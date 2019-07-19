@@ -1318,22 +1318,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         userId,
                         isOwner
                     )
-                    if (model.postTag.totalItems != 0 && !model.postTag.items.isEmpty()) {
-                        for (i in 0 until model.postTag.totalItems) {
-                            if (isOwner) {
-                                postTagAnalytics.trackViewPostTagProfileSelf(
+                    if (model.postTag.totalItems != 0 && model.postTag.items.isNotEmpty()) {
+                        if (isOwner) {
+                            postTagAnalytics.trackViewPostTagProfileSelf(
                                     model.id,
-                                    model.postTag.items.get(i),
-                                    i,
+                                    model.postTag.items,
                                     trackingPostModel)
-                            } else {
-                                postTagAnalytics.trackViewPostTagProfileOther(
+                        } else {
+                            postTagAnalytics.trackViewPostTagProfileOther(
                                     model.id,
-                                    model.postTag.items.get(i),
-                                    i,
+                                    model.postTag.items,
                                     trackingPostModel
-                                )
-                            }
+                            )
                         }
                     }
 

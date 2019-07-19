@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/filter_item_container"
     android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingTop="@dimen/quick_filter_padding_vertical"
+    android:paddingBottom="@dimen/quick_filter_padding_vertical"
     android:paddingLeft="@dimen/quick_filter_padding_horizontal"
     android:paddingRight="@dimen/quick_filter_padding_horizontal"
-    android:layout_marginTop="17dp"
-    android:layout_marginRight="8dp"
     android:background="@drawable/quick_filter_item_background_neutral"
-    android:gravity="center_vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -22,27 +22,9 @@
         android:layout_marginRight="5dp"
         android:visibility="gone"/>
 
-    <ImageView
-        android:id="@+id/rating_icon"
-        android:layout_marginRight="@dimen/dp_2"
-        android:layout_width="@dimen/chip_rating_icon_size"
-        android:layout_height="@dimen/chip_rating_icon_size"
-        android:src="@drawable/ic_app_rating_filled"
-        android:visibility="gone" />
-
-    <com.tokopedia.design.color.ColorSampleView
-        android:id="@+id/color_icon"
-        android:layout_marginRight="@dimen/dp_8"
-        android:layout_width="@dimen/chip_color_item_icon_size"
-        android:layout_height="@dimen/chip_color_item_icon_size"
-        android:visibility="gone"
-        />
-
     <TextView
-        android:id="@+id/filter_item_text"
+        android:id="@+id/quick_filter_text"
         style="@style/TextView.Small.BlackSecondary"
-        android:paddingTop="@dimen/quick_filter_padding_vertical"
-        android:paddingBottom="@dimen/quick_filter_padding_vertical"
         tools:text="superstar"/>
 
 </LinearLayout>
