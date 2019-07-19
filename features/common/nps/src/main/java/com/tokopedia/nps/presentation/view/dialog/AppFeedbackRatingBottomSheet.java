@@ -18,6 +18,11 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
     }
 
     @Override
+    public void initView(View view) {
+
+    }
+
+    @Override
     public void show(FragmentManager manager, String tag) {
         super.show(manager, tag);
     }
