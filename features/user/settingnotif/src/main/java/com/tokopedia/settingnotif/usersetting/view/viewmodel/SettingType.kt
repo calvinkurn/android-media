@@ -14,6 +14,10 @@ data class SettingType(
         return settingFieldFragment.newInstance()
     }
 
+    fun isPushNotificationFieldFragment(): Boolean {
+        return settingFieldFragment == PushNotifFieldFragment::class.java
+    }
+
     companion object {
         fun createSettingTypes(): List<SettingType> {
             return arrayListOf(

@@ -11,7 +11,7 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 
 class SettingTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private val settingTypeName: TextView? = itemView?.findViewById(R.id.tv_setting_type)
+    private val settingTypeName: TextView? = itemView.findViewById(R.id.tv_setting_type)
 
     fun bind(settingType: SettingType, settingTypeContract: SettingTypeFragment.SettingTypeContract) {
         settingTypeName?.text = settingType.name

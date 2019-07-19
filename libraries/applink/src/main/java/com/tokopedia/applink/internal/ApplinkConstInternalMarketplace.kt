@@ -118,6 +118,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
 
+    // SettingFieldActivity
+    @JvmField
+    val USER_PUSH_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-push-notification-setting"
+
     // ShopScoreDetailActivity
     @JvmField
     val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"

@@ -159,7 +159,7 @@
     <string name="title_menu_loan">Modal usaha untuk Toko Anda</string>
     <string name="label_menu_loan">Potensi pinjaman senilai</string>
     <string name="label_tokopoint_see_voucher">Lihat Kupon</string>
-    <string name="title_app_notif_setting">Notifikasi Aplikasi</string>
+    <string name="title_app_notif_setting">Push Notification</string>
     <string name="title_email_notif_setting">Notifikasi Email</string>
     <string name="title_menu_wishlist">Wishlist</string>
     <string name="label_menu_wishlist">Lihat Produk yang sudah Anda wishlist</string>
