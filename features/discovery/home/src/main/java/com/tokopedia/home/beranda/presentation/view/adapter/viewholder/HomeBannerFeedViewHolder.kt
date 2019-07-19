@@ -29,7 +29,7 @@ class HomeBannerFeedViewHolder(itemView: View, private val homeFeedview: HomeFee
 
     private val context: Context by lazy { itemView.context }
 
-    private val bannerImageView: ImageView by lazy { itemView.findViewById(R.id.bannerImageView) }
+    private val bannerImageView: ImageView by lazy { itemView.findViewById<ImageView>(R.id.bannerImageView) }
 
     override fun bind(element: BannerFeedViewModel) {
         bannerImageView.setOnClickListener {

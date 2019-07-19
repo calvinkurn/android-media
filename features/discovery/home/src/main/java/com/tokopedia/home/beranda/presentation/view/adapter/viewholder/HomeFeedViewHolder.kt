@@ -41,14 +41,10 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
             setImageProductVisible(true)
             setProductNameVisible(true)
             setPriceVisible(true)
-            if(element.discountPercentage > 0){
-                setSlashedPriceVisible(true)
-                setLabelDiscountVisible(true)
-            }
-            if(element.rating > 0 && element.countReview > 0) {
-                setImageRatingVisible(true)
-                setReviewCountVisible(true)
-            }
+            setSlashedPriceVisible(element.discountPercentage > 0)
+            setLabelDiscountVisible(element.discountPercentage > 0)
+            setImageRatingVisible(element.rating > 0 && element.countReview > 0)
+            setReviewCountVisible(element.rating > 0 && element.countReview > 0)
             setShopBadgesVisible(true)
             setShopLocationVisible(true)
             setButtonWishlistVisible(true)
@@ -69,6 +65,7 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                 }
             })
             realignLayout()
+            setOnClickListener { homeFeedView.onProductClick(element, adapterPosition) }
             setButtonWishlistOnClickListener {
                 homeFeedView.onWishlistClick(element, adapterPosition, !it.isActivated){ isSuccess, throwable ->
                     if(isSuccess){

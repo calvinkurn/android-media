@@ -38,6 +38,7 @@ public class HomePageTracking {
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
     private static final String EVENT_CLICK_HOME_PAGE = "clickHomePage";
+    private static final String EVENT_CLICK_HOME_PAGE_WISHLIST = "clickHomepage";
     private static final String EVENT_GIMMICK = "clickGimmick";
     private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
     private static final String EVENT_TOKO_POINT = "eventTokopoint";
@@ -635,7 +636,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_CLICK_HOME_PAGE,
+                    EVENT_CLICK_HOME_PAGE_WISHLIST,
                     CATEGORY_HOME_PAGE,
                     ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION,
                     tabName
@@ -647,7 +648,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_CLICK_HOME_PAGE,
+                    EVENT_CLICK_HOME_PAGE_WISHLIST,
                     CATEGORY_HOME_PAGE,
                     ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION,
                     tabName
@@ -659,7 +660,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_CLICK_HOME_PAGE,
+                    EVENT_CLICK_HOME_PAGE_WISHLIST,
                     CATEGORY_HOME_PAGE,
                     ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN,
                     tabName

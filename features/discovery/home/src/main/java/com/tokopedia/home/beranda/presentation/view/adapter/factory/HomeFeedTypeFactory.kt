@@ -33,7 +33,7 @@ class HomeFeedTypeFactory(private val view: HomeFeedContract.View) : BaseAdapter
     }
 
     fun type(viewModel: BannerFeedViewModel): Int {
-        return BannerFeedViewModel.LAYOUT.toInt()
+        return BannerFeedViewModel.LAYOUT
     }
 
 
