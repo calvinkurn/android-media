@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.presentation.widget.hotelcalendar.HotelCalendarDialog
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
@@ -33,8 +35,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
-import android.support.v7.widget.RecyclerView
-import com.tokopedia.hotel.common.presentation.widget.hotelcalendar.HotelCalendarDialog
 
 /**
  * @author by furqan on 28/03/19
@@ -294,7 +294,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         rv_hotel_homepage_promo.isNestedScrollingEnabled = false
         rv_hotel_homepage_promo.adapter = promoAdapter
         rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
