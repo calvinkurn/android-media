@@ -506,7 +506,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         super.onViewCreated(view, savedInstanceState)
         button_buy_partial.setOnClickListener {
-            if (hasError()) {navigateCheckoutToPayment
+            if (hasError()) {
+//                navigateCheckoutToPayment
                 return@setOnClickListener
             }
             if (!viewModel.isUserSessionActive()) {
