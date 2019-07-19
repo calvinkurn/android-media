@@ -90,6 +90,7 @@ data class ShopViewModel(
                 val url: String = "",
                 val applink: String = "",
                 val price: Int = 0,
+                val priceFormat: String = "",
                 val imageUrl: String = ""
         ) : Parcelable {
 
@@ -99,6 +100,7 @@ data class ShopViewModel(
                     parcel.readString() ?: "",
                     parcel.readString() ?: "",
                     parcel.readInt(),
+                    parcel.readString() ?: "",
                     parcel.readString() ?: "")
 
             override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -107,6 +109,7 @@ data class ShopViewModel(
                 parcel.writeString(url)
                 parcel.writeString(applink)
                 parcel.writeInt(price)
+                parcel.writeString(priceFormat)
                 parcel.writeString(imageUrl)
             }
 

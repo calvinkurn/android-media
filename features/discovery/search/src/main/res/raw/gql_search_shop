@@ -33,6 +33,7 @@ query SearchShop($params: String!) {
         url
         applink
         price
+        price_format
         image_url
       }
       voucher {
@@ -73,6 +74,7 @@ query SearchShop($params: String!) {
         url
         applink
         price
+        price_format
         image_url
       }
       voucher {
@@ -113,6 +115,7 @@ query SearchShop($params: String!) {
         url
         applink
         price
+        price_format
         image_url
       }
       voucher {

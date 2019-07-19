@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
@@ -46,15 +47,11 @@ class ShopProductItemViewHolder(
         itemView.textViewShopItemProductPrice.visibility = if (isShopItemProductPriceVisible) View.VISIBLE else View.GONE
 
         if(isShopItemProductPriceVisible) {
-            itemView.textViewShopItemProductPrice.text =
-                    context.resources.getString(
-                            R.string.shop_product_item_price,
-                            shopItemProductView.price.toString()
-                    )
+            itemView.textViewShopItemProductPrice.text = MethodChecker.fromHtml(shopItemProductView.priceFormat)
         }
     }
 
     private fun getIsShopItemProductPriceVisible(shopItemProductView: ShopViewModel.ShopItem.ShopItemProduct): Boolean {
-        return shopItemProductView.price > 0
+        return shopItemProductView.priceFormat != ""
     }
 }

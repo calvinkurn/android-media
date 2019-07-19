@@ -93,6 +93,7 @@ class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
                 url = shopItemProduct.url,
                 applink = shopItemProduct.applink,
                 price = shopItemProduct.price,
+                priceFormat = shopItemProduct.priceFormat,
                 imageUrl = shopItemProduct.imageUrl
         )
     }

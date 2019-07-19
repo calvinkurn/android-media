@@ -175,6 +175,10 @@ data class SearchShopModel(
                     @Expose
                     val price: Int = 0,
 
+                    @SerializedName("price_format")
+                    @Expose
+                    val priceFormat: String = "",
+
                     @SerializedName("image_url")
                     @Expose
                     val imageUrl: String = ""
