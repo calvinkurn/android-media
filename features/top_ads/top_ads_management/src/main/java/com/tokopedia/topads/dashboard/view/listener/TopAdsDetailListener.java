@@ -13,4 +13,8 @@ public interface TopAdsDetailListener<V extends Ad> extends CustomerView {
     void onAdEmpty();
 
     void onLoadAdError();
+
+    void onAutoAdsActive();
+
+    void onAutoAdsInactive();
 }

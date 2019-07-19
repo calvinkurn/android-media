@@ -89,12 +89,17 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Inject
     GlobalCacheManager cacheManager;
 
-    InboxReputationDetailPassModel passModel;
+    String reputationId = "0";
+    int role = 0;
 
-    public static InboxReputationDetailFragment createInstance(int tab) {
+    public static InboxReputationDetailFragment createInstance(int tab,
+                                                               boolean isFromApplink,
+                                                               String reputationId) {
         InboxReputationDetailFragment fragment = new InboxReputationDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(InboxReputationDetailActivity.ARGS_TAB, tab);
+        bundle.putBoolean(InboxReputationDetailActivity.ARGS_IS_FROM_APPLINK, isFromApplink);
+        bundle.putString(InboxReputationDetailActivity.REPUTATION_ID, reputationId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -122,25 +127,33 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        if (cacheManager != null) {
+        if (getArguments().getBoolean(InboxReputationDetailActivity.ARGS_IS_FROM_APPLINK, false)) {
+            reputationId = getArguments().getString(InboxReputationDetailActivity.REPUTATION_ID, "0");
+        } else if (cacheManager != null) {
             try {
-                passModel = cacheManager.getConvertObjData(InboxReputationDetailActivity.CACHE_PASS_DATA,
-                        InboxReputationDetailPassModel.class);
-                setToolbar();
+                InboxReputationDetailPassModel passModel =
+                        cacheManager.getConvertObjData(
+                                InboxReputationDetailActivity.CACHE_PASS_DATA,
+                                InboxReputationDetailPassModel.class
+                        );
+                reputationId = passModel.getReputationId();
+                role = passModel.getRole();
+                setToolbar(passModel.getInvoice(), passModel.getCreateTime());
             } catch (Exception e) {
                 // Ignore cache expired exception
             }
         }
+
         callbackManager = CallbackManager.Factory.create();
         InboxReputationDetailTypeFactory typeFactory = new InboxReputationDetailTypeFactoryImpl
                 (this);
         adapter = new InboxReputationDetailAdapter(typeFactory);
     }
 
-    private void setToolbar(){
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.app_bar);
-        toolbar.setTitle(passModel.getInvoice());
-        toolbar.setSubtitle(passModel.getCreateTime());
+    private void setToolbar(String title, String subtitle){
+        Toolbar toolbar = getActivity().findViewById(R.id.app_bar);
+        toolbar.setTitle(title);
+        toolbar.setSubtitle(subtitle);
     }
 
     @Override
@@ -177,9 +190,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (passModel != null && !TextUtils.isEmpty(passModel.getReputationId())) {
+        if (!TextUtils.isEmpty(reputationId)) {
             presenter.getInboxDetail(
-                    passModel.getReputationId(),
+                    reputationId,
                     getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
             );
         }else{
@@ -202,7 +215,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                         @Override
                         public void onRetryClicked() {
                             presenter.getInboxDetail(
-                                    passModel.getReputationId(),
+                                    reputationId,
                                     getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
                             );
                         }
@@ -218,6 +231,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetInboxDetail(InboxReputationItemViewModel inboxReputationItemViewModel,
                                         List<Visitable> list) {
+        role = inboxReputationItemViewModel.getRole();
+        setToolbar(inboxReputationItemViewModel.getInvoice(), inboxReputationItemViewModel.getCreateTime());
+
         adapter.clearList();
         adapter.addHeader(createHeaderModel(inboxReputationItemViewModel));
         adapter.addList(list);
@@ -229,7 +245,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         startActivityForResult(
                 InboxReputationFormActivity.getEditReviewIntent(getActivity(),
                         element.getReviewId(),
-                        passModel.getReputationId(),
+                        reputationId,
                         element.getProductId(),
                         String.valueOf(element.getShopId()),
                         element.getReviewStar(),
@@ -254,7 +270,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                 InboxReputationFormActivity.getGiveReviewIntent(
                         getActivity(),
                         reviewId,
-                        passModel.getReputationId(), productId,
+                        reputationId, productId,
                         String.valueOf(shopId), reviewIsSkippable,
                         productAvatar, productName, productUrl,
                         revieweeName, productStatus),
@@ -481,7 +497,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            presenter.sendSmiley(passModel.getReputationId(), score, passModel.getRole());
+                            presenter.sendSmiley(reputationId, score, role);
                         }
                     });
             builder.setNegativeButton(getString(R.string.title_cancel),
@@ -559,7 +575,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void refreshPage() {
-        presenter.refreshPage(passModel.getReputationId(),
+        presenter.refreshPage(reputationId,
                 getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1));
     }
 

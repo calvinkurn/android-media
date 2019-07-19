@@ -16,6 +16,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 import java.util.concurrent.TimeUnit
 
 /**
@@ -65,20 +66,24 @@ class DynamicButtonViewHolder(
             var intervalToHideMs = ((element.tooltipDuration - 1)*1000).toLong()
             var index = if(element.priority > 0) element.priority-1 else position
 
+            val showTooltip = Action1<Long> {
+                ViewTooltip.on(icon)
+                        .autoHide(true, intervalToHideMs)
+                        .corner(30)
+                        .clickToHide(false)
+                        .color(MethodChecker.getColor(icon.context, R.color.white))
+                        .textColor(MethodChecker.getColor(icon.context, R.color.black_70))
+                        .position(ViewTooltip.Position.TOP)
+                        .text(element.tooltip)
+                        .textSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                        .show()
+            }
+
+            val onError = Action1<Throwable> { it.printStackTrace() }
+
             Observable.timer((timeToShow*index).toLong(), TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        ViewTooltip.on(icon)
-                                .autoHide(true, intervalToHideMs)
-                                .corner(30)
-                                .clickToHide(false)
-                                .color(MethodChecker.getColor(icon.context, R.color.white))
-                                .textColor(MethodChecker.getColor(icon.context, R.color.black_70))
-                                .position(ViewTooltip.Position.TOP)
-                                .text(element.tooltip)
-                                .textSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                                .show()
-                    }
+                    .subscribe(showTooltip, onError)
         }
     }
 }

@@ -10,5 +10,7 @@
     <string name="path_change_inactive_phone_form">/change-inactive-phone-form</string>
     <string name="path_choose_account">/choose-account</string>
     <string name="path_withdraw">/withdraw</string>
-
+    <string name="path_add_name_register">/add-name-register</string>
+    <string name="path_forgot_password">/forgot-password</string>
+    <string name="path_webview" translatable="false">/webview</string>
 </resources>

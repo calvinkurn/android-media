@@ -40,7 +40,7 @@ public class BottomNavigation extends BottomNavigationView {
 
     private static String INIT_BACKSTACK = "0";
 
-    private int mShiftAmount;
+    private float mShiftAmount;
     private float mScaleUpFactor;
     private float mScaleDownFactor;
     private boolean animationRecord;
@@ -105,7 +105,7 @@ public class BottomNavigation extends BottomNavigationView {
         final BottomNavigationMenuView mMenuView = getBottomNavigationMenuView();
         BottomNavigationItemView[] mButtons = getBottomNavigationItemViews();
         for (BottomNavigationItemView button : mButtons) {
-            ImageView mIcon = getField(button.getClass(), button, "mIcon");
+            ImageView mIcon = getField(button.getClass(), button, "icon");
             assert mIcon != null;
             mIcon.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
         }
@@ -118,7 +118,7 @@ public class BottomNavigation extends BottomNavigationView {
 
             BottomNavigationItemView button = mButtons[0];
             if (null != button) {
-                final ImageView mIcon = getField(button.getClass(), button, "mIcon");
+                final ImageView mIcon = getField(button.getClass(), button, "icon");
                 if (null != mIcon) {
                     mIcon.post(new Runnable() {
                         @Override
@@ -148,8 +148,8 @@ public class BottomNavigation extends BottomNavigationView {
         BottomNavigationItemView[] mButtons = getBottomNavigationItemViews();
 
         for (BottomNavigationItemView button : mButtons) {
-            TextView mLargeLabel = getField(button.getClass(), button, "mLargeLabel");
-            TextView mSmallLabel = getField(button.getClass(), button, "mSmallLabel");
+            TextView mLargeLabel = getField(button.getClass(), button, "largeLabel");
+            TextView mSmallLabel = getField(button.getClass(), button, "smallLabel");
 
             if (mLargeLabel == null)
                 return;
@@ -223,29 +223,30 @@ public class BottomNavigation extends BottomNavigationView {
         BottomNavigationMenuView mMenuView = getBottomNavigationMenuView();
         BottomNavigationItemView[] mButtons = getBottomNavigationItemViews();
         for (BottomNavigationItemView button : mButtons) {
-            TextView mLargeLabel = getField(button.getClass(), button, "mLargeLabel");
-            TextView mSmallLabel = getField(button.getClass(), button, "mSmallLabel");
+            TextView mLargeLabel = getField(button.getClass(), button, "largeLabel");
+            TextView mSmallLabel = getField(button.getClass(), button, "smallLabel");
 
             // if disable animation, need animationRecord the source value
             if (!enable) {
                 if (!animationRecord) {
                     animationRecord = true;
-                    mShiftAmount = getField(button.getClass(), button, "mShiftAmount");
-                    mScaleUpFactor = getField(button.getClass(), button, "mScaleUpFactor");
-                    mScaleDownFactor = getField(button.getClass(), button, "mScaleDownFactor");
+                    mShiftAmount = getField(button.getClass(), button, "shiftAmount");
+                    mScaleUpFactor = getField(button.getClass(), button, "scaleUpFactor");
+                    mScaleDownFactor = getField(button.getClass(), button, "scaleDownFactor");
 
                     mLargeLabelSize = mLargeLabel.getTextSize();
                     mSmallLabelSize = mSmallLabel.getTextSize();
 
                 }
                 // disable
-                setField(button.getClass(), button, "mShiftAmount", 0);
-                setField(button.getClass(), button, "mScaleUpFactor", 1);
-                setField(button.getClass(), button, "mScaleDownFactor", 1);
+                setField(button.getClass(), button, "shiftAmount", 0);
+                setField(button.getClass(), button, "scaleUpFactor", 1);
+                setField(button.getClass(), button, "scaleDownFactor", 1);
 
                 // let the mLargeLabel font size equal to mSmallLabel
                 if (mLargeLabel != null) {
                     mLargeLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, mSmallLabelSize);
+                    mLargeLabel.setPadding(0,0,0,0);
                 }
 
             } else {
@@ -253,9 +254,9 @@ public class BottomNavigation extends BottomNavigationView {
                 if (!animationRecord)
                     return;
                 // enable animation
-                setField(button.getClass(), button, "mShiftAmount", mShiftAmount);
-                setField(button.getClass(), button, "mScaleUpFactor", mScaleUpFactor);
-                setField(button.getClass(), button, "mScaleDownFactor", mScaleDownFactor);
+                setField(button.getClass(), button, "shiftAmount", mShiftAmount);
+                setField(button.getClass(), button, "scaleUpFactor", mScaleUpFactor);
+                setField(button.getClass(), button, "scaleDownFactor", mScaleDownFactor);
                 // restore
                 if (mLargeLabel != null) {
                     mLargeLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, mLargeLabelSize);
@@ -281,7 +282,7 @@ public class BottomNavigation extends BottomNavigationView {
         // 1. get mMenuView
         BottomNavigationMenuView mMenuView = getBottomNavigationMenuView();
         // 2. change field mShiftingMode value in mMenuView
-        setField(mMenuView.getClass(), mMenuView, "mShiftingMode", enable);
+        //setField(mMenuView.getClass(), mMenuView, "isShifting", enable);
 
         mMenuView.updateMenuView();
     }
@@ -299,7 +300,7 @@ public class BottomNavigation extends BottomNavigationView {
         BottomNavigationItemView[] mButtons = getBottomNavigationItemViews();
         // 3. change field mShiftingMode value in mButtons
         for (BottomNavigationItemView button : mButtons) {
-            setField(button.getClass(), button, "mShiftingMode", enable);
+            setField(button.getClass(), button, "isShifting", enable);
         }
         mMenuView.updateMenuView();
     }
@@ -356,7 +357,7 @@ public class BottomNavigation extends BottomNavigationView {
         // 2. get mButtons
         BottomNavigationItemView[] mButtons = getBottomNavigationItemViews();
         // get mOnClickListener
-        View.OnClickListener mOnClickListener = getField(mMenuView.getClass(), mMenuView, "mOnClickListener");
+        View.OnClickListener mOnClickListener = getField(mMenuView.getClass(), mMenuView, "onClickListener");
 
         if (mOnClickListener != null) {
             mOnClickListener.onClick(mButtons[item]);
@@ -371,7 +372,7 @@ public class BottomNavigation extends BottomNavigationView {
      */
     public OnNavigationItemSelectedListener getOnNavigationItemSelectedListener() {
         // private OnNavigationItemSelectedListener mListener;
-        return getField(BottomNavigationView.class, this, "mSelectedListener");
+        return getField(BottomNavigationView.class, this, "selectedListener");
     }
 
     @Override
@@ -392,7 +393,7 @@ public class BottomNavigation extends BottomNavigationView {
      */
     private BottomNavigationMenuView getBottomNavigationMenuView() {
         if (null == mMenuView)
-            mMenuView = getField(BottomNavigationView.class, this, "mMenuView");
+            mMenuView = getField(BottomNavigationView.class, this, "menuView");
         return mMenuView;
     }
 
@@ -409,7 +410,7 @@ public class BottomNavigation extends BottomNavigationView {
          * 2 private BottomNavigationItemView[] mButtons;
          */
         BottomNavigationMenuView mMenuView = getBottomNavigationMenuView();
-        mButtons = getField(mMenuView.getClass(), mMenuView, "mButtons");
+        mButtons = getField(mMenuView.getClass(), mMenuView, "buttons");
         return mButtons;
     }
 
@@ -431,7 +432,7 @@ public class BottomNavigation extends BottomNavigationView {
      */
     public ImageView getIconAt(int position) {
         BottomNavigationItemView mButtons = getBottomNavigationItemView(position);
-        return getField(BottomNavigationItemView.class, mButtons, "mIcon");
+        return getField(BottomNavigationItemView.class, mButtons, "icon");
     }
 
     /**
@@ -443,7 +444,7 @@ public class BottomNavigation extends BottomNavigationView {
      */
     public TextView getSmallLabelAt(int position) {
         BottomNavigationItemView mButtons = getBottomNavigationItemView(position);
-        return getField(BottomNavigationItemView.class, mButtons, "mSmallLabel");
+        return getField(BottomNavigationItemView.class, mButtons, "smallLabel");
     }
 
     /**
@@ -455,7 +456,7 @@ public class BottomNavigation extends BottomNavigationView {
      */
     public TextView getLargeLabelAt(int position) {
         BottomNavigationItemView mButtons = getBottomNavigationItemView(position);
-        return getField(BottomNavigationItemView.class, mButtons, "mLargeLabel");
+        return getField(BottomNavigationItemView.class, mButtons, "largeLabel");
     }
 
     /**
@@ -559,7 +560,7 @@ public class BottomNavigation extends BottomNavigationView {
         // 1. get mMenuView
         final BottomNavigationMenuView mMenuView = getBottomNavigationMenuView();
         // 2. set private final int mItemHeight in mMenuView
-        setField(mMenuView.getClass(), mMenuView, "mItemHeight", height);
+        setField(mMenuView.getClass(), mMenuView, "itemHeight", height);
 
         mMenuView.updateMenuView();
     }
@@ -573,7 +574,7 @@ public class BottomNavigation extends BottomNavigationView {
         // 1. get mMenuView
         final BottomNavigationMenuView mMenuView = getBottomNavigationMenuView();
         // 2. get private final int mItemHeight in mMenuView
-        return getField(mMenuView.getClass(), mMenuView, "mItemHeight");
+        return getField(mMenuView.getClass(), mMenuView, "itemHeight");
     }
 
     /**
@@ -817,7 +818,7 @@ public class BottomNavigation extends BottomNavigationView {
 
     @SuppressLint("RestrictedApi")
     public void enableShiftingMode(int position, boolean enable) {
-        getBottomNavigationItemView(position).setShiftingMode(enable);
+        getBottomNavigationItemView(position).setShifting(enable);
     }
 
     @SuppressLint("RestrictedApi")
@@ -859,7 +860,7 @@ public class BottomNavigation extends BottomNavigationView {
         2. private final int mDefaultMargin;
          */
         BottomNavigationItemView itemView = getBottomNavigationItemView(position);
-        setField(BottomNavigationItemView.class, itemView, "mDefaultMargin", marginTop);
+        setField(BottomNavigationItemView.class, itemView, "defaultMargin", marginTop);
         mMenuView.updateMenuView();
     }
 
@@ -870,7 +871,6 @@ public class BottomNavigation extends BottomNavigationView {
 
     public void setNotification(int badgeNumber, int positionItem) {
         if (getBottomNavigationItemView(positionItem) == null) {
-            Log.e(this.getClass().getSimpleName(), "BottomNavigationItemView NULL");
             return;
         }
 
