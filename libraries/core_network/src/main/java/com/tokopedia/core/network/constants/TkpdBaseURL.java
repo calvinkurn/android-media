@@ -27,7 +27,7 @@ public class TkpdBaseURL {
     public static String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB();
     public static String MOBILE_DOMAIN = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
-    public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart/";
+    public static String TOKOPEDIA_CART_DOMAIN = TokopediaUrl.getInstance().getFS() + "tkpdcart/";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = TokopediaUrl.Companion.getInstance().getPULSA_API();
     public static String DIGITAL_WEBSITE_DOMAIN = TokopediaUrl.Companion.getInstance().getPULSA();
