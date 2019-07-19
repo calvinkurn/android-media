@@ -86,7 +86,7 @@ class ShopItemViewHolder(
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
-            ImageHandler.loadImage(context, imageViewShopReputation, shopViewItem.reputationImageUri, -1)
+            ImageHandler.loadImageFitCenter(context, imageViewShopReputation, shopViewItem.reputationImageUri, -1)
         }
     }
 
