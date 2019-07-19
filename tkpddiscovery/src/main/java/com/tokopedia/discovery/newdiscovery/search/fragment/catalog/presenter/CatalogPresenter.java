@@ -57,7 +57,9 @@ public class CatalogPresenter extends BrowseSectionFragmentPresenterImpl<Catalog
 
     @Override
     protected void getFilterFromNetwork(RequestParams requestParams) {
-        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        com.tokopedia.usecase.RequestParams dynamicRequestParams = new com.tokopedia.usecase.RequestParams();
+        dynamicRequestParams.putAll(requestParams.getParameters());
+        getDynamicFilterUseCase.execute(dynamicRequestParams, new GetDynamicFilterSubscriber(getView()));
     }
 
     @Override

@@ -141,34 +141,38 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     private void hideError() {
         tvError.setText("");
+        tvMessage.setVisibility(VISIBLE);
     }
 
     private void showError() {
         tvError.setVisibility(VISIBLE);
+        tvMessage.setVisibility(GONE);
     }
 
     public void showLoginEmailView(@NotNull String email) {
         wrapperPassword.setVisibility(View.VISIBLE);
         btnForgotPassword.setVisibility(View.VISIBLE);
         btnChange.setVisibility(View.VISIBLE);
+        tvMessage.setVisibility(GONE);
 
+        tvMessage.setText("");
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.title_email));
         btnAction.setText(btnAction.getContext().getString(R.string.login));
 
         etInputEmailPhone.setText(email);
         etInputEmailPhone.setEnabled(false);
-
     }
 
     public void showDefaultView() {
         wrapperPassword.setVisibility(View.GONE);
         btnForgotPassword.setVisibility(View.GONE);
         btnChange.setVisibility(View.GONE);
+        tvMessage.setVisibility(VISIBLE);
 
+        tvMessage.setText(tvMessage.getContext().getString(R.string.default_placeholder));
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.phone_or_email_input));
         etInputEmailPhone.setText("");
         etInputEmailPhone.setEnabled(true);
-
     }
 
     public void resetErrorWrapper() {
