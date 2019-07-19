@@ -841,25 +841,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private void setDealTitle(int position, ProductItem value) {
             if (value != null) {
                 this.valueItem = value;
-                if (showHighlightText) {
-                    SpannableString spannableString = new SpannableString(valueItem.getDisplayName());
-                    if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getDisplayName(), highLightText)) {
-                        StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
-                        int fromindex = valueItem.getDisplayName().toLowerCase().indexOf(highLightText.toLowerCase());
-                        if (fromindex == -1) {
-                            fromindex = valueItem.getDisplayName().toLowerCase().indexOf(lowerhighlight.toLowerCase());
-                        }
-                        if (fromindex == -1) {
-                            fromindex = valueItem.getDisplayName().toLowerCase().indexOf(upperhighlight.toLowerCase());
-                        }
-                        int toIndex = fromindex + highLightText.length();
-                        spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-                    tvDealTitle.setText(spannableString);
-                } else {
-                    tvDealTitle.setText(valueItem.getDisplayName());
-
-                }
+                tvDealTitle.setText(valueItem.getDisplayName());
                 tvBrandName.setText(value.getBrand().getTitle());
                 ImageHandler.loadImage(context, brandImage, value.getThumbnailWeb(), R.color.grey_1100, R.color.grey_1100);
                 if (value.getMrp() > 0) {

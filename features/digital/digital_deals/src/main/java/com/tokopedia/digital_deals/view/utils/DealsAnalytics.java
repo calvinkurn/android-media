@@ -399,13 +399,14 @@ public class DealsAnalytics {
         }
     }
 
-    public void sendEcommercePayment(int id, int quantity, int salesPrice, String displayName, String brandName, boolean promoApplied) {
+    public void sendEcommercePayment(Integer categoryID, int id, int quantity, int salesPrice, String displayName, String brandName, boolean promoApplied) {
         try {
             HashMap<String, Object> productMap = new HashMap<>();
             productMap.put(ID, String.valueOf(id));
             productMap.put(NAME, displayName);
             productMap.put(PRICE, String.valueOf(quantity * salesPrice));
             productMap.put(CATEGORY, "deals");
+            productMap.put(CATEGORY_ID, String.valueOf(categoryID));
             productMap.put(QUANTITY, quantity);
             HashMap<String, Object> checkout = new HashMap<>();
             HashMap<String, Object> ecommerce = new HashMap<>();
@@ -756,7 +757,7 @@ public class DealsAnalytics {
             productMap.put(ID, String.valueOf(dealDetail.getId()));
             productMap.put(PRICE, String.valueOf(dealDetail.getSalesPrice()));
             productMap.put(CATEGORY, DEALS);
-            productMap.put(QUANTITY, dealDetail.getMaxQty());
+            productMap.put(QUANTITY, String.valueOf(dealDetail.getQuantity()));
             productMap.put(VARIANT, "none");
             productMap.put(CART_ID, "0");
             add.put(KEY_PRODUCTS, Collections.singletonList(productMap));
