@@ -97,6 +97,7 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    compile project(path: ':libraries:kotlin_extensions')
 }
 
 apply from: '../../../publish_local.gradle'
