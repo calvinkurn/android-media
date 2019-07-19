@@ -148,6 +148,7 @@ public class ShopListFragment
     }
 
     private void setSpanCountToOne() {
+        setSpanCount(1);
         getGridLayoutManager().setSpanCount(1);
     }
 
