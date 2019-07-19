@@ -6,9 +6,11 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
-import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
@@ -16,7 +18,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartList
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
-import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
@@ -48,7 +49,6 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceAdd;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
@@ -208,10 +208,10 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processInitialGetCartData(String cartId, boolean initialLoad, boolean forceInitialLoad) {
+    public void processInitialGetCartData(String cartId, boolean initialLoad, boolean isLoadingTypeRefresh) {
         if (initialLoad) {
             view.renderLoadGetCartData();
-        } else if (!forceInitialLoad) {
+        } else if (!isLoadingTypeRefresh) {
             view.showProgressLoading();
         }
 
@@ -1188,54 +1188,48 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processAddToCart(Object productModel) {
-        try {
-            int productId = 0;
-            int shopId = 0;
-            String externalSource = "";
-            if (productModel instanceof CartWishlistItemHolderData) {
-                CartWishlistItemHolderData cartWishlistItemHolderData = (CartWishlistItemHolderData) productModel;
-                productId = Integer.parseInt(cartWishlistItemHolderData.getId());
-                shopId = Integer.parseInt(cartWishlistItemHolderData.getShopId());
-                externalSource = AddToCartRequest.ATC_FROM_WISHLIST;
-            } else if (productModel instanceof CartRecentViewItemHolderData) {
-                CartRecentViewItemHolderData cartRecentViewItemHolderData = (CartRecentViewItemHolderData) productModel;
-                productId = Integer.parseInt(cartRecentViewItemHolderData.getId());
-                shopId = Integer.parseInt(cartRecentViewItemHolderData.getShopId());
-                externalSource = AddToCartRequest.ATC_FROM_RECENT_VIEW;
-            } else if (productModel instanceof CartRecommendationItemHolderData) {
-                CartRecommendationItemHolderData cartRecommendationItemHolderData = (CartRecommendationItemHolderData) productModel;
-                productId = cartRecommendationItemHolderData.getRecommendationItem().getProductId();
-                shopId = cartRecommendationItemHolderData.getRecommendationItem().getShopId();
-                externalSource = AddToCartRequest.ATC_FROM_RECOMMENDATION;
-            }
+        view.showProgressLoading();
 
-            view.showProgressLoading();
-            AddToCartRequest addToCartRequest = new AddToCartRequest.Builder()
-                    .productId(productId)
-                    .notes("")
-                    .quantity(0) // Always be 0 (request from backend)
-                    .warehouseId(0) // Always be 0 (request from backend)
-                    .shopId(shopId)
-                    .atcFromExternalSource(externalSource)
-                    .build();
-
-            RequestParams requestParams = RequestParams.create();
-            requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
-
-            addToCartUseCase.createObservable(requestParams)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new AddToCartSubscriber(view, this, productModel));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            view.hideProgressLoading();
+        int productId = 0;
+        int shopId = 0;
+        String externalSource = "";
+        if (productModel instanceof CartWishlistItemHolderData) {
+            CartWishlistItemHolderData cartWishlistItemHolderData = (CartWishlistItemHolderData) productModel;
+            productId = Integer.parseInt(cartWishlistItemHolderData.getId());
+            shopId = Integer.parseInt(cartWishlistItemHolderData.getShopId());
+            externalSource = AddToCartRequestParams.Companion.getATC_FROM_WISHLIST();
+        } else if (productModel instanceof CartRecentViewItemHolderData) {
+            CartRecentViewItemHolderData cartRecentViewItemHolderData = (CartRecentViewItemHolderData) productModel;
+            productId = Integer.parseInt(cartRecentViewItemHolderData.getId());
+            shopId = Integer.parseInt(cartRecentViewItemHolderData.getShopId());
+            externalSource = AddToCartRequestParams.Companion.getATC_FROM_RECENT_VIEW();
+        } else if (productModel instanceof CartRecommendationItemHolderData) {
+            CartRecommendationItemHolderData cartRecommendationItemHolderData = (CartRecommendationItemHolderData) productModel;
+            productId = cartRecommendationItemHolderData.getRecommendationItem().getProductId();
+            shopId = cartRecommendationItemHolderData.getRecommendationItem().getShopId();
+            externalSource = AddToCartRequestParams.Companion.getATC_FROM_RECOMMENDATION();
         }
+
+        AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
+        addToCartRequestParams.setProductId(productId);
+        addToCartRequestParams.setShopId(shopId);
+        addToCartRequestParams.setQuantity(0);
+        addToCartRequestParams.setNotes("");
+        addToCartRequestParams.setWarehouseId(0);
+        addToCartRequestParams.setAtcFromExternalSource(externalSource);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams);
+        addToCartUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AddToCartSubscriber(view, this, productModel));
     }
 
     @Override
     public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData,
-                                                                          AddToCartDataResponseModel addToCartDataResponseModel) {
+                                                                          AddToCartDataModel addToCartDataResponseModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_WISHLIST);
@@ -1266,7 +1260,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData,
-                                                                          AddToCartDataResponseModel addToCartDataResponseModel) {
+                                                                          AddToCartDataModel addToCartDataResponseModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECENT_VIEW);
@@ -1294,7 +1288,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData,
-                                                                          AddToCartDataResponseModel addToCartDataResponseModel) {
+                                                                          AddToCartDataModel addToCartDataResponseModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECOMMENDATION);

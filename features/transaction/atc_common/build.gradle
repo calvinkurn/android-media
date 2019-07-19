@@ -1,0 +1,33 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = "${artifactIdTransactionAnalytics}"
+    groupId = "${groupIdTransaction}"
+    versionName = "${transactionGroupVersion}"
+    artifactName = "${artifactIdTransactionAnalytics}-release"
+}
+
+dependencies {
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.graphql)
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+apply from: "$rootProject.projectDir/publish_local.gradle"
