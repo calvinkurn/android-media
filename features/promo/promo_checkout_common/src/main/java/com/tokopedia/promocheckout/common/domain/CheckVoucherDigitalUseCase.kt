@@ -17,11 +17,13 @@ class CheckVoucherDigitalUseCase(val resources: Resources): GraphqlUseCase() {
     val PRODUCT_ID = "product_id"
     val CLIENT_NUMBER = "client_number"
     val PRICE = "price"
+    val LABEL_DATA = "data"
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         requestParams?.let {
+            val variables = mapOf(LABEL_DATA to it.parameters)
             val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                    R.raw.promo_checkout_digital_check_voucher), CheckVoucherDigital.Response::class.java, it.parameters)
+                    R.raw.promo_checkout_digital_check_voucher), CheckVoucherDigital.Response::class.java, variables)
             clearRequest()
             addRequest(graphqlRequest)
             super.execute(requestParams, subscriber)
@@ -30,10 +32,14 @@ class CheckVoucherDigitalUseCase(val resources: Resources): GraphqlUseCase() {
 
     fun createRequestParams(promoCode: String, promoDigitalModel: PromoDigitalModel): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString(INPUT_CODE, promoCode)
-        requestParams.putInt(PRODUCT_ID, promoDigitalModel.productId)
-        requestParams.putString(CLIENT_NUMBER, promoDigitalModel.clientNumber)
-        requestParams.putLong(PRICE, promoDigitalModel.price)
+//        requestParams.putString(INPUT_CODE, promoCode)
+//        requestParams.putInt(PRODUCT_ID, promoDigitalModel.productId)
+//        requestParams.putString(CLIENT_NUMBER, promoDigitalModel.clientNumber)
+//        requestParams.putLong(PRICE, promoDigitalModel.price)
+        requestParams.putString(INPUT_CODE, "RADITDIGI")
+        requestParams.putInt(PRODUCT_ID, 69)
+        requestParams.putString(CLIENT_NUMBER, "081311205111")
+        requestParams.putLong(PRICE, 10000)
         return requestParams
     }
 

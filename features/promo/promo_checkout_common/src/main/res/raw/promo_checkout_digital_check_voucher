@@ -1,11 +1,22 @@
-mutation rechargeCheckVoucher($data: RechargeInputVoucher!) {
+query rechargeCheckVoucher($data: RechargeInputVoucher!) {
     rechargeCheckVoucher(voucher: $data) {
         data {
+          success
+          code
+          discount_amount
+          cashback_amount
+          promo_code_id
+          is_coupon
           message {
+            state
+            color
             text
           }
-          code
-          is_coupon
+          title_description
+        }
+        errors{
+          status
+          title
         }
     }
 }

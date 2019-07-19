@@ -11,8 +11,6 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.domain.CheckVoucherDigitalUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
-import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigitalData
-import com.tokopedia.promocheckout.common.domain.model.Message
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.usecase.RequestParams
