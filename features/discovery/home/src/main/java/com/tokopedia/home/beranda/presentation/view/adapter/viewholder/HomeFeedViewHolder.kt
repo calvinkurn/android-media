@@ -52,6 +52,7 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
             setShopBadgesVisible(true)
             setShopLocationVisible(true)
             setButtonWishlistVisible(true)
+            setButtonWishlistImage(element.isWishList)
             setImageProductUrl(element.imageUrl)
             setProductNameText(element.productName)
             setPriceText(element.price)

@@ -46,6 +46,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     public static final String ARG_RECOM_ID = "ARG_RECOM_ID";
     public static final String ARG_TAB_NAME = "ARG_TAB_NAME";
     public static final String ARG_TAB_HEIGHT = "ARG_TAB_HEIGHT";
+    private static final String PDP_EXTRA_PRODUCT_ID = "product_id";
+    private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
+    private static final int REQUEST_FROM_PDP = 349;
 
     private static final int DEFAULT_TOTAL_ITEM_PER_PAGE = 12;
     private static final int DEFAULT_SPAN_COUNT = 2;
@@ -228,7 +231,18 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     private void goToProductDetail(String productId) {
-        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        startActivityForResult(intent, REQUEST_FROM_PDP);
+    }
+
+    private void updateWishlist(String id, boolean isWishlist) {
+        for(int i =0; i < getAdapter().getDataSize(); i++) {
+            HomeFeedViewModel model = getAdapter().getData().get(i);
+            if(model.getProductId().equals(id)) {
+                model.setWishList(isWishlist);
+                getAdapter().notifyItemChanged(i);
+            }
+        }
     }
 
     @Override
@@ -321,5 +335,15 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             homeTrackingQueue.sendAll();
         }
         super.onPause();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_FROM_PDP && data != null) {
+            String id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID);
+            boolean wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false);
+            updateWishlist(id, wishlistStatusFromPdp);
+        }
     }
 }
