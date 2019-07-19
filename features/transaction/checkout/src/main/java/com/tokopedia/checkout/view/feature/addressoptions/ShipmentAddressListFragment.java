@@ -442,6 +442,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
                         SaveAddressDataModel saveAddressDataModel = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
                         RecipientAddressModel newAddress = new RecipientAddressModel();
+                        newAddress.setId(String.valueOf(saveAddressDataModel.getId()));
                         newAddress.setAddressName(saveAddressDataModel.getAddressName());
                         newAddress.setDestinationDistrictId(String.valueOf(saveAddressDataModel.getDistrictId()));
                         newAddress.setCityId(String.valueOf(saveAddressDataModel.getCityId()));
