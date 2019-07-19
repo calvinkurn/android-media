@@ -158,6 +158,7 @@ public class PartialRegisterInputView extends BaseCustomView {
         btnChange.setVisibility(View.VISIBLE);
         tvMessage.setVisibility(GONE);
 
+        tvMessage.setText("");
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.title_email));
         btnAction.setText(btnAction.getContext().getString(R.string.login));
 
@@ -169,7 +170,6 @@ public class PartialRegisterInputView extends BaseCustomView {
         wrapperPassword.setVisibility(View.GONE);
         btnForgotPassword.setVisibility(View.GONE);
         btnChange.setVisibility(View.GONE);
-        tvMessage.setVisibility(GONE);
 
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.phone_or_email_input));
         etInputEmailPhone.setText("");
