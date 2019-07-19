@@ -7,5 +7,5 @@ package com.tokopedia.profilecompletion.addbod.view.widget.wheelpicker
 
 interface OnValueChangeListener {
 
-    fun onValueChange(oldVal: Int, newVal: Int)
+    fun onValueChange(oldVal: String, newVal: String)
 }

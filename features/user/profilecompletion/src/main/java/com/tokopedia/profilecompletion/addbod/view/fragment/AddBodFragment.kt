@@ -42,9 +42,9 @@ class AddBodFragment: BaseDaggerFragment(){
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val addBodViewModel by lazy { viewModelProvider.get(AddBodViewModel::class.java) }
 
-    private var defaultDate: Calendar = GregorianCalendar(1980, 0, 1)
-    private var minDate: Calendar = GregorianCalendar(1900, 0, 1)
-    private var maxDate: Calendar = GregorianCalendar(2100, 0, 1)
+    private var defaultDate: Date = GregorianCalendar(1980, 0, 1).time
+    private var minDate: Date = GregorianCalendar(1900, 0, 1).time
+    private var maxDate: Date = GregorianCalendar(2100, 0, 1).time
     private var isDayShown = true
 
     private lateinit var closeableBottomSheetDialog : CloseableBottomSheetDialog
@@ -64,9 +64,7 @@ class AddBodFragment: BaseDaggerFragment(){
             val viewBottomSheetDialog = View.inflate(context, R.layout.custom_test, null)
 
             val datePicker = viewBottomSheetDialog.datePicker
-            datePicker.setMinDate(minDate.timeInMillis)
-            datePicker.setMaxDate(maxDate.timeInMillis)
-            datePicker.init(defaultDate.time, isDayShown, object : OnDateChangedListener{
+            datePicker.init(object : OnDateChangedListener{
                 override fun onDateChanged(date: Date) {
 
                 }
@@ -123,9 +121,7 @@ class AddBodFragment: BaseDaggerFragment(){
         })
     }
 
-    override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)

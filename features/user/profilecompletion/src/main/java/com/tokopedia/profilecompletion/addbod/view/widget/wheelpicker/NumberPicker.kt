@@ -548,7 +548,7 @@ class NumberPicker @JvmOverloads constructor(
     }
 
     private fun notifyChange(previous: Int, current: Int) {
-        onValueChangeListener?.onValueChange(Integer.parseInt(getValue(previous)), Integer.parseInt(getValue(current)))
+        onValueChangeListener?.onValueChange(getValue(previous), getValue(current))
     }
 
     private fun validatePosition(position: Int): Int {

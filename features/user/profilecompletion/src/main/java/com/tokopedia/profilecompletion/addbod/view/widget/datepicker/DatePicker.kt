@@ -3,19 +3,14 @@ package com.tokopedia.profilecompletion.addbod.view.widget.datepicker
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.view.widget.wheelpicker.NumberPicker
 import com.tokopedia.profilecompletion.addbod.view.widget.wheelpicker.OnValueChangeListener
 import kotlinx.android.synthetic.main.custom_datepicker.view.*
 import java.text.DateFormatSymbols
-import java.time.Year
 import java.util.*
 
 /**
@@ -40,16 +35,11 @@ class DatePicker: FrameLayout{
             defStyleRes: Int)
             : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private var tempDate: Calendar = Calendar.getInstance()
-    private var minDate: Calendar = Calendar.getInstance()
-    private var maxDate: Calendar = Calendar.getInstance()
     private var currentDate: Calendar = Calendar.getInstance()
-    private var shortMonths: Array<String> = emptyArray()
+    private var tempDate: Calendar = Calendar.getInstance()
 
     private var onDateChangedListener: OnDateChangedListener? = null
-    private var isDayShown: Boolean = true
     private var isDatePickerEnabled: Boolean = true
-    private var numberOfMonths: Int = 0
 
     private val monthAdapter = MonthAdapter()
     private var dayAdapter = DayAdapter()
@@ -60,57 +50,30 @@ class DatePicker: FrameLayout{
     private val yearSpinner: NumberPicker by lazy { view.yearSpinner}
 
     init {
-        setCurrentLocale(Locale.getDefault())
 
-//        daySpinner.setAdapter(dayAdapter)
+        daySpinner.setAdapter(dayAdapter)
         daySpinner.setOnValueChangedListener(object : OnValueChangeListener {
-            override fun onValueChange(oldVal: Int, newVal: Int) {
+            override fun onValueChange(oldVal: String, newVal: String) {
                 tempDate.timeInMillis = currentDate.timeInMillis
-                tempDate.set(Calendar.DAY_OF_MONTH, newVal)
-//                val maxDayOfMonth = tempDate.getActualMaximum(Calendar.DAY_OF_MONTH)
-//                if (oldVal == maxDayOfMonth && newVal == 1) {
-//                    tempDate.add(Calendar.DAY_OF_MONTH, 1)
-//                } else if (oldVal == 1 && newVal == maxDayOfMonth) {
-//                    tempDate.add(Calendar.DAY_OF_MONTH, -1)
-//                } else {
-//                    tempDate.add(Calendar.DAY_OF_MONTH, newVal - oldVal)
-//                }
-//
-                updateDate(tempDate.time)
+                currentDate.set(tempDate.get(Calendar.YEAR), tempDate.get(Calendar.MONTH), newVal.toInt())
             }
         })
 
-//        monthSpinner.setAdapter(monthAdapter)
+        monthSpinner.setAdapter(monthAdapter)
         monthSpinner.setOnValueChangedListener(object : OnValueChangeListener {
-            override fun onValueChange(oldVal: Int, newVal: Int) {
-                //TODO
+            override fun onValueChange(oldVal: String, newVal: String) {
+                clampDaysByMonth()
                 tempDate.timeInMillis = currentDate.timeInMillis
-                tempDate.set(Calendar.MONTH, newVal)
-
-//                if (oldVal == 11 && newVal == 0) {
-//                    tempDate.add(Calendar.MONTH, 1)
-//                } else if (oldVal == 0 && newVal == 11) {
-//                    tempDate.add(Calendar.MONTH, -1)
-//                } else {
-//                    tempDate.add(Calendar.MONTH, newVal - oldVal)
-//                }
-
-                updateDate(tempDate.time)
-
-//                dayAdapter.notifyDataSetChanged()
+                val months = DateFormatSymbols.getInstance().months
+                currentDate.set(tempDate.get(Calendar.YEAR), months.indexOf(newVal), tempDate.get(Calendar.DAY_OF_MONTH))
             }
         })
-
-        //TODO
-//        monthSpinner.setMinValue(0)
-//        monthSpinner.setMaxValue(numberOfMonths - 1)
 
         yearSpinner.setOnValueChangedListener(object : OnValueChangeListener {
-            override fun onValueChange(oldVal: Int, newVal: Int) {
+            override fun onValueChange(oldVal: String, newVal: String) {
+                clampDaysByMonth()
                 tempDate.timeInMillis = currentDate.timeInMillis
-                tempDate.set(Calendar.YEAR, newVal)
-                updateDate(tempDate.time)
-//                dayAdapter.notifyDataSetChanged()
+                currentDate.set(newVal.toInt(), tempDate.get(Calendar.MONTH), tempDate.get(Calendar.DAY_OF_MONTH))
             }
         })
 
@@ -121,19 +84,8 @@ class DatePicker: FrameLayout{
         }
     }
 
-    fun init(date: Date, isDayShown: Boolean){
-        this.isDayShown = isDayShown
-        setDate(date)
-        updateSpinners()
-    }
-
-    fun init(date: Date, isDayShown: Boolean,
-             onDateChangedListener: OnDateChangedListener){
-        this.isDayShown = isDayShown
+    fun init(onDateChangedListener: OnDateChangedListener){
         this.onDateChangedListener = onDateChangedListener
-        setDate(date)
-        updateSpinners()
-        notifyDateChanged()
     }
 
     override fun setEnabled(enabled: Boolean) {
@@ -145,206 +97,25 @@ class DatePicker: FrameLayout{
 
     override fun isEnabled(): Boolean = isDatePickerEnabled
 
-    private fun isNewDate(
-            year: Int,
-            month: Int,
-            dayOfMonth: Int
-    ): Boolean = (currentDate.get(Calendar.YEAR) != year
-                || currentDate.get(Calendar.MONTH) != month
-                || currentDate.get(Calendar.DAY_OF_MONTH) != dayOfMonth)
-
-    private fun setDate(date: Date) {
-        currentDate.time = date
-        if (currentDate.before(minDate)) {
-            currentDate.timeInMillis = minDate.timeInMillis
-        } else if (currentDate.after(maxDate)) {
-            currentDate.timeInMillis = maxDate.timeInMillis
-        }
-    }
-
-    private fun updateDate(date: Date) {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        if (isNewDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))) {
-            setDate(date)
-            updateSpinners()
-            notifyDateChanged()
-        }
-    }
-
-    fun setMinDate(date: Long){
-        tempDate.timeInMillis = date
-        if(tempDate.get(Calendar.YEAR) == minDate.get(Calendar.YEAR) &&
-                tempDate.get(Calendar.YEAR) == minDate.get(Calendar.DAY_OF_YEAR)){
-            return
-        }
-
-        minDate.timeInMillis = date
-        if(currentDate.before(minDate)){
-            currentDate.timeInMillis = minDate.timeInMillis
-        }
-
-        updateSpinners()
-    }
-
-    fun setMaxDate(date: Long){
-        tempDate.timeInMillis = date
-        if(tempDate.get(Calendar.YEAR) == maxDate.get(Calendar.YEAR) &&
-                tempDate.get(Calendar.YEAR) == maxDate.get(Calendar.DAY_OF_YEAR)){
-            return
-        }
-
-        maxDate.timeInMillis = date
-        if(currentDate.after(maxDate)){
-            currentDate.timeInMillis = maxDate.timeInMillis
-        }
-
-        updateSpinners()
-    }
-
     fun getYear(): Int = currentDate.get(Calendar.YEAR)
 
     fun getMonth(): Int = currentDate.get(Calendar.MONTH)
 
     fun getDayOfMonth(): Int = currentDate.get(Calendar.DAY_OF_MONTH)
 
-    private fun setCurrentLocale(locale: Locale) {
-        tempDate = getCalendarForLocale(tempDate, locale)
-        minDate = getCalendarForLocale(minDate, locale)
-        maxDate = getCalendarForLocale(maxDate, locale)
-        currentDate = getCalendarForLocale(currentDate, locale)
+    private fun clampDaysByMonth() {
+        val selectedDay = daySpinner.getCurrentItem()
 
-        numberOfMonths = tempDate.getActualMaximum(Calendar.MONTH) + 1
-        shortMonths = DateFormatSymbols().shortMonths
+        val daysInMonth = GregorianCalendar(yearSpinner.getCurrentItem().toInt(), monthAdapter.getPosition(monthSpinner.getCurrentItem()), 1)
+                .getActualMaximum(Calendar.DAY_OF_MONTH)
 
-        if (usingNumericMonths()) {
-            for (i in 0 until numberOfMonths) {
-                shortMonths[i] = String.format("%d", i + 1)
-            }
-        }
+        dayAdapter.days.clear()
+        dayAdapter.days.addAll((1..daysInMonth).toMutableList())
 
-        val datePlusOneMonth = currentDate.time
+        daySpinner.setMaxValue(dayAdapter.getMaxIndex())
+        daySpinner.setValue(selectedDay)
 
-        Calendar.getInstance().time = datePlusOneMonth
-    }
-
-    private fun getCalendarForLocale(oldCalendar: Calendar?, locale: Locale): Calendar {
-        return if (oldCalendar == null) {
-            Calendar.getInstance(locale)
-        } else {
-            val currentTimeMillis = oldCalendar.timeInMillis
-            val newCalendar = Calendar.getInstance(locale)
-            newCalendar.timeInMillis = currentTimeMillis
-            newCalendar
-        }
-    }
-
-    private fun usingNumericMonths(): Boolean {
-        return Character.isDigit(shortMonths[Calendar.JANUARY][0])
-    }
-
-    private fun updateSpinners(){
-        //TODO
-//        when (currentDate) {
-//            minDate -> {
-//                daySpinner.setMinValue(currentDate.get(Calendar.DAY_OF_MONTH))
-//                daySpinner.setMaxValue(currentDate.getActualMaximum(Calendar.DAY_OF_MONTH))
-//                daySpinner.setWrapSelectorWheel(false)
-//                monthSpinner.setMinValue(currentDate.get(Calendar.MONTH))
-//                monthSpinner.setMaxValue(currentDate.getActualMaximum(Calendar.MONTH))
-//                monthSpinner.setWrapSelectorWheel(false)
-//            }
-//            maxDate -> {
-//                daySpinner.setMinValue(currentDate.getActualMinimum(Calendar.DAY_OF_MONTH))
-//                daySpinner.setMaxValue(currentDate.get(Calendar.DAY_OF_MONTH))
-//                daySpinner.setWrapSelectorWheel(false)
-//                monthSpinner.setMinValue(currentDate.getActualMinimum((Calendar.MONTH)))
-//                monthSpinner.setMaxValue(currentDate.get(Calendar.MONTH))
-//                monthSpinner.setWrapSelectorWheel(false)
-//            }
-//            else -> {
-//                daySpinner.setMinValue(1)
-//                daySpinner.setMaxValue(currentDate.getActualMinimum(Calendar.DAY_OF_MONTH))
-//                daySpinner.setWrapSelectorWheel(true)
-//                monthSpinner.setMinValue(0)
-//                monthSpinner.setMaxValue(11)
-//                monthSpinner.setWrapSelectorWheel(true)
-//            }
-//        }
-    }
-
-    private fun notifyDateChanged(){
-        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED)
-        onDateChangedListener?.onDateChanged(currentDate.time)
-
-        yearSpinner.scrollToValue(currentDate.get(Calendar.YEAR).toString())
-        monthSpinner.scrollToValue(currentDate.get(Calendar.MONTH).toString())
-        daySpinner.scrollToValue(currentDate.get(Calendar.DAY_OF_MONTH).toString())
-    }
-
-    override fun onSaveInstanceState(): Parcelable? {
-        val superState = super.onSaveInstanceState()
-        return if(superState != null)
-            SavedState(superState, currentDate, minDate, maxDate, isDayShown)
-        else null
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable) {
-        val ss = state as SavedState
-        super.onRestoreInstanceState(ss.superState)
-        currentDate = Calendar.getInstance()
-        currentDate.timeInMillis = ss.currentDate
-        minDate = Calendar.getInstance()
-        minDate.timeInMillis = ss.minDate
-        maxDate = Calendar.getInstance()
-        maxDate.timeInMillis = ss.maxDate
-        updateSpinners()
-    }
-
-    private class SavedState : View.BaseSavedState {
-        internal val currentDate: Long
-        internal val minDate: Long
-        internal val maxDate: Long
-        internal val isDaySpinnerShown: Boolean
-
-        internal constructor(superState: Parcelable,
-                             currentDate: Calendar,
-                             minDate: Calendar,
-                             maxDate: Calendar,
-                             isDaySpinnerShown: Boolean) : super(superState) {
-            this.currentDate = currentDate.timeInMillis
-            this.minDate = minDate.timeInMillis
-            this.maxDate = maxDate.timeInMillis
-            this.isDaySpinnerShown = isDaySpinnerShown
-        }
-
-        private constructor(parcel: Parcel) : super(parcel) {
-            this.currentDate = parcel.readLong()
-            this.minDate = parcel.readLong()
-            this.maxDate = parcel.readLong()
-            this.isDaySpinnerShown = parcel.readByte().toInt() != 0
-        }
-
-        override fun writeToParcel(dest: Parcel, flags: Int) {
-            super.writeToParcel(dest, flags)
-            dest.writeLong(currentDate)
-            dest.writeLong(minDate)
-            dest.writeLong(maxDate)
-            dest.writeByte(if (isDaySpinnerShown) 1.toByte() else 0.toByte())
-        }
-
-        companion object {
-            @JvmField
-            val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
-
-                override fun createFromParcel(`in`: Parcel): SavedState {
-                    return SavedState(`in`)
-                }
-
-                override fun newArray(size: Int): Array<SavedState?> {
-                    return arrayOfNulls(size)
-                }
-            }
-        }
+        daySpinner.smoothScrollToValue(selectedDay)
+        dayAdapter.notifyDataSetChanged()
     }
 }
