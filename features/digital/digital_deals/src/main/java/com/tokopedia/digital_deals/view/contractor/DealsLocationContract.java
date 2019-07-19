@@ -15,7 +15,9 @@ public class DealsLocationContract {
     public interface View extends CustomerView {
         Activity getActivity();
 
-        void renderFromSearchResults(List<Location> locationList, boolean isTopLocations, String... searchText);
+        void renderPopularCities(List<Location> locationList, String... searchText);
+
+        void renderPopularLocations(List<Location> locationList, String... searchText);
 
         RequestParams getParams();
 

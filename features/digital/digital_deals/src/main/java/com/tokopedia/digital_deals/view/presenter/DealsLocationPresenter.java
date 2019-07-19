@@ -39,6 +39,13 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
     }
 
     @Override
+    public void attachView(DealsLocationContract.View view) {
+        super.attachView(view);
+        getLocations();
+        getCities();
+    }
+
+    @Override
     public void getLocationListBySearch(String searchText) {
         List<Location> locationList = new ArrayList<>();
         if (mAllLocations != null) {
@@ -46,7 +53,7 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                 if (location.getName().trim().toLowerCase().contains(searchText.trim().toLowerCase()))
                     locationList.add(location);
         }
-        getView().renderFromSearchResults(locationList, !isTopLocations, searchText);
+        getView().renderPopularCities(locationList, searchText);
     }
 
     public void getLocations() {
@@ -78,14 +85,14 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                 LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
                 mTopLocations = locationResponse.getLocations();
                 mAllLocations = locationResponse.getLocations();
-                getView().renderFromSearchResults(mTopLocations, isTopLocations);
+                getView().renderPopularLocations(mTopLocations);
             }
         });
     }
 
     public void getCities() {
-        getSearchLocationListRequestUseCase.setRequestParams(getView().getParams());
-        getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        getLocationCityUseCase.setRequestParams(getView().getParams());
+        getLocationCityUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
@@ -112,7 +119,7 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                 LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
                 mTopLocations = locationResponse.getLocations();
                 mAllLocations = locationResponse.getLocations();
-                getView().renderFromSearchResults(mTopLocations, isTopLocations);
+                getView().renderPopularCities(mTopLocations);
             }
         });
     }
@@ -121,6 +128,7 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
     @Override
     public void onDestroy() {
         getSearchLocationListRequestUseCase.unsubscribe();
+        getLocationCityUseCase.unsubscribe();
     }
 
     @Override
@@ -130,9 +138,9 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
             if (searchText.length() > 0)
                 getLocationListBySearch(searchText);
             if (searchText.length() == 0)
-                getView().renderFromSearchResults(mTopLocations, isTopLocations);
+                getView().renderPopularCities(mTopLocations);
         } else
-            getView().renderFromSearchResults(mTopLocations, isTopLocations);
+            getView().renderPopularCities(mTopLocations);
 
     }
 

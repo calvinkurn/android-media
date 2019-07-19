@@ -69,8 +69,8 @@ public class DealsPopularLocationAdapter extends RecyclerView.Adapter<DealsPopul
 
         void bindData(Location location) {
             locationName.setText(location.getName());
-//            locAddress.setText(location.getAddress());
-//            locType.setText(location.getLocType());
+            locAddress.setText(location.getAddress());
+            locType.setText(location.getLocType());
             ImageHandler.loadImage(context, locImage, location.getImageApp(), R.color.grey_1100, R.color.grey_1100);
         }
 

@@ -14,6 +14,7 @@ import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFr
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
+import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.fragment.TncBottomSheetFragment;
 import com.tokopedia.oms.di.OmsModule;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
@@ -50,4 +51,6 @@ public interface DealsComponent {
     void inject(TncBottomSheetFragment fragment);
 
     void inject(AllBrandsActivity allBrandsActivity);
+
+    void inject(SelectLocationBottomSheet selectLocationBottomSheet);
 }
