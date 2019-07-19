@@ -243,21 +243,37 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val trackingPostModel = mapPostTracking(feed)
 
         val postTag = feed.content.cardpost.body.postTag.firstOrNull() ?: PostTag()
-        posts.add(
-                DynamicPostViewModel(
-                        feed.id,
-                        feed.content.cardpost.title,
-                        feed.content.cardpost.header,
-                        postTag,
-                        feed.content.cardpost.footer,
-                        feed.content.cardpost.body.caption,
-                        contentList,
-                        template,
-                        trackingPostModel,
-                        mapTrackingData(feed.content.cardpost.tracking),
-                        feedType
-                )
-        )
+        if (shouldAddCardPost(feed, contentList)) {
+            posts.add(
+                    DynamicPostViewModel(
+                            feed.id,
+                            feed.content.cardpost.title,
+                            feed.content.cardpost.header,
+                            postTag,
+                            feed.content.cardpost.footer,
+                            feed.content.cardpost.body.caption,
+                            contentList,
+                            template,
+                            trackingPostModel,
+                            mapTrackingData(feed.content.cardpost.tracking),
+                            feedType
+                    )
+            )
+        }
+    }
+
+    private fun shouldAddCardPost(feed: Feed, contentList: MutableList<BasePostViewModel>, postTag: PostTag): Boolean {
+        val isGridNotEmpty =
+                if (contentList.firstOrNull() is GridPostViewModel)
+                    (contentList.firstOrNull() as GridPostViewModel).itemList.size > 0
+                else
+                    true
+
+        return feed.content.cardpost.header.avatarTitle.isNotEmpty() &&
+                feed.content.cardpost.body.media.isNotEmpty() &&
+                contentList.size > 0 &&
+                postTag.items.size > 0 &&
+                isGridNotEmpty
     }
 
     private fun mapPostContent(cardPost: Cardpost, template: Template): MutableList<BasePostViewModel> {
