@@ -5,14 +5,24 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 
 class ShopProductItemDecoration(
-        val spacing: Int,
-        val itemCount: Int
+        private val spacing: Int
 ): RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        outRect.left = if (parent.getChildAdapterPosition(view) == 0) 0 else spacing / 2
+        val itemPosition = parent.getChildAdapterPosition(view)
+        val itemCount = state.itemCount
+
+        outRect.left = getLeftOffset(itemPosition)
         outRect.top = 0
-        outRect.right = if (parent.getChildAdapterPosition(view) == itemCount - 1) 0 else spacing / 2
+        outRect.right = getRightOffset(itemPosition, itemCount)
         outRect.bottom = 0
+    }
+
+    private fun getLeftOffset(itemPosition: Int): Int {
+        return if (itemPosition == 0) 0 else spacing / 2
+    }
+
+    private fun getRightOffset(itemPosition: Int, itemCount: Int): Int {
+        return if (itemPosition == itemCount - 1) 0 else spacing / 2
     }
 }
