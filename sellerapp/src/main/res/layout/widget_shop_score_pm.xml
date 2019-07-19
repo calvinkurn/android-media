@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_score_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="4sp"
+        android:text="@string/this_week_statistics"
+        android:textColor="@color/font_black_secondary_54"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:layout_marginTop="19dp"
+        android:layout_below="@+id/tv_score_title"
+        android:background="@drawable/rect_gray_rounded"/>
+
+    <com.tokopedia.sellerapp.dashboard.view.widget.RoundGradientProgressBar
+        android:id="@+id/progress_value"
+        android:layout_width="match_parent"
+        android:layout_height="13dp"
+        app:rcBackgroundColor="@color/transparent"
+        app:rcMax="100"
+        app:rcRadius="20dp"
+        app:rcProgressColor="@color/tkpd_main_green"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_below="@+id/tv_score_title"/>
+
+    <TextView
+        android:id="@+id/tv_shop_performance_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/font_black_secondary_54"
+        android:lineSpacingExtra="6sp"
+        android:fontFamily="sans-serif"
+        android:text="@string/shop_performance"
+        android:layout_below="@id/progress_value"
+        android:layout_marginTop="@dimen/dp_4"/>
+
+    <TextView
+        android:id="@+id/tv_progress_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/font_black_secondary_54"
+        android:lineSpacingExtra="6sp"
+        android:gravity="end"
+        tools:text="85/100"
+        android:layout_below="@id/progress_value"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

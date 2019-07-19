@@ -17,8 +17,8 @@ class DistrictBoundaryMapper @Inject constructor() {
     fun map(response: GraphqlResponse?): DistrictBoundaryResponseUiModel {
         var districtBoundaryGeometryUiModel = DistrictBoundaryGeometryUiModel()
         val responseDistrictBoundary: DistrictBoundaryResponse? = response?.getData(DistrictBoundaryResponse::class.java)
-        responseDistrictBoundary?.keroGetDistrictBoundaryArray.let {keroGetDistrictBoundaryArray ->
-            keroGetDistrictBoundaryArray?.geometry.let {
+        responseDistrictBoundary?.keroGetDistrictBoundaryArray?.let {keroGetDistrictBoundaryArray ->
+            keroGetDistrictBoundaryArray.geometry.let {
                 districtBoundaryGeometryUiModel = mapGeometry(it)
             }
         }

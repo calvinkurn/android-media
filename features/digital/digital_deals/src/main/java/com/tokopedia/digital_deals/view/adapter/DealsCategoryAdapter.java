@@ -92,7 +92,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private boolean isDealsHomeLayout;
     private String searchText = "";
     private boolean isFromSearchResult;
-    private String dealType;
+    private String dealType = "";
     private int homePosition;
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {

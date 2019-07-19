@@ -15,7 +15,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include layout="@layout/card_event_details" />
+            <include android:id="@+id/event_details_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                layout="@layout/card_event_details" />
 
         </FrameLayout>
 

@@ -3,11 +3,14 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
+import com.tokopedia.checkout.domain.usecase.GetCornerList;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.di.scope.ShipmentAddressListScope;
-import com.tokopedia.checkout.view.feature.addressoptions.addressadapter.ShipmentAddressListAdapter;
+import com.tokopedia.checkout.view.feature.addressoptions.AddressListContract;
+import com.tokopedia.checkout.view.feature.addressoptions.AddressListPresenter;
 import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListFragment;
-import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListPresenter;
+import com.tokopedia.checkout.view.feature.addressoptions.recyclerview.ShipmentAddressListAdapter;
+import com.tokopedia.checkout.view.feature.cornerlist.CornerListPresenter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -21,8 +24,12 @@ import dagger.Provides;
 @Module(includes = {TrackingAnalyticsModule.class})
 public class ShipmentAddressListModule {
 
-    private final ShipmentAddressListAdapter.ActionListener actionListener;
+    private ShipmentAddressListAdapter.ActionListener actionListener;
     private Context context;
+
+    public ShipmentAddressListModule(Context context) {
+        this.context = context;
+    }
 
     public ShipmentAddressListModule(Context context, ShipmentAddressListFragment shipmentAddressListFragment) {
         this.context = context;
@@ -31,14 +38,14 @@ public class ShipmentAddressListModule {
 
     @Provides
     @ShipmentAddressListScope
-    ShipmentAddressListPresenter provideCartAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase) {
-        return new ShipmentAddressListPresenter(getPeopleAddressUseCase);
+    AddressListContract.Presenter provideAddressListPresenter(AddressListPresenter presenter) {
+        return presenter;
     }
 
     @Provides
     @ShipmentAddressListScope
-    ShipmentAddressListAdapter provideCartAddressListAdapter() {
-        return new ShipmentAddressListAdapter(actionListener);
+    CornerListPresenter provideCornerPresenter(GetCornerList usecase) {
+        return new CornerListPresenter(usecase);
     }
 
     @Provides

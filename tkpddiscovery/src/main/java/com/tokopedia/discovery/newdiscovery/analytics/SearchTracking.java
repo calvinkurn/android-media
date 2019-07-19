@@ -216,7 +216,7 @@ public class SearchTracking {
 
     public static void eventClickRelatedSearch(Context context, String currentKeyword, String relatedKeyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                "",
+                "clickSearchResult",
                 "search result",
                 "click - related keyword",
                 String.format("%s - %s", currentKeyword, relatedKeyword)
@@ -557,5 +557,23 @@ public class SearchTracking {
                         )
                 )
         );
+    }
+
+    public void eventSuccessAddWishlistSearchResultProduct(String keyword, String productId) {
+        sendGeneralEventWithUserId(SearchEventTracking.Event.CLICK_WISHLIST,
+                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                SearchEventTracking.Action.ADD_WISHLIST,
+                generateWishlistClickEventLabel(keyword, productId));
+    }
+
+    public void eventSuccessRemoveWishlistSearchResultProduct(String keyword, String productId) {
+        sendGeneralEventWithUserId(SearchEventTracking.Event.CLICK_WISHLIST,
+                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                SearchEventTracking.Action.REMOVE_WISHLIST,
+                generateWishlistClickEventLabel(keyword, productId));
+    }
+
+    private String generateWishlistClickEventLabel(String keyword, String productId) {
+        return keyword + " - " + productId;
     }
 }

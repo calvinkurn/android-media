@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -73,9 +72,6 @@ dependencies {
     implementation rootProject.ext.viewDependencies.appIntro
 
     implementation rootProject.ext.playServicesDependencies.maps
-
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

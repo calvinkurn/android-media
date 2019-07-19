@@ -63,4 +63,11 @@ object ProductTrackingConstant {
         const val EVENT = "clickMessageShop"
         const val LABEL = "Message Shop"
     }
+
+    object PageNameRecommendation {
+        const val PDP_1 = "pdp_1"
+        const val PDP_2 = "pdp_2"
+        const val PDP_3 = "pdp_3"
+        const val PDP_4 = "pdp_4"
+    }
 }

@@ -261,6 +261,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        clearData()
         prepareView()
         showLoadingDiscover()
         context?.run {
@@ -281,6 +282,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
 
         presenter.getTickerInfo()
+    }
+
+    private fun clearData() {
+        userSession.logoutSession()
     }
 
     private fun onLoginEmailClick() {
@@ -710,10 +715,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun setSmartLock() {
-        if (emailPhoneEditText.text.isNotBlank() && passwordEditText.text.isNotBlank()) {
-            saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
-                    emailPhoneEditText.text.toString(),
-                    passwordEditText.text.toString())
+        passwordEditText.text?.let {
+            if (emailPhoneEditText.text.isNotBlank() && it.isNotBlank()) {
+                saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
+                        emailPhoneEditText.text.toString(),
+                        it.toString())
+            }
         }
     }
 

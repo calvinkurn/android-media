@@ -9,15 +9,19 @@
         android:id="@+id/toolbar_textview"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
+        android:drawableLeft="@drawable/ic_arrow_back_24dp"
+        android:drawableTint="@color/grey_730"
         android:elevation="@dimen/dp_4"
-        android:gravity="center"
-        android:text="@string/survei_layanan"
+        android:paddingStart="@dimen/dp_15"
+        android:paddingLeft="@dimen/dp_15"
+        android:drawablePadding="@dimen/dp_15"
+        android:text="@string/survey_layanan"
         android:textColor="@color/black_70"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:gravity="center_vertical"
         android:theme="?toolbarTheme"
         app:elevation="@dimen/dp_4"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,11 +58,16 @@
     <LinearLayout
         android:id="@+id/smile_layout"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_60"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:weightSum="5"
-        app:layout_constraintLeft_toLeftOf="@id/txt_help_title"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="@id/txt_help_title"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_help_title">
 
     </LinearLayout>
@@ -109,13 +118,14 @@
         android:paddingTop="@dimen/dp_6"
         android:paddingBottom="@dimen/dp_6"
         android:showDividers="end"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_feedback_question"
         app:layout_scrollFlags="enterAlways">
 
         <com.tokopedia.contactus.inboxticket2.view.customview.CustomQuickOptionView
             android:id="@+id/filter_review"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
     </LinearLayout>

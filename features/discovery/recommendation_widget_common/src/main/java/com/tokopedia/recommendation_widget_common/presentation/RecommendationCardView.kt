@@ -20,7 +20,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 class RecommendationCardView : ProductCardView {
-    private val reviewContainer by lazy { this.findViewById<View>(R.id.rating_review_container) }
+
     constructor(context: Context) : super(context) {}
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
@@ -37,6 +37,8 @@ class RecommendationCardView : ProductCardView {
         setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setWishlistButtonVisible(false)
         setRatingReviewCount(item.rating, item.countReview)
+        setBadges(item.badgesUrl)
+        setLocation(item.location)
         imageView.addOnImpressionListener(item,
                 object: ViewHintListener {
                     override fun onViewHint() {
@@ -69,11 +71,9 @@ class RecommendationCardView : ProductCardView {
 
     override fun setRatingReviewCount(rating: Int, reviewCount: Int) {
         if (rating in 1..5) {
+            setRatingVisible()
             ratingView.setImageResource(getRatingDrawable(rating))
             reviewCountView.text = "($reviewCount)"
-            if (fixedHeight && !reviewContainer.isVisible) {
-                reviewContainer.show()
-            }
         } else {
             if (fixedHeight) {
                 ratingView.visibility = View.INVISIBLE
@@ -82,6 +82,14 @@ class RecommendationCardView : ProductCardView {
                 ratingView.visibility = View.GONE
                 reviewCountView.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setRatingVisible(){
+        ratingView.visibility = View.VISIBLE
+        reviewCountView.visibility = View.VISIBLE
+        if (ratingContainer != null) {
+            ratingContainer.visibility = View.VISIBLE
         }
     }
 
