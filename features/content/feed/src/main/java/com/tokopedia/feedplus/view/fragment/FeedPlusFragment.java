@@ -1604,6 +1604,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onBuyClicked(@NotNull PostTagItem postTagItem) {
+        onGoToLink(postTagItem.getApplink());
+    }
 
     @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition,

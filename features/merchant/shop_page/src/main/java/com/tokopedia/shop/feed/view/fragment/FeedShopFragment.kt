@@ -474,6 +474,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun onBuyClicked(postTagItem: PostTagItem) {
+        onGoToLink(postTagItem.applink)
+    }
+
     override fun onActionPopup() {
     }
 

@@ -858,6 +858,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onBuyClicked(@NotNull PostTagItem postTagItem) {
+        onGoToLink(postTagItem.getApplink());
+    }
+
+    @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition, @NotNull String youtubeId) {
         String YOUTUBE_URL = "{youtube_url}";
         String redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId);

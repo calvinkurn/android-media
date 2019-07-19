@@ -58,8 +58,10 @@ data class PostTagItem(
         @Expose
         val tags: List<PostTagItemTag> = ArrayList(),
 
+        @SerializedName("shop")
+        @Expose
+        val shop: PostTagItemShop = PostTagItemShop(),
+
         @SerializedName("rating")
         val rating: Int = 0
-
-
 )

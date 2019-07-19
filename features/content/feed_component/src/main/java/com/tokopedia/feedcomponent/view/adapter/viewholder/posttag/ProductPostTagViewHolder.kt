@@ -59,7 +59,7 @@ class ProductPostTagViewHolder (val mainView: View, val listener: DynamicPostVie
         widgetRating = itemView.findViewById(R.id.widgetRating)
         productImage.loadImageRounded(item.thumbnail, 10f)
         productPrice.text = item.price
-        btnBuy.visibility = View.GONE
+        btnBuy.setOnClickListener { onBuyButtonClicked(listener, item.postTagItemPojo) }
         productLayout.setOnClickListener(
                 getItemClickNavigationListener(listener, item.positionInFeed, item.postTagItemPojo, adapterPosition)
         )
@@ -161,6 +161,10 @@ class ProductPostTagViewHolder (val mainView: View, val listener: DynamicPostVie
             ))
         }
         return trackList
+    }
+
+    private fun onBuyButtonClicked(listener: DynamicPostViewHolder.DynamicPostListener, itemPojo: PostTagItem) {
+        listener.onBuyClicked(itemPojo)
     }
 
     companion object {
