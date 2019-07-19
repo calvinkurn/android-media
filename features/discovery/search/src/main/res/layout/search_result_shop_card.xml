@@ -108,8 +108,9 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             tools:visibility="visible"
-            tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            tools:orientation="horizontal"/>
+            tools:layoutManager="android.support.v7.widget.GridLayoutManager"
+            tools:orientation="vertical"
+            tools:spanCount="3"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewShopHasNoProduct"
@@ -123,6 +124,7 @@
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:background="@drawable/search_text_view_shop_no_product_background"
+            android:text="@string/shop_has_no_product"
             app:typographyType="small"
             app:layout_constraintTop_toBottomOf="@id/imageViewShopAvatar"
             app:layout_constraintLeft_toLeftOf="parent"

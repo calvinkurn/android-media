@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.ShopProductItemAdapter
@@ -143,7 +145,7 @@ class ShopItemViewHolder(
     }
 
     private fun showTextShopHasNoProduct() {
-        itemView.textViewShopHasNoProduct?.visibility = View.VISIBLE
+        itemView.textViewShopHasNoProduct?.visible()
     }
 
     private fun finishBindShopItem() {
@@ -152,7 +154,8 @@ class ShopItemViewHolder(
 
     @DimenRes
     private fun getTextViewShopNameMarginLeft(): Int {
-        return if (itemView.imageViewShopBadge?.visibility == View.VISIBLE) R.dimen.dp_2 else R.dimen.dp_8
+        return itemView.imageViewShopBadge?.let { if (it.isVisible) R.dimen.dp_2 else R.dimen.dp_8 }
+                ?: R.dimen.dp_8
     }
 
     private fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {
