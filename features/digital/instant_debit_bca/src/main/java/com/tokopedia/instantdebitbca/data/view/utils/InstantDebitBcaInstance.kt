@@ -18,6 +18,6 @@ object InstantDebitBcaInstance {
             instantDebitBcaComponent = DaggerInstantDebitBcaComponent.builder().baseAppComponent(
                     (application as BaseMainApplication).baseAppComponent).build()
         }
-        return this.instantDebitBcaComponent!!
+        return this.instantDebitBcaComponent
     }
 }

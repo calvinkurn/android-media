@@ -34,7 +34,7 @@ class EditLimitFragment @Inject constructor(): InstantDebitBcaFragment() {
     }
 
     override fun openWidgetBca(accessToken: String) {
-        if(!::widgetBca.isInitialized) {
+        if(::widgetBca.isInitialized) {
             widgetBca.openWidget(accessToken, AuthUtil.KEY.API_KEY_INSTANT_DEBIT_BCA, AuthUtil.KEY.API_SEED_INSTANT_DEBIT_BCA,
                     userSession.userId, AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID, xcoid)
         }

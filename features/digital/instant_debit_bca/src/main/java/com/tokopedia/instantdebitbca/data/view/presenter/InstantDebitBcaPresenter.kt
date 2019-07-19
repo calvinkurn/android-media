@@ -47,7 +47,9 @@ constructor(val getAccessTokenBcaUseCase: GetAccessTokenBcaUseCase,
                             }
 
                             override fun onNext(tokenInstantDebitBca: TokenInstantDebitBca) {
-                                view.openWidgetBca(tokenInstantDebitBca.accessToken ?: "")
+                                if(isViewAttached) {
+                                    view.openWidgetBca(tokenInstantDebitBca.accessToken ?: "")
+                                }
                             }
                         }))
     }
@@ -70,7 +72,9 @@ constructor(val getAccessTokenBcaUseCase: GetAccessTokenBcaUseCase,
                             }
 
                             override fun onNext(notifyDebitRegisterBca: NotifyDebitRegisterBca) {
-                                view.redirectPageAfterRegisterBca()
+                                if(isViewAttached) {
+                                    view.redirectPageAfterRegisterBca()
+                                }
                             }
                         }))
     }
@@ -93,7 +97,9 @@ constructor(val getAccessTokenBcaUseCase: GetAccessTokenBcaUseCase,
                             }
 
                             override fun onNext(notifyDebitRegisterBca: NotifyDebitRegisterBca) {
-                                view.redirectPageAfterRegisterBca()
+                                if(isViewAttached) {
+                                    view.redirectPageAfterRegisterBca()
+                                }
                             }
                         }))
     }
