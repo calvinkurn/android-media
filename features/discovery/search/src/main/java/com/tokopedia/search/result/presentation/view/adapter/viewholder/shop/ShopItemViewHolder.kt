@@ -111,7 +111,7 @@ class ShopItemViewHolder(
     }
 
     private fun initProductPreview(shopViewItem: ShopViewModel.ShopItem) {
-        if (shopViewItem.shopItemProductList.isNotEmpty() && false) {
+        if (shopViewItem.shopItemProductList.isNotEmpty()) {
             showShopProductItemPreview(shopViewItem)
         } else {
             showTextShopHasNoProduct()
@@ -149,7 +149,7 @@ class ShopItemViewHolder(
     }
 
     private fun finishBindShopItem() {
-        setViewMargins(itemView.textViewShopName.id, ConstraintSet.LEFT, getTextViewShopNameMarginLeft())
+        setViewMargins(itemView.textViewShopName.id, ConstraintSet.START, getTextViewShopNameMarginLeft())
     }
 
     @DimenRes
