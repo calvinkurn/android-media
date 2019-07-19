@@ -276,6 +276,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         String selectedId = mCurrentAddress.getId();
         mAdapter.setAddressList(list, selectedId);
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
+        llNetworkErrorView.setVisibility(View.GONE);
+        llNoResult.setVisibility(View.GONE);
     }
 
     @Override
