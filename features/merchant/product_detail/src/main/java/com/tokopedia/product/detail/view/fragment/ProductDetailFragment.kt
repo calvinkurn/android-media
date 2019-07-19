@@ -902,7 +902,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         varPictureImage = view_picture
         initToolBarMethod  =  ::initToolbarTransparent
         fab_detail.setAnchor(R.id.view_picture)
-
     }
 
     private fun collapsedAppBar() {

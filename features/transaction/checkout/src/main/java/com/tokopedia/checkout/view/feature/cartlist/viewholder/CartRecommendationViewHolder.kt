@@ -51,4 +51,7 @@ class CartRecommendationViewHolder(val view: View, val actionListener: ActionLis
 
     }
 
+    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
+
+    }
 }

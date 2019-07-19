@@ -7,21 +7,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
-import android.view.View
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.ViewGroup
+import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.datamodel.TitleDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
-import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
-import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
@@ -34,8 +28,8 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
-import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
 import com.tokopedia.recommendation_widget_common.TYPE_CUSTOM_HORIZONTAL
+import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -57,6 +51,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private val SPAN_COUNT = 2
     private val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
     private val SAVED_PRODUCT_ID = "saved_product_id"
+    private val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+    private val PDP_EXTRA_PRODUCT_ID = "product_id"
+    private val REQUEST_FROM_PDP = 394
 
     companion object{
         private val RECOMMENDATION_APP_LINK = "https://tokopedia.com/rekomendasi/%s"
@@ -132,6 +129,12 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
             } else {
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(), onErrorGetRecommendation = this::onErrorGetRecommendation)
             }
+        }
+    }
+
+    private fun goToPDP(productId: String){
+        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
+            startActivityForResult(this, REQUEST_FROM_PDP)
         }
     }
 
@@ -219,6 +222,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun onClickTopAds(item: RecommendationItem) {
+        goToPDP(item.productId.toString())
         if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString())
         }else{
@@ -227,6 +231,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun onClickOrganic(item: RecommendationItem) {
+        goToPDP(item.productId.toString())
         if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString())
         }else{
@@ -310,6 +315,25 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         }
 
         activity?.startActivity(Intent.createChooser(shareIntent, SHARE_PRODUCT_TITLE))
+    }
+
+    private fun updateWishlist(id: String, isWishlist: Boolean){
+        adapter.data.withIndex().filter { (_, model) -> model is RecommendationItemDataModel && model.productItem.productId.toString() == id }.map { (i, model) ->
+            (model as RecommendationItemDataModel).productItem.isWishlist = isWishlist
+            adapter.notifyItemChanged(i)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_FROM_PDP) {
+            data?.let {
+                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
+                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+                        false)
+                updateWishlist(id, wishlistStatusFromPdp)
+            }
+        }
     }
 
 }

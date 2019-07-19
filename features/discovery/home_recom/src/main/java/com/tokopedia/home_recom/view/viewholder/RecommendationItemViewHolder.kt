@@ -37,6 +37,7 @@ class RecommendationItemViewHolder(
             setShopLocationVisible(true)
             setButtonWishlistVisible(true)
             setShopBadgesVisible(true)
+            setButtonWishlistImage(element.productItem.isWishlist)
             setProductNameText(element.productItem.name)
             setPriceText(element.productItem.price)
             setImageProductUrl(element.productItem.imageUrl)
@@ -67,9 +68,6 @@ class RecommendationItemViewHolder(
                 } else {
                     //Click for organic item
                     element.listener.onClickOrganic(element.productItem)
-                }
-                context?.run {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, element.productItem.productId.toString())
                 }
             }
 
