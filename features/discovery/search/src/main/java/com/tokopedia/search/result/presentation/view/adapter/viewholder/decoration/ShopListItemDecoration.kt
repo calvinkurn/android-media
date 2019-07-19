@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.tokopedia.search.R
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
@@ -12,19 +13,47 @@ class ShopListItemDecoration(private val left: Int,
                              private val bottom: Int,
                              private val top: Int) : RecyclerView.ItemDecoration() {
 
+    private val allowedViewTypes = listOf(
+            R.layout.search_result_shop_card
+    )
+
     private var horizontalCardViewOffset: Int = 0
     private var verticalCardViewOffset: Int = 0
 
     override fun getItemOffsets(outRect: Rect, view: View,
                                 parent: RecyclerView, state: RecyclerView.State) {
 
-        horizontalCardViewOffset = getHorizontalCardViewOffset(view)
-        verticalCardViewOffset = getVerticalCardViewOffset(view)
+        val position = parent.getChildAdapterPosition(view)
 
-        outRect.left = getLeftOffset()
-        outRect.top = getTopOffset(parent, view)
-        outRect.right = getRightOffset()
-        outRect.bottom = getBottomOffset()
+        if(isShopItem(parent, position)) {
+            horizontalCardViewOffset = getHorizontalCardViewOffset(view)
+            verticalCardViewOffset = getVerticalCardViewOffset(view)
+
+            outRect.left = getLeftOffset()
+            outRect.top = getTopOffset(parent, view)
+            outRect.right = getRightOffset()
+            outRect.bottom = getBottomOffset()
+        }
+    }
+
+    private fun isShopItem(parent: RecyclerView, viewPosition: Int): Boolean {
+        val viewType = getRecyclerViewViewType(parent, viewPosition)
+        return viewType != -1 && allowedViewTypes.contains(viewType)
+    }
+
+    private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
+        return parent.adapter?.let { getRecyclerViewViewTypeIfAdapterNotNull(viewPosition, it) } ?: -1
+    }
+
+    private fun getRecyclerViewViewTypeIfAdapterNotNull(
+            viewPosition: Int,
+            adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+    ): Int {
+        return if (viewPosition < 0 || viewPosition > adapter.itemCount - 1) {
+            -1
+        } else {
+            adapter.getItemViewType(viewPosition)
+        }
     }
 
     private fun getHorizontalCardViewOffset(view: View): Int {
