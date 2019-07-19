@@ -189,7 +189,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     private void loadWishlistData() {
-        if (searchEditText.getQuery().length() > 0) {
+        if (!TextUtils.isEmpty(searchEditText.getQuery())) {
             wishList.refreshDataOnSearch(searchEditText.getQuery());
         } else {
             wishList.fetchDataFromInternet(getContext());

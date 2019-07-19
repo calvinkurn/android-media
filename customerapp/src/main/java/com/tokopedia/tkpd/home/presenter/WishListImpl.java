@@ -240,10 +240,6 @@ public class WishListImpl implements WishList {
 
     @Override
     public void initAnalyticsHandler(Context context) {
-        if (context != null) {
-
-        }
-
     }
 
     @Override
@@ -259,14 +255,8 @@ public class WishListImpl implements WishList {
         wishListView.displayLoadMore(false);
         wishListView.loadDataChange();
         mPaging.resetPage();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (context != null)
-                    fetchDataFromInternet(context);
-            }
-        }, 200);
-
+        if (context != null)
+            fetchDataFromInternet(context);
     }
 
     @Override
@@ -590,24 +580,6 @@ public class WishListImpl implements WishList {
     public void refreshDataOnSearch(CharSequence query) {
         mPaging.resetPage();
         searchWishlist(query.toString());
-    }
-
-    @Override
-    public void onResume(Context context) {
-        if (isAfterRotation()) {
-            handleAfterRotation(context);
-        } else {
-            fetchDataFromCache(context);
-        }
-    }
-
-    private void handleAfterRotation(Context context) {
-        if (!isLoadedFirstPage()) {
-            refreshData(context);
-        } else {
-            wishListView.displayContentList(true);
-            wishListView.displayLoading(false);
-        }
     }
 
     @Override
