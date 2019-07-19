@@ -14,7 +14,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/textViewShopItemProductPrice"
         app:cardCornerRadius="@dimen/dp_6"
         app:cardElevation="@dimen/dp_0">
 
@@ -35,6 +34,7 @@
         android:visibility="gone"
         app:typographyType="body_3"
         app:typographyWeight="bold"
+        app:layout_constraintTop_toBottomOf="@id/cardViewShopItemProductImage"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
