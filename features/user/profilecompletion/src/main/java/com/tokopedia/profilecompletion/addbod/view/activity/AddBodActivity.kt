@@ -12,7 +12,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 /**
  * Created by Ade Fulki on 2019-07-16.
  * ade.hadian@tokopedia.com
- * For navigate: use {@link ApplinkConstInternalGlobal.ADD_BOD}
+ * For navigate: use {@link ApplinkConstInternalGlobal.REQUEST_ADD_BOD}
  */
 
 class AddBodActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {

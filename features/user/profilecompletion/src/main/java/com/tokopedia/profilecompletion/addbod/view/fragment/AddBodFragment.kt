@@ -1,9 +1,12 @@
 package com.tokopedia.profilecompletion.addbod.view.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
+import android.support.annotation.NonNull
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +14,21 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
-import com.tokopedia.profilecompletion.addbod.view.widget.datepicker.DatePicker
 import com.tokopedia.profilecompletion.addbod.view.widget.datepicker.OnDateChangedListener
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.custom_test.view.*
 import kotlinx.android.synthetic.main.fragment_add_bod.*
 import java.util.*
 import javax.inject.Inject
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.Snackbar
+import android.widget.FrameLayout
+import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.custom_test.view.datePicker
+
 
 /**
  * Created by Ade Fulki on 2019-07-16.
@@ -39,13 +47,9 @@ class AddBodFragment: BaseDaggerFragment(){
     private var maxDate: Calendar = GregorianCalendar(2100, 0, 1)
     private var isDayShown = true
 
-    companion object {
-        fun createInstance(bundle: Bundle): AddBodFragment {
-            val fragment = AddBodFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
+    private lateinit var closeableBottomSheetDialog : CloseableBottomSheetDialog
+    private lateinit var chooseDateButton : View
+    private var selectedDate : String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -58,6 +62,7 @@ class AddBodFragment: BaseDaggerFragment(){
 
         chooseDate.setOnClickListener {
             val viewBottomSheetDialog = View.inflate(context, R.layout.custom_test, null)
+
             val datePicker = viewBottomSheetDialog.datePicker
             datePicker.setMinDate(minDate.timeInMillis)
             datePicker.setMaxDate(maxDate.timeInMillis)
@@ -68,15 +73,45 @@ class AddBodFragment: BaseDaggerFragment(){
 
             })
 
-            val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
+            chooseDateButton = viewBottomSheetDialog.findViewById(R.id.btn_continue)
+            chooseDateButton.setOnClickListener {
+                selectedDate = formatDateParam( datePicker.getDayOfMonth(),datePicker.getMonth() , datePicker.getYear() )
+                val formattedDateView = String.format("%s %s %s", datePicker.getDayOfMonth(),datePicker.getMonth() , datePicker.getYear())
+                chooseDate.setText(formattedDateView)
+                closeableBottomSheetDialog.dismiss()
+            }
+
+            closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
             closeableBottomSheetDialog.setCustomContentView(viewBottomSheetDialog, "DatePicker", true)
-            closeableBottomSheetDialog.setCancelable(false)
+
+            val bottomSheet = closeableBottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet) as FrameLayout?
+            val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+            behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    }
+                }
+
+                override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {}
+            })
+
             closeableBottomSheetDialog.show()
+
         }
 
-        btnSave.setOnClickListener {  }
+        btnSave.setOnClickListener {
+            if(selectedDate.isNotBlank()) {
+                showLoading()
+                addBodViewModel.editBodUserProfile(selectedDate)
+            }
+        }
 
         initObserver()
+    }
+
+    private fun formatDateParam(dayOfMonth: Int, month: Int, year: Int): String {
+        return String.format("%s-%s-%s", year.toString(), month.toString(), dayOfMonth.toString())
     }
 
     private fun initObserver(){
@@ -97,10 +132,24 @@ class AddBodFragment: BaseDaggerFragment(){
     }
 
     private fun onSuccessAddBodUserProfile(addBodData: AddBodData){
-
+        dismissLoading()
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putInt(EXTRA_PROFILE_SCORE, addBodData.completionScore)
+            bundle.putString(EXTRA_BOD, selectedDate)
+            intent.putExtras(bundle)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 
     private fun onErrorAddBodUserProfile(throwable: Throwable){
+        dismissLoading()
+        view?.run{
+            val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+            Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
+        }
 
     }
 
@@ -112,5 +161,17 @@ class AddBodFragment: BaseDaggerFragment(){
     private fun dismissLoading() {
         mainView.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
+    }
+
+    companion object {
+
+        val EXTRA_PROFILE_SCORE = "profile_score"
+        val EXTRA_BOD= "bod"
+
+        fun createInstance(bundle: Bundle): AddBodFragment {
+            val fragment = AddBodFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

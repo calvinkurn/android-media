@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -21,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
@@ -142,8 +142,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     REQUEST_CODE_EDIT_PROFILE_PHOTO -> {
                         onSuccessGetProfilePhoto(data)
                     }
-                    REQUEST_CODE_EDIT_BOD -> {
-                    } //TODO add action on result
+                    REQUEST_CODE_ADD_BOD -> {
+                        onSuccessAddBOD(data)
+                    }
                     REQUEST_CODE_EDIT_PHONE -> {
                         onSuccessEditPhone(data)
                     }
@@ -158,6 +159,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun onSuccessAddBOD(data: Intent?) {
+        refreshProfile()
+        view?.run {
+            Toaster.showNormal(this, getString(R.string.success_add_bod), Snackbar.LENGTH_LONG)
         }
     }
 
@@ -200,17 +208,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 view?.run {
                     Toaster.showNormal(this, getString(R.string.success_add_phone), Snackbar.LENGTH_LONG)
                 }
-                phone.showFilled(
-                        getString(R.string.subtitle_phone_setting_profile),
-                        PhoneNumberUtils.transform(phoneString),
-                        true,
-                        true,
-                        View.OnClickListener {
-                            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
-                            startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
-                        }
-                )
             }
+            refreshProfile()
         }
     }
 
@@ -221,16 +220,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 view?.run {
                     Toaster.showNormal(this, getString(R.string.success_add_email), Snackbar.LENGTH_LONG)
                 }
-                email.showFilled(
-                        getString(R.string.subtitle_email_setting_profile),
-                        emailString,
-                        true,
-                        true,
-                        View.OnClickListener {
-                            showChangeEmailDialog()
-                        }
-                )
             }
+            refreshProfile()
         }
     }
 
@@ -289,21 +280,23 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     getString(R.string.hint_bod_setting_profile),
                     false,
                     View.OnClickListener {
-                        //TODO add action on listener
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+                        startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
                     }
             )
         } else {
             bod.showFilled(
-                getString(R.string.subtitle_bod_setting_profile),
-                DateFormatUtils.formatDate(
-                    DateFormatUtils.FORMAT_YYYY_MM_DD,
-                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
-                    profileCompletionData.birthDay),
-                false,
-                true,
-                View.OnClickListener {
-                    RouteManager.route(context, ApplinkConstInternalGlobal.ADD_BOD)
-                }
+                    getString(R.string.subtitle_bod_setting_profile),
+                    DateFormatUtils.formatDate(
+                            DateFormatUtils.FORMAT_YYYY_MM_DD,
+                            DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                            profileCompletionData.birthDay),
+                    false,
+                    true,
+                    View.OnClickListener {
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+                        startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
+                    }
             )
         }
 
@@ -420,10 +413,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
         view?.run {
             val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
             NetworkErrorHelper.showEmptyState(context, this, error, null)
-            Toaster.showError(
-                    this,
-                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
-                    Snackbar.LENGTH_LONG)
         }
     }
 
@@ -464,7 +453,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
-        const val REQUEST_CODE_EDIT_BOD = 201
         const val REQUEST_CODE_EDIT_EMAIL = 202 //No Implementation yet
         const val REQUEST_CODE_EDIT_PHONE = 203
 
