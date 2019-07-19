@@ -312,7 +312,7 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onStart() {
-                wishListView.displayLoading(true);
+                wishListView.displayLoadMore(true);
             }
 
             @Override
@@ -325,7 +325,7 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onNext(GqlWishListDataResponse response) {
-                wishListView.displayLoading(false);
+                wishListView.displayLoadMore(false);
                 wishListView.displayPull(false);
                 if (response != null) {
                     if (response.getGqlWishList().getWishlistDataList().size() == 0) {
