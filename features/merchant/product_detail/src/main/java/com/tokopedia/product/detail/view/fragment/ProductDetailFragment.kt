@@ -1322,21 +1322,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
         productInfo?.run {
-            productDetailTracking.sendScreen(basic.shopID.toString(),
-                    shopInfo?.goldOS?.shopTypeString ?: "", productId ?: "")
-            var isHandPhone = false
-            this.category.detail.forEach { detail: Category.Detail ->
-                if (detail.name.equals("Handphone")) {
-                    isHandPhone = true
-                }
-            }
-//            if (!isHandPhone)
-//                productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
-//                        false, false, productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
-//
-//            productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
-//                    ?: "")
-//            productDetailTracking.eventAppsFylerOpenProduct(this)
             productDetailTracking.eventBranchItemView(this, (UserSession(activity)).userId)
         }
 
