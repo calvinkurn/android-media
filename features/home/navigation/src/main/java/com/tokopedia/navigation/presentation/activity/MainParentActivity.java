@@ -377,12 +377,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         
         if (position == OS_MENU) {
-            if (!isNewOfficialStoreEnabled()) {
-                startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
-                return false;
-            } else {
-                setOsIconProgress(OS_STATE_SELECTED);
-            }
+            setOsIconProgress(OS_STATE_SELECTED);
         } else {
             setOsIconProgress(OS_STATE_UNSELECTED);
         }
