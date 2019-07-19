@@ -38,6 +38,7 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
         FragmentManager manager = getActivity().getSupportFragmentManager();
 
         if (manager != null) {
+
             AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
             rating.show(manager, "AppFeedbackRatingBottomSheet");
         }
