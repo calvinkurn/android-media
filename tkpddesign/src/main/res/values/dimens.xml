@@ -58,6 +58,7 @@
     <dimen name="dp_110">110dp</dimen> <!-- not recommended -->
     <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
     <dimen name="dp_120">120dp</dimen>
+    <dimen name="dp_130">130dp</dimen>
     <dimen name="dp_128">128dp</dimen> <!-- not recommended -->
     <dimen name="dp_140">140dp</dimen> <!-- not recommended -->
     <dimen name="dp_145">145dp</dimen> <!-- not recommended -->
@@ -71,7 +72,8 @@
     <dimen name="dp_240">240dp</dimen> <!-- not recommended -->
     <dimen name="dp_282">282dp</dimen>
     <dimen name="dp_288">288dp</dimen> <!-- not recommended -->
-    <dimen name="dp_121">121dp</dimen> <!-- not recommended -->
+    <dimen name="dp_121">121dp</dimen>
+    <dimen name="dp_182">182dp</dimen><!-- not recommended -->
     <dimen name="dp_250">250dp</dimen> <!-- not recommended -->
     <dimen name="dp_260">260dp</dimen> <!-- not recommended -->
     <dimen name="dp_280">280dp</dimen> <!-- not recommended -->

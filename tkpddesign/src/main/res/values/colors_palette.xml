@@ -15,6 +15,8 @@
     <color name="grey_560">#ae31353b</color>
     <color name="grey_600">#757575</color>
     <color name="grey_700">#616161</color>
+    <color name="gr_700">#ae31353b</color>
+    <color name="grey_730">#52565e</color>
     <color name="grey_750">#4b4b4b</color>
     <color name="grey_796">#f531353b</color>
     <color name="grey_800">#424242</color>
@@ -31,9 +33,11 @@
 
     <color name="red_50">#fdebec</color>
     <color name="red_100">#f9bdbb</color>
+    <color name="r_100">#ffeaef</color>
     <color name="red_200">#f69988</color>
     <color name="red_300">#f36c60</color>
     <color name="red_400">#e84e40</color>
+    <color name="r_400">#ff5c84</color>
     <color name="red_500">#e51c23</color>
     <color name="red_600">#dd191d</color>
     <color name="red_a700">#e00032</color>
@@ -50,6 +54,7 @@
     <color name="green_300">#42bd41</color>
     <color name="green_400">#2baf2b</color>
     <color name="green_500">#259b24</color>
+    <color name="g_500">#03ac0e</color>
     <color name="green_600">#0a8f08</color>
     <color name="green_800">#056f00</color>
     <color name="lightish_green">#77db80</color>
@@ -61,6 +66,7 @@
     <color name="yellow_110">#ffeaac</color>
     <color name="yellow_200">#ecdb77</color>
     <color name="yellow_notif">#fffeeb</color>
+    <color name="y_200">#fff0b3</color>
 
     <color name="orange_300">#ffb74d</color>
     <color name="orange_900">#e65100</color>
@@ -68,6 +74,7 @@
     <color name="deep_orange_500">#ff5722</color>
     <color name="orange_100">#f5751d</color>
     <color name="orange_607">#ff5607</color>
+    <color name="orange_500">#fa591d</color>
 
     <color name="shadow_1">#00CCCCCC</color>
     <color name="shadow_2">#10CCCCCC</color>

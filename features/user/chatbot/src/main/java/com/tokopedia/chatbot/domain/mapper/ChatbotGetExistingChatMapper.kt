@@ -4,18 +4,15 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
-import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.ListInvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -32,7 +29,6 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_QUICK_REPLY -> convertToQuickReply(chatItemPojoByDateByTime)
             TYPE_CHAT_BALLOON_ACTION -> convertToBalloonAction(chatItemPojoByDateByTime)
             TYPE_INVOICES_SELECTION -> convertToInvoicesSelection(chatItemPojoByDateByTime)
-            TYPE_INVOICE_SEND -> convertToInvoiceSent(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
@@ -135,30 +131,6 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 list,
                 pojo.msg
         )
-    }
-
-    /////////////////// INVOICE SEND
-
-
-    private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentViewModel {
-        val invoiceSentPojo = GsonBuilder().create().fromJson<InvoiceSentPojo>(
-                pojo.attachment?.attributes, InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel(
-                pojo.msgId.toString(),
-                pojo.senderId.toString(),
-                pojo.senderName,
-                pojo.role,
-                pojo.attachment?.id.toString(),
-                pojo.attachment?.type.toString(),
-                pojo.replyTime,
-                invoiceSentPojo.invoiceLink.attributes.title,
-                invoiceSentPojo.invoiceLink.attributes.description,
-                invoiceSentPojo.invoiceLink.attributes.imageUrl,
-                invoiceSentPojo.invoiceLink.attributes.totalAmount,
-                !pojo.isOpposite,
-                pojo.isRead
-        )
-
     }
 
 }
