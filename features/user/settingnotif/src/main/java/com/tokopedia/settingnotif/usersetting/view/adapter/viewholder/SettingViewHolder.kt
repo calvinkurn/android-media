@@ -38,12 +38,17 @@ abstract class SettingViewHolder<T : BaseSetting>(
         }
     }
 
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        settingSwitch?.setOnCheckedChangeListener(null)
+    }
+
     override fun bind(element: T, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
 
         val payload = payloads[0]
         if (payload == PAYLOAD_SWITCH) {
-            settingSwitch?.isChecked = !settingSwitch?.isChecked!!
+            settingSwitch?.isChecked = element.status
         }
     }
 
