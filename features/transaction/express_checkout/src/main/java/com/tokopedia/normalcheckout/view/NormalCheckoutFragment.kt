@@ -507,7 +507,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         super.onViewCreated(view, savedInstanceState)
         button_buy_partial.setOnClickListener {
             if (hasError()) {
-//                navigateCheckoutToPayment
                 return@setOnClickListener
             }
             if (!viewModel.isUserSessionActive()) {
