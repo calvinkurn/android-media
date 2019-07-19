@@ -27,7 +27,7 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/room_full_room_name_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:maxLines="2"

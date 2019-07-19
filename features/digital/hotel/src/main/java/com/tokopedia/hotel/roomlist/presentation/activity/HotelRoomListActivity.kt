@@ -16,6 +16,7 @@ class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListCom
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         toolbar.contentInsetStartWithNavigation = 0
+        supportActionBar?.elevation = 0.3f
     }
 
     override fun getComponent(): HotelRoomListComponent =
@@ -32,7 +33,7 @@ class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListCom
             intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_CHILDREN, 0),
             intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_ROOM, 0))
 
-    override fun shouldShowOptionMenu(): Boolean = true
+    override fun shouldShowOptionMenu(): Boolean = false
 
     companion object {
         fun createInstance(context: Context, propertyId: Int = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",

@@ -68,7 +68,7 @@
                     android:layout_alignParentRight="true"
                     android:gravity="end"
                     android:text="@string/hotel_destination_recent_search_delete_all"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/green_500"
                     app:fontSize="micro" />
             </RelativeLayout>
 
