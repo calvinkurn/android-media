@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -27,7 +26,6 @@ import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.util.PasswordGenerator;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -51,9 +49,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     public static final int DAYS_IN_SECONDS = 86400;
     public static final int OVERLAY_PERMISSION_REQ_CODE = 1080;
     private PasswordGenerator Pgenerator;
-    DownloadResultReceiver mReceiver;
     String id = null;
-    protected SessionHandler sessionHandler;
     protected View decorView;
 
     protected RemoteConfig remoteConfig;
@@ -63,9 +59,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        mReceiver = new DownloadResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
-        sessionHandler = new SessionHandler(this);
         resetAllDatabaseFlag();
         initPermissionReactNativeDev();
         decorView = getWindow().getDecorView();
