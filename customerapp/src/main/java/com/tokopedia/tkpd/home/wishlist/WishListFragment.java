@@ -555,6 +555,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void setEmptyState() {
         wishlistAdapter.setEmptyState();
+        wishList.getFirstRecomData();
     }
 
     @Override

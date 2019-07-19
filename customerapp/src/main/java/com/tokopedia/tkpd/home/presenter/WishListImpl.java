@@ -337,7 +337,11 @@ public class WishListImpl implements WishList {
             public void onNext(GqlWishListDataResponse response) {
                 wishListView.displayLoadMore(false);
                 if (response != null) {
-                    setData(response);
+                    if (response.getGqlWishList().getWishlistDataList().size() == 0) {
+                        wishListView.setEmptyState();
+                    } else {
+                        setData(response);
+                    }
                 } else {
                     setData();
                 }
