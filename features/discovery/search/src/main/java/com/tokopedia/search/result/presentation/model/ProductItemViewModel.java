@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -10,6 +11,7 @@ import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductItemViewModel extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
@@ -38,7 +40,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private int position;
     private String originalPrice;
     private int discountPercentage;
-    private boolean isOfficial;
     private String topLabel;
     private String bottomLabel;
     private String productWishlistUrl;
@@ -50,6 +51,9 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String topadsClickUrl;
     private String topadsWishlistUrl;
     private boolean isNew;
+    private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
+    private boolean isShopPowerBadge;
+    private boolean isShopOfficialStore;
 
     public boolean isTopAds() {
         return isTopAds;
@@ -263,14 +267,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.discountPercentage = discountPercentage;
     }
 
-    public boolean isOfficial() {
-        return isOfficial;
-    }
-
-    public void setOfficial(boolean official) {
-        isOfficial = official;
-    }
-
     public String getTopLabel() {
         return topLabel;
     }
@@ -311,6 +307,38 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.categoryBreadcrumb = categoryBreadcrumb;
     }
 
+    public void setLabelGroupList(List<LabelGroupViewModel> productLabelGroupList) {
+        this.labelGroupList = productLabelGroupList;
+    }
+
+    public List<LabelGroupViewModel> getLabelGroupList() {
+        return this.labelGroupList;
+    }
+
+    public void setProductWishlistUrl(String productWishlistUrl) {
+        this.productWishlistUrl = productWishlistUrl;
+    }
+
+    public String getProductWishlistUrl() {
+        return productWishlistUrl;
+    }
+
+    public void setIsShopPowerBadge(boolean isShopPowerBadge) {
+        this.isShopPowerBadge = isShopPowerBadge;
+    }
+
+    public boolean isShopPowerBadge() {
+        return isShopPowerBadge;
+    }
+
+    public void setIsShopOfficialStore(boolean isShopOfficialStore) {
+        this.isShopOfficialStore = isShopOfficialStore;
+    }
+
+    public boolean isShopOfficialStore() {
+        return isShopOfficialStore;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -319,7 +347,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return typeFactory.type(this);
     }
 
-    public Object getProductAsObjectDataLayer(String userId) {
+    public Object getProductAsObjectDataLayer(String userId, String filterSortParams) {
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
@@ -330,7 +358,8 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "list", getActionFieldString(getPageNumber()),
                 "position", Integer.toString(getPosition()),
                 "userId", userId,
-                "shopId", getShopID()
+                "shopId", getShopID(),
+                "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams
         );
     }
 
@@ -348,14 +377,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "position", Integer.toString(getPosition()),
                 "userId", userId
         );
-    }
-
-    public void setProductWishlistUrl(String productWishlistUrl) {
-        this.productWishlistUrl = productWishlistUrl;
-    }
-
-    public String getProductWishlistUrl() {
-        return productWishlistUrl;
     }
 
     @Override
@@ -386,7 +407,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeInt(this.position);
         dest.writeString(this.originalPrice);
         dest.writeInt(this.discountPercentage);
-        dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
         dest.writeString(this.topLabel);
         dest.writeString(this.bottomLabel);
         dest.writeString(this.productWishlistUrl);
@@ -398,6 +418,9 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeString(this.topadsImpressionUrl);
         dest.writeString(this.topadsClickUrl);
         dest.writeString(this.topadsWishlistUrl);
+        dest.writeTypedList(this.labelGroupList);
+        dest.writeByte(this.isShopPowerBadge ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isShopOfficialStore ? (byte) 1 : (byte) 0);
     }
 
     protected ProductItemViewModel(Parcel in) {
@@ -422,7 +445,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.position = in.readInt();
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
-        this.isOfficial = in.readByte() != 0;
         this.topLabel = in.readString();
         this.bottomLabel = in.readString();
         this.productWishlistUrl = in.readString();
@@ -434,6 +456,9 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.topadsImpressionUrl = in.readString();
         this.topadsClickUrl = in.readString();
         this.topadsWishlistUrl = in.readString();
+        this.labelGroupList = in.createTypedArrayList(LabelGroupViewModel.CREATOR);
+        this.isShopPowerBadge = in.readByte() != 0;
+        this.isShopOfficialStore = in.readByte() != 0;
     }
 
     public static final Creator<ProductItemViewModel> CREATOR = new Creator<ProductItemViewModel>() {

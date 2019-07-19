@@ -9,7 +9,7 @@ import android.view.View
  */
 class ChipsItemDecoration(private val staticDimen: Int) : RecyclerView.ItemDecoration() {
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         outRect.right = staticDimen
         outRect.top = staticDimen / 2
         outRect.bottom = staticDimen / 2

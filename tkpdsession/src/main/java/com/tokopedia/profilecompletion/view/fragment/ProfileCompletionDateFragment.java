@@ -213,13 +213,15 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
             }
         });
 
-        allField.subscribe(Properties.enabledFrom(proceed));
+        Action1<Throwable> onError = Throwable::printStackTrace;
+
+        allField.subscribe(Properties.enabledFrom(proceed), onError);
         allField.subscribe(new Action1<Boolean>() {
             @Override
             public void call(Boolean aBoolean) {
                 view.canProceed(aBoolean);
             }
-        });
+        }, onError);
     }
 
 

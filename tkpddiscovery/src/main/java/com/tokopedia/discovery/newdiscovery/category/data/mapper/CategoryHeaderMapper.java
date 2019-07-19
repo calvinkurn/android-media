@@ -27,6 +27,7 @@ public class CategoryHeaderMapper implements Func1<Response<CategoryHadesModel>,
         if (categoryHadesModelResponse.body().getData()!=null) {
             categoryHeaderModel.setRevamp(categoryHadesModelResponse.body().getData().getRevamp());
             categoryHeaderModel.setTemplate(categoryHadesModelResponse.body().getData().getTemplate());
+            categoryHeaderModel.setIsAdult(categoryHadesModelResponse.body().getData().getIsAdult());
             categoryHeaderModel.setRootCategoryId(String.valueOf(categoryHadesModelResponse.body().getData().getRootCategoryId()));
             categoryHeaderModel.setHeaderImage(categoryHadesModelResponse.body().getData().getHeaderImage());
             categoryHeaderModel.setHeaderImageHexColor(categoryHadesModelResponse.body().getData().getHeaderHexColor());

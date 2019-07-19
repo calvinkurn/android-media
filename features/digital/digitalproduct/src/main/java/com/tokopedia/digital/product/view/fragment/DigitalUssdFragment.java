@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
@@ -357,8 +358,8 @@ public class DigitalUssdFragment extends BaseDaggerFragment
         }
 
         if (DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL() == requestCode)
-        if (data != null && data.hasExtra(DigitalRouter.Companion.getEXTRA_MESSAGE())) {
-            String message = data.getStringExtra(DigitalRouter.Companion.getEXTRA_MESSAGE());
+        if (data != null && data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
+            String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
             if (!TextUtils.isEmpty(message)) {
                 showToastMessage(message);
             }

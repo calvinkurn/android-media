@@ -8,9 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -43,8 +41,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
@@ -71,6 +69,7 @@ import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicat
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.constant.CashbackOption;
+import com.tokopedia.product.manage.list.constant.ManageTrackingConstant;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
@@ -97,6 +96,7 @@ import com.tokopedia.topads.common.data.model.FreeDeposit;
 import com.tokopedia.topads.freeclaim.data.constant.TopAdsFreeClaimConstantKt;
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -171,11 +171,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         txtTipsTrick = dialog.findViewById(R.id.txt_tips_trick);
 
         btnSubmit.setOnClickListener(v -> {
+            trackerManageCourierButton();
             RouteManager.route(getContext(),ApplinkConst.SELLER_SHIPPING_EDITOR);
             getActivity().finish();
         });
 
         btnGoToPdp.setOnClickListener(v -> {
+            trackerSeeProduct();
             goToPDP(productId);
             dialog.dismiss();
         });
@@ -190,6 +192,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         ClickableSpan cs = new ClickableSpan() {
             @Override
             public void onClick(View v) {
+                trackerLinkClick();
                 RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK));
                 getActivity().finish();
             }
@@ -198,6 +201,30 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         txtTipsTrick.setMovementMethod(LinkMovementMethod.getInstance());
         txtTipsTrick.setText(spanText);
         return dialog;
+    }
+
+    private void trackerManageCourierButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                ManageTrackingConstant.EVENT_ADD_PRODUCT,
+                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ManageTrackingConstant.ACTION_CLICK_MANAGE_COURIER,
+                "");
+    }
+
+    private void trackerSeeProduct(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                ManageTrackingConstant.EVENT_ADD_PRODUCT,
+                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ManageTrackingConstant.ACTION_SEE_PRODUCT,
+                "");
+    }
+
+    private void trackerLinkClick(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                ManageTrackingConstant.EVENT_ADD_PRODUCT,
+                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ManageTrackingConstant.ACTION_LINK,
+                "");
     }
 
     @Override

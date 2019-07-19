@@ -18,4 +18,6 @@ public interface GMCommonRepository {
     Observable<Boolean> setCashback(String string, int cashback);
 
     Observable<List<GMGetCashbackModel>> getCashbackList(List<String> productIdList, String shopId);
+
+
 }

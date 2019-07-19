@@ -17,10 +17,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.model.datamodel.TitleDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
+import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
@@ -59,6 +59,8 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private val SAVED_PRODUCT_ID = "saved_product_id"
 
     companion object{
+        private val RECOMMENDATION_APP_LINK = "https://tokopedia.com/rekomendasi/%s"
+
         fun newInstance(productId: String = "") = RecommendationFragment().apply {
             this.productId = productId
         }
@@ -124,7 +126,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private fun loadData(){
         activity?.let{
             if(productId.isNotBlank()) {
-                recommendationWidgetViewModel.getPrimaryProduct(productId, it)
+                recommendationWidgetViewModel.getPrimaryProduct(productId)
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
                         onErrorGetRecommendation = this::onErrorGetRecommendation)
             } else {
@@ -183,9 +185,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 .commit()
     }
 
-    private fun mapDataModel(listRecommendationModelDummy: List<RecommendationWidget>): List<HomeRecommendationDataModel>{
+    private fun mapDataModel(listRecommendationModel: List<RecommendationWidget>): List<HomeRecommendationDataModel>{
         val list = ArrayList<HomeRecommendationDataModel>()
-        listRecommendationModelDummy.forEach { recommendationWidget ->
+        listRecommendationModel.forEach { recommendationWidget ->
             when(recommendationWidget.layoutType){
                 TYPE_SCROLL -> {
                     list.add(TitleDataModel(recommendationWidget.title))
@@ -234,21 +236,22 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     fun onClickAddWishlist(item: RecommendationItem) {
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(true)
+            RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item))
         }else{
-            RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
+            RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item))
         }
     }
 
     fun onClickRemoveWishlist(item: RecommendationItem) {
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(false)
+            RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item))
         }else{
-            RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
+            RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item))
         }
     }
 
     private fun getHeaderName(item: RecommendationItem): String{
+        if(item.header.isNotBlank()) return item.header
         var header = ""
         val data = adapter.data
         val itemFoundAtStaggeredGridLayoutManager = data.any { it is RecommendationItemDataModel && it.productItem.productId == item.productId }
@@ -271,11 +274,11 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
-                    openIntentShare(productDetailData.name, context.getString(R.string.home_recommendation), linkerShareData.url)
+                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), linkerShareData.url)
                 }
 
                 override fun onError(linkerError: LinkerError) {
-                    openIntentShare(productDetailData.name, context.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDetailData.id}")
+                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), String.format(RECOMMENDATION_APP_LINK, "${productDetailData.id}"))
                 }
             }))
         }

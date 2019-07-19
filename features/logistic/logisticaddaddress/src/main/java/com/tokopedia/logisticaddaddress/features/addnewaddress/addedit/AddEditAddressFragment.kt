@@ -4,18 +4,16 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.TextView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -29,7 +27,6 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.AddressConstants.ANA_NEGATIVE
@@ -57,6 +54,8 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_addr
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
+import kotlinx.android.synthetic.main.form_add_new_address_data_item.et_detail_address
+import kotlinx.android.synthetic.main.form_add_new_address_data_item.tv_detail_address_counter
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
 import kotlinx.android.synthetic.main.fragment_add_edit_new_address.*
@@ -174,11 +173,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 .build()
         staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
 
-        arrangeLayout(isMismatch, isMismatchSolved)
-
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
         et_phone.setText(userSession.phoneNumber)
+        if (isMismatch && !isMismatchSolved) et_detail_address.isFocusable = false
     }
 
     private fun setViewListener() {
@@ -210,15 +208,49 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             et_detail_address.apply {
                 addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper))
                 setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive() }
+                addTextChangedListener(setDetailAlamatWatcher())
+
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
             }
 
             setOnTouchLabelAddress(ANA_POSITIVE)
 
-            et_receiver_name.setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive()
+            et_receiver_name.apply {
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive()
+                    }
+                }
+
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
             }
-            et_phone.setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive()
+
+            et_phone.apply {
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
+
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive()
+                    }
+                }
             }
 
         } else {
@@ -237,18 +269,24 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 addTextChangedListener(setAlamatWatcher())
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
+                        AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative()
                     }
                 }
-                AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative()
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
             }
 
             et_kode_pos_mismatch.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        // scrollUpLayout()
-                        AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
                         eventShowZipCodes()
+                    } else {
+                        rv_kodepos_chips_mismatch.visibility = View.GONE
                     }
                 }
                 setOnClickListener {
@@ -262,6 +300,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     override fun onTextChanged(s: CharSequence, start: Int, before: Int,
                                                count: Int) {
                         if (s.isNotEmpty()) {
+                            setWrapperError(et_kode_pos_mismatch_wrapper, null)
                             val input = "$s"
                             val zipCodesDisplay = mutableListOf<String>()
 
@@ -278,35 +317,76 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     override fun afterTextChanged(s: Editable) {
                     }
                 })
-                //addTextChangedListener(setWrapperWatcher(et_kode_pos_mismatch_wrapper))
             }
 
             setOnTouchLabelAddress(ANA_NEGATIVE)
 
-            et_receiver_name.setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative()
+            et_receiver_name.apply {
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
+
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative()
+                    }
+                }
             }
 
-            et_phone.setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressNegative()
+            et_phone.apply {
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
+
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressNegative()
+                    }
+                }
             }
         }
 
-        et_label_address.addTextChangedListener(setWrapperWatcher(et_label_address_wrapper))
-        et_receiver_name.addTextChangedListener(setWrapperWatcher(et_receiver_name_wrapper))
-        et_phone.addTextChangedListener(setWrapperWatcher(et_phone_wrapper))
+        et_receiver_name.apply {
+            setOnTouchListener { view, event ->
+                view.parent.requestDisallowInterceptTouchEvent(true)
+                if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                    view.parent.requestDisallowInterceptTouchEvent(false)
+                }
+                return@setOnTouchListener false
+            }
+            addTextChangedListener(setWrapperWatcher(et_receiver_name_wrapper))
+        }
+
+        et_phone.apply {
+            setOnTouchListener { view, event ->
+                view.parent.requestDisallowInterceptTouchEvent(true)
+                if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                    view.parent.requestDisallowInterceptTouchEvent(false)
+                }
+                return@setOnTouchListener false
+            }
+            addTextChangedListener(setWrapperWatcher(et_phone_wrapper))
+        }
     }
 
     private fun setOnTouchLabelAddress(type: String) {
         et_label_address.apply {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
                     eventShowListLabelAlamat(type)
+                } else {
+                    rv_label_alamat_chips.visibility = View.GONE
                 }
             }
             setOnClickListener {
-                AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
                 eventShowListLabelAlamat(type)
             }
             addTextChangedListener(object : TextWatcher {
@@ -333,11 +413,19 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 override fun afterTextChanged(s: Editable) {
                 }
             })
+            setOnTouchListener { view, event ->
+                view.parent.requestDisallowInterceptTouchEvent(true)
+                if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                    view.parent.requestDisallowInterceptTouchEvent(false)
+                }
+                return@setOnTouchListener false
+            }
+            addTextChangedListener(setWrapperWatcher(et_label_address_wrapper))
         }
     }
 
     private fun eventShowListLabelAlamat(type: String) {
-        // showLabelAlamatList() - on next phase
+        showLabelAlamatList()
         if (type.equals("positive", true)) {
             AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive()
         } else {
@@ -347,10 +435,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun doSaveAddress() {
         setSaveAddressModel()
-        presenter.saveAddress(saveAddressDataModel)
 
-        if (isMismatch) AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess()
-        else AddNewAddressAnalytics.eventClickButtonSimpanSuccess()
+        if (isMismatch) {
+            presenter.saveAddress(saveAddressDataModel, ANA_NEGATIVE)
+        } else {
+            presenter.saveAddress(saveAddressDataModel, ANA_POSITIVE)
+        }
     }
 
     private fun validateForm(errorField: String): Boolean {
@@ -359,7 +449,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var field = errorField
         if (et_detail_address.text.isEmpty()) {
             validated = false
-            setWrapperError(et_label_address_wrapper, getString(R.string.validate_detail_alamat))
+            setWrapperError(et_detail_address_wrapper, getString(R.string.validate_detail_alamat))
             if (!isErrorFieldEmpty(field)) field += ", "
             field += "detail alamat"
         }
@@ -494,19 +584,20 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    var countCharLeft: Int
+                    val countCharLeft: Int
                     var info = ""
+                    val strLength = s.toString().length
                     when {
-                        count < 5 -> {
-                            countCharLeft = 5 - count
+                        strLength < 5 -> {
+                            countCharLeft = 5 - strLength
                             info = "$countCharLeft karakter lagi diperlukan"
                         }
-                        count > 4 -> {
-                            countCharLeft = 175 - count
+                        strLength > 4 -> {
+                            countCharLeft = 175 - strLength
                             info = "$countCharLeft karakter tersisa"
 
                         }
-                        count == 175 -> info = ""
+                        strLength == 175 -> info = ""
                     }
                     tv_alamat_info_mismatch.text = info
                 }
@@ -538,8 +629,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 setMismatchSolvedForm()
             }
             setupRvKodePosChips()
-            setupRvLabelAlamatChips()
         }
+        setupRvLabelAlamatChips()
     }
 
     private fun eventShowZipCodes() {
@@ -547,16 +638,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative()
     }
 
-    private fun setOnClickLabelAlamat() {
-        // next phase
-        /*et_label_address.setOnClickListener {
-            // showLabelAlamatList()
-        }*/
-    }
-
     private fun setupRvKodePosChips() {
         rv_kodepos_chips_mismatch.apply {
-            addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(it) })
+            staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
             layoutManager = chipsLayoutManager
             adapter = zipCodeChipsAdapter
         }
@@ -564,7 +648,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun setupRvLabelAlamatChips() {
         rv_label_alamat_chips.apply {
-            addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(it) })
+            staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
             layoutManager = labelAlamatChipsLayoutManager
             adapter = labelAlamatChipsAdapter
         }
@@ -580,6 +664,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             params.width = 450
             btn_map.layoutParams = params
             setOnClickListener {
+                hideKeyboard()
                 saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, false, districtId,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
@@ -598,8 +683,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             params.width = 550
             btn_map.layoutParams = params
             setOnClickListener {
+                hideKeyboard()
                 if (et_kota_kecamatan_mismatch.text.isEmpty()) {
-                    hideKeyboard()
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
@@ -621,7 +706,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             params.width = 450
             btn_map.layoutParams = params
             setOnClickListener {
-                saveAddressDataModel?.editDetailAddress = et_detail_alamat_mismatch.text.toString()
+                hideKeyboard()
+                saveAddressDataModel?.editDetailAddress = tv_detail_alamat_mismatch.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
             }
@@ -635,12 +721,21 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun setMismatchForm() {
         ll_detail_alamat.visibility = View.GONE
+        et_alamat_mismatch.clearFocus()
     }
 
     private fun setMismatchSolvedForm() {
-        ll_detail_alamat.visibility = View.VISIBLE
         et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
-        et_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
+
+        val isDetailAddressEmpty = this.saveAddressDataModel?.editDetailAddress?.isEmpty()
+        isDetailAddressEmpty?.let {
+            if (it) {
+                ll_detail_alamat.visibility = View.GONE
+            } else {
+                ll_detail_alamat.visibility = View.VISIBLE
+                tv_detail_alamat_mismatch.text = this.saveAddressDataModel?.editDetailAddress
+            }
+        }
         et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
     }
 
@@ -653,19 +748,21 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun showZipCodes() {
         ViewCompat.setLayoutDirection(rv_kodepos_chips_mismatch, ViewCompat.LAYOUT_DIRECTION_LTR)
-        zipCodeChipsAdapter.zipCodes = saveAddressDataModel?.zipCodes!!.toMutableList()
-
-        rv_kodepos_chips_mismatch.visibility = View.VISIBLE
+        saveAddressDataModel?.zipCodes?.let {
+            zipCodeChipsAdapter.zipCodes = it.toMutableList()
+            zipCodeChipsAdapter.notifyDataSetChanged()
+            rv_kodepos_chips_mismatch.visibility = View.VISIBLE
+        }
     }
 
     private fun showLabelAlamatList() {
         val res: Resources = resources
         labelAlamatList = res.getStringArray(R.array.labelAlamatList)
 
+        rv_label_alamat_chips.visibility = View.VISIBLE
         ViewCompat.setLayoutDirection(rv_label_alamat_chips, ViewCompat.LAYOUT_DIRECTION_LTR)
         labelAlamatChipsAdapter.labelAlamatList = labelAlamatList.toMutableList()
-
-        rv_label_alamat_chips.visibility = View.VISIBLE
+        labelAlamatChipsAdapter.notifyDataSetChanged()
     }
 
     private fun setSaveAddressModel() {
@@ -677,7 +774,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             saveAddressDataModel?.address2 = "$currentLat,$currentLong"
 
         } else {
-            detailAddress = et_detail_alamat_mismatch.text.toString()
+            detailAddress = tv_detail_alamat_mismatch.text.toString()
             if (isMismatch) {
                 saveAddressDataModel?.address1 = "${detailAddress} ${saveAddressDataModel?.selectedDistrict}"
                 saveAddressDataModel?.address2 = ""
@@ -740,6 +837,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun onResume() {
         map_view_detail?.onResume()
         super.onResume()
+        arrangeLayout(isMismatch, isMismatchSolved)
     }
 
     override fun onPause() {
@@ -855,7 +953,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     override fun onLabelAlamatChipClicked(labelAlamat: String) {
         rv_label_alamat_chips.visibility = View.GONE
-        et_label_address.setText(labelAlamat)
+        et_label_address.run {
+            setText(labelAlamat)
+            setSelection(et_label_address.text.length)
+        }
         if (!isMismatch && !isMismatchSolved) {
             AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive()
         } else {
@@ -891,9 +992,52 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 }
                 createFragment()
             }
+        } else {
+            // this solves issue when positif ANA changed into negatif ANA
+            if (data == null) {
+                isMismatch = true
+                isMismatchSolved = false
+                createFragment()
+            }
         }
     }
 
     override fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean) {
+    }
+
+    private fun setDetailAlamatWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                println("## count = $count, s.length = ${s.toString().length}")
+                if (s.isNotEmpty()) {
+                    val countCharLeft: Int
+                    var info = ""
+                    val strLength = s.toString().length
+                    when {
+                        strLength > 0 -> {
+                            countCharLeft = 60 - strLength
+                            info = "$countCharLeft/60"
+                        }
+                        strLength == 0 -> info = "60/60"
+                        strLength == 60 -> info = "0/60"
+                    }
+                    tv_detail_address_counter.text = info
+                } else {
+                    tv_detail_address_counter.text = "60/60"
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+            }
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        presenter.detachView()
     }
 }
