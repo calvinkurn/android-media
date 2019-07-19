@@ -44,10 +44,10 @@ class ShopProductItemViewHolder(
     private fun initShopItemProductPrice(shopItemProductView: ShopViewModel.ShopItem.ShopItemProduct) {
         val isShopItemProductPriceVisible = getIsShopItemProductPriceVisible(shopItemProductView)
 
-        itemView.textViewShopItemProductPrice.visibility = if (isShopItemProductPriceVisible) View.VISIBLE else View.GONE
+        itemView.textViewShopItemProductPrice?.visibility = if (isShopItemProductPriceVisible) View.VISIBLE else View.GONE
 
         if(isShopItemProductPriceVisible) {
-            itemView.textViewShopItemProductPrice.text = MethodChecker.fromHtml(shopItemProductView.priceFormat)
+            itemView.textViewShopItemProductPrice?.text = MethodChecker.fromHtml(shopItemProductView.priceFormat)
         }
     }
 
