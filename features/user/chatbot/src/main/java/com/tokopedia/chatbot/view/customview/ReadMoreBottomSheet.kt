@@ -9,7 +9,11 @@ import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
 import android.view.View
 import android.widget.*
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 
 
 class ReadMoreBottomSheet() : BottomSheetDialogFragment() {
@@ -22,7 +26,16 @@ class ReadMoreBottomSheet() : BottomSheetDialogFragment() {
         val view = View.inflate(context, R.layout.read_more_bottom_sheet, null)
         val tvMsg= view.findViewById<TextView>(R.id.tv_msg)
         val ivClose = view.findViewById<ImageView>(R.id.iv_close_icon)
-        tvMsg.setText(getArguments()?.get(MESSAGE).toString())
+
+        var childFragmentList = activity?.supportFragmentManager?.fragments
+
+        childFragmentList?.forEach {
+               if(it is ChatbotFragment){
+                   tvMsg.movementMethod = ChatLinkHandlerMovementMethod(it as ChatLinkHandlerListener)
+                   return@forEach
+               }
+        }
+        tvMsg.text = MethodChecker.fromHtml(arguments?.getString(MESSAGE))
         ivClose.setOnClickListener { this.dismiss() }
 
         val linearLayout = view.findViewById<LinearLayout>(R.id.read_more_bottom_sheet)

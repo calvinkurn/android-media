@@ -11,8 +11,6 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
 import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest
-import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
@@ -77,8 +75,6 @@ interface CheckoutVariantContract {
         fun navigateCheckoutToThankYouPage(appLink: String)
 
         fun generateFingerprintPublicKey()
-
-        fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult>
 
         fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData>
 
