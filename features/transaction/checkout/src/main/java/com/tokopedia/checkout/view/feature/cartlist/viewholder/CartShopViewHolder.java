@@ -102,13 +102,13 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         renderWarningItemHeader(cartShopHolderData);
 
         String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko) + " ";
+        int startLabelShop = labelShop.length();
         String shopName = cartShopHolderData.getShopGroupData().getShopName();
 
         SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
         completeLabelShop.append(labelShop);
-        int start = labelShop.length();
         completeLabelShop.append(shopName);
-        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tvShopName.setText(completeLabelShop);
         tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(cartShopHolderData));

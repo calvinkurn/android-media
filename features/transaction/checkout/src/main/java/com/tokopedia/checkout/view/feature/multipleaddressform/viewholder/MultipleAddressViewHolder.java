@@ -91,13 +91,13 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         }
 
         String labelShop = senderName.getContext().getResources().getString(R.string.label_toko) + " ";
+        int startLabelShop = labelShop.length();
         String shopName = data.getSenderName();
 
         SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
         completeLabelShop.append(labelShop);
-        int start = labelShop.length();
         completeLabelShop.append(shopName);
-        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         senderName.setText(completeLabelShop);
         senderCity.setText(data.getSenderCity());

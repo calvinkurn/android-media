@@ -492,13 +492,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko) + " ";
+        int startLabelShop = labelShop.length();
         String shopName = shipmentCartItemModel.getShopName();
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(labelShop);
-        int start = labelShop.length();
         builder.append(shopName);
-        builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tvShopName.setText(builder, TextView.BufferType.SPANNABLE);
     }
