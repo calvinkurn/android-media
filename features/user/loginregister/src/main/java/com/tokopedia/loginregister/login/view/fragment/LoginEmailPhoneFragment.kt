@@ -615,7 +615,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         val date = Date()
         val stringDate = DateFormat.format("EEEE, MMMM d, yyyy ", date.time)
         dataMap.put("timestamp", stringDate)
-        dataMap.put("timestamp", stringDate)
         TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
