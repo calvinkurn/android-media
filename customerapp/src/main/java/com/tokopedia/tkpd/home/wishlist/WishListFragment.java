@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -254,7 +255,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void sendAddToCartAnalytics(Wishlist dataDetail, AddToCartResult addToCartResult) {
+    public void sendAddToCartAnalytics(Wishlist dataDetail, AddToCartDataModel addToCartResult) {
         Object object = DataLayer.mapOf(
                 "name", dataDetail.getName(),
                 "id", dataDetail.getId(),
@@ -269,7 +270,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 "picture", dataDetail.getImageUrl(),
                 "url", dataDetail.getUrl(),
                 "categoryId", DEFAULT_VALUE_NONE_OTHER,
-                "dimension45", addToCartResult.getCartId(),
+                "dimension45", addToCartResult.getData().getCartId(),
                 "dimension38", DEFAULT_VALUE_NONE_OTHER
         );
         wishlistAnalytics.trackEventAddToCardProductWishlist(object);
@@ -373,7 +374,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void displayAddToCart(String productId) {
-        wishList.addToCart(getActivity(), productId);
+        wishList.addToCart(productId);
     }
 
     @Override

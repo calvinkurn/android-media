@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.applink.ApplinkConst;
@@ -39,6 +40,7 @@ import com.tokopedia.user_identification_common.KycCommonUrl;
 
 import java.util.HashMap;
 
+import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -66,6 +68,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     private AccountAnalytics accountAnalytics;
     private RemoteConfig remoteConfig;
     UserSession userSession;
+    private AffiliatePreference affiliatePreference;
 
     abstract void notifyItemChanged(int position);
 
@@ -74,6 +77,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         super.onCreate(savedInstanceState);
         accountAnalytics = new AccountAnalytics(getActivity());
         userSession = new UserSession(getContext());
+        affiliatePreference = new AffiliatePreference(getContext());
     }
 
     protected void openApplink(String applink) {
@@ -91,8 +95,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
         } else if (applink.equals(AccountConstants.Navigation.TOPADS)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard
-                    (getContext());
+            ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard(getContext());
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
@@ -137,8 +140,20 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onByMeClicked() {
-        sendTracking(PEMBELI, BY_ME_CURATION, "", true);
-        openApplink(ApplinkConst.AFFILIATE_EXPLORE);
+        if (affiliatePreference.isFirstTimeEducation(userSession.getUserId())) {
+
+            Intent intent = RouteManager.getIntent(
+                    getContext(),
+                    ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
+            );
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+            affiliatePreference.setFirstTimeEducation(userSession.getUserId());
+
+        } else {
+            sendTracking(PEMBELI, BY_ME_CURATION, "", true);
+            RouteManager.route(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
+        }
     }
 
     @Override

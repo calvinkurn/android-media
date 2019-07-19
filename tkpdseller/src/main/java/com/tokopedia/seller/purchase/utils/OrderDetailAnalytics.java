@@ -18,8 +18,11 @@ import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.EVENT;
 import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.EVENT_ACTION;
 import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.EVENT_CATEGORY;
 import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.EVENT_LABEL;
+import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.VALUE_CLICK_ASK_BUYER;
 import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.VALUE_CLICK_ORDER;
 import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.VALUE_SALES_SHIPPING;
+import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.VALUE_SHOP_ORDER_PAGE;
+
 import com.tokopedia.track.TrackApp;
 
 /**
@@ -50,6 +53,12 @@ public class OrderDetailAnalytics {
     public void sendAnalyticsClickShipping(String action, String label) {
         sendAnalytics(VALUE_CLICK_ORDER,
                 VALUE_SALES_SHIPPING,
+                action, label);
+    }
+
+    public void sendAnalyticsClickAskBuyer(String action, String label) {
+        sendAnalytics(VALUE_CLICK_ASK_BUYER,
+                VALUE_SHOP_ORDER_PAGE,
                 action, label);
     }
 

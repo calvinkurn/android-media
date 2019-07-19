@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.home.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +20,10 @@ import com.tokopedia.abstraction.common.network.exception.ResponseDataNullExcept
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
@@ -39,11 +42,19 @@ import com.tokopedia.core.network.entity.wishlist.WishlistPaging;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
@@ -52,8 +63,10 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -117,6 +130,8 @@ public class WishListImpl implements WishList {
     Context context;
     private String query = "";
 
+    private AddToCartUseCase addToCartUseCase;
+
     private final GetRecommendationUseCase getRecommendationUseCase;
 
     public WishListImpl(Context context, WishListView wishListView) {
@@ -130,6 +145,10 @@ public class WishListImpl implements WishList {
         removeWishListUseCase = new RemoveWishListUseCase(context);
         this.context = context;
         userSession = new UserSession(context);
+        addToCartUseCase = new AddToCartUseCase(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart),
+                new GraphqlUseCase()
+        );
         getRecommendationUseCase = new GetRecommendationUseCase(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.query_recommendation_widget), new GraphqlUseCase(), new UserSession(context));
     }
@@ -470,27 +489,29 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void addToCart(Activity activity, String productId) {
+    public void addToCart(String productId) {
         for (int i = 0; i < dataWishlist.size(); i++) {
             if (productId.equals(dataWishlist.get(i).getId())) {
                 Wishlist dataDetail = dataWishlist.get(i);
-                routeToNewCheckout(activity, dataDetail);
+                routeToNewCheckout(dataDetail);
                 return;
             }
         }
     }
 
-    private void routeToNewCheckout(Activity activity, Wishlist dataDetail) {
+    private void routeToNewCheckout(Wishlist dataDetail) {
         wishListView.showProgressDialog();
-        ((TransactionRouter) activity.getApplication()).addToCartProduct(
-                new AddToCartRequest.Builder()
-                        .productId(Integer.parseInt(dataDetail.getId()))
-                        .notes("")
-                        .quantity(dataDetail.getMinimumOrder())
-                        .shopId(Integer.parseInt(dataDetail.getShop().getId()))
-                        .build(),
-                false).subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+        AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
+        addToCartRequestParams.setProductId(Integer.parseInt(dataDetail.getId()));
+        addToCartRequestParams.setShopId(Integer.parseInt(dataDetail.getShop().getId()));
+        addToCartRequestParams.setQuantity(dataDetail.getMinimumOrder());
+        addToCartRequestParams.setNotes("");
+
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams);
+        addToCartUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(addToCartSubscriber(dataDetail));
     }
@@ -520,6 +541,9 @@ public class WishListImpl implements WishList {
         cache.unSubscribeObservable();
         if (removeWishListUseCase != null) {
             removeWishListUseCase.unsubscribe();
+        }
+        if (addToCartUseCase != null) {
+            addToCartUseCase.unsubscribe();
         }
     }
 
@@ -754,8 +778,8 @@ public class WishListImpl implements WishList {
 
     }
 
-    private Subscriber<AddToCartResult> addToCartSubscriber(Wishlist dataDetail) {
-        return new Subscriber<AddToCartResult>() {
+    private Subscriber<AddToCartDataModel> addToCartSubscriber(Wishlist dataDetail) {
+        return new Subscriber<AddToCartDataModel>() {
             @Override
             public void onCompleted() {
 
@@ -791,7 +815,7 @@ public class WishListImpl implements WishList {
             }
 
             @Override
-            public void onNext(AddToCartResult addToCartResult) {
+            public void onNext(AddToCartDataModel addToCartResult) {
                 NullCheckerKt.isContainNull(addToCartResult, s -> {
                     ContainNullException exception = new ContainNullException("Found " + s + " on " + WishListImpl.class.getSimpleName());
                     if (!BuildConfig.DEBUG) {
@@ -801,10 +825,10 @@ public class WishListImpl implements WishList {
                 });
 
                 wishListView.dismissProgressDialog();
-                if (addToCartResult.getCartId().isEmpty()) {
-                    wishListView.showAddToCartErrorMessage(addToCartResult.getMessage());
+                if (addToCartResult.getStatus().equalsIgnoreCase(AddToCartDataModel.STATUS_OK) && addToCartResult.getData().getSuccess() == 1) {
+                    wishListView.showAddToCartMessage(addToCartResult.getData().getMessage().get(0));
                 } else {
-                    wishListView.showAddToCartMessage(addToCartResult.getMessage());
+                    wishListView.showAddToCartErrorMessage(addToCartResult.getErrorMessage().get(0));
                 }
                 wishListView.sendAddToCartAnalytics(dataDetail, addToCartResult);
             }

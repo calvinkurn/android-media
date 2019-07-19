@@ -5,6 +5,7 @@ package com.tokopedia.logisticaddaddress;
  */
 public class AddressConstants {
 
+    public static final String SCREEN_ADD_ADDRESS_FORM = "Add Address Form";
 
     public static final String SCREEN_MANAGE_ADDRESS = "People Edit Address";
 
@@ -67,4 +68,5 @@ public class AddressConstants {
     public static final String PARAM_RECEIVER_PHONE = "receiver_phone";
     public static final String PARAM_LATITUDE = "latitude";
     public static final String PARAM_LONGITUDE = "longitude";
+    public static final int GPS_REQUEST = 108;
 }

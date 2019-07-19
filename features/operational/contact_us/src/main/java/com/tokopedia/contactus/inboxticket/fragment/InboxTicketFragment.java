@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -35,7 +34,6 @@ import com.tokopedia.contactus.inboxticket.listener.InboxTicketView;
 import com.tokopedia.contactus.inboxticket.presenter.InboxTicketFragmentPresenter;
 import com.tokopedia.contactus.inboxticket.presenter.InboxTicketFragmentPresenterImpl;
 
-import butterknife.BindView;
 
 /**
  * Created by Nisie on 4/21/16.
@@ -43,14 +41,10 @@ import butterknife.BindView;
 public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragmentPresenter>
         implements InboxTicketView, InboxTicketConstant {
 
-    @BindView(R2.id.message_list)
-    RecyclerView listMessage;
 
-    @BindView(R2.id.swipe_refresh_layout)
-    SwipeToRefresh swipeToRefresh;
-
-    @BindView(R2.id.fab)
-    FloatingActionButton fab;
+    private RecyclerView listMessage;
+    private SwipeToRefresh swipeToRefresh;
+    private FloatingActionButton fab;
 
     View filterLayout;
     TextView confirmButton;
@@ -147,6 +141,7 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
         spinnerStatus = (Spinner) filterLayout.findViewById(R.id.spinner_status);
         radioAll = (RadioButton) filterLayout.findViewById(R.id.radio_all);
         radioUnread = (RadioButton) filterLayout.findViewById(R.id.radio_unread);
+        findingViewsId(view);
         bottomSheetDialog = new BottomSheetDialog(getActivity());
         bottomSheetDialog.setContentView(filterLayout);
         bottomSheetDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -167,6 +162,12 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
         listMessage.setAdapter(adapter);
         ArrayAdapter<CharSequence> adapterStatus = ArrayAdapter.createFromResource(getActivity(), R.array.ticket_status, android.R.layout.simple_spinner_dropdown_item);
         spinnerStatus.setAdapter(adapterStatus);
+    }
+
+    private void findingViewsId(View view) {
+        listMessage = view.findViewById(R.id.message_list);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        fab = view.findViewById(R.id.fab);
     }
 
     @Override

@@ -10,7 +10,6 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.data.repository.BannerRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepository;
@@ -19,6 +18,7 @@ import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         this.bannerRepository = bannerRepository;
         this.service = service;
         this.firebaseRemoteConfig = remoteConfig;
-        this.changeParamRow = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
+        this.changeParamRow = firebaseRemoteConfig.getBoolean(RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
     }
 
     public static RequestParams createInitializeSearchParam(SearchParameter searchParameter) {
