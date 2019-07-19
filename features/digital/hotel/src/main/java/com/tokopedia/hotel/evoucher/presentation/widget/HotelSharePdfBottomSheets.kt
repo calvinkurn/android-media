@@ -82,7 +82,7 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
             }
 
             btnSend.setOnClickListener {
-                if (evEmail.text.isNotEmpty() && validateEmail(evEmail.text.toString().trim())) {
+                if ((evEmail.text ?: "").isNotEmpty() && validateEmail(evEmail.text.toString().trim())) {
                     emailList.add(evEmail.text.toString().trim())
                     evError.visibility = View.GONE
                 }
@@ -149,7 +149,7 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
     }
 
     private fun configSendButton() {
-        btnSend.isEnabled = !(evEmail.text.isEmpty() && emailList.isEmpty())
+        btnSend.isEnabled = !((evEmail.text ?: "").isEmpty() && emailList.isEmpty())
     }
 
     interface SharePdfBottomSheetsListener {
