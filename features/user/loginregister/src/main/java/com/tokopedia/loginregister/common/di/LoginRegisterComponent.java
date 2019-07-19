@@ -2,8 +2,6 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 import android.content.res.Resources;
-
-import android.content.res.Resources;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;

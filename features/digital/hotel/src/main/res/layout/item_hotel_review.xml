@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,112 +15,106 @@
             android:id="@+id/review_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:textViewTheme="lightPrimary"
             app:fontSize="small"
+            app:textViewTheme="lightPrimary"
             app:weight="medium"
-            tools:text="Sangat Baik"
-            />
+            tools:text="Sangat Baik" />
 
         <TextView
             android:id="@+id/rating_text_view"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_20"
-            android:textColor="@color/blue_booking"
-            tools:text="8,6"
-            android:textStyle="bold"
+            android:background="@drawable/bg_hotel_blue_radius"
+            android:gravity="center"
             android:paddingStart="@dimen/dp_8"
             android:paddingLeft="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
+            android:textColor="@color/blue_booking"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/review_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/review_title"
-            app:layout_constraintBottom_toBottomOf="@id/review_title"
-            android:gravity="center"
-            android:background="@drawable/bg_hotel_blue_radius"
-            />
+            tools:text="8,6" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/good_review_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/review_title"
-            android:layout_marginTop="@dimen/dp_8">
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/review_title">
 
             <ImageView
                 android:id="@+id/icon_good_review"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:src="@drawable/ic_good_review"
-                />
+                app:srcCompat="@drawable/ic_good_review" />
+
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/good_review_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@id/icon_good_review"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/icon_good_review"
-                app:layout_constraintTop_toTopOf="@id/icon_good_review"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
                 app:fontSize="micro"
-                tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/icon_good_review"
+                app:layout_constraintStart_toEndOf="@id/icon_good_review"
+                app:layout_constraintTop_toTopOf="@id/icon_good_review"
+                tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/bad_review_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/good_review_layout"
-            android:layout_marginTop="@dimen/dp_8">
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/good_review_layout">
 
             <ImageView
                 android:id="@+id/icon_bad_review"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:src="@drawable/ic_bad_review"
-                />
+                app:srcCompat="@drawable/ic_bad_review" />
+
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/bad_review_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@id/icon_bad_review"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/icon_bad_review"
-                app:layout_constraintTop_toTopOf="@id/icon_bad_review"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
-                app:fontSize="micro"
                 android:lineSpacingExtra="@dimen/dp_3"
-                tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
-                />
+                app:fontSize="micro"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/icon_bad_review"
+                app:layout_constraintStart_toEndOf="@id/icon_bad_review"
+                app:layout_constraintTop_toTopOf="@id/icon_bad_review"
+                tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " />
         </android.support.constraint.ConstraintLayout>
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/reviewer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Ignatius Andrew"
-            app:layout_constraintTop_toBottomOf="@id/bad_review_layout"
             android:layout_marginTop="@dimen/dp_8"
-            app:weight="medium"
             app:fontSize="micro"
-            />
+            app:layout_constraintTop_toBottomOf="@id/bad_review_layout"
+            app:weight="medium"
+            tools:text="Ignatius Andrew" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/reviewer_origin_and_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fontSize="micro"
             android:textColor="@color/light_disabled"
+            app:fontSize="micro"
             app:layout_constraintTop_toBottomOf="@id/reviewer_name"
-            tools:text="Indonesia -  8 Sep 2018"
-            />
+            tools:text="Indonesia -  8 Sep 2018" />
     </android.support.constraint.ConstraintLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bg_line_separator"/>
+        android:background="@drawable/bg_line_separator" />
 
 </LinearLayout>

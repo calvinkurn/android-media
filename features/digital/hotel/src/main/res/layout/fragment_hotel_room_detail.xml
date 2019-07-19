@@ -36,7 +36,7 @@
                     <com.tokopedia.hotel.roomlist.widget.ImageViewPager
                         android:id="@+id/room_detail_images"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_160" />
+                        android:layout_height="200dp" />
                 </LinearLayout>
 
                 <android.support.v7.widget.Toolbar

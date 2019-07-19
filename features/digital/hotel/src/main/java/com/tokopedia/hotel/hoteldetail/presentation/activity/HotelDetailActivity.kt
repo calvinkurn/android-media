@@ -48,6 +48,8 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
     override fun shouldShowOptionMenu(): Boolean = true
 
+    override fun shouldShowMenuWhite(): Boolean = true
+
     override fun getNewFragment(): Fragment =
             HotelDetailFragment.getInstance(checkInDate, checkOutDate, propertyId, roomCount, adultCount)
 

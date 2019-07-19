@@ -56,7 +56,7 @@
     <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu dewasa.</string>
     <string name="hotel_homepage_near_by_destination">Hotel dekat lokasimu</string>
 
-    <string name="hotel_calendar_error_max_range">Maksimum rentang waktu 30 hari</string>
+    <string name="hotel_calendar_error_max_range">Maks. 30 malam. Coba ubah tanggal cek-in atau check-out</string>
 
     <string name="hotel_destination_edittext_hint">Cari kota, area, atau hotel</string>
     <string name="hotel_destination_nearest_location">Lihat hotel dekat lokasimu</string>
@@ -81,7 +81,7 @@
     <string name="hotel_room_not_found_subtitle_after_filter">Coba ubah Filter dan cari sekali lagi, yuk!</string>
     <string name="hotel_room_not_found_button_text">Reset Filter</string>
     <string name="hotel_room_not_found_title">Nggak ada kamar yang cocok sama pencarianmu</string>
-    <string name="hotel_room_not_found_subtitle">Tenang, mungkin kamu cuma perxlu ubah detail pencarian di awal</string>
+    <string name="hotel_room_not_found_subtitle">Tenang, mungkin kamu cuma perlu ubah detail pencarian di awal</string>
     <string name="hotel_room_room_left_text">Sisa %1$s Kamar!</string>
     <string name="hotel_room_full_text_view">Sudah Penuh</string>
     <string name="hotel_room_list_free_breakfast">Sarapan Gratis</string>

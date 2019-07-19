@@ -266,6 +266,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
             onErrorGetLocation()
             dialog.dismiss()
         }
+        dialog.show()
     }
 
     private fun onErrorGetLocation() {

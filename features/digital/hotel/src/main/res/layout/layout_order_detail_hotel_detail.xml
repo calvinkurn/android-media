@@ -172,19 +172,17 @@
                     android:id="@+id/refund_ticker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:tickerType="announcement"
-                    app:tickerShapeType="loose"
-                    app:layout_constraintTop_toBottomOf="@id/room_amenities"
                     android:layout_marginTop="@dimen/dp_16"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/room_amenities"
+                    app:tickerShapeType="loose"
+                    app:tickerType="announcement" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/special_request_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
-                    app:layout_constraintTop_toBottomOf="@id/refund_ticker"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/refund_ticker" />
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/special_notes"
@@ -216,13 +214,13 @@
                     android:id="@+id/call_icon"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
-                    android:src="@drawable/ic_call_green_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/contact_hotel"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_call_green_24" />
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/contact_hotel"
