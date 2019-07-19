@@ -145,7 +145,7 @@
         android:id="@+id/media_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/overlay_toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_toolbar"
         app:layout_constraintBottom_toTopOf="@+id/overlay_tags"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"

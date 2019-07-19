@@ -84,6 +84,8 @@ class MediaHolderFragment : BaseDaggerFragment() {
             currentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_INDEX_KEY, 0);
             currentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY, 0);
         }
+
+        video_player.setControllerVisibilityListener {}
     }
 
     override fun onStart() {
