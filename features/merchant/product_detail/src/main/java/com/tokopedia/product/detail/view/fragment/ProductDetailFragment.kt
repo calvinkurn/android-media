@@ -1330,13 +1330,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     isHandPhone = true
                 }
             }
-//            if (!isHandPhone)
-//                productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
-//                        false, false, productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
-//
-//            productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
-//                    ?: "")
-//            productDetailTracking.eventAppsFylerOpenProduct(this)
             productDetailTracking.eventBranchItemView(this, (UserSession(activity)).userId)
         }
 
