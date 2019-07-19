@@ -75,9 +75,6 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void renderData() {
-        tvMessage.setVisibility(VISIBLE);
-        tvMessage.setText(tvMessage.getContext().getString(R.string.default_placeholder));
-
         etInputEmailPhone.addTextChangedListener(watcher(wrapperEmailPhone));
         etPassword.addTextChangedListener(watcher(wrapperPassword));
 
@@ -170,7 +167,9 @@ public class PartialRegisterInputView extends BaseCustomView {
         wrapperPassword.setVisibility(View.GONE);
         btnForgotPassword.setVisibility(View.GONE);
         btnChange.setVisibility(View.GONE);
+        tvMessage.setVisibility(VISIBLE);
 
+        tvMessage.setText(tvMessage.getContext().getString(R.string.default_placeholder));
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.phone_or_email_input));
         etInputEmailPhone.setText("");
         etInputEmailPhone.setEnabled(true);
