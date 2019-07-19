@@ -145,6 +145,7 @@
     <string name="weight_unit_kilogram">Kg</string>
     <string name="label_shipping_price_format" formatted="false">Ongkos Kirim (%s %s)</string>
     <string name="label_hide_other_item">Sembunyikan produk lainnya</string>
+    <string name="label_hide_other_item_new">Sembunyikan list</string>
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
     <string name="label_pay">Bayar</string>
     <string name="label_pay_cod">Bayar di Tempat</string>

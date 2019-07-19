@@ -25,6 +25,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
 import rx.subscriptions.CompositeSubscription;
@@ -37,7 +38,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
     public static final int TYPE_VIEW_ITEM_SHOP = R.layout.item_shop;
 
-    private LinearLayout llWarningAndError;
+    // private LinearLayout llWarningAndError;
+    private Ticker tickerWarningAndError;
     private FrameLayout flShopItemContainer;
     private LinearLayout llShopContainer;
     private CheckBox cbSelectShop;
@@ -46,12 +48,12 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private ImageView imgFulfillment;
     private Typography tvFulfillDistrict;
     private RecyclerView rvCartItem;
-    private LinearLayout layoutError;
+    /*private LinearLayout layoutError;
     private TextView tvErrorTitle;
     private TextView tvErrorDescription;
     private LinearLayout layoutWarning;
     private TextView tvWarningTitle;
-    private TextView tvWarningDescription;
+    private TextView tvWarningDescription;*/
 
     private ActionListener actionListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
@@ -67,19 +69,20 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         this.cartItemAdapterListener = cartItemAdapterListener;
         this.compositeSubscription = compositeSubscription;
 
-        llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
+        // llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
+        tickerWarningAndError = itemView.findViewById(R.id.ticker_shop);
         flShopItemContainer = itemView.findViewById(R.id.fl_shop_item_container);
         llShopContainer = itemView.findViewById(R.id.ll_shop_container);
         cbSelectShop = itemView.findViewById(R.id.cb_select_shop);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         rvCartItem = itemView.findViewById(R.id.rv_cart_item);
-        layoutError = itemView.findViewById(R.id.layout_error);
+        /*layoutError = itemView.findViewById(R.id.layout_error);
         tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
         tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
         layoutWarning = itemView.findViewById(R.id.layout_warning);
         tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
-        tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
+        tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);*/
         imgFulfillment = itemView.findViewById(R.id.img_shop_fulfill);
         tvFulfillDistrict = itemView.findViewById(R.id.tv_fulfill_district);
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
@@ -94,9 +97,11 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         });
 
         if (cartShopHolderData.getShopGroupData().isError() || cartShopHolderData.getShopGroupData().isWarning()) {
-            llWarningAndError.setVisibility(View.VISIBLE);
+            // llWarningAndError.setVisibility(View.VISIBLE);
+            tickerWarningAndError.setVisibility(View.VISIBLE);
         } else {
-            llWarningAndError.setVisibility(View.GONE);
+            // llWarningAndError.setVisibility(View.GONE);
+            tickerWarningAndError.setVisibility(View.GONE);
         }
         renderErrorItemHeader(cartShopHolderData);
         renderWarningItemHeader(cartShopHolderData);
@@ -251,7 +256,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             cbSelectShop.setEnabled(false);
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_disabled_item));
             llShopContainer.setBackgroundResource(R.drawable.bg_error_shop);
-            tvErrorTitle.setText(data.getShopGroupData().getErrorTitle());
+
+            /*tvErrorTitle.setText(data.getShopGroupData().getErrorTitle());
             String errorDescription = data.getShopGroupData().getErrorDescription();
             if (!TextUtils.isEmpty(errorDescription)) {
                 tvErrorDescription.setText(errorDescription);
@@ -259,19 +265,35 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             } else {
                 tvErrorDescription.setVisibility(View.GONE);
             }
-            layoutError.setVisibility(View.VISIBLE);
+            layoutError.setVisibility(View.VISIBLE);*/
+
+            String errorDescription = data.getShopGroupData().getErrorDescription();
+            if (!TextUtils.isEmpty(errorDescription)) {
+                tickerWarningAndError.setTickerTitle(data.getShopGroupData().getErrorTitle());
+                tickerWarningAndError.setTextDescription(errorDescription);
+            } else {
+                tickerWarningAndError.setTextDescription(data.getShopGroupData().getErrorTitle());
+            }
+            tickerWarningAndError.setTickerType(Ticker.TYPE_ERROR);
+            tickerWarningAndError.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerWarningAndError.setCloseButtonVisibility(View.GONE);
+            tickerWarningAndError.setVisibility(View.VISIBLE);
+
             renderPromoMerchant(data, false);
         } else {
             cbSelectShop.setEnabled(true);
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_enabled_item));
             llShopContainer.setBackgroundColor(llShopContainer.getContext().getResources().getColor(R.color.white));
-            layoutError.setVisibility(View.GONE);
+
+            tickerWarningAndError.setVisibility(View.GONE);
+            // layoutError.setVisibility(View.GONE);
+
             renderPromoMerchant(data, true);
         }
     }
 
     private void renderWarningItemHeader(CartShopHolderData data) {
-        if (data.getShopGroupData().isWarning()) {
+        /*if (data.getShopGroupData().isWarning()) {
             tvWarningTitle.setText(data.getShopGroupData().getWarningTitle());
             String warningDescription = data.getShopGroupData().getWarningDescription();
             if (!TextUtils.isEmpty(warningDescription)) {
@@ -283,6 +305,22 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
             layoutWarning.setVisibility(View.GONE);
+        }*/
+
+        if (data.getShopGroupData().isWarning()) {
+            String warningDescription = data.getShopGroupData().getWarningDescription();
+            if (!TextUtils.isEmpty(warningDescription)) {
+                tickerWarningAndError.setTickerTitle(data.getShopGroupData().getWarningTitle());
+                tickerWarningAndError.setTextDescription(warningDescription);
+            } else {
+                tickerWarningAndError.setTextDescription(data.getShopGroupData().getWarningTitle());
+            }
+            tickerWarningAndError.setTickerType(Ticker.TYPE_WARNING);
+            tickerWarningAndError.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerWarningAndError.setCloseButtonVisibility(View.GONE);
+            tickerWarningAndError.setVisibility(View.VISIBLE);
+        } else {
+            tickerWarningAndError.setVisibility(View.GONE);
         }
     }
 
