@@ -27,10 +27,12 @@ class VideoHorizontalHelper(
         hideVideoToggle.setOnClickListener {
             hideVideo()
             analytics.eventClickHideVideoToggle(viewModel?.channelId)
+            setChatListHasSpaceOnTop.invoke(HORIZONTAL_WITHOUT_VIDEO)
         }
         showVideoToggle.setOnClickListener {
             showVideo()
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
+            setChatListHasSpaceOnTop.invoke(HORIZONTAL_WITH_VIDEO)
         }
     }
 
@@ -38,11 +40,9 @@ class VideoHorizontalHelper(
         showVideoToggle.hide()
         hideVideoToggle.show()
         videoContainer.show()
-        setChatListHasSpaceOnTop.invoke(HORIZONTAL_WITH_VIDEO)
     }
 
     fun hideVideo() {
-        setChatListHasSpaceOnTop(VideoHorizontalHelper.HORIZONTAL_WITHOUT_VIDEO)
         hideVideoAndToggle()
         showVideoToggle.show()
     }
@@ -82,6 +82,11 @@ class VideoHorizontalHelper(
         hideAllToggle()
         videoContainer.hide()
         liveIndicator.hide()
+    }
+
+    fun clearDataVideoHorizontal() {
+        viewModel?.videoId = ""
+        viewModel?.isVideoLive = false
     }
 
     companion object {

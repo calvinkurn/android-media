@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Build
 import android.os.Handler
+import android.support.constraint.ConstraintLayout
+import android.support.constraint.ConstraintSet
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.FragmentActivity
@@ -292,6 +294,13 @@ open class PlayViewStateImpl(
         sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
         welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
         errorView.setOnClickListener {}
+
+        view.findViewById<View>(R.id.test_button).setOnClickListener {
+            var space = replyEditText.text.toString().toInt()
+            setChatListHasSpaceOnTop().invoke(space)
+        }
+
+
     }
 
     override fun onErrorVideoVertical() {
@@ -818,6 +827,8 @@ open class PlayViewStateImpl(
             overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
             videoHorizontalHelper.hideVideoAndToggle()
             sponsorHelper.assignVideoVertical(true)
+            setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITH_VIDEO)
+            videoHorizontalHelper.clearDataVideoHorizontal()
         } else {
             videoVerticalHelper.stopVideo()
             setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO)
@@ -845,6 +856,7 @@ open class PlayViewStateImpl(
             sponsorHelper.setSponsor()
             overflowMenuHelper.assignViewModel(viewModel)
             videoVerticalHelper.stopVideo()
+            videoVerticalHelper.setData(VideoStreamViewModel())
         }
     }
 
@@ -861,6 +873,7 @@ open class PlayViewStateImpl(
                 }
                 videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, getVideoInitializer(videoId))
             }
+            setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO)
         } else {
             setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITHOUT_VIDEO)
             videoHorizontalHelper.hideVideoAndToggle()
@@ -1040,8 +1053,9 @@ open class PlayViewStateImpl(
     }
 
     override fun onSuccessSendMessage(pendingChatViewModel: PendingChatViewModel) {
-        val viewModel = ChatViewModel(
-                pendingChatViewModel.message!!,
+        for(i in 1..30) {
+            val viewModel = ChatViewModel(
+                pendingChatViewModel.message!! + i,
                 System.currentTimeMillis(),
                 System.currentTimeMillis(),
                 "",
@@ -1050,8 +1064,10 @@ open class PlayViewStateImpl(
                 userSession.profilePicture,
                 false,
                 false)
-        adapter.addReply(viewModel)
-        adapter.notifyItemInserted(0)
+
+            adapter.addReply(viewModel)
+            adapter.notifyItemInserted(0)
+        }
         setQuickReply(null)
         this.viewModel?.quickRepliesViewModel = null
         scrollToBottom()
@@ -1233,11 +1249,7 @@ open class PlayViewStateImpl(
 
     private fun setChatListHasSpaceOnTop(): (Int) -> Unit {
         return {
-            var layoutParams = spaceChatVideo.layoutParams
-            layoutParams.height = it.dpToPx(view.context.resources.displayMetrics)
-            spaceChatVideo.layoutParams = layoutParams
-            spaceChatVideo.show()
-            debug("spacetop", it.toString())
+            val layoutParams = chatRecyclerView.layoutParams as ConstraintLayout.LayoutParams
 
             val fadingEdgeLength = when (it){
                 VideoVerticalHelper.VERTICAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
@@ -1247,7 +1259,34 @@ open class PlayViewStateImpl(
                 }
             }
             chatRecyclerView.setFadingEdgeLength(fadingEdgeLength)
-            chatRecyclerView.invalidate()
+
+            val displayMetrics = view.context.resources.displayMetrics
+            val height: Int
+            when (it){
+                VideoVerticalHelper.VERTICAL_WITH_VIDEO -> {
+                    height = 120.dpToPx(displayMetrics)
+                    spaceChatVideo.hide()
+                }
+                VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO -> {
+                    height = 0
+                    spaceChatVideo.hide()
+                }
+                VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO -> {
+                    height = 0
+                    if(!videoVerticalHelper.videoStreamViewModel.androidStreamSD.isNullOrBlank()) {
+                        spaceChatVideo.show()
+                    } else {
+                        spaceChatVideo.hide()
+                    }
+                }
+                else -> {
+                    height = 0
+                    spaceChatVideo.show()
+                }
+            }
+
+            layoutParams.height = height
+            chatRecyclerView.layoutParams = layoutParams
         }
     }
 
@@ -1263,8 +1302,10 @@ open class PlayViewStateImpl(
             if(it) {
                 videoHorizontalHelper.showVideo()
                 videoVerticalHelper.stopVideo()
+                setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO)
             } else {
                 videoHorizontalHelper.hideVideo()
+                setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITHOUT_VIDEO)
             }
         }
     }
@@ -1276,9 +1317,11 @@ open class PlayViewStateImpl(
                 sponsorHelper.hideSponsor()
                 youTubePlayer?.release()
                 youTubePlayer = null
+                setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITH_VIDEO)
             } else {
                 sponsorHelper.setSponsor()
                 videoVerticalHelper.stopVideo()
+                setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO)
             }
         }
     }

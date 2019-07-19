@@ -44,7 +44,7 @@ class VideoVerticalHelper constructor (
         var VIDEO_480 = 480
         var VIDEO_720 = 720
         var VERTICAL_WITH_VIDEO = 200
-        var VERTICAL_WITHOUT_VIDEO = 54
+        var VERTICAL_WITHOUT_VIDEO = 542
 
         var TAG = "playvertical"
     }
@@ -164,7 +164,6 @@ class VideoVerticalHelper constructor (
         playerView.show()
         gradientBackground.show()
         showLoadingOnly()
-        setChatListHasSpaceOnTop(VERTICAL_WITH_VIDEO)
         analytics.eventVerticalVideoPlayed(viewModel?.channelId)
         startTime = System.currentTimeMillis()
     }
@@ -173,7 +172,6 @@ class VideoVerticalHelper constructor (
         player?.stop()
         playerView.hide()
         gradientBackground.show()
-        setChatListHasSpaceOnTop(VERTICAL_WITHOUT_VIDEO)
         backgroundHelper.resetBackground()
         hideContainer()
         endTime = System.currentTimeMillis()

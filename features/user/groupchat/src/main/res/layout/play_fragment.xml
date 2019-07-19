@@ -167,7 +167,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sponsor_layout"
             tools:ignore="MergeRootFrame"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                       xmlns:tools="http://schemas.android.com/tools"
@@ -273,7 +273,8 @@
             android:layout_height="@dimen/dp_48"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/video_horizontal" />
+            app:layout_constraintTop_toBottomOf="@id/video_horizontal"
+            android:visibility="visible"/>
 
         <FrameLayout
             android:id="@+id/interaction_button_guideline"
@@ -298,11 +299,9 @@
             app:layout_constraintBottom_toTopOf="@+id/sticky_component"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/top_space_guideline"
-            app:layout_constraintVertical_weight="0.5"
+            app:layout_constraintVertical_bias="1"
             android:translationZ="-3dp"
             tools:ignore="MergeRootFrame"/>
 
