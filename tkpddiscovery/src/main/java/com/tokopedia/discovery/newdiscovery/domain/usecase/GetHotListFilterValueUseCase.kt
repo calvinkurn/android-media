@@ -16,6 +16,8 @@ import javax.inject.Inject
 
 class GetHotListFilterValueUseCase @Inject constructor(@ApplicationContext private val context: Context
                                                        , private val graphqlUseCase: GraphqlUseCase) : UseCase<List<QueriesItem?>?>() {
+    private val KEY_PRODUCT_KEY = "productKey"
+
     override fun createObservable(requestParams: RequestParams?): Observable<List<QueriesItem?>?> {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.hotlist_detail), Data::class.java, requestParams!!.parameters, false)
@@ -28,9 +30,6 @@ class GetHotListFilterValueUseCase @Inject constructor(@ApplicationContext priva
 
         }
     }
-
-
-    private val KEY_PRODUCT_KEY = "productKey"
 
     fun createRequestParams(productKey: String): RequestParams {
         val requestParams = RequestParams.create()

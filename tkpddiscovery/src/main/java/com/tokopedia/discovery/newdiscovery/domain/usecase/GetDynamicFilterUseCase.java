@@ -21,7 +21,6 @@ public class GetDynamicFilterUseCase extends UseCase<DynamicFilterModel> {
     public GetDynamicFilterUseCase(ThreadExecutor threadExecutor,
                                    PostExecutionThread postExecutionThread,
                                    AttributeRepository repository) {
-       // super(threadExecutor, postExecutionThread);
         this.repository = repository;
     }
 
@@ -29,7 +28,6 @@ public class GetDynamicFilterUseCase extends UseCase<DynamicFilterModel> {
     public Observable<DynamicFilterModel> createObservable(RequestParams requestParams) {
         TKPDMapParam<String,Object> tkpdMapParam = new TKPDMapParam<>();
         tkpdMapParam.putAll(requestParams.getParameters());
-
         return repository.getDynamicFilter(tkpdMapParam);
     }
 }

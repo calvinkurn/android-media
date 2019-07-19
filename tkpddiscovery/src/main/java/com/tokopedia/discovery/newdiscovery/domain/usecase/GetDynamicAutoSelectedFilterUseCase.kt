@@ -7,8 +7,13 @@ import rx.Observable
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
-class GetDyanamicAutoSelecetedFilterUseCase @Inject constructor(private val getHotListFilterValueUseCase: GetHotListFilterValueUseCase
-                                                                , private val getDynamicFilterUseCase: GetDynamicFilterUseCase) : UseCase<DynamicFilterModel>() {
+class GetDynamicAutoSelectedFilterUseCase @Inject constructor(private val getHotListFilterValueUseCase: GetHotListFilterValueUseCase
+                                                              , private val getDynamicFilterUseCase: GetDynamicFilterUseCase) : UseCase<DynamicFilterModel>() {
+
+    companion object {
+        const val KEY_PRODUCT_ALIAS = "productKey"
+        const val KEY_OFFICIAL_FLAG = "official"
+    }
 
     override fun createObservable(requestParams: RequestParams?): Observable<DynamicFilterModel>? {
 
@@ -28,11 +33,6 @@ class GetDyanamicAutoSelecetedFilterUseCase @Inject constructor(private val getH
             }
             DynamicFilterModel(dynamicFilterModel.data, dynamicFilterModel.processTime, dynamicFilterModel.status, flag)
         }
-    }
-
-    companion object {
-        const val KEY_PRODUCT_ALIAS = "productKey"
-        const val KEY_OFFICIAL_FLAG = "official"
     }
 
 }

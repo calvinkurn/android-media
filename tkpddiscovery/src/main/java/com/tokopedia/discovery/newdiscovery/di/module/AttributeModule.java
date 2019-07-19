@@ -9,7 +9,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.data.mapper.DynamicAttributeMapper;
 import com.tokopedia.discovery.newdiscovery.data.repository.AttributeRepositoryImpl;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDyanamicAutoSelecetedFilterUseCase;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicAutoSelectedFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetHotListFilterValueUseCase;
@@ -58,9 +58,9 @@ public class AttributeModule {
     }
 
     @Provides
-    GetDyanamicAutoSelecetedFilterUseCase getDyanamicAutoSelecetedFilterUseCase(GetHotListFilterValueUseCase getHotListFilterValueUseCase,
+    GetDynamicAutoSelectedFilterUseCase getDyanamicAutoSelecetedFilterUseCase(GetHotListFilterValueUseCase getHotListFilterValueUseCase,
                                                                                 GetDynamicFilterUseCase getDynamicFilterUseCase){
-        return new GetDyanamicAutoSelecetedFilterUseCase(getHotListFilterValueUseCase,getDynamicFilterUseCase);
+        return new GetDynamicAutoSelectedFilterUseCase(getHotListFilterValueUseCase,getDynamicFilterUseCase);
     }
 
     @Provides
