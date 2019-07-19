@@ -236,7 +236,7 @@ class ProductDetailTracking() {
                         KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
                         (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
                         KEY_LABEL, pageTitle,
-                        KEY_ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, CURRENCY_DEFAULT_VALUE, "impression",
+                        KEY_ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, CURRENCY_DEFAULT_VALUE, "impressions",
                         DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
                                         ID, product.productId.toString(),
