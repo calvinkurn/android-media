@@ -440,10 +440,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     onSearchReset();
                     break;
                 case ADD_NEW_ADDRESS_CREATED:
-                    RecipientAddressModel newAddress = null;
                     if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
                         SaveAddressDataModel saveAddressDataModel = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
-                        newAddress = new RecipientAddressModel();
+                        RecipientAddressModel newAddress = new RecipientAddressModel();
                         newAddress.setAddressName(saveAddressDataModel.getAddressName());
                         newAddress.setDestinationDistrictId(String.valueOf(saveAddressDataModel.getDistrictId()));
                         newAddress.setCityId(String.valueOf(saveAddressDataModel.getCityId()));
@@ -455,7 +454,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                         mActivityListener.finishAndSendResult(newAddress);
                     }
-                    onSearchReset();
                     break;
                 default:
                     break;
