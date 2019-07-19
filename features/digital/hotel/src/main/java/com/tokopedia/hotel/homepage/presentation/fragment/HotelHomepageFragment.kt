@@ -294,7 +294,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         rv_hotel_homepage_promo.isNestedScrollingEnabled = false
         rv_hotel_homepage_promo.adapter = promoAdapter
         rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
