@@ -126,6 +126,14 @@ public class InstagramLoginFragment extends BaseDaggerFragment{
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
                 view.stopLoading();
+            } else if (codeUri.getHost().equals("www.instagram.com") && codeUri.getQueryParameterNames().isEmpty()) {
+                /**
+                 * This will try to handle Instagram challenge
+                 * e.g. "Suspicious Login Attempt" which will redirect us to https://www.instagram.com after we succeed the challenge
+                 * in which we will try to force load the initial authentication page
+                 */
+                view.loadUrl(InstagramConstant.URL_LOGIN_INSTAGRAM);
+                return true;
             } else {
                 view.loadUrl(url);
             }
