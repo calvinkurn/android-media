@@ -70,6 +70,7 @@
     <string name="label_official_store">Official Store</string>
     <string name="label_gold_merchant">Gold Merchant</string>
     <string name="label_regular_merchant">Regular Merchant</string>
+    <string name="label_power_merchant">Power Merchant</string>
     <string name="title_delete">Hapus</string>
 
     <string name="intro_seller_saldo_finish_string">Selesai</string>

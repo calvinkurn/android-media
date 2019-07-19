@@ -126,7 +126,7 @@ public class MainToolbar extends Toolbar {
         });
 
         editTextSearch.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingSearchBar();
+            searchBarAnalytics.eventTrackingSearchBar(screenName);
             RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
         });
 

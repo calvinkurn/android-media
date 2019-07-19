@@ -232,6 +232,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     userAddressResult.setProvinceName(groupAddress.getUserAddress().getProvinceName());
                     userAddressResult.setReceiverName(groupAddress.getUserAddress().getReceiverName());
                     userAddressResult.setCornerId(groupAddress.getUserAddress().getCornerId());
+                    userAddressResult.setCorner(groupAddress.getUserAddress().isCorner());
 
                     groupAddressResult.setUserAddress(userAddressResult);
                 }

@@ -1,0 +1,21 @@
+query enquiryTelco ($clientNumber: String!,
+  $productId: String!) {
+  enquiry(
+    clientNumber: $clientNumber,
+    productId: $productId,
+    requestType: NEW
+  ) {
+    attributes: Attributes {
+      UserID
+      ProductID
+      ClientNumber
+      Title
+      Price
+      PricePlain
+      mainInfo: MainInfo {
+        label: Label
+        value: Value
+      }
+    }
+  }
+}

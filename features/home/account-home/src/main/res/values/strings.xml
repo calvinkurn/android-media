@@ -167,10 +167,14 @@
     <string name="title_dev_options">Developer Options</string>
     <string name="title_shake_setting">Shake Shake</string>
     <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
+    <string name="title_geolocation_setting">Lokasi</string>
+    <string name="subtitle_geolocation_setting">Mendeteksi lokasi secara otomatis</string>
     <string name="account_home_label_logout_confirmation">Apakah Anda ingin keluar?</string>
     <string name="account_home_label_cancel">Batal</string>
     <string name="title_app_review_setting">Review Aplikasi</string>
     <string name="label_wallet_activation">Aktivasi TokoCash</string>
+    <string name="title_pm_card">Pengaturan Power Merchant</string>
+    <string name="desc_pm_card">Kelola toko dengan fitur eksklusif</string>
 
 
     <string name="msg_has_no_shop">Mulai dengan Tokopedia!</string>
@@ -209,5 +213,9 @@
     <string name="ulasan">Ulasan</string>
     <string name="ulasan_desc">Berikan penilaian dan ulasan Produk</string>
     <string name="label_new">Baru</string>
+
+    <string name="account_home_title_geolocation_alertdialog">Kamu bisa izinkan akses lokasi di Izin -> Lokasi</string>
+    <string name="account_home_ok_geolocation_alertdialog">OK</string>
+    <string name="account_home_batal_geolocation_alertdialog">Batal</string>
 
 </resources>

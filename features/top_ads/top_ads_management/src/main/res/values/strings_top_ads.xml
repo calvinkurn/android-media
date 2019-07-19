@@ -24,6 +24,8 @@
     <string name="label_top_ads_groups">Grup</string>
     <string name="label_top_ads_items">Produk</string>
     <string name="label_top_ads_keyword">Kata Kunci</string>
+    <string name="label_total_gross_profit">Total Terjual : %s</string>
+    <string name="label_total_sold">Pendapatan : %s</string>
 
     <string name="label_top_ads_deposit_desc">Kredit TopAds: %1$s</string>
     <string name="label_top_ads_next">Selanjutnya</string>

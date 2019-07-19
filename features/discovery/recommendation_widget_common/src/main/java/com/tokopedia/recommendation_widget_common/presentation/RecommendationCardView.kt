@@ -20,6 +20,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 class RecommendationCardView : ProductCardView {
+
     constructor(context: Context) : super(context) {}
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
@@ -36,6 +37,8 @@ class RecommendationCardView : ProductCardView {
         setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setWishlistButtonVisible(false)
         setRatingReviewCount(item.rating, item.countReview)
+        setBadges(item.badgesUrl)
+        setLocation(item.location)
         imageView.addOnImpressionListener(item,
                 object: ViewHintListener {
                     override fun onViewHint() {
@@ -85,7 +88,9 @@ class RecommendationCardView : ProductCardView {
     private fun setRatingVisible(){
         ratingView.visibility = View.VISIBLE
         reviewCountView.visibility = View.VISIBLE
-        ratingContainer.visibility = View.VISIBLE
+        if (ratingContainer != null) {
+            ratingContainer.visibility = View.VISIBLE
+        }
     }
 
     interface TrackingListener {
