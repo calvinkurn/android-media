@@ -80,6 +80,8 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation project(rootProject.ext.libraries.linker)
+
 
     testImplementation rootProject.ext.testDependencies.assertJ
 }
