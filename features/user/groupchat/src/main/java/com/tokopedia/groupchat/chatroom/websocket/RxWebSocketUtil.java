@@ -116,16 +116,4 @@ public class RxWebSocketUtil {
             throw new WebSocketException("The WebSokcet not open");
         }
     }
-
-    public void asyncSend(String url, final String msg, String groupChatToken) {
-        getWebSocket(url, "", groupChatToken)
-                .first()
-                .subscribe(new Action1<WebSocket>() {
-                    @Override
-                    public void call(WebSocket webSocket) {
-                        webSocket.send(msg);
-                    }
-                });
-
-    }
 }
