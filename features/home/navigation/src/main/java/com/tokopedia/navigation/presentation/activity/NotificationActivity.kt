@@ -35,7 +35,8 @@ import javax.inject.Inject
  * Created by meta on 20/06/18.
  */
 @DeepLink(ApplinkConst.NOTIFICATION)
-class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View {
+class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View,
+        NotificationUpdateFragment.NotificationUpdateListener {
 
     @Inject
     lateinit var presenter: NotificationActivityPresenter
@@ -66,6 +67,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
     }
 
+    override fun onSuccessLoadNotifUpdate() {
+        clearNotifCounter(INDEX_NOTIFICATION_UPDATE)
+    }
 
     private fun onSuccessGetUpdateUnreadCounter(): (NotificationUpdateUnread) -> Unit {
         return {

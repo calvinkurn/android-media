@@ -48,6 +48,7 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
@@ -343,7 +344,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     mValueMembershipDescription);
         } else if (source.getId() == R.id.view_loyalty_bottom) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
-
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -351,16 +351,14 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     "");
         } else if (source.getId() == R.id.view_point_bottom
                 || source.getId() == R.id.view_point) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
-
+            startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
         } else if (source.getId() == R.id.view_loyalty) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
-
+            startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -370,7 +368,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             mPresenter.getTokoPointDetail();
         } else if (source.getId() == R.id.container_fab_egg_token) {
             if (mSumToken <= 0) {
-                if(mStartPurchaseBottomSheet!=null) {
+                if (mStartPurchaseBottomSheet != null) {
                     mStartPurchaseBottomSheet.show(getChildFragmentManager(), StartPurchaseBottomSheet.class.getName());
                 }
             } else {
@@ -391,6 +389,8 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         coordinatorLayout = view.findViewById(R.id.container);
         mContainerMain = view.findViewById(R.id.container_main);
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
+        mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_arrow_right_grey), null);
         mTextMembershipLabel = view.findViewById(R.id.text_membership_label);
         mTextPoints = view.findViewById(R.id.text_my_points_value);
         mTextLoyalty = view.findViewById(R.id.text_loyalty_value);

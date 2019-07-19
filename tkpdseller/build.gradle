@@ -40,11 +40,9 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.features.logisticanalytics)
     implementation project(rootProject.ext.features.logisticinputreceiptshipment)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation project(rootProject.ext.features.logisticCommon)
 
 
     implementation project(rootProject.ext.features.topAdsSourceTagging)
@@ -60,7 +58,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.resourcesCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
@@ -83,11 +81,10 @@ dependencies {
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor  rootProject.ext.miscDependencies.parceler

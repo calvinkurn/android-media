@@ -54,7 +54,7 @@
                                     android:layout_height="@dimen/dp_24"
                                     android:layout_marginLeft="@dimen/dp_8"
                                     android:layout_marginTop="@dimen/dp_13"
-                                    android:src="@drawable/ic_close_data" />
+                                    app:srcCompat="@drawable/ic_close_data" />
 
 
                                 <TextView

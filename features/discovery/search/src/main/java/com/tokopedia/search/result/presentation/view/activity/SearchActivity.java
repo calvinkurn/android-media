@@ -31,12 +31,10 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.discovery.DiscoveryRouter;
-import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
-import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
@@ -103,6 +101,8 @@ public class SearchActivity extends BaseActivity
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
     private TextView buttonFilter;
     private TextView buttonSort;
+    private View iconFilter;
+    private View iconSort;
     private View searchNavDivider;
     private View searchNavContainer;
     private BottomSheetFilterView bottomSheetFilterView;
@@ -182,7 +182,9 @@ public class SearchActivity extends BaseActivity
         viewPager = findViewById(R.id.pager);
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter);
         buttonFilter = findViewById(R.id.button_filter);
+        iconFilter = findViewById(R.id.icon_filter);
         buttonSort = findViewById(R.id.button_sort);
+        iconSort = findViewById(R.id.icon_sort);
         searchNavDivider = findViewById(R.id.search_nav_divider);
         searchNavContainer = findViewById(R.id.search_nav_container);
     }
@@ -320,8 +322,17 @@ public class SearchActivity extends BaseActivity
                 searchNavigationClickListener.onFilterClick();
             }
         });
-
+        iconFilter.setOnClickListener(view -> {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onFilterClick();
+            }
+        });
         buttonSort.setOnClickListener(view -> {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onSortClick();
+            }
+        });
+        iconSort.setOnClickListener(view -> {
             if (searchNavigationClickListener != null) {
                 searchNavigationClickListener.onSortClick();
             }
@@ -780,9 +791,11 @@ public class SearchActivity extends BaseActivity
 
         if (isSortEnabled) {
             buttonSort.setVisibility(View.VISIBLE);
+            iconSort.setVisibility(View.VISIBLE);
             searchNavDivider.setVisibility(View.VISIBLE);
         } else {
             buttonSort.setVisibility(View.GONE);
+            iconSort.setVisibility(View.GONE);
             searchNavDivider.setVisibility(View.GONE);
         }
 
@@ -809,5 +822,45 @@ public class SearchActivity extends BaseActivity
     @Override
     public BaseAppComponent getComponent() {
         return getBaseAppComponent();
+    }
+
+    @Override
+    public void startActivityWithApplink(String applink, String... parameter) {
+        finishCurrentActivityIfRedirectedToSearch(applink);
+
+        Intent intent = RouteManager.getIntent(this, applink, parameter);
+        int startActivityForResultRequestCode = getStartActivityForResultRequestCode(applink);
+
+        startActivityForResult(intent, startActivityForResultRequestCode);
+    }
+
+    private void finishCurrentActivityIfRedirectedToSearch(String applink) {
+        if(isApplinkToSearchActivity(applink)) {
+            setIntent(new Intent());
+            finish();
+        }
+    }
+
+    private boolean isApplinkToSearchActivity(String applink) {
+        return !TextUtils.isEmpty(applink)
+                && applink.startsWith(ApplinkConst.DISCOVERY_SEARCH + "?");
+    }
+
+    private int getStartActivityForResultRequestCode(String applink) {
+        if(isApplinkToAutoCompleteActivity(applink)) {
+            return AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
+        }
+
+        return -1;
+    }
+
+    private boolean isApplinkToAutoCompleteActivity(String applink) {
+        return !TextUtils.isEmpty(applink)
+                && applink.startsWith(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?");
+    }
+
+    @Override
+    public void startActivityWithUrl(String url, String... parameter) {
+        RouteManager.route(this, url, parameter);
     }
 }

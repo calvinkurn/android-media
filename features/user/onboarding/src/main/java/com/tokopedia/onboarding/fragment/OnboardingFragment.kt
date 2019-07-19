@@ -9,9 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.onboarding.OnboardingActivity
@@ -25,13 +27,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
-
 /**
  * @author by stevenfredian on 14/05/19.
  */
 class
 OnboardingFragment : BaseDaggerFragment(),
-        CustomAnimationPageTransformerDelegate,  OnboardingActivity.onBoardingFirsbaseCallBack{
+        CustomAnimationPageTransformerDelegate, OnboardingActivity.onBoardingFirsbaseCallBack {
 
     companion object {
         val VIEW_DEFAULT = 100
@@ -48,7 +49,7 @@ OnboardingFragment : BaseDaggerFragment(),
 
         fun createInstance(title: String = "",
                            description: String = "",
-                           lottieAsset: String = "",
+                           lottieAsset: Int = 0,
                            bgColor: Int = 0,
                            position: Int = 0,
                            ttlKey: String = "",
@@ -57,7 +58,7 @@ OnboardingFragment : BaseDaggerFragment(),
             val args = Bundle()
             args.putCharSequence(ARG_TITLE, title)
             args.putCharSequence(ARG_DESC, description)
-            args.putString(ARG_LOTTIE, lottieAsset)
+            args.putInt(ARG_LOTTIE, lottieAsset)
             args.putInt(ARG_BG_COLOR, bgColor)
             args.putInt(ARG_POSITION, position)
             args.putString(ARG_TTLKEY, ttlKey)
@@ -69,7 +70,7 @@ OnboardingFragment : BaseDaggerFragment(),
 
     var title: String = ""
     var description: String = ""
-    var lottieAsset: String = ""
+    var lottieAsset: Int = 0
     var bgColor: Int = 0
     var position: Int = 0
     var isAnimationPlayed = false
@@ -88,16 +89,19 @@ OnboardingFragment : BaseDaggerFragment(),
     lateinit var main: View
 
     override fun getScreenName(): String {
-       return ""
+        return ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = getParamString(ARG_TITLE, arguments, savedInstanceState, "")
         description = getParamString(ARG_DESC, arguments, savedInstanceState, "")
-        lottieAsset = getParamString(ARG_LOTTIE, arguments, savedInstanceState, "")
+        lottieAsset = getParamInt(ARG_LOTTIE, arguments, savedInstanceState, 0)
         bgColor = getParamInt(ARG_BG_COLOR, arguments, savedInstanceState, 0)
         position = getParamInt(ARG_POSITION, arguments, savedInstanceState, 0)
+        descKey = getParamString(ARG_DESCKEY, arguments, savedInstanceState, "")
+        ttlKey = getParamString(ARG_TTLKEY, arguments, savedInstanceState, "")
+
     }
 
     override fun initInjector() {
@@ -116,11 +120,10 @@ OnboardingFragment : BaseDaggerFragment(),
             : View? {
         val defaultView: View = inflater.inflate(R.layout.base_onboarding_fragment, container,
                 false)
-        val main :View = defaultView.findViewById(R.id.main)
+        val main: View = defaultView.findViewById(R.id.main)
         main.setBackgroundColor(bgColor)
 
-        lottieAnimationView = defaultView.findViewById(R.id.animation_view)
-        lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong)
+        setAnimation(defaultView)
 
         titleView = defaultView.findViewById(R.id.title)
         descView = defaultView.findViewById(R.id.description)
@@ -129,6 +132,19 @@ OnboardingFragment : BaseDaggerFragment(),
         descView.text = MethodChecker.fromHtml(getDescMsg())
 
         return defaultView
+    }
+
+    private fun setAnimation(defaultView: View) {
+        try {
+            lottieAnimationView = defaultView.findViewById(R.id.animation_view)
+            if (lottieAsset != 0) {
+                lottieAnimationView.setAnimation(lottieAsset)
+            } else if (!GlobalConfig.DEBUG) {
+                Crashlytics.log("Lottie Asset Is Blank")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -221,7 +237,7 @@ OnboardingFragment : BaseDaggerFragment(),
             var msg = remoteConfig.getString(descKey)
             if (!TextUtils.isEmpty(msg)) {
                 val descTxt = msg
-                activity?.runOnUiThread(object: Runnable {
+                activity?.runOnUiThread(object : Runnable {
                     override fun run() {
                         descView.text = MethodChecker.fromHtml(descTxt)
                     }
@@ -230,9 +246,10 @@ OnboardingFragment : BaseDaggerFragment(),
             msg = remoteConfig.getString(ttlKey)
             if (!TextUtils.isEmpty(msg)) {
                 val ttlTxt = msg
-                activity?.runOnUiThread(object: Runnable {
+                activity?.runOnUiThread(object : Runnable {
                     override fun run() {
-                        titleView.text = MethodChecker.fromHtml(ttlTxt)                    }
+                        titleView.text = MethodChecker.fromHtml(ttlTxt)
+                    }
                 })
             }
         }

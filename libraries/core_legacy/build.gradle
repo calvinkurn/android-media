@@ -46,6 +46,7 @@ dependencies {
         transitive = true
     }
 
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.userSession)
     implementation rootProject.ext.playServicesDependencies.plus
@@ -63,12 +64,11 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.installRef
     implementation rootProject.ext.analyticsDependencies.moengageFirebase
     implementation (rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-gcm'
+        exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
-    implementation rootProject.ext.analyticsDependencies.logentries
 
     implementation project(rootProject.ext.libraries.analytics)
 
@@ -80,9 +80,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.firebase.config
 
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
@@ -91,10 +90,10 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation "com.moengage:moengagesdk:3.3.00"
-    implementation "com.moengage:pushbase:3.2.00"
+    implementation rootProject.ext.analyticsDependencies.moengageSdk
+    implementation rootProject.ext.analyticsDependencies.moengagePushbase
+    implementation rootProject.ext.analyticsDependencies.moengageInapp
     implementation "com.moengage:moe-push-firebase:3.2.00"
-    implementation "com.moengage:inapp:3.2.02"
     implementation "com.moengage:moe-location-lib:5.2.02"
     implementation "com.moengage:addon-realtime-trigger:2.2.00"
     implementation "com.moengage:integration-verifier:1.0.00"

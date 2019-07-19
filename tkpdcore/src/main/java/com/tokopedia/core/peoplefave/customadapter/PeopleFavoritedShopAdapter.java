@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.peoplefave.listener.PeopleFavoritedShopFragmentView;
@@ -18,9 +17,6 @@ import com.tokopedia.core.peoplefave.model.PeopleFavoritedShopData;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by hangnadi on 10/11/16.
@@ -35,16 +31,22 @@ public class PeopleFavoritedShopAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.shop_name) TextView shopName;
-        @BindView(R2.id.shop_avatar) ImageView shopAvatar;
-        @BindView(R2.id.shop_layout) LinearLayout shopLayout;
-        @BindView(R2.id.prods) TextView product;
-        @BindView(R2.id.etalase) TextView etalase;
-        @BindView(R2.id.unfav) TextView actionUnfavorite;
+        TextView shopName;
+        ImageView shopAvatar;
+        LinearLayout shopLayout;
+        TextView product;
+        TextView etalase;
+        TextView actionUnfavorite;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            shopName = (TextView) itemView.findViewById(R.id.shop_name);
+            shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
+            shopLayout = (LinearLayout) itemView.findViewById(R.id.shop_layout);
+            product = (TextView) itemView.findViewById(R.id.prods);
+            etalase = (TextView) itemView.findViewById(R.id.etalase);
+            actionUnfavorite = (TextView) itemView.findViewById(R.id.unfav);
         }
     }
 

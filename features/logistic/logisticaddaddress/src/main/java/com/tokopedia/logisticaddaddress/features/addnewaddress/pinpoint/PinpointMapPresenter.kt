@@ -42,7 +42,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private var saveAddressDataModel = SaveAddressDataModel()
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     fun getDistrict(placeId: String) {
         getDistrictUseCase.setParams(placeId)
@@ -58,6 +58,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         super.detachView()
         getDistrictUseCase.unsubscribe()
         autofillUseCase.unsubscribe()
+        districtBoundaryUseCase.unsubscribe()
     }
 
     fun clearCacheGetDistrict() {
@@ -75,11 +76,13 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
             AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess()
             AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed()
         } else {
-            isChangesRequested?.let {
-                if (it) {
-                    view.finishBackToAddEdit(false, it)
-                } else {
-                    isMismatchSolved?.let { view.goToAddEditActivity(false, it) }
+            isChangesRequested?.let { isChanges ->
+                isMismatchSolved?.let { isSolved ->
+                    if (isChanges) {
+                        view.finishBackToAddEdit(false, isSolved)
+                    } else {
+                        view.goToAddEditActivity(false, isSolved)
+                    }
                 }
             }
 
@@ -134,13 +137,13 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     }
 
     fun requestLocation(activity: Activity) {
-        val locationDetectorHelper = activity.let {
-            LocationDetectorHelper(
-                    permissionCheckerHelper,
-                    LocationServices.getFusedLocationProviderClient(it),
-                    it) }
+        permissionCheckerHelper?.let { permission ->
+            val locationDetectorHelper = activity.let { act ->
+                LocationDetectorHelper(
+                        permission,
+                        LocationServices.getFusedLocationProviderClient(act),
+                        act) }
 
-        this.let {
             locationDetectorHelper.getLocation(onGetLocation(), activity,
                     LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                     activity.getString(R.string.rationale_need_location))
@@ -153,7 +156,9 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         }
     }
 
-    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper) {
-        this.permissionCheckerHelper = permissionCheckerHelper
+    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {
+        if (permissionCheckerHelper != null) {
+            this.permissionCheckerHelper = permissionCheckerHelper
+        }
     }
 }

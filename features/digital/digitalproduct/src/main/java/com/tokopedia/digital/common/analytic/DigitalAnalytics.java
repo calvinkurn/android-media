@@ -7,13 +7,13 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
+import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 
 
 /**
@@ -32,6 +32,14 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Action.CLICK_PANDUAN_SECTION,
                 categoryName.toLowerCase()
         ));
+    }
+
+    public void eventDigitalCategoryScreenLaunch (CategoryData categoryData) {
+        Map<String, Object> value = DataLayer.mapOf(
+                "category", categoryData.getName(),
+                "digital_category_id", categoryData.getCategoryId()
+        );
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, "Digital_Category_Screen_Launched");
     }
 
     public void eventAddToCart(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom) {

@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -21,17 +19,20 @@ import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.tkpd.network.DataSource;
+import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.cachemanager.PersistentCacheManager;
+
+import timber.log.Timber;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,10 +52,10 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void onCreate() {
-        GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
+        GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
-        com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
+        com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
 
@@ -70,25 +71,28 @@ public class MyApplication extends BaseMainApplication
         super.onCreate();
         FlowManager.init(new FlowConfig.Builder(this)
                 .build());
-        FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
         initCacheApi();
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
-    public static class GTMAnalytics extends DummyAnalytics{
+    public static class GTMAnalytics extends DummyAnalytics {
 
         public GTMAnalytics(Context context) {
             super(context);
         }
     }
 
-    public static class AppsflyerAnalytics extends DummyAnalytics{
+    public static class AppsflyerAnalytics extends DummyAnalytics {
 
         public AppsflyerAnalytics(Context context) {
             super(context);
         }
     }
 
-    public static class MoengageAnalytics extends DummyAnalytics{
+    public static class MoengageAnalytics extends DummyAnalytics {
 
         public MoengageAnalytics(Context context) {
             super(context);
@@ -138,7 +142,7 @@ public class MyApplication extends BaseMainApplication
     }
 
     private void initCacheApi() {
-        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+        new CacheApiWhiteListUseCase(this).executeSync(CacheApiWhiteListUseCase.createParams(
                 getWhiteList(), String.valueOf(System.currentTimeMillis())));
     }
 
@@ -169,9 +173,10 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response) {
+    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
+
 
     @Override
     public void showForceLogoutTokenDialog(String response) {
@@ -296,11 +301,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
-
-    }
-
-    @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return false;
     }
@@ -323,7 +323,7 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void goToApplinkActivity(Context context, String applink) {
         Toast.makeText(getApplicationContext(), "deprecated - GO TO " + applink, Toast.LENGTH_LONG).show();
-        RouteManager.route(context,applink);
+        RouteManager.route(context, applink);
     }
 
     /**
@@ -333,7 +333,7 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
         Toast.makeText(getApplicationContext(), "deprecated - GO TO " + applink, Toast.LENGTH_LONG).show();
-        RouteManager.route(activity,applink);
+        RouteManager.route(activity, applink);
     }
 
     /**
@@ -342,7 +342,7 @@ public class MyApplication extends BaseMainApplication
     @Deprecated
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
-        return RouteManager.getIntent(context,applink);
+        return RouteManager.getIntent(context, applink);
     }
 
     @Deprecated
