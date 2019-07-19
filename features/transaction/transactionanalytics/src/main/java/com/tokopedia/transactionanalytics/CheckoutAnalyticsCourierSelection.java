@@ -859,4 +859,12 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventViewPromoLogisticTicker(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_LOGISTIC_TICKER,
+                promoCode
+        );
+    }
 }
