@@ -48,7 +48,7 @@ public class SmartLockActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        private UserSessionInterface userSessionInterface = new UserSession(this);
+        UserSessionInterface userSessionInterface = new UserSession(this);
         analytics = new LoginRegisterAnalytics(userSessionInterface);
 
         setContentView(R.layout.activity_smartlock);
