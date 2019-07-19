@@ -46,7 +46,8 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             } else {
                 room_description_layout.visibility = View.GONE
                 room_full_layout.visibility = View.VISIBLE
-                setImageViewPager(listOf(roomListModel.images[0]), hotelRoom)
+                room_image_view_pager.setImages(listOf(roomListModel.images.first()))
+                room_image_view_pager.buildView()
                 room_full_room_name_text_view.text = roomListModel.roomName
             }
         }
@@ -91,7 +92,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
                 override fun onImageClicked(position: Int) {
                     listener.onPhotoClickListener(room)
                     context.startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                            context!!, room.additionalPropertyInfo.propertyName, imageUrls, imageUrls, position
+                            context!!, room.roomInfo.name, imageUrls, imageUrls, position
                     ))
                 }
             }

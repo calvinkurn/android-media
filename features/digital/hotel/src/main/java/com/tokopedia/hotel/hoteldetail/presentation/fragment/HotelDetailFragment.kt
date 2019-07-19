@@ -120,6 +120,8 @@ class HotelDetailFragment : HotelBaseFragment() {
                     hotelHomepageModel.locId)
         }
 
+
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

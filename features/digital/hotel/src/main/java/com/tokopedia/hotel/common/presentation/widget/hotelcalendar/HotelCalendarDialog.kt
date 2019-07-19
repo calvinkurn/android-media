@@ -47,9 +47,6 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var hotelCalendarDialogViewModel: HotelCalendarDialogViewModel
 
-    @Inject
-    lateinit var useCase: TravelCalendarHolidayUseCase
-
     var isFirstTime: Boolean = true
 
     var listener: OnDateClickListener? = null
