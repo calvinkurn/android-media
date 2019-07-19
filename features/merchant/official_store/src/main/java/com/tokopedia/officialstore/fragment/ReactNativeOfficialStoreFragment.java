@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
+import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.officialstore.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
@@ -32,6 +34,23 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
         return new ReactNativeOfficialStoreFragment();
     }
 
+    private void initView() {
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+
+        if (manager != null) {
+            AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+            rating.show(manager, "AppFeedbackRatingBottomSheet");
+        }
+//        AdvancedAppRatingDialog.show(getActivity(), new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface dialogInterface) {
+//                Toast lala = Toast.makeText(getContext(), "Testing", Toast.LENGTH_LONG);
+//                lala.show();
+//            }
+//        });
+
+    }
+
     @Override
     public String getModuleName() {
         return ReactConst.Screen.OFFICIAL_STORE_HOME;
@@ -44,13 +63,6 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
         if (getActivity() != null) // set background color of react root view
             reactRootView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_50));
 
-        AdvancedAppRatingDialog.show(getActivity(), new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                Toast lala = Toast.makeText(getContext(), "Testing", Toast.LENGTH_LONG);
-                lala.show();
-            }
-        });
         return reactRootView;
     }
 
