@@ -96,7 +96,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         hidePromoContainer()
                     }
                 }
-                is Fail -> { }
+                is Fail -> {  }
             }
         })
     }

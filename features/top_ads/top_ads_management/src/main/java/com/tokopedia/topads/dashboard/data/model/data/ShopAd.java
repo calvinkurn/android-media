@@ -15,6 +15,8 @@ public class ShopAd implements Ad, Parcelable {
 
     public static final int TYPE = 2;
 
+    @Expose(serialize = false, deserialize = false)
+    private boolean isAutoAds;
     @SerializedName("ad_id")
     @Expose
     private long id;
@@ -87,12 +89,56 @@ public class ShopAd implements Ad, Parcelable {
     @Expose
     private String name;
 
+    @SerializedName("product_image_uri")
+    @Expose
+    private String productImageUrl;
+
     @SerializedName("shop_id")
     @Expose
     private long shopId;
     @SerializedName("shop_uri")
     @Expose
     private String shopUri;
+    @SerializedName("stat_total_gross_profit")
+    @Expose
+    private String statTotalGrossProfit;
+    @SerializedName("stat_total_sold")
+    @Expose
+    private String statTotalSold;
+
+    public String getStatTotalGrossProfit() {
+        return statTotalGrossProfit;
+    }
+
+    public void setStatTotalGrossProfit(String statTotalGrossProfit) {
+        this.statTotalGrossProfit = statTotalGrossProfit;
+    }
+
+    public String getStatTotalSold() {
+        return statTotalSold;
+    }
+
+    public void setStatTotalSold(String statTotalSold) {
+        this.statTotalSold = statTotalSold;
+    }
+
+    @Override
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
+
+    @Override
+    public boolean isAutoAds() {
+        return isAutoAds;
+    }
+
+    public void setAutoAds(boolean autoAds) {
+        isAutoAds = autoAds;
+    }
 
     @Override
     public String getPriceDailyFmt() {
@@ -248,6 +294,10 @@ public class ShopAd implements Ad, Parcelable {
         dest.writeString(this.name);
         dest.writeLong(this.shopId);
         dest.writeString(this.shopUri);
+        dest.writeString(this.productImageUrl);
+        dest.writeString(this.statTotalGrossProfit);
+        dest.writeString(this.statTotalSold);
+        dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
 
     public ShopAd() {
@@ -279,6 +329,10 @@ public class ShopAd implements Ad, Parcelable {
         this.name = in.readString();
         this.shopId = in.readLong();
         this.shopUri = in.readString();
+        this.productImageUrl = in.readString();
+        this.statTotalGrossProfit = in.readString();
+        this.statTotalSold = in.readString();
+        this.isAutoAds = in.readByte() != 0;
     }
 
     public static final Creator<ShopAd> CREATOR = new Creator<ShopAd>() {

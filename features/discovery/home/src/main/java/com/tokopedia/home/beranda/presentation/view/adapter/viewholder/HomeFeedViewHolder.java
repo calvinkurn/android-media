@@ -40,6 +40,12 @@ public class HomeFeedViewHolder extends AbstractViewHolder<HomeFeedViewModel> {
         productCardView.setRatingReviewCount(element.getRating(), element.getCountReview());
         productCardView.setBadges(mapBadges(element.getBadges()));
         productCardView.setLocation(element.getLocation());
+        productCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                homeFeedview.onProductClick(element, getAdapterPosition());
+            }
+        });
         productCardView.getImageView().setViewHintListener(element, new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
+import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.constant.ConstantKey;
@@ -31,6 +32,7 @@ import rx.functions.Func1;
 
 public class HomeDataSource {
     public static final long ONE_YEAR = TimeUnit.DAYS.toSeconds(365);
+    private HomeAceApi homeAceApi;
     private HomeDataApi homeDataApi;
     private HomeMapper homeMapper;
     private Context context;
@@ -38,11 +40,13 @@ public class HomeDataSource {
     private Gson gson;
 
     public HomeDataSource(HomeDataApi homeDataApi,
+                          HomeAceApi homeAceApi,
                           HomeMapper homeMapper,
                           Context context,
                           CacheManager cacheManager,
                           Gson gson) {
         this.homeDataApi = homeDataApi;
+        this.homeAceApi = homeAceApi;
         this.homeMapper = homeMapper;
         this.context = context;
         this.cacheManager = cacheManager;
@@ -71,6 +75,10 @@ public class HomeDataSource {
                 .debounce(200, TimeUnit.MILLISECONDS)
                 .map(saveToCache())
                 .map(homeMapper);
+    }
+
+    public Observable<Response<String>> sendGeolocationInfo() {
+        return homeAceApi.sendGeolocationInfo();
     }
 
     private Func1<Response<GraphqlResponse<HomeData>>, Response<GraphqlResponse<HomeData>>> saveToCache() {

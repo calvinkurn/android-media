@@ -174,7 +174,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        clearData()
         callbackManager = CallbackManager.Factory.create()
 
         activity?.run {
@@ -191,6 +191,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
     }
 
+    private fun clearData() {
+        userSession.logoutSession()
+    }
 
     override fun onResume() {
         super.onResume()

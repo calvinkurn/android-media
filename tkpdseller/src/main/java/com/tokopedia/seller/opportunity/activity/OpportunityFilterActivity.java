@@ -49,6 +49,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     }
 
     public static final String CACHE_OPPORTUNITY_FILTER = "CACHE_OPPORTUNITY_FILTER";
+    public static final Long CACHE_OPPORTUNITY_FILTER_EXPIRY = 1000L;
 
     View saveButton;
     View resetButton;
@@ -197,6 +198,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                 cacheManager.setValue(CacheUtil.convertModelToString(filterPassModel,
                         new TypeToken<OpportunityFilterPassModel>() {
                         }.getType()));
+                cacheManager.setCacheDuration(CACHE_OPPORTUNITY_FILTER_EXPIRY);
                 cacheManager.store();
 
                 if (trackingEventLabel.endsWith("~"))

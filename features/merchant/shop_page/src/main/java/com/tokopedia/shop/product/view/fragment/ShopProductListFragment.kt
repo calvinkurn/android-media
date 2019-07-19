@@ -264,7 +264,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
             }
             it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (dy < 0) { // going up
                         if (shopProductAdapter.shopProductViewModelList.size > 0) {

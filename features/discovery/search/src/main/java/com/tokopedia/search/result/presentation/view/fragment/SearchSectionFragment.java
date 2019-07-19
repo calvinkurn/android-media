@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 
@@ -21,7 +22,6 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
@@ -82,6 +82,7 @@ public abstract class SearchSectionFragment
     protected RedirectionListener redirectionListener;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout refreshLayout;
     private boolean showBottomBar;
     public int spanCount;
@@ -146,8 +147,12 @@ public abstract class SearchSectionFragment
 
     private void initLayoutManager() {
         linearLayoutManager = new LinearLayoutManager(getActivity());
+
         gridLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
+
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(getSpanCount(), StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
     }
 
     @Override
@@ -210,8 +215,12 @@ public abstract class SearchSectionFragment
         return linearLayoutManager;
     }
 
+    protected StaggeredGridLayoutManager getStaggeredGridLayoutManager() {
+        return staggeredGridLayoutManager;
+    }
+
     protected void switchLayoutType() {
-        if (!getUserVisibleHint()) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
             return;
         }
 
@@ -219,12 +228,14 @@ public abstract class SearchSectionFragment
             case GRID_1:
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
+                staggeredGridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
+                staggeredGridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
                 SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
@@ -238,7 +249,7 @@ public abstract class SearchSectionFragment
     }
 
     public void refreshMenuItemGridIcon() {
-        if(searchNavigationListener == null) return;
+        if(searchNavigationListener == null || getAdapter() == null) return;
 
         searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
     }

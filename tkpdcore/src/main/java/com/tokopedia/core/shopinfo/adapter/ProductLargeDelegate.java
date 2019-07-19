@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.BadgeUtil;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
@@ -30,9 +28,6 @@ import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Tkpd_Eka on 10/9/2015.
@@ -40,34 +35,33 @@ import butterknife.ButterKnife;
 public class ProductLargeDelegate {
 
     public class VHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.product_image)
         public SquareImageView img;
-        @BindView(R2.id.title)
         public TextView name;
-        @BindView(R2.id.price)
         public TextView price;
-        @BindView(R2.id.container)
         public View mainView;
-        @BindView(R2.id.badges_container)
         public LinearLayout containerBadge;
-        @BindView(R2.id.label_container)
         public FlowLayout containerLabel;
-        @BindView(R2.id.shop_name)
         public View shopName;
-        @BindView(R2.id.location)
         public View location;
-        @BindView(R2.id.text_original_price)
         public TextView textOriginalPrice;
-        @BindView(R2.id.text_discount)
         public TextView textDiscount;
-        @BindString(R2.string.label_discount_percentage)
         public String discount;
 
         public VHolder(View itemView) {
             super(itemView);
+
+            img = (SquareImageView) itemView.findViewById(R.id.product_image);
+            name = (TextView) itemView.findViewById(R.id.title);
+            price = (TextView) itemView.findViewById(R.id.price);
+            mainView = (View) itemView.findViewById(R.id.container);
+            containerBadge = (LinearLayout) itemView.findViewById(R.id.badges_container);
+            containerLabel = (FlowLayout) itemView.findViewById(R.id.label_container);
+            shopName = (View) itemView.findViewById(R.id.shop_name);
+            location = (View) itemView.findViewById(R.id.location);
+            textOriginalPrice = (TextView) itemView.findViewById(R.id.text_original_price);
+            textDiscount = (TextView) itemView.findViewById(R.id.text_discount);
+            discount = itemView.getResources().getString(R.string.label_discount_percentage);
             mainView = itemView;
-            ButterKnife.bind(this, itemView);
         }
     }
 

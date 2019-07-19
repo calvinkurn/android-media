@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.home.beranda.data.model.Promotion;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.BannerFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -110,6 +111,11 @@ public class HomePageTracking {
     public static final String NON_LOGIN = "non login";
     public static final String QR_CODE = "qr code";
     public static final String OVO = "ovo";
+    public static final String EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION = "click on allow geolocation";
+    public static final String EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION = "click on not allow geolocation";
+    public static final String EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT = "click on geolocation component";
+    public static final String EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT = "click close on geolocation component";
+    public static final String EVENT_ACTION_CLICK_ON_ATUR = "click on atur";
 
     public static ContextAnalytics getTracker(Context context) {
         return TrackApp.getInstance().getGTM();
@@ -801,5 +807,122 @@ public class HomePageTracking {
                     headerName
             );
         }
+    }
+
+    //on permission
+    public static void eventClickAllowGeolocation(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION,
+                    LABEL_EMPTY
+            );
+        }
+    }
+
+    //on permission
+    public static void eventClickNotAllowGeolocation(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION,
+                    LABEL_EMPTY
+            );
+        }
+    }
+
+    public static void eventClickGeolocationComponent(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT,
+                    LABEL_EMPTY
+            );
+        }
+    }
+
+    public static void eventClickCloseGeolocationComponent(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT,
+                    LABEL_EMPTY
+            );
+        }
+    }
+
+    public static void eventClickOnAtur(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    EVENT_ACTION_CLICK_ON_ATUR,
+                    LABEL_EMPTY
+            );
+        }
+    }
+
+    public static void eventImpressionOnBannerFeed(
+            TrackingQueue trackingQueue,
+            BannerFeedViewModel bannerFeedViewModel,
+            String tabName) {
+
+        if (trackingQueue == null) {
+            return;
+        }
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, "impression on banner inside recommendation tab",
+                EVENT_LABEL, tabName,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS,
+                                convertBannerFeedViewModelListToObjectData(bannerFeedViewModel, tabName)
+                        )
+                )
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
+    private static List<Object> convertBannerFeedViewModelListToObjectData(
+            BannerFeedViewModel bannerFeedViewModel,
+            String tabName
+    ) {
+        List<Object> objects = new ArrayList<>();
+        objects.add(bannerFeedViewModel.convertBannerFeedModelToDataLayer());
+        return objects;
+    }
+
+    public static void eventClickOnBannerFeed(
+            Context context,
+            BannerFeedViewModel bannerFeedViewModel,
+            String tabName) {
+
+        ContextAnalytics tracker = getTracker(context);
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, "click on banner inside recommendation tab",
+                EVENT_LABEL, tabName,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS,
+                                convertBannerFeedViewModelListToObjectData(bannerFeedViewModel, tabName)
+                        )
+                )
+        );
+        tracker.sendEnhanceEcommerceEvent(data);
     }
 }

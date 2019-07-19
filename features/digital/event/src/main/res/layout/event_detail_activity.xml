@@ -79,7 +79,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <include layout="@layout/timings_location_card" />
+                        <include android:id="@+id/event_detail_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            layout="@layout/timings_location_card" />
                     </FrameLayout>
 
                     <View
