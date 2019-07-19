@@ -1,4 +1,5 @@
 mutation PropertyCheckout($data: PropertyCheckoutArgs!) {
+    status
     propertyCheckout(input: $data) {
         queryString
         redirectURL

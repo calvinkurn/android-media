@@ -251,7 +251,7 @@ class HotelDetailFragment : HotelBaseFragment() {
 
         for ((imageIndex, item) in images.withIndex()) {
             imageList.add(item.urlOriginal)
-            thumbnailImageList.add(item.urlSquare6)
+            thumbnailImageList.add(item.urlMax300)
 
             when (imageCounter) {
                 0 -> {
@@ -309,18 +309,20 @@ class HotelDetailFragment : HotelBaseFragment() {
 
     private fun setupReviewHeader(data: HotelReview.ReviewData) {
         if (data.totalReview > 0 || data.averageScoreReview > 0) {
+            var hasHeadline = false
             if (data.totalReview > 0) {
                 tv_hotel_rating_count.text = getString(R.string.hotel_detail_based_on_review_number,
                         CurrencyFormatUtil.convertPriceValue(data.totalReview.toDouble(), false))
                 tv_hotel_rating_detail.text = data.headline
-            } else {
+                hasHeadline = true
+            } else if (!hasHeadline) {
                 tv_hotel_rating_count.visibility = View.GONE
             }
 
             if (data.averageScoreReview > 0) {
                 tv_hotel_rating_number.text = data.averageScoreReview.toString()
                 tv_hotel_rating_detail.text = data.headline
-            } else {
+            } else if (!hasHeadline) {
                 tv_hotel_rating_number.visibility = View.GONE
                 tv_hotel_rating_detail.text = getString(R.string.hotel_detail_no_rating)
             }
