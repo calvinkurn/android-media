@@ -37,7 +37,7 @@
         android:layout_marginTop="@dimen/dp_16"
         tools:orientation="horizontal"
         tools:layoutManager="android.support.v7.widget.GridLayoutManager"
-        tools:listitem="@layout/quick_filter_item"
+        tools:listitem="@layout/search_quick_filter_item"
         tools:itemCount="10"
         />
 
