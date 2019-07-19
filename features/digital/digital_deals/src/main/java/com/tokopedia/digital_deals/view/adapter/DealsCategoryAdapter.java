@@ -342,7 +342,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
                 itemsForGA.add(categoryItems.get(holder1.getIndex()));
                 int  itemsToSend = (categoryItems.size() - 1) - holder1.getAdapterPosition();
-                if (itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5)) {
+                if (itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
                     if (isDealsHomeLayout) {
                         if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
                             dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_TRENDING_DEALS, itemsForGA, holder1.getIndex(), categoryName, 0);
@@ -367,7 +367,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
                 int  itemsToSend = (categoryItems.size() - 1) - holder1.getAdapterPosition();
                 itemsForGA.add(categoryItems.get(holder1.getIndex()));
-                if (itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5)) {
+                if (itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
                     dealsAnalytics.sendRecommendedDealImpressionEvent(itemsForGA, holder1.getIndex(), categoryName);
                     itemsForGA.clear();
                 }
@@ -381,7 +381,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
                 int  itemsToSend = (categoryItems.size() - 1) - holder1.getAdapterPosition();
                 itemsForGA.add(categoryItems.get(holder1.getIndex()));
-                if (itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5)) {
+                if (itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
                     dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
                             itemsForGA, categoryName, pageType, holder1.getIndex(), searchText, isFromSearchResult);
                     itemsForGA.clear();

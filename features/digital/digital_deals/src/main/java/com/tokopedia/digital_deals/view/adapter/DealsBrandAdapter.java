@@ -16,6 +16,7 @@ import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
+import com.tokopedia.digital_deals.view.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 holder1.setShown(true);
                 itemsForGA.add(brandItems.get(holder1.getIndex()));
                 int  itemsToSend = (brandItems.size() - 1) - holder1.getAdapterPosition();
-                if (isPopularBrands && itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5)) {
+                if (isPopularBrands && itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
                     dealsAnalytics.sendEcommerceBrand(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_HOME, DealsAnalytics.DEALS_HOME_PAGE);
                     itemsForGA.clear();
@@ -67,7 +68,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_ALL, DealsAnalytics.DEALS_HOME_PAGE);
                     itemsForGA.clear();
                 } else if (!TextUtils.isEmpty(pageType) && pageType.equalsIgnoreCase("category")){
-                    if (itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5))
+                    if (itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA))
                     dealsAnalytics.sendEcommerceBrand(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_CATEGORY, DealsAnalytics.DEALS_HOME_PAGE);
                     itemsForGA.clear();
