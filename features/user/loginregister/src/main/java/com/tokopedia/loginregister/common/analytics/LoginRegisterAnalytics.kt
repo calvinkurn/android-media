@@ -166,7 +166,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
     //#5
-    fun trackLoginPhoneNumberFailed(errorMessage: Int) {
+    fun trackLoginPhoneNumberFailed(errorMessage: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
