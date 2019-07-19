@@ -45,7 +45,7 @@ class ShopItemViewHolder(
         initShopLocation(shopViewItem)
         initImageShopReputation(shopViewItem)
         initTextShopCredibilityInfo(shopViewItem)
-//        initProductPreview(shopViewItem)
+        initProductPreview(shopViewItem)
 
         finishBindShopItem()
     }
@@ -109,7 +109,7 @@ class ShopItemViewHolder(
     }
 
     private fun initProductPreview(shopViewItem: ShopViewModel.ShopItem) {
-        if (shopViewItem.shopItemProductList.isNotEmpty()) {
+        if (shopViewItem.shopItemProductList.isNotEmpty() && false) {
             showShopProductItemPreview(shopViewItem)
         } else {
             showTextShopHasNoProduct()
