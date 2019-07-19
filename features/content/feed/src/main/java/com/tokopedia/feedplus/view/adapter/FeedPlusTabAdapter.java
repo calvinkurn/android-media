@@ -41,7 +41,8 @@ public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
         } else if (data.getType().equals(TYPE_EXPLORE)){
             return ContentExploreFragment.newInstance(bundle);
         } else {
-            return FeedPlusFragment.newInstanceWithSource(data.getKey());
+            /* Will be override for next to handle custom tab */
+            return new Fragment();
         }
     }
 
