@@ -9,7 +9,7 @@ import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 
-class SettingTypeViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+class SettingTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val settingTypeName: TextView? = itemView?.findViewById(R.id.tv_setting_type)
 

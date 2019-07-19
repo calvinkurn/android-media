@@ -22,22 +22,18 @@ class NotifSettingBigDividerDecoration(context: Context?) : RecyclerView.ItemDec
         }
     }
 
-    override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
-        if (parent == null) return
-
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val childViewHolder = parent.getChildViewHolder(view)
         val childPosition = parent.getChildAdapterPosition(view)
 
         if (childViewHolder is SettingSectionViewHolder && childPosition != 0) {
-            outRect?.top = dividerHeight
+            outRect.top = dividerHeight
         } else {
-            outRect?.setEmpty()
+            outRect.setEmpty()
         }
     }
 
-    override fun onDrawOver(c: Canvas?, parent: RecyclerView?, state: RecyclerView.State?) {
-        if (parent == null || c == null) return
-
+    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         val childCount = parent.childCount
         for (childIndex in 0 until childCount) {
             val childView = parent.getChildAt(childIndex)
@@ -57,9 +53,7 @@ class NotifSettingBigDividerDecoration(context: Context?) : RecyclerView.ItemDec
         }
     }
 
-    private fun drawBigDivider(c: Canvas, parent: RecyclerView, childView: View?) {
-        if (childView == null) return
-
+    private fun drawBigDivider(c: Canvas, parent: RecyclerView, childView: View) {
         val childParams = childView.layoutParams as RecyclerView.LayoutParams
 
         val left = 0

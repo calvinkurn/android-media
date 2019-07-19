@@ -22,9 +22,7 @@ class NotifSettingDividerDecoration(context: Context?) : RecyclerView.ItemDecora
         }
     }
 
-    override fun onDrawOver(c: Canvas?, parent: RecyclerView?, state: RecyclerView.State?) {
-        if (parent == null || c == null) return
-
+    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         val parentPaddingLeft = parent.paddingLeft
         val parentPaddingRight = parent.width - parent.paddingRight
         val childCount = parent.childCount
