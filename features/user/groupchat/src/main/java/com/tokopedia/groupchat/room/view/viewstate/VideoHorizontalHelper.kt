@@ -86,6 +86,6 @@ class VideoHorizontalHelper(
 
     companion object {
         var HORIZONTAL_WITH_VIDEO = 0
-        var HORIZONTAL_WITHOUT_VIDEO = 48
+        var HORIZONTAL_WITHOUT_VIDEO = 54
     }
 }

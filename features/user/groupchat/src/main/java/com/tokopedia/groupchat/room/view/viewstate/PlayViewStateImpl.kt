@@ -61,6 +61,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -1235,6 +1236,7 @@ open class PlayViewStateImpl(
             layoutParams.height = it.dpToPx(view.context.resources.displayMetrics)
             spaceChatVideo.layoutParams = layoutParams
             spaceChatVideo.show()
+            debug("spacetop", it.toString())
 
             val fadingEdgeLength = when (it){
                 VideoVerticalHelper.VERTICAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)

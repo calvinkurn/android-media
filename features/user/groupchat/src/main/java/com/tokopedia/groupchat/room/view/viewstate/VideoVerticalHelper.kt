@@ -43,8 +43,8 @@ class VideoVerticalHelper constructor (
     companion object {
         var VIDEO_480 = 480
         var VIDEO_720 = 720
-        var VERTICAL_WITH_VIDEO = 160
-        var VERTICAL_WITHOUT_VIDEO = 0
+        var VERTICAL_WITH_VIDEO = 200
+        var VERTICAL_WITHOUT_VIDEO = 54
 
         var TAG = "playvertical"
     }
