@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.domain.gql.feed.Badge;
 import com.tokopedia.home.beranda.domain.gql.feed.Label;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
+import com.tokopedia.kotlin.model.ImpressHolder;
 
 import java.util.List;
 
