@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.feature.cartlist;
 
 import android.app.Activity;
 
-import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
@@ -101,5 +101,7 @@ public interface ICartListView extends IBaseView {
 
     void hideItemLoading();
 
-    void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataResponseModel addToCartDataResponseModel, Object productModel);
+    void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel);
+
+    void notifyBottomCartParent();
 }

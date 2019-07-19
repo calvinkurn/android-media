@@ -3,13 +3,13 @@ package com.tokopedia.topchat.chatroom.di
 import android.content.Context
 import com.google.gson.Gson
 import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -22,21 +22,22 @@ import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
+import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
+import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
+import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
+import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface
 import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
-import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
-import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
-import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
-import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -205,6 +206,13 @@ class ChatModule {
                                      chatSettingsAnalytics: ChatSettingsAnalytics):
             ChatSettingsInterface.Presenter {
         return ChatSettingsPresenter(graphqlUseCase, chatSettingsAnalytics)
+    }
+
+    @ChatScope
+    @Provides
+    @Named("atcMutation")
+    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
     }
 
 }
