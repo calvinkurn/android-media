@@ -336,9 +336,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void hideLoading() {
         isLoading = false;
-        rlContent.setVisibility(View.VISIBLE);
-        llNetworkErrorView.setVisibility(View.GONE);
-        llNoResult.setVisibility(View.GONE);
         swipeToRefreshLayout.setRefreshing(false);
     }
 
