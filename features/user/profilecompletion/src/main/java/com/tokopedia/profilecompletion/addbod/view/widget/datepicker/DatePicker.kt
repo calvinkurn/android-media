@@ -66,15 +66,16 @@ class DatePicker: FrameLayout{
         daySpinner.setOnValueChangedListener(object : OnValueChangeListener {
             override fun onValueChange(oldVal: Int, newVal: Int) {
                 tempDate.timeInMillis = currentDate.timeInMillis
-                val maxDayOfMonth = tempDate.getActualMaximum(Calendar.DAY_OF_MONTH)
-                if (oldVal == maxDayOfMonth && newVal == 1) {
-                    tempDate.add(Calendar.DAY_OF_MONTH, 1)
-                } else if (oldVal == 1 && newVal == maxDayOfMonth) {
-                    tempDate.add(Calendar.DAY_OF_MONTH, -1)
-                } else {
-                    tempDate.add(Calendar.DAY_OF_MONTH, newVal - oldVal)
-                }
-
+                tempDate.set(Calendar.DAY_OF_MONTH, newVal)
+//                val maxDayOfMonth = tempDate.getActualMaximum(Calendar.DAY_OF_MONTH)
+//                if (oldVal == maxDayOfMonth && newVal == 1) {
+//                    tempDate.add(Calendar.DAY_OF_MONTH, 1)
+//                } else if (oldVal == 1 && newVal == maxDayOfMonth) {
+//                    tempDate.add(Calendar.DAY_OF_MONTH, -1)
+//                } else {
+//                    tempDate.add(Calendar.DAY_OF_MONTH, newVal - oldVal)
+//                }
+//
                 updateDate(tempDate.time)
             }
         })
@@ -82,21 +83,27 @@ class DatePicker: FrameLayout{
 //        monthSpinner.setAdapter(monthAdapter)
         monthSpinner.setOnValueChangedListener(object : OnValueChangeListener {
             override fun onValueChange(oldVal: Int, newVal: Int) {
+                //TODO
                 tempDate.timeInMillis = currentDate.timeInMillis
-                if (oldVal == 11 && newVal == 0) {
-                    tempDate.add(Calendar.MONTH, 1)
-                } else if (oldVal == 0 && newVal == 11) {
-                    tempDate.add(Calendar.MONTH, -1)
-                } else {
-                    tempDate.add(Calendar.MONTH, newVal - oldVal)
-                }
+                tempDate.set(Calendar.MONTH, newVal)
+
+//                if (oldVal == 11 && newVal == 0) {
+//                    tempDate.add(Calendar.MONTH, 1)
+//                } else if (oldVal == 0 && newVal == 11) {
+//                    tempDate.add(Calendar.MONTH, -1)
+//                } else {
+//                    tempDate.add(Calendar.MONTH, newVal - oldVal)
+//                }
 
                 updateDate(tempDate.time)
+
 //                dayAdapter.notifyDataSetChanged()
             }
         })
-        monthSpinner.setMinValue(0)
-        monthSpinner.setMaxValue(numberOfMonths - 1)
+
+        //TODO
+//        monthSpinner.setMinValue(0)
+//        monthSpinner.setMaxValue(numberOfMonths - 1)
 
         yearSpinner.setOnValueChangedListener(object : OnValueChangeListener {
             override fun onValueChange(oldVal: Int, newVal: Int) {
@@ -237,33 +244,33 @@ class DatePicker: FrameLayout{
     }
 
     private fun updateSpinners(){
-        daySpinner.visibility = if(isDayShown) View.VISIBLE else View.GONE
-        when (currentDate) {
-            minDate -> {
-                daySpinner.setMinValue(currentDate.get(Calendar.DAY_OF_MONTH))
-                daySpinner.setMaxValue(currentDate.getActualMaximum(Calendar.DAY_OF_MONTH))
-                daySpinner.setWrapSelectorWheel(false)
-                monthSpinner.setMinValue(currentDate.get(Calendar.MONTH))
-                monthSpinner.setMaxValue(currentDate.getActualMaximum(Calendar.MONTH))
-                monthSpinner.setWrapSelectorWheel(false)
-            }
-            maxDate -> {
-                daySpinner.setMinValue(currentDate.getActualMinimum(Calendar.DAY_OF_MONTH))
-                daySpinner.setMaxValue(currentDate.get(Calendar.DAY_OF_MONTH))
-                daySpinner.setWrapSelectorWheel(false)
-                monthSpinner.setMinValue(currentDate.getActualMinimum((Calendar.MONTH)))
-                monthSpinner.setMaxValue(currentDate.get(Calendar.MONTH))
-                monthSpinner.setWrapSelectorWheel(false)
-            }
-            else -> {
-                daySpinner.setMinValue(1)
-                daySpinner.setMaxValue(currentDate.getActualMinimum(Calendar.DAY_OF_MONTH))
-                daySpinner.setWrapSelectorWheel(true)
-                monthSpinner.setMinValue(0)
-                monthSpinner.setMaxValue(11)
-                monthSpinner.setWrapSelectorWheel(true)
-            }
-        }
+        //TODO
+//        when (currentDate) {
+//            minDate -> {
+//                daySpinner.setMinValue(currentDate.get(Calendar.DAY_OF_MONTH))
+//                daySpinner.setMaxValue(currentDate.getActualMaximum(Calendar.DAY_OF_MONTH))
+//                daySpinner.setWrapSelectorWheel(false)
+//                monthSpinner.setMinValue(currentDate.get(Calendar.MONTH))
+//                monthSpinner.setMaxValue(currentDate.getActualMaximum(Calendar.MONTH))
+//                monthSpinner.setWrapSelectorWheel(false)
+//            }
+//            maxDate -> {
+//                daySpinner.setMinValue(currentDate.getActualMinimum(Calendar.DAY_OF_MONTH))
+//                daySpinner.setMaxValue(currentDate.get(Calendar.DAY_OF_MONTH))
+//                daySpinner.setWrapSelectorWheel(false)
+//                monthSpinner.setMinValue(currentDate.getActualMinimum((Calendar.MONTH)))
+//                monthSpinner.setMaxValue(currentDate.get(Calendar.MONTH))
+//                monthSpinner.setWrapSelectorWheel(false)
+//            }
+//            else -> {
+//                daySpinner.setMinValue(1)
+//                daySpinner.setMaxValue(currentDate.getActualMinimum(Calendar.DAY_OF_MONTH))
+//                daySpinner.setWrapSelectorWheel(true)
+//                monthSpinner.setMinValue(0)
+//                monthSpinner.setMaxValue(11)
+//                monthSpinner.setWrapSelectorWheel(true)
+//            }
+//        }
     }
 
     private fun notifyDateChanged(){
