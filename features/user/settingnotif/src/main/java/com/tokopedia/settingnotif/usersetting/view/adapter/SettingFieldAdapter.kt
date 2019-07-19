@@ -25,9 +25,24 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
     }
 
     override fun updateSettingView(positions: List<Int>) {
-        for (position in positions) {
-            notifyItemChanged(position, SettingViewHolder.PAYLOAD_SWITCH)
+        if (positions.isEmpty()) return
+        if (positions.size == 1) {
+            notifySinglePosition(positions[0])
+        } else if (positions.size > 1) {
+            notifyRangedPosition(positions)
         }
+    }
+
+    private fun notifySinglePosition(position: Int) {
+        notifyItemChanged(position, SettingViewHolder.PAYLOAD_SWITCH)
+    }
+
+    private fun notifyRangedPosition(positions: List<Int>) {
+        val sortedPosition = positions.sorted()
+        val endArrayIndex = sortedPosition.size - 1
+        val startPosition = sortedPosition[0]
+        val endPosition = sortedPosition[endArrayIndex]
+        notifyItemRangeChanged(startPosition, endPosition, SettingViewHolder.PAYLOAD_SWITCH)
     }
 
     override fun getParentSetting(childAdapterPosition: Int): Pair<ParentSetting, Int>? {
