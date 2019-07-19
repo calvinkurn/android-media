@@ -243,7 +243,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val trackingPostModel = mapPostTracking(feed)
 
         val postTag = feed.content.cardpost.body.postTag.firstOrNull() ?: PostTag()
-        if (shouldAddCardPost(feed, contentList)) {
+        if (shouldAddCardPost(feed, contentList, postTag)) {
             posts.add(
                     DynamicPostViewModel(
                             feed.id,
