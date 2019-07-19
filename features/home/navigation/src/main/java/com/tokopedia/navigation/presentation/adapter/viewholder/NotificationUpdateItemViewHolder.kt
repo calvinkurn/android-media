@@ -79,6 +79,18 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
         if (labelIndex == BUYER_TYPE) {
             getStringResource(R.string.buyer_label)?.apply {
                 label.text = this
+                label.setTextColor(getColorResource(R.color.Neutral_N200))
+                label.visibility = View.VISIBLE
+            }
+
+            label.background.let {
+                if (it is GradientDrawable) {
+                    it.setColor(getColorResource(R.color.Neutral_N50))
+                }
+            }
+        } else if (labelIndex == SELLER_TYPE) {
+            getStringResource(R.string.seller_label)?.apply {
+                label.text = this
                 label.setTextColor(getColorResource(R.color.Green_G500))
                 label.visibility = View.VISIBLE
             }
@@ -86,18 +98,6 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
             label.background.let {
                 if (it is GradientDrawable) {
                     it.setColor(getColorResource(R.color.Green_G200))
-                }
-            }
-        } else if (labelIndex == SELLER_TYPE) {
-            getStringResource(R.string.seller_label)?.apply {
-                label.text = this
-                label.setTextColor(getColorResource(R.color.Blue_B500))
-                label.visibility = View.VISIBLE
-            }
-
-            label.background.let {
-                if (it is GradientDrawable) {
-                    it.setColor(getColorResource(R.color.Blue_B200))
                 }
             }
         }

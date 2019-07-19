@@ -8,15 +8,12 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.BuildConfig;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-
-import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;

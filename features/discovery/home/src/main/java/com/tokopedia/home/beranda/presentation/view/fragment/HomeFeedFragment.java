@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.applink.ApplinkConst;
@@ -39,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
-public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFeedTypeFactory>
+public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFactory>, HomeFeedTypeFactory>
         implements HomeFeedContract.View {
 
     public static final String ARG_TAB_INDEX = "ARG_TAB_INDEX";
@@ -153,9 +154,8 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @NonNull
     @Override
-    protected BaseListAdapter<HomeFeedViewModel, HomeFeedTypeFactory> createAdapterInstance() {
+    protected BaseListAdapter<Visitable<HomeFeedTypeFactory>, HomeFeedTypeFactory> createAdapterInstance() {
         HomeFeedAdapter homeFeedAdapter = new HomeFeedAdapter(getAdapterTypeFactory());
-        homeFeedAdapter.setOnAdapterInteractionListener(this);
         return homeFeedAdapter;
     }
 
@@ -197,37 +197,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     @Override
-    public void onItemClicked(HomeFeedViewModel homeFeedViewModel) {
-        if (userSession.isLoggedIn()) {
-            if (!homeFeedViewModel.isTopAds()) {
-                HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
-                        getActivity(),
-                        homeFeedViewModel,
-                        tabName.toLowerCase()
-                );
-            }
-        } else {
-            if (!homeFeedViewModel.isTopAds()) {
-                HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
-                        getActivity(),
-                        homeFeedViewModel,
-                        tabName.toLowerCase()
-                );
-            }
-        }
-        if (homeFeedViewModel.isTopAds()) {
-            new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
-            Product p = new Product();
-            p.setId(homeFeedViewModel.getProductId());
-            p.setName(homeFeedViewModel.getProductName());
-            p.setPriceFormat(homeFeedViewModel.getPrice());
-            TopAdsGtmTracker.getInstance().eventRecomendationProductClick(getContext(), p,
-                    tabName.toLowerCase(), homeFeedViewModel.getRecommendationType(),
-                    homeFeedViewModel.getCategoryBreadcrumbs(),
-                    userSession.isLoggedIn(),
-                    homeFeedViewModel.getPosition());
-        }
-        goToProductDetail(homeFeedViewModel.getProductId());
+    public void onItemClicked(Visitable<HomeFeedTypeFactory> homeFeedViewModel) {
     }
 
     private void goToProductDetail(String productId) {
@@ -237,7 +207,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     private void updateWishlist(String id, boolean isWishlist) {
         for(int i =0; i < getAdapter().getDataSize(); i++) {
-            HomeFeedViewModel model = getAdapter().getData().get(i);
+            HomeFeedViewModel model = (HomeFeedViewModel) getAdapter().getData().get(i);
             if(model.getProductId().equals(id)) {
                 model.setWishList(isWishlist);
                 getAdapter().notifyItemChanged(i);
@@ -328,6 +298,40 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     @Override
+    public void onProductClick(HomeFeedViewModel homeFeedViewModel, int position) {
+        if (userSession.isLoggedIn()) {
+            if (!homeFeedViewModel.isTopAds()) {
+                HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
+                        getActivity(),
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            }
+        } else {
+            if (!homeFeedViewModel.isTopAds()) {
+                HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
+                        getActivity(),
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            }
+        }
+        if (homeFeedViewModel.isTopAds()) {
+            new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
+            Product p = new Product();
+            p.setId(homeFeedViewModel.getProductId());
+            p.setName(homeFeedViewModel.getProductName());
+            p.setPriceFormat(homeFeedViewModel.getPrice());
+            TopAdsGtmTracker.getInstance().eventRecomendationProductClick(getContext(), p,
+                    tabName.toLowerCase(), homeFeedViewModel.getRecommendationType(),
+                    homeFeedViewModel.getCategoryBreadcrumbs(),
+                    userSession.isLoggedIn(),
+                    homeFeedViewModel.getPosition());
+        }
+        goToProductDetail(homeFeedViewModel.getProductId());
+    }
+
+    @Override
     public void onPause() {
         if(homeTrackingQueue != null) {
             TopAdsGtmTracker.getInstance().eventRecomendationProductView(homeTrackingQueue,
@@ -345,5 +349,15 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             boolean wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false);
             updateWishlist(id, wishlistStatusFromPdp);
         }
+    }
+
+    @Override
+    public TrackingQueue getTrackingQueue() {
+        return homeTrackingQueue;
+    }
+
+    @Override
+    public String getTabName() {
+        return tabName;
     }
 }

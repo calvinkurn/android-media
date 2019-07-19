@@ -12,7 +12,6 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
-import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
@@ -30,8 +29,6 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessVie
 import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
