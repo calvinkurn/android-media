@@ -33,8 +33,13 @@ public class OrderListAnalytics {
     private static final String IDR = "IDR";
     private static final String QUANTITY = "quantity";
     private static final String REVENUE = "revenue";
+    private static final String AFFILIATION = "affiliation";
+    private static final String BRAND = "brand";
+    private static final String VARIANT = "variant";
+    private static final String SHIPPING = "shipping";
     private static final String KEY_PRODUCTS = "products";
     private static final String KEY_PURCHASE = "purchase";
+    private static final String KEY_ACTION_FIELD = "actionField";
     private static final String SCREEN_NAME = "/digital/deals/thanks";
 
 
@@ -75,16 +80,22 @@ public class OrderListAnalytics {
         Map<String, Object> products = new HashMap<>();
         Map<String, Object> purchase = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
+        Map<String, Object> actionField = new HashMap<>();
 
         products.put(ID, String.valueOf(entityProductId));
         products.put(NAME, entityProductName);
         products.put(PRICE, totalTicketPrice);
         products.put("Category", CATEGORY);
         products.put(QUANTITY, quantity);
+        products.put(BRAND, brandName);
+        products.put(VARIANT, "none");
 
-        purchase.put(ID, orderId);
-        purchase.put(REVENUE, totalTicketPrice);
+        actionField.put(ID, orderId);
+        actionField.put(REVENUE, totalTicketPrice);
+        actionField.put(AFFILIATION, brandName);
+        actionField.put(SHIPPING, "0");
 
+        purchase.put(KEY_ACTION_FIELD, purchase);
         ecommerce.put(CURRENCY_CODE, IDR);
         ecommerce.put(KEY_PRODUCTS, Collections.singletonList(products));
         ecommerce.put(KEY_PURCHASE, purchase);

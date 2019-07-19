@@ -345,11 +345,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 if (itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5)) {
                     if (isDealsHomeLayout) {
                         if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
-                            dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_TRENDING_DEALS, itemsForGA, holder1.getIndex(), categoryName);
+                            dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_TRENDING_DEALS, itemsForGA, holder1.getIndex(), categoryName, 0);
                             itemsForGA.clear();
                         } else if (dealType.equalsIgnoreCase(DealsAnalytics.CURATED_DEALS)){
-                            dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW,
-                                    String.format("%s - %s", DealsAnalytics.EVENT_IMPRESSION_CURATED_DEALS, String.valueOf(this.homePosition)), itemsForGA, holder1.getIndex(), categoryName);
+                            dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_CURATED_DEALS, itemsForGA, holder1.getIndex(), categoryName, this.homePosition);
                             itemsForGA.clear();
                         }
                     } else if (dealType.equalsIgnoreCase(DealsAnalytics.CATEGORY_DEALS)) {
@@ -665,9 +664,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
                 toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
                 if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
-                    dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_TRENDING_DEALS, position);
+                    dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_TRENDING_DEALS, position, 0);
                 } else if (dealType.equalsIgnoreCase(DealsAnalytics.CURATED_DEALS)) {
-                    dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_CURATED_DEALS, position);
+                    dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_CURATED_DEALS, position, homePosition);
                 } else if (dealType.equalsIgnoreCase(DealsAnalytics.CATEGORY_DEALS)) {
                     dealsAnalytics.sendCategoryDealClickEvent(categoryItems.get(getIndex()), position, DealsAnalytics.EVENT_CLICK_CATEGORY_DEALS);
                 } else {

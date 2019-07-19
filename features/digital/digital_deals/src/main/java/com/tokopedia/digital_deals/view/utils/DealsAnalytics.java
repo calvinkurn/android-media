@@ -327,7 +327,7 @@ public class DealsAnalytics {
         }
     }
 
-    public void sendTrendingDealClickEvent(ProductItem productItem, String action, int position) {
+    public void sendTrendingDealClickEvent(ProductItem productItem, String action, int position, int dealPosition) {
         try {
             String label;
 
@@ -351,8 +351,13 @@ public class DealsAnalytics {
             ecommerce.put(CURRENCY_CODE, IDR);
             ecommerce.put(HASH_CLICK, promoClick);
 
-            label = String.format("%s - %s", productItem.getBrand().getTitle()
-                    , String.valueOf(position));
+            if (action.equalsIgnoreCase(EVENT_CLICK_CURATED_DEALS)) {
+                label = String.format("%s - %s - %s", productItem.getBrand().getTitle()
+                        , String.valueOf(dealPosition), String.valueOf(position));
+            } else {
+                label = String.format("%s - %s", productItem.getBrand().getTitle()
+                        , String.valueOf(position));
+            }
             sendEventEcommerce(DealsAnalytics.EVENT_PRODUCT_CLICK
                     , action
                     , label.toLowerCase(), ecommerce);
@@ -433,6 +438,7 @@ public class DealsAnalytics {
             productMap.put(CATEGORY, DEALS);
             productMap.put(CATEGORY_ID, String.valueOf(categoryID));
             productMap.put(QUANTITY, quantity);
+            productMap.put(CART_ID, "0");
             HashMap<String, Object> checkout = new HashMap<>();
             HashMap<String, Object> ecommerce = new HashMap<>();
             HashMap<String, Object> actionField = new HashMap<>();
@@ -654,7 +660,7 @@ public class DealsAnalytics {
 
     }
 
-    public void sendTrendingDealImpression(String event, String action, List<ProductItem> items, int position, String categoryName) {
+    public void sendTrendingDealImpression(String event, String action, List<ProductItem> items, int position, String categoryName, int dealPosition) {
 
         List<HashMap<String, Object>> products = new ArrayList<>();
         HashMap<String, Object> ecommerce = new HashMap<>();
@@ -666,12 +672,18 @@ public class DealsAnalytics {
             productmap.put(CREATIVE, items.get(index).getBrand().getTitle());
             productmap.put(CATEGORY, items.get(index).getDisplayName());
             productmap.put(POSITION, String.valueOf(index));
+            productmap.put(BRAND, items.get(index).getBrand().getTitle());
+            productmap.put(VARIANT, "none");
+            productmap.put(LIST, String.format("%s - %s - %s - %s", DEALS, BRAND, String.valueOf(index), items.get(index).getDisplayName()));
             productmap.put(PRICE, String.valueOf(items.get(index).getSalesPrice()));
             products.add(productmap);
         }
         ecommerce.put(CURRENCY_CODE, IDR);
         ecommerce.put(KEY_IMPRESSIONS, products);
-        String label = TextUtils.isEmpty(categoryName) ? categoryName : DEALS;
+        String label = "";
+        if (action.equalsIgnoreCase(EVENT_IMPRESSION_CURATED_DEALS)) {
+          label = String.valueOf(dealPosition);;
+        }
         sendEventEcommerce(event, action, label.toLowerCase(), ecommerce);
 
     }
@@ -746,6 +758,7 @@ public class DealsAnalytics {
             productMap.put(CATEGORY, DEALS);
             productMap.put(QUANTITY, dealDetail.getMaxQty());
             productMap.put(VARIANT, "none");
+            productMap.put(CART_ID, "0");
             add.put(KEY_PRODUCTS, Collections.singletonList(productMap));
             ecommerce.put(CURRENCY_CODE, IDR);
             ecommerce.put(HASH_ADD, add);
