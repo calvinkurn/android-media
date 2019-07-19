@@ -84,9 +84,6 @@ public class BranchHelper {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        Log.d("payment data", "product type=" + branchIOPayment.getProductType() + " , revenuePrice= " + branchIOPayment.getRevenue()+ " , shippingPrice= " + branchIOPayment.getShipping()
-                + " , PAYMENT_KEY= " + branchIOPayment.getPaymentId() + " , TransactionID - orderid= " + branchIOPayment.getOrderId() + " , USERID_KEY= " + userData.getUserId() +
-                " , New Buyer= " + branchIOPayment.isNewBuyer());
     }
 
     public static void sendLogoutEvent() {
