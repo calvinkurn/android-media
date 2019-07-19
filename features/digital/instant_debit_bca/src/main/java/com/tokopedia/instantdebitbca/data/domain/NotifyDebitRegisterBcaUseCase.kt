@@ -41,7 +41,9 @@ constructor(@param:ApplicationContext var context: Context, var graphqlUseCase: 
                 .map { graphqlResponse -> graphqlResponse.getData<ResponseDebitRegisterBca>(ResponseDebitRegisterBca::class.java) }
                 .map { it ->
                     val notifyDebitRegisterBca = NotifyDebitRegisterBca()
-                    notifyDebitRegisterBca.callbackUrl = it.notifyDebitRegister!!.debitRegister!!.callbackUrl
+                    it.notifyDebitRegister?.debitRegister?.let {
+                        notifyDebitRegisterBca.callbackUrl = it.callbackUrl
+                    }
                     notifyDebitRegisterBca
                 }
     }

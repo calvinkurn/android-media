@@ -17,23 +17,27 @@ import javax.inject.Inject
 
 class EditLimitFragment @Inject constructor(): InstantDebitBcaFragment() {
 
-    private var xcoid: String? = null
-    private var widgetBca: BCAEditXCOWidget? = null
+    private var xcoid: String? = ""
+    private lateinit var widgetBca: BCAEditXCOWidget
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        xcoid = arguments!!.getString(BcaEditLimitActivity.XCOID)
+        arguments?.let {
+            xcoid = it.getString(BcaEditLimitActivity.XCOID)
+        }
         super.onViewCreated(view, savedInstanceState)
     }
 
     override fun createAndSetBcaWidget() {
         widgetBca = BCAEditXCOWidget(activity, XCOEnum.ENVIRONMENT.DEV)
-        widgetBca!!.setListener(this)
+        widgetBca.setListener(this)
         layoutWidget.addView(widgetBca)
     }
 
     override fun openWidgetBca(accessToken: String) {
-        widgetBca!!.openWidget(accessToken, AuthUtil.KEY.API_KEY_INSTANT_DEBIT_BCA, AuthUtil.KEY.API_SEED_INSTANT_DEBIT_BCA,
-                userSession!!.userId, AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID, xcoid)
+        if(!::widgetBca.isInitialized) {
+            widgetBca.openWidget(accessToken, AuthUtil.KEY.API_KEY_INSTANT_DEBIT_BCA, AuthUtil.KEY.API_SEED_INSTANT_DEBIT_BCA,
+                    userSession.userId, AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID, xcoid)
+        }
     }
 
     override fun onBCASuccess(xcoID: String?, credentialType: String?, credentialNo: String?, maxLimit: String?) {
@@ -41,7 +45,9 @@ class EditLimitFragment @Inject constructor(): InstantDebitBcaFragment() {
         mapCardData[NotifyDebitRegisterBcaUseCase.XCOID] = xcoID ?: ""
         mapCardData[NotifyDebitRegisterBcaUseCase.MAX_LIMIT] = maxLimit ?: ""
         val debitData = convertObjToJsonString(mapCardData)
-        presenter!!.notifyDebitRegisterEditLimit(debitData, "")
+        if(isPresenterInitialized()) {
+            presenter.notifyDebitRegisterEditLimit(debitData, "")
+        }
     }
 
     companion object {

@@ -41,8 +41,10 @@ constructor(@param:ApplicationContext private val context: Context, private val 
                 .map { graphqlResponse -> graphqlResponse.getData<ResponseAccessTokenBca>(ResponseAccessTokenBca::class.java) }
                 .map { it ->
                     val token = TokenInstantDebitBca()
-                    token.accessToken = it.merchantAuth!!.dataToken!!.tokenBca!!.accessToken
-                    token.tokenType = it.merchantAuth.dataToken!!.tokenBca!!.tokenType
+                    it.merchantAuth?.dataToken?.tokenBca?.let {
+                        token.accessToken = it.accessToken
+                        token.tokenType = it.tokenType
+                    }
                     token
                 }
     }

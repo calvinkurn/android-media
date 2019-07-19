@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 26/03/19.
  */
-class NotifyDebitRegisterBcaEntity {
+data class NotifyDebitRegisterBcaEntity (
     @SerializedName("data")
     @Expose
-    val debitRegister: DebitRegisterBcaEntity? = null
-}
+    val debitRegister: DebitRegisterBcaEntity? = DebitRegisterBcaEntity()
+)

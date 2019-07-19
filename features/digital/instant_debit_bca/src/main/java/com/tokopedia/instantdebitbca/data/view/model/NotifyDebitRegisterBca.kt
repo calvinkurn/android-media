@@ -5,5 +5,5 @@ package com.tokopedia.instantdebitbca.data.view.model
  */
 class NotifyDebitRegisterBca {
 
-    var callbackUrl: String? = null
+    var callbackUrl: String? = ""
 }

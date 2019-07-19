@@ -11,10 +11,10 @@ import com.tokopedia.instantdebitbca.data.di.InstantDebitBcaComponent
  */
 object InstantDebitBcaInstance {
 
-    private var instantDebitBcaComponent: InstantDebitBcaComponent? = null
+    private lateinit var instantDebitBcaComponent: InstantDebitBcaComponent
 
     fun getComponent(application: Application): InstantDebitBcaComponent {
-        if (instantDebitBcaComponent == null) {
+        if (!::instantDebitBcaComponent.isInitialized) {
             instantDebitBcaComponent = DaggerInstantDebitBcaComponent.builder().baseAppComponent(
                     (application as BaseMainApplication).baseAppComponent).build()
         }

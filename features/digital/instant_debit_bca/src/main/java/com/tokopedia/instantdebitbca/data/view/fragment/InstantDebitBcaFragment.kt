@@ -34,14 +34,14 @@ import javax.inject.Inject
 open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), InstantDebitBcaContract.View, BCAXCOListener {
 
     @Inject
-    lateinit var presenter: InstantDebitBcaPresenter
+    protected lateinit var presenter: InstantDebitBcaPresenter
     @Inject
-    lateinit var userSession: UserSessionInterface
+    protected lateinit var userSession: UserSessionInterface
 
     protected lateinit var layoutWidget: RelativeLayout
-    private var widgetBca: BCARegistrasiXCOWidget? = null
-    private var listener: ActionListener? = null
-    private var applinkUrl: String? = null
+    private lateinit var widgetBca: BCARegistrasiXCOWidget
+    private lateinit var listener: ActionListener
+    private var applinkUrl: String? = ""
 
     private val deviceId: String
         get() {
@@ -59,22 +59,26 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        applinkUrl = arguments!!.getString(InstantDebitBcaActivity.CALLBACK_URL)
+        arguments?.let {
+            applinkUrl = it.getString(InstantDebitBcaActivity.CALLBACK_URL)
+        }
         presenter.getAccessTokenBca()
         createAndSetBcaWidget()
     }
 
     override fun createAndSetBcaWidget() {
         widgetBca = BCARegistrasiXCOWidget(activity, XCOEnum.ENVIRONMENT.DEV)
-        widgetBca!!.setListener(this)
+        widgetBca.setListener(this)
         layoutWidget.addView(widgetBca)
     }
 
     override fun initInjector() {
-        GraphqlClient.init(activity!!)
-        val instantDebitBcaComponent = InstantDebitBcaInstance.getComponent(activity!!.application)
-        instantDebitBcaComponent.inject(this)
-        presenter.attachView(this)
+        activity?.let {
+            GraphqlClient.init(it)
+            val instantDebitBcaComponent = InstantDebitBcaInstance.getComponent(it.application)
+            instantDebitBcaComponent.inject(this)
+            presenter.attachView(this)
+        }
     }
 
     override fun getScreenName(): String? {
@@ -82,8 +86,10 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
     }
 
     override fun openWidgetBca(accessToken: String) {
-        widgetBca!!.openWidget(accessToken, AuthUtil.KEY.API_KEY_INSTANT_DEBIT_BCA, AuthUtil.KEY.API_SEED_INSTANT_DEBIT_BCA,
-                userSession.userId, AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID)
+        if(!::widgetBca.isInitialized) {
+            widgetBca.openWidget(accessToken, AuthUtil.KEY.API_KEY_INSTANT_DEBIT_BCA, AuthUtil.KEY.API_SEED_INSTANT_DEBIT_BCA,
+                    userSession.userId, AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID)
+        }
     }
 
     override fun showErrorMessage(throwable: Throwable) {
@@ -109,6 +115,10 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
         presenter.notifyDebitRegisterBca(debitData, deviceId)
     }
 
+    protected fun isPresenterInitialized(): Boolean{
+        return ::presenter.isInitialized
+    }
+
     override fun onBCATokenExpired(tokenStatus: String) {
 
     }
@@ -122,7 +132,9 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
     }
 
     override fun redirectPageAfterRegisterBca() {
-        listener!!.redirectPage(applinkUrl)
+        if(!::listener.isInitialized) {
+            listener.redirectPage(applinkUrl)
+        }
     }
 
     override fun onDestroy() {

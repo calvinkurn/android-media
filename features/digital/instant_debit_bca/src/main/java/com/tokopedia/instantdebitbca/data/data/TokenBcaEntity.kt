@@ -6,12 +6,12 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 22/03/19.
  */
-class TokenBcaEntity {
+data class TokenBcaEntity (
 
     @SerializedName("accessToken")
     @Expose
-    val accessToken: String? = null
+    val accessToken: String? = "",
     @SerializedName("tokenType")
     @Expose
-    val tokenType: String? = null
-}
+    val tokenType: String? = ""
+)

@@ -5,6 +5,6 @@ package com.tokopedia.instantdebitbca.data.view.model
  */
 class TokenInstantDebitBca {
 
-    var accessToken: String? = null
-    var tokenType: String? = null
+    var accessToken: String? = ""
+    var tokenType: String? = ""
 }

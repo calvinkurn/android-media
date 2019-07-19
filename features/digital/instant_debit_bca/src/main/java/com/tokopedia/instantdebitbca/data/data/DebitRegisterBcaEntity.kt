@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 26/03/19.
  */
-class DebitRegisterBcaEntity {
+data class DebitRegisterBcaEntity (
     @SerializedName("callbackURL")
     @Expose
-    val callbackUrl: String? = null
+    val callbackUrl: String? = "",
     @SerializedName("debitData")
     @Expose
-    val debitData: String? = null
-}
+    val debitData: String? = ""
+)

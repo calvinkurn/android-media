@@ -47,7 +47,7 @@ constructor(val getAccessTokenBcaUseCase: GetAccessTokenBcaUseCase,
                             }
 
                             override fun onNext(tokenInstantDebitBca: TokenInstantDebitBca) {
-                                view.openWidgetBca(tokenInstantDebitBca.accessToken!!)
+                                view.openWidgetBca(tokenInstantDebitBca.accessToken ?: "")
                             }
                         }))
     }
