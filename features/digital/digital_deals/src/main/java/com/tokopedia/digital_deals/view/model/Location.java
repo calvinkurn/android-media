@@ -45,6 +45,12 @@ public class Location implements Parcelable {
     @SerializedName("image_app")
     @Expose
     private String imageApp;
+    @SerializedName("address")
+    @Expose
+    private String address;
+    @SerializedName("location_type")
+    @Expose
+    private String locType;
 
 
     public final static Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
@@ -76,6 +82,8 @@ public class Location implements Parcelable {
         this.icon = in.readString();
         this.url = in.readString();
         this.imageApp = in.readString();
+        this.address = in.readString();
+        this.locType = in.readString();
     }
 
     public Location() {
@@ -177,6 +185,22 @@ public class Location implements Parcelable {
         this.imageApp = imageApp;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getLocType() {
+        return locType;
+    }
+
+    public void setLocType(String locType) {
+        this.locType = locType;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeInt(id);
@@ -191,6 +215,8 @@ public class Location implements Parcelable {
         dest.writeString(icon);
         dest.writeString(url);
         dest.writeString(imageApp);
+        dest.writeString(address);
+        dest.writeString(locType);
     }
 
     public int describeContents() {

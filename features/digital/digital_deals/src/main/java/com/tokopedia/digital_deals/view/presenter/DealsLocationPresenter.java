@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.digital_deals.domain.getusecase.GetLocationCityUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.model.Location;
@@ -27,12 +28,14 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
     private boolean isTopLocations = true;
 
     private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
+    private GetLocationCityUseCase getLocationCityUseCase;
     private List<Location> mTopLocations;
     private List<Location> mAllLocations;
 
     @Inject
-    public DealsLocationPresenter(GetLocationListRequestUseCase getLocationListRequestUseCase) {
+    public DealsLocationPresenter(GetLocationListRequestUseCase getLocationListRequestUseCase, GetLocationCityUseCase getLocationCityUseCase) {
         this.getSearchLocationListRequestUseCase = getLocationListRequestUseCase;
+        this.getLocationCityUseCase = getLocationCityUseCase;
     }
 
     @Override
@@ -62,6 +65,40 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                     @Override
                     public void onRetryClicked() {
                         getLocations();
+                    }
+                });
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                mTopLocations = locationResponse.getLocations();
+                mAllLocations = locationResponse.getLocations();
+                getView().renderFromSearchResults(mTopLocations, isTopLocations);
+            }
+        });
+    }
+
+    public void getCities() {
+        getSearchLocationListRequestUseCase.setRequestParams(getView().getParams());
+        getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+                CommonUtils.dumper("enter onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper("enter error");
+                e.printStackTrace();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        getCities();
                     }
                 });
             }

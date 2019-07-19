@@ -9,6 +9,7 @@
     <string name="promo">Promo</string>
     <string name="trending_deals">Trending Deals</string>
     <string name="search_input_hint_deals">Cari Deals atau Brand</string>
+    <string name="search_input_hint_deals_location">Lokasi hits, wilayah, atau kota</string>
     <string name="search_input_hint_location">Cari Kota</string>
     <string name="empty_search_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>
     <string name="empty_search_text_lower">Silakan lakukan pencarian dengan kata kunci / filter lain</string>
