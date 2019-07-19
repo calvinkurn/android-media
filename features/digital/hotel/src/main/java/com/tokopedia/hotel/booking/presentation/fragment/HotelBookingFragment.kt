@@ -104,12 +104,12 @@ class HotelBookingFragment : HotelBaseFragment() {
                     val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
                     val intent = RouteManager.getIntent(context, paymentCheckoutString)
                     intent?.run {
-                        putExtra("EXTRA_PARAMETER_TOP_PAY_DATA", checkoutData)
+                        putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutData)
                         startActivityForResult(intent, REQUEST_CODE_CHECKOUT)
                     }
                 }
                 is Fail -> {
-                    val message = when(it.throwable is MessageErrorException) {
+                    val message = when (it.throwable is MessageErrorException) {
                         true -> it.throwable.message ?: ""
                         false -> ErrorHandler.getErrorMessage(activity, it.throwable)
                     }
@@ -126,7 +126,8 @@ class HotelBookingFragment : HotelBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_BOOKING_MODEL)) {
-            hotelBookingPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_BOOKING_MODEL) ?: HotelBookingPageModel()
+            hotelBookingPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_BOOKING_MODEL)
+                    ?: HotelBookingPageModel()
         }
         initProgressDialog()
         showLoadingBar()
@@ -247,7 +248,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 val policyView = InfoTextView(context!!)
                 policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
                 policyView.info_title.setFontSize(TextViewCompat.FontSize.SMALL)
-                policyView.info_container.setMargin(0,0,0, policyView.info_container.getDimens(R.dimen.dp_16))
+                policyView.info_container.setMargin(0, 0, 0, policyView.info_container.getDimens(R.dimen.dp_16))
                 hotelCancellationPolicyBottomSheets.addContentView(policyView)
             }
 
@@ -290,10 +291,10 @@ class HotelBookingFragment : HotelBaseFragment() {
         if (hotelBookingPageModel.contactData.isEmpty()) {
             val initContactData = cart.contact
             hotelBookingPageModel.contactData = TravelContactData(
-                name = initContactData.name,
-                email = initContactData.email,
-                phoneCode = initContactData.phoneCode,
-                phone = initContactData.phone
+                    name = initContactData.name,
+                    email = initContactData.email,
+                    phoneCode = initContactData.phoneCode,
+                    phone = initContactData.phone
             )
         }
         hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
@@ -357,11 +358,11 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun setupInvoiceSummary(cart: HotelCartData, property: HotelPropertyData) {
         cart.fares.find { it.type == "base_price" }?.let {
             tv_room_price_label.text = it.description
-            tv_room_price.text = if(cart.localCurrency.isEmpty()) it.price else it.localPrice
+            tv_room_price.text = if (cart.localCurrency.isEmpty()) it.price else it.localPrice
         }
         cart.fares.find { it.type == "tax" }?.let {
             tv_room_tax_label.text = it.description
-            tv_room_tax.text = if(cart.localCurrency.isEmpty()) it.price else it.localPrice
+            tv_room_tax.text = if (cart.localCurrency.isEmpty()) it.price else it.localPrice
         }
 
         val priceLabelResId = if (!property.isDirectPayment) R.string.hotel_booking_invoice_estimate_pay_at_hotel else R.string.hotel_booking_invoice_estimate_pay_now
@@ -395,7 +396,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     onImportantNotesClicked(property.paymentNote)
                 }
             }
-            spannableString.setSpan(moreInfoSpan,spannableString.length - expandNotesLabel.length, spannableString.length,
+            spannableString.setSpan(moreInfoSpan, spannableString.length - expandNotesLabel.length, spannableString.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.green_200)),
                     spannableString.length - expandNotesLabel.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -422,11 +423,11 @@ class HotelBookingFragment : HotelBaseFragment() {
             trackingHotelUtil.hotelClickNext(hotelBookingPageModel.guestName.isEmpty())
 
             val hotelCheckoutParam = HotelCheckoutParam(
-                cartId = hotelBookingPageModel.cartId,
-                contact = mapToCheckoutContact(hotelBookingPageModel.contactData),
-                guestName = hotelBookingPageModel.guestName,
-                promoCode = hotelBookingPageModel.promoCode,
-                specialRequest = hotelBookingPageModel.roomRequest
+                    cartId = hotelBookingPageModel.cartId,
+                    contact = mapToCheckoutContact(hotelBookingPageModel.contactData),
+                    guestName = hotelBookingPageModel.guestName,
+                    promoCode = hotelBookingPageModel.promoCode,
+                    specialRequest = hotelBookingPageModel.roomRequest
             )
             bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
         }
@@ -438,9 +439,14 @@ class HotelBookingFragment : HotelBaseFragment() {
         if (radio_button_contact_guest.isSelected && til_guest.editText.text.isEmpty()) {
             toggleGuestFormError(true)
             isValid = false
+        } else if (tv_guest_input.text.isNotEmpty() && !validateNameIsAlphabetOnly(tv_guest_input.text.toString())) {
+            toggleGuestFormError(true)
+            isValid = false
         }
         return isValid
     }
+
+    private fun validateNameIsAlphabetOnly(expression: String): Boolean = expression.matches(REGEX_IS_ALPHANUMERIC_ONLY.toRegex())
 
     private fun mapToCheckoutContact(contactData: TravelContactData): HotelCartData.BookingContact {
         return HotelCartData.BookingContact(
@@ -464,12 +470,16 @@ class HotelBookingFragment : HotelBaseFragment() {
     companion object {
         const val ARG_CART_ID = "arg_cart_id"
         const val EXTRA_HOTEL_BOOKING_MODEL = "extra_hotel_booking_model"
+        const val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
         const val REQUEST_CODE_CONTACT_DATA = 104
         const val REQUEST_CODE_CHECKOUT = 105
         const val TAG_HOTEL_CANCELLATION_POLICY = "hotel_cancellation_policy"
         const val TAG_HOTEL_TAX_POLICY = "hotel_tax_policy"
         const val TAG_HOTEL_IMPORTANT_NOTES = "hotel_important_notes"
         const val ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT = 250
+
+        private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z0-9]*$"
+
 
         fun getInstance(cartId: String): HotelBookingFragment =
                 HotelBookingFragment().also {
