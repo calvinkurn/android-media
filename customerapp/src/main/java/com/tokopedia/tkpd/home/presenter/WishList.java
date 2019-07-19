@@ -91,8 +91,6 @@ public interface WishList {
 
     void refreshDataOnSearch(CharSequence query);
 
-    void onResume(Context context);
-
     void getFirstRecomData();
 
     void loadMoreRecomendation(int page);
