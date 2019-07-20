@@ -2,15 +2,12 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
 import android.os.Handler
 import android.support.annotation.LayoutRes
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
@@ -60,7 +57,6 @@ open class DynamicPostViewHolder(v: View,
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     lateinit var captionTv: TextView
-    val snapHelper: PagerSnapHelper = PagerSnapHelper()
     lateinit var adapter: PostPagerAdapter
 
     companion object {
@@ -405,13 +401,9 @@ open class DynamicPostViewHolder(v: View,
             if (postTag.totalItems > 0) {
                 itemView.rvPosttag.show()
                 itemView.rvPosttag.setHasFixedSize(true)
-                if (itemView.rvPosttag.onFlingListener != null) {
-                    itemView.rvPosttag.onFlingListener = null
-                }
                 val layoutManager: RecyclerView.LayoutManager = when (feedType) {
                     SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
                     else -> feedType.let{
-                        snapHelper.attachToRecyclerView(itemView.rvPosttag)
                         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                     }
                 }
