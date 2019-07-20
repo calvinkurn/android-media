@@ -9,11 +9,12 @@
     <LinearLayout
         android:id="@+id/layout_title"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
         android:orientation="horizontal"
         android:padding="@dimen/dp_16">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/btn_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +30,9 @@
             android:textSize="@dimen/sp_17"
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"/>
+            android:layout_marginStart="@dimen/dp_16"
+            android:maxLines="2"
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/tv_reset"

@@ -38,71 +38,62 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
 
     public Observable<FCMTokenUpdateEntity> updateTokenServer(final FCMTokenUpdate data) {
         return Observable.just(data)
-                .flatMap(new Func1<FCMTokenUpdate, Observable<Response<TokopediaWsV4Response>>>() {
-                    @Override
-                    public Observable<Response<TokopediaWsV4Response>> call(FCMTokenUpdate requestData) {
-                        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-                        param.put("device_id_new", requestData.getNewToken());
-                        param.put("os_type", requestData.getOsType());
-                        param.put("user_id", requestData.getUserId());
-                        PushNotificationService service = new PushNotificationService(context, requestData.getAccessToken());
-                        return service.getApi().updateToken(param);
-                    }
+                .flatMap((Func1<FCMTokenUpdate, Observable<Response<TokopediaWsV4Response>>>) requestData -> {
+                    TKPDMapParam<String, String> param = new TKPDMapParam<>();
+                    param.put("device_id_new", requestData.getNewToken());
+                    param.put("os_type", requestData.getOsType());
+                    param.put("user_id", requestData.getUserId());
+                    PushNotificationService service = new PushNotificationService(context, requestData.getAccessToken());
+                    return service.getApi().updateToken(param);
                 })
-                .map(new Func1<Response<TokopediaWsV4Response>, FCMTokenUpdateEntity>() {
-                    @Override
-                    public FCMTokenUpdateEntity call(Response<TokopediaWsV4Response> response) {
-                        FCMTokenUpdateEntity entity = new FCMTokenUpdateEntity();
-                        entity.setToken(data.getNewToken());
-                        if (response.isSuccessful()) {
-                            TokopediaWsV4Response tkpdResponse = response.body();
-                            if (tkpdResponse.isError()) {
-                                entity.setSuccess(false);
-                                return entity;
-                            }
-                            if (tkpdResponse.isNullData()) {
-                                entity.setSuccess(false);
-                                return entity;
-                            }
-                            if (!response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
-                                try {
-                                    int status = response.body().getJsonData()
-                                            .getInt(KEY_FLAG_IS_SUCCESS);
-                                    switch (status) {
-                                        case 1:
-                                            entity.setSuccess(true);
-                                            return entity;
-                                        default:
-                                            entity.setSuccess(false);
-                                            return entity;
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    entity.setSuccess(false);
-                                    return entity;
-                                }
-                            }
+                .map(response -> {
+                    FCMTokenUpdateEntity entity = new FCMTokenUpdateEntity();
+                    entity.setToken(data.getNewToken());
+                    if (response.isSuccessful()) {
+                        TokopediaWsV4Response tkpdResponse = response.body();
+                        if (tkpdResponse.isError()) {
                             entity.setSuccess(false);
                             return entity;
-                        } else {
-                            throw new RuntimeException("error");
                         }
+                        if (tkpdResponse.isNullData()) {
+                            entity.setSuccess(false);
+                            return entity;
+                        }
+                        if (!response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
+                            try {
+                                int status = response.body().getJsonData()
+                                        .getInt(KEY_FLAG_IS_SUCCESS);
+                                switch (status) {
+                                    case 1:
+                                        entity.setSuccess(true);
+                                        return entity;
+                                    default:
+                                        entity.setSuccess(false);
+                                        return entity;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                entity.setSuccess(false);
+                                return entity;
+                            }
+                        }
+                        entity.setSuccess(false);
+                        return entity;
+                    } else {
+                        throw new RuntimeException("error");
                     }
                 });
     }
 
     public Observable<DeviceRegistrationDataResponse> deviceRegistration(){
         return Observable.just(true)
-                .map(new Func1<Boolean, DeviceRegistrationDataResponse>() {
-                    @Override
-                    public DeviceRegistrationDataResponse call(Boolean aBoolean) {
-                        String cloudRegitrationID = FirebaseInstanceId.getInstance().getToken();
-                        DeviceRegistrationDataResponse response = new DeviceRegistrationDataResponse();
-                        response.setStatusCode(REGISTRATION_STATUS_OK);
-                        response.setDeviceRegistration(cloudRegitrationID);
-                        response.setStatusMessage(REGISTRATION_MESSAGE_OK);
-                        return response;
-                    }
+                .map(aBoolean -> {
+                    String cloudRegitrationID = FirebaseInstanceId.getInstance().getToken();
+                    DeviceRegistrationDataResponse response = new DeviceRegistrationDataResponse();
+                    response.setStatusCode(REGISTRATION_STATUS_OK);
+                    response.setDeviceRegistration(cloudRegitrationID);
+                    response.setStatusMessage(REGISTRATION_MESSAGE_OK);
+                    return response;
                 });
     }
 
@@ -113,16 +104,6 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
 
     @Override
     public Observable<Boolean> saveRegistrationDevice(String registrationDevice) {
-        return null;
-    }
-
-    @Override
-    public Observable<List<PushNotification>> getSavedPushNotification() {
-        return null;
-    }
-
-    @Override
-    public Observable<List<PushNotification>> getPushSavedPushNotification(String category) {
         return null;
     }
 
@@ -139,22 +120,6 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
     @Override
     public Observable<Boolean> deleteSavedPushNotification() {
         return null;
-    }
-
-    @Override
-    public Observable<Boolean> savePushNotification(String category, String response, String customIndex) {
-        return null;
-    }
-
-    @Override
-    public Observable<Boolean> savePushNotification(String category, String response) {
-        return null;
-    }
-
-    @Override
-    public Observable<String> getRegistrationDevice() {
-        String cloudRegitrationID = FirebaseInstanceId.getInstance().getToken();
-        return Observable.just(cloudRegitrationID);
     }
 
     @Override

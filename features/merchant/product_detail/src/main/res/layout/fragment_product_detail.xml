@@ -134,7 +134,7 @@
                 <include layout="@layout/partial_product_detail_header"/>
                 <include layout="@layout/partial_product_rating_talk_courier"/>
                 <include layout="@layout/partial_product_detail_visibility"/>
-
+                <include layout="@layout/partial_value_proposition_os"/>
                 <include layout="@layout/partial_variant_rate_estimation" />
 
                 <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget

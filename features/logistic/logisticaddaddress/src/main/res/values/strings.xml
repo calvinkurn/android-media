@@ -60,6 +60,23 @@
     <string name="logistic_zip_code_label">Kode Pos</string>
     <string name="logistic_result_error_message">Ada masalah, hubungi resolusi</string>
 
+    <string name="title_shipping_dest">Tujuan Pengiriman</string>
+    <string name="text_information_google_map">* Pastikan lokasi google map anda sesuai dengan alamat yang anda masukan</string>
+    <string name="permission_location_neverask">Anda tidak memberikan izin akses untuk Lokasi. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_multi_neverask">Anda tidak memberikan izin akses. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="need_permission_location" >Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
+    <string name="need_permission_multi">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
+    <string name="dialog_cancel">BATAL</string>
+    <string name="permission_multi_denied">Anda tidak memberikan izin akses</string>
+    <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
+    <string name="wait_generate_address">Harap Tunggu . . .</string>
+    <string name="hint_gojek_pick_address">Cari Lokasi</string>
+
+    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+    <string name="message_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
+    <string name="message_search_address_no_result">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
+    <string name="message_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
+
     <string name="navigate_up">Navigate Up</string>
     <string name="pointer">Map Pointer</string>
     <string name="hint_search_location">Tulis jalan / perumahan / gedung</string>
@@ -111,6 +128,7 @@
     <string name="validate_kode_pos">Kode Pos harus diisi</string>
     <string name="validate_kode_pos_length">Kode Pos minimal 5 karakter</string>
     <string name="validate_alamat">Alamat harus diisi</string>
+    <string name="validate_alamat_length">Alamat minimal 5 karakter</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
