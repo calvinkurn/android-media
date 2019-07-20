@@ -1,0 +1,33 @@
+query getProductQuery($componentID: Int!, $operatorID: String!) {
+                status
+                rechargeComponentDataCollection(data: PRODUCT, componentID: $componentID, filterData: [{ param_name: "operator", value: [$operatorID]}]){
+                    data_collections {
+                        id
+                        key
+                        value
+                        product {
+                            id
+                            attributes {
+                                desc
+                                detail
+                                detail_url
+                                detail_url_text
+                                info
+                                price
+                                price_plain
+                                status
+                                detail_compact
+                                category_id
+                                operator_id
+                                promo {
+                                    id
+                                    bonus_text
+                                    new_price
+                                    new_price_plain
+                                    value_text
+                                }
+                            }
+                        }
+                    }
+                }
+            }

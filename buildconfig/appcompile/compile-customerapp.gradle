@@ -24,6 +24,7 @@ include "features:digital:digital_browse"
 include "features:digital:digital_deals"
 include "features:digital:event"
 include "features:digital:digitalproduct"
+include "features:digital:digital_topup_bills"
 include "features:digital:flight"
 //include "features:digital:flight_no_op"
 include "features:digital:train"
@@ -46,6 +47,7 @@ include "features:discovery:search"
 include "features:fintech:home_credit"
 include "features:fintech:mitra_toppers"
 include "features:fintech:reksa_dana"
+include "features:digital:instant_debit_bca"
 include "features:fintech:instant_loan"
 //include "features:fintech:instant_loan_no_op"
 include "features:fintech:saldo_details"
@@ -131,6 +133,7 @@ include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
 include "features:top_ads:top_ads_management_sourcetagging"
 
+include "features:transaction:atc_common"
 include "features:transaction:express_checkout"
 //include "features:transaction:express_checkout_no_op"
 include "features:transaction:express_checkout_common"
@@ -178,10 +181,7 @@ include 'tkpdtransaction'
 include 'tkpdsession'
 include 'tkpddesign'
 include 'tkpdseller'
-include 'tkpdtokocash'
 include 'tkpdabstraction'
-include 'tkpdcontent'
-include 'tkpdstream'
 include 'tkpdtransaction-common'
 
 include 'customerapp'

@@ -12,10 +12,14 @@ import android.support.v4.app.Fragment
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
+import android.text.format.DateFormat
 import android.text.style.ClickableSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -73,15 +77,15 @@ import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.ticker.TickerData;
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 
 /**
  * @author by nisie on 18/01/19.
@@ -89,6 +93,8 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
 
     private val ID_ACTION_REGISTER = 111
+    private val ID_ACTION_DEVOPS = 112
+    val RC_SIGN_IN_GOOGLE = 7777
 
     private val REQUEST_SMART_LOCK = 101
     private val REQUEST_SAVE_SMART_LOCK = 102
@@ -200,6 +206,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (getDraw() != null) {
             menuItem.icon = getDraw()
         }
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, getString(R.string.developer_options))
+            menu.findItem(ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -219,6 +229,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             registerAnalytics.trackClickTopSignUpButton()
             goToRegisterInitial()
             return true
+        }
+        if (id == ID_ACTION_DEVOPS) {
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -582,6 +598,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 //Login Event
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
+                loginEventAppsFlyer(userSession.userId, userSession.email)
             }
 
             if (::mIris.isInitialized) {
@@ -604,6 +621,16 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun loginEventAppsFlyer(userId:String, userEmail:String){
+        var dataMap = HashMap<String, Any>()
+        dataMap.put("user_id", userId)
+        dataMap.put("user_email", userEmail)
+        val date = Date()
+        val stringDate = DateFormat.format("EEEE, MMMM d, yyyy ", date.time)
+        dataMap.put("timestamp", stringDate)
+        TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
     fun onErrorLogin(errorMessage: String?) {

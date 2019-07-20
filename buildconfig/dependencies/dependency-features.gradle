@@ -194,6 +194,7 @@ ext {
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",
             digitalproduct                  : ":features:digital:digitalproduct",
+            digitalTopupBills               : ":features:digital:digital_topup_bills",
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
 //            flight                          : ":features:digital:flight_no_op",
@@ -216,6 +217,7 @@ ext {
             productCard                     : ":features:discovery:productcard",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             homecredit                      : ":features:fintech:home_credit",
+            instantDebitBca                 : ":features:digital:instant_debit_bca",
             instantLoan                     : ":features:fintech:instant_loan",
 //            instantLoan                   : ":features:fintech:instant_loan_no_op",
             mitraToppers                    : ":features:fintech:mitra_toppers",
@@ -305,6 +307,7 @@ ext {
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging             : ":features:top_ads:top_ads_management_sourcetagging",
 
+            atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
             transactionanalytics            : ":features:transaction:transactionanalytics",
             checkout                        : ":features:transaction:checkout",
