@@ -33,6 +33,7 @@ import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -40,7 +41,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
@@ -312,40 +312,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         return applinkDelegate;
     }
 
-    @DeepLink({Constants.Applinks.SellerApp.SELLER_APP_HOME,
-            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
-            Constants.Applinks.SellerApp.SALES,
-            Constants.Applinks.SellerApp.TOPADS_CREDIT,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
-            Constants.Applinks.SellerApp.GOLD_MERCHANT,
-            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
-            Constants.Applinks.SellerApp.BROWSER})
-    public static Intent getIntentSellerApp(Context context, Bundle extras) {
-        Intent launchIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-
-        if (launchIntent == null) {
-            return RedirectCreateShopActivity.getCallingIntent(context);
-        } else {
-            launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
-            launchIntent.putExtras(extras);
-            launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-            return launchIntent;
-        }
-    }
-
-    @DeepLink(Constants.Applinks.BROWSER)
-    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
-        String webUrl = extras.getString(
-                Constants.ARG_NOTIFICATION_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
-        );
-        Intent destination = new Intent(Intent.ACTION_VIEW);
-        destination.setData(Uri.parse(webUrl));
-        return destination;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -484,6 +450,40 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             } catch (Exception ignored) {
             }
         }
+    }
+
+    @DeepLink({Constants.Applinks.SellerApp.SELLER_APP_HOME,
+            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
+            Constants.Applinks.SellerApp.SALES,
+            Constants.Applinks.SellerApp.TOPADS_CREDIT,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
+            Constants.Applinks.SellerApp.GOLD_MERCHANT,
+            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
+            Constants.Applinks.SellerApp.BROWSER})
+    public static Intent getIntentSellerApp(Context context, Bundle extras) {
+        Intent launchIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+
+        if (launchIntent == null) {
+            return RedirectCreateShopActivity.getCallingIntent(context);
+        } else {
+            launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
+            launchIntent.putExtras(extras);
+            launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+            return launchIntent;
+        }
+    }
+
+    @DeepLink(Constants.Applinks.BROWSER)
+    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
+        String webUrl = extras.getString(
+                Constants.ARG_NOTIFICATION_URL, TokopediaUrl.Companion.getInstance().getWEB()
+        );
+        Intent destination = new Intent(Intent.ACTION_VIEW);
+        destination.setData(Uri.parse(webUrl));
+        return destination;
     }
 
     @Override

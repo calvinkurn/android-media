@@ -10,9 +10,7 @@ import android.webkit.WebView;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.user.session.UserSession;
 

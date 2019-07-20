@@ -319,4 +319,5 @@
     <string name="loginregister_failed_login_google">Akun gagal terautentikasi (%s). Mohon coba kembali.</string>
   <string name="default_placeholder">Contoh: 08123456789</string>
 
+    <string name="developer_options">Developer Options</string>
 </resources>
