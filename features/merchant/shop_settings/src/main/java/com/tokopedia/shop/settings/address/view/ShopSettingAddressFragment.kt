@@ -105,7 +105,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
     override fun onErrorDeleteAddress(throwable: Throwable?) {
         throwable?.let {
             ToasterError.make(view, ErrorHandler.getErrorMessage(activity, it), BaseToaster.LENGTH_SHORT)
-                    .setAction(R.string.close) {}.show()
+                    .setAction(com.tokopedia.abstraction.R.string.close) {}.show()
         }
     }
 

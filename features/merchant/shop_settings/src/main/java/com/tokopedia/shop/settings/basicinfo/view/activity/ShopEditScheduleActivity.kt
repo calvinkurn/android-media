@@ -227,7 +227,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         val message = ErrorHandler.getErrorMessage(this, throwable)
         ToasterError.make(findViewById(android.R.id.content),
                 message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(getString(R.string.title_try_again)) { onSaveButtonClicked() }.show()
+                .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again)) { onSaveButtonClicked() }.show()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {

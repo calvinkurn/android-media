@@ -42,6 +42,8 @@ dependencies {
     api rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.playServicesDependencies.core
 }
 
 apply from: '../publish_local.gradle'
