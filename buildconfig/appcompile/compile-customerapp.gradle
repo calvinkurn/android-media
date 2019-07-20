@@ -47,6 +47,7 @@ include "features:discovery:search"
 include "features:fintech:home_credit"
 include "features:fintech:mitra_toppers"
 include "features:fintech:reksa_dana"
+include "features:digital:instant_debit_bca"
 include "features:fintech:instant_loan"
 //include "features:fintech:instant_loan_no_op"
 include "features:fintech:saldo_details"
@@ -180,10 +181,7 @@ include 'tkpdtransaction'
 include 'tkpdsession'
 include 'tkpddesign'
 include 'tkpdseller'
-include 'tkpdtokocash'
 include 'tkpdabstraction'
-include 'tkpdcontent'
-include 'tkpdstream'
 include 'tkpdtransaction-common'
 
 include 'customerapp'

@@ -63,13 +63,13 @@ import com.tokopedia.cod.view.CodActivity;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
-import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
@@ -134,6 +134,7 @@ import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.design.utils.DateLabelUtils;
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -736,7 +737,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getBaseUrlDomainPayment() {
-        return ConsumerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
+        return TokopediaUrl.getInstance().getPAY();
     }
 
     @Override
@@ -2168,6 +2169,33 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void shareEvent(Context context, String uri, String name, String imageUrl) {
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType("")
+                .setName(name)
+                .setUri(uri)
+                .setImgUri(imageUrl)
+                .build();
+
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
+                    @Override
+                    public void urlCreated(LinkerShareResult linkerShareData) {
+                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getUrl());
+                        Intent intent = Intent.createChooser(share, getString(R.string.share_link));
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        context.startActivity(intent);
+                    }
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                }));
+    }
+
+    @Override
     public String getUserPhoneNumber() {
         return SessionHandler.getPhoneNumber();
     }
@@ -2812,8 +2840,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
-        LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptions.CHUCK_ENABLED);
-        return cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
+        LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
+        return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
     }
 
     public String getDefferedDeeplinkPathIfExists() {

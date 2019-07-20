@@ -1,12 +1,14 @@
 package com.tokopedia.events.data.source;
 
+import com.tokopedia.url.TokopediaUrl;
+
 /**
  * Created by ashwanityagi on 02/11/17.
  */
 
 public class EventsUrl {
 
-    public static String EVENTS_DOMAIN = "https://booking.tokopedia.com/";
+    public static String EVENTS_DOMAIN = TokopediaUrl.Companion.getInstance().getBOOKING();
 
     public static final String EVENTS_LIST = "v1/api/h/event";
     public static final String EVENTS_LIST_SEARCH = "v1/api/s/event";

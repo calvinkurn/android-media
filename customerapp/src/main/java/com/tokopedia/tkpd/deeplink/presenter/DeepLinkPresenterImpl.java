@@ -544,7 +544,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equals("preorder")
                 || lastSegment.equals("sold")
-                || (linkSegment.get(1).equals("etalase"));
+                || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
