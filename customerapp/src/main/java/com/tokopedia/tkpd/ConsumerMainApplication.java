@@ -183,9 +183,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
             GlobalConfig.VERSION_CODE = pInfo.versionCode;
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = pInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         }
     }
 

@@ -20,13 +20,18 @@ class GetRecommendationSubscriber(private val view: ICartListView?,
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideItemLoading()
-        view?.stopAllCartPerformanceTrace();
+        view?.setHasTriedToLoadRecommendation()
+        view?.stopAllCartPerformanceTrace()
     }
 
     override fun onNext(recommendationModels: List<RecommendationWidget>) {
         if (view != null) {
             view.hideItemLoading()
-            view.renderRecommendation(recommendationModels[0].recommendationItemList)
+            if (recommendationModels[0].recommendationItemList.isNotEmpty()) {
+                view.renderRecommendation(recommendationModels[0].recommendationItemList)
+            }
+            view.setHasTriedToLoadRecommendation()
+            view.stopAllCartPerformanceTrace()
         }
     }
 }

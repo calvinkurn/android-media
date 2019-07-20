@@ -13,10 +13,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
@@ -42,6 +40,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var layoutProgressBar: RelativeLayout
     private lateinit var operatorSelected: TelcoCustomDataCollection
+    private lateinit var selectedTelcoRecommendation: TelcoRecommendation
 
     private val favNumberList = mutableListOf<TelcoFavNumber>()
     private var operatorData: TelcoCustomComponentData =
@@ -60,15 +59,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun onStart() {
-        context?.let {
-            GraphqlClient.init(it)
-        }
-        super.onStart()
-    }
-
-    override fun getScreenName(): String {
-        return DigitalTopupEventTracking.Screen.DIGITAL_TELCO_POSTPAID
+    override fun getScreenName(): String? {
+        return null
     }
 
     override fun initInjector() {
@@ -104,7 +96,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         super.onActivityCreated(savedInstanceState)
         sharedModel.promoItem.observe(this, Observer {
             it?.run {
-                    promoListWidget.notifyPromoItemChanges(this)
+                promoListWidget.notifyPromoItemChanges(this)
             }
         })
     }
@@ -120,7 +112,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 R.raw.query_telco_catalog_menu_detail), this::onLoadingMenuDetail,
                 this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
         catalogMenuDetailViewModel.getFavNumbersPostpaid(GraphqlHelper.loadRawString(resources,
-                R.raw.temp_query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
+                R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
     }
 
     fun getDataFromBundle() {
@@ -192,10 +184,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     fun renderProductFromCustomData() {
         try {
             if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
-                val prefixClientNumber = postpaidClientNumberWidget.getInputNumber().substring(0, 4)
-
                 operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
-                    it.value.equals(prefixClientNumber)
+                    postpaidClientNumberWidget.getInputNumber().startsWith(it.value)
                 }.single()
                 val operatorName = operatorSelected.operator.attributes.name
                 when (inputNumberActionType) {
@@ -209,7 +199,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                         topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
                     }
                     InputNumberActionType.CONTACT_HOMEPAGE -> {
-                        topupAnalytics.eventClickOnContactPickerHomepage(categoryId, operatorName)
+                        topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+                    }
+                    InputNumberActionType.LATEST_TRANSACTION -> {
+                        if (::selectedTelcoRecommendation.isInitialized) {
+                            topupAnalytics.clickEnhanceCommerceRecentTransaction(selectedTelcoRecommendation,
+                                    operatorName, selectedTelcoRecommendation.position)
+                        }
                     }
                 }
 
@@ -217,7 +213,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
         } catch (exception: Exception) {
             view?.run {
-                Toaster.showError(this, ErrorHandler.getErrorMessage(activity, exception), Snackbar.LENGTH_LONG)
+                postpaidClientNumberWidget.setErrorInputNumber(
+                        getString(R.string.telco_number_error_not_found))
             }
         }
     }
@@ -282,6 +279,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
         inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
         postpaidClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
+        this.selectedTelcoRecommendation = telcoRecommendation
     }
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {

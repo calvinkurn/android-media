@@ -2,10 +2,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Rect
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -14,6 +11,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -77,7 +75,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var addNewAddressComponent: AddNewAddressComponent? = null
     private var isChangesRequested: Boolean? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
-    private val SCREEN_NAME = "/user/address/create/cart/pinpoint1"
     private var continueWithLocation: Boolean? = false
 
     @Inject
@@ -168,6 +165,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     private fun setViewListener() {
         back_button?.setOnClickListener {
+            // hide keyboard
+            val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
+            (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.rootView?.windowToken, 0)
+
             map_view?.onPause()
             AddNewAddressAnalytics.eventClickBackArrowOnPinPoint()
             activity?.finish()
@@ -337,7 +338,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun showAutocompleteGeocodeBottomSheet(lat: Double, long: Double, search: String) {
-        activity?.let { AddNewAddressAnalytics.sendScreenName(it, SCREEN_NAME) }
         val autocompleteGeocodeBottomSheetFragment =
                 AutocompleteBottomSheetFragment.newInstance(lat, long, search)
         autocompleteGeocodeBottomSheetFragment.setActionListener(this)

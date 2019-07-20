@@ -46,6 +46,9 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
