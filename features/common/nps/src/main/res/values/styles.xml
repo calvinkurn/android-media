@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Medium.RatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/app_rating_star</item>
         <item name="android:stepSize">1</item>
         <item name="android:numStars">5</item>
+        <item name="android:scaleX">1</item>
+        <item name="android:scaleY">1</item>
     </style>
+
 </resources>
