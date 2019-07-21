@@ -4,9 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -14,15 +16,14 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kol.R
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import kotlinx.android.synthetic.main.media_player_view.*
 import com.tokopedia.videoplayer.utils.VideoSourceProtocol
 import java.io.File
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.*
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.google.android.exoplayer2.util.Util
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.videoplayer.utils.RepeatMode
 
 
@@ -31,9 +32,13 @@ class MediaHolderFragment : BaseDaggerFragment() {
     private var mediaSource = ""
 
     private var isReadyPlayed = true
-    private var currentWindowIndex: Int = 0
+    private var currentWindowIndex: Int = C.INDEX_UNSET
     private var currentPosition: Long = 0
+    private var isMute = false
+    private var currentVol = 1f
     private var mExoPlayer: SimpleExoPlayer? = null
+
+    private var onControllerTouch: OnControllerTouch? = null
 
     companion object {
         private const val ARG_MEDIA_SRC = "media_src"
@@ -42,6 +47,8 @@ class MediaHolderFragment : BaseDaggerFragment() {
         private const val IS_READY_PLAYED_KEY = "is_ready_played"
         private const val CURRENT_WINDOW_INDEX_KEY = "current_window"
         private const val CURRENT_POSITION_KEY = "current_position"
+        private const val CURRENT_MUTE_KEY = "current_mute"
+        private const val CURRENT_VOLUME_KEY = "current_volume"
 
         private const val TYPE_IMAGE = "image"
         private const val TYPE_VIDEO = "video"
@@ -63,6 +70,9 @@ class MediaHolderFragment : BaseDaggerFragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
+        if (context is OnControllerTouch){
+            onControllerTouch = context
+        }
         arguments?.let {
             mediaType = it.getString(ARG_MEDIA_TYPE, TYPE_IMAGE)
             mediaSource = it.getString(ARG_MEDIA_SRC, "")
@@ -77,42 +87,61 @@ class MediaHolderFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         if (mediaSource.isBlank()) return
 
-        image_preview.loadImageWithoutPlaceholder(mediaSource)
+        image_preview.shouldShowWithAction(mediaType == TYPE_IMAGE){
+            image_preview.loadImageWithoutPlaceholder(mediaSource)
+        }
+        video_player.showWithCondition(mediaType == TYPE_VIDEO)
 
         savedInstanceState?.let {
-            isReadyPlayed = savedInstanceState.getBoolean(IS_READY_PLAYED_KEY, false);
-            currentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_INDEX_KEY, 0);
-            currentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY, 0);
+            isReadyPlayed = savedInstanceState.getBoolean(IS_READY_PLAYED_KEY, false)
+            currentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_INDEX_KEY, 0)
+            currentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY, 0)
+            isMute = savedInstanceState.getBoolean(CURRENT_MUTE_KEY, false)
+            currentVol = savedInstanceState.getFloat(CURRENT_VOLUME_KEY, 1f)
         }
 
-        video_player.setControllerVisibilityListener {}
+        video_player.controllerShowTimeoutMs = 0
+        video_player.setControllerVisibilityListener {
+            onControllerTouch?.onTouch(it == View.VISIBLE)
+        }
+        val volumeControl: ImageView = video_player.findViewById(R.id.volume_control)
+        volumeControl.setOnClickListener {
+            context?.let { volumeControl.setImageDrawable(
+                    ContextCompat.getDrawable(it,if (isMute) R.drawable.ic_af_volume_off else R.drawable.ic_af_volume_on))
+            }
+            if (!isMute){
+                currentVol = mExoPlayer?.volume ?: 1f
+            }
+            isMute = !isMute
+            mExoPlayer?.volume = if (isMute) 0f else currentVol
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        if (mediaType == TYPE_VIDEO){
+        if (Util.SDK_INT > 23 && mediaType == TYPE_VIDEO && userVisibleHint){
             playVideo(mediaSource)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (mediaType == TYPE_VIDEO){
+        if ((Util.SDK_INT <= 23 || mExoPlayer == null) && mediaType == TYPE_VIDEO){
             playVideo(mediaSource)
         }
     }
 
     override fun onPause() {
-        if (mediaType == TYPE_VIDEO){
-            backupState()
+        backupState()
+        if (Util.SDK_INT <= 23 && mediaType == TYPE_VIDEO){
             releaseExoPlayer()
         }
         super.onPause()
     }
 
     override fun onStop() {
-        if (mediaType == TYPE_VIDEO){
-           backupState()
+        backupState()
+        if (Util.SDK_INT > 23 && mediaType == TYPE_VIDEO){
             releaseExoPlayer()
         }
         super.onStop()
@@ -132,15 +161,12 @@ class MediaHolderFragment : BaseDaggerFragment() {
     private fun initPlayerListener() {
         mExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                //super.onPlayerStateChanged(playWhenReady, playbackState)
                 when(playbackState){
                     Player.STATE_READY -> {
-                        image_preview.gone()
-                        video_player.visible()
+                        loading.gone()
                     }
                     else -> {
-                        image_preview.visible()
-                        video_player.gone()
+                        loading.visible()
                     }
                 }
             }
@@ -166,8 +192,16 @@ class MediaHolderFragment : BaseDaggerFragment() {
                 video_player.rotation = VIDEO_ROTATION_90
             }
 
-            mExoPlayer?.seekTo(currentWindowIndex, currentPosition)
-            mExoPlayer?.prepare(buildMediaSource(url, protocol))
+            val isHasStartPosition = currentWindowIndex != C.INDEX_UNSET
+            if (isHasStartPosition) {
+                mExoPlayer?.seekTo(currentWindowIndex, currentPosition)
+            }
+
+            if (isMute){
+                mExoPlayer?.volume = 0f
+            }
+
+            mExoPlayer?.prepare(buildMediaSource(url, protocol), !isHasStartPosition, false)
         } catch (t: Throwable){
 
         }
@@ -207,15 +241,17 @@ class MediaHolderFragment : BaseDaggerFragment() {
         outState.putInt(CURRENT_WINDOW_INDEX_KEY, currentWindowIndex)
         outState.putLong(CURRENT_POSITION_KEY, currentPosition)
         outState.putBoolean(IS_READY_PLAYED_KEY, isReadyPlayed)
+        outState.putBoolean(CURRENT_MUTE_KEY, isMute)
+        outState.putFloat(CURRENT_VOLUME_KEY, currentVol)
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser){
-            onResume()
-        } else {
-            onPause()
-        }
+    fun imVisible(){
+        playVideo(mediaSource)
+    }
+
+    fun imInvisible(){
+        backupState()
+        releaseExoPlayer()
     }
 
     override fun onDestroyView() {
@@ -240,5 +276,9 @@ class MediaHolderFragment : BaseDaggerFragment() {
             currentPosition = it.currentPosition
             currentWindowIndex = it.currentWindowIndex
         }
+    }
+
+    interface OnControllerTouch {
+        fun onTouch(isVisible: Boolean)
     }
 }

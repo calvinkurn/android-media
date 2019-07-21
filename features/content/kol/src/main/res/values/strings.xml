@@ -75,4 +75,5 @@
     <string name="kol_total_post_tag">%1$d barang</string>
     <string name="kol_template_start_price">Mulai dari %1$s</string>
     <string name="kol_see_product">Lihat</string>
+    <string name="af_indicator_media">%1$d dari %2$d</string>
 </resources>

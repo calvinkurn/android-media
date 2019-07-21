@@ -97,6 +97,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         items.add(MediaItem(thumbnail = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/8/16/19829070/19829070_19948cbd-bd22-4edb-a553-d226f08e659a_960_1280.jpeg", type = "image"))
         items.add(MediaItem(thumbnail = "https://pmdvod.nationalgeographic.com/NG_Video/821/547/0705687ANG_0.mp4", type = "video"))
         val adapter = MediaPagerAdapter(items, childFragmentManager)
+        pager_indicator.text = getString(R.string.af_indicator_media, 1, adapter.count)
         media_pager.adapter = adapter
         media_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             var lastPosition = 0
@@ -105,8 +106,9 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
 
             override fun onPageSelected(position: Int) {
-                adapter.getRegisteredFragment(lastPosition)?.userVisibleHint = false
-                adapter.getRegisteredFragment(position)?.userVisibleHint = true
+                pager_indicator.text = getString(R.string.af_indicator_media, position+1, adapter.count)
+                (adapter.getRegisteredFragment(lastPosition) as? MediaHolderFragment)?.imInvisible()
+                (adapter.getRegisteredFragment(position) as? MediaHolderFragment)?.imVisible()
                 lastPosition = position
             }
 
@@ -209,6 +211,16 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun onErrorGetDetail(throwable: Throwable) {
 
+    }
+
+    fun showDetail(visible: Boolean) {
+        if (visible){
+            overlay_tags.visible()
+            overlay_toolbar.visible()
+        } else {
+            overlay_tags.gone()
+            overlay_toolbar.gone()
+        }
     }
 
     companion object{

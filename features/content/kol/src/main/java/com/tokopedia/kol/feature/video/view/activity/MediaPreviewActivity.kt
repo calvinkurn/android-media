@@ -10,10 +10,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.common.di.KolComponent
+import com.tokopedia.kol.feature.video.view.fragment.MediaHolderFragment
 import com.tokopedia.kol.feature.video.view.fragment.MediaPreviewFragment
 import com.tokopedia.kotlin.extensions.view.hide
 
-class MediaPreviewActivity : BaseSimpleActivity(), HasComponent<KolComponent> {
+class MediaPreviewActivity : BaseSimpleActivity(), HasComponent<KolComponent>, MediaHolderFragment.OnControllerTouch {
 
     override fun getComponent(): KolComponent = DaggerKolComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
@@ -30,7 +31,12 @@ class MediaPreviewActivity : BaseSimpleActivity(), HasComponent<KolComponent> {
     companion object{
 
         @JvmStatic
-        fun createIntent(context: Context, postId: String) =
+        fun createIntent(context: Context, postId: String): Intent =
                 Intent(context, MediaPreviewActivity::class.java).putExtra(MediaPreviewFragment.ARG_POST_ID, postId)
+    }
+
+    override fun onTouch(isVisible: Boolean) {
+        if (fragment is MediaPreviewFragment)
+            (fragment as MediaPreviewFragment).showDetail(isVisible)
     }
 }
