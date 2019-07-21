@@ -38,17 +38,9 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
         FragmentManager manager = getActivity().getSupportFragmentManager();
 
         if (manager != null) {
-
             AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
             rating.show(manager, "AppFeedbackRatingBottomSheet");
         }
-//        AdvancedAppRatingDialog.show(getActivity(), new DialogInterface.OnDismissListener() {
-//            @Override
-//            public void onDismiss(DialogInterface dialogInterface) {
-//                Toast lala = Toast.makeText(getContext(), "Testing", Toast.LENGTH_LONG);
-//                lala.show();
-//            }
-//        });
 
     }
 
