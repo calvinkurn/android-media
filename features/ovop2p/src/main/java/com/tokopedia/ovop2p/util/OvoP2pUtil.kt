@@ -75,7 +75,7 @@ object OvoP2pUtil {
     fun executeOvoGetWalletData(context: Context, subscriber: Subscriber<GraphqlResponse>) {
         var ovoWalletDataUseCase = GraphqlUseCase()
         val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.oqr_wallet_detail),
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.ovop2p_wallet_detail),
                 WalletDataBase::class.java)
         ovoWalletDataUseCase.addRequest(graphqlRequest)
         ovoWalletDataUseCase.execute(subscriber)
