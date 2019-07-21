@@ -9,9 +9,31 @@
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:text="INI ISENG DOANG"
-        />
+        android:layout_marginTop="@dimen/new_margin_small"
+        android:textColor="@color/black_n700_96"
+        android:textSize="@dimen/text_size_large"
+        android:text="@string/rating_feedback_title" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/new_margin_small"
+        android:textColor="@color/black_n700_68"
+        android:textSize="@dimen/fontvs"
+        android:text="@string/rating_feedback_message" />
+
+    <android.support.v7.widget.AppCompatRatingBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progressDrawable="@drawable/app_rating_star"
+        android:layout_centerHorizontal="true" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/new_margin_small"
+        android:textColor="@color/black_n700_96"
+        android:textSize="@dimen/sp_14"
+        android:text="@string/rating_feedback_title" />
 
 </android.support.design.widget.CoordinatorLayout>

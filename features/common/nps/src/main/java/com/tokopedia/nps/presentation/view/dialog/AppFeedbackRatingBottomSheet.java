@@ -14,7 +14,7 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
 
     @Override
     protected BottomSheetsState state() {
-        return BottomSheetsState.FULL;
+        return BottomSheetsState.NORMAL;
     }
 
     @Override
