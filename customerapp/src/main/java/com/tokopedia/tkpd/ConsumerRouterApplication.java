@@ -90,6 +90,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.ovop2p.OvoP2pRouter;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
@@ -509,12 +510,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TradeInRouter,
         ProductDetailRouter,
         OvoPayWithQrRouter,
+        OvoP2pRouter,
         TopAdsAutoRouter,
-        KYCRouter {
-
-
-    private final static int IRIS_ROW_LIMIT = 50;
-    private final static long IRIS_TIME_MINUTES = 15;
+        KYCRouter{
 
     private static final String EXTRA = "extra";
 

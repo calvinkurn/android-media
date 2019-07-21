@@ -570,6 +570,7 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.features.ovop2p)
 }
 
 
