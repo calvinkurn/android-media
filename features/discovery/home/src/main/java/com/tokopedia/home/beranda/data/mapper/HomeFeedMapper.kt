@@ -2,13 +2,13 @@ package com.tokopedia.home.beranda.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.home.beranda.domain.gql.feed.*
+import com.tokopedia.home.beranda.domain.gql.feed.Banner
+import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
+import com.tokopedia.home.beranda.domain.gql.feed.Product
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.BannerFeedViewModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel
-
 import rx.functions.Func1
 import java.util.*
 
