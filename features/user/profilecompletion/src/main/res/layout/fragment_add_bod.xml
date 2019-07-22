@@ -28,6 +28,7 @@
                 android:drawableEnd="@drawable/down"
                 android:hint="@string/hint_bod_setting_profile"
                 android:clickable="true"
+                android:cursorVisible="false"
                 android:focusable="false"/>
 
         <TextView
