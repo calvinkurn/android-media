@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Switch
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ChildSetting
+import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 
 class ChildSettingViewHolder(
         itemView: View?,
@@ -25,25 +26,24 @@ class ChildSettingViewHolder(
         val currentSettingPosition = adapterPosition
         val parentSettingAndItsIndex = settingListener.getParentSetting(currentSettingPosition)
                 ?: return
-
         val parentSetting = parentSettingAndItsIndex.first
         val parentSettingIndex = parentSettingAndItsIndex.second
-        val childSettings = parentSetting.childSettings
-        val currentChildSettingIndex = currentSettingPosition - parentSettingIndex - 1
+        val currentChildIndex = element.getIndex(currentSettingPosition, parentSettingIndex)
 
-        var allSiblingHasSameCheckedStatus = true
-        childSettings.forEachIndexed { index, childSetting ->
-            childSetting?.let {
-                if (index != currentChildSettingIndex && !childSetting.hasSameCheckedStatusWith(checked)) {
-                    allSiblingHasSameCheckedStatus = false
-                }
-            }
-        }
+        val otherSiblingHasSameCheckedStatus = parentSetting.isOtherChildHasSameCheckedStatus(currentChildIndex, checked)
 
-        if (allSiblingHasSameCheckedStatus && !parentSetting.hasSameCheckedStatusWith(checked)) {
-            parentSetting.status = checked
-            settingListener.updateSettingView(arrayListOf(parentSettingIndex))
+        if (parentSetting.needToUpdateCheckedStatus(otherSiblingHasSameCheckedStatus, checked)) {
+            updateParentSettingCheckedState(parentSetting, parentSettingIndex, checked)
         }
+    }
+
+    private fun updateParentSettingCheckedState(
+            parentSetting: ParentSetting,
+            parentSettingIndex: Int,
+            checked: Boolean
+    ) {
+        parentSetting.status = checked
+        settingListener.updateSettingView(arrayListOf(parentSettingIndex))
     }
 
     override fun getUpdatedSettingIds(element: ChildSetting, checked: Boolean): List<Map<String, Any>> {

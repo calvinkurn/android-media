@@ -12,4 +12,8 @@ class ChildSetting(
     override fun type(typeFactory: SettingFieldTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun getIndex(currentSettingPosition: Int, parentSettingIndex: Int): Int {
+        return currentSettingPosition - parentSettingIndex - 1
+    }
 }
