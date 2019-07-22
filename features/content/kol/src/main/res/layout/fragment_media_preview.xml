@@ -142,7 +142,7 @@
         app:layout_constraintTop_toBottomOf="@+id/overlay_toolbar"
         tools:text="1 dari 2"/>
 
-    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+    <android.support.v4.view.ViewPager
         android:id="@+id/media_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
