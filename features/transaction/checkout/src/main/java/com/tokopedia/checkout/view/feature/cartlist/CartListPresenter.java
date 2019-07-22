@@ -360,7 +360,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void updateInsuranceProductData(InsuranceCartShops insuranceCartShops, ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
+    public void updateInsuranceProductData(InsuranceCartShops insuranceCartShops,
+                                           ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
         view.showProgressLoading();
 
         ArrayList<UpdateInsuranceDataCart> cartIdList = new ArrayList<>();
@@ -369,6 +370,7 @@ public class CartListPresenter implements ICartListPresenter {
 
         Long shopid = insuranceCartShops.getShopId();
 
+        long productId = 0;
         for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
 
 
@@ -378,6 +380,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (!insuranceCartDigitalProduct.isProductLevel()) {
 
                     Long cartId = insuranceCartShopItems.getDigitalProductList().get(0).getCartItemId();
+                    productId = insuranceCartShopItems.getProductId();
                     cartIdList.add(new UpdateInsuranceDataCart(String.valueOf(cartId), 1));
 
                     UpdateInsuranceProduct updateInsuranceProduct =
@@ -397,7 +400,7 @@ public class CartListPresenter implements ICartListPresenter {
         }
 
         updateInsuranceProductDataUsecase.setRequestParams(updateInsuranceDataArrayList, "cart", String.valueOf(Build.VERSION.SDK_INT), cartIdList);
-        updateInsuranceProductDataUsecase.execute(getSubscriberUpdateInsuranceProductData());
+        updateInsuranceProductDataUsecase.execute(getSubscriberUpdateInsuranceProductData(productId));
     }
 
     @Override
@@ -1041,7 +1044,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<GraphqlResponse> getSubscriberUpdateInsuranceProductData() {
+    private Subscriber<GraphqlResponse> getSubscriberUpdateInsuranceProductData(long productId) {
         return new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -1062,10 +1065,8 @@ public class CartListPresenter implements ICartListPresenter {
                         graphqlResponse.getData(UpdateInsuranceDataGqlResponse.class) != null) {
                     updateInsuranceDataGqlResponse = graphqlResponse.getData(UpdateInsuranceDataGqlResponse.class);
                     if (updateInsuranceDataGqlResponse.getData().getUpdateCart().getStatus().equalsIgnoreCase("ok")) {
-//                        getInsuranceTechCart();
-
-                        // TODO: 12/7/19 show success toast
                         view.showToastMessageGreen("insurance data updated");
+                        view.removeInsuranceProductItem(productId);
                         getInsuranceTechCart();
                     } else {
                         view.showToastMessageRed(
