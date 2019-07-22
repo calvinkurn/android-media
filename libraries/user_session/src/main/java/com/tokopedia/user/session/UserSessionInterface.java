@@ -51,8 +51,10 @@ public interface UserSessionInterface {
 
     String getShopAvatar();
 
+    boolean isPowerMerchantIdle();
 
-        /**
+
+    /**
          * SETTER METHOD
          */
 
@@ -113,4 +115,6 @@ public interface UserSessionInterface {
     void setGCToken(String gcToken);
 
     void setShopAvatar(String shopAvatar);
+
+    void setIsPowerMerchantIdle(boolean powerMerchantIdle);
 }

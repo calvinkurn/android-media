@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
@@ -33,7 +34,9 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     private TextView tvMarketInsightFooter;
     private TitleCardView titleCardView;
     private GMMarketInsightAdapter GMMarketInsightAdapter;
-    private View notGMView;
+    private View overlayWarningView;
+    private ButtonCompat buttonRedirectTo;
+    private TextView tvOverlayDescription;
 
     private Listener listener;
 
@@ -43,9 +46,10 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
 
     public GMStatisticMarketInsightViewHolder(View view) {
         titleCardView = (TitleCardView) view.findViewById(R.id.market_insight_card_view);
-        notGMView = titleCardView.getContentView().findViewById(R.id.vg_market_insight_not_gm);
-
-        notGMView.setOnClickListener(new View.OnClickListener() {
+        overlayWarningView = titleCardView.getContentView().findViewById(R.id.vg_market_insight_not_gm);
+        buttonRedirectTo = titleCardView.getContentView().findViewById(R.id.button_redirect_to);
+        tvOverlayDescription = titleCardView.getContentView().findViewById(R.id.text_view_overlay_description);
+        overlayWarningView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventClickGMStatBuyGMDetailTransaction(v.getContext());
@@ -62,7 +66,7 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         GMMarketInsightAdapter = new GMMarketInsightAdapter(new ArrayList<GetKeyword.SearchKeyword>());
         recyclerView.setAdapter(GMMarketInsightAdapter);
 
-        TextView titleUpgradeGM = notGMView.findViewById(R.id.market_insight_gmsubscribe_text);
+        TextView titleUpgradeGM = overlayWarningView.findViewById(R.id.market_insight_gmsubscribe_text);
         titleUpgradeGM.setText(view.getContext().getString(R.string.gm_statistic_upgrade_to_gold_merchant,
                 view.getContext().getString(GMConstant.getGMTitleResource(view.getContext()))));
     }
@@ -92,7 +96,7 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
             return;
         }
 
-        notGMView.setVisibility(View.GONE);
+        overlayWarningView.setVisibility(View.GONE);
         //[START] check whether all is empty
         int isNotEmpty = 0;
         for (GetKeyword getKeyword : getKeywords) {
@@ -123,16 +127,30 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     }
 
     public void bindNoShopCategory(boolean goldMerchant) {
-        if (goldMerchant)
-            displayEmptyState();
-        else {
-            displayNonGoldMerchant();
-        }
+//        if (goldMerchant) {
+//            if (idlePowerMerchant)
+                displayIdlePowerMerchant();
+//            else
+//                displayEmptyState();
+//        }
+//        else {
+//            displayNonGoldMerchant();
+//        }
     }
 
     private void displayNonGoldMerchant() {
         titleCardView.setViewState(LoadingStateView.VIEW_CONTENT);
-        notGMView.setVisibility(View.VISIBLE);
+        overlayWarningView.setVisibility(View.VISIBLE);
+        tvOverlayDescription.setText("Pantau perkembangan tokomu dengan Wawasan Pasar, khusus Power Merchant.");
+        buttonRedirectTo.setText("Upgrade Tokomu");
+        displayDummyContentKeyword();
+    }
+
+    private void displayIdlePowerMerchant() {
+        titleCardView.setViewState(LoadingStateView.VIEW_CONTENT);
+        overlayWarningView.setVisibility(View.VISIBLE);
+        tvOverlayDescription.setText("Pantau perkembangan tokomu dengan Wawasan Pasar, khusus Power Merchant. Idle");
+        buttonRedirectTo.setText("Upgrade Tokomu Idle");
         displayDummyContentKeyword();
     }
 

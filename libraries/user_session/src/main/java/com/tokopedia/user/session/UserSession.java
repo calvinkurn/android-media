@@ -43,6 +43,7 @@ public class UserSession implements UserSessionInterface {
     private static final String SHOP_NAME = "SHOP_NAME";
     private static final String SHOP_AVATAR = "SHOP_AVATAR";
     private static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
+    private static final String IS_POWER_MERCHANT_IDLE = "IS_POWER_MERCHANT_IDLE";
     private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
     private static final String KEY_IV = "tokopedia1234567";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
@@ -211,6 +212,12 @@ public class UserSession implements UserSessionInterface {
     public String getShopAvatar() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(SHOP_AVATAR, "");
+    }
+
+    @Override
+    public boolean isPowerMerchantIdle() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(IS_POWER_MERCHANT_IDLE, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(IS_POWER_MERCHANT_IDLE, false);
     }
 
     /**
@@ -448,6 +455,14 @@ public class UserSession implements UserSessionInterface {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(SHOP_AVATAR, shopAvatar);
+        editor.apply();
+    }
+
+    @Override
+    public void setIsPowerMerchantIdle(boolean powerMerchantIdle) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(IS_POWER_MERCHANT_IDLE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(IS_POWER_MERCHANT_IDLE, powerMerchantIdle);
         editor.apply();
     }
 

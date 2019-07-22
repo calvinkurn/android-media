@@ -58,8 +58,8 @@ import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.gm.common.utils.PowerMerchantTracking;
+import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
-import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
@@ -468,6 +468,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel) {
         userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchantOrPending());
+        userSession.setIsPowerMerchantIdle(shopStatusModel.isPowerMerchantIdle());
 
         Info shopModelInfo = shopModel.info;
         String shopName = shopModelInfo.getShopName();

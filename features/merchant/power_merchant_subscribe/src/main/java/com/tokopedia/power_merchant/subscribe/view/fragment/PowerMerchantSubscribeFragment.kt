@@ -31,6 +31,7 @@ import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
+import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showEmptyState
@@ -39,7 +40,6 @@ import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
-import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder

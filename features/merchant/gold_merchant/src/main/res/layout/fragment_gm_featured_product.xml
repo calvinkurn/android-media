@@ -19,4 +19,6 @@
         app:srcCompat="@drawable/ic_plus_white"
         android:visibility="gone"
         app:backgroundTint="@color/tkpd_main_green" />
+    <include layout="@layout/partial_gm_statistic_market_insight_content_not_gm" />
+
 </android.support.design.widget.CoordinatorLayout>

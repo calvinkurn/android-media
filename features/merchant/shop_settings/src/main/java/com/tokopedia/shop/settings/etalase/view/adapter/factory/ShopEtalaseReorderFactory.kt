@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseTitleViewModel
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
+import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseReorderViewHolder
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseTitleViewHolder
+import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreViewHolder
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
 import com.tokopedia.shop.settings.notes.view.adapter.factory.BaseShopNoteFactory
 import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteReorderViewHolder
@@ -16,6 +18,9 @@ import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteReorderViewHold
  * Created by hendry on 16/08/18.
  */
 class ShopEtalaseReorderFactory(private val onStartDragListener: OnStartDragListener?) : BaseShopEtalaseFactory() {
+    override fun type(model: TickerReadMoreViewModel): Int {
+        return TickerReadMoreViewHolder.LAYOUT
+    }
 
     override fun type(model: ShopEtalaseViewModel): Int {
         return ShopEtalaseReorderViewHolder.LAYOUT

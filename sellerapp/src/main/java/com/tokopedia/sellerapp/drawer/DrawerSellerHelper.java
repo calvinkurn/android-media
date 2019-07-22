@@ -393,9 +393,6 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-                    eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
-                    intent = new Intent(context, GMFeaturedProductActivity.class);
-                    context.startActivity(intent);
 //                    if (adapter instanceof SellerDrawerAdapter && ((SellerDrawerAdapter) adapter).isGoldMerchant()) {
 //                        eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
 //                        intent = new Intent(context, GMFeaturedProductActivity.class);
@@ -404,6 +401,8 @@ public class DrawerSellerHelper extends DrawerHelper
 //                        showDialogActionGoToGMSubscribe();
 //                        isNeedToCloseActivity = false;
 //                    }
+                    intent = new Intent(context, GMFeaturedProductActivity.class);
+                    context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
                     eventSellerInfo(AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);

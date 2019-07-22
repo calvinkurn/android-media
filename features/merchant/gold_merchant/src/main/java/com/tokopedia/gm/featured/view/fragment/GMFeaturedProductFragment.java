@@ -16,6 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
@@ -67,6 +69,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private ItemTouchHelper mItemTouchHelper;
     private ProgressDialog progressDialog;
     private CoordinatorLayout coordinatorLayoutContainer;
+    private View viewOverlayRegularMerchant;
+    private View viewOverlayButtonRegularMerchant;
     @GMFeaturedProductTypeView
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
@@ -98,15 +102,34 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         emptyGroupAdsDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {
-                moveToProductPicker();
+                checkIsPowerMerchant();
             }
 
             @Override
             public void onEmptyButtonClicked() {
-                moveToProductPicker();
+                checkIsPowerMerchant();
             }
         });
         return emptyGroupAdsDataBinder;
+    }
+
+    private void checkIsPowerMerchant() {
+//        if (isPowerMerchant) {
+//            moveToProductPicker();
+//        } else {
+            showUpgradeOverlay();
+//        }
+
+    }
+
+    private void showUpgradeOverlay() {
+        viewOverlayRegularMerchant.setVisibility(View.VISIBLE);
+        viewOverlayButtonRegularMerchant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+            }
+        });
     }
 
     @Override
@@ -144,6 +167,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
+        viewOverlayRegularMerchant = view.findViewById(R.id.vg_market_insight_not_gm);
+        viewOverlayButtonRegularMerchant = view.findViewById(R.id.button_redirect_to);
+
+
     }
 
     private void showSnackbarWithUndo() {

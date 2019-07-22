@@ -1,4 +1,4 @@
-package com.tokopedia.power_merchant.subscribe.view.bottomsheets
+package com.tokopedia.gm.common.widget
 
 import android.app.Dialog
 import android.os.Bundle
@@ -10,11 +10,11 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.TextViewCompat
+import com.tokopedia.gm.common.R
 import com.tokopedia.gm.common.constant.GMParamConstant.PM_HOME_NONACTIVE
 import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.power_merchant.subscribe.R
 
 class PowerMerchantSuccessBottomSheet : BottomSheets() {
 
