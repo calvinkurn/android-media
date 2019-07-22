@@ -17,23 +17,51 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.analytics.Analytics;
+import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
+import com.tokopedia.changepassword.data.ChangePasswordUrl;
+import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.common.category.CategoryDbFlow;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.digital.common.constant.DigitalUrl;
+import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.imageuploader.data.ImageUploaderUrl;
+import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
+import com.tokopedia.logout.data.LogoutUrl;
+import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
+import com.tokopedia.network.SessionUrl;
+import com.tokopedia.otp.cotp.data.CotpUrl;
+import com.tokopedia.otp.cotp.data.SQLoginUrl;
+import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
+import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
+import com.tokopedia.product.detail.data.util.ProductDetailConstant;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
+import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.sessioncommon.data.SessionCommonUrl;
+import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
+import com.tokopedia.settingbank.choosebank.data.BankListUrl;
+import com.tokopedia.shop.common.constant.ShopCommonUrl;
+import com.tokopedia.shop.common.constant.ShopUrl;
+import com.tokopedia.talk.common.data.TalkUrl;
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -113,7 +141,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = DashboardActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeepLinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
-        setVersionCode();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
@@ -121,7 +148,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
 
         TrackApp.initTrackApp(this);
@@ -130,6 +156,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
+        Analytics.initDB(getApplicationContext());
+
 
         super.onCreate();
 
@@ -139,6 +167,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GraphqlClient.init(this);
         NetworkClient.init(this);
         InstabugInitalize.init(this);
+        TokopediaUrl.Companion.init(this);
     }
 
     private void setVersionCode() {

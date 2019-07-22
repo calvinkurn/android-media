@@ -1,7 +1,6 @@
 package com.tokopedia.core.network.apiservices.etc.apis.home;
 
-import com.tokopedia.config.url.TokopediaUrl;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Slide;
 

@@ -1,6 +1,6 @@
 package com.tokopedia.imageuploader.data;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author by yfsx on 02/07/18.

@@ -93,6 +93,10 @@ public interface ProductListSectionContract {
         void launchLoginActivity(String productId);
 
         void sendImpressionGuidedSearch();
+
+        void showAdultRestriction();
+
+        void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

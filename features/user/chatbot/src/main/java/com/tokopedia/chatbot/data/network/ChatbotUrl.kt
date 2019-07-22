@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.data.network
 
-import com.tokopedia.config.url.TokopediaUrl
-import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * @author by nisie on 06/12/18.

@@ -26,7 +26,6 @@
         </activity>
         <activity
             android:name=".view.feature.addressoptions.CartAddressChoiceActivity"
-            android:label="@string/checkout_module_title_shipping_dest"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
@@ -43,7 +42,7 @@
 
         <activity
             android:name=".view.feature.shipment.ShipmentActivity"
-            android:label="@string/checkout_module_title_activity_checkout"
+            android:label="@string/checkout_module_title_shipping_dest_new"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

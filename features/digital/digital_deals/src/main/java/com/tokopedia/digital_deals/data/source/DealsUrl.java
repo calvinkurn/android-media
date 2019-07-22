@@ -1,6 +1,6 @@
 package com.tokopedia.digital_deals.data.source;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 public class DealsUrl {
     //Base Url

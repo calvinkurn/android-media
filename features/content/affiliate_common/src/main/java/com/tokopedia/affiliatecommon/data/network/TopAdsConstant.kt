@@ -1,6 +1,6 @@
 package com.tokopedia.affiliatecommon.data.network
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * @author by milhamj on 10/17/18.

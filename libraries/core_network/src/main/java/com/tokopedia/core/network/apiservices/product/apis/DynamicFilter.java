@@ -1,8 +1,7 @@
 package com.tokopedia.core.network.apiservices.product.apis;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import java.util.Map;
 

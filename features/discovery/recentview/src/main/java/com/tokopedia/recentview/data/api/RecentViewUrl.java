@@ -1,6 +1,6 @@
 package com.tokopedia.recentview.data.api;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 public class RecentViewUrl {
     public static String MOJITO_DOMAIN = TokopediaUrl.Companion.getInstance().getMOJITO();

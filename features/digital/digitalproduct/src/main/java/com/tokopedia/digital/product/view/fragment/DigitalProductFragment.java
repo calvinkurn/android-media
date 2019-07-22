@@ -45,10 +45,11 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
@@ -256,6 +257,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         renderViewShadow();
         setupArguments(getArguments());
+        presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId), "VISIT");
 
         if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
@@ -424,6 +426,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber) {
+        digitalAnalytics.eventDigitalCategoryScreenLaunch(categoryData);
+
         this.categoryDataState = categoryData;
         this.historyClientNumberState = historyClientNumber;
         actionListener.updateTitleToolbar(categoryData.getName());
@@ -878,8 +882,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 break;
             case REQUEST_CODE_CART_DIGITAL:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    if (data.hasExtra(DigitalRouter.Companion.getEXTRA_MESSAGE())) {
-                        String message = data.getStringExtra(DigitalRouter.Companion.getEXTRA_MESSAGE());
+                    if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
+                        String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
                         if (!TextUtils.isEmpty(message)) {
                             showToastMessage(message);
                         }

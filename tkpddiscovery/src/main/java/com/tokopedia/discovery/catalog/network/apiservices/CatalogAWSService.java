@@ -1,9 +1,8 @@
 package com.tokopedia.discovery.catalog.network.apiservices;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.search.CatalogService;
 import com.tokopedia.discovery.catalog.network.apiservices.apis.CatalogAWSApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.BaseService;
 
 import retrofit2.Retrofit;

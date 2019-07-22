@@ -2,13 +2,11 @@ package com.tokopedia.transaction.orders.orderlist.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.ParseException
 import android.os.Bundle
 import android.text.TextUtils
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.config.url.TokopediaUrl
-import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity
 
 class WebViewOrderListActivity : BaseDownloadAppLinkActivity() {

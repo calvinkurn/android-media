@@ -1,6 +1,6 @@
 package com.tokopedia.settingbank.addeditaccount.data
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * Created by Ade Fulki on 2019-05-16.

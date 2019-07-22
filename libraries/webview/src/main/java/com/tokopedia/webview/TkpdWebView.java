@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
+import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
@@ -14,6 +16,7 @@ import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Map;
 
 /**
  * Created by nisie on 11/30/16.
@@ -119,5 +122,18 @@ public class TkpdWebView extends WebView {
 
     private boolean isSeamlessUrl(String uri) {
         return uri.startsWith(URLGenerator.getBaseUrl());
+    }
+
+    @Override
+    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
+        if(WebViewHelper.isUrlValid(url)){
+            super.loadUrl(url, additionalHttpHeaders);
+        }else {
+            if(!GlobalConfig.DEBUG)
+                Crashlytics.log(
+                        getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+
+            super.loadUrl(url);
+        }
     }
 }

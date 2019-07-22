@@ -1,6 +1,6 @@
 package com.tokopedia.instantloan.network
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.BaseUrl.WEB_DOMAIN
 
 object InstantLoanUrl {

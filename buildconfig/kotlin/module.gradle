@@ -44,7 +44,6 @@ android {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.supportV4

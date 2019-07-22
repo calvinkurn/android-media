@@ -1,6 +1,6 @@
 package com.tokopedia.common_digital.common.constant
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * Created by Rizky on 13/08/18.

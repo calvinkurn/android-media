@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.common;
 
-import com.tokopedia.config.url.TokopediaUrl;
-import com.tokopedia.inbox.BuildConfig;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by meta on 21/02/19.

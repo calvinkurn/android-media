@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
+import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -32,7 +34,6 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
@@ -45,6 +46,7 @@ import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -54,6 +56,7 @@ import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.url.TokopediaUrl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -89,6 +92,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         UIBlockDebugger.init(this);
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
+
+        FirebaseApp.initializeApp(this);
+
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
@@ -183,9 +189,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
             GlobalConfig.VERSION_CODE = pInfo.versionCode;
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = pInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         }
     }
 
@@ -386,4 +394,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
 
+    @Override
+    public void setCategoryAbTestingConfig() {
+        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(), this::openNewBelanja, this::openOldBelanja);
+    }
+
+    Intent openNewBelanja(Context context) {
+        return null;
+    }
+
+    Intent openOldBelanja(Context context) {
+        return null;
+    }
 }

@@ -281,7 +281,7 @@
     <string name="email_not_registered">Email Belum Terdaftar</string>
     <string name="email_not_registered_info">Lanjut daftar dengan email ini %1$s?</string>
     <string name="not_registered_yes">Ya, Daftar</string>
-
+    <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
     <!-- ACTIVATION PAGE -->
     <string name="title_activity_activation">Aktivasi Akun</string>
@@ -317,6 +317,13 @@
     <string name="must_insert_email_or_phone">Nomor Ponsel atau Email harus diisi</string>
     <string name="change_2">Ubah</string>
     <string name="loginregister_failed_login_google">Akun gagal terautentikasi (%s). Mohon coba kembali.</string>
+    <string name="default_placeholder">Contoh: 08123456789</string>
 
     <string name="developer_options">Developer Options</string>
+
+    <!-- ERROR LOGIN -->
+    <string name="error_login_user_cancel_create_password">Cancel create password</string>
+    <string name="error_login_user_cancel_activate_account">Cancel activate account</string>
+    <string name="error_login_user_cancel_login_phone">Cancel login phone</string>
+
 </resources>

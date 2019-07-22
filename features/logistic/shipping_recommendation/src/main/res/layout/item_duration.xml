@@ -28,18 +28,18 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_duration"
-            style="@style/TextMidMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:lineSpacingExtra="4sp"
-            tools:text="4 Jam" />
+            tools:text="4 Jam"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_promo_potency"
-            style="@style/TextSmallNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/tv_duration"
@@ -53,53 +53,60 @@
             android:text="@string/label_text_promo_potency"
             android:textColor="@color/text_promo_potency"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_price"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_duration"
             android:layout_marginTop="4dp"
-            tools:text="Mulai dari Rp10.000" />
+            tools:text="Mulai dari Rp10.000"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_text_desc"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_price"
             android:layout_marginTop="@dimen/dp_4"
-            tools:text="(Direkomendasikan untuk berat di atas 5kg)" />
+            tools:text="(Direkomendasikan untuk berat di atas 5kg)"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_cod_availability"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_text_desc"
             android:layout_marginTop="4dp"
-            tools:text="(Tersedia Bayar di Tempat)" />
+            tools:text="(Tersedia Bayar di Tempat)"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_order_prioritas"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_cod_availability"
             android:layout_marginTop="4dp"
-            tools:text="Tersedia layanan Order Prioritas" />
+            tools:text="Tersedia layanan Order Prioritas"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_error"
-            style="@style/TextSmallNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_order_prioritas"
             android:layout_marginTop="4dp"
             android:textColor="@color/text_courier_error_red"
-            tools:text="Jarak melebihi batas maksimum kurir" />
+            tools:text="Jarak melebihi batas maksimum kurir"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
         <ImageView
             android:id="@+id/img_check"

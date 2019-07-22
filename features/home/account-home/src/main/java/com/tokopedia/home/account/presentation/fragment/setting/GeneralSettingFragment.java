@@ -2,19 +2,23 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
@@ -26,7 +30,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
@@ -46,8 +49,9 @@ import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
-import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.url.TokopediaUrl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +84,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     private View baseSettingView;
 
     private AccountAnalytics accountAnalytics;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     public static Fragment createInstance() {
         return new GeneralSettingFragment();
@@ -91,6 +96,24 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         accountAnalytics = new AccountAnalytics(getActivity());
+        permissionCheckerHelper = new PermissionCheckerHelper();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null) {
+            adapter.updateSettingItem(SettingConstant.SETTING_GEOLOCATION_ID);
+        }
+    }
+
+    private boolean hasLocationPermission() {
+        if (getActivity() != null) {
+            return permissionCheckerHelper.hasPermission(getActivity(),
+                            new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION});
+
+        }
+        return false;
     }
 
     @Nullable
@@ -141,7 +164,9 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)));
         settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
-                getString(R.string.title_shake_setting), getString(R.string.subtitle_shake_setting)));
+                getString(R.string.title_shake_setting), getString(R.string.subtitle_shake_setting), false));
+        settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
+                getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true));
 
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TNC_ID,
                 getString(R.string.title_tnc_setting)));
@@ -298,6 +323,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         switch (settingId) {
             case SettingConstant.SETTING_SHAKE_ID:
                 return isItemSelected(getString(R.string.pref_receive_shake), true);
+            case SettingConstant.SETTING_GEOLOCATION_ID:
+                return hasLocationPermission();
             default:
                 return false;
         }
@@ -311,6 +338,16 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 saveSettingValue(getString(R.string.pref_receive_shake), value);
                 break;
             default:
+                break;
+        }
+    }
+
+
+    @Override
+    public void onClicked(int settingId, boolean currentValue) {
+        switch (settingId) {
+            case SettingConstant.SETTING_GEOLOCATION_ID:
+                createAndShowLocationAlertDialog(currentValue);
                 break;
         }
     }
@@ -337,6 +374,14 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         startActivity(intent);
     }
 
+    private void goToApplicationDetailActivity() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+        intent.setData(uri);
+        getActivity().startActivity(intent);
+    }
+
     @Override
     public void logoutFacebook() {
         LoginManager.getInstance().logOut();
@@ -360,5 +405,30 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     public void onDestroyView() {
         presenter.detachView();
         super.onDestroyView();
+    }
+
+    private void createAndShowLocationAlertDialog(boolean currentValue) {
+        if (!currentValue) {
+            accountAnalytics.eventClickToggleOnGeolocation(getActivity());
+        } else {
+            accountAnalytics.eventClickToggleOffGeolocation(getActivity());
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setMessage(R.string.account_home_title_geolocation_alertdialog);
+        builder.setPositiveButton(R.string.account_home_ok_geolocation_alertdialog, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                goToApplicationDetailActivity();
+            }
+        });
+        builder.setNegativeButton(R.string.account_home_batal_geolocation_alertdialog, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
     }
 }

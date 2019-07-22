@@ -1,7 +1,7 @@
 package com.tokopedia.user_identification_common;
 
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author by nisie on 16/11/18.

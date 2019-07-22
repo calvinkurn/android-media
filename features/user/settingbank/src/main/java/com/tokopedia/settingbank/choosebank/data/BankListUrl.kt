@@ -1,6 +1,6 @@
 package com.tokopedia.settingbank.choosebank.data
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * @author by nisie on 7/2/18.

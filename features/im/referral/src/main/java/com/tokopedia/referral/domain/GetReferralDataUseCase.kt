@@ -8,13 +8,11 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
-import com.tokopedia.config.url.TokopediaUrl
-import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.data.ReferralCodeEntity
 import com.tokopedia.usecase.RequestParams
 
-import java.lang.reflect.Type
 import java.util.ArrayList
 
 import javax.inject.Inject

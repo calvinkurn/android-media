@@ -1,6 +1,6 @@
 package com.tokopedia.payment.setting.util
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 
 var PAYMENT_SETTING_URL = TokopediaUrl.getInstance().PAYMENT
 val GET_IFRAME_ADD_CC_URL = "ccvault/ws/ccregister/iframe"

@@ -5,12 +5,10 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase
-import com.tokopedia.config.url.TokopediaUrl
-import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.promocheckout.common.domain.model.cancelpromo.ResponseCancelPromo
 import com.tokopedia.usecase.RequestParams
 import okhttp3.Interceptor
-import org.json.JSONObject
 
 class CancelPromoUseCase(authInterceptor : List<Interceptor>, context: Context) : RestRequestSupportInterceptorUseCase(authInterceptor, context) {
 

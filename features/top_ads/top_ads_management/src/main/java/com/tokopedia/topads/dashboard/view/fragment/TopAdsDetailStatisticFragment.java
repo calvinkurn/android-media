@@ -82,6 +82,26 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailViewPr
         updateStatisticView(ad);
     }
 
+    @Override
+    public void onAutoAdsActive() {
+        super.onAutoAdsActive();
+        maxBid.setVisibility(View.GONE);
+        avgCost.setVisibility(View.GONE);
+        start.setVisibility(View.GONE);
+        end.setVisibility(View.GONE);
+        dailyBudget.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onAutoAdsInactive() {
+        super.onAutoAdsInactive();
+        maxBid.setVisibility(View.VISIBLE);
+        avgCost.setVisibility(View.VISIBLE);
+        start.setVisibility(View.VISIBLE);
+        end.setVisibility(View.VISIBLE);
+        dailyBudget.setVisibility(View.VISIBLE);
+    }
+
     protected void updateCostView(V ad) {
         maxBid.setContent(getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         avgCost.setContent(ad.getStatAvgClick());

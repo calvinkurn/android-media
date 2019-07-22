@@ -12,14 +12,11 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Nisie on 19/06/15.
@@ -45,32 +42,29 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public static class ViewHolderRetry extends RecyclerView.ViewHolder {
-        @BindView(R2.id.main_retry)
         TextView retry;
 
         public ViewHolderRetry(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            retry = (TextView) itemView.findViewById(R.id.main_retry);
         }
     }
 
     public static class ViewHolderErrorNetworkState extends RecyclerView.ViewHolder {
-        @BindView(R2.id.button_retry)
         TextView retry;
 
         public ViewHolderErrorNetworkState(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            retry = (TextView) itemView.findViewById(R.id.button_retry);
         }
     }
 
     public static class ViewHolderEmpty extends RecyclerView.ViewHolder {
-        @BindView(R2.id.no_result_image)
         ImageView emptyImage;
 
         public ViewHolderEmpty(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            emptyImage = (ImageView) itemView.findViewById(R.id.no_result_image);
         }
     }
 

@@ -1,7 +1,7 @@
 package com.tokopedia.home.account;
 
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author okasurya on 9/14/18.

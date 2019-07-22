@@ -3,9 +3,11 @@ package com.tokopedia.tkpd.timber;
 import android.app.Application;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.BuildConfig;

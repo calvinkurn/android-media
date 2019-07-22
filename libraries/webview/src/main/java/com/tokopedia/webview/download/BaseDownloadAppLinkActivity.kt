@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment
 import android.text.TextUtils
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 
 open class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {

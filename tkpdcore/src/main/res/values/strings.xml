@@ -2217,4 +2217,7 @@ di Tokopedia Sekarang!</string>
     <string name="label_tokocard">TokoCard</string>
     <string name="react_native_developer_mode">React Native Developer Mode</string>
 
+    <!-- String related WebView-->
+    <string name="error_message_url_invalid">Url tidak valid</string>
+    <string name="error_message_url_invalid_crashlytics">Invalid webview url - </string>
 </resources>

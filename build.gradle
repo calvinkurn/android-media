@@ -6,6 +6,7 @@ apply from: 'buildconfig/dependencies/dependency-features.gradle'
 //apply from: 'buildconfig/dependencies/dependency-features-no-op.gradle'
 apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
+apply plugin: 'idea'
 
 
 buildscript {
@@ -24,7 +25,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.uber:okbuck:0.41.0'
-        classpath ('com.android.tools.build:gradle:3.2.0') {
+        classpath ('com.android.tools.build:gradle:3.3.1') {
             exclude module: 'proguard-gradle'
         }
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
@@ -41,7 +42,7 @@ buildscript {
         }
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.0"
         classpath "com.google.gms:google-services:4.1.0"
-        classpath "io.fabric.tools:gradle:1.26.1"
+        classpath "io.fabric.tools:gradle:1.27.1"
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
     }
@@ -120,6 +121,7 @@ okbuck {
         version = "26.0.1"
     }
 
+    buckBinary = "com.github.tokopedia:buck:7c9bdd9e65d5c25eeb5c4c4e2542267b6b6c6900@pex"
 }
 
 task clean(type: Delete) {
@@ -150,13 +152,13 @@ subprojects {
             dependencySubstitution {
                 substitute module('com.squareup.okhttp3:okhttp') with module(rootProject.ext.networkDependencies.okHttp)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib') with module(rootProject.ext.supportLibDependencies.kotlinSupport)
-                substitute module('com.squareup.okio:okio') with module('com.squareup.okio:okio:1.13.0')
+                substitute module('com.squareup.okio:okio') with module('com.squareup.okio:okio:1.15.0')
                 substitute module('com.google.code.findbugs:jsr305') with module('com.google.code.findbugs:jsr305:1.3.9')
-                substitute module('com.android.support:support-annotations') with module('com.android.support:support-annotations:27.1.1')
+                substitute module('com.android.support:support-annotations') with module("com.android.support:support-annotations:${supportLibraryVersion}")
                 substitute module('com.android.support:multidex') with module("com.android.support:multidex:${multiDexVersion}")
-                substitute module('com.android.support:support-v13') with module('com.android.support:support-v13:27.1.1')
-                substitute module('com.android.support:support-v4') with module('com.android.support:support-v4:27.1.1')
-                substitute module('com.android.support:support-compat') with module('com.android.support:support-compat:27.1.1')
+                substitute module('com.android.support:support-v13') with module("com.android.support:support-v13:${supportLibraryVersion}")
+                substitute module('com.android.support:support-v4') with module("com.android.support:support-v4:${supportLibraryVersion}")
+                substitute module('com.android.support:support-compat') with module("com.android.support:support-compat:${supportLibraryVersion}")
                 substitute module('android.arch.core:runtime') with module('android.arch.core:runtime:1.1.1')
                 substitute module('android.arch.core:common') with module('android.arch.core:common:1.1.1')
                 substitute module('android.arch.lifecycle:runtime') with module('android.arch.lifecycle:runtime:1.1.1')
@@ -169,6 +171,7 @@ subprojects {
                 substitute module('com.google.firebase:firebase-iid') with module("com.google.firebase:firebase-iid:${playServiceFirebaseIidVersion}")
                 substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:16.0.5")
                 substitute module('com.google.guava:guava') with module("com.google.guava:guava:${guavaVersion}")
+                substitute module('com.facebook.soloader:soloader') with module("com.facebook.soloader:soloader:0.6.0")
             }
         }
     }
@@ -182,3 +185,9 @@ gradle.buildFinished {
     "zip -d .okbuck/cache/org.hamcrest.hamcrest-integration-1.3.jar LICENSE.txt".execute()
 }
 
+idea.module {
+    excludeDirs += file('build/')
+    excludeDirs += file('.buckd/')
+    excludeDirs += file('.okbuck/')
+    excludeDirs += file('buck-out/')
+}

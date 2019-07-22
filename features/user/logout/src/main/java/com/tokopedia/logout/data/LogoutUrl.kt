@@ -1,6 +1,6 @@
 package com.tokopedia.logout.data
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * @author by nisie on 5/30/18.

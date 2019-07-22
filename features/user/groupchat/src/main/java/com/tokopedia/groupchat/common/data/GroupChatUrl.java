@@ -1,6 +1,6 @@
 package com.tokopedia.groupchat.common.data;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author by nisie on 2/23/18.

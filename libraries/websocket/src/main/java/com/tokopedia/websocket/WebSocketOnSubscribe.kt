@@ -1,8 +1,7 @@
 package com.tokopedia.websocket
 
 import android.util.Log
-import com.tokopedia.config.url.TokopediaUrl
-import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.url.TokopediaUrl
 import okhttp3.*
 import okio.ByteString
 import rx.Observable

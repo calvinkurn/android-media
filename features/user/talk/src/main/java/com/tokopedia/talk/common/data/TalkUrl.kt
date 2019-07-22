@@ -1,6 +1,6 @@
 package com.tokopedia.talk.common.data
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * @author by nisie on 9/3/18.

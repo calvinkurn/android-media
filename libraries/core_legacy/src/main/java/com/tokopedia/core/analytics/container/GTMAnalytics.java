@@ -26,12 +26,19 @@ import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
@@ -47,12 +54,14 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
     private final Iris iris;
+    private final RemoteConfig remoteConfig;
 
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
         super(context);
         iris = IrisAnalytics.Companion.getInstance(context);
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @Override
@@ -101,9 +110,14 @@ public class GTMAnalytics extends ContextAnalytics {
                     bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
 
             pResult.setResultCallback(cHolder -> {
-                if (isAllowRefreshDefault(cHolder)) {
-                    cHolder.refresh();
-                }
+                cHolder.setContainerAvailableListener((containerHolder, s) -> {
+                    if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
+                        if (isAllowRefreshDefault(containerHolder)) {
+                            Log.d("GTM TKPD", "Refreshed Container ");
+                            containerHolder.refresh();
+                        }
+                    }
+                });
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
             eventError(getContext().getClass().toString(), e.toString());
@@ -128,12 +142,17 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
-        Log.i("GAv4", "UA-9801603-15: Send Event");
-
-        log(getContext(), eventName, values);
-
-        getTagManager().getDataLayer().pushEvent(eventName, values);
-        pushIris(eventName, values);
+        Observable.just(values)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(uid -> {
+                    Log.i("GAv4", "UA-9801603-15: Send Event");
+                    log(getContext(), eventName, values);
+                    getTagManager().getDataLayer().pushEvent(eventName, values);
+                    pushIris(eventName, values);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
     @Override
@@ -293,17 +312,30 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void pushGeneral(Map<String, Object> values) {
-        Log.i("GAv4", "UA-9801603-15: Send General");
-
-        log(getContext(), null, values);
-        TagManager.getInstance(getContext()).getDataLayer().push(values);
-        pushIris("", values);
+        Observable.just(values)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(map -> {
+                    Log.i("GAv4", "UA-9801603-15: Send General");
+                    log(getContext(), null, values);
+                    TagManager.getInstance(getContext()).getDataLayer().push(values);
+                    pushIris("", values);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
     public void pushUserId(String userId) {
-        Map<String, Object> maps = new HashMap<>();
-        maps.put("user_id", userId);
-        getTagManager().getDataLayer().push(maps);
+        Observable.just(userId)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(uid -> {
+                    Map<String, Object> maps = new HashMap<>();
+                    maps.put("user_id", uid);
+                    getTagManager().getDataLayer().push(maps);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
     public void eventLogAnalytics(String screenName, String errorDesc) {
@@ -572,5 +604,24 @@ public class GTMAnalytics extends ContextAnalytics {
     private static class GTMBody {
         Map<String, Object> values;
         String eventName;
+    }
+
+    private Subscriber<Boolean> getDefaultSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Boolean ignored) {
+
+            }
+        };
     }
 }

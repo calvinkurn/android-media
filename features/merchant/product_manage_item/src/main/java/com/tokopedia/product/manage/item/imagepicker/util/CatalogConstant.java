@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.imagepicker.util;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by zulfikarrahman on 6/5/18.

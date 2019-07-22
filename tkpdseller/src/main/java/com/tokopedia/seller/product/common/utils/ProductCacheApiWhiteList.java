@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.common.utils;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.product.manage.item.common.util.ProductUrl;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
