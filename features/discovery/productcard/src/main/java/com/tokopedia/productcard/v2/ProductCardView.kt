@@ -22,8 +22,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.*
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder
-import com.tokopedia.topads.sdk.view.ImpressedImageView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
