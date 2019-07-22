@@ -30,15 +30,14 @@ import com.tokopedia.videoplayer.utils.RepeatMode
 class MediaHolderFragment : BaseDaggerFragment() {
     private var mediaType = TYPE_IMAGE
     private var mediaSource = ""
+    private var onControllerTouch: OnControllerTouch? = null
 
     private var isReadyPlayed = true
     private var currentWindowIndex: Int = C.INDEX_UNSET
     private var currentPosition: Long = 0
+    private var mExoPlayer: SimpleExoPlayer? = null
     private var isMute = false
     private var currentVol = 1f
-    private var mExoPlayer: SimpleExoPlayer? = null
-
-    private var onControllerTouch: OnControllerTouch? = null
 
     companion object {
         private const val ARG_MEDIA_SRC = "media_src"
@@ -100,9 +99,8 @@ class MediaHolderFragment : BaseDaggerFragment() {
             currentVol = savedInstanceState.getFloat(CURRENT_VOLUME_KEY, 1f)
         }
 
-        //video_player.controllerShowTimeoutMs = 0
         video_player.setControllerVisibilityListener {
-            //onControllerTouch?.onTouch(it == View.VISIBLE)
+            onControllerTouch?.onTouch(it == View.VISIBLE)
         }
         val volumeControl: ImageView = video_player.findViewById(R.id.volume_control)
         volumeControl.setOnClickListener {
@@ -126,7 +124,7 @@ class MediaHolderFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
-        if ((Util.SDK_INT <= 23 || mExoPlayer == null) && mediaType == TYPE_VIDEO){
+        if ((Util.SDK_INT <= 23 || mExoPlayer == null) && mediaType == TYPE_VIDEO && userVisibleHint){
             playVideo(mediaSource)
         }
     }
@@ -187,16 +185,16 @@ class MediaHolderFragment : BaseDaggerFragment() {
             video_player.player = mExoPlayer
             mExoPlayer?.repeatMode = RepeatMode.REPEAT_MODE_OFF
             mExoPlayer?.playWhenReady = isReadyPlayed
-
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-                video_player.rotation = VIDEO_ROTATION_90
-            }
-
             val isHasStartPosition = currentWindowIndex != C.INDEX_UNSET
             if (isHasStartPosition) {
                 mExoPlayer?.seekTo(currentWindowIndex, currentPosition)
             }
 
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+                video_player.rotation = VIDEO_ROTATION_90
+            }
+
+            video_player.controllerShowTimeoutMs = 0
             if (isMute){
                 mExoPlayer?.volume = 0f
             }
