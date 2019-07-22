@@ -9,5 +9,5 @@ import java.util.*
 
 interface OnDateChangedListener{
 
-    fun onDateChanged(date: Date)
+    fun onDateChanged(date: Long)
 }

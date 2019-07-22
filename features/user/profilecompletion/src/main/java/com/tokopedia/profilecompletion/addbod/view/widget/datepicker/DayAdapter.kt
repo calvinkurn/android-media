@@ -1,7 +1,7 @@
 package com.tokopedia.profilecompletion.addbod.view.widget.datepicker
 
 import com.tokopedia.kotlin.extensions.view.clamp
-import com.tokopedia.profilecompletion.addbod.view.widget.wheelpicker.NumberPickerAdapter
+import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPickerAdapter
 
 class DayAdapter(var days: MutableList<Int> = mutableListOf()) : NumberPickerAdapter() {
 

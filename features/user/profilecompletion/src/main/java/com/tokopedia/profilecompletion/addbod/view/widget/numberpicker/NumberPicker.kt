@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.addbod.view.widget.wheelpicker
+package com.tokopedia.profilecompletion.addbod.view.widget.numberpicker
 
 import android.content.Context
 import android.graphics.Canvas
@@ -564,9 +564,6 @@ class NumberPicker @JvmOverloads constructor(
     }
 
     fun scrollTo(position: Int) {
-        if (curSelectedItemIndex == position)
-            return
-
         curSelectedItemIndex = position
         selectorItemIndices.clear()
         for (i in 0 until selectorItemCount) {

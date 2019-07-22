@@ -280,8 +280,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     getString(R.string.hint_bod_setting_profile),
                     false,
                     View.OnClickListener {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
-                        startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
+                        goToAddBod()
                     }
             )
         } else {
@@ -294,8 +293,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     false,
                     true,
                     View.OnClickListener {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
-                        startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
+                        goToChangeBod(profileCompletionData.birthDay)
                     }
             )
         }
@@ -406,6 +404,17 @@ class SettingProfileFragment : BaseDaggerFragment() {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
+    }
+
+    private fun goToAddBod() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+        startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
+    }
+
+    private fun goToChangeBod(bod: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD, bod)
+        startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
     }
 
     private fun onErrorGetProfileInfo(throwable: Throwable) {

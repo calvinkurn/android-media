@@ -21,7 +21,7 @@
             android:orientation="horizontal"
             android:background="@android:color/transparent">
 
-        <com.tokopedia.profilecompletion.addbod.view.widget.wheelpicker.NumberPicker
+        <com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
                 android:id="@+id/daySpinner"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -40,7 +40,7 @@
                 app:np_wrapSelectorWheel="true"
         />
 
-        <com.tokopedia.profilecompletion.addbod.view.widget.wheelpicker.NumberPicker
+        <com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
                 android:id="@+id/monthSpinner"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -59,7 +59,7 @@
                 app:np_wrapSelectorWheel="true"
         />
 
-        <com.tokopedia.profilecompletion.addbod.view.widget.wheelpicker.NumberPicker
+        <com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
                 android:id="@+id/yearSpinner"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -69,13 +69,11 @@
                 android:background="@android:color/transparent"
                 app:np_align="CENTER"
                 app:np_fadingEdgeEnabled="false"
-                app:np_max="2019"
-                app:np_min="1919"
                 app:np_selectedTextColor="@android:color/black"
                 app:np_textColor="#7031353b"
                 app:np_textSize="14sp"
                 app:np_wheelItemCount="5"
-                app:np_wrapSelectorWheel="true"
+                app:np_wrapSelectorWheel="false"
         />
     </LinearLayout>
 </RelativeLayout>
