@@ -98,6 +98,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView ivProductImage;
     private TextView tvProductName;
     private TextView tvProductPrice;
+    private TextView tvProductPriceOriginal;
     private ImageView ivFreeReturnIcon;
     private TextView tvFreeReturnLabel;
     private TextView tvPreOrder;
@@ -253,6 +254,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
         tvProductPrice = itemView.findViewById(R.id.tv_product_price);
+        tvProductPriceOriginal = itemView.findViewById(R.id.tv_product_price_original);
         rlPurchaseProtection = itemView.findViewById(R.id.rlayout_purchase_protection);
         tvPPPLinkText = itemView.findViewById(R.id.text_link_text);
         tvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
