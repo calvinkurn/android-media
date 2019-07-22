@@ -177,6 +177,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         intent.putExtra(HOTEL_CURRENT_LOCATION_LAT, lat)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+        activity?.overridePendingTransition(R.anim.travel_anim_stay, R.anim.travel_slide_out_up)
     }
 
     fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
@@ -194,6 +195,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         intent.putExtra(HOTEL_DESTINATION_TYPE, popularSearch.type)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+        activity?.overridePendingTransition(R.anim.travel_anim_stay, R.anim.travel_slide_out_up)
     }
 
     override fun loadData(page: Int) {
@@ -226,6 +228,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         intent.putExtra(HOTEL_DESTINATION_TYPE, recentSearch.property.type)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+        activity?.overridePendingTransition(R.anim.travel_anim_stay, R.anim.travel_slide_out_up)
     }
 
     override fun isRecentSearchEmpty() {

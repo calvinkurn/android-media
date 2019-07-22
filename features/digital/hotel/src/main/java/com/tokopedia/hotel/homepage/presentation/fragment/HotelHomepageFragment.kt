@@ -177,6 +177,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun onDestinationChangeClicked() {
         startActivityForResult(HotelDestinationActivity.createInstance(activity!!), REQUEST_CODE_DESTINATION)
+        activity?.run {
+            overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay)
+        }
     }
 
     private fun configAndRenderCheckInDate() {
