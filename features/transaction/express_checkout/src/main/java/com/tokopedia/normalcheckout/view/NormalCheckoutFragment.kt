@@ -66,8 +66,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
 import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest
-import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.transactiondata.insurance.entity.request.*
 import com.tokopedia.transactiondata.insurance.entity.response.AddInsuranceProductToCartGqlResponse
@@ -76,10 +74,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
-import rx.Observable
 import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
@@ -768,14 +763,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    private fun sendBranchAddToCardEvent(){
-        if(selectedProductInfo != null) {
+    private fun sendBranchAddToCardEvent() {
+        if (selectedProductInfo != null) {
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, createLinkerData(selectedProductInfo,
                     (UserSession(activity)).userId)))
         }
     }
 
-    private fun createLinkerData(productInfo: ProductInfo?, userId: String?): LinkerData{
+    private fun createLinkerData(productInfo: ProductInfo?, userId: String?): LinkerData {
         var linkerData = LinkerData()
         linkerData.id = productInfo?.basic?.id.toString()
         linkerData.price = productInfo?.basic?.price?.toInt().toString()
