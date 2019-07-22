@@ -54,6 +54,17 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
     }
 
     @Override
+    public int getDataSize() {
+        List<GMFeaturedProductModel> gmFeaturedProductModels = new ArrayList<>();
+        for (ItemType model : super.getData()) {
+            if(model instanceof GMFeaturedProductModel){
+                gmFeaturedProductModels.add((GMFeaturedProductModel) model);
+            }
+        }
+        return gmFeaturedProductModels.size();
+    }
+
+    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case GMFeaturedProductModel.TYPE:
