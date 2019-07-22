@@ -77,7 +77,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
-        val feedData = data.feedData.filter { it.data == "custom" }
+        val feedData = data.feedData.filter { it.type != "custom" }
         val adapter = FeedPlusTabAdapter(childFragmentManager, feedData, arguments)
         view_pager.adapter = adapter
         pagerAdapter = adapter
