@@ -163,7 +163,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     }
 
     fun processToCart() {
-        if (userSession.isLoggedIn) {
+        if (userSession.isLoggedIn && ::checkoutPassData.isInitialized) {
             navigateToCart()
         } else {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
