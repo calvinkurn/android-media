@@ -275,7 +275,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void showList(@NotNull List<RecipientAddressModel> list) {
         maxItemPosition = 0;
-        String selectedId = mCurrentAddress.getId();
+        String selectedId = (mCurrentAddress != null) ? mCurrentAddress.getId() : "";
         mAdapter.setAddressList(list, selectedId);
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
     }
@@ -562,6 +562,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     public interface ICartAddressChoiceActivityListener {
         void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult);
+
         void requestCornerList();
     }
 
