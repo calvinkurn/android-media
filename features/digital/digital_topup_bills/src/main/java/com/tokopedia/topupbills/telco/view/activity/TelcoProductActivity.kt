@@ -47,6 +47,6 @@ class TelcoProductActivity : BaseTelcoActivity() {
 
     override fun onBackPressed() {
         (fragment as DigitalTelcoFragment).onBackPressed()
-        finish()
+        super.onBackPressed()
     }
 }

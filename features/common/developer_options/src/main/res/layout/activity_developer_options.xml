@@ -1,0 +1,266 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:id="@+id/reset_onboarding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Reset OnBoarding"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/test_onboarding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Test OnBoarding"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/force_crash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Force Crash"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/rn_dev_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="RN Dev Options"
+            android:textColor="@color/white" />
+
+        <CheckBox
+            android:id="@+id/toggle_chuck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Network Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_chuck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View Network Log"
+            android:textColor="@color/white" />
+
+        <CheckBox
+            android:id="@+id/toggle_analytics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Analytics Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_analytics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View Analytics Log"
+            android:textColor="@color/white" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@drawable/line_divider" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:gravity="center"
+                android:text="Remote Config"
+                android:layout_marginTop="@dimen/dp_4"
+                style="@style/TextView.Title.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_remote_config_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_4"
+                android:hint="Remote Config Key" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_remote_config_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:hint="Remote Config Value" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_remote_config_check"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_4"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_share"
+                    android:text="Check"
+                    android:textColor="@color/white" />
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_remote_config_save"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_share"
+                    android:text="Save"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TableLayout
+            android:stretchColumns="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow>
+                <TextView
+                    android:text="@string/react_native_developer_mode"
+                    android:paddingRight="25dip"
+                    style="@style/TextView.Title.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <ToggleButton
+                    android:id="@+id/toggle_reactnative_mode"
+                    android:background="@drawable/btn_share"
+                    android:textColor="@color/white"
+                    android:layout_marginRight="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+        </TableLayout>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/ip_groupchat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:hint="IP Groupchat" />
+
+        <TableLayout
+            android:stretchColumns="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow>
+
+                <ToggleButton
+                    android:id="@+id/groupchat_log"
+                    android:background="@drawable/btn_share"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/ip_groupchat_save"
+                    android:background="@drawable/btn_share"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Save IP"/>
+
+            </TableRow>
+        </TableLayout>
+
+        <TableLayout
+            android:stretchColumns="1"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow>
+                <TextView
+                    android:text="Enable RN Developer Option"
+                    android:paddingRight="25dip"
+                    style="@style/TextView.Title.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <ToggleButton
+                    android:id="@+id/toggle_reactnative_dev_options"
+                    android:background="@drawable/btn_share"
+                    android:textColor="@color/white"
+                    android:layout_marginRight="1dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                style="@style/TextView.Title.Bold"
+                android:text="Choose URL Env"/>
+
+            <Spinner
+                android:id="@+id/spinner_env_chooser"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

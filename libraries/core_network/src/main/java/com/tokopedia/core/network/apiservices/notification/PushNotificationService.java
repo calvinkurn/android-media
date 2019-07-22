@@ -1,7 +1,7 @@
 package com.tokopedia.core.network.apiservices.notification;
 
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.notification.apis.PushNotificationApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.BearerService;
 
 import retrofit2.Retrofit;
@@ -19,7 +19,7 @@ public class PushNotificationService extends BearerService<PushNotificationApi> 
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.ACCOUNTS_DOMAIN;
+        return TokopediaUrl.Companion.getInstance().getACCOUNTS();
     }
 
     @Override
