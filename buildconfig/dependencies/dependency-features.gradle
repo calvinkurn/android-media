@@ -79,14 +79,12 @@ ext {
 
     //SCOPE LOGISTIC
     groupIdLogistic = 'com.tokopedia.logistic'
-    artifactIdLogisticCod = 'logisticCod'
     artifactIdLogisticData = 'logisticdata'
     artifactIdLogisticInputReceiptShipment = 'logisticinputreceiptshipment'
     artifactIdLogisticUploadAwb = 'logisticuploadawb'
     artifactIdLogisticTracking = 'tracking'
     artifactIdLogisticAddAddress = 'logisticaddaddress'
     artifactIdLogisticListAddress = 'logisticlistaddress'
-    artifactIdLogisticInsurance = 'logisticinsurance'
     logisticGroupVersion = '2.22'
 
     groupIdPayment = 'com.tokopedia.payment'
@@ -245,9 +243,6 @@ ext {
 //            tracking                      : ":features:logistic:tracking_no_op",
             logisticuploadawb               : ":features:logistic:logisticuploadawb",
 //            logisticuploadawb               : ":features:logistic:logisticuploadawb_no_op",
-            logisticinsurance               : ":features:logistic:logisticinsurance",
-//            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
-            logisticCod                     : ":features:logistic:cod",
             shippingRecommendation          : ":features:logistic:shipping_recommendation",
 
             goldMerchant                    : ":features:merchant:gold_merchant",

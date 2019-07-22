@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinsurance;
+package com.tokopedia.shipping_recommendation.logisticinsurance;
 
 public class NoOpRuntimeException extends RuntimeException {
 

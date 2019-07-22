@@ -15,5 +15,7 @@
     <string name="shiprecc_cancel">Batalkan</string>
     <string name="logistic_promo_serviceid_mismatch_message">Tidak tersedia kurir untuk promo tersebut</string>
     <string name="order_prioritas">Tersedia Layanan Order Prioritas</string>
+    <string name="title_term_and_condition">Syarat dan Ketentuan</string>
+    <string name="cod_brand_tag">Bayar di Tempat</string>
 
 </resources>

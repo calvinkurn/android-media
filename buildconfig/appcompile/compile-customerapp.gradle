@@ -70,14 +70,12 @@ include "features:logistic:tracking"
 //include 'features:logistic:tracking_no_op'
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
-include "features:logistic:cod"
 include "features:logistic:shipping_recommendation"
 include "features:logistic:logisticuploadawb"
 //include "features:logistic:logisticuploadawb_no_op"
 include "features:logistic:logisticinputreceiptshipment"
 //include 'features:logistic:logisticinputreceiptshipment_no_op'
 include "features:logistic:logisticlistaddress"
-include "features:logistic:logisticinsurance"
 //include "features:logistic:logisticinsurance_no_op"
 
 include "features:merchant:gold_merchant_common"
