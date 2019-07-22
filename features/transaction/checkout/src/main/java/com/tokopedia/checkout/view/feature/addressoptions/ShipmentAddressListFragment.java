@@ -439,14 +439,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 case LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT:
                     onSearchReset();
                     break;
+                case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY:
                 case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED:
                     RecipientAddressModel newAddress = setRecipientAddressModel(data);
                     mActivityListener.finishAndSendResult(newAddress);
-                    break;
-                case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY:
-                    RecipientAddressModel newRecipientAddAddressModelFromEmpty = setRecipientAddressModel(data);
-                    mCurrentAddress = newRecipientAddAddressModelFromEmpty;
-                    onSearchReset();
                     break;
                 default:
                     break;
