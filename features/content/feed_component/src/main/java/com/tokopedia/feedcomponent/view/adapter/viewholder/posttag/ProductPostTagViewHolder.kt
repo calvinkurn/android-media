@@ -11,17 +11,16 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.common.ColorPojo
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
-import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -43,7 +42,7 @@ class ProductPostTagViewHolder (val mainView: View, val listener: DynamicPostVie
     private lateinit var productPrice: TextView
     private lateinit var productName: TextView
     private lateinit var productTag: TextView
-    private lateinit var btnBuy: ButtonCompat
+    private lateinit var btnBuy: FrameLayout
     private lateinit var productNameSection: LinearLayout
     private lateinit var container: CardView
     private lateinit var widgetRating: RatingBarReview
