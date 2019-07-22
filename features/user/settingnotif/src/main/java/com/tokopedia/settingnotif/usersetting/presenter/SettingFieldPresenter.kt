@@ -26,7 +26,7 @@ class SettingFieldPresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable?) {
-
+                view?.onErrorGetUserSetting()
             }
 
         })

@@ -11,6 +11,7 @@ interface SettingFieldContract {
         fun onSuccessGetUserSetting(data: UserSettingViewModel)
         fun onSuccessSetUserSetting(data: SetUserSettingResponse)
         fun onErrorSetUserSetting()
+        fun onErrorGetUserSetting()
     }
 
     interface Presenter : CustomerPresenter<View> {

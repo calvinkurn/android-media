@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
@@ -120,7 +121,16 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         showMessage(R.string.state_failed_set_user_setting)
     }
 
+    override fun onErrorGetUserSetting() {
+        showMessage(MESSAGE_ERROR_SERVER)
+        renderList(emptyList())
+    }
+
     protected fun showMessage(@StringRes message: Int) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    protected fun showMessage(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }
