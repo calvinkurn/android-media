@@ -32,14 +32,14 @@ class CheckVoucherDigitalUseCase(val resources: Resources): GraphqlUseCase() {
 
     fun createRequestParams(promoCode: String, promoDigitalModel: PromoDigitalModel): RequestParams {
         val requestParams = RequestParams.create()
-//        requestParams.putString(INPUT_CODE, promoCode)
-//        requestParams.putInt(PRODUCT_ID, promoDigitalModel.productId)
-//        requestParams.putString(CLIENT_NUMBER, promoDigitalModel.clientNumber)
-//        requestParams.putLong(PRICE, promoDigitalModel.price)
-        requestParams.putString(INPUT_CODE, "RADITDIGI")
-        requestParams.putInt(PRODUCT_ID, 69)
-        requestParams.putString(CLIENT_NUMBER, "081311205111")
-        requestParams.putLong(PRICE, 10000)
+        requestParams.putString(INPUT_CODE, promoCode)
+        requestParams.putInt(PRODUCT_ID, promoDigitalModel.productId)
+        requestParams.putString(CLIENT_NUMBER, promoDigitalModel.clientNumber)
+        requestParams.putLong(PRICE, promoDigitalModel.price)
+//        requestParams.putString(INPUT_CODE, "RADITDIGI")
+//        requestParams.putInt(PRODUCT_ID, 69)
+//        requestParams.putString(CLIENT_NUMBER, "081311205111")
+//        requestParams.putLong(PRICE, 10000)
         return requestParams
     }
 
