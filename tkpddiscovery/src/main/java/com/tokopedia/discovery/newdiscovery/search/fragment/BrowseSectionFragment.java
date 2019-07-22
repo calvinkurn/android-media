@@ -589,4 +589,9 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     protected String removeValue(String mapValue, String removedValue) {
         return mapValue.replace(removedValue, "").replace(",,", ",");
     }
+
+    @Override
+    public void setOfficialSelected(Boolean officialSelectedFlag) {
+
+    }
 }

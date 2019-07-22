@@ -14,10 +14,10 @@ import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
@@ -45,6 +45,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     private boolean showToolbar;
     private boolean needLogin;
 
+    private static final String WEB_URL = TokopediaUrl.Companion.getInstance().getWEB();
+
     public static Intent newInstance(Context context, String url) {
         return new Intent(context, AppLinkWebsiteActivity.class)
                 .putExtra(EXTRA_URL, url)
@@ -70,7 +72,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @DeepLink({Constants.Applinks.WEBVIEW})
     public static Intent getInstanceIntentAppLink(Context context, Bundle extras) {
         String webUrl = extras.getString(
-                KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+                KEY_APP_LINK_QUERY_URL, WEB_URL
         );
         boolean showToolbar;
         boolean needLogin;
@@ -89,7 +91,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         }
 
         if (TextUtils.isEmpty(webUrl)) {
-            webUrl = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;
+            webUrl = WEB_URL;
         }
         return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin);
     }
@@ -98,7 +100,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @DeepLink({Constants.Applinks.WEBVIEW_PARENT_HOME})
     public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
         String webUrl = extras.getString(
-                KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+                KEY_APP_LINK_QUERY_URL, WEB_URL
         );
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();

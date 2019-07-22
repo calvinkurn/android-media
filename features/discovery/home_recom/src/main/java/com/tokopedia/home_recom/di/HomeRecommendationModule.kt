@@ -6,13 +6,12 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.home_recom.R
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.home_recom.R
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -62,4 +61,12 @@ class HomeRecommendationModule {
     fun providePrimaryProductRawQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
                     R.raw.gql_primary_product)
+
+    @Provides
+    @HomeRecommendationScope
+    @Named("atcMutation")
+    fun provideAddToCartMutation(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources,
+                    R.raw.mutation_add_to_cart)
+
 }

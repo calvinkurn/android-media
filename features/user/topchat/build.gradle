@@ -27,7 +27,7 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.miscDependencies.multiDex
@@ -51,6 +51,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.webview)
 
+    implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachproduct)

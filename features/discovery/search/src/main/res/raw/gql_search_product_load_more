@@ -20,6 +20,7 @@ query SearchProduct(
         }
         products {
             id
+            warehouse_id_default
             name
             childs
             url
