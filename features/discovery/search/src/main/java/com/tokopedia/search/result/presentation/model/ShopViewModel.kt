@@ -47,27 +47,27 @@ data class ShopViewModel(
     }
 
     data class ShopItem(
-            val shopId: String = "",
-            val shopName: String = "",
-            val shopDomain: String = "",
-            val shopUrl: String = "",
-            val shopApplink: String = "",
-            val shopImage: String = "",
-            val shopImage300: String = "",
-            val shopDescription: String = "",
-            val shopTagLine: String = "",
-            val shopLocation: String = "",
-            val shopTotalTransaction: String = "",
-            val shopTotalFavorite: String = "",
-            val shopGoldShop: Int = 0,
-            val shopIsOwner: Int = 0,
-            val shopRateSpeed: Int = 0,
-            val shopRateAccuracy: Int = 0,
-            val shopRateService: Int = 0,
-            val shopStatus: Int = 0,
-            val shopItemProductList: List<ShopItemProduct> = listOf(),
+            val id: String = "",
+            val name: String = "",
+            val domain: String = "",
+            val url: String = "",
+            val applink: String = "",
+            val image: String = "",
+            val image300: String = "",
+            val description: String = "",
+            val tagLine: String = "",
+            val location: String = "",
+            val totalTransaction: String = "",
+            val totalFavorite: String = "",
+            val goldShop: Int = 0,
+            val isOwner: Int = 0,
+            val rateSpeed: Int = 0,
+            val rateAccuracy: Int = 0,
+            val rateService: Int = 0,
+            val status: Int = 0,
+            val productList: List<ShopItemProduct> = listOf(),
             val voucher: ShopItemVoucher = ShopItemVoucher(),
-            val shopLucky: String = "",
+            val lucky: String = "",
             val reputationImageUri: String = "",
             val reputationScore: Int = 0,
             val isOfficial: Boolean = false,
@@ -213,27 +213,27 @@ data class ShopViewModel(
                 parcel.readString() ?: "")
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(shopId)
-            parcel.writeString(shopName)
-            parcel.writeString(shopDomain)
-            parcel.writeString(shopUrl)
-            parcel.writeString(shopApplink)
-            parcel.writeString(shopImage)
-            parcel.writeString(shopImage300)
-            parcel.writeString(shopDescription)
-            parcel.writeString(shopTagLine)
-            parcel.writeString(shopLocation)
-            parcel.writeString(shopTotalTransaction)
-            parcel.writeString(shopTotalFavorite)
-            parcel.writeInt(shopGoldShop)
-            parcel.writeInt(shopIsOwner)
-            parcel.writeInt(shopRateSpeed)
-            parcel.writeInt(shopRateAccuracy)
-            parcel.writeInt(shopRateService)
-            parcel.writeInt(shopStatus)
-            parcel.writeTypedList(shopItemProductList)
+            parcel.writeString(id)
+            parcel.writeString(name)
+            parcel.writeString(domain)
+            parcel.writeString(url)
+            parcel.writeString(applink)
+            parcel.writeString(image)
+            parcel.writeString(image300)
+            parcel.writeString(description)
+            parcel.writeString(tagLine)
+            parcel.writeString(location)
+            parcel.writeString(totalTransaction)
+            parcel.writeString(totalFavorite)
+            parcel.writeInt(goldShop)
+            parcel.writeInt(isOwner)
+            parcel.writeInt(rateSpeed)
+            parcel.writeInt(rateAccuracy)
+            parcel.writeInt(rateService)
+            parcel.writeInt(status)
+            parcel.writeTypedList(productList)
             parcel.writeParcelable(voucher, flags)
-            parcel.writeString(shopLucky)
+            parcel.writeString(lucky)
             parcel.writeString(reputationImageUri)
             parcel.writeInt(reputationScore)
             parcel.writeByte(if (isOfficial) 1 else 0)

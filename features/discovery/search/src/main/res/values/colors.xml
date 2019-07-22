@@ -12,4 +12,8 @@
 
     <color name="shop_item_product_price_color">#ff5722</color>
     <color name="shop_item_product_empty_color">#f3f4f5</color>
+
+    <color name="shop_status_background">#ae31353b</color>
+    <color name="shop_status_text_background">#e131353b</color>
+    <color name="shop_status_text_color">#f5ffffff</color>
 </resources>

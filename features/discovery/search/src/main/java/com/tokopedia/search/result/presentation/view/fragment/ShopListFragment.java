@@ -340,10 +340,10 @@ public class ShopListFragment
     public void onItemClicked(@NonNull ShopViewModel.ShopItem shopItem) {
         if(redirectionListener == null) return;
 
-        SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
+        SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getName(),
                 shopItem.getPage(), shopItem.getPosition());
 
-        redirectionListener.startActivityWithApplink(shopItem.getShopApplink());
+        redirectionListener.startActivityWithApplink(shopItem.getApplink());
     }
 
     @Override

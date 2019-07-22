@@ -30,8 +30,9 @@ class ShopItemViewHolder(
         val LAYOUT = R.layout.search_result_shop_card
 
         private const val KEY_SHOP_IS_GOLD = 1
-        private const val KEY_SHOP_IS_INACTIVE = "4"
-        private const val KEY_SHOP_IS_CLOSED = "2"
+        private const val KEY_SHOP_STATUS_CLOSED = 2
+        private const val KEY_SHOP_STATUS_MODERATED = 3
+        private const val KEY_SHOP_STATUS_INACTIVE = 4
         private const val SHOP_PRODUCT_ITEM_COUNT = 3
     }
 
@@ -48,6 +49,7 @@ class ShopItemViewHolder(
         initImageShopReputation(shopViewItem)
         initTextShopCredibilityInfo(shopViewItem)
         initProductPreview(shopViewItem)
+        initShopStatus(shopViewItem)
 
         finishBindShopItem()
     }
@@ -60,7 +62,7 @@ class ShopItemViewHolder(
 
     private fun initImageShopAvatar(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopAvatar?.let {
-            ImageHandler.loadImageCircle2(context, itemView.imageViewShopAvatar, shopViewItem.shopImage)
+            ImageHandler.loadImageCircle2(context, itemView.imageViewShopAvatar, shopViewItem.image)
         }
     }
 
@@ -68,14 +70,14 @@ class ShopItemViewHolder(
         itemView.imageViewShopBadge?.let { imageViewShopBadge ->
             when {
                 shopViewItem.isOfficial -> imageViewShopBadge.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.search_ic_official_store))
-                shopViewItem.shopGoldShop == KEY_SHOP_IS_GOLD -> imageViewShopBadge.setImageDrawable(GMConstant.getGMDrawable(context))
+                shopViewItem.goldShop == KEY_SHOP_IS_GOLD -> imageViewShopBadge.setImageDrawable(GMConstant.getGMDrawable(context))
                 else -> imageViewShopBadge.visibility = View.GONE
             }
         }
     }
 
     private fun initShopName(shopViewItem: ShopViewModel.ShopItem) {
-        itemView.textViewShopName?.text = MethodChecker.fromHtml(shopViewItem.shopName)
+        itemView.textViewShopName?.text = MethodChecker.fromHtml(shopViewItem.name)
     }
 
     private fun initShopLocation(shopViewItem: ShopViewModel.ShopItem) {
@@ -83,7 +85,7 @@ class ShopItemViewHolder(
     }
 
     private fun getShopLocation(shopViewItem: ShopViewModel.ShopItem): Spanned {
-        return MethodChecker.fromHtml(shopViewItem.shopLocation + " |")
+        return MethodChecker.fromHtml(shopViewItem.location + " |")
     }
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
@@ -98,11 +100,11 @@ class ShopItemViewHolder(
 
     private fun getShopCredibilityInfo(shopViewItem: ShopViewModel.ShopItem): String {
         return when {
-            shopViewItem.shopTotalTransaction != "" -> {
-                "| " + context.getString(R.string.shop_total_transaction, shopViewItem.shopTotalTransaction)
+            shopViewItem.totalTransaction != "" -> {
+                "| " + context.getString(R.string.shop_total_transaction, shopViewItem.totalTransaction)
             }
-            shopViewItem.shopTotalFavorite != "" -> {
-                "| " + context.getString(R.string.shop_total_favorite, shopViewItem.shopTotalFavorite)
+            shopViewItem.totalFavorite != "" -> {
+                "| " + context.getString(R.string.shop_total_favorite, shopViewItem.totalFavorite)
             }
             else -> {
                 ""
@@ -111,7 +113,7 @@ class ShopItemViewHolder(
     }
 
     private fun initProductPreview(shopViewItem: ShopViewModel.ShopItem) {
-        if (shopViewItem.shopItemProductList.isNotEmpty()) {
+        if (shopViewItem.productList.isNotEmpty()) {
             showShopProductItemPreview(shopViewItem)
         } else {
             showTextShopHasNoProduct()
@@ -128,7 +130,7 @@ class ShopItemViewHolder(
         recyclerViewShopProductItem.visibility = View.VISIBLE
 
         recyclerViewShopProductItem.adapter = ShopProductItemAdapter(
-                context, shopViewItem.shopItemProductList, SHOP_PRODUCT_ITEM_COUNT, shopListener
+                context, shopViewItem.productList, SHOP_PRODUCT_ITEM_COUNT, shopListener
         )
 
         recyclerViewShopProductItem.layoutManager = createRecyclerViewShopProductItemLayoutManager()
@@ -150,8 +152,26 @@ class ShopItemViewHolder(
         itemView.textViewShopHasNoProduct?.visible()
     }
 
+    private fun initShopStatus(shopViewItem: ShopViewModel.ShopItem) {
+        if(shopViewItem.status == KEY_SHOP_STATUS_CLOSED) {
+            showShopStatus(getString(R.string.shop_status_closed))
+        }
+        else if(shopViewItem.status == KEY_SHOP_STATUS_MODERATED) {
+            showShopStatus(getString(R.string.shop_status_moderated))
+        }
+    }
+
+    private fun showShopStatus(shopStatus: String) {
+        itemView.constraintLayoutShopStatus?.visible()
+        itemView.textViewShopStatus?.text = shopStatus
+    }
+
     private fun finishBindShopItem() {
-        setViewMargins(itemView.textViewShopName.id, ConstraintSet.START, getTextViewShopNameMarginLeft())
+        itemView.textViewShopName?.let { textViewShopName ->
+            if(textViewShopName.isVisible) {
+                setViewMargins(textViewShopName.id, ConstraintSet.START, getTextViewShopNameMarginLeft())
+            }
+        }
     }
 
     @DimenRes
@@ -161,13 +181,13 @@ class ShopItemViewHolder(
     }
 
     private fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {
-        applyConstraintSetToConstraintLayoutProductCard { constraintSet ->
+        applyConstraintSetToConstraintLayoutShopCard { constraintSet ->
             val marginPixel = getDimensionPixelSize(marginDp)
             constraintSet.setMargin(viewId, anchor, marginPixel)
         }
     }
 
-    private fun applyConstraintSetToConstraintLayoutProductCard(
+    private fun applyConstraintSetToConstraintLayoutShopCard(
             configureConstraintSet: (constraintSet: ConstraintSet) -> Unit
     ) {
         itemView.constraintLayoutShopCard?.let {
