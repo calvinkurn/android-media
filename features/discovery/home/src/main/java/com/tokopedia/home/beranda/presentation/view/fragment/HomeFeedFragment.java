@@ -49,6 +49,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     public static final String ARG_TAB_HEIGHT = "ARG_TAB_HEIGHT";
     private static final String PDP_EXTRA_PRODUCT_ID = "product_id";
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
+    private static final String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
     private static final int REQUEST_FROM_PDP = 349;
 
     private static final int DEFAULT_TOTAL_ITEM_PER_PAGE = 12;
@@ -200,19 +201,18 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     public void onItemClicked(Visitable<HomeFeedTypeFactory> homeFeedViewModel) {
     }
 
-    private void goToProductDetail(String productId) {
+    private void goToProductDetail(String productId, int position) {
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position);
         startActivityForResult(intent, REQUEST_FROM_PDP);
     }
 
-    private void updateWishlist(String id, boolean isWishlist) {
-        for(int i =0; i < getAdapter().getDataSize(); i++) {
-            if(getAdapter().getData().get(i) instanceof HomeFeedViewModel) {
-                HomeFeedViewModel model = (HomeFeedViewModel) getAdapter().getData().get(i);
-                if (model.getProductId().equals(id)) {
-                    model.setWishList(isWishlist);
-                    getAdapter().notifyItemChanged(i);
-                }
+    private void updateWishlist(String id, boolean isWishlist, int position) {
+        if(getAdapter().getData().get(position) instanceof HomeFeedViewModel) {
+            HomeFeedViewModel model = (HomeFeedViewModel) getAdapter().getData().get(position);
+            if (model.getProductId().equals(id)) {
+                model.setWishList(isWishlist);
+                getAdapter().notifyItemChanged(position);
             }
         }
     }
@@ -330,7 +330,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                     userSession.isLoggedIn(),
                     homeFeedViewModel.getPosition());
         }
-        goToProductDetail(homeFeedViewModel.getProductId());
+        goToProductDetail(homeFeedViewModel.getProductId(), position);
     }
 
     @Override
@@ -346,10 +346,11 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_FROM_PDP && data != null) {
+        if (requestCode == REQUEST_FROM_PDP && data != null && data.hasExtra(WIHSLIST_STATUS_IS_WISHLIST)) {
             String id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID);
             boolean wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false);
-            updateWishlist(id, wishlistStatusFromPdp);
+            int position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1);
+            updateWishlist(id, wishlistStatusFromPdp, position);
         }
     }
 
