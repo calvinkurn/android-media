@@ -270,8 +270,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     true
 
         return feed.content.cardpost.header.avatarTitle.isNotEmpty() &&
-                feed.content.cardpost.body.media.isNotEmpty() &&
-                (contentList.size > 0 || postTag.items.size > 0) &&
+                ((feed.content.cardpost.body.media.isNotEmpty() && contentList.size > 0) || postTag.items.size > 0) &&
                 isGridNotEmpty
     }
 
