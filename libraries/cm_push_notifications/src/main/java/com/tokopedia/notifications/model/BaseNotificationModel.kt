@@ -49,7 +49,8 @@ data class BaseNotificationModel (
 
     var carouselList: List<Carousel> = ArrayList(),
     var gridList: List<Grid> = ArrayList(),
-    var productInfoList : List<ProductInfo>? = ArrayList()
+    var productInfoList : List<ProductInfo>? = ArrayList(),
+    var parentId: Long = 0
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -79,7 +80,8 @@ data class BaseNotificationModel (
             parcel.readByte() != 0.toByte(),
             parcel.createTypedArrayList(Carousel),
             parcel.createTypedArrayList(Grid),
-            parcel.createTypedArrayList(ProductInfo))
+            parcel.createTypedArrayList(ProductInfo),
+            parcel.readLong())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(notificationId)
@@ -107,6 +109,7 @@ data class BaseNotificationModel (
         parcel.writeTypedList(carouselList)
         parcel.writeTypedList(gridList)
         parcel.writeTypedList(productInfoList)
+        parcel.writeLong(parentId)
     }
 
     override fun describeContents(): Int {

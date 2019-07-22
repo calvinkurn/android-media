@@ -78,6 +78,7 @@ public interface CMConstant {
         String PD_ACTION = "pdAction";
         String NOTIFICATION_PRIORITY = "priorityPreOreo";
         String PRODUCT_INFO_LIST = "product_info_list";
+        String PARENT_ID = "parentId";
     }
 
     interface ReceiverExtraData {

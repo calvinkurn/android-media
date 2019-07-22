@@ -41,6 +41,8 @@ public class CMNotificationFactory {
     public static BaseNotification getNotification(Context context, Bundle bundle) {
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
 
+        IrisAnalyticsEvents.INSTANCE.sendPushReceiveEvent(context,baseNotificationModel);
+
         if (CMConstant.NotificationType.SILENT_PUSH.equals(baseNotificationModel.getType())) {
             handleSilentPush(context, baseNotificationModel);
             return null;
@@ -95,7 +97,7 @@ public class CMNotificationFactory {
     }
 
     private static void handleSilentPush(Context context, BaseNotificationModel baseNotificationModel) {
-        IrisAnalyticsEvents.sendPushReceiveEvent(context, baseNotificationModel);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -125,6 +127,7 @@ public class CMNotificationFactory {
         model.setSoundFileName(data.getString(CMConstant.PayloadKeys.SOUND, ""));
         model.setNotificationId(Integer.parseInt(data.getString(CMConstant.PayloadKeys.NOTIFICATION_ID, "500")));
         model.setCampaignId(Long.parseLong(data.getString(CMConstant.PayloadKeys.CAMPAIGN_ID, "0")));
+        model.setParentId(Long.parseLong(data.getString(CMConstant.PayloadKeys.PARENT_ID, "0")));
         model.setTribeKey(data.getString(CMConstant.PayloadKeys.TRIBE_KEY, ""));
         model.setType(data.getString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, ""));
         model.setChannelName(data.getString(CMConstant.PayloadKeys.CHANNEL, ""));
