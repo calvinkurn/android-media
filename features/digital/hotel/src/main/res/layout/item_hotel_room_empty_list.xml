@@ -42,7 +42,7 @@
         android:layout_margin="@dimen/dp_5"
         android:gravity="center"
         android:text="@string/msg_network_error_2"
-        android:textColor="@color/grey_400"
+        android:textColor="@color/clr_ae31353b"
         app:fontSize="micro"
         app:weight="regular" />
 
