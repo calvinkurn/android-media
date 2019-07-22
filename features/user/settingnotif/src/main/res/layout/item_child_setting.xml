@@ -11,4 +11,6 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16"
     android:textColor="@color/charcoal_grey_96"
+    android:thumb="@drawable/bg_switch_thumb_selector"
+    android:track="@drawable/bg_switch_track_selector"
     tools:text="Transaksi Pembelian" />
