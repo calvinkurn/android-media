@@ -868,9 +868,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             addToCart()
         })
 
-        Toast.makeText(context, "application detail valid", Toast.LENGTH_SHORT).show()
-
-
         /*tempQuantity = quantity
         isTradeIn = 0
 
@@ -998,7 +995,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         val addInsuranceResponse = graphqlResponse.getData<AddInsuranceProductToCartGqlResponse>(AddInsuranceProductToCartGqlResponse::class.java)
 
 
-                        if (addInsuranceResponse.addToCartTransactional.addCart.status.equals("ok")) {
+                        if (addInsuranceResponse.addToCartTransactional.addCart.status.equals("ok",true)) {
                             normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
                                     selectedProductInfo?.basic?.price.toString(),
                                     quantity,
