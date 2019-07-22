@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
@@ -37,6 +39,7 @@ import com.tokopedia.base.list.seller.view.old.Pair;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.featured.constant.GMFeaturedConstant;
@@ -95,7 +98,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private View viewOverlayRegularMerchant;
     private TextView textViewOverlay;
     private ImageView imageViewOverlay;
-    private View viewOverlayButtonRegularMerchant;
+    private Button buttonOverlay;
     @GMFeaturedProductTypeView
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
@@ -161,14 +164,16 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 "Selengkapnya"
         ));
         viewOverlayRegularMerchant.setVisibility(View.VISIBLE);
-        viewOverlayButtonRegularMerchant.setOnClickListener(new View.OnClickListener() {
+        buttonOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
             }
         });
+        buttonOverlay.setText("Upgrade Tokomu");
         ImageHandler imageHandler = new ImageHandler(getContext());
         imageHandler.loadImage(imageViewOverlay,IMG_URL_ICON_LOCK_WHITE_GREEN);
+
     }
 
     private SpannableStringBuilder createDescriptionWithSpannable(
@@ -241,7 +246,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         viewOverlayRegularMerchant = view.findViewById(R.id.layout_overlay);
         textViewOverlay = view.findViewById(R.id.text_view_overlay_description);
         imageViewOverlay = view.findViewById(R.id.image_view_overlay);
-        viewOverlayButtonRegularMerchant = view.findViewById(R.id.button_redirect_to);
+        buttonOverlay = view.findViewById(R.id.button_redirect_to);
     }
 
     private void showSnackbarWithUndo() {
@@ -477,13 +482,16 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     protected void moveToProductPicker() {
         List<ProductListPickerViewModel> productListPickerViewModels = new ArrayList<>();
-        for (GMFeaturedProductModel gmFeaturedProductModel : adapter.getData()) {
-            ProductListPickerViewModel productListPickerViewModel = new ProductListPickerViewModel();
-            productListPickerViewModel.setId(gmFeaturedProductModel.getId());
-            productListPickerViewModel.setProductPrice(gmFeaturedProductModel.getProductPrice());
-            productListPickerViewModel.setTitle(gmFeaturedProductModel.getProductName());
-            productListPickerViewModel.setImageUrl(gmFeaturedProductModel.getImageUrl());
-            productListPickerViewModels.add(productListPickerViewModel);
+        for (ItemType model : adapter.getData()) {
+            if(model instanceof GMFeaturedProductModel) {
+                GMFeaturedProductModel gmFeaturedProductModel = (GMFeaturedProductModel) model;
+                ProductListPickerViewModel productListPickerViewModel = new ProductListPickerViewModel();
+                productListPickerViewModel.setId(gmFeaturedProductModel.getId());
+                productListPickerViewModel.setProductPrice(gmFeaturedProductModel.getProductPrice());
+                productListPickerViewModel.setTitle(gmFeaturedProductModel.getProductName());
+                productListPickerViewModel.setImageUrl(gmFeaturedProductModel.getImageUrl());
+                productListPickerViewModels.add(productListPickerViewModel);
+            }
         }
         Intent intent = ProductListPickerActivity.createIntent(getActivity(), productListPickerViewModels, false);
         startActivityForResult(intent, REQUEST_CODE);
