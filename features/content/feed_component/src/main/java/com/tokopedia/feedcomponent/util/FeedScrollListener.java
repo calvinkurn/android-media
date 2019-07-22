@@ -13,6 +13,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class FeedScrollListener {
 
     private static final int THRESHOLD_VIDEO_HEIGHT_SHOWN = 75;
     private static final String TYPE_VIDEO = "video";
+    private static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
 
     public static void onFeedScrolled(RecyclerView recyclerView, List<Visitable> list) {
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -32,7 +35,7 @@ public class FeedScrollListener {
 
 
         for (int i =firstPosition ; i<=lastPosition; i ++) {
-            if (isVideoCard(list, i)) {
+            if (isVideoCard(list, i) && canAutoplayVideo(recyclerView)) {
                 VideoViewModel item = getVideoCardViewModel(list, i);
                 if (item != null) {
                     getVideoModelScrollListener(item, layoutManager, recyclerView, i);
@@ -128,4 +131,10 @@ public class FeedScrollListener {
     private static MediaItem getVideoCardItemViewModel(List<Visitable> list, int position) {
         return ((MultimediaGridViewModel)((DynamicPostViewModel)list.get(position)).getContentList().get(0)).getMediaItemList().get(0);
     }
+
+    private static boolean canAutoplayVideo(RecyclerView recyclerView) {
+        RemoteConfig config = new FirebaseRemoteConfigImpl(recyclerView.getContext());
+        return config.getBoolean(CONFIG_AUTOPLAY_VIDEO_WIFI,false);
+    }
+
 }
