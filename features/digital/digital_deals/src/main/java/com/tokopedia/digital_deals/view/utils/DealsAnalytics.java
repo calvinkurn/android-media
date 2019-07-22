@@ -406,6 +406,7 @@ public class DealsAnalytics {
             productMap.put(NAME, displayName);
             productMap.put(PRICE, String.valueOf(quantity * salesPrice));
             productMap.put(CATEGORY, "deals");
+            productMap.put(CART_ID, "0");
             productMap.put(CATEGORY_ID, String.valueOf(categoryID));
             productMap.put(QUANTITY, quantity);
             HashMap<String, Object> checkout = new HashMap<>();
@@ -757,6 +758,7 @@ public class DealsAnalytics {
             productMap.put(ID, String.valueOf(dealDetail.getId()));
             productMap.put(PRICE, String.valueOf(dealDetail.getSalesPrice()));
             productMap.put(CATEGORY, DEALS);
+            productMap.put(CATEGORY_ID, String.valueOf(dealDetail.getCategoryId()));
             productMap.put(QUANTITY, String.valueOf(dealDetail.getQuantity()));
             productMap.put(VARIANT, "none");
             productMap.put(CART_ID, "0");

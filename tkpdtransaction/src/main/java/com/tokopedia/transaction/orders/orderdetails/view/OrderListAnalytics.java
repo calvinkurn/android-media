@@ -37,6 +37,8 @@ public class OrderListAnalytics {
     private static final String BRAND = "brand";
     private static final String VARIANT = "variant";
     private static final String SHIPPING = "shipping";
+    private static final String TAX = "tax";
+    private static final String COUPON_CODE = "coupon";
     private static final String KEY_PRODUCTS = "products";
     private static final String KEY_PURCHASE = "purchase";
     private static final String KEY_ACTION_FIELD = "actionField";
@@ -88,14 +90,17 @@ public class OrderListAnalytics {
         products.put("Category", CATEGORY);
         products.put(QUANTITY, quantity);
         products.put(BRAND, brandName);
+        products.put(COUPON_CODE, "none");
         products.put(VARIANT, "none");
 
-        actionField.put(ID, orderId);
+        actionField.put(ID, String.valueOf(orderId));
         actionField.put(REVENUE, totalTicketPrice);
         actionField.put(AFFILIATION, brandName);
         actionField.put(SHIPPING, "0");
+        actionField.put(TAX, "none");
+        actionField.put(COUPON_CODE, "none");
 
-        purchase.put(KEY_ACTION_FIELD, purchase);
+        purchase.put(KEY_ACTION_FIELD, actionField);
         ecommerce.put(CURRENCY_CODE, IDR);
         ecommerce.put(KEY_PRODUCTS, Collections.singletonList(products));
         ecommerce.put(KEY_PURCHASE, purchase);
