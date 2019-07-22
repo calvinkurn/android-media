@@ -176,6 +176,7 @@ class VideoVerticalHelper constructor (
         hideContainer()
         endTime = System.currentTimeMillis()
         analytics.eventWatchVerticalVideo(viewModel?.channelId, (endTime - startTime).toString())
+        liveIndicator.hide()
     }
 
     fun setData(it: VideoStreamViewModel) {

@@ -295,12 +295,6 @@ open class PlayViewStateImpl(
         welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
         errorView.setOnClickListener {}
 
-        view.findViewById<View>(R.id.test_button).setOnClickListener {
-            var space = replyEditText.text.toString().toInt()
-            setChatListHasSpaceOnTop().invoke(space)
-        }
-
-
     }
 
     override fun onErrorVideoVertical() {
@@ -1053,9 +1047,8 @@ open class PlayViewStateImpl(
     }
 
     override fun onSuccessSendMessage(pendingChatViewModel: PendingChatViewModel) {
-        for(i in 1..30) {
-            val viewModel = ChatViewModel(
-                pendingChatViewModel.message!! + i,
+        val viewModel = ChatViewModel(
+                pendingChatViewModel.message!!,
                 System.currentTimeMillis(),
                 System.currentTimeMillis(),
                 "",
@@ -1064,10 +1057,8 @@ open class PlayViewStateImpl(
                 userSession.profilePicture,
                 false,
                 false)
-
-            adapter.addReply(viewModel)
-            adapter.notifyItemInserted(0)
-        }
+        adapter.addReply(viewModel)
+        adapter.notifyItemInserted(0)
         setQuickReply(null)
         this.viewModel?.quickRepliesViewModel = null
         scrollToBottom()
