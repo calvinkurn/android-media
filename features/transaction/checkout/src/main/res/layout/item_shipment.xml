@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_invoice_item"
     android:layout_width="match_parent"
@@ -7,10 +8,17 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include
+    <!--<include
         android:id="@+id/layout_warning_and_error"
         layout="@layout/layout_item_warning_and_error"
-        tools:visibility="visible" />
+        tools:visibility="visible" />-->
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_shipment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:visibility="gone" />
 
     <include
         layout="@layout/item_shipment_seller_info"

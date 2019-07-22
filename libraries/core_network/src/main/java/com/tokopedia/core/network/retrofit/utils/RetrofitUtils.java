@@ -7,9 +7,9 @@ import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.BuildConfig;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.GeneralUtils;
@@ -38,11 +38,11 @@ public class RetrofitUtils {
     public static final int DEFAULT_TIMEOUT = 120;
 
     public static Retrofit createRetrofitWIthProxy(String urlProxy, int port) {
-        return createRetrofit(TkpdBaseURL.BASE_DOMAIN, urlProxy, port, DEFAULT_TIMEOUT, false);
+        return createRetrofit(TokopediaUrl.Companion.getInstance().getWS(), urlProxy, port, DEFAULT_TIMEOUT, false);
     }
 
     public static Retrofit createRetrofit() {
-        return createRetrofit(TkpdBaseURL.BASE_DOMAIN);
+        return createRetrofit(TokopediaUrl.Companion.getInstance().getWS());
     }
 
     public static Retrofit createRetrofitV4(String url) {
@@ -51,7 +51,7 @@ public class RetrofitUtils {
             String path = baseUrl.substring(baseUrl.indexOf("v4"));
             SharedPreferences pref = CoreNetworkApplication.getAppContext()
                     .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
-            baseUrl = pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN) + path;
+            baseUrl = pref.getString("DOMAIN_WS4", TokopediaUrl.Companion.getInstance().getWS()) + path;
         }
         return createRetrofit(baseUrl);
     }

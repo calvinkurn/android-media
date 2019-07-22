@@ -48,6 +48,10 @@ class ProductPostTagViewHolder (val mainView: View, val listener: DynamicPostVie
     private lateinit var container: CardView
     private lateinit var widgetRating: RatingBarReview
 
+    private val RAD_10f = 10f
+    private val RAD_20f = 20f
+    private val RAD_30f = 30f
+
     override fun bind(item: ProductPostTagViewModel) {
         productLayout = itemView.findViewById(R.id.productLayout)
         productImage = itemView.findViewById(R.id.productImage)
@@ -57,7 +61,7 @@ class ProductPostTagViewHolder (val mainView: View, val listener: DynamicPostVie
         productNameSection = itemView.findViewById(R.id.productNameSection)
         productName = itemView.findViewById(R.id.productName)
         widgetRating = itemView.findViewById(R.id.widgetRating)
-        productImage.loadImageRounded(item.thumbnail, 10f)
+        productImage.loadImageRounded(item.thumbnail, RAD_10f)
         productPrice.text = item.price
         btnBuy.setOnClickListener { onBuyButtonClicked(listener, item.postTagItemPojo) }
         productLayout.setOnClickListener(
@@ -70,7 +74,7 @@ class ProductPostTagViewHolder (val mainView: View, val listener: DynamicPostVie
             widgetRating.gone()
         } else {
             widgetRating.visible()
-            widgetRating.updateRating((item.rating / 20f).roundToInt())
+            widgetRating.updateRating((item.rating / RAD_20f).roundToInt())
         }
         if (item.feedType != DynamicPostViewHolder.SOURCE_DETAIL && item.needToResize) {
             container = itemView.findViewById(R.id.container)
@@ -121,7 +125,7 @@ class ProductPostTagViewHolder (val mainView: View, val listener: DynamicPostVie
     private fun renderDrawable(hex: String, opacity: String): Drawable {
         val drawable = GradientDrawable()
         drawable.shape = GradientDrawable.RECTANGLE
-        drawable.cornerRadii = floatArrayOf(30f, 30f, 30f ,30f , 30f, 30f, 30f, 30f)
+        drawable.cornerRadii = floatArrayOf(RAD_30f, RAD_30f, RAD_30f ,RAD_30f , RAD_30f, RAD_30f, RAD_30f, RAD_30f)
         drawable.setColor(Color.parseColor(hex))
         drawable.alpha = calculateBackgroundAlpha(opacity)
         return drawable

@@ -1,12 +1,14 @@
 package com.tokopedia.inbox.rescenter.network;
 
+import com.tokopedia.url.TokopediaUrl;
+
 /**
  * @author by yfsx on 26/07/18.
  */
 public class ResolutionUrl {
 
-    public static String BASE_URL = "https://api.tokopedia.com/";
-    public static String BASE_URL_IMAGE_SERVICE = "https://ws.tokopedia.com/";
+    public static String BASE_URL = TokopediaUrl.Companion.getInstance().getAPI();
+    public static String BASE_URL_IMAGE_SERVICE = TokopediaUrl.Companion.getInstance().getWS();
 
 
     public static final String BASE_RESOLUTION = BASE_URL + "resolution/";
