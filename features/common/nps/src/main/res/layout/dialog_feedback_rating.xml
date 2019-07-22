@@ -1,39 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_bright">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/new_margin_small"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:textColor="@color/black_n700_96"
-        android:textSize="@dimen/text_size_large"
+        android:textSize="18sp"
         android:text="@string/rating_feedback_title" />
 
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/new_margin_small"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:textColor="@color/black_n700_68"
-        android:textSize="@dimen/fontvs"
+        android:textSize="12sp"
         android:text="@string/rating_feedback_message" />
 
     <android.support.v7.widget.AppCompatRatingBar
-        android:layout_width="match_parent"
+        android:id="@+id/rating_bar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"
         android:progressDrawable="@drawable/app_rating_star"
-        android:layout_centerHorizontal="true" />
+        style="@style/AppRatingBar" />
 
     <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/rating_level"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/new_margin_small"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:textColor="@color/black_n700_96"
-        android:textSize="@dimen/sp_14"
-        android:text="@string/rating_feedback_title" />
+        android:textSize="14sp"
+        android:text="Sample Score" />
 
-</android.support.design.widget.CoordinatorLayout>
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/send_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:paddingTop="11dp"
+        android:paddingBottom="11dp"
+        android:background="@drawable/rounded_button"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:text="@string/rating_feedback_send_button_label" />
+
+</LinearLayout>

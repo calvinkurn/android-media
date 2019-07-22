@@ -16,7 +16,4 @@
 
     <dimen name="margin_med">20dp</dimen>
 
-    <dimen name="dp_zero">0dp</dimen>
-    <dimen name="sp_14">14sp</dimen>
-
 </resources>
