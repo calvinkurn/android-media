@@ -9,7 +9,9 @@ import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;
 import com.tokopedia.gm.featured.helper.OnStartDragListener;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
+import com.tokopedia.gm.featured.view.adapter.model.TickerReadMoreFeaturedModel;
 import com.tokopedia.gm.featured.view.adapter.viewholder.GMFeaturedProductViewHolder;
+import com.tokopedia.gm.featured.view.adapter.viewholder.TickerReadMoreFeaturedViewHolder;
 
 import java.util.Collections;
 
@@ -21,10 +23,15 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
         ItemTouchHelperAdapter, GMFeaturedProductViewHolder.PostDataListener {
 
     private OnStartDragListener onStartDragListener;
+    private TickerReadMoreFeaturedViewHolder.TickerViewHolderViewHolderListener tickerViewHolderViewHolderListener;
     private UseCaseListener useCaseListener;
 
-    public GMFeaturedProductAdapter(OnStartDragListener onStartDragListener) {
+    public GMFeaturedProductAdapter(
+            OnStartDragListener onStartDragListener,
+            TickerReadMoreFeaturedViewHolder.TickerViewHolderViewHolderListener tickerViewHolderViewHolderListener
+    ) {
         this.onStartDragListener = onStartDragListener;
+        this.tickerViewHolderViewHolderListener = tickerViewHolderViewHolderListener;
     }
 
     public void setUseCaseListener(UseCaseListener useCaseListener) {
@@ -35,7 +42,15 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case GMFeaturedProductModel.TYPE:
-                return new GMFeaturedProductViewHolder(getLayoutView(parent, R.layout.item_gm_featured_product), onStartDragListener, this);
+                return new GMFeaturedProductViewHolder(
+                        getLayoutView(parent, R.layout.item_gm_featured_product), onStartDragListener,
+                        this
+                );
+            case TickerReadMoreFeaturedModel.TYPE:
+                return new TickerReadMoreFeaturedViewHolder(
+                        getLayoutView(parent, R.layout.item_featured_product_ticker_idle_pm),
+                        tickerViewHolderViewHolderListener
+                );
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }

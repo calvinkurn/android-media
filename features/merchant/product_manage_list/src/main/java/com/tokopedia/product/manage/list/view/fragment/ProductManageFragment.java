@@ -535,6 +535,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 showInActivePowerMerchantBottomSheet(FEATURE_CASHBACK);
             } else if (!isPowerMerchant()) {
                 showRegularMerchantBottomSheet(FEATURE_CASHBACK);
+            } else {
+                NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
+                        ErrorHandler.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                productManagePresenter.setCashback(productId, cashback);
+                            }
+                        }).showRetrySnackbar();
             }
         } else {
             NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
@@ -548,7 +556,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private boolean isIdlePowerMerchant() {
-        return userSession.isGoldMerchant() && userSession.isPowerMerchantIdle();
+        return userSession.isPowerMerchantIdle();
     }
 
     private boolean isPowerMerchant() {
@@ -565,7 +573,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 featureName
         );
         String buttonName = getString(R.string.bottom_sheet_regular_btn);
-        showBottomSheet(title,IMG_URL_REGULAR_MERCHANT_POPUP, description, buttonName);
+        showBottomSheet(title, IMG_URL_REGULAR_MERCHANT_POPUP, description, buttonName);
     }
 
     private void showInActivePowerMerchantBottomSheet(String featureName) {

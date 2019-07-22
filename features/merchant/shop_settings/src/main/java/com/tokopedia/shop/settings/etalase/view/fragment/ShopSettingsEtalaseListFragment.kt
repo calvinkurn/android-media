@@ -279,7 +279,7 @@ class ShopSettingsEtalaseListFragment :
     }
 
     private fun isIdlePowerMerchant(): Boolean {
-        return userSession!!.isGoldMerchant && userSession!!.isPowerMerchantIdle
+        return userSession!!.isPowerMerchantIdle
     }
 
     private fun addIdlePowerMerchantTicker() {

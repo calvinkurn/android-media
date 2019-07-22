@@ -18,10 +18,10 @@ import android.view.View;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.base.list.seller.view.old.Pair;
@@ -40,6 +40,8 @@ import com.tokopedia.gm.featured.helper.SimpleItemTouchHelperCallback;
 import com.tokopedia.gm.featured.view.adapter.GMFeatureProductEmptyDataBinder;
 import com.tokopedia.gm.featured.view.adapter.GMFeaturedProductAdapter;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
+import com.tokopedia.gm.featured.view.adapter.model.TickerReadMoreFeaturedModel;
+import com.tokopedia.gm.featured.view.adapter.viewholder.TickerReadMoreFeaturedViewHolder;
 import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
 import com.tokopedia.gm.featured.view.presenter.GMFeaturedProductPresenterImpl;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
@@ -55,14 +57,20 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_POWER_MERCHANT_SCORE_TIPS;
+
 /**
  * Created by normansyahputa on 9/6/17.
  */
 
 public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, GMFeaturedProductModel>
-        implements GMFeaturedProductView, OnStartDragListener,
-        GMFeaturedProductAdapter.UseCaseListener, SimpleItemTouchHelperCallback.isEnabled,
-        BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel> {
+        implements GMFeaturedProductView,
+        OnStartDragListener,
+        GMFeaturedProductAdapter.UseCaseListener,
+        SimpleItemTouchHelperCallback.isEnabled,
+        BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel> ,
+        TickerReadMoreFeaturedViewHolder.TickerViewHolderViewHolderListener
+{
 
     private static final int REQUEST_CODE = 12314;
     private static final int MAX_ITEM = 5;
@@ -86,7 +94,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     @Override
     protected BaseListAdapter<GMFeaturedProductModel> getNewAdapter() {
-        GMFeaturedProductAdapter gmFeaturedProductAdapter = new GMFeaturedProductAdapter(this);
+        GMFeaturedProductAdapter gmFeaturedProductAdapter = new GMFeaturedProductAdapter(this,this);
         gmFeaturedProductAdapter.setUseCaseListener(this);
         gmFeaturedProductAdapter.setCheckedCallback(this);
         return gmFeaturedProductAdapter;
@@ -275,9 +283,27 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     protected void showViewList(@NonNull List<GMFeaturedProductModel> list) {
         super.showViewList(list);
+        if(!adapter.isEmpty()){
+            if(isIdlePowerMerchant()){
+                addTickerIdlePowerMerchant();
+            }
+        }
         getActivity().invalidateOptionsMenu();
         updateTitle();
         updateFabDisplay();
+    }
+
+    private boolean isIdlePowerMerchant() {
+        return userSession.isPowerMerchantIdle();
+    }
+
+    private void addTickerIdlePowerMerchant() {
+        TickerReadMoreFeaturedModel tickerReadMoreFeaturedModel = new TickerReadMoreFeaturedModel(
+                getString(R.string.ticker_featured_product_title),
+                getString(R.string.ticker_featured_product_description),
+                getString(R.string.ticker_featured_product_read_more)
+        );
+        adapter.getDataItemType().add(0, tickerReadMoreFeaturedModel);
     }
 
     @Override
@@ -568,5 +594,13 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
         return null;
+    }
+
+    @Override
+    public void onReadMoreClicked() {
+        RouteManager.route(
+                getContext(),
+                ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS
+        );
     }
 }
