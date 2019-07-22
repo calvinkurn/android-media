@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
@@ -95,6 +96,9 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_POWER_MERCHANT_IDLE_POPUP;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_REGULAR_MERCHANT_POPUP;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_POWER_MERCHANT_SCORE_TIPS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 
@@ -113,7 +117,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public static final int INSTAGRAM_SELECT_REQUEST_CODE = 3860;
     public static final String FEATURE_CASHBACK = "Cashback";
 
-
     @Inject
     ProductManagePresenter productManagePresenter;
     private BottomActionView bottomActionView;
@@ -131,8 +134,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private boolean isOfficialStore;
     private String shopDomain;
     private UserSessionInterface userSession;
-    private final String URL_SELLER_SCORE_TIPS = "https://seller.tokopedia.com/edu/skor-toko/";
-
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -532,7 +533,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         if (t instanceof MessageErrorException && ((MessageErrorException) t).getErrorCode().equals(ERROR_CODE_LIMIT_CASHBACK)) {
             if (isIdlePowerMerchant()) {
                 showInActivePowerMerchantBottomSheet(FEATURE_CASHBACK);
-            } else if (!userSession.isGoldMerchant()) {
+            } else if (!isPowerMerchant()) {
                 showRegularMerchantBottomSheet(FEATURE_CASHBACK);
             }
         } else {
@@ -546,8 +547,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         }
     }
 
-    private boolean isIdlePowerMerchant(){
+    private boolean isIdlePowerMerchant() {
         return userSession.isGoldMerchant() && userSession.isPowerMerchantIdle();
+    }
+
+    private boolean isPowerMerchant() {
+        return userSession.isGoldMerchant();
     }
 
     private void showRegularMerchantBottomSheet(String featureName) {
@@ -560,7 +565,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 featureName
         );
         String buttonName = getString(R.string.bottom_sheet_regular_btn);
-        showBottomSheet(title, description, buttonName);
+        showBottomSheet(title,IMG_URL_REGULAR_MERCHANT_POPUP, description, buttonName);
     }
 
     private void showInActivePowerMerchantBottomSheet(String featureName) {
@@ -573,20 +578,20 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 featureName
         );
         String buttonName = getString(R.string.bottom_sheet_idle_btn);
-        showBottomSheet(title, description, buttonName);
+        showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName);
     }
 
-    private void showBottomSheet(String title, String description, String buttonName) {
+    private void showBottomSheet(String title, String imageUrl, String description, String buttonName) {
         PowerMerchantSuccessBottomSheet.BottomSheetModel model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
                 title,
                 description,
-                "https://ecs7.tokopedia.net/img/android/power_merchant_subscribe/power_merchant_idle.png",
+                imageUrl,
                 buttonName,
                 ""
         );
         PowerMerchantSuccessBottomSheet bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model);
         bottomSheet.setListener(this);
-        bottomSheet.show(getChildFragmentManager(), "asd");
+        bottomSheet.show(getChildFragmentManager(), "merchant_warning_bottom_sheet");
     }
 
     @Override
@@ -908,14 +913,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onButtonClicked() {
-//        if (idlePowerMerchant) {
-//        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_SELLER_SCORE_TIPS);
-
-//
-//        } else if (inActive) {
-        RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
-
-//        }
-
+        if (isIdlePowerMerchant()) {
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS);
+        } else if (!isPowerMerchant()) {
+            RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+        }
     }
 }

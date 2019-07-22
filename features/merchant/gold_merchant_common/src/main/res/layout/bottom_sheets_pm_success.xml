@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,7 +12,7 @@
         android:id="@+id/txt_success_header_bs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pm_label_bs_success_header"
+        tools:text="Title"
         android:textColor="@color/black"
         app:fontSize="subHeadline"
         android:textStyle="bold"
@@ -31,7 +32,7 @@
         android:id="@+id/txt_success_desc_bs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pm_label_bs_success_desc"
+        tools:text="Description"
         android:gravity="center"
         app:fontSize="title"
         android:layout_marginBottom="@dimen/dp_20"/>
@@ -42,6 +43,6 @@
         android:layout_height="wrap_content"
         style="@style/Button.Submit.Green.Full"
         android:layout_marginBottom="@dimen/dp_64"
-        android:text="@string/pm_label_bs_success_button"/>
+        tools:text="Button Text"/>
 
 </LinearLayout>
