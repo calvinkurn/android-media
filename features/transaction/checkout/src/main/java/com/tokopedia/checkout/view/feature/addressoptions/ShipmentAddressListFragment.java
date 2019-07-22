@@ -30,6 +30,7 @@ import com.tokopedia.checkout.view.feature.addressoptions.recyclerview.ShipmentA
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel;
 import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
@@ -37,7 +38,6 @@ import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
@@ -51,6 +51,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.checkout.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
 import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
@@ -67,7 +68,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static final String ARGUMENT_ORIGIN_DIRECTION_TYPE = "ARGUMENT_ORIGIN_DIRECTION_TYPE";
     public static final int ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM = 1;
     public static final int ORIGIN_DIRECTION_TYPE_DEFAULT = 0;
-    public final int ADD_NEW_ADDRESS_CREATED = 3333;
     public final String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
 
     private RecyclerView mRvRecipientAddressList;
@@ -79,7 +79,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private Button btChangeSearch;
 
     private InputMethodManager mInputMethodManager;
-    private ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
+    private ICartAddressChoiceActivityListener mActivityListener;
     private int maxItemPosition;
     private boolean isLoading;
     private boolean isDisableCorner;
@@ -179,7 +179,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mCartAddressChoiceActivityListener = (ICartAddressChoiceActivityListener) activity;
+        mActivityListener = (ICartAddressChoiceActivityListener) activity;
     }
 
     @Override
@@ -274,9 +274,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void showList(@NotNull List<RecipientAddressModel> list) {
         maxItemPosition = 0;
-        String selectedId = mCurrentAddress.getId();
+        String selectedId = (mCurrentAddress != null) ? mCurrentAddress.getId() : "";
         mAdapter.setAddressList(list, selectedId);
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
+        llNetworkErrorView.setVisibility(View.GONE);
+        llNoResult.setVisibility(View.GONE);
     }
 
     @Override
@@ -337,9 +339,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void hideLoading() {
         isLoading = false;
-        rlContent.setVisibility(View.VISIBLE);
-        llNetworkErrorView.setVisibility(View.GONE);
-        llNoResult.setVisibility(View.GONE);
         swipeToRefreshLayout.setRefreshing(false);
     }
 
@@ -376,10 +375,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model, int position) {
         mAdapter.updateSelected(position);
-        if (mCartAddressChoiceActivityListener != null && getActivity() != null) {
+        if (mActivityListener != null && getActivity() != null) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
             sendAnalyticsOnAddressSelectionClicked();
-            mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
+            mActivityListener.finishAndSendResult(model);
         }
     }
 
@@ -387,9 +386,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onCornerAddressClicked(RecipientAddressModel addressModel, int position) {
         mPresenter.saveLastCorner(addressModel);
         mAdapter.updateSelected(position);
-        if (mCartAddressChoiceActivityListener != null && getActivity() != null) {
+        if (mActivityListener != null && getActivity() != null) {
             mCornerAnalytics.sendChooseCornerAddress();
-            mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(addressModel);
+            mActivityListener.finishAndSendResult(addressModel);
         } else {
             // Show error in case of unexpected behaviour
             this.showError(new Throwable());
@@ -440,27 +439,32 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 case LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT:
                     onSearchReset();
                     break;
-                case ADD_NEW_ADDRESS_CREATED:
-                    RecipientAddressModel newRecipientAddAddressModel;
-                    if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
-                        SaveAddressDataModel saveAddressDataModel = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
-                        newRecipientAddAddressModel = new RecipientAddressModel();
-                        newRecipientAddAddressModel.setAddressName(saveAddressDataModel.getAddressName());
-                        newRecipientAddAddressModel.setDestinationDistrictId(String.valueOf(saveAddressDataModel.getDistrictId()));
-                        newRecipientAddAddressModel.setCityId(String.valueOf(saveAddressDataModel.getCityId()));
-                        newRecipientAddAddressModel.setProvinceId(String.valueOf(saveAddressDataModel.getProvinceId()));
-                        newRecipientAddAddressModel.setRecipientName(saveAddressDataModel.getReceiverName());
-                        newRecipientAddAddressModel.setRecipientPhoneNumber(saveAddressDataModel.getPhone());
-                        newRecipientAddAddressModel.setStreet(saveAddressDataModel.getFormattedAddress());
-                        newRecipientAddAddressModel.setPostalCode(saveAddressDataModel.getPostalCode());
-                    }
-                    onSearchReset();
+                case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY:
+                case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED:
+                    RecipientAddressModel newAddress = setRecipientAddressModel(data);
+                    mActivityListener.finishAndSendResult(newAddress);
                     break;
                 default:
                     break;
             }
         }
+    }
 
+    private RecipientAddressModel setRecipientAddressModel(Intent data) {
+        RecipientAddressModel newRecipientAddAddressModel = new RecipientAddressModel();
+        if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
+            SaveAddressDataModel saveAddressDataModel = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
+            newRecipientAddAddressModel.setId(String.valueOf(saveAddressDataModel.getId()));
+            newRecipientAddAddressModel.setAddressName(saveAddressDataModel.getAddressName());
+            newRecipientAddAddressModel.setDestinationDistrictId(String.valueOf(saveAddressDataModel.getDistrictId()));
+            newRecipientAddAddressModel.setCityId(String.valueOf(saveAddressDataModel.getCityId()));
+            newRecipientAddAddressModel.setProvinceId(String.valueOf(saveAddressDataModel.getProvinceId()));
+            newRecipientAddAddressModel.setRecipientName(saveAddressDataModel.getReceiverName());
+            newRecipientAddAddressModel.setRecipientPhoneNumber(saveAddressDataModel.getPhone());
+            newRecipientAddAddressModel.setStreet(saveAddressDataModel.getFormattedAddress());
+            newRecipientAddAddressModel.setPostalCode(saveAddressDataModel.getPostalCode());
+        }
+        return newRecipientAddAddressModel;
     }
 
     @Override
@@ -469,36 +473,38 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
 
-                if (isAddNewAddressEnabled()) {
+                // if (isAddNewAddressEnabled()) {
+                    AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
-                            false), ADD_NEW_ADDRESS_CREATED);
+                            false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
-                } else {
+                /*} else {
                     startActivityForResult(
                             AddAddressActivity.createInstanceAddAddressFromCheckoutMultipleAddressForm(
                                     getActivity(), token
                             ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
-                }
+                }*/
 
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
 
-                if (isAddNewAddressEnabled()) {
+                // if (isAddNewAddressEnabled()) {
+                    AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
-                            false), ADD_NEW_ADDRESS_CREATED);
+                            false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
-                } else {
+                /*} else {
                     startActivityForResult(
                             AddAddressActivity.createInstanceAddAddressFromCheckoutSingleAddressForm(
                                     getActivity(), token
                             ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
                     );
-                }
+                }*/
             }
 
 
@@ -507,7 +513,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onCornerButtonClicked() {
-        mCartAddressChoiceActivityListener.requestCornerList();
+        mActivityListener.requestCornerList();
     }
 
     private void openSoftKeyboard() {
@@ -550,7 +556,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     public interface ICartAddressChoiceActivityListener {
-        void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult);
+        void finishAndSendResult(RecipientAddressModel selectedAddressResult);
         void requestCornerList();
     }
 
