@@ -327,6 +327,7 @@ public class GTMAnalytics extends ContextAnalytics {
     public void pushClickEECommerce(Bundle bundle){
         // replace list
         bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
+        bundle.remove("list");
         logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle, context);
     }
 
