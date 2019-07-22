@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ShopViewModel
@@ -32,7 +33,6 @@ class ShopItemViewHolder(
         private const val KEY_SHOP_IS_GOLD = 1
         private const val KEY_SHOP_STATUS_CLOSED = 2
         private const val KEY_SHOP_STATUS_MODERATED = 3
-        private const val KEY_SHOP_STATUS_INACTIVE = 4
         private const val SHOP_PRODUCT_ITEM_COUNT = 3
     }
 
@@ -113,10 +113,13 @@ class ShopItemViewHolder(
     }
 
     private fun initProductPreview(shopViewItem: ShopViewModel.ShopItem) {
+        val isProductListVisible = shopViewItem.productList.isNotEmpty()
+
+        itemView.recyclerViewShopProductItem?.showWithCondition(isProductListVisible)
+        itemView.textViewShopHasNoProduct?.showWithCondition(!isProductListVisible)
+
         if (shopViewItem.productList.isNotEmpty()) {
             showShopProductItemPreview(shopViewItem)
-        } else {
-            showTextShopHasNoProduct()
         }
     }
 
@@ -127,29 +130,31 @@ class ShopItemViewHolder(
     }
 
     private fun initShopProductItemRecyclerView(recyclerViewShopProductItem: RecyclerView, shopViewItem: ShopViewModel.ShopItem) {
-        recyclerViewShopProductItem.visibility = View.VISIBLE
-
-        recyclerViewShopProductItem.adapter = ShopProductItemAdapter(
-                context, shopViewItem.productList, SHOP_PRODUCT_ITEM_COUNT, shopListener
-        )
+        recyclerViewShopProductItem.adapter = createRecyclerViewShopProductItemAdapter(shopViewItem.productList)
 
         recyclerViewShopProductItem.layoutManager = createRecyclerViewShopProductItemLayoutManager()
 
-        if (recyclerViewShopProductItem.itemDecorationCount == 0) {
+        if (!hasItemDecoration(recyclerViewShopProductItem)) {
             recyclerViewShopProductItem.addItemDecoration(createRecyclerViewShopProductItemDecoration())
         }
+    }
+
+    private fun createRecyclerViewShopProductItemAdapter(
+            productList: List<ShopViewModel.ShopItem.ShopItemProduct>
+    ): RecyclerView.Adapter<ShopProductItemViewHolder> {
+        return ShopProductItemAdapter(context, productList, SHOP_PRODUCT_ITEM_COUNT, shopListener)
     }
 
     private fun createRecyclerViewShopProductItemLayoutManager(): RecyclerView.LayoutManager {
         return GridLayoutManager(context, SHOP_PRODUCT_ITEM_COUNT, GridLayoutManager.VERTICAL, false)
     }
 
-    private fun createRecyclerViewShopProductItemDecoration(): RecyclerView.ItemDecoration {
-        return ShopProductItemDecoration(getDimensionPixelSize(R.dimen.dp_8))
+    private fun hasItemDecoration(recyclerViewShopProductItem: RecyclerView): Boolean {
+        return recyclerViewShopProductItem.itemDecorationCount != 0
     }
 
-    private fun showTextShopHasNoProduct() {
-        itemView.textViewShopHasNoProduct?.visible()
+    private fun createRecyclerViewShopProductItemDecoration(): RecyclerView.ItemDecoration {
+        return ShopProductItemDecoration(getDimensionPixelSize(R.dimen.dp_8))
     }
 
     private fun initShopStatus(shopViewItem: ShopViewModel.ShopItem) {

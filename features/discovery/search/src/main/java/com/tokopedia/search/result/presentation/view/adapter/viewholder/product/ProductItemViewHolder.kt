@@ -17,7 +17,6 @@ import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.topads.sdk.view.ImpressedImageView
 
 const val LABEL_GROUP_POSITION_PROMO = "promo"
 const val LABEL_GROUP_POSITION_CREDIBILITY = "credibility"
