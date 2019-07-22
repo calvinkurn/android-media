@@ -213,6 +213,11 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                     opacity
                   }
                 }
+                buttonCTA {
+                  text
+                  textDisabled
+                  isDisabled
+                }
                 shop {
                     shopID
                 }

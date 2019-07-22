@@ -62,6 +62,10 @@ data class PostTagItem(
         @Expose
         val shop: List<PostTagItemShop> = ArrayList(),
 
+        @SerializedName("buttonCTA")
+        @Expose
+        val buttonCTA: List<PostTagItemButtonCTA> = ArrayList(),
+
         @SerializedName("rating")
         val rating: Int = 0
 )

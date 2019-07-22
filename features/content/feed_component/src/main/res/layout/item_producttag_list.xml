@@ -114,6 +114,7 @@
             android:layout_marginBottom="@dimen/dp_8"
             android:background="@drawable/bg_btn_transaction"
             android:clickable="true"
+            android:enabled="true"
             android:focusable="true"
             android:paddingStart="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
@@ -123,11 +124,12 @@
             android:paddingBottom="@dimen/dp_8">
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textBtnProductBuy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/string_posttag_buy"
                 android:textColor="@color/Neutral_N0"
-                app:typographyType="heading_5" />
+                app:typographyType="heading_5"
+                tools:text="@string/string_posttag_buy" />
 
         </FrameLayout>
 
