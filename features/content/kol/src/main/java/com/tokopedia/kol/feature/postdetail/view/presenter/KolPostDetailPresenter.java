@@ -284,6 +284,8 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                         }
                     }
             );
+        } else {
+            getView().onAddToCartFailed(postTagItem.getApplink());
         }
     }
 }

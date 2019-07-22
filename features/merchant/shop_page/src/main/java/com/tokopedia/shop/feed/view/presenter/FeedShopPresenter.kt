@@ -330,6 +330,8 @@ class FeedShopPresenter @Inject constructor(
                         }
                     }
             )
+        } else {
+            view.onAddToCartFailed(postTagItem.applink)
         }
     }
 

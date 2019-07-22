@@ -115,6 +115,8 @@ class ProfilePresenter @Inject constructor(
                         }
                     }
             )
+        } else {
+            view.onAddToCartFailed(postTagItem.applink)
         }
     }
 

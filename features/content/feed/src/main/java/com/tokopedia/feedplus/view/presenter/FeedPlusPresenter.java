@@ -448,6 +448,8 @@ public class FeedPlusPresenter
                         }
                     }
             );
+        } else {
+            getView().onAddToCartFailed(postTagItem.getApplink());
         }
     }
 }
