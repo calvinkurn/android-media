@@ -100,19 +100,19 @@ class MediaHolderFragment : BaseDaggerFragment() {
             currentVol = savedInstanceState.getFloat(CURRENT_VOLUME_KEY, 1f)
         }
 
-        video_player.controllerShowTimeoutMs = 0
+        //video_player.controllerShowTimeoutMs = 0
         video_player.setControllerVisibilityListener {
-            onControllerTouch?.onTouch(it == View.VISIBLE)
+            //onControllerTouch?.onTouch(it == View.VISIBLE)
         }
         val volumeControl: ImageView = video_player.findViewById(R.id.volume_control)
         volumeControl.setOnClickListener {
-            context?.let { volumeControl.setImageDrawable(
-                    ContextCompat.getDrawable(it,if (isMute) R.drawable.ic_af_volume_off else R.drawable.ic_af_volume_on))
-            }
             if (!isMute){
                 currentVol = mExoPlayer?.volume ?: 1f
             }
             isMute = !isMute
+            context?.let { volumeControl.setImageDrawable(
+                    ContextCompat.getDrawable(it,if (isMute) R.drawable.ic_af_volume_off else R.drawable.ic_af_volume_on))
+            }
             mExoPlayer?.volume = if (isMute) 0f else currentVol
         }
     }
