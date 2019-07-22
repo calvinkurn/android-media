@@ -403,9 +403,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.rvPosttag.setHasFixedSize(true)
                 val layoutManager: RecyclerView.LayoutManager = when (feedType) {
                     SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
-                    else -> feedType.let{
-                        LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-                    }
+                    else -> LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 }
                 itemView.rvPosttag.layoutManager = layoutManager
                 itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId, adapterPosition), PostTagTypeFactoryImpl(listener))
