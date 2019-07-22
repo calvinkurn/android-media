@@ -316,8 +316,12 @@ class FeedShopPresenter @Inject constructor(
             atcUseCase.execute(
                     AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop.first().shopId),
                     object : Subscriber<AddToCartDataModel>() {
-                        override fun onNext(t: AddToCartDataModel?) {
-                            view.onAddToCartSuccess()
+                        override fun onNext(model: AddToCartDataModel?) {
+                            if (model?.data?.success != 1) {
+                                view.onAddToCartFailed(postTagItem.applink)
+                            } else {
+                                view.onAddToCartSuccess()
+                            }
                         }
 
                         override fun onCompleted() {

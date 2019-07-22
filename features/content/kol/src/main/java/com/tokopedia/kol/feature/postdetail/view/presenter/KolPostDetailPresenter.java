@@ -280,7 +280,11 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
 
                         @Override
                         public void onNext(AddToCartDataModel addToCartDataModel) {
-                            getView().onAddToCartSuccess();
+                            if (addToCartDataModel.getData().getSuccess() == 0) {
+                                getView().onAddToCartFailed(postTagItem.getApplink());
+                            } else {
+                                getView().onAddToCartSuccess();
+                            }
                         }
                     }
             );
