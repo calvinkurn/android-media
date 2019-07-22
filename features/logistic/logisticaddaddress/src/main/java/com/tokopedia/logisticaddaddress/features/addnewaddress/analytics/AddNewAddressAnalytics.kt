@@ -50,7 +50,7 @@ object AddNewAddressAnalytics {
     private const val CLICK_CHIPS_KODE_POS = "click chips kode pos"
     private const val CLICK_FIELD_ALAMAT = "click field alamat"
     private const val CLICK_BACK_ARROW_ON_NEGATIVE_PAGE = "click back arrow on negative page"
-    private const val VIEW_TOASTER_PILIH_KOTA_DAN_KODE_POS_TERLEBIH_DAHULU = "click field no ponsel"
+    private const val VIEW_TOASTER_PILIH_KOTA_DAN_KODE_POS_TERLEBIH_DAHULU = "view toaster pilih kota dan kode pos terlebih dahulu"
     private const val VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA = "view toaster alamat tidak sesuai dengan peta"
 
     @JvmStatic

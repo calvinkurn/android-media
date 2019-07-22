@@ -1,7 +1,7 @@
 package com.tokopedia.attachproduct.data.source.service;
 
 import com.tokopedia.attachproduct.data.source.api.AttachProductApi;
-import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.url.TokopediaUrl;
 
 import retrofit2.Retrofit;
 
@@ -21,7 +21,7 @@ public class GetShopProductService {
     }
 
     protected String getBaseUrl() {
-        return TkpdBaseURL.ACE_DOMAIN;
+        return TokopediaUrl.Companion.getInstance().getACE();
     }
 
     public AttachProductApi getApi() {

@@ -497,6 +497,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             if (field.isNotEmpty()) field += ", "
             field += "alamat"
         }
+        if (et_alamat_mismatch.text.length < 5) {
+            validated = false
+            setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat_length))
+            if (field.isNotEmpty()) field += ", "
+            field += "alamat"
+        }
 
         if (!validated) {
             AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field)
