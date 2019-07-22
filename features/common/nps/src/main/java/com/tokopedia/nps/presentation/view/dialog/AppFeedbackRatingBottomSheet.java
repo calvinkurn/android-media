@@ -18,6 +18,7 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
     private AppCompatButton sendButton;
 
     private int ratingValue = 1;
+    private String[] ratingDetails;
 
     @Override
     public int getLayoutResourceId() {
@@ -26,7 +27,7 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
 
     @Override
     protected BottomSheetsState state() {
-        return BottomSheetsState.FULL;
+        return BottomSheetsState.NORMAL;
     }
 
     @Override
@@ -36,21 +37,29 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
 
     @Override
     public void initView(View view) {
+        ratingDetails = getResources().getStringArray(R.array.app_ratings);
+
         ratingBar = view.findViewById(R.id.rating_bar);
         ratingLevel = view.findViewById(R.id.rating_level);
         sendButton = view.findViewById(R.id.send_button);
 
-        ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
-            Log.d("RATING CHANGED", Float.toString(rating));
-        });
+        if (ratingBar != null && ratingLevel != null) {
+            ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+                ratingLevel.setText(ratingDetails[(int) rating]);
+            });
+        }
 
-        sendButton.setOnClickListener(v -> {
-            if (ratingValue < GOOD_RATING_THRESHOLD) {
-                Log.d("Bad Rating", "");
-            } else {
-                Log.d("Good Rating", "");
-            }
-        });
+        if (sendButton != null) {
+            sendButton.setOnClickListener(v -> {
+                Log.d(">>>>>", "@@");
+                if (ratingValue < GOOD_RATING_THRESHOLD) {
+                    Log.d("Bad Rating", "");
+                } else {
+                    Log.d("Good Rating", "");
+                }
+            });
+        }
+
     }
 
 }
