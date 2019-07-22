@@ -77,10 +77,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
-        val adapter = FeedPlusTabAdapter(childFragmentManager, data.feedData, arguments)
+        val feedData = data.feedData.filter { it.data == "custom" }
+        val adapter = FeedPlusTabAdapter(childFragmentManager, feedData, arguments)
         view_pager.adapter = adapter
         pagerAdapter = adapter
-        view_pager.currentItem = if (data.meta.selectedIndex < data.feedData.size) data.meta.selectedIndex else 0
+        view_pager.currentItem = if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
         feed_loading.visibility = View.GONE
         feed_error.visibility = View.GONE
         tab_layout.visibility = View.VISIBLE
