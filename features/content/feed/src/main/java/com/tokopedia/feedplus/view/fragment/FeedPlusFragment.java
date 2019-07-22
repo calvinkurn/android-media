@@ -1703,7 +1703,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onAddToCartSuccess() {
-
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
     }
 
     @Override

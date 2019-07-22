@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
@@ -903,7 +904,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onAddToCartSuccess() {
-
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
     }
 
     @Override
