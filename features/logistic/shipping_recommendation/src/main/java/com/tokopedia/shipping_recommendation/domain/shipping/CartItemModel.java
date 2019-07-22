@@ -18,7 +18,6 @@ public class CartItemModel implements Parcelable {
     private String name;
     private double price;
     private double originalPrice;
-    private boolean isSlashPrice;
     private int currency;
 
     private int weightUnit;
@@ -133,14 +132,6 @@ public class CartItemModel implements Parcelable {
 
     public void setOriginalPrice(double originalPrice) {
         this.originalPrice = originalPrice;
-    }
-
-    public boolean isSlashPrice() {
-        return isSlashPrice;
-    }
-
-    public void setIsSlashPrice(boolean isSlashPrice) {
-        this.isSlashPrice = isSlashPrice;
     }
 
     public int getCurrency() {
@@ -399,7 +390,6 @@ public class CartItemModel implements Parcelable {
                 .append(getProductId(), that.getProductId())
                 .append(getPrice(), that.getPrice())
                 .append(getOriginalPrice(), that.getOriginalPrice())
-                .append(isSlashPrice(), that.isSlashPrice())
                 .append(getCurrency(), that.getCurrency())
                 .append(getWeightUnit(), that.getWeightUnit())
                 .append(getWeight(), that.getWeight())
@@ -436,7 +426,6 @@ public class CartItemModel implements Parcelable {
                 .append(getName())
                 .append(getPrice())
                 .append(getOriginalPrice())
-                .append(isSlashPrice())
                 .append(getCurrency())
                 .append(getWeightUnit())
                 .append(getWeight())
@@ -474,7 +463,6 @@ public class CartItemModel implements Parcelable {
         dest.writeString(this.name);
         dest.writeDouble(this.price);
         dest.writeDouble(this.originalPrice);
-        dest.writeByte(this.isSlashPrice ? (byte) 1: (byte) 0);
         dest.writeInt(this.currency);
         dest.writeInt(this.weightUnit);
         dest.writeDouble(this.weight);
@@ -509,7 +497,6 @@ public class CartItemModel implements Parcelable {
         this.name = in.readString();
         this.price = in.readDouble();
         this.originalPrice = in.readDouble();
-        this.isSlashPrice = in.readByte() != 0;
         this.currency = in.readInt();
         this.weightUnit = in.readInt();
         this.weight = in.readDouble();
