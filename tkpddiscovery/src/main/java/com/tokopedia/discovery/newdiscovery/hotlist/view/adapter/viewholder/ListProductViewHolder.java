@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
@@ -146,7 +146,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     }
 
     protected void renderProductImage(HotlistProductViewModel productItem) {
-        ImageHandler.loadImageThumbs(context.getApplicationContext(), productImage, productItem.getImageUrl());
+        ImageHandler.loadImageThumbs(context, productImage, productItem.getImageUrl());
     }
 
     protected void renderShopLocation(HotlistProductViewModel element) {
@@ -192,7 +192,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
             simpleTargetBitmapShopBadge = createSimpleTargetBitmapForLoadBadge(view);
         }
 
-        ImageHandler.loadImageBitmap2(context.getApplicationContext(), badgeItem.getImageUrl(), simpleTargetBitmapShopBadge);
+        ImageHandler.loadImageBitmap2(context, badgeItem.getImageUrl(), simpleTargetBitmapShopBadge);
     }
 
     private SimpleTarget<Bitmap> createSimpleTargetBitmapForLoadBadge(final View view) {
