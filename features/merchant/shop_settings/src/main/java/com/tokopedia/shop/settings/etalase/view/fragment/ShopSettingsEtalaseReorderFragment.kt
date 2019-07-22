@@ -24,9 +24,12 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
+import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
 import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseReorderAdapter
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseReorderFactory
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListReorderPresenter
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 import java.util.ArrayList
 
@@ -46,6 +49,8 @@ class ShopSettingsEtalaseReorderFragment : BaseListFragment<ShopEtalaseViewModel
 
     private var listener: OnShopSettingsEtalaseReorderFragmentListener? = null
     private var recyclerViewDefault: RecyclerView? = null
+    private var userSession: UserSessionInterface? = null
+
 
     interface OnShopSettingsEtalaseReorderFragmentListener {
         fun onSuccessReorderEtalase()
@@ -90,6 +95,7 @@ class ShopSettingsEtalaseReorderFragment : BaseListFragment<ShopEtalaseViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userSession = UserSession(activity)
         val itemTouchHelperCallback = SimpleItemTouchHelperCallback(adapter)
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper!!.attachToRecyclerView(recyclerView)
@@ -100,7 +106,23 @@ class ShopSettingsEtalaseReorderFragment : BaseListFragment<ShopEtalaseViewModel
             adapterDefault!!.clearAllElements()
             adapterDefault!!.addElement(shopEtalaseModelsDefault)
             recyclerViewDefault!!.visibility = View.VISIBLE
+            if (isIdlePowerMerchant()) {
+                addIdlePowerMerchantTicker()
+            }
         }
+    }
+
+    private fun isIdlePowerMerchant(): Boolean {
+        return userSession!!.isGoldMerchant && userSession!!.isPowerMerchantIdle
+    }
+
+    private fun addIdlePowerMerchantTicker() {
+        val model = TickerReadMoreViewModel(
+                getString(R.string.ticker_etalase_title),
+                getString(R.string.ticker_etalase_description),
+                getString(R.string.ticker_etalase_read_more)
+        )
+        adapter?.addElement(0, model)
     }
 
     override fun loadData(page: Int) {

@@ -26,6 +26,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.settings.R
@@ -39,6 +40,8 @@ import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFacto
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListPresenter
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder
 import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreViewHolder
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
@@ -54,10 +57,10 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     private var needReload: Boolean = false
     private var recyclerView: RecyclerView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var userSession: UserSessionInterface? = null
+
 
     private var onShopSettingsEtalaseFragmentListener: OnShopSettingsEtalaseFragmentListener? = null
-
-    private val URL_SELLER_SCORE_TIPS = "https://seller.tokopedia.com/edu/skor-toko/"
 
     override val keyword: String
         get() = searchInputView.searchText
@@ -94,6 +97,7 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hideSearchInputView()
+        userSession = UserSession(activity)
         searchInputView.setSearchHint(getString(R.string.search_etalase))
     }
 
@@ -221,7 +225,7 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     }
 
     override fun getAdapterTypeFactory(): ShopEtalaseFactory {
-        return ShopEtalaseFactory(this,this)
+        return ShopEtalaseFactory(this, this)
     }
 
     override fun onIconMoreClicked(shopEtalaseViewModel: ShopEtalaseViewModel) {
@@ -264,16 +268,20 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
         this.shopEtalaseViewModels = shopEtalaseViewModels
         onSearchSubmitted(keyword)
         activity!!.invalidateOptionsMenu()
-//        if(idlePowerMerchant()) {
-        addIdlePowerMerchantTicker()
-//        }
+        if (isIdlePowerMerchant()) {
+            addIdlePowerMerchantTicker()
+        }
+    }
+
+    private fun isIdlePowerMerchant(): Boolean {
+        return userSession!!.isGoldMerchant && userSession!!.isPowerMerchantIdle
     }
 
     private fun addIdlePowerMerchantTicker() {
         val model = TickerReadMoreViewModel(
-                "Tambah Etalase",
-                "Power Merchant nonaktif hanya tampilkan 10 etalase teratas. Tingkatkan performa tokomu minimal 65.",
-                "Selengkapnya"
+                getString(R.string.ticker_etalase_title),
+                getString(R.string.ticker_etalase_description),
+                getString(R.string.ticker_etalase_read_more)
         )
         adapter.addElement(0, model)
     }
@@ -380,7 +388,7 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     }
 
     override fun onReadMoreClicked() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_SELLER_SCORE_TIPS);
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS)
     }
 
     companion object {

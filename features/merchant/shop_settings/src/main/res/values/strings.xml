@@ -130,4 +130,7 @@
     <string name="regular_merchant_learn_more">Power Merchant sekarang bebas biaya bulanan!</string>
     <string name="power_merchant_learn_more"><![CDATA[Power Merchant aktif jika skor performa toko minimum <b>75</b> poin.]]></string>
     <string name="learn_more">Pelajari Selengkapnya</string>
+    <string name="ticker_etalase_title">Tambah Etalase</string>
+    <string name="ticker_etalase_description">Power Merchant nonaktif hanya tampilkan 10 etalase teratas. Tingkatkan performa tokomu minimal 65.</string>
+    <string name="ticker_etalase_read_more">Selengkapnya</string>
 </resources>

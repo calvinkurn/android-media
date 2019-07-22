@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.watcher.AfterTextWatcher
+import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
 import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
@@ -44,8 +45,8 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     companion object {
         private const val PARAM_IS_EDIT = "IS_EDIT"
         private const val PARAM_SHOP_ETALASE = "SHOP_ETALASE"
-
         private const val PARAM_IS_SUCCESS = "IS_SUCCESS"
+        private const val FEATURE_ETALASE = "Etalase"
 
         @JvmStatic
         fun createInstance(isEdit: Boolean, etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()) =
@@ -115,7 +116,7 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     override fun onErrorAddEdit(throwable: Throwable?) {
         if (view != null && activity != null) {
             if (throwable is MessageErrorException) {
-                showRegularMerchantBottomSheet("Etalase")
+                showRegularMerchantBottomSheet(FEATURE_ETALASE)
             } else {
                 ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
                         .setAction(R.string.title_retry) {
@@ -142,13 +143,13 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         val model = PowerMerchantSuccessBottomSheet.BottomSheetModel(
                 title,
                 description,
-                "https://ecs7.tokopedia.net/img/android/power_merchant_subscribe/power_merchant_idle.png",
+                IMG_URL_REGULAR_MERCHANT_POPUP,
                 buttonName,
                 ""
         )
         val bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model)
         bottomSheet.setListener(this)
-        bottomSheet.show(childFragmentManager, "asd")
+        bottomSheet.show(childFragmentManager, "merchant_warning_bottom_sheet")
     }
 
     override fun onButtonClicked() {
