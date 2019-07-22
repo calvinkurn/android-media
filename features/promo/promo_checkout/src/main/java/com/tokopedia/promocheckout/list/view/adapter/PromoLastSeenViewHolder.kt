@@ -9,7 +9,7 @@ class PromoLastSeenViewHolder(val view : View, val listenerLastSeen: ListenerLas
     fun bind(data: PromoCheckoutLastSeenModel) {
         view.setOnClickListener { listenerLastSeen.onClickItemLastSeen(data) }
         view.voucherCode.text = data.promoCode
-        view.descPromo.text = data.subtitle.toUpperCase()
+        view.descPromo.text = data.title.toUpperCase()
     }
 
     interface ListenerLastSeen{
