@@ -142,7 +142,7 @@ class ShopItemViewHolder(
     private fun createRecyclerViewShopProductItemAdapter(
             productList: List<ShopViewModel.ShopItem.ShopItemProduct>
     ): RecyclerView.Adapter<ShopProductItemViewHolder> {
-        return ShopProductItemAdapter(context, productList, SHOP_PRODUCT_ITEM_COUNT, shopListener)
+        return ShopProductItemAdapter(context, productList.take(SHOP_PRODUCT_ITEM_COUNT), shopListener)
     }
 
     private fun createRecyclerViewShopProductItemLayoutManager(): RecyclerView.LayoutManager {
