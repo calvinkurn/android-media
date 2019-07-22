@@ -38,7 +38,11 @@ query PropertyCart($data: PropertyGetCartRequest!) {
       name
       type
       address
-      propertyImage
+      propertyImage {
+        urlSquare60
+        urlOriginal
+        urlMax300
+      }
       star
       paymentNote
       checkInFrom

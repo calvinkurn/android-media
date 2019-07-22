@@ -191,7 +191,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             hotel_info_rating_container.addView(RatingStarView(context!!))
         }
         tv_hotel_info_address.text = property.address
-        iv_hotel_info_image.loadImage(property.image, R.drawable.ic_failed_load_image)
+        iv_hotel_info_image.loadImage(property.image.urlMax300, R.drawable.ic_failed_load_image)
     }
 
     private fun setupRoomDuration(property: HotelPropertyData, cart: HotelCartData) {
