@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rv_setting_type"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
-    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+    app:has_divider_left_padding="true"
     tools:listitem="@layout/item_setting_type">
 
-</android.support.v7.widget.RecyclerView>
+</com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView>
