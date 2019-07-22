@@ -83,7 +83,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun onErrorCustomData(error: Throwable)
 
-    fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
+    open fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
         renderPromoList(catalogMenuDetailData.catalogMenuDetailData.promos)
         renderRecentTransactions(catalogMenuDetailData.catalogMenuDetailData.recommendations)
         renderTicker(catalogMenuDetailData.catalogMenuDetailData.tickers)
@@ -123,9 +123,11 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         } else {
             tickerView.visibility = View.GONE
         }
+
     }
 
     fun navigateContact() {
+        topupAnalytics.eventClickOnContactPickerHomepage()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             activity?.let {
                 permissionCheckerHelper.checkPermission(it,
@@ -225,10 +227,10 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     private fun renderRecentTransactions(recentNumbers: List<TelcoRecommendation>) {
         if (recentNumbers.isNotEmpty()) {
             recentNumbersWidget.setListener(object : DigitalRecentTransactionWidget.ActionListener {
-                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryName: String,
+                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryId: Int,
                                                  position: Int) {
+                    telcoRecommendation.position = position
                     onClickItemRecentNumber(telcoRecommendation)
-                    topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, categoryName, position)
                 }
 
                 override fun onTrackImpressionRecentList(digitalTrackRecentList: List<DigitalTrackRecentTransactionTelco>) {
@@ -285,7 +287,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     topupAnalytics.impressionEnhanceCommercePromoList(digitalTrackPromoList)
                 }
 
-                override fun onClickItemPromo(telcoPromo: TelcoPromo) {
+                override fun onClickItemPromo(telcoPromo: TelcoPromo, position: Int) {
+                    topupAnalytics.clickEnhanceCommercePromo(telcoPromo, position)
                     if (!TextUtils.isEmpty(telcoPromo.urlBannerPromo)) {
                         RouteManager.route(activity, telcoPromo.urlBannerPromo)
                     }

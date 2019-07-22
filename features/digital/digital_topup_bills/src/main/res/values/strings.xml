@@ -10,8 +10,8 @@
     <string name="text_copy_promo_code">Salin</string>
     <string name="text_has_copied_promo_code">Disalin</string>
     <string name="title_promo">Promo</string>
-    <string name="title_telco_product_empty_state">%s Tidak Tersedia</string>
-    <string name="desc_telco_product_empty_state">Produk %s untuk provider ini belum tersedia, silakan coba provider lainnya.</string>
+    <string name="title_telco_product_empty_state">Belum ada pilihan %s</string>
+    <string name="desc_telco_product_empty_state">Yah... %1$s buat nomor ini belum tersedia, coba cari %2$s untuk provider lain atau cek lagi lain kali, ya.</string>
     <string name="digital_desc_add_to_mybills">You’ll be reminded to pay your bill every month on %s th</string>
     <string name="input_number">Masukkan nomor</string>
     <string name="digital_title_fav_number">Nomor Favorit</string>
@@ -23,4 +23,9 @@
     <string name="digital_title_price">Harga</string>
     <string name="digital_title_details_bills">Detail Tagihan</string>
     <string name="digital_see_more_btn">lihat detail</string>
+    <string name="Telco_title_showcase_client_number">Nggak perlu repot pilih provider</string>
+    <string name="telco_label_showcase_client_number">Cukup masukkan nomor HP, langsung tersedia pilihan pulsa dan paket data yang sesuai</string>
+    <string name="telco_title_showcase_promo">Diskon spesial buat kamu</string>
+    <string name="telco_label_showcase_promo">Mau beli pulsa dan paket data lebih hemat? Pilih sendiri kode promonya!</string>
+    <string name="telco_number_error_not_found">Nomor tidak valid</string>
 </resources>

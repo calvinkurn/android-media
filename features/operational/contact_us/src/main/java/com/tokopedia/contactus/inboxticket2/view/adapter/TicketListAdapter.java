@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
+import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 
 import java.util.List;
 
@@ -29,7 +31,6 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean isFooterAdded;
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
-    private boolean isOfficialStore = false;
 
     public TicketListAdapter(Context context, List<TicketsItem> data, InboxListContract.InboxListPresenter presenter) {
         mContext = context;
@@ -146,7 +147,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    class TicketItemHolder extends RecyclerView.ViewHolder {
+    class TicketItemHolder extends RecyclerView.ViewHolder implements ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet {
 
         private AppCompatCheckBox checkboxDelete;
         private TextView tvTicketStatus;
@@ -155,6 +156,8 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private TextView tvTicketDate;
         private TextView tvPrioritylabel;
         ConstraintLayout layoutItemTicket;
+        private boolean isOfficialStore = false;
+        private CloseableBottomSheetDialog servicePrioritiesBottomSheet;
 
         TicketItemHolder(View itemView) {
             super(itemView);
@@ -204,13 +207,19 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 checkboxDelete.setVisibility(View.GONE);
 
             if (!TextUtils.isEmpty(item.getIsOfficialStore()) && item.getIsOfficialStore().equalsIgnoreCase("yes")) {
+                isOfficialStore = true;
                 tvPrioritylabel.setVisibility(View.VISIBLE);
                 tvPrioritylabel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //opn tooltip
+                        servicePrioritiesBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(mContext);
+                        servicePrioritiesBottomSheet.setCustomContentView( new ServicePrioritiesBottomSheet(mContext,TicketItemHolder.this),"", false);
+                        servicePrioritiesBottomSheet.show();
                     }
                 });
+            }else {
+                tvPrioritylabel.setVisibility(View.GONE);
+                isOfficialStore = false;
             }
 
             layoutItemTicket.setOnClickListener(new View.OnClickListener() {
@@ -232,6 +241,11 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         void clickItem() {
             mPresenter.onClickTicket(getAdapterPosition(), isOfficialStore);
+        }
+
+        @Override
+        public void onClickClose() {
+            servicePrioritiesBottomSheet.dismiss();
         }
     }
 

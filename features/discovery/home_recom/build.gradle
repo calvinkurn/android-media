@@ -1,6 +1,14 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
+android{
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+}
+
 repositories {
 }
 
@@ -14,6 +22,7 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.linker)

@@ -18,9 +18,19 @@ public final class DynamicFilterModel implements Parcelable {
     @Expose
     String status;
 
+    @SerializedName("isOfficialSelectedFlag")
+    @Expose
+    Boolean isOfficialSelectedFlag = false;
+
     public DynamicFilterModel() {
     }
 
+    public DynamicFilterModel(DataValue data,String processTime, String status,Boolean isOfficialFlag) {
+        this.data = data;
+        this.processTime = processTime;
+        this.status = status;
+        this.isOfficialSelectedFlag = isOfficialFlag;
+    }
     public String getProcessTime() {
         return processTime;
     }
@@ -63,6 +73,9 @@ public final class DynamicFilterModel implements Parcelable {
         this.status = in.readString();
     }
 
+    public Boolean getIsOfficialSelectedFlag() {
+        return isOfficialSelectedFlag;
+    }
     public static final Creator<DynamicFilterModel> CREATOR = new Creator<DynamicFilterModel>() {
         @Override
         public DynamicFilterModel createFromParcel(Parcel source) {

@@ -11,8 +11,9 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:descendantFocusability="beforeDescendants"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
             <RelativeLayout
                 android:id="@+id/layout_search"
