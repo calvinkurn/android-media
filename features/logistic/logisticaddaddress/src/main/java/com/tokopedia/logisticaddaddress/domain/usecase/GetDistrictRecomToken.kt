@@ -9,6 +9,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import org.json.JSONObject
 import rx.Observable
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 class GetDistrictRecomToken @Inject constructor(val repository: ShopAddressRepository)
@@ -22,7 +23,7 @@ class GetDistrictRecomToken @Inject constructor(val repository: ShopAddressRepos
         val param = requestParams?.getObject(PARAM_AUTH) as Map<String, String>
         return repository.getLocation(param).map {
             val response = it.body()
-            val jsonObject = JSONObject(response.stringData)
+            val jsonObject = JSONObject(response?.stringData)
 
             val data = GsonBuilder().create()
                     .fromJson(jsonObject.toString(), ShopAddressTokenResponse::class.java)
