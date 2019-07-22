@@ -1,17 +1,22 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistListener;
@@ -40,6 +45,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     protected View container;
     protected TextView topLabel;
     protected TextView bottomLabel;
+    protected SimpleTarget<Bitmap> simpleTargetBitmapShopBadge;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_item_list;
@@ -140,7 +146,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     }
 
     protected void renderProductImage(HotlistProductViewModel productItem) {
-        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
+        ImageHandler.loadImageThumbs(context, productImage, productItem.getImageUrl());
     }
 
     protected void renderShopLocation(HotlistProductViewModel element) {
@@ -172,10 +178,53 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
 
     protected void renderBadges(List<HotlistProductViewModel.BadgeModel> badgesList) {
         badgesContainer.removeAllViews();
+
         for (HotlistProductViewModel.BadgeModel badgeItem : badgesList) {
             if (badgeItem.isShown()) {
-                LuckyShopImage.loadImage(context, badgeItem.getImageUrl(), badgesContainer);
+                loadShopBadgeIcon(badgeItem);
             }
         }
+    }
+
+    private void loadShopBadgeIcon(HotlistProductViewModel.BadgeModel badgeItem) {
+        if(simpleTargetBitmapShopBadge == null) {
+            View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
+            simpleTargetBitmapShopBadge = createSimpleTargetBitmapForLoadBadge(view);
+        }
+
+        ImageHandler.loadImageBitmap2(context, badgeItem.getImageUrl(), simpleTargetBitmapShopBadge);
+    }
+
+    private SimpleTarget<Bitmap> createSimpleTargetBitmapForLoadBadge(final View view) {
+        return new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                loadShopBadgeSuccess(bitmap, view);
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Exception e, @Nullable Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                loadShopBadgeFailed(view);
+            }
+        };
+    }
+
+    private void loadShopBadgeSuccess(Bitmap bitmap, View view) {
+        ImageView image = view.findViewById(R.id.badge);
+
+        if(image != null) {
+            if (bitmap.getHeight() <= 1 && bitmap.getWidth() <= 1) {
+                view.setVisibility(View.GONE);
+            } else {
+                image.setImageBitmap(bitmap);
+                view.setVisibility(View.VISIBLE);
+                badgesContainer.addView(view);
+            }
+        }
+    }
+
+    private void loadShopBadgeFailed(View view) {
+        view.setVisibility(View.GONE);
     }
 }
