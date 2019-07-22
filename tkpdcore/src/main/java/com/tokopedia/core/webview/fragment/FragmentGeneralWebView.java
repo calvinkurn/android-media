@@ -67,6 +67,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private static final String QUERY_PARAM_PLUS = "plus";
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
+    private static final String PARAM_EXTERNAL = "tokopedia_external=true";
+
     private static final int LOGIN_GPLUS = 123453;
     private static final int REQUEST_CODE_LOGIN = 123321;
     private static boolean isAlreadyFirstRedirect;
@@ -542,6 +544,12 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE), HCI_CAMERA_REQUEST_CODE);
                 return true;
             } else if (getActivity() != null
+                    && url.contains(PARAM_EXTERNAL)) {
+                Intent destination = new Intent(Intent.ACTION_VIEW);
+                destination.setData(Uri.parse(url));
+                startActivity(destination);
+                return true;
+            } else if (getActivity() != null
                     && url.equalsIgnoreCase(PARAM_WEBVIEW_BACK)
                     && !getActivity().isTaskRoot()) {
                 getActivity().finish();
@@ -581,7 +589,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 }
             } else {
                 Activity activity = getActivity();
-                if (activity!= null) {
+                if (activity != null) {
                     String applink = DeeplinkMapper.getRegisteredNavigation(activity, url);
                     if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(activity, applink)) {
                         RouteManager.route(getActivity(), applink);
@@ -633,7 +641,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         }
     }
 
-    public void reloadPage(){
+    public void reloadPage() {
         WebViewGeneral.reload();
     }
 }
