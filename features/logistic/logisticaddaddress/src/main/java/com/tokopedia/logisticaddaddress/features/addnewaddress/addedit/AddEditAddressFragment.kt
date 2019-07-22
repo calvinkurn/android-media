@@ -94,6 +94,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
     private var labelAlamatList: Array<String> = emptyArray()
+    private var isLatitudeNotEmpty: Boolean? = false
+    private var isLongitudeNotEmpty: Boolean? = false
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
@@ -128,8 +130,17 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)!!
             saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
             token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
-            currentLat = saveAddressDataModel?.latitude?.toDouble()
-            currentLong = saveAddressDataModel?.longitude?.toDouble()
+
+            isLatitudeNotEmpty = saveAddressDataModel?.latitude?.isNotEmpty()
+            isLatitudeNotEmpty?.let {
+                if (it) currentLat = saveAddressDataModel?.latitude?.toDouble()
+            }
+
+            isLongitudeNotEmpty = saveAddressDataModel?.longitude?.isNotEmpty()
+            isLongitudeNotEmpty?.let {
+                if (it) currentLong = saveAddressDataModel?.longitude?.toDouble()
+            }
+
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)!!
         }
     }

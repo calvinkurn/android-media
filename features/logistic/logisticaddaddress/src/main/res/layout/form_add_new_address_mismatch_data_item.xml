@@ -150,25 +150,6 @@
             android:textColor="@color/label_grey"
             android:text="@string/detail_alamat"/>
 
-        <!--<com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/et_detail_alamat_mismatch_wrapper"
-            style="@style/HintTextInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:hintEnabled="false">
-
-            <EditText
-                android:id="@+id/et_detail_alamat_mismatch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/et_alamat_hint"
-                android:focusable="false"
-                android:enabled="false"
-                android:cursorVisible="false"
-                android:textColor="#ae31353b" />
-
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>-->
-
     </LinearLayout>
 
 </LinearLayout>
