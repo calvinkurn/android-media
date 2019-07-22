@@ -104,7 +104,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     egoldTieringModel.setBasisAmount(data.getBasisAmount());
                     egoldTieringModel.setMaxAmount(data.getMaxAmount());
                     egoldTieringModel.setMinAmount(data.getMinAmount());
-                    egoldTieringModel.setMinTotalAmount(data.getMinToalAmount());
+                    egoldTieringModel.setMinTotalAmount(data.getMinTotalAmount());
                     egoldTieringModelArrayList.add(egoldTieringModel);
                 }
                 egoldAttributeModel.setEgoldTieringModelArrayList(egoldTieringModelArrayList);

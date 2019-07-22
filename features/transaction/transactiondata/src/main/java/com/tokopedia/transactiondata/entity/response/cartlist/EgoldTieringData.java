@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class EgoldTieringData {
 
     @SerializedName("minimum_total_amount")
-    private long minToalAmount;
+    private long minTotalAmount;
 
     @SerializedName("minimum_amount")
     private long minAmount;
@@ -16,12 +16,12 @@ public class EgoldTieringData {
     @SerializedName("basis_amount")
     private long basisAmount;
 
-    public long getMinToalAmount() {;
-        return minToalAmount;
+    public long getMinTotalAmount() {
+        return minTotalAmount;
     }
 
-    public void setMinToalAmount(long minToalAmount) {
-        this.minToalAmount = minToalAmount;
+    public void setMinTotalAmount(long minToalAmount) {
+        this.minTotalAmount = minToalAmount;
     }
 
     public long getMinAmount() {
