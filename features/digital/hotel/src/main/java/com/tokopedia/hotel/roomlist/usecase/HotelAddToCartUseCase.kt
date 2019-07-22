@@ -9,10 +9,7 @@ import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -32,14 +29,8 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
         try {
             val graphqlRequest = GraphqlRequest(rawQuery, HotelAddCartData.Response::class.java, param)
             useCase.addRequest(graphqlRequest)
-
-            val hotelRoomData = GlobalScope.async {
-                val response =  withContext(Dispatchers.IO) {
-                    useCase.executeOnBackground().getSuccessData<HotelAddCartData.Response>()
-                }
-                response
-            }
-            return Success(hotelRoomData.await())
+            val hotelAddToCartData = useCase.executeOnBackground().getSuccessData<HotelAddCartData.Response>()
+            return Success(hotelAddToCartData)
         } catch (throwable: Throwable) {
             return Fail(throwable)
         }

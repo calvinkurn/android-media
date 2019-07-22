@@ -30,7 +30,6 @@
         <include
             android:id="@+id/room_full_layout"
             layout="@layout/item_hotel_room_full"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/room_image_view_pager"
             app:layout_constraintTop_toTopOf="@id/room_image_view_pager" />
 
