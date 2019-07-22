@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
@@ -14,7 +15,9 @@ import com.tokopedia.gm.featured.view.adapter.model.TickerReadMoreFeaturedModel;
 import com.tokopedia.gm.featured.view.adapter.viewholder.GMFeaturedProductViewHolder;
 import com.tokopedia.gm.featured.view.adapter.viewholder.TickerReadMoreFeaturedViewHolder;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by normansyahputa on 9/6/17.
@@ -37,6 +40,17 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
 
     public void setUseCaseListener(UseCaseListener useCaseListener) {
         this.useCaseListener = useCaseListener;
+    }
+
+    @Override
+    public List<GMFeaturedProductModel> getData() {
+        List<GMFeaturedProductModel> gmFeaturedProductModels = new ArrayList<>();
+        for (ItemType model : super.getData()) {
+            if(model instanceof GMFeaturedProductModel){
+                gmFeaturedProductModels.add((GMFeaturedProductModel) model);
+            }
+        }
+        return gmFeaturedProductModels;
     }
 
     @Override

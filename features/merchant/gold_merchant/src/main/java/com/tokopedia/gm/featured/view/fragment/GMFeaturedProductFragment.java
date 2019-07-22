@@ -29,7 +29,6 @@ import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
@@ -482,16 +481,13 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     protected void moveToProductPicker() {
         List<ProductListPickerViewModel> productListPickerViewModels = new ArrayList<>();
-        for (ItemType model : adapter.getData()) {
-            if(model instanceof GMFeaturedProductModel) {
-                GMFeaturedProductModel gmFeaturedProductModel = (GMFeaturedProductModel) model;
-                ProductListPickerViewModel productListPickerViewModel = new ProductListPickerViewModel();
-                productListPickerViewModel.setId(gmFeaturedProductModel.getId());
-                productListPickerViewModel.setProductPrice(gmFeaturedProductModel.getProductPrice());
-                productListPickerViewModel.setTitle(gmFeaturedProductModel.getProductName());
-                productListPickerViewModel.setImageUrl(gmFeaturedProductModel.getImageUrl());
-                productListPickerViewModels.add(productListPickerViewModel);
-            }
+        for (GMFeaturedProductModel gmFeaturedProductModel : adapter.getData()) {
+            ProductListPickerViewModel productListPickerViewModel = new ProductListPickerViewModel();
+            productListPickerViewModel.setId(gmFeaturedProductModel.getId());
+            productListPickerViewModel.setProductPrice(gmFeaturedProductModel.getProductPrice());
+            productListPickerViewModel.setTitle(gmFeaturedProductModel.getProductName());
+            productListPickerViewModel.setImageUrl(gmFeaturedProductModel.getImageUrl());
+            productListPickerViewModels.add(productListPickerViewModel);
         }
         Intent intent = ProductListPickerActivity.createIntent(getActivity(), productListPickerViewModels, false);
         startActivityForResult(intent, REQUEST_CODE);
