@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsPopularLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
@@ -25,6 +26,7 @@ import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.DealsLocationPresenter;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,6 +43,10 @@ public class SelectLocationBottomSheet extends LinearLayout implements DealsLoca
     private BottomSheetBehavior<FrameLayout> frameLayoutBottomSheetBehavior = new BottomSheetBehavior<>();
     @Inject
     DealsLocationPresenter mPresenter;
+    boolean isLoading = false;
+    List<Location> popularLocations = new ArrayList<>();
+    private LinearLayoutManager layoutManager;
+    private DealsPopularLocationAdapter dealsPopularLocationAdapter;
 
     public SelectLocationBottomSheet(@NonNull Context context, boolean isForFirstTime, List<Location> locationList, DealsLocationAdapter.ActionListener actionListener, String selectedLocation, SelectLocationBottomSheet.CloseSelectLocationBottomSheet closeBottomSheetListener) {
         super(context);
@@ -61,6 +67,7 @@ public class SelectLocationBottomSheet extends LinearLayout implements DealsLoca
         searchInputView = locationView.findViewById(R.id.search_input_view);
         popularCityTitle = locationView.findViewById(R.id.popular_city_heading);
         popularLocationTitle = locationView.findViewById(R.id.popular_location_heading);
+        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         this.selectedLocation = selectedLocation;
 
         linearLayout = locationView.findViewById(R.id.mainContent);
@@ -102,6 +109,11 @@ public class SelectLocationBottomSheet extends LinearLayout implements DealsLoca
     }
 
     @Override
+    public LinearLayoutManager getLayoutManager() {
+        return layoutManager;
+    }
+
+    @Override
     public void renderPopularCities(List<Location> locationList, String... searchText) {
         rvSearchResults.setLayoutManager(new GridLayoutManager(getContext(), 3,
                 GridLayoutManager.VERTICAL, false));
@@ -110,8 +122,61 @@ public class SelectLocationBottomSheet extends LinearLayout implements DealsLoca
 
     @Override
     public void renderPopularLocations(List<Location> locationList, String... searchText) {
-        rvLocationResults.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        rvLocationResults.setAdapter(new DealsPopularLocationAdapter(getContext(), locationList));
+        popularLocations.addAll(locationList);
+        dealsPopularLocationAdapter = new DealsPopularLocationAdapter(getContext(), locationList);
+        rvLocationResults.setLayoutManager(layoutManager);
+        rvLocationResults.setAdapter(dealsPopularLocationAdapter);
+        rvLocationResults.addOnScrollListener(rvOnScrollListener);
+    }
+
+    private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            mPresenter.onRecyclerViewScrolled(layoutManager);
+        }
+    };
+
+
+    @Override
+    public void removeFooter() {
+        ((DealsPopularLocationAdapter) rvLocationResults.getAdapter()).removeFooter();
+    }
+
+    @Override
+    public void addFooter() {
+        ((DealsPopularLocationAdapter) rvLocationResults.getAdapter()).addFooter();
+
+    }
+
+    @Override
+    public void showLoadMore(boolean showLoadMore, String uriNext) {
+        if (showLoadMore) {
+            rvLocationResults.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvLocationResults.getLayoutManager();
+                    if (!isLoading) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == popularLocations.size() - 1) {
+                            //bottom of list!
+                            mPresenter.loadMore();
+                            isLoading = true;
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override
