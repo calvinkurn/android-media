@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_24">
+    android:paddingBottom="@dimen/dp_24"
+    app:cardElevation="@dimen/dp_8">
 
     <com.tokopedia.feedcomponent.view.widget.CardTitleView
         android:id="@+id/cardTitle"
