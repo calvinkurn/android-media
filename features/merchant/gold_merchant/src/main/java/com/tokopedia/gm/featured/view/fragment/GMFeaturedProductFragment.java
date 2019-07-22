@@ -30,12 +30,14 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;
+import com.tokopedia.gm.featured.constant.GMFeaturedConstant;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.di.component.DaggerGMFeaturedProductComponent;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductSubmitUseCase;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;
 import com.tokopedia.gm.featured.helper.OnStartDragListener;
 import com.tokopedia.gm.featured.helper.SimpleItemTouchHelperCallback;
+import com.tokopedia.gm.featured.view.adapter.GMFeatureProductEmptyDataBinder;
 import com.tokopedia.gm.featured.view.adapter.GMFeaturedProductAdapter;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
 import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
@@ -46,6 +48,7 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +78,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
     private List<Pair<Integer, GMFeaturedProductModel>> gmTemporaryDelete;
+    private UserSession userSession;
 
     public static GMFeaturedProductFragment createInstance() {
         return new GMFeaturedProductFragment();
@@ -95,11 +99,14 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        EmptyDataBinder emptyGroupAdsDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
-        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.gm_featured_product_title_empty));
-        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.gm_featured_product_description_empty));
-        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.gm_featured_product_add_title_empty));
-        emptyGroupAdsDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
+        GMFeatureProductEmptyDataBinder emptyDataBinder = new GMFeatureProductEmptyDataBinder(
+                adapter,
+                GMFeaturedConstant.IMG_URL_NO_FEATURED_PRODUCT
+        );
+        emptyDataBinder.setEmptyTitleText(getString(R.string.gm_featured_product_title_empty));
+        emptyDataBinder.setEmptyContentText(getString(R.string.gm_featured_product_description_empty));
+        emptyDataBinder.setEmptyButtonItemText(getString(R.string.gm_featured_product_add_title_empty));
+        emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {
                 checkIsPowerMerchant();
@@ -110,16 +117,20 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 checkIsPowerMerchant();
             }
         });
-        return emptyGroupAdsDataBinder;
+        return emptyDataBinder;
     }
 
     private void checkIsPowerMerchant() {
-//        if (isPowerMerchant) {
-//            moveToProductPicker();
-//        } else {
+        if (isPowerMerchant()) {
+            moveToProductPicker();
+        } else {
             showUpgradeOverlay();
-//        }
+        }
 
+    }
+
+    private boolean isPowerMerchant() {
+        return userSession.isGoldMerchant();
     }
 
     private void showUpgradeOverlay() {
@@ -155,6 +166,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        userSession = new UserSession(getContext());
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
