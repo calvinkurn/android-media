@@ -430,6 +430,8 @@ class HotelBookingFragment : HotelBaseFragment() {
                     specialRequest = hotelBookingPageModel.roomRequest
             )
             bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
+        } else {
+            progressDialog.dismiss()
         }
     }
 
@@ -478,7 +480,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         const val TAG_HOTEL_IMPORTANT_NOTES = "hotel_important_notes"
         const val ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT = 250
 
-        private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z0-9]*$"
+        private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z\\s]*$"
 
 
         fun getInstance(cartId: String): HotelBookingFragment =

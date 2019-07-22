@@ -21,7 +21,7 @@ class HotelPropertyData {
     @Expose
     val address: String = ""
 
-    @SerializedName("image")
+    @SerializedName("propertyImage")
     @Expose
     val image: String = ""
 
