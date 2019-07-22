@@ -3,6 +3,8 @@ package com.tokopedia.checkout.view.feature.shipment.viewholder;
 import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Typeface;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -576,6 +578,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvProductName.setText(cartItemModel.getName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItemModel.getPrice(), false));
+        if (cartItemModel.isSlashPrice() || cartItemModel.getOriginalPrice() > 0) {
+            tvProductPriceOriginal.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    cartItemModel.getOriginalPrice(), false
+            ));
+            tvProductPriceOriginal.setPaintFlags(tvProductPriceOriginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            tvProductPriceOriginal.setVisibility(View.VISIBLE);
+        } else {
+            tvProductPriceOriginal.setVisibility(View.GONE);
+        }
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItemModel.getQuantity()),

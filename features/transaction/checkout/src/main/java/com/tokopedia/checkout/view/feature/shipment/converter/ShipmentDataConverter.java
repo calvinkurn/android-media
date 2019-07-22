@@ -316,6 +316,8 @@ public class ShipmentDataConverter {
         } else {
             cartItemModel.setPrice(product.getProductPrice());
         }
+        cartItemModel.setOriginalPrice(product.getProductOriginalPrice());
+        cartItemModel.setIsSlashPrice(product.isSlashPrice());
         cartItemModel.setQuantity(product.getProductQuantity());
         cartItemModel.setWeight(product.getProductWeight());
         cartItemModel.setWeightFmt(product.getProductWeightFmt());
