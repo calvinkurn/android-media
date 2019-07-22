@@ -38,7 +38,7 @@ query PropertyCart($data: PropertyGetCartRequest!) {
       name
       type
       address
-      image
+      propertyImage
       star
       paymentNote
       checkInFrom
