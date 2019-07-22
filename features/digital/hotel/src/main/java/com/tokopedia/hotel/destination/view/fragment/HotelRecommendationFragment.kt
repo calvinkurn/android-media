@@ -262,7 +262,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         dialog.setBtnOk(getString(R.string.hotel_recommendation_gps_dialog_ok))
         dialog.setBtnCancel(getString(R.string.hotel_recommendation_gps_dialog_cancel))
         dialog.setOnOkClickListener {
-            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CODE_GPS)
             dialog.dismiss()
         }
         dialog.setOnCancelClickListener {
@@ -276,7 +276,19 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.hotel_destination_error_get_location))
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when(requestCode) {
+            REQUEST_CODE_GPS -> {
+                destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+            }
+        }
+    }
+
     companion object {
+        private const val REQUEST_CODE_GPS = 10101
+
         fun getInstance(): HotelRecommendationFragment = HotelRecommendationFragment()
     }
 
