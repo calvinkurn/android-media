@@ -435,6 +435,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
 
+    implementation project(rootProject.ext.libraries.url)
+
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.analytics
@@ -567,6 +569,7 @@ dependencies {
     implementation 'com.facebook.soloader:soloader:0.6.0'
 
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
+    implementation project(rootProject.ext.features.ovop2p)
 }
 
 
