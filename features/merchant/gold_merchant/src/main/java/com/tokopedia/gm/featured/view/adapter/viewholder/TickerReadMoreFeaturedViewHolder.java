@@ -27,6 +27,8 @@ import com.tokopedia.gm.featured.helper.OnStartDragListener;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
 import com.tokopedia.gm.featured.view.adapter.model.TickerReadMoreFeaturedModel;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by normansyahputa on 9/8/17.
  */
@@ -72,12 +74,12 @@ public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadM
         spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
-            public void onClick(View view) {
+            public void onClick(@NotNull View view) {
                 tickerViewHolderViewHolderListener.onReadMoreClicked();
             }
 
             @Override
-            public void updateDrawState(TextPaint ds) {
+            public void updateDrawState(@NotNull TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
                 ds.setColor(color);

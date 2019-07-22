@@ -8,6 +8,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
@@ -19,6 +20,6 @@
         app:srcCompat="@drawable/ic_plus_white"
         android:visibility="gone"
         app:backgroundTint="@color/tkpd_main_green" />
-    <include layout="@layout/partial_gm_statistic_market_insight_content_not_gm" />
+    <include layout="@layout/layout_gm_featured_product_overlay" />
 
 </android.support.design.widget.CoordinatorLayout>

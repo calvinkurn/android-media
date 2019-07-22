@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         tools:text="Description"
         android:gravity="center"
-        app:fontSize="title"
+        app:fontSize="micro"
         android:layout_marginBottom="@dimen/dp_20"/>
 
     <Button

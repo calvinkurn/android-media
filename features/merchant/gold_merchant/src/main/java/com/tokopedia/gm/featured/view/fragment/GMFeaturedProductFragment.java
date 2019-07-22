@@ -3,6 +3,7 @@ package com.tokopedia.gm.featured.view.fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,11 +12,19 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -52,11 +61,14 @@ import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 import com.tokopedia.user.session.UserSession;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_ICON_LOCK_WHITE_GREEN;
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_POWER_MERCHANT_SCORE_TIPS;
 
 /**
@@ -81,6 +93,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private ProgressDialog progressDialog;
     private CoordinatorLayout coordinatorLayoutContainer;
     private View viewOverlayRegularMerchant;
+    private TextView textViewOverlay;
+    private ImageView imageViewOverlay;
     private View viewOverlayButtonRegularMerchant;
     @GMFeaturedProductTypeView
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
@@ -142,6 +156,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private void showUpgradeOverlay() {
+        textViewOverlay.setText(createDescriptionWithSpannable(
+                "Pajang produk terbaikmu dengan fitur Produk Unggulan.",
+                "Selengkapnya"
+        ));
         viewOverlayRegularMerchant.setVisibility(View.VISIBLE);
         viewOverlayButtonRegularMerchant.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,6 +167,39 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
             }
         });
+        ImageHandler imageHandler = new ImageHandler(getContext());
+        imageHandler.loadImage(imageViewOverlay,IMG_URL_ICON_LOCK_WHITE_GREEN);
+    }
+
+    private SpannableStringBuilder createDescriptionWithSpannable(
+            String originalText,
+            String readMoreText
+    ) {
+        SpannableString spannableText = new SpannableString(readMoreText);
+        int startIndex = 0;
+        int endIndex = spannableText.length();
+        int color = Color.parseColor("#03ac0e");
+        spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NotNull View view) {
+
+            }
+
+            @Override
+            public void updateDrawState(@NotNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(color);
+            }
+        };
+        spannableText.setSpan(
+                clickableSpan,
+                startIndex,
+                endIndex,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+        return new SpannableStringBuilder(originalText).append(" ").append(spannableText);
     }
 
     @Override
@@ -187,10 +238,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
-        viewOverlayRegularMerchant = view.findViewById(R.id.vg_market_insight_not_gm);
+        viewOverlayRegularMerchant = view.findViewById(R.id.layout_overlay);
+        textViewOverlay = view.findViewById(R.id.text_view_overlay_description);
+        imageViewOverlay = view.findViewById(R.id.image_view_overlay);
         viewOverlayButtonRegularMerchant = view.findViewById(R.id.button_redirect_to);
-
-
     }
 
     private void showSnackbarWithUndo() {

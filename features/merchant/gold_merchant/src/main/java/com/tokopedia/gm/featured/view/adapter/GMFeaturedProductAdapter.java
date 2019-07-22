@@ -3,6 +3,7 @@ package com.tokopedia.gm.featured.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
@@ -53,6 +54,14 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
                 );
             default:
                 return super.onCreateViewHolder(parent, viewType);
+        }
+    }
+
+    @Override
+    protected void bindData(int position, RecyclerView.ViewHolder viewHolder) {
+        super.bindData(position, viewHolder);
+        if(viewHolder instanceof BaseViewHolder){
+            ((BaseViewHolder) viewHolder).bindObject(data.get(position));
         }
     }
 
