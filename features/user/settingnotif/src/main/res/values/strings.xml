@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Setting Notif</string>
+    <string name="state_success_set_user_setting" >Anda telah berhasil mengubah pengaturan notifikasi</string>
+    <string name="state_failed_set_user_setting">Gagal mengubah pengaturan notifikasi, mohon cek koneksi Anda</string>
 </resources>

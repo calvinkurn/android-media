@@ -3,18 +3,22 @@ package com.tokopedia.settingnotif.usersetting.view.fragment
 import android.app.Activity
 import android.os.Bundle
 import android.support.annotation.RawRes
+import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
+import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactoryImpl
@@ -106,5 +110,17 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
 
     override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
         renderList(data.data)
+    }
+
+    override fun onSuccessSetUserSetting(data: SetUserSettingResponse) {
+        showMessage(R.string.state_success_set_user_setting)
+    }
+
+    override fun onErrorSetUserSetting() {
+        showMessage(R.string.state_failed_set_user_setting)
+    }
+
+    protected fun showMessage(@StringRes message: Int) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }

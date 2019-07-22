@@ -35,8 +35,9 @@ class SettingFieldPresenter @Inject constructor(
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
         val params = setUserSettingUseCase.createParams(notificationType, updatedSettingIds)
         setUserSettingUseCase.execute(params, object : Subscriber<SetUserSettingResponse>() {
-            override fun onNext(t: SetUserSettingResponse?) {
-
+            override fun onNext(data: SetUserSettingResponse?) {
+                if (data == null) return
+                view?.onSuccessSetUserSetting(data)
             }
 
             override fun onCompleted() {
@@ -44,7 +45,7 @@ class SettingFieldPresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable?) {
-
+                view?.onErrorSetUserSetting()
             }
 
         })
