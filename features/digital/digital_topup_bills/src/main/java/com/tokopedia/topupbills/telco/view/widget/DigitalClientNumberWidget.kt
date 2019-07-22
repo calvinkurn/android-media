@@ -61,16 +61,14 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                     listener.onClearAutoComplete()
                     imgOperator.visibility = View.GONE
                 }
-                if (count in 1..9) {
-                    errorInputNumber.text = context.getString(R.string.digital_telco_error_min_phone_number)
-                    errorInputNumber.visibility = View.VISIBLE
-                } else if (count in 10..14) {
-                    listener.onRenderOperator()
-                    imgOperator.visibility = View.VISIBLE
-                    errorInputNumber.visibility = View.GONE
-                } else if (count >14) {
-                    errorInputNumber.text = context.getString(R.string.digital_telco_error_max_phone_number)
-                    errorInputNumber.visibility = View.VISIBLE
+                when {
+                    count in 1..9 -> setErrorInputNumber(context.getString(R.string.digital_telco_error_min_phone_number))
+                    count in 10..14 -> {
+                        listener.onRenderOperator()
+                        imgOperator.visibility = View.VISIBLE
+                        hideErrorInputNumber()
+                    }
+                    count >14 -> setErrorInputNumber(context.getString(R.string.digital_telco_error_max_phone_number))
                 }
             }
         })
@@ -92,6 +90,16 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun setListener(listener: ActionListener) {
         this.listener = listener
+    }
+
+    fun setErrorInputNumber(errorMessage: String) {
+        errorInputNumber.text = errorMessage
+        errorInputNumber.visibility = View.VISIBLE
+    }
+
+    fun hideErrorInputNumber() {
+        errorInputNumber.text = ""
+        errorInputNumber.visibility = View.GONE
     }
 
     fun setInputNumber(inputNumber: String) {

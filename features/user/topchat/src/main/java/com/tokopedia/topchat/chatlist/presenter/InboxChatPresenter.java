@@ -6,14 +6,15 @@ import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
-import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
+import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.data.TopChatUrl;
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.topchat.chatlist.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.topchat.chatlist.domain.usecase.SearchMessageUseCase;
@@ -23,11 +24,10 @@ import com.tokopedia.topchat.chatlist.subscriber.GetMessageSubscriber;
 import com.tokopedia.topchat.chatlist.subscriber.SearchMessageSubscriber;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper;
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -432,7 +432,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             String websocketUrl = TopChatUrl.Companion.getPathWebsocket(userSession.getDeviceId(),
                     userSession.getUserId());
             Request request = new Request.Builder().url(websocketUrl)
-                    .header("Origin", TkpdBaseURL.WEB_DOMAIN)
+                    .header("Origin", TokopediaUrl.Companion.getInstance().getWEB())
                     .header("Accounts-Authorization",
                             "Bearer " + userSession.getAccessToken())
                     .header("x-app-version",String.valueOf(GlobalConfig.VERSION_CODE))

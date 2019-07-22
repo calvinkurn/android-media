@@ -11,13 +11,13 @@ import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import com.tokopedia.topads.sdk.view.ImpressedImageView
 
 const val LABEL_GROUP_POSITION_PROMO = "promo"
 const val LABEL_GROUP_POSITION_CREDIBILITY = "credibility"
@@ -70,14 +70,8 @@ abstract class ProductItemViewHolder(
 
         setImageProductUrl(productItem)
 
-        getProductCardView()?.setImageProductViewHintListener(productItem, createViewHintListener(productItem))
-    }
-
-    private fun createViewHintListener(productItem: ProductItemViewModel): ViewHintListener {
-        return object: ViewHintListener {
-            override fun onViewHint() {
-                productListener.onProductImpressed(productItem, adapterPosition)
-            }
+        getProductCardView()?.setImageProductViewHintListener(productItem) {
+            productListener.onProductImpressed(productItem, adapterPosition)
         }
     }
 

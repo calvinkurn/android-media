@@ -66,6 +66,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -348,19 +349,20 @@ open class PlayViewStateImpl(
                         }
                     })
 
+            val hideStickyComponent = Action1<Long> {
+                stickyComponent.animate().setDuration(200)
+                        .alpha(0f)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator) {
+                                stickyComponent.hide()
+                                stickyComponentViewModel = null
+                            }
+                        })
+            }
             if (item.stickyTime != 0) {
                 Observable.timer(item.stickyTime.toLong(), TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            stickyComponent.animate().setDuration(200)
-                                    .alpha(0f)
-                                    .setListener(object : AnimatorListenerAdapter() {
-                                        override fun onAnimationEnd(animation: Animator) {
-                                            stickyComponent.hide()
-                                            stickyComponentViewModel = null
-                                        }
-                                    })
-                        }
+                        .subscribe(hideStickyComponent, Action1{ it.printStackTrace()})
             }
         }
     }
@@ -397,9 +399,10 @@ open class PlayViewStateImpl(
     private fun scrollToBottom() {
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    chatRecyclerView.scrollToPosition(0)
-                }
+                .subscribe (
+                        {chatRecyclerView.scrollToPosition(0)},
+                        { it.printStackTrace() }
+                )
     }
 
     private fun attemptResetNewMessageCounter() {
@@ -1380,7 +1383,7 @@ open class PlayViewStateImpl(
 
             Observable.timer(3, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
+                    .subscribe( {
                         if (adapter.list.size == 0
                                 || adapter.getItemAt(0) != null
                                 && adapter.getItemAt(0) !is SprintSaleAnnouncementViewModel) {
@@ -1388,7 +1391,7 @@ open class PlayViewStateImpl(
                             adapter.notifyItemInserted(0)
                             listener.vibratePhone()
                         }
-                    }
+                    }, {it.printStackTrace()})
         }
     }
 

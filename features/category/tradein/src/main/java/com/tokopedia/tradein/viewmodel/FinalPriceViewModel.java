@@ -14,18 +14,18 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
-
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.tokopedia.tradein.model.DeviceDataResponse;
 import com.tokopedia.tradein.model.DeviceDiagGQL;
 import com.tokopedia.tradein.model.DeviceDiagParams;
 import com.tokopedia.tradein.model.KYCDetailGQL;
 import com.tokopedia.tradein.model.KYCDetails;
 import com.tokopedia.tradein.model.TradeInParams;
+import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
+
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+
 import rx.Subscriber;
 
 public class FinalPriceViewModel extends BaseViewModel implements LifecycleObserver {
@@ -42,7 +42,7 @@ public class FinalPriceViewModel extends BaseViewModel implements LifecycleObser
         return deviceDiagData;
     }
 
-    public TradeInParams getTradeInParams(){
+    public TradeInParams getTradeInParams() {
         return tradeInParams;
     }
 
@@ -63,13 +63,13 @@ public class FinalPriceViewModel extends BaseViewModel implements LifecycleObser
         gqlDeviceDiagInput.clearRequest();
         gqlDeviceDiagInput.addRequest(new
                 GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
-                R.raw.gql_get_device_diag), DeviceDiagGQL.class, variables1,false));
+                R.raw.gql_get_device_diag), DeviceDiagGQL.class, variables1, false));
         if (tradeInParams.isUseKyc() == 1) {
             Map<String, Object> variables2 = new HashMap<>();
             variables2.put("projectID", 4);
             gqlDeviceDiagInput.addRequest(new
                     GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
-                    R.raw.gql_get_kyc_status), KYCDetailGQL.class, variables2,false));
+                    R.raw.gql_get_kyc_status), KYCDetailGQL.class, variables2, false));
         }
 
         gqlDeviceDiagInput.execute(new Subscriber<GraphqlResponse>() {
@@ -94,25 +94,26 @@ public class FinalPriceViewModel extends BaseViewModel implements LifecycleObser
             public void onNext(GraphqlResponse graphqlResponse) {
                 if (graphqlResponse != null) {
                     DeviceDiagGQL deviceDiagGQL = graphqlResponse.getData(DeviceDiagGQL.class);
-                    assert deviceDiagGQL != null;
-                    DeviceDataResponse deviceDataResponse = deviceDiagGQL.getDiagResponse();
-                    KYCDetailGQL kycDetailGQL = graphqlResponse.getData(KYCDetailGQL.class);
-                    assert kycDetailGQL != null;
-                    KYCDetails kycDetails = kycDetailGQL.getKycDetails();
-                    if (deviceDataResponse != null && kycDetails != null) {
-                        deviceDataResponse.setKycDetails(kycDetails);
-                        deviceDiagData.setValue(deviceDataResponse);
-                    }
+                    if (deviceDiagGQL != null) {
+                        DeviceDataResponse deviceDataResponse = deviceDiagGQL.getDiagResponse();
+                        KYCDetailGQL kycDetailGQL = graphqlResponse.getData(KYCDetailGQL.class);
+                        if (deviceDataResponse != null) {
+                            if (kycDetailGQL != null) {
+                                KYCDetails kycDetails = kycDetailGQL.getKycDetails();
+                                if (kycDetails != null)
+                                    deviceDataResponse.setKycDetails(kycDetails);
+                            }
+                            deviceDiagData.setValue(deviceDataResponse);
+                        } else throw new RuntimeException("");
+                    } else throw new RuntimeException("");
                 }
             }
         });
 
-        if (TrackApp.getInstance() != null && TrackApp.getInstance().getGTM() != null) {
-            TrackApp.getInstance().getGTM().sendGeneralEvent("viewTradeIn",
-                    "harga final trade in",
-                    "view harga final",
-                    "");
-        }
+        TrackApp.getInstance().getGTM().sendGeneralEvent("viewTradeIn",
+                "harga final trade in",
+                "view harga final",
+                "");
     }
 
 }

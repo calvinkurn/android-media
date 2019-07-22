@@ -37,6 +37,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.vote)
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
@@ -46,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.libraries.websocket)

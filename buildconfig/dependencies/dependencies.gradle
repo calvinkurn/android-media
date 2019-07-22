@@ -24,7 +24,7 @@ ext {
     runnerVersion = "1.0.2"
     rulesVersion = "1.0.2"
     apolloVersion = '0.3.0'
-    lottieVersion = '2.5.1'
+    lottieVersion = '2.7.0'
     cardioVersion = '5.5.1'
     reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
@@ -55,6 +55,7 @@ ext {
     playServiceAds = '17.1.2'
     playServiceFirebaseCore = '16.0.6'
     playServiceTagManager = '16.0.6'
+    playServiceSafetyNet = '16.0.0'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
@@ -122,7 +123,8 @@ ext {
             phone            : "com.google.android.gms:play-services-auth-api-phone:${playServiceAuthApiPhone}",
             mapsUtils        : "com.google.maps.android:android-maps-utils:${playServiceMapsUtil}",
             ads              : "com.google.android.gms:play-services-ads:${playServiceAds}",
-            tagManagerImpl   : "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}"
+            tagManagerImpl   : "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
+            safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}"
     ]
 
     firebase = [
@@ -189,6 +191,8 @@ ext {
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
             dagger                : "com.google.dagger:dagger:2.5",
             daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
+            bcaxcoWidget          : "com.bca.xco.widget:BCAXCOWidget:1.0@aar",
+
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",

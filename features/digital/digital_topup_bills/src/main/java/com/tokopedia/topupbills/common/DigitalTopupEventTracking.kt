@@ -34,12 +34,13 @@ interface DigitalTopupEventTracking {
             val PRODUCT_CARD_IMPRESSION = "impression on product card"
             val CLICK_PRODUCT_CARD = "click on product card"
             val CLICK_BACK_BUTTON = "user click back button"
-            val CLICK_SEE_MORE = "click_see_more"
+            val CLICK_SEE_MORE = "user click see more"
             val CLOSE_DETAIL_PRODUCT = "click x on detail product"
             val RECENT_ICON_IMPRESSION = "impression recent icon"
             val CLICK_RECENT_ICON = "click recent icon"
             val PROMO_DIGITAL_IMPRESSION = "impression promo digital"
             val COPY_PROMO_DIGITAL = "click salin promo digital"
+            val CLICK_PROMO_DIGITAL = "click promo digital"
             val CLICK_TELCO_CATEGORY = "click on telco category"
         }
     }
@@ -61,6 +62,7 @@ interface DigitalTopupEventTracking {
             internal var LIST = "list"
             internal var POSITION = "position"
             internal var CREATIVE = "creative"
+            internal var CREATIVE_URL = "creative_url"
             internal var PROMO_ID = "promo_id"
             internal var PROMO_CODE = "promo_code"
         }
