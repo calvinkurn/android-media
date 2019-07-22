@@ -99,6 +99,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         val adapter = MediaPagerAdapter(items, childFragmentManager)
         pager_indicator.text = getString(R.string.af_indicator_media, 1, adapter.count)
         media_pager.adapter = adapter
+        updateDirectionMedia(0, adapter.count)
         media_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             var lastPosition = 0
             override fun onPageScrollStateChanged(p0: Int) {}
@@ -110,9 +111,29 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                 (adapter.getRegisteredFragment(lastPosition) as? MediaHolderFragment)?.imInvisible()
                 (adapter.getRegisteredFragment(position) as? MediaHolderFragment)?.imVisible()
                 lastPosition = position
+                updateDirectionMedia(position, adapter.count)
             }
 
         })
+
+        action_back.setOnClickListener {
+            val currentIndex = media_pager.currentItem
+            if (currentIndex > 0){
+                media_pager.currentItem = currentIndex - 1
+            }
+        }
+
+        action_next.setOnClickListener {
+            val currentIndex = media_pager.currentItem
+            if (currentIndex < adapter.count - 1){
+                media_pager.currentItem = currentIndex + 1
+            }
+        }
+    }
+
+    private fun updateDirectionMedia(pos: Int, count: Int) {
+        action_back.showWithCondition(pos > 0 && count > 1)
+        action_next.showWithCondition(pos < count-1 && count > 1)
     }
 
     private fun convertToMediaItem(media: BasePostViewModel): MediaItem?{
