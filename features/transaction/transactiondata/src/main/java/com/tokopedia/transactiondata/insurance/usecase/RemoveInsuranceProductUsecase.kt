@@ -31,10 +31,10 @@ class RemoveInsuranceProductUsecase @Inject constructor(@ApplicationContext val 
     fun execute(subscriber: Subscriber<GraphqlResponse>) {
         graphqlUseCase.clearRequest()
 
-        val graphqlRequestForUsable = GraphqlRequest(
+        val request = GraphqlRequest(
                 GraphqlHelper.loadRawString(context.resources, R.raw.mutation_remove_insurance_product),
                 RemoveInsuranceProductGqlResponse::class.java, requestParams?.parameters, false)
-        graphqlUseCase.addRequest(graphqlRequestForUsable)
+        graphqlUseCase.addRequest(request)
         graphqlUseCase.execute(subscriber)
     }
 

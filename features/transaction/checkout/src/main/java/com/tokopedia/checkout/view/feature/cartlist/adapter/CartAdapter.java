@@ -513,6 +513,21 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void removeInsuranceDataItem(long productId) {
+        try {
+            for (Object item : cartDataList) {
+                if (item instanceof InsuranceCartShops) {
+                    if (((InsuranceCartShops) item).getShopItemsList().get(0).getProductId() == productId) {
+                        cartDataList.remove(item);
+                        notifyDataSetChanged();
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
     public void addInsuranceDataList(InsuranceCartShops insuranceCartShops, boolean isRecommendation) {
         allInsuranceProductsList.clear();
         allInsuranceProductsList.add(insuranceCartShops);
@@ -538,7 +553,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             cartDataList.add(++insuranceIndex, insuranceCartShops);
         }
 
-//        cartDataList.add(insuranceCartShops);
         notifyDataSetChanged();
         // TODO: 19/6/19 check if need to call checkForShipmentForm()
     }

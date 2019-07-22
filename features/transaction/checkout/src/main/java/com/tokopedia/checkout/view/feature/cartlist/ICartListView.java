@@ -116,4 +116,6 @@ public interface ICartListView extends IBaseView {
     void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse, boolean isRecommendation);
 
     InsuranceCartShops getInsuranceCartShopData();
+
+    void removeInsuranceProductItem(long productId);
 }

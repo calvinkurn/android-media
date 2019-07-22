@@ -25,7 +25,7 @@ data class RemoveTransactional(
 
 data class RemoveCart(
         @SerializedName("error_message")
-        var errorMessage: String,
+        var errorMessage: ArrayList<String>,
 
         @SerializedName("status")
         val status: String

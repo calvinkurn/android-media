@@ -1128,7 +1128,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
                 if (cartListData.getShopGroupDataList() != null && !cartListData.getShopGroupDataList().isEmpty()) {
                     dPresenter.getInsuranceTechCart();
-                    dPresenter.getInsuranceRecommendationProducts(cartListData);
+//                    dPresenter.getInsuranceRecommendationProducts(cartListData);
                 }
 
 
@@ -1922,6 +1922,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             return cartAdapter.getInsuranceCartShops().get(0);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    @Override
+    public void removeInsuranceProductItem(long productId) {
+        if (cartAdapter != null) {
+            cartAdapter.removeInsuranceDataItem(productId);
         }
     }
 

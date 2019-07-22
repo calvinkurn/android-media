@@ -346,8 +346,9 @@ public class CartListPresenter implements ICartListPresenter {
 
         Long shopid = insuranceCartShops.getShopId();
 
+        long productId = 0;
         for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
-            Long productId = insuranceCartShopItems.getProductId();
+            productId = insuranceCartShopItems.getProductId();
             Long cartId = insuranceCartShopItems.getDigitalProductList().get(0).getCartItemId();
             cartIdList.add(String.valueOf(cartId));
             RemoveInsuranceData removeInsuranceData = new RemoveInsuranceData(cartId, shopid, productId);
@@ -355,7 +356,7 @@ public class CartListPresenter implements ICartListPresenter {
         }
 
         removeInsuranceProductUsecase.setRequestParams(removeInsuranceDataArrayList, "cart", String.valueOf(Build.VERSION.SDK_INT), cartIdList);
-        removeInsuranceProductUsecase.execute(getSubscriberRemoveInsuranceProduct());
+        removeInsuranceProductUsecase.execute(getSubscriberRemoveInsuranceProduct(productId));
     }
 
     @Override
@@ -378,14 +379,6 @@ public class CartListPresenter implements ICartListPresenter {
 
                     Long cartId = insuranceCartShopItems.getDigitalProductList().get(0).getCartItemId();
                     cartIdList.add(new UpdateInsuranceDataCart(String.valueOf(cartId), 1));
-
-                    /*ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList = new ArrayList<>();
-                    for (InsuranceProductApplicationDetails insuranceProductApplicationDetails : insuranceCartDigitalProduct.getApplicationDetails()) {
-                        UpdateInsuranceProductApplicationDetails updateInsuranceProductApplicationDetails =
-                                new UpdateInsuranceProductApplicationDetails(insuranceProductApplicationDetails.getId(),
-                                        insuranceProductApplicationDetails.getValue());
-                        updateInsuranceProductApplicationDetailsArrayList.add(updateInsuranceProductApplicationDetails);
-                    }*/
 
                     UpdateInsuranceProduct updateInsuranceProduct =
                             new UpdateInsuranceProduct(insuranceCartDigitalProduct.getDigitalProductId(),
@@ -960,7 +953,6 @@ public class CartListPresenter implements ICartListPresenter {
                         graphqlResponse.getData(InsuranceCartGqlResponse.class) != null) {
                     insuranceCartGqlResponse =
                             graphqlResponse.getData(InsuranceCartGqlResponse.class);
-//                    view.renderInsuranceCartData(insuranceCartGqlResponse.getData());
                 } else {
                     /*
                       Do Nothing if insureTech cart service fails
@@ -997,7 +989,6 @@ public class CartListPresenter implements ICartListPresenter {
                         graphqlResponse.getData(InsuranceRecommendationGqlResponse.class) != null) {
                     insuranceRecommendationGqlResponse =
                             graphqlResponse.getData(InsuranceRecommendationGqlResponse.class);
-//                    view.renderInsuranceCartData(insuranceRecommendationGqlResponse.getData());
                 } else {
                     /*
                       Do Nothing is insureTech cart service fails
@@ -1015,7 +1006,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<GraphqlResponse> getSubscriberRemoveInsuranceProduct() {
+    private Subscriber<GraphqlResponse> getSubscriberRemoveInsuranceProduct(long productId) {
         return new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -1025,6 +1016,7 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
+                view.showToastMessageRed("Failed to remove insurance product!");
                 // TODO: 27/6/19 error case handling
             }
 
@@ -1033,9 +1025,11 @@ public class CartListPresenter implements ICartListPresenter {
                 RemoveInsuranceProductGqlResponse removeInsuranceProductGqlResponse;
                 if (graphqlResponse != null &&
                         graphqlResponse.getData(RemoveInsuranceProductGqlResponse.class) != null) {
+
                     removeInsuranceProductGqlResponse = graphqlResponse.getData(RemoveInsuranceProductGqlResponse.class);
                     if (removeInsuranceProductGqlResponse.getResponse().getRemoveTransactional().getStatus()) {
-                        getInsuranceTechCart();
+                        view.showToastMessageGreen("Success in remove insurance product!");
+                        view.removeInsuranceProductItem(productId);
                     } else {
                         view.showToastMessageRed(
                                 removeInsuranceProductGqlResponse.getResponse().getRemoveTransactional().getErrorMessage());
@@ -1057,6 +1051,7 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
+                view.showToastMessageRed("Failed to update application details!");
                 // TODO: 27/6/19 error case handling
             }
 
