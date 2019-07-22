@@ -146,7 +146,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     }
 
     protected void renderProductImage(HotlistProductViewModel productItem) {
-        ImageHandler.loadImageThumbs(context, productImage, productItem.getImageUrl());
+        ImageHandler.loadImageThumbs(context.getApplicationContext(), productImage, productItem.getImageUrl());
     }
 
     protected void renderShopLocation(HotlistProductViewModel element) {
@@ -192,7 +192,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
             simpleTargetBitmapShopBadge = createSimpleTargetBitmapForLoadBadge(view);
         }
 
-        ImageHandler.loadImageBitmap2(context, badgeItem.getImageUrl(), simpleTargetBitmapShopBadge);
+        ImageHandler.loadImageBitmap2(context.getApplicationContext(), badgeItem.getImageUrl(), simpleTargetBitmapShopBadge);
     }
 
     private SimpleTarget<Bitmap> createSimpleTargetBitmapForLoadBadge(final View view) {
