@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -856,7 +857,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onBuyClicked(@NotNull PostTagItem postTagItem) {
-        onGoToLink(postTagItem.getApplink());
+        presenter.addPostTagItemToCart(postTagItem);
     }
 
     @Override
@@ -898,6 +899,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
         startActivityForResult(VideoDetailActivity.Companion.getInstance(getActivity(), postId), OPEN_VIDEO_DETAIL);
+    }
+
+    @Override
+    public void onAddToCartSuccess() {
+
+    }
+
+    @Override
+    public void onAddToCartFailed(String pdpAppLink) {
+        onGoToLink(pdpAppLink);
     }
 
     private void onGoToLink(String link) {

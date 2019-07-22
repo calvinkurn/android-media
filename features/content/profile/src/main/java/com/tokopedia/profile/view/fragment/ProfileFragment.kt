@@ -895,7 +895,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onBuyClicked(postTagItem: PostTagItem) {
-        onGoToLink(postTagItem.applink)
+        presenter.addPostTagItemToCart(postTagItem)
     }
 
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
@@ -963,6 +963,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onEmptyComponentClicked() {
         goToAffiliateExplore()
         profileAnalytics.eventClickEmptyStateCta()
+    }
+
+    override fun onAddToCartSuccess() {
+
+    }
+
+    override fun onAddToCartFailed(pdpAppLink: String) {
+        onGoToLink(pdpAppLink)
     }
 
     private fun initVar(savedInstanceState: Bundle?) {

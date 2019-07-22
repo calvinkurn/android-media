@@ -1607,7 +1607,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onBuyClicked(@NotNull PostTagItem postTagItem) {
-        onGoToLink(postTagItem.getApplink());
+        presenter.addPostTagItemToCart(postTagItem);
     }
 
     @Override
@@ -1699,6 +1699,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
             trackCardPostClick(positionInFeed, model.getTrackingPostModel());
         }
+    }
+
+    @Override
+    public void onAddToCartSuccess() {
+
+    }
+
+    @Override
+    public void onAddToCartFailed(String pdpAppLink) {
+        onGoToLink(pdpAppLink);
     }
 
     private void doShare(String body, String title) {

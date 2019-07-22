@@ -475,7 +475,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onBuyClicked(postTagItem: PostTagItem) {
-        onGoToLink(postTagItem.applink)
+        presenter.addPostTagItemToCart(postTagItem)
     }
 
     override fun onActionPopup() {
@@ -537,6 +537,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     it,
                     postId))
         }
+    }
+
+    override fun onAddToCartSuccess() {
+
+    }
+
+    override fun onAddToCartFailed(pdpAppLink: String) {
+        onGoToLink(pdpAppLink)
     }
 
     fun hideFAB() {

@@ -5,6 +5,9 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
@@ -38,6 +41,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
     private final DeletePostUseCase deletePostUseCase;
     private final SendVoteUseCase sendVoteUseCase;
     private final UserSessionInterface userSession;
+    private final AddToCartUseCase atcUseCase;
 
     @Inject
     public KolPostDetailPresenter(GetPostDetailUseCase getPostDetailUseCase,
@@ -47,6 +51,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                                   SendVoteUseCase sendVoteUseCase,
                                   TrackAffiliateClickUseCase trackAffiliateClickUseCase,
                                   DeletePostUseCase deletePostUseCase,
+                                  AddToCartUseCase atcUseCase,
                                   UserSessionInterface userSessionInterface) {
         this.getPostDetailUseCase = getPostDetailUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
@@ -55,6 +60,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
         this.deletePostUseCase = deletePostUseCase;
+        this.atcUseCase = atcUseCase;
         this.userSession = userSessionInterface;
     }
 
@@ -254,5 +260,30 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                     }
                 }
         );
+    }
+
+    @Override
+    public void addPostTagItemToCart(PostTagItem postTagItem) {
+        if (!postTagItem.getShop().isEmpty()) {
+            atcUseCase.execute(
+                    AddToCartUseCase.getMinimumParams(postTagItem.getId(), postTagItem.getShop().get(0).getShopId()),
+                    new Subscriber<AddToCartDataModel>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            getView().onAddToCartFailed(postTagItem.getApplink());
+                        }
+
+                        @Override
+                        public void onNext(AddToCartDataModel addToCartDataModel) {
+                            getView().onAddToCartSuccess();
+                        }
+                    }
+            );
+        }
     }
 }

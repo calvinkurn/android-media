@@ -5,7 +5,10 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileRelatedUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
@@ -30,7 +33,8 @@ class ProfilePresenter @Inject constructor(
     private val deletePostUseCase: DeletePostUseCase,
     private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
     private val shouldChangeUsernameUseCase: ShouldChangeUsernameUseCase,
-    private val getProfileRelatedUseCase: GetProfileRelatedUseCase)
+    private val getProfileRelatedUseCase: GetProfileRelatedUseCase,
+    private val atcUseCase: AddToCartUseCase)
     : BaseDaggerPresenter<ProfileContract.View>(), ProfileContract.Presenter {
 
     override var cursor: String = ""
@@ -90,6 +94,28 @@ class ProfilePresenter @Inject constructor(
             LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
             LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
         )
+    }
+
+    override fun addPostTagItemToCart(postTagItem: PostTagItem) {
+        if (postTagItem.shop.isNotEmpty()) {
+            atcUseCase.execute(
+                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop.first().shopId),
+                    object : Subscriber<AddToCartDataModel>() {
+                        override fun onNext(t: AddToCartDataModel?) {
+                            view.onAddToCartSuccess()
+                        }
+
+                        override fun onCompleted() {
+
+                        }
+
+                        override fun onError(e: Throwable?) {
+                            if (GlobalConfig.isAllowDebuggingTools()) e?.printStackTrace()
+                            view.onAddToCartFailed(postTagItem.applink)
+                        }
+                    }
+            )
+        }
     }
 
     override fun deletePost(id: Int, rowNumber: Int) {
