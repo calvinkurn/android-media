@@ -46,6 +46,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private SessionHandler sessionHandler;
     private List<String> shopTypes;
     private PaymentData paymentData;
+    private boolean newBuyerFlag;
     private static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
     private static final String TYPE_GLOBAL_VOUCHER = "global";
     private static final String TYPE_PAYMENT_VOUCHER = "payment";
@@ -62,6 +63,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     public Boolean call(Response<GraphqlResponse<PaymentGraphql>> response) {
         if (isResponseValid(response)) {
             paymentData = response.body().getData().getPayment();
+            newBuyerFlag = response.body().getData().isNewBuyerFlag();
             String paymentType = generatePaymentType(paymentData.getPaymentType());
 
             if (paymentData.getOrders() != null) {
@@ -347,6 +349,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         branchIOPayment.setRevenue(String.valueOf((long)paymentData.getPaymentAmount()));
         branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE);
         branchIOPayment.setItemPrice(String.valueOf((long)orderData.getItemPrice()));
+        branchIOPayment.setNewBuyer(newBuyerFlag);
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();
             product.put(LinkerConstants.ID, String.valueOf(orderDetail.getProductId()));
