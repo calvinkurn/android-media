@@ -72,4 +72,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation 'org.assertj:assertj-core:3.8.0'
     testImplementation 'org.json:json:20140107'
+    implementation project(rootProject.ext.libraries.cpm)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.network)
 }
