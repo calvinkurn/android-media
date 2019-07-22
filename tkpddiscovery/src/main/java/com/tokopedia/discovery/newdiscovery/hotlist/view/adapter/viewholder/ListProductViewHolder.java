@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
@@ -187,11 +188,12 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     }
 
     private void loadShopBadgeIcon(HotlistProductViewModel.BadgeModel badgeItem) {
-        if(simpleTargetBitmapShopBadge == null) {
-            View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
-            simpleTargetBitmapShopBadge = createSimpleTargetBitmapForLoadBadge(view);
+        if(simpleTargetBitmapShopBadge != null) {
+            Glide.clear(simpleTargetBitmapShopBadge);
         }
 
+        View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
+        simpleTargetBitmapShopBadge = createSimpleTargetBitmapForLoadBadge(view);
         ImageHandler.loadImageBitmap2(context, badgeItem.getImageUrl(), simpleTargetBitmapShopBadge);
     }
 
