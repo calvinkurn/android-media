@@ -97,7 +97,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvProductName.setText(cartItem.getName());
         mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItem.getPrice(), false));
-        if (cartItem.isSlashPrice() || cartItem.getOriginalPrice() > 0) {
+        if (cartItem.getOriginalPrice() > 0) {
             mTvProductOriginalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false));
             mTvProductOriginalPrice.setPaintFlags(mTvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             mTvProductOriginalPrice.setVisibility(View.VISIBLE);
@@ -186,6 +186,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         int colorGreyNonActiveText = ContextCompat.getColor(mTvProductName.getContext(), R.color.grey_nonactive_text);
         mTvProductName.setTextColor(colorGreyNonActiveText);
         mTvProductPrice.setTextColor(colorGreyNonActiveText);
+        mTvProductOriginalPrice.setTextColor(colorGreyNonActiveText);
         mTvFreeReturnLabel.setTextColor(colorGreyNonActiveText);
         mTvPreOrder.setTextColor(colorGreyNonActiveText);
         mTvNoteToSellerLabel.setTextColor(colorGreyNonActiveText);
@@ -209,6 +210,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private void enableItemView() {
         mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), R.color.black_70));
         mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), R.color.orange_red));
+        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.getContext(), R.color.n_700_44));
         mTvFreeReturnLabel.setTextColor(ContextCompat.getColor(mTvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
         mTvPreOrder.setTextColor(ContextCompat.getColor(mTvPreOrder.getContext(), R.color.font_black_secondary_54));
         mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mTvNoteToSellerLabel.getContext(), R.color.black_38));

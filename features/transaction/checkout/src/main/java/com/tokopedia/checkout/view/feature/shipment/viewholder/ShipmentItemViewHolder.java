@@ -100,7 +100,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView ivProductImage;
     private TextView tvProductName;
     private TextView tvProductPrice;
-    private TextView tvProductPriceOriginal;
+    private TextView tvProductOriginalPrice;
     private ImageView ivFreeReturnIcon;
     private TextView tvFreeReturnLabel;
     private TextView tvPreOrder;
@@ -256,7 +256,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
         tvProductPrice = itemView.findViewById(R.id.tv_product_price);
-        tvProductPriceOriginal = itemView.findViewById(R.id.tv_product_original_price);
+        tvProductOriginalPrice = itemView.findViewById(R.id.tv_product_original_price);
         rlPurchaseProtection = itemView.findViewById(R.id.rlayout_purchase_protection);
         tvPPPLinkText = itemView.findViewById(R.id.text_link_text);
         tvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
@@ -578,14 +578,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvProductName.setText(cartItemModel.getName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItemModel.getPrice(), false));
-        if (cartItemModel.isSlashPrice() || cartItemModel.getOriginalPrice() > 0) {
-            tvProductPriceOriginal.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+        if (cartItemModel.getOriginalPrice() > 0) {
+            tvProductOriginalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     cartItemModel.getOriginalPrice(), false
             ));
-            tvProductPriceOriginal.setPaintFlags(tvProductPriceOriginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            tvProductPriceOriginal.setVisibility(View.VISIBLE);
+            tvProductOriginalPrice.setPaintFlags(tvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            tvProductOriginalPrice.setVisibility(View.VISIBLE);
         } else {
-            tvProductPriceOriginal.setVisibility(View.GONE);
+            tvProductOriginalPrice.setVisibility(View.GONE);
         }
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
@@ -721,7 +721,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvLogPromoDiscAmount.setText(labelCouponAmount);
             } else tvLogPromoLabel.setVisibility(View.GONE);
             tvChangeSelectedCourierRecommendation.setTextColor(
-                    ContextCompat.getColor(context, R.color.button_change_courier_disabled));
+                    ContextCompat.getColor(context, R.color.n_700_44));
             tvChangeSelectedCourierRecommendation.setOnClickListener(null);
         } else llLogPromo.setVisibility(View.GONE);
 
@@ -1533,6 +1533,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         int nonActiveTextColor = ContextCompat.getColor(tvProductName.getContext(), R.color.grey_nonactive_text);
         tvProductName.setTextColor(nonActiveTextColor);
         tvProductPrice.setTextColor(nonActiveTextColor);
+        tvProductOriginalPrice.setTextColor(nonActiveTextColor);
         tvFreeReturnLabel.setTextColor(nonActiveTextColor);
         tvPreOrder.setTextColor(nonActiveTextColor);
         tvNoteToSellerLabel.setTextColor(nonActiveTextColor);
@@ -1556,6 +1557,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void enableItemView() {
         tvProductName.setTextColor(ContextCompat.getColor(tvProductName.getContext(), R.color.black_70));
         tvProductPrice.setTextColor(ContextCompat.getColor(tvProductPrice.getContext(), R.color.orange_red));
+        tvProductOriginalPrice.setTextColor(ContextCompat.getColor(tvProductOriginalPrice.getContext(), R.color.n_700_44));
         tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
         tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.font_black_secondary_54));
         tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.black_38));
