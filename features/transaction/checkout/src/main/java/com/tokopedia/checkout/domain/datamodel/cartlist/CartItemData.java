@@ -178,6 +178,7 @@ public class CartItemData implements Parcelable {
         private String trackerListName;
         private String originalRemark;
         private String shopName;
+        private String shopCity;
         private String shopId;
         private String shopType;
         private boolean officialStore;
@@ -481,6 +482,14 @@ public class CartItemData implements Parcelable {
 
         public void setShopName(String shopName) {
             this.shopName = shopName;
+        }
+
+        public String getShopCity() {
+            return shopCity;
+        }
+
+        public void setShopCity(String shopCity) {
+            this.shopCity = shopCity;
         }
 
         public boolean isOfficialStore() {

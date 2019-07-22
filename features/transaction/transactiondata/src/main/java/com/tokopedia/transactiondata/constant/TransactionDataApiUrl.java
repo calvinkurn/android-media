@@ -1,11 +1,13 @@
 package com.tokopedia.transactiondata.constant;
 
+import com.tokopedia.url.TokopediaUrl;
+
 /**
  * @author anggaprasetiyo on 09/05/18.
  */
 public class TransactionDataApiUrl {
     public static class Cart {
-        static public String BASE_URL = "https://api.tokopedia.com/";
+        static public String BASE_URL = TokopediaUrl.Companion.getInstance().getAPI();
 
         public static final String HMAC_KEY = "web_service_v4";
         public static final String VERSION_1 = "v1";
@@ -36,7 +38,7 @@ public class TransactionDataApiUrl {
     }
 
     public static class TransactionAction {
-        static public String BASE_URL = "https://ws.tokopedia.com/";
+        static public String BASE_URL = TokopediaUrl.Companion.getInstance().getWS();
 
         public static final String HMAC_KEY = "web_service_v4";
         public static final String VERSION = "v4/";

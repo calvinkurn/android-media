@@ -336,9 +336,11 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.homecredit)
+    implementation project(rootProject.ext.features.instantDebitBca)
     implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.digitalDeals)
+    implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.expressCheckout)
     implementation project(rootProject.ext.features.logisticdata)
@@ -432,12 +434,16 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation rootProject.ext.miscDependencies.bcaxcoWidget
 
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
+
+    implementation project(rootProject.ext.libraries.url)
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
@@ -566,6 +572,7 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.features.ovop2p)
 }
 
 

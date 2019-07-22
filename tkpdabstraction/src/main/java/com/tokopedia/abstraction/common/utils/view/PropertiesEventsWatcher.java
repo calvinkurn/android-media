@@ -48,7 +48,7 @@ public final class PropertiesEventsWatcher {
         }
 
         public void set(Observable<Boolean> observable) {
-            observable.subscribe(this);
+            observable.subscribe(this,  Throwable::printStackTrace);
         }
 
         @Override public void call(Boolean enabled) {

@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
@@ -158,6 +158,7 @@ public class CartListModule {
     }
 
     @Provides
+    @CartListScope
     @Named("recommendationQuery")
     String provideRecommendationRawQuery(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_recommendation_widget);
@@ -169,6 +170,13 @@ public class CartListModule {
                                                              GraphqlUseCase graphqlUseCase,
                                                              UserSessionInterface userSessionInterface) {
         return new GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface);
+    }
+
+    @Provides
+    @CartListScope
+    @Named("atcMutation")
+    String provideAddToCartMutation(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
     }
 
     @Provides

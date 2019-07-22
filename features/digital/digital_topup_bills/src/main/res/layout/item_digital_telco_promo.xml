@@ -40,7 +40,7 @@
                 android:layout_alignBottom="@id/btn_copy_promo"
                 android:layout_marginLeft="@dimen/dp_12"
                 android:gravity="center_vertical"
-                android:src="@drawable/digital_ic_voucher" />
+                app:srcCompat="@drawable/digital_ic_voucher" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_promo_code"

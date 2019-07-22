@@ -2,11 +2,7 @@ package com.tokopedia.normalcheckout.router
 
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest
-import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
-import com.tokopedia.transactiondata.insurance.entity.request.AddInsuranceProductToCartRequest
-import com.tokopedia.transactiondata.insurance.entity.request.AddMarketPlaceToCartRequest
 import com.tokopedia.transactiondata.insurance.usecase.AddInsuranceProductUsecase
 import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceRecommendationUsecase
 import rx.Observable
@@ -18,7 +14,6 @@ import rx.Observable
 interface NormalCheckoutRouter {
 
     fun addInsuranceProductToCart(/*request: AddInsuranceProductToCartRequest, marketPlaceRequest: AddMarketPlaceToCartRequest*/): AddInsuranceProductUsecase
-    fun addToCartProduct(addToCartRequest: AddToCartRequest, isOneClickShipment: Boolean): Observable<AddToCartResult>
     fun getInsuranceRecommendationUsecase(): GetInsuranceRecommendationUsecase
     fun getCheckoutIntent(context: Context, shipmentFormRequest: ShipmentFormRequest): Intent
     fun getCheckoutIntent(context: Context, deviceid: String): Intent

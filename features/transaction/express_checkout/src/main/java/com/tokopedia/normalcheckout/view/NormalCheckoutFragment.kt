@@ -26,6 +26,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -39,6 +42,10 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
@@ -67,6 +74,7 @@ import com.tokopedia.transactiondata.insurance.entity.response.AddInsuranceProdu
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import rx.Observable
 import rx.Subscriber
@@ -122,6 +130,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var shopType: String? = null
     var shopName: String? = null
     private var tradeInParams: TradeInParams? = null
+    val currencyLabel = "IDR"
+
 
     private val page = "pdp"
     private val clientVersion = Build.VERSION.SDK_INT.toString()
@@ -582,6 +592,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
+    override fun onDestroy() {
+        viewModel.unsubscribe()
+        super.onDestroy()
+    }
+
     private fun getInsuranceRecommendationProducts() {
 
         val getInsuranceRecommendationUsecase = router.getInsuranceRecommendationUsecase()
@@ -726,6 +741,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
      * called when on Success Add to Cart
      */
     fun onFinishAddToCart(atcSuccessMessage: String? = null) {
+
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
@@ -747,8 +763,29 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
                 }
             })
+            sendBranchAddToCardEvent()
             finish()
         }
+    }
+
+    private fun sendBranchAddToCardEvent(){
+        if(selectedProductInfo != null) {
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, createLinkerData(selectedProductInfo,
+                    (UserSession(activity)).userId)))
+        }
+    }
+
+    private fun createLinkerData(productInfo: ProductInfo?, userId: String?): LinkerData{
+        var linkerData = LinkerData()
+        linkerData.id = productInfo?.basic?.id.toString()
+        linkerData.price = productInfo?.basic?.price?.toInt().toString()
+        linkerData.description = productInfo?.basic?.description
+        linkerData.shopId = productInfo?.basic?.shopID.toString()
+        linkerData.catLvl1 = productInfo?.category?.name
+        linkerData.userId = userId ?: ""
+        linkerData.currency = currencyLabel
+        linkerData.quantity = tempQuantity.toString()
+        return linkerData
     }
 
     private fun doBuyOrPreorder(isOcs: Boolean) {
@@ -846,12 +883,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             onFinishAddToCart(message)
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickAddToCartInVariant(
-                        originalProduct,
-                        selectedVariantId ?: "",
-                        this, quantity,
-                        shopId, shopType, shopName, cartId,
-                        trackerAttribution, trackerListName,
-                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false)
+                    originalProduct,
+                    selectedVariantId ?: "",
+                    this, quantity,
+                    shopId, shopType, shopName, cartId,
+                    trackerAttribution, trackerListName,
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment?: false)
             }
         }, onRetryWhenError = {
             addToCart()
@@ -1059,55 +1096,64 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 selectedProductInfo?.basic?.name ?: "",
                 selectedProductInfo?.category?.name ?: "")
 
-        router.addToCartProduct(AddToCartRequest.Builder()
-                .productId(if (selectedVariant != null && selectedVariant.toInt() > 0) {
-                    selectedVariant.toInt()
-                } else {
-                    productId.toInt()
-                })
-                .notes(notes)
-                .quantity(tempQuantity)
-                .isTradein(isTradeIn)
-                .shopId(shopId?.toInt() ?: 0)
-                .trackerAttribution(trackerAttribution)
-                .trackerListName(trackerListName)
-                .warehouseId(selectedWarehouseId)
-                .build(), oneClickShipment)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<AddToCartResult>() {
-                    override fun onNext(addToCartResult: AddToCartResult?) {
-                        hideLoadingDialog()
-                        addToCartResult?.run {
-                            if (isSuccess) {
-                                //success checkout
-                                normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
-                                        selectedProductInfo?.basic?.price.toString(),
-                                        quantity,
-                                        selectedProductInfo?.basic?.name ?: "",
-                                        selectedProductInfo?.category?.name ?: "")
-                                onFinish(addToCartResult.message, addToCartResult.cartId)
-                            } else {
-                                activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
-                                        addToCartResult.message
-                                                ?: getString(R.string.default_request_error_unknown_short))
-                            }
-                        }
+        if (oneClickShipment) {
+            val addToCartOcsRequestParams = AddToCartOcsRequestParams()
+            addToCartOcsRequestParams.productId = if (selectedVariant != null && selectedVariant.toInt() > 0) {
+                selectedVariant.toLong()
+            } else {
+                productId.toLong()
+            }
+            addToCartOcsRequestParams.shopId = shopId?.toInt() ?: 0
+            addToCartOcsRequestParams.quantity = tempQuantity
+            addToCartOcsRequestParams.notes = notes ?: ""
+            addToCartOcsRequestParams.warehouseId = selectedWarehouseId
+            addToCartOcsRequestParams.trackerAttribution = trackerAttribution ?: ""
+            addToCartOcsRequestParams.trackerListName = trackerListName ?: ""
+            addToCartOcsRequestParams.isTradeIn = isTradeIn == 1
 
-                    }
+            viewModel.addToCartProduct(addToCartOcsRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
+        } else {
+            val addToCartRequestParams = AddToCartRequestParams()
+            addToCartRequestParams.productId = if (selectedVariant != null && selectedVariant.toInt() > 0) {
+                selectedVariant.toLong()
+            } else {
+                productId.toLong()
+            }
+            addToCartRequestParams.shopId = shopId?.toInt() ?: 0
+            addToCartRequestParams.quantity = tempQuantity
+            addToCartRequestParams.notes = notes ?: ""
+            addToCartRequestParams.attribution = trackerAttribution ?: ""
+            addToCartRequestParams.listTracker = trackerListName ?: ""
+            addToCartRequestParams.warehouseId = selectedWarehouseId
 
-                    override fun onCompleted() {
+            viewModel.addToCartProduct(addToCartRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
+        }
+    }
 
-                    }
+    private fun onSuccessAtc(addToCartDataModel: AddToCartDataModel?, onFinish: (message: String?, cartId: String?) -> Unit) {
+        hideLoadingDialog()
+        addToCartDataModel?.run {
+            if (addToCartDataModel.status == "OK" && addToCartDataModel.data.success == 1) {
+                //success checkout
+                normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
+                        selectedProductInfo?.basic?.price.toString(),
+                        quantity,
+                        selectedProductInfo?.basic?.name ?: "",
+                        selectedProductInfo?.category?.name ?: "")
+                onFinish(addToCartDataModel.data.message[0], addToCartDataModel.data.cartId.toString())
+            } else {
+                activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
+                        addToCartDataModel.errorMessage[0])
+            }
+        }
 
-                    override fun onError(e: Throwable?) {
-                        hideLoadingDialog()
-                        showToastError(e) {
-                            onRetryWhenError()
-                        }
-                    }
-                })
+    }
+
+    private fun onErrorAtc(e: Throwable?, onRetryWhenError: (() -> Unit)) {
+        hideLoadingDialog()
+        showToastError(e) {
+            onRetryWhenError()
+        }
     }
 
     fun showLoadingDialog(onCancelClicked: (() -> Unit)? = null) {
@@ -1285,10 +1331,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun navigateCheckoutToThankYouPage(appLink: String) {
         if (activity != null) startActivity(RouteManager.getIntent(activity, appLink))
         activity?.finish()
-    }
-
-    override fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult> {
-        return router.addToCartProduct(addToCartRequest, true)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

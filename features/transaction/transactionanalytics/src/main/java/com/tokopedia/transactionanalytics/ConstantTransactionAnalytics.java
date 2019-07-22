@@ -175,6 +175,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BELI_ON_WISHLIST = "click - beli on wishlist";
         String CLICK_BELI_ON_RECENT_VIEW_PAGE = "click - beli on recent view page";
         String CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT = "click add to cart on primary product";
+        String IMPRESSION_ERROR_COURIER_NO_AVAILABLE = "impression error courier no available";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -272,6 +273,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PROMO_LOGISTIC_TICKER = "click promo logistic ticker";
         String CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo";
         String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
+        String VIEW_PROMO_LOGISTIC_TICKER = "view promo logistic ticker";
 
         //Promo not eligible bottomsheet
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";

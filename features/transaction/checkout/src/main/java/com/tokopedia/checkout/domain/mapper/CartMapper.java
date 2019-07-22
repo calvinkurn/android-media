@@ -213,9 +213,9 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setOriginalRemark(cartItemDataOrigin.getProductVarianRemark());
                 cartItemDataOrigin.setOriginalQty(data.getProduct().getProductQuantity());
                 cartItemDataOrigin.setShopName(shopGroup.getShop().getShopName());
+                cartItemDataOrigin.setShopCity(shopGroup.getShop().getCityName());
                 cartItemDataOrigin.setGoldMerchant(shopGroup.getShop().getGoldMerchant().isGoldBadge());
                 cartItemDataOrigin.setOfficialStore(shopGroup.getShop().getIsOfficial() == 1);
-                cartItemDataOrigin.setShopName(shopGroup.getShop().getShopName());
                 cartItemDataOrigin.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
                 cartItemDataOrigin.setShopType(generateShopType(shopGroup.getShop()));
                 cartItemDataOrigin.setWishlisted(data.getProduct().isWishlisted());
@@ -414,6 +414,7 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setCartId(data.getCartId());
             cartItemDataOrigin.setShopId(String.valueOf(data.getShop().getShopId()));
             cartItemDataOrigin.setShopName(data.getShop().getShopName());
+            cartItemDataOrigin.setShopCity(data.getShop().getCityName());
             cartItemDataOrigin.setWeightFormatted(data.getProduct().getProductWeightFmt());
             cartItemDataOrigin.setWeightUnit(data.getProduct().getProductWeightUnitCode());
             cartItemDataOrigin.setWeightPlan(data.getProduct().getProductWeight());

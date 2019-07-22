@@ -7,6 +7,7 @@ package com.tokopedia.shop.open.analytic;
 public class ShopOpenTrackingConstant {
     //event
     public static String CLICK_CREATE_SHOP = "clickCreateShop";
+    public static String EVENT_SHOP_CREATED = "shopCreated";
 
     //category
     public static String OPEN_SHOP_BIODATA_FORM = "open shop - shop biodata form";
@@ -59,4 +60,11 @@ public class ShopOpenTrackingConstant {
 
     static String LONG_CLICK = "longClick";
     static String LONG_PRESS = "Long Press";
+
+    public interface Keys{
+        String USERID = "user_id";
+        String SHOPID = "shop_id";
+        String USEREMAIL = "user_email";
+        String PHONE = "phone";
+    }
 }

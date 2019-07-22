@@ -41,11 +41,13 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.libraries.track)
-    
+    implementation project(rootProject.ext.libraries.url)
+
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
 
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.userSession)
     implementation rootProject.ext.playServicesDependencies.plus
