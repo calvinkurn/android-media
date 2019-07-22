@@ -438,7 +438,6 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductPriceFmt(product.getProductPriceFmt());
                                 productResult.setProductPrice(product.getProductPrice());
                                 productResult.setProductOriginalPrice(product.getProductOriginalPrice());
-                                productResult.setIsSlashPrice(product.isSlashPrice());
                                 if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
                                     productResult.setProductPrice(product.getTradeInInfo().getNewDevicePrice());
                                 }
@@ -471,7 +470,6 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductCatId(product.getProductCatId());
                                 productResult.setProductCatalogId(product.getProductCatalogId());
                                 productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
-                                // HANSEN : perlu set origin price di analytics obj?
 
                                 if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
                                     TradeInInfo tradeInInfo = new TradeInInfo();

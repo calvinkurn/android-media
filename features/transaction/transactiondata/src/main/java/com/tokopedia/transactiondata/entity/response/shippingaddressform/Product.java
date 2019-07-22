@@ -35,9 +35,6 @@ public class Product {
     @SerializedName("product_original_price")
     @Expose
     private int productOriginalPrice;
-    @SerializedName("is_slash_price")
-    @Expose
-    private boolean isSlashPrice;
     @SerializedName("product_wholesale_price")
     @Expose
     private int productWholesalePrice;
@@ -169,10 +166,6 @@ public class Product {
 
     public int getProductOriginalPrice() {
         return productOriginalPrice;
-    }
-
-    public boolean isSlashPrice() {
-        return isSlashPrice;
     }
 
     public int getProductWholesalePrice() {
