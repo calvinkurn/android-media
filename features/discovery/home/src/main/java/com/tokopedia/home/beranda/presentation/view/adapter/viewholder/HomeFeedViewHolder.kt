@@ -45,7 +45,7 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
             setLabelDiscountVisible(element.discountPercentage > 0)
             setImageRatingVisible(element.rating > 0 && element.countReview > 0)
             setReviewCountVisible(element.rating > 0 && element.countReview > 0)
-            setShopBadgesVisible(true)
+            setShopBadgesVisible(element.badges.isNotEmpty())
             setShopLocationVisible(true)
             setButtonWishlistVisible(true)
             setButtonWishlistImage(element.isWishList)
@@ -90,7 +90,7 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
 
     private fun mapBadges(badges: List<Badge>){
         for (badge in badges) {
-            val view = LayoutInflater.from(productCardView.context).inflate(com.tokopedia.productcard.R.layout.layout_badge, null)
+            val view = LayoutInflater.from(productCardView.context).inflate(R.layout.home_layout_badge, null)
             ImageHandler.loadImageFitCenter(productCardView.context, view.findViewById(com.tokopedia.productcard.R.id.badge), badge.imageUrl)
             productCardView.addShopBadge(view)
         }

@@ -208,7 +208,8 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     }
 
     private void updateWishlist(String id, boolean isWishlist, int position) {
-        if(getAdapter().getData().get(position) instanceof HomeFeedViewModel) {
+        if(position > -1 && getAdapter().getData() != null &&
+            getAdapter().getDataSize() > position && getAdapter().getData().get(position) instanceof HomeFeedViewModel) {
             HomeFeedViewModel model = (HomeFeedViewModel) getAdapter().getData().get(position);
             if (model.getProductId().equals(id)) {
                 model.setWishList(isWishlist);
