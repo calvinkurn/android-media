@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'graphql']
+            }
+        }
+    }
+}
+
+project.ext {
+    artifactId = 'url'
+    groupId = 'com.tokopedia.url'
+    versionName = "${tkpdUrlVersion}"
+    artifactName = "url-release"
+}
+
+
+
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+}
+
+apply from: '../../publish_local.gradle'
