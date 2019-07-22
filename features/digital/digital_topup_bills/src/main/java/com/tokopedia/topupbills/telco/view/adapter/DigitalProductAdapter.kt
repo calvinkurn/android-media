@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.view.adapter
 
 import android.content.Context
 import android.graphics.Paint
+import android.support.v7.content.res.AppCompatResources
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -98,12 +99,12 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
         }
 
         protected fun setItemSelected(viewGrup: ViewGroup) {
+            var drawable = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_round)
             if (productItem.product.attributes.selected) {
                 listener.onClickItemProduct(productItem, adapterPosition)
-                viewGrup.setBackgroundResource(R.drawable.digital_bg_green_light_rounded)
-            } else {
-                viewGrup.setBackgroundResource(R.drawable.digital_bg_transparent_round)
+                drawable = AppCompatResources.getDrawable(context, R.drawable.digital_bg_green_light_rounded)
             }
+            viewGrup.background = drawable
         }
     }
 

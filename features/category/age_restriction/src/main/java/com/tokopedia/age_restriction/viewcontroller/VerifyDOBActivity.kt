@@ -140,7 +140,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
                     .build()
             travelCalenderSheet?.setListener(object : TravelCalendarBottomSheet.ActionListener {
                 override fun onClickDate(dateSelected: Date) {
-                    ed_edit_dob.text = SimpleDateFormat("dd MMMM YYYY", Locale("in", "ID")).format(dateSelected)
+                    ed_edit_dob.text = SimpleDateFormat("dd MMMM yyyy", Locale("in", "ID")).format(dateSelected)
                     selectedDate = dateSelected
                     hideProgressBar()
                     ed_edit_dob.isClickable = true

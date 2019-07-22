@@ -1,6 +1,7 @@
 package com.tokopedia.topupbills.telco.view.adapter
 
 import android.content.Context
+import android.support.v7.content.res.AppCompatResources
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -85,17 +86,19 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
             description.text = telcoPromo.title
             promoCode.text = telcoPromo.promoCode
 
+            var containerBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_border_green)
+            var btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_green_rounded)
             if (telcoPromo.voucherCodeCopied) {
-                container.setBackgroundResource(R.drawable.digital_bg_transparent_border_green)
-                btnCopyPromo.setBackgroundResource(R.drawable.digital_bg_green_rounded)
                 btnCopyPromo.text = context.getString(R.string.text_has_copied_promo_code)
                 btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.white))
             } else {
-                container.setBackgroundResource(R.drawable.digital_bg_transparent_round)
-                btnCopyPromo.setBackgroundResource(R.drawable.digital_bg_transparent_border_green)
+                containerBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_round)
+                btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_border_green)
                 btnCopyPromo.text = context.getString(R.string.text_copy_promo_code)
                 btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.tkpd_main_green))
             }
+            container.background = containerBg
+            btnCopyPromo.background = btnCopyBg
 
             if (TextUtils.isEmpty(telcoPromo.promoCode)) {
                 promoCodeLayout.visibility = View.GONE
