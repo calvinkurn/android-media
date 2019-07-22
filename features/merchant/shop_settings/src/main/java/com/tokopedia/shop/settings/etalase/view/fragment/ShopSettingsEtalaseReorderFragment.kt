@@ -15,11 +15,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
+import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
@@ -28,6 +31,7 @@ import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
 import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseReorderAdapter
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseReorderFactory
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListReorderPresenter
+import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreViewHolder
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -35,8 +39,12 @@ import java.util.ArrayList
 
 import javax.inject.Inject
 
-class ShopSettingsEtalaseReorderFragment : BaseListFragment<ShopEtalaseViewModel, ShopEtalaseReorderFactory>(), ShopSettingEtalaseListReorderPresenter.View, OnStartDragListener {
-
+class ShopSettingsEtalaseReorderFragment :
+        BaseListFragment<ShopEtalaseViewModel, ShopEtalaseReorderFactory>(),
+        ShopSettingEtalaseListReorderPresenter.View,
+        OnStartDragListener,
+        TickerReadMoreViewHolder.TickerViewHolderViewHolderListener
+{
     @Inject
     lateinit var shopSettingEtalaseListReorderPresenter: ShopSettingEtalaseListReorderPresenter
     private var shopEtalaseModels: ArrayList<ShopEtalaseViewModel>? = null
@@ -85,7 +93,7 @@ class ShopSettingsEtalaseReorderFragment : BaseListFragment<ShopEtalaseViewModel
         shopEtalaseModels = arguments!!.getParcelableArrayList(EXTRA_ETALASE_LIST)
         super.onCreate(savedInstanceState)
         GraphqlClient.init(context!!)
-        adapterDefault = ShopEtalaseReorderAdapter(ShopEtalaseReorderFactory(null))
+        adapterDefault = ShopEtalaseReorderAdapter(ShopEtalaseReorderFactory(null,null))
     }
 
     override fun getRecyclerView(view: View): RecyclerView? {
@@ -130,7 +138,7 @@ class ShopSettingsEtalaseReorderFragment : BaseListFragment<ShopEtalaseViewModel
     }
 
     override fun getAdapterTypeFactory(): ShopEtalaseReorderFactory {
-        return ShopEtalaseReorderFactory(this)
+        return ShopEtalaseReorderFactory(this,this)
     }
 
     fun saveReorder() {
@@ -198,6 +206,10 @@ class ShopSettingsEtalaseReorderFragment : BaseListFragment<ShopEtalaseViewModel
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         listener = context as OnShopSettingsEtalaseReorderFragmentListener
+    }
+
+    override fun onReadMoreClicked() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS)
     }
 
     companion object {

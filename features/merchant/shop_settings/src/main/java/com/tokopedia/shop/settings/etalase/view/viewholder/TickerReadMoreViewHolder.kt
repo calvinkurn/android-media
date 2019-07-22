@@ -19,7 +19,7 @@ import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
 
 class TickerReadMoreViewHolder(
         itemView: View,
-        private val tickerViewHolderViewHolderListener: TickerViewHolderViewHolderListener
+        private val tickerViewHolderViewHolderListener: TickerViewHolderViewHolderListener?
 ) : AbstractViewHolder<TickerReadMoreViewModel>(itemView) {
 
     private val textViewTitle: TextView
@@ -51,7 +51,7 @@ class TickerReadMoreViewHolder(
         spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(p0: View) {
-                tickerViewHolderViewHolderListener.onReadMoreClicked()
+                tickerViewHolderViewHolderListener?.onReadMoreClicked()
             }
 
             override fun updateDrawState(ds: TextPaint) {

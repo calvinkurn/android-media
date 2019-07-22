@@ -46,7 +46,12 @@ import java.util.*
 import javax.inject.Inject
 
 
-class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseViewModel, ShopEtalaseFactory>(), ShopSettingEtalaseListPresenter.View, ShopEtalaseViewHolder.OnShopEtalaseViewHolderListener, TickerReadMoreViewHolder.TickerViewHolderViewHolderListener {
+class ShopSettingsEtalaseListFragment :
+        BaseSearchListFragment<BaseShopEtalaseViewModel, ShopEtalaseFactory>(),
+        ShopSettingEtalaseListPresenter.View,
+        ShopEtalaseViewHolder.OnShopEtalaseViewHolderListener,
+        TickerReadMoreViewHolder.TickerViewHolderViewHolderListener
+{
     @Inject
     lateinit var shopSettingEtalaseListPresenter: ShopSettingEtalaseListPresenter
     private var shopEtalaseViewModels: ArrayList<ShopEtalaseViewModel>? = null

@@ -17,7 +17,10 @@ import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteReorderViewHold
 /**
  * Created by hendry on 16/08/18.
  */
-class ShopEtalaseReorderFactory(private val onStartDragListener: OnStartDragListener?) : BaseShopEtalaseFactory() {
+class ShopEtalaseReorderFactory(
+        private val onStartDragListener: OnStartDragListener?,
+        private val tickerViewHolderViewHolderListener: TickerReadMoreViewHolder.TickerViewHolderViewHolderListener?
+) : BaseShopEtalaseFactory() {
     override fun type(model: TickerReadMoreViewModel): Int {
         return TickerReadMoreViewHolder.LAYOUT
     }
@@ -35,7 +38,10 @@ class ShopEtalaseReorderFactory(private val onStartDragListener: OnStartDragList
             ShopEtalaseReorderViewHolder(parent, onStartDragListener)
         } else if (type == ShopEtalaseTitleViewHolder.LAYOUT) {
             ShopEtalaseTitleViewHolder(parent)
-        } else {
+        } else if(type == TickerReadMoreViewHolder.LAYOUT){
+            TickerReadMoreViewHolder(parent,tickerViewHolderViewHolderListener)
+        }
+        else {
             super.createViewHolder(parent, type)
         }
     }
