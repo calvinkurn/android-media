@@ -148,6 +148,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
     private var isAppBarCollapse = false
+    private var linkerData: LinkerData? = null
+    private var isShareProfile: Boolean? = null
 
     override lateinit var profileRouter: ProfileModuleRouter
     lateinit var layoutManager: GridLayoutManager
@@ -168,9 +170,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var affiliatePreference: AffiliatePreference
-
-    private var linkerData: LinkerData? = null
-    private var isShareProfile: Boolean? = null
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
