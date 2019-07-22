@@ -525,14 +525,14 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @NonNull
     private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
-
-        // TODO: 18/6/19 check if insurance products modified? also check if only insurance products are being bought?
-
         return view -> {
             if (message == null || message.equals("")) {
-
-                // TODO: 2/7/19 check if recommended insurance product is being bought
-
+                ArrayList<InsuranceCartShops> insuranceCartShopsArrayList = cartAdapter.isInsuranceCartProductUnSelected();
+                if (!insuranceCartShopsArrayList.isEmpty()) {
+                    for (InsuranceCartShops insuranceCartShops : insuranceCartShopsArrayList) {
+                        deleteInsurance(insuranceCartShops, false);
+                    }
+                }
                 dPresenter.processToUpdateCartData(getSelectedCartDataList(), cartAdapter.getSelectedCartShopHolderData());
             } else {
                 showToastMessageRed(message);
@@ -2146,27 +2146,34 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void deleteInsurance(InsuranceCartShops insuranceCartShops) {
-        View view = getLayoutInflater().inflate(R.layout.remove_insurance_product, null, false);
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                .setView(view)
-                .setCancelable(true)
-                .show();
+    public void deleteInsurance(@NotNull InsuranceCartShops insuranceCartShops, boolean showConfirmationDialog) {
 
-        view.findViewById(R.id.button_positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dPresenter.processDeleteCartInsurance(insuranceCartShops);
-                alertDialog.dismiss();
-            }
-        });
+        if (showConfirmationDialog) {
+            View view = getLayoutInflater().inflate(R.layout.remove_insurance_product, null, false);
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                    .setView(view)
+                    .setCancelable(true)
+                    .show();
 
-        view.findViewById(R.id.button_negative).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
+            view.findViewById(R.id.button_positive).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dPresenter.processDeleteCartInsurance(insuranceCartShops);
+                    alertDialog.dismiss();
+                }
+            });
+
+            view.findViewById(R.id.button_negative).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+        } else {
+            dPresenter.processDeleteCartInsurance(insuranceCartShops);
+        }
+
+
     }
 
     @Override

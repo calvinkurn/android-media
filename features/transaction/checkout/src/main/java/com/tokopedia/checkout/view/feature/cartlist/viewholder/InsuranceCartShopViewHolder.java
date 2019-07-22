@@ -87,7 +87,12 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
         datePicker = new SaldoDatePickerUtil((Activity) ivInsuranceIcon.getContext());
         boolean isInsuranceSelected = insuranceCartDigitalProduct.getOptIn();
-        cbSelectInsurance.setChecked(isInsuranceSelected);
+
+        /*
+         * By default need to keep this checked for cart page
+         * */
+
+        cbSelectInsurance.setChecked(true);
 
         if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getTitle())) {
             tvProductTitle.setText(insuranceCartDigitalProduct.getProductInfo().getTitle());
@@ -303,7 +308,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         ivDeleteInsurance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insuranceItemActionlistener.deleteInsurance(insuranceCartShops);
+                insuranceItemActionlistener.deleteInsurance(insuranceCartShops, true);
             }
         });
     }

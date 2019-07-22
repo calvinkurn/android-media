@@ -559,19 +559,36 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public List<InsuranceCartShops> getSelectedRecommendedInsuranceList() {
 
-        List<InsuranceCartShops> insuranceCartShops = new ArrayList<>();
-        for (InsuranceCartShops insuranceCartShops1 : insuranceRecommendationList) {
+        List<InsuranceCartShops> insuranceCartShopsList = new ArrayList<>();
+        for (InsuranceCartShops insuranceCartShops : insuranceRecommendationList) {
 
-            if (insuranceCartShops1 != null &&
-                    insuranceCartShops1.getShopItemsList().get(0) != null &&
-                    insuranceCartShops1.getShopItemsList().get(0).getDigitalProductList().get(0) != null &&
-                    insuranceCartShops1.getShopItemsList().get(0).getDigitalProductList().get(0).getOptIn()) {
+            if (insuranceCartShops != null &&
+                    insuranceCartShops.getShopItemsList().get(0) != null &&
+                    insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0) != null &&
+                    insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).getOptIn()) {
 
-                insuranceCartShops.add(insuranceCartShops1);
+                insuranceCartShopsList.add(insuranceCartShops);
             }
         }
-        return insuranceCartShops;
+        return insuranceCartShopsList;
     }
+
+    public ArrayList<InsuranceCartShops> isInsuranceCartProductUnSelected() {
+
+        ArrayList<InsuranceCartShops> insuranceCartShopsList = new ArrayList<>();
+        for (InsuranceCartShops insuranceCartShops : insuranceCartList) {
+
+            if (insuranceCartShops != null &&
+                    insuranceCartShops.getShopItemsList().get(0) != null &&
+                    insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0) != null &&
+                    !insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).getOptIn()) {
+
+                insuranceCartShopsList.add(insuranceCartShops);
+            }
+        }
+        return insuranceCartShopsList;
+    }
+
 
     public ArrayList<InsuranceCartShops> getInsuranceCartShops() {
         return allInsuranceProductsList;

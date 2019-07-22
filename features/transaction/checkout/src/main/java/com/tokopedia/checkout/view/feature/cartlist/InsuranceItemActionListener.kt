@@ -5,7 +5,7 @@ import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShop
 import java.util.ArrayList
 
 interface InsuranceItemActionListener : ActionListener {
-    fun deleteInsurance(insuranceCartShops: InsuranceCartShops)
+    fun deleteInsurance(insuranceCartShops: InsuranceCartShops, showconfirmationDialog: Boolean)
     fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops, updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>)
     fun onInsuranceSelectStateChanges()
 
