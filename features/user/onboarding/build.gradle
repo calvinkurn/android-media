@@ -35,6 +35,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation rootProject.ext.unifyDependencies.principles
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation 'io.reactivex:rxkotlin:0.60.0'
 

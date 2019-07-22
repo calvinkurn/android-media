@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.TaskStackBuilder
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.text.TextUtils
 import android.view.ViewGroup
@@ -54,14 +53,13 @@ class OnboardingActivity : BaseActivity() {
         fun onResponse(remoteConfig: RemoteConfig)
     }
 
-    val indicatorNormal: Int = R.drawable.indicator_onboarding_unfocused
-    val indicatorFocused: Int = R.drawable.indicator_onboarding_focused
+    private val indicatorNormal: Int = R.drawable.indicator_onboarding_unfocused
+    private val indicatorFocused: Int = R.drawable.indicator_onboarding_focused
 
     lateinit var loginButton: ButtonCompat
     lateinit var registerButton: ButtonCompat
     lateinit var skipButton: TextView
     var currentPosition = 0
-
 
     protected var indicatorItems = java.util.ArrayList<ImageView>()
 
@@ -106,20 +104,16 @@ class OnboardingActivity : BaseActivity() {
         val fragmentList = addFragments()
 
         viewPager.setPageTransformer(false, CustomAnimationPageTransformer())
-        viewPager.offscreenPageLimit = 1
         pagerAdapter = OnboardingPagerAdapter(supportFragmentManager, fragmentList)
         viewPager.adapter = pagerAdapter
 
         addIndicator(fragmentList)
         setListener()
-
     }
 
     private fun setListener() {
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
+            override fun onPageScrollStateChanged(state: Int) {}
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
             }
@@ -128,7 +122,6 @@ class OnboardingActivity : BaseActivity() {
                 setIndicator(position)
                 currentPosition = position
                 analytics.sendScreen(position)
-
             }
         })
 
@@ -202,57 +195,56 @@ class OnboardingActivity : BaseActivity() {
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB1_TTL, R.string.nonb_1_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB1_DESC, R.string.nonb_1_desc),
-                R.raw.onboard1,
-                ContextCompat.getColor(applicationContext, R.color.green_nob),
                 0,
                 RemoteConfigKey.NONB1_TTL,
-                RemoteConfigKey.NONB1_DESC
+                RemoteConfigKey.NONB1_DESC,
+                getStringVideoPath(R.raw.onboard_2)
         ))
 
         //#2
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB2_TTL, R.string.nonb_2_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB2_DESC, R.string.nonb_2_desc),
-                R.raw.onboard2,
-                ContextCompat.getColor(applicationContext, R.color.blue_nob),
                 1,
                 RemoteConfigKey.NONB2_TTL,
-                RemoteConfigKey.NONB2_DESC
+                RemoteConfigKey.NONB2_DESC,
+                getStringVideoPath(R.raw.onboard_1)
         ))
 
         //#3
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB3_TTL, R.string.nonb_3_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB3_DESC, R.string.nonb_3_desc),
-                R.raw.onboard3,
-                ContextCompat.getColor(applicationContext, R.color.orange_nob),
                 2,
                 RemoteConfigKey.NONB3_TTL,
-                RemoteConfigKey.NONB3_DESC
+                RemoteConfigKey.NONB3_DESC,
+                getStringVideoPath(R.raw.onboard_3)
         ))
 
         //#4
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB4_TTL, R.string.nonb_4_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB4_DESC, R.string.nonb_4_desc),
-                R.raw.onboard4,
-                ContextCompat.getColor(applicationContext, R.color.green_nob),
                 3,
                 RemoteConfigKey.NONB4_TTL,
-                RemoteConfigKey.NONB4_DESC
+                RemoteConfigKey.NONB4_DESC,
+                getStringVideoPath(R.raw.onboard_4)
         ))
 
         //#5
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB5_TTL, R.string.nonb_5_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB5_DESC, R.string.nonb_5_desc),
-                R.raw.onboard5,
-                ContextCompat.getColor(applicationContext, R.color.blue_nob),
                 4,
                 RemoteConfigKey.NONB5_TTL,
-                RemoteConfigKey.NONB5_DESC
+                RemoteConfigKey.NONB5_DESC,
+                getStringVideoPath(R.raw.onboard_5)
         ))
         return fragmentList
+    }
+
+    private fun getStringVideoPath(rawResource: Int): String {
+        return "android.resource://$packageName/$rawResource"
     }
 
     private fun getMessageFromRemoteConfig(firebaseKey: String, defaultMessageResId: Int): String {
@@ -267,7 +259,7 @@ class OnboardingActivity : BaseActivity() {
         remoteConfig = FirebaseRemoteConfigImpl(this)
         remoteConfig.fetch(object : RemoteConfig.Listener {
             override fun onComplete(rc: RemoteConfig?) {
-                if (slideCallBackList != null && slideCallBackList.isNotEmpty()) {
+                if (slideCallBackList.isNotEmpty()) {
                     for (slideCallback in slideCallBackList) {
                         slideCallback.onResponse(remoteConfig)
                     }
@@ -281,14 +273,15 @@ class OnboardingActivity : BaseActivity() {
     }
 
     private fun createAndAddSlide(title: String, description: String,
-                                  assetName: Int, bgColor: Int,
                                   position: Int,
                                   ttlKey: String,
-                                  descKey: String):OnboardingFragment {
+                                  descKey: String,
+                                  videoPath: String):OnboardingFragment {
         val slide = OnboardingFragment.createInstance(title,
-                description, assetName,
-                bgColor,
-                position, ttlKey,
+                description,
+                videoPath,
+                position,
+                ttlKey,
                 descKey)
         slideCallBackList.add(slide)
         return slide

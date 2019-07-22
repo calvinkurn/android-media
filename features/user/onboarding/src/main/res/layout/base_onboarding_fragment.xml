@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/main"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:gravity="bottom"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="bottom"
+    android:orientation="vertical">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view"
+    <VideoView
+        android:id="@+id/video_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:scaleType="centerInside"
-        android:visibility="invisible"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
 
     <TextView
         android:id="@+id/title"
@@ -29,12 +25,11 @@
         android:gravity="center"
         android:letterSpacing="0.02"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:textColor="#ffffff"
+        android:textColor="#f531353b"
         android:textSize="@dimen/sp_22"
         android:textStyle="bold"
         android:visibility="invisible"
-        tools:text="Judul"
-        />
+        tools:text="Judul" />
 
 
     <TextView
@@ -48,7 +43,7 @@
         android:letterSpacing="0.02"
         android:lineSpacingExtra="@dimen/sp_4"
         android:minLines="2"
-        android:textColor="@color/white"
+        android:textColor="#ae31353b"
         android:textSize="@dimen/sp_18"
         android:textStyle="normal"
         android:visibility="invisible"
@@ -58,7 +53,6 @@
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_30"/>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -111,6 +105,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dp"
             app:srcCompat="@drawable/next_ic"/>
+
     </RelativeLayout>
 
 </LinearLayout>
