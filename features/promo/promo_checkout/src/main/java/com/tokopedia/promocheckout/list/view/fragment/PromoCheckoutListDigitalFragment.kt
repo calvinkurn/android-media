@@ -108,8 +108,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
         val intent = Intent()
         val typePromo = if (data.isCoupon == PromoData.VALUE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
         val promoData = PromoData(typePromo, data.codes[0],
-                data.message.text, data.titleDescription,
-                data.cashbackWalletAmount, data.message.state.mapToStatePromoCheckout())
+                data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
