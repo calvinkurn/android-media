@@ -67,6 +67,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
             recyclerView.clearItemDecoration()
             recyclerView.addItemDecoration(NotifSettingDividerDecoration(context))
             recyclerView.addItemDecoration(NotifSettingBigDividerDecoration(context))
+            recyclerView.setHasFixedSize(true)
         }
     }
 
