@@ -669,7 +669,7 @@ public class DealsAnalytics {
         HashMap<String, Object> productmap = new HashMap<>();
 
         for (int index = 0; index < items.size(); index++) {
-            productmap.put(NAME, DEALS_HOME_PAGE);
+            productmap.put(NAME, items.get(index).getDisplayName());
             productmap.put(ID, String.valueOf(items.get(index).getId()));
             productmap.put(CREATIVE, items.get(index).getBrand().getTitle());
             productmap.put(CATEGORY, DEALS);
