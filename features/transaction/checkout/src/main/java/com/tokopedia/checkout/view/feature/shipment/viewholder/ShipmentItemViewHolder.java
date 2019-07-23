@@ -92,7 +92,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout layoutWarning;
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;*/
-    private Ticker tickerWarningAndError;
+    private LinearLayout layoutError;
+    private Ticker tickerError;
+    private LinearLayout layoutWarning;
+    private Ticker tickerWarning;
     private Typography tvShopName;
     private LinearLayout llShippingWarningContainer;
     private ImageView ivProductImage;
@@ -247,7 +250,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutWarning = itemView.findViewById(R.id.layout_warning);
         tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
         tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);*/
-        tickerWarningAndError = itemView.findViewById(R.id.ticker_shipment);
+        layoutError = itemView.findViewById(R.id.layout_error);
+        tickerError = itemView.findViewById(R.id.ticker_error);
+        layoutWarning = itemView.findViewById(R.id.layout_warning);
+        tickerWarning = itemView.findViewById(R.id.ticker_warning);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         llShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
@@ -437,11 +443,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderErrorAndWarning(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isWarning() || shipmentCartItemModel.isError()) {
-            // layoutWarningAndError.setVisibility(View.VISIBLE);
-            tickerWarningAndError.setVisibility(View.VISIBLE);
+            layoutWarningAndError.setVisibility(View.VISIBLE);
         } else {
-            // layoutWarningAndError.setVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.GONE);
+            layoutWarningAndError.setVisibility(View.GONE);
         }
         renderError(shipmentCartItemModel);
         renderWarnings(shipmentCartItemModel);
@@ -1278,15 +1282,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
             String errorDescription = shipmentCartItemModel.getErrorDescription();
             if (!TextUtils.isEmpty(errorDescription)) {
-                tickerWarningAndError.setTickerTitle(shipmentCartItemModel.getErrorTitle());
-                tickerWarningAndError.setTextDescription(errorDescription);
+                tickerError.setTickerTitle(shipmentCartItemModel.getErrorTitle());
+                tickerError.setTextDescription(errorDescription);
             } else {
-                tickerWarningAndError.setTextDescription(shipmentCartItemModel.getErrorTitle());
+                tickerError.setTextDescription(shipmentCartItemModel.getErrorTitle());
             }
-            tickerWarningAndError.setTickerType(Ticker.TYPE_ERROR);
-            tickerWarningAndError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerWarningAndError.setCloseButtonVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.VISIBLE);
+            tickerError.setTickerType(Ticker.TYPE_ERROR);
+            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerError.setCloseButtonVisibility(View.GONE);
+            tickerError.setVisibility(View.VISIBLE);
+            layoutError.setVisibility(View.VISIBLE);
 
             flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), R.drawable.fg_disabled_item));
             cbPPP.setEnabled(false);
@@ -1308,8 +1313,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             etShipperPhone.setFocusable(false);
             etShipperPhone.setFocusableInTouchMode(false);
         } else {
-            // layoutError.setVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.GONE);
+            layoutError.setVisibility(View.GONE);
+            tickerError.setVisibility(View.GONE);
 
             flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), R.drawable.fg_enabled_item));
             cbPPP.setEnabled(true);
@@ -1351,17 +1356,19 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (shipmentCartItemModel.isWarning()) {
             String warningDescription = shipmentCartItemModel.getWarningDescription();
             if (!TextUtils.isEmpty(warningDescription)) {
-                tickerWarningAndError.setTickerTitle(shipmentCartItemModel.getWarningTitle());
-                tickerWarningAndError.setTextDescription(warningDescription);
+                tickerWarning.setTickerTitle(shipmentCartItemModel.getWarningTitle());
+                tickerWarning.setTextDescription(warningDescription);
             } else {
-                tickerWarningAndError.setTextDescription(shipmentCartItemModel.getWarningTitle());
+                tickerWarning.setTextDescription(shipmentCartItemModel.getWarningTitle());
             }
-            tickerWarningAndError.setTickerType(Ticker.TYPE_WARNING);
-            tickerWarningAndError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerWarningAndError.setCloseButtonVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.VISIBLE);
+            tickerWarning.setTickerType(Ticker.TYPE_WARNING);
+            tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerWarning.setCloseButtonVisibility(View.GONE);
+            tickerWarning.setVisibility(View.VISIBLE);
+            layoutWarning.setVisibility(View.VISIBLE);
         } else {
-            tickerWarningAndError.setVisibility(View.GONE);
+            layoutWarning.setVisibility(View.GONE);
+            tickerWarning.setVisibility(View.GONE);
         }
     }
 
