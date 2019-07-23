@@ -1,4 +1,5 @@
 query rechargeCheckVoucher($data: RechargeInputVoucher!) {
+    status
     rechargeCheckVoucher(voucher: $data) {
         data {
           success
