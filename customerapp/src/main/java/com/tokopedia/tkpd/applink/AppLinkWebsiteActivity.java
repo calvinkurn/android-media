@@ -55,13 +55,9 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         return new Intent(context, AppLinkWebsiteActivity.class)
                 .putExtra(EXTRA_URL, url)
                 .putExtra(EXTRA_TITLEBAR, true)
-                .putExtra(EXTRA_NEED_LOGIN, false);
+                .putExtra(EXTRA_NEED_LOGIN, false)
+                .putExtra(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE, true);
 
-    }
-
-    public static Intent refreshIntent(Context context, boolean refreshPage) {
-        return new Intent(context, AppLinkWebsiteActivity.class)
-                .putExtra(EXTRA_REFRESH_FLAG, refreshPage);
     }
 
     public static Intent newInstance(Context context, String url, boolean showToolbar,

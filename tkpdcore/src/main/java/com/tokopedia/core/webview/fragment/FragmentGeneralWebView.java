@@ -131,6 +131,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             url = savedInstanceState.getString(EXTRA_URL);
             needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
+            allowOverride = savedInstanceState.getBoolean(EXTRA_OVERRIDE_URL, true);
         }
     }
 
@@ -629,6 +630,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         outState.putString(EXTRA_URL, url);
         outState.putBoolean(EXTRA_NEED_LOGIN, needLogin);
         outState.putBoolean(EXTRA_SHOW_TOOLBAR, showToolbar);
+        outState.putBoolean(EXTRA_OVERRIDE_URL, allowOverride);
+
     }
 
     @Override
@@ -638,6 +641,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             url = savedInstanceState.getString(EXTRA_URL);
             needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
+            allowOverride = savedInstanceState.getBoolean(EXTRA_OVERRIDE_URL, true);
+
         }
     }
 
