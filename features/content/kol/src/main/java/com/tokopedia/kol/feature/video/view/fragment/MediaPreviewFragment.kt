@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.video.view.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -12,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.UnifyButton
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -24,6 +27,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.KolComponent
 import com.tokopedia.kol.common.util.TimeConverter
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
@@ -53,6 +57,11 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                 is Fail -> onErrorGetDetail(it.throwable)
             }
         })
+
+        mediaPreviewViewModel.postFooterLive.observe(this, Observer {
+            val (footer, footerTemplate) = it ?: return@Observer
+            bindFooter(footer, footerTemplate)
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +84,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     override fun onDestroy() {
         mediaPreviewViewModel.postDetailLive.removeObservers(this)
+        mediaPreviewViewModel.postFooterLive.removeObservers(this)
         mediaPreviewViewModel.clear()
         super.onDestroy()
     }
@@ -86,7 +96,6 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             bindTags(it)
             bindMedia(it.contentList.mapNotNull { media -> convertToMediaItem(media) })
         }
-        bindFooter(data.footerModel, dynamicPost?.template?.cardpost?.footer)
     }
 
     private fun bindMedia(mediaItems: List<MediaItem>) {
@@ -131,9 +140,9 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun updateDirectionMedia(pos: Int, count: Int) {
-        action_prev.showWithCondition(pos > 0 && count > 1)
-        action_next.showWithCondition(pos < count-1 && count > 1)
+    private fun updateDirectionMedia(pos: Int, count: Int, forceToHide: Boolean = false) {
+        action_prev.showWithCondition(!forceToHide && pos > 0 && count > 1)
+        action_next.showWithCondition(!forceToHide && pos < count-1 && count > 1)
     }
 
     private fun convertToMediaItem(media: BasePostViewModel): MediaItem?{
@@ -222,12 +231,50 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             }
 
         }
+
+        groupLike.setOnClickListener {
+            if (mediaPreviewViewModel.isSessionActive) {
+                mediaPreviewViewModel.doLikePost(!footer.isLiked, this::onErrorLikePost)
+            } else {
+                activity?.let {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN)
+                }
+            }
+        }
+
         groupComment.shouldShowWithAction(template?.comment == true){
             label_comment.text = if (footer.totalComment > 0) footer.totalComment.toString()
                 else getString(R.string.kol_action_comment)
         }
 
+        groupComment.setOnClickListener {
+            activity?.let {
+                val (intent, reqCode) = if (mediaPreviewViewModel.isSessionActive)
+                    KolCommentActivity.getCallingIntent(it, mediaPreviewViewModel.postId.toInt(), 0) to REQ_CODE_COMMENT
+                else RouteManager.getIntent(it, ApplinkConst.LOGIN) to REQ_CODE_LOGIN
+
+                startActivityForResult(intent, reqCode)
+            }
+        }
+
         groupShare.showWithCondition(template?.share == true)
+        groupShare.setOnClickListener {
+            doShare(String.format("%s %s", footer.shareData.description, footer.shareData.url)
+                    , footer.shareData.title)
+        }
+    }
+
+    private fun doShare(body: String, title: String) {
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+        sharingIntent.type = "text/plain"
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
+        startActivity(
+                Intent.createChooser(sharingIntent, title)
+        )
+    }
+
+    private fun onErrorLikePost(t: Throwable) {
+
     }
 
     private fun onErrorGetDetail(throwable: Throwable) {
@@ -235,6 +282,9 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     }
 
     fun showDetail(visible: Boolean) {
+        media_pager.adapter?.let {
+            updateDirectionMedia(media_pager.currentItem, it.count, !visible)
+        }
         if (visible){
             overlay_tags.visible()
             overlay_toolbar.visible()
@@ -246,6 +296,8 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     companion object{
         const val ARG_POST_ID = "post_id"
+        private const val REQ_CODE_LOGIN = 0x01
+        private const val REQ_CODE_COMMENT = 0x02
 
         @JvmStatic
         fun createInstance(postId: String): Fragment = MediaPreviewFragment().apply {
