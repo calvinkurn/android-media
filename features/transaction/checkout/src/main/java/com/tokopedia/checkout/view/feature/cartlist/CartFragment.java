@@ -378,7 +378,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             @Override
             public int getSpanSize(int position) {
                 if (position < cartAdapter.getItemCount()) {
-                    if (cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.Companion.getLAYOUT()) {
+                    if (cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
                         return 1;
                     }
                 }
@@ -394,6 +394,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
         };
         cartRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
+
+        if (cartListData != null) {
+            onContentAvailabilityChanged(true);
+        }
     }
 
     private void setupToolbar(View view) {
