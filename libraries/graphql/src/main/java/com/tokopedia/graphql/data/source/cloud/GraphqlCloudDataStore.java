@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponseInternal;
 import com.tokopedia.graphql.data.source.GraphqlDataStore;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
     public Observable<GraphqlResponseInternal> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
         return mApi.getResponse(requests)
                 .doOnError(throwable -> {
-                    if (!(throwable instanceof UnknownHostException)) {
+                    if (!(throwable instanceof UnknownHostException) && !(throwable instanceof SocketTimeoutException)) {
                         Timber.e(throwable, requests.toString());
                     }
                 })

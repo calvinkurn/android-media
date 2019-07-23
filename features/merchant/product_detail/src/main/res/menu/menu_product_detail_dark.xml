@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/action_cart"
-        android:icon="@drawable/ic_product_cart_counter_dark"
+        app:actionLayout="@layout/menu_item_cart"
         android:orderInCategory="200"
         android:title="@string/label_cart"
         app:showAsAction="always" />

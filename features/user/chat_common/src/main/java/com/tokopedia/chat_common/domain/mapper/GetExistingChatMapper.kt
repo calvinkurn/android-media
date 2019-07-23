@@ -5,12 +5,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import javax.inject.Inject
@@ -105,10 +107,10 @@ open class GetExistingChatMapper @Inject constructor() {
             TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime)
             TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             TYPE_IMAGE_ANNOUNCEMENT -> convertToImageAnnouncement(chatItemPojoByDateByTime)
+            TYPE_INVOICE_SEND -> convertToInvoiceSent(chatItemPojoByDateByTime)
             else -> convertToFallBackModel(chatItemPojoByDateByTime)
         }
     }
-
 
     private fun convertToImageAnnouncement(item: Reply): Visitable<*> {
         val pojoAttribute = GsonBuilder().create().fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
@@ -197,6 +199,31 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojoAttribute.productProfile.priceBefore,
                 pojoAttribute.productProfile.shopId
         )
+    }
+
+    private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentViewModel {
+        val invoiceAttributes = pojo.attachment?.attributes
+        val invoiceSentPojo = GsonBuilder().create().fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
+        return AttachInvoiceSentViewModel(
+                pojo.msgId.toString(),
+                pojo.senderId.toString(),
+                pojo.senderName,
+                pojo.role,
+                pojo.attachment?.id.toString(),
+                pojo.attachment?.type.toString(),
+                pojo.replyTime,
+                invoiceSentPojo.invoiceLink.attributes.title,
+                invoiceSentPojo.invoiceLink.attributes.description,
+                invoiceSentPojo.invoiceLink.attributes.imageUrl,
+                invoiceSentPojo.invoiceLink.attributes.totalAmount,
+                !pojo.isOpposite,
+                pojo.isRead,
+                invoiceSentPojo.invoiceLink.attributes.statusId,
+                invoiceSentPojo.invoiceLink.attributes.status,
+                invoiceSentPojo.invoiceLink.attributes.code,
+                invoiceSentPojo.invoiceLink.attributes.hrefUrl
+        )
+
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
