@@ -187,14 +187,6 @@ public class ShopGroupData implements Parcelable {
         isOfficialStore = officialStore;
     }
 
-    public List<CartItemHolderData> getCartItemHolderDataList() {
-        return cartItemHolderDataList;
-    }
-
-    public void setCartItemHolderDataList(List<CartItemHolderData> cartItemHolderDataList) {
-        this.cartItemHolderDataList = cartItemHolderDataList;
-    }
-
     public String getErrorDescription() {
         return errorDescription;
     }

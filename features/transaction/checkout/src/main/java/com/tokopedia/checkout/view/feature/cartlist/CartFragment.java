@@ -1942,15 +1942,26 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (insuranceCartResponse != null &&
                 !insuranceCartResponse.getCartShopsList().isEmpty()) {
             for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
-                if (!insuranceCartShops.getShopItemsList().isEmpty()) {
-                    cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
-                }
-
                 for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                     for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
                         if (insuranceCartDigitalProduct.isProductLevel()) {
+                            List<CartShopHolderData> cartShopHolderDataList = cartAdapter.getAllCartShopHolderData();
+                            if (cartShopHolderDataList != null && !cartShopHolderDataList.isEmpty()) {
+                                for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
+                                    if (cartShopHolderData.getShopGroupData() != null) {
+                                        List<CartItemHolderData> cartItemHolderDataList = cartShopHolderData.getShopGroupData().getCartItemDataList();
+                                        if (cartItemHolderDataList != null && !cartItemHolderDataList.isEmpty()) {
+                                            for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
+                                                if (String.valueOf(insuranceCartShopItems.getProductId()).
+                                                        equalsIgnoreCase(cartItemHolderData.getCartItemData().getOriginData().getProductId())) {
 
-//                            cartAdapter.getAllCartShopHolderData();
+                                                    cartItemHolderData.getCartItemData().setMicroInsuranceData(insuranceCartDigitalProduct);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 
                         } else {
                             cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
