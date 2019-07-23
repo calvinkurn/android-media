@@ -105,7 +105,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void getMerchantCreditLineDetails() {
         GetMerchantCreditDetailsSubscriber getMerchantCreditDetailsSubscriber =
                 new GetMerchantCreditDetailsSubscriber(this);
-
         getMerchantCreditDetails.execute(getMerchantCreditDetailsSubscriber);
     }
 
@@ -233,6 +232,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         }
     }
 
+
     private void launchWithdrawActivity(Intent intent) {
         intent.putExtras(withdrawActivityBundle);
         getView().getActivity().startActivityForResult(intent, REQUEST_WITHDRAW_CODE);
@@ -285,4 +285,5 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void setSeller(boolean seller) {
         isSeller = seller;
     }
+
 }
