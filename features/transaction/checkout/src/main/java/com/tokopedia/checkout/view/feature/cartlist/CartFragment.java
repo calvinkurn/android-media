@@ -2048,25 +2048,18 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void renderRecommendation(@Nullable List<RecommendationItem> recommendationItems) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
-        if (this.recommendationList != null) {
-            if (recommendationList.size() != 0) {
-                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
-            } else {
-                if (recommendationItems != null) {
-                    for (RecommendationItem recommendationItem : recommendationItems) {
-                        CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                                new CartRecommendationItemHolderData(recommendationItem);
-                        cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
-                    }
-                }
+
+        if (recommendationItems != null) {
+            // Render from API
+            for (RecommendationItem recommendationItem : recommendationItems) {
+                CartRecommendationItemHolderData cartRecommendationItemHolderData =
+                        new CartRecommendationItemHolderData(recommendationItem);
+                cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
             }
         } else {
-            if (recommendationItems != null) {
-                for (RecommendationItem recommendationItem : recommendationItems) {
-                    CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                            new CartRecommendationItemHolderData(recommendationItem);
-                    cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
-                }
+            // Render from Cache
+            if (recommendationList != null && recommendationList.size() != 0) {
+                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
             }
         }
 
@@ -2078,8 +2071,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         hasLoadRecommendation = true;
-        cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
-        this.recommendationList = cartRecommendationItemHolderDataList;
+        if (cartRecommendationItemHolderDataList.size() > 0) {
+            cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
+            recommendationList = cartRecommendationItemHolderDataList;
+        }
     }
 
     @Override
