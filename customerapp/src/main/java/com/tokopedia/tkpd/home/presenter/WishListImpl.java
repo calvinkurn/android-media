@@ -151,6 +151,11 @@ public class WishListImpl implements WishList {
     }
 
     @Override
+    public void clearData() {
+        data.clear();
+    }
+
+    @Override
     public void loadMoreRecomendation(int page) {
         getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(
                 page,

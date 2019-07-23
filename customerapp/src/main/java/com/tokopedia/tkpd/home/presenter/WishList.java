@@ -94,4 +94,6 @@ public interface WishList {
     void getFirstRecomData();
 
     void loadMoreRecomendation(int page);
+
+    void clearData();
 }

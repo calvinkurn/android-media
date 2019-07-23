@@ -224,6 +224,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                wishList.clearData();
                 if (searchEditText.getQuery().length() > 0) {
                     wishList.refreshDataOnSearch(searchEditText.getQuery());
                 } else {
