@@ -82,7 +82,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 val trackingRepository = TrackingRepository(context)
                 val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
                 if (isSuccess && BuildConfig.DEBUG) {
-                    Log.e("Iris", "Success Send Single Event")
+                    Log.d("Iris", "Success Send Single Event")
                 }
             }
          }
