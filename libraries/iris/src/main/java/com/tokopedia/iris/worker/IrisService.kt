@@ -51,24 +51,7 @@ class IrisService : JobIntentService(), CoroutineScope {
     private fun startService(maxRow: Int) {
         launchCatchError {
             val trackingRepository = TrackingRepository(applicationContext)
-
-            val trackings: List<Tracking> = trackingRepository.getFromOldest(maxRow)
-
-            if (trackings.isNotEmpty()) {
-                val request: String = TrackingMapper().transformListEvent(trackings)
-
-                val service = ApiService(mContext).makeRetrofitService()
-                val requestBody = ApiService.parse(request)
-                service.sendMultiEvent(requestBody).enqueue(object : Callback<String> {
-                    override fun onFailure(call: Call<String>, t: Throwable) {}
-
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        if (response.isSuccessful && response.code() == 200) {
-                            trackingRepository.delete(trackings)
-                        }
-                    }
-                })
-            }
+            trackingRepository.sendRemainingEvent(maxRow)
         }
     }
 

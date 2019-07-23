@@ -24,7 +24,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
-    private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
     private var cache: Cache = Cache(context)
 
@@ -62,6 +61,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
             launchCatchError {
+                val trackingRepository = TrackingRepository(context)
                 // convert map to json then save as string
                 val event = JSONObject(map).toString()
                 val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
@@ -72,11 +72,11 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override fun sendEvent(map: Map<String, Any>) {
          if (cache.isEnabled()) {
-             launchCatchError {
-                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
-                        session)
+            launchCatchError {
+                val trackingRepository = TrackingRepository(context)
+                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
                 if (isSuccess && BuildConfig.DEBUG) {
-                    Log.e("Iris", "Success Send Single Event")
+                     Log.e("Iris", "Success Send Single Event")
                 }
             }
          }
