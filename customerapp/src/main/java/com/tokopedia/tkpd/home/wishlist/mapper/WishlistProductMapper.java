@@ -43,6 +43,7 @@ public class WishlistProductMapper implements Func2<GraphqlResponse, List<? exte
                 p.setPriceFormat(r.getPrice());
                 p.setWishlist(r.isWishlist());
                 d.setProduct(p);
+                d.setProductClickUrl(r.getClickUrl());
                 d.setProductWishlistUrl(r.getWishlistUrl());
                 data.add(d);
             }
