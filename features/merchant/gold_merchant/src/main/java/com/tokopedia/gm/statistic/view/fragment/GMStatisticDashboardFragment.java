@@ -45,6 +45,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_POWER_MERCHANT_IDLE_POPUP;
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_MARKET_INSIGHT;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_POWER_MERCHANT_SCORE_TIPS;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -272,7 +273,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                 getString(R.string.bottom_sheet_idle_desc),
                 featureName
         );
-        String buttonName = getString(R.string.bottom_sheet_idle_btn);
+        String buttonName = "Cara Tingkatkan Performa";
         showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName);
     }
 
@@ -329,6 +330,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onBottomSheetButtonClicked() {
-
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS);
     }
 }
