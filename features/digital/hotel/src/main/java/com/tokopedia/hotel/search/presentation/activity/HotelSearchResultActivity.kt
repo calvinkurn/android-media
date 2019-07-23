@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
@@ -15,9 +14,7 @@ import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 
 class HotelSearchResultActivity: HotelBaseActivity(), HasComponent<HotelSearchPropertyComponent> {
-    override fun shouldShowOptionMenu(): Boolean {
-        return true
-    }
+    override fun shouldShowOptionMenu(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +51,7 @@ class HotelSearchResultActivity: HotelBaseActivity(), HasComponent<HotelSearchPr
         fun createIntent(context: Context, destinationName: String = "", destinationID: Int = 0, type: String = "",
                          latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",
                          checkOut: String = "", totalRoom: Int = 1, totalAdult: Int = 0,
-                         totalChildren: Int = 0) =
+                         totalChildren: Int = 0): Intent =
                 Intent(context, HotelSearchResultActivity::class.java)
                         .putExtra(HotelSearchResultFragment.ARG_DESTINATION_NAME, destinationName)
                         .putExtra(HotelSearchResultFragment.ARG_DESTINATION_ID, destinationID)
