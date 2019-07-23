@@ -35,8 +35,9 @@
         android:id="@+id/tv_date_recent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
@@ -45,7 +46,6 @@
         android:textColor="#61000000"
         android:textSize="12sp"
         android:textStyle="normal"
-        android:layout_marginStart="@dimen/dp_10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/iv_profile"
@@ -64,6 +64,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_name"
         tools:text="29 Mar" />
+
+
+    <ImageView
+        android:id="@+id/iv_csast_status_good"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:background="@drawable/thumbsupdwnbg"
+        android:layout_marginRight="@dimen/dp_16"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/dp_4"
+        android:src="@drawable/thumbs_up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_name"
+        android:elevation="@dimen/dp_4"/>
+
+
+    <ImageView
+        android:id="@+id/iv_csast_status_bad"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:background="@drawable/thumbsupdwnbg"
+        android:layout_marginRight="@dimen/dp_40"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/dp_4"
+        app:layout_goneMarginRight="@dimen/dp_16"
+        android:src="@drawable/thumbs_down"
+        app:layout_constraintEnd_toEndOf="@id/iv_csast_status_good"
+        app:layout_constraintTop_toTopOf="@+id/tv_name"
+        android:elevation="@dimen/dp_4"
+        />
 
     <TextView
         android:id="@+id/tv_comment"
@@ -99,9 +131,9 @@ Customer Care" />
         android:id="@+id/rv_attached_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
         android:background="@color/blue_30"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -114,19 +146,19 @@ Customer Care" />
         android:id="@+id/tv_hint_attachment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:gravity="center"
-        android:visibility="gone"
+        android:layout_marginEnd="@dimen/dp_16"
         android:background="@drawable/rounded_yellow_bg_border"
-        tools:text="Catatan: Mohon lampirkan data yang diminta"
-        android:textSize="@dimen/sp_14"
+        android:gravity="center"
         android:paddingTop="@dimen/dp_12"
         android:paddingBottom="@dimen/dp_12"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_attached_image" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_attached_image"
+        tools:text="Catatan: Mohon lampirkan data yang diminta" />
 
     <View
         android:id="@+id/divider_bottom"

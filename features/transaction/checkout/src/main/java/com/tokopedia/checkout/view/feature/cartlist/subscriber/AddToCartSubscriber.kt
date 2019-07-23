@@ -1,12 +1,10 @@
 package com.tokopedia.checkout.view.feature.cartlist.subscriber
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel
-import com.tokopedia.checkout.domain.datamodel.addtocart.DataModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException
-import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse
 import rx.Subscriber
 
 /**
@@ -15,7 +13,7 @@ import rx.Subscriber
 
 class AddToCartSubscriber(val view: ICartListView?,
                           val presenter: ICartListPresenter,
-                          val productModel: Any) : Subscriber<AddToCartDataResponse>() {
+                          val productModel: Any) : Subscriber<AddToCartDataModel>() {
 
     override fun onCompleted() {
 
@@ -33,28 +31,20 @@ class AddToCartSubscriber(val view: ICartListView?,
         }
     }
 
-    override fun onNext(response: AddToCartDataResponse) {
+    override fun onNext(addToCartDataModel: AddToCartDataModel) {
         if (view != null) {
             view.hideProgressLoading()
-            if (response.success == 1) {
-                val dataModel = DataModel()
-                dataModel.cartId = response.data.cartId
-                dataModel.customerId = response.data.customerId
-                dataModel.notes = response.data.notes
-                dataModel.productId = response.data.productId
-                dataModel.shopId = response.data.shopId
-                dataModel.quantity = response.data.quantity
-
-                val addToCartDataModel = AddToCartDataResponseModel()
-                addToCartDataModel.success = response.success
-                addToCartDataModel.message = response.message
-                addToCartDataModel.data = dataModel
-
+            if (addToCartDataModel.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartDataModel.data.success == 1) {
                 view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
                 presenter.processInitialGetCartData("0", false, false)
-                view.showToastMessageGreen(response.message[0])
+                if (addToCartDataModel.data.message.size > 0) {
+                    view.showToastMessageGreen(addToCartDataModel.data.message[0])
+                    view.notifyBottomCartParent();
+                }
             } else {
-                view.showToastMessageRed(response.message[0])
+                if (addToCartDataModel.errorMessage.size > 0) {
+                    view.showToastMessageRed(addToCartDataModel.errorMessage[0])
+                }
             }
         }
     }
