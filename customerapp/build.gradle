@@ -245,7 +245,9 @@ android {
             exclude "lib/arm64-v8a/libgnustl_shared.so"
         }
         resConfigs "en", "id"
-
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
     }
 
 
