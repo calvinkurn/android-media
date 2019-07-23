@@ -48,8 +48,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:textColor="@color/black_n700_96"
-        android:textSize="14sp"
-        android:text="Sample Score" />
+        android:textSize="14sp" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/send_button"

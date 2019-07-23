@@ -1,5 +1,6 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
+import android.content.Context;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.AppCompatTextView;
@@ -8,6 +9,8 @@ import android.view.View;
 
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.R;
+import com.tokopedia.nps.presentation.view.activity.FeedbackActivity;
+import com.tokopedia.nps.presentation.view.activity.FeedbackThankPageActivity;
 
 public class AppFeedbackRatingBottomSheet extends BottomSheets {
 
@@ -17,7 +20,7 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
     private AppCompatTextView ratingLevel;
     private AppCompatButton sendButton;
 
-    private int ratingValue = 1;
+    private float ratingValue;
     private String[] ratingDetails;
 
     @Override
@@ -45,17 +48,19 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
 
         if (ratingBar != null && ratingLevel != null) {
             ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
-                ratingLevel.setText(ratingDetails[(int) rating]);
+                ratingValue = rating;
+                int ratingIndex = ((int) rating) - 1;
+
+                ratingLevel.setText(ratingDetails[ratingIndex]);
             });
         }
 
         if (sendButton != null) {
             sendButton.setOnClickListener(v -> {
-                Log.d(">>>>>", "@@");
-                if (ratingValue < GOOD_RATING_THRESHOLD) {
-                    Log.d("Bad Rating", "");
+                if ((int) ratingValue < GOOD_RATING_THRESHOLD) {
+                    FeedbackActivity.start(getContext(), ratingValue);
                 } else {
-                    Log.d("Good Rating", "");
+                    FeedbackThankPageActivity.startActivity(getContext(), ratingValue);
                 }
             });
         }
