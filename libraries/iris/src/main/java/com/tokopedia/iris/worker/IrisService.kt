@@ -3,20 +3,15 @@ package com.tokopedia.iris.worker
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.JobIntentService
+import android.util.Log
 import com.tokopedia.iris.DEFAULT_MAX_ROW
 import com.tokopedia.iris.JOB_IRIS_ID
 import com.tokopedia.iris.MAX_ROW
 import com.tokopedia.iris.data.TrackingRepository
-import com.tokopedia.iris.data.db.mapper.TrackingMapper
-import com.tokopedia.iris.data.db.table.Tracking
-import com.tokopedia.iris.data.network.ApiService
-import com.tokopedia.iris.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -45,19 +40,24 @@ class IrisService : JobIntentService(), CoroutineScope {
         try {
             val maxRow = intent.getIntExtra(MAX_ROW, DEFAULT_MAX_ROW)
             startService(maxRow)
-        } catch (e: java.lang.Exception) {}
+        } catch (e: java.lang.Exception) {
+        }
     }
 
     private fun startService(maxRow: Int) {
-        launchCatchError {
-            val trackingRepository = TrackingRepository(applicationContext)
-            trackingRepository.sendRemainingEvent(maxRow)
+        runBlocking(coroutineContext) {
+            try {
+                val trackingRepository = TrackingRepository(applicationContext)
+                trackingRepository.sendRemainingEvent(maxRow)
+            } catch (e: Exception) {
+                Log.d("IRIS startService", e.message)
+            }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if(!job.isCancelled) {
+        if (!job.isCancelled) {
             job.children.forEach {
                 it.cancel()
             }
