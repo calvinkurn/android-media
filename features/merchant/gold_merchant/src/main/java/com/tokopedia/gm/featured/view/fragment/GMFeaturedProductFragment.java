@@ -103,6 +103,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
     private List<Pair<Integer, GMFeaturedProductModel>> gmTemporaryDelete;
     private UserSession userSession;
+    private final String FEATURE_FEATURED_PRODUCT = "Produk Unggulan";
 
     public static GMFeaturedProductFragment createInstance() {
         return new GMFeaturedProductFragment();
@@ -132,7 +133,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                         if (!isPowerMerchant()) {
                             RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
                         } else if (isIdlePowerMerchant()) {
-                            showIdlePowerMerchantBottomSheet("Produk Unggulan");
+                            showIdlePowerMerchantBottomSheet(FEATURE_FEATURED_PRODUCT);
                         }
                     }
 
