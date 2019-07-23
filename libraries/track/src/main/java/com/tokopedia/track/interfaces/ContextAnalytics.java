@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import org.json.JSONObject;
@@ -90,4 +91,9 @@ public abstract class ContextAnalytics implements Analytics {
     public void sendGTMGeneralEvent(String event, String category, String action, String label,
                                     String shopId, String shopType, String userId,
                                     @Nullable Map<String, Object> customDimension) { }
+
+    public void pushGeneralGTMV5(String event, String category, String action, String label){}
+    public void pushGeneralGTMV5(Map<String, Object> params){}
+    public void pushClickEECommerce(Bundle bundle){}
+    public void pushEECommerce(String param, Bundle bundle){}
 }
