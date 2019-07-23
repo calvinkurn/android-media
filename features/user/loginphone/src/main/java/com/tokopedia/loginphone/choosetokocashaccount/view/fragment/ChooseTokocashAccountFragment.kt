@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Spanned
+import android.text.format.DateFormat
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -50,6 +51,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.collections.HashMap
 
 /**
  * @author by nisie on 12/4/17.
@@ -229,6 +231,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
                 //Login Event
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
+                loginEventAppsFlyer(userSessionInterface.userId, userSessionInterface.email)
             }
 
             if (::mIris.isInitialized) {
@@ -238,6 +241,16 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun loginEventAppsFlyer(userId:String, userEmail:String){
+        var dataMap = HashMap<String, Any>()
+        dataMap.put("user_id", userId)
+        dataMap.put("user_email", userEmail)
+        val date = Date()
+        val stringDate = DateFormat.format("EEEE, MMMM d, yyyy ", date.time)
+        dataMap.put("timestamp", stringDate)
+        TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
     override fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {
@@ -332,6 +345,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
                         userDetail,
                         viewModel.phoneNumber)
             } else {
+                dismissLoadingProgress()
                 adapter.setList(accountList.accountListPojo.userDetails)
                 message.text = promptText
             }

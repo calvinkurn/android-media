@@ -5,17 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
@@ -30,15 +25,9 @@ public class CategoryDetailActivity extends DealsBaseActivity {
     private String categoryName;
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_CATEGORY})
-    public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
+    public static Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
         String deepLink = extras.getString(DeepLink.URI);
-        Intent destination;
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-
-        Intent homeIntent = ((DealsModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(new Intent(context, DealsHomeActivity.class));
+        Intent destination = new Intent();
 
         Location location = Utils.getSingletonInstance().getLocation(context);
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
@@ -46,13 +35,13 @@ public class CategoryDetailActivity extends DealsBaseActivity {
         CategoriesModel categoriesModel = new CategoriesModel();
         categoriesModel.setCategoryId(Integer.parseInt(extras.getString("category_id")));
         categoriesModel.setTitle(extras.getString("name"));
-        String categoryUrl = searchName + "?"+ Utils.QUERY_PARAM_CITY_ID + "=" + location.getId();
+        String categoryUrl = searchName + "?" + Utils.QUERY_PARAM_CITY_ID + "=" + location.getId();
         categoriesModel.setCategoryUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_CATEGORY + categoryUrl);
 
         if (TextUtils.isEmpty(categoriesModel.getTitle())) {
             if (!TextUtils.isEmpty(searchName)) {
                 if (searchName.length() > 1)
-                    searchName = searchName.substring(0,1).toUpperCase() + searchName.substring(1);
+                    searchName = searchName.substring(0, 1).toUpperCase() + searchName.substring(1);
                 else
                     searchName = searchName.toUpperCase();
                 categoriesModel.setTitle(searchName);
@@ -64,8 +53,7 @@ public class CategoryDetailActivity extends DealsBaseActivity {
                 .setData(uri.build())
                 .putExtras(extras);
 
-        taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
+        return destination;
     }
 
     @Override

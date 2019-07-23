@@ -33,7 +33,7 @@
     <string name="promote_topads">Iklan TopAds</string>
     <string name="no_stock">Stok Kosong</string>
     <string name="action_preorder">PREORDER</string>
-    <string name="product_from">Produk dari</string>
+    <string name="product_from">Produk</string>
     <string name="from_official_store_label">Official Store</string>
     <string name="from_power_badge_label">Power Merchant</string>
 
@@ -116,4 +116,15 @@
     <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
     <string name="label_prescription">Obat Keras</string>
+
+    <string name="value_proposition_learn_more">Pelajari Selengkapnya</string>
+    <string name="value_proposition_title_guarantee">Garansi Harga Termurah</string>
+    <string name="value_proposition_title_guarantee_7_days">Garansi 7 Hari</string>
+    <string name="value_proposition_desc_guarantee_7_days">Barang rusak, hilang saat pengiriman, atau tidak sesuai deskripsi? Laporkan segera dan kami akan kembalikan uangmu.</string>
+    <string name="value_proposition_desc_guarantee">Dapatkan harga termurah di Official Store Tokopedia. Kami akan ganti 2x selisih harga jika kamu menemukan yang lebih murah di Official Store platform lain.</string>
+    <string name="value_proposition_title_ready">Pasti ready</string>
+    <string name="value_proposition_desc_ready">Stok barang di Official Store dijamin tersedia. Transaksi dibatalkan penjual? Kami akan beri kamu cashback sebagai kompensasi.</string>
+    <string name="value_proposition_title_original">Pasti ori</string>
+    <string name="value_proposition_desc_original">Semua barang di Official Store Tokopedia dijamin asli. Kalau terbukti palsu, uangmu akan dikembalikan 2x lipat.</string>
+
 </resources>

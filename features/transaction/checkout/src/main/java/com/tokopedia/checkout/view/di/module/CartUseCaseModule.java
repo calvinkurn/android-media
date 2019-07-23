@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.checkout.domain.usecase.AddToCartOneClickShipmentUseCase;
-import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
@@ -39,16 +37,6 @@ import dagger.Provides;
  */
 @Module(includes = {PromoCheckoutModule.class})
 public class CartUseCaseModule {
-
-    @Provides
-    AddToCartUseCase addToCartUseCase(ICartRepository cartRepository, Gson gson) {
-        return new AddToCartUseCase(cartRepository, gson);
-    }
-
-    @Provides
-    AddToCartOneClickShipmentUseCase addToCartOneClickShipmentUseCase(ICartRepository cartRepository, Gson gson) {
-        return new AddToCartOneClickShipmentUseCase(cartRepository, gson);
-    }
 
     @Provides
     CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase(ICartRepository cartRepository,

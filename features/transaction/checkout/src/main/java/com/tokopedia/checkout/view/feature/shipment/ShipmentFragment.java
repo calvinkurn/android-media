@@ -68,8 +68,8 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.logisticanalytics.CodAnalytics;
-import com.tokopedia.logisticcommon.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
@@ -731,11 +731,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
         }
-    }
-
-    @Override
-    public void sendAnalyticsChoosePaymentMethodSuccess() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickPilihMetodePembayaranSuccess();
     }
 
     @Override
@@ -2170,6 +2165,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (message.contains(getString(R.string.corner_error_stub)))
             mTrackerCorner.sendViewCornerError();
         if (getActivity() != null) {
+            checkoutAnalyticsCourierSelection.eventViewCourierImpressionErrorCourierNoAvailable();
+
             Tooltip tooltip = new Tooltip(getActivity());
             tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
             tooltip.setDesc(message);

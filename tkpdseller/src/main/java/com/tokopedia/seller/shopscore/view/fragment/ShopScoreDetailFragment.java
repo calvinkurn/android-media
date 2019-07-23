@@ -170,7 +170,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
             case NOT_GOLD_MERCHANT_QUALIFIED_BADGE:
             case NOT_GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
                 icon = GMConstant.getGMRegularBadgeDrawable(getContext());
-                buttonGoToGmSubscribe.setVisibility(View.VISIBLE);
+                buttonGoToGmSubscribe.setVisibility(View.GONE);
                 break;
             default:
                 icon = GMConstant.getGMRegularBadgeDrawable(getContext());

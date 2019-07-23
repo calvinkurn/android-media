@@ -24,7 +24,7 @@ project.ext {
 }
 
 dependencies {
-
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.transactioncommon)
@@ -33,6 +33,7 @@ dependencies {
     implementation project(rootProject.ext.features.sessioncommon)
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.logisticdata)
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.fingerprint)

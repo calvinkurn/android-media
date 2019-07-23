@@ -63,7 +63,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     @Inject
     CategoryPresenter categoryPresenter;
-
+    CategorySectionPagerAdapter categorySectionPagerAdapter;
     private CategoryComponent categoryComponent;
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
@@ -114,6 +114,14 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        categoryPresenter.setDiscoveryView(this);
+        loadInitialData();
+        categorySectionPagerAdapter.clear();
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_CATEGORY);
@@ -123,6 +131,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         categoryPresenter.setDiscoveryView(this);
         categoryName = "";
         loadInitialData();
+        categorySectionPagerAdapter = new CategorySectionPagerAdapter(getSupportFragmentManager());
     }
 
     @Override
@@ -226,7 +235,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             tabLayout.setVisibility(View.GONE);
 
         }
-        CategorySectionPagerAdapter categorySectionPagerAdapter = new CategorySectionPagerAdapter(getSupportFragmentManager());
+        categorySectionPagerAdapter = new CategorySectionPagerAdapter(getSupportFragmentManager());
         categorySectionPagerAdapter.setData(categorySectionItems);
         viewPager.setAdapter(categorySectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);

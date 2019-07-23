@@ -21,7 +21,7 @@
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_8"
-            android:src="@drawable/ic_product_home_geolocation_colorful_77"
+            app:srcCompat="@drawable/ic_product_home_geolocation_colorful_77"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -53,7 +53,7 @@
             android:layout_height="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_5"
-            android:src="@drawable/ic_product_action_close_grayscale_24"
+            app:srcCompat="@drawable/ic_product_action_close_grayscale_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>

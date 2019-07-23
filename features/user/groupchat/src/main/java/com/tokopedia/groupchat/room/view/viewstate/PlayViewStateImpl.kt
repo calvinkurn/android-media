@@ -66,6 +66,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -348,19 +349,20 @@ open class PlayViewStateImpl(
                         }
                     })
 
+            val hideStickyComponent = Action1<Long> {
+                stickyComponent.animate().setDuration(200)
+                        .alpha(0f)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator) {
+                                stickyComponent.hide()
+                                stickyComponentViewModel = null
+                            }
+                        })
+            }
             if (item.stickyTime != 0) {
                 Observable.timer(item.stickyTime.toLong(), TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            stickyComponent.animate().setDuration(200)
-                                    .alpha(0f)
-                                    .setListener(object : AnimatorListenerAdapter() {
-                                        override fun onAnimationEnd(animation: Animator) {
-                                            stickyComponent.hide()
-                                            stickyComponentViewModel = null
-                                        }
-                                    })
-                        }
+                        .subscribe(hideStickyComponent, Action1{ it.printStackTrace()})
             }
         }
     }
@@ -397,9 +399,10 @@ open class PlayViewStateImpl(
     private fun scrollToBottom() {
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    chatRecyclerView.scrollToPosition(0)
-                }
+                .subscribe (
+                        {chatRecyclerView.scrollToPosition(0)},
+                        { it.printStackTrace() }
+                )
     }
 
     private fun attemptResetNewMessageCounter() {
@@ -417,6 +420,10 @@ open class PlayViewStateImpl(
     override fun onSuccessGetInfo(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
         loadingView.hide()
 
+        var needCueVideo = viewModel?.videoId != it.videoId
+        viewModel = it
+        viewModel?.infoUrl = it.infoUrl
+
         if (it.isFreeze) {
             onChannelFrozen(it.channelId)
             listener.onToolbarEnabled(false)
@@ -425,7 +432,7 @@ open class PlayViewStateImpl(
 
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
         setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
-        initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
+        initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive, needCueVideo)
         setBottomView()
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {
@@ -436,8 +443,6 @@ open class PlayViewStateImpl(
         setPinnedMessage(it)
         onBackgroundUpdated(it.backgroundViewModel)
 
-        viewModel = it
-        viewModel?.infoUrl = it.infoUrl
         autoAddSprintSale()
     }
 
@@ -518,11 +523,12 @@ open class PlayViewStateImpl(
 
     override fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager) {
         viewModel?.let { viewModel ->
+            var needCueVideo = viewModel?.videoId != it.videoId
             viewModel.videoId = it.videoId
             viewModel.adsId?.let {
                 setSponsorData(it, viewModel.adsImageUrl, viewModel.adsName)
             }
-            initVideoFragment(childFragmentManager, it.videoId, it.videoLive)
+            initVideoFragment(childFragmentManager, it.videoId, it.videoLive, needCueVideo)
         }
     }
 
@@ -844,7 +850,7 @@ open class PlayViewStateImpl(
         }
     }
 
-    fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
+    fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean, needCueVideo: Boolean) {
         videoContainer.hide()
         liveIndicator.hide()
         hideVideoToggle.hide()
@@ -859,7 +865,7 @@ open class PlayViewStateImpl(
                 setChatListHasSpaceOnTop(false)
                 liveIndicator.showWithCondition(isVideoLive)
                 youTubePlayer?.let {
-                    if (videoId != viewModel?.videoId) {
+                    if (needCueVideo) {
                         it.cueVideo(videoId)
                     }
                     autoPlayVideo()
@@ -1377,7 +1383,7 @@ open class PlayViewStateImpl(
 
             Observable.timer(3, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
+                    .subscribe( {
                         if (adapter.list.size == 0
                                 || adapter.getItemAt(0) != null
                                 && adapter.getItemAt(0) !is SprintSaleAnnouncementViewModel) {
@@ -1385,7 +1391,7 @@ open class PlayViewStateImpl(
                             adapter.notifyItemInserted(0)
                             listener.vibratePhone()
                         }
-                    }
+                    }, {it.printStackTrace()})
         }
     }
 

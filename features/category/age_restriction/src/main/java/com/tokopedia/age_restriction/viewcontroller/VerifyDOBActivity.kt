@@ -47,7 +47,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
         iv_arrow_down.setOnClickListener(clickListenerCalender)
 
         tv_update_dob.setOnClickListener {
-            val simpleDateFormat = SimpleDateFormat.getDateInstance()
+            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
             if (selectedDate != null) {
                 val calendar = Calendar.getInstance()
                 calendar.time = selectedDate
@@ -63,7 +63,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             sendGeneralEvent(eventClick,
                     event,
                     "click - adult pop up - simpan",
-                    "tanggal lahir page - " + simpleDateFormat.format(selectedDate) + " - $event/$destinationUrlGtm")
+                    "tanggal lahir page - " + simpleDateFormat.format(selectedDate) + " - $destinationUrlGtm - $event/$destinationUrlGtm")
         }
     }
 
@@ -140,7 +140,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
                     .build()
             travelCalenderSheet?.setListener(object : TravelCalendarBottomSheet.ActionListener {
                 override fun onClickDate(dateSelected: Date) {
-                    ed_edit_dob.text = SimpleDateFormat("dd MMMM YYYY", Locale("in", "ID")).format(dateSelected)
+                    ed_edit_dob.text = SimpleDateFormat("dd MMMM yyyy", Locale("in", "ID")).format(dateSelected)
                     selectedDate = dateSelected
                     hideProgressBar()
                     ed_edit_dob.isClickable = true
