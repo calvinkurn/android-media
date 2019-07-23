@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -86,6 +87,18 @@ class MerchantCommonBottomSheet : BottomSheets() {
     override fun setupDialog(dialog: Dialog?, style: Int) {
         super.setupDialog(dialog, style)
         updateHeight()
+    }
+
+    override fun configView(parentView: View?) {
+        super.configView(parentView)
+
+        val displayMetrics = DisplayMetrics()
+        activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val widthSpec = View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.EXACTLY)
+        parentView?.post {
+            parentView.measure(widthSpec, 0)
+            updateHeight(parentView.measuredHeight)
+        }
     }
 
     data class BottomSheetModel(
