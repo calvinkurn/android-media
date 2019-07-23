@@ -397,7 +397,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private boolean isIdlePowerMerchant() {
-        return !userSession.isPowerMerchantIdle();
+        return userSession.isPowerMerchantIdle();
     }
 
     private void addTickerIdlePowerMerchant() {
