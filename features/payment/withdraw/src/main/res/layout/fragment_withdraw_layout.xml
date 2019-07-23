@@ -288,12 +288,36 @@
                     android:padding="@dimen/dp_16"
                     android:visibility="gone">
 
-                    <ImageView
-                        android:id="@+id/info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/transparent"
-                        app:srcCompat="@drawable/ic_info_black" />
+            <ImageView
+                android:id="@+id/ivButtonLeft"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_8"
+                android:src="@drawable/ic_icon_lock"
+                android:visibility="gone"
+                android:tint="#abadb1"
+              />
+
+            <TextView
+                android:id="@+id/withdraw_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/sp_11"
+                android:text="@string/title_action_withdraw"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/ll_warning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_16">
 
                     <TextView
                         android:layout_width="wrap_content"

@@ -386,7 +386,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     protected void initialVar() {
         saldoDetailsPresenter.setSeller(isSellerEnabled);
-
+        saldoDetailsPresenter.getMCLLateCount();
         totalBalanceTitle.setText(getResources().getString(R.string.total_saldo_text));
         totalBalanceInfo.setVisibility(View.GONE);
         buyerSaldoBalanceRL.setVisibility(View.VISIBLE);
@@ -623,21 +623,50 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         }
     }
 
+
     @Override
     public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
         if (response != null && response.isEligible()) {
-            merchantStatusLL.setVisibility(View.VISIBLE);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
-            getChildFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
-                    .commit();
+            statusWithDrawLock = response.getStatus();
+            switch (statusWithDrawLock) {
+
+                case MCL_STATUS_ZERO:
+                    hideMerchantCreditLineFragment();
+                    break;
+
+                case MCL_STATUS_BLOCK1:
+                    showTicker();
+                    showMerchantCreditLineWidget(response);
+                    break;
+
+                case MCL_STATUS_BLOCK2:
+                    showTicker();
+                    showMerchantCreditLineWidget(response);
+                    break;
+
+                case MCL_STATUS_BLOCK3:
+                    hideMerchantCreditLineFragment();
+                    break;
+
+                default:
+                    showMerchantCreditLineWidget(response);
+            }
         } else {
             hideMerchantCreditLineFragment();
         }
 
     }
+
+    public void showMerchantCreditLineWidget(GqlMerchantCreditResponse response) {
+        merchantStatusLL.setVisibility(View.VISIBLE);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
+                .commit();
+    }
+
 
     @Override
     public void hideWarning() {

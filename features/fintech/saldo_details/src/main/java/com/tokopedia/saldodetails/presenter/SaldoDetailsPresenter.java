@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -11,6 +12,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.deposit.listener.MerchantFinancialStatusActionListener;
+import com.tokopedia.saldodetails.response.lateCountModel.Response;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
@@ -77,6 +79,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             getMerchantSaldoDetails.unsubscribe();
             getMerchantCreditDetails.unsubscribe();
             getMerchantFinancialStatus.unsubscribe();
+            getMCLLateCountUseCase.unsubscribe();
         } catch (NullPointerException e) {
 
         }
