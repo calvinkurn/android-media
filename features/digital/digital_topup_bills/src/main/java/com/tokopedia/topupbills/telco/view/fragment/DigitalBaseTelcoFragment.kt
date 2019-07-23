@@ -11,7 +11,6 @@ import android.support.design.widget.Snackbar
 import android.support.v4.widget.NestedScrollView
 import android.text.TextUtils
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -31,7 +30,6 @@ import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
-import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
 import com.tokopedia.unifycomponents.Toaster
@@ -245,16 +243,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     }
 
     fun handleFocusClientNumber() {
-        mainContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS)
-        mainContainer.setFillViewport(true)
-        mainContainer.setFocusable(true)
-        mainContainer.setFocusableInTouchMode(true)
         mainContainer.setOnTouchListener { view1, motionEvent ->
-            if (view1 is DigitalClientNumberWidget) {
-                view1.requestFocusFromTouch()
-            } else {
-                view1.clearFocus()
-            }
+            view1.clearFocus()
             false
         }
     }
