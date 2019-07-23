@@ -88,7 +88,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         SimpleItemTouchHelperCallback.isEnabled,
         BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel>,
         TickerReadMoreFeaturedViewHolder.TickerReadMoreListener,
-        MerchantCommonBottomSheet.BottomSheetListener{
+        MerchantCommonBottomSheet.BottomSheetListener {
 
     private static final int REQUEST_CODE = 12314;
     private static final int MAX_ITEM = 5;
@@ -168,14 +168,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private void showIdlePowerMerchantBottomSheet(String featureName) {
-        String title = String.format(
-                getString(R.string.bottom_sheet_idle_title),
-                featureName
-        );
-        String description = String.format(
-                getString(R.string.bottom_sheet_idle_desc),
-                featureName
-        );
+        String title = getString(R.string.bottom_sheet_idle_title, featureName);
+        String description = getString(R.string.bottom_sheet_idle_desc, featureName);
         String buttonName = getString(R.string.bottom_sheet_idle_btn);
         showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName);
     }

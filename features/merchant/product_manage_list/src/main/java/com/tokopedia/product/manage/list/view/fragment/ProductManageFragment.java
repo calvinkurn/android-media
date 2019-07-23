@@ -564,27 +564,15 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showRegularMerchantBottomSheet(String featureName) {
-        String title = String.format(
-                getString(R.string.bottom_sheet_regular_title),
-                featureName
-        );
-        String description = String.format(
-                getString(R.string.bottom_sheet_regular_desc),
-                featureName
-        );
+        String title = getString(R.string.bottom_sheet_regular_title, featureName);
+        String description = getString(R.string.bottom_sheet_regular_desc, featureName);
         String buttonName = getString(R.string.bottom_sheet_regular_btn);
         showBottomSheet(title, IMG_URL_REGULAR_MERCHANT_POPUP, description, buttonName);
     }
 
     private void showIdlePowerMerchantBottomSheet(String featureName) {
-        String title = String.format(
-                getString(R.string.bottom_sheet_idle_title),
-                featureName
-        );
-        String description = String.format(
-                getString(R.string.bottom_sheet_idle_desc),
-                featureName
-        );
+        String title = getString(R.string.bottom_sheet_idle_title, featureName);
+        String description = getString(R.string.bottom_sheet_idle_desc, featureName);
         String buttonName = getString(R.string.bottom_sheet_idle_btn);
         showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName);
     }

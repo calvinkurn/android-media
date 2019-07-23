@@ -54,8 +54,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         implements GMStatisticDashboardView,
         GMStatisticTransactionViewHolder.Listener,
         GMStatisticMarketInsightViewHolder.Listener,
-        MerchantCommonBottomSheet.BottomSheetListener
-{
+        MerchantCommonBottomSheet.BottomSheetListener {
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
@@ -70,7 +69,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private GMStatisticMarketInsightViewHolder GMStatisticMarketInsightViewHolder;
     private UserSession userSession;
     public final String FEATURE_MARKET_INSIGHT = "Wawasan Pasar";
-
 
 
     private SnackbarRetry snackbarRetry;
@@ -136,7 +134,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         loadDataByDate();
     }
 
-    private void loadDataByDate(){
+    private void loadDataByDate() {
         resetToLoading();
         gmDashboardPresenter.fetchData(getStartDate(), getEndDate());
     }
@@ -240,9 +238,9 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onButtonRedirectToClicked() {
-        if(isIdlePowerMerchant())
+        if (isIdlePowerMerchant())
             showIdlePowerMerchantBottomSheet(FEATURE_MARKET_INSIGHT);
-        else if(!isPowerMerchant())
+        else if (!isPowerMerchant())
             startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(getActivity()));
 
     }
@@ -264,14 +262,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     private void showIdlePowerMerchantBottomSheet(String featureName) {
-        String title = String.format(
-                getString(R.string.bottom_sheet_idle_title),
-                featureName
-        );
-        String description = String.format(
-                getString(R.string.bottom_sheet_idle_desc),
-                featureName
-        );
+        String title = getString(R.string.bottom_sheet_idle_title, featureName);
+
+        String description = getString(R.string.bottom_sheet_idle_desc, featureName);
+
         String buttonName = getString(R.string.gm_statistic_improve_performance);
         showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName);
     }
@@ -308,7 +302,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                     snackbarRetry.showRetrySnackbar();
                 }
             }
-        },700);
+        }, 700);
     }
 
     @Override

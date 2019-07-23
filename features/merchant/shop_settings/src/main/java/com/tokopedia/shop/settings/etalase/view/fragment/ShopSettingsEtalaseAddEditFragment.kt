@@ -145,32 +145,20 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     }
 
     private fun showIdlePowerMerchantBottomSheet(featureName: String) {
-        val title = String.format(
-                getString(R.string.bottom_sheet_idle_title),
-                featureName
-        )
-        val description = String.format(
-                getString(R.string.bottom_sheet_idle_desc),
-                featureName
-        )
+        val title = getString(R.string.bottom_sheet_idle_title, featureName)
+        val description = getString(R.string.bottom_sheet_idle_desc, featureName)
         val buttonName = getString(R.string.bottom_sheet_idle_btn)
         showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName)
     }
 
     private fun showRegularMerchantBottomSheet(featureName: String) {
-        val title = String.format(
-                getString(R.string.bottom_sheet_regular_title),
-                featureName
-        )
-        val description = String.format(
-                getString(R.string.bottom_sheet_regular_desc),
-                featureName
-        )
+        val title = getString(R.string.bottom_sheet_regular_title, featureName)
+        val description = getString(R.string.bottom_sheet_regular_desc, featureName)
         val buttonName = getString(R.string.bottom_sheet_regular_btn)
         showBottomSheet(title, IMG_URL_REGULAR_MERCHANT_POPUP, description, buttonName)
     }
 
-    private fun showBottomSheet(title: String, imageUrl : String, description: String, buttonName: String) {
+    private fun showBottomSheet(title: String, imageUrl: String, description: String, buttonName: String) {
         val model = MerchantCommonBottomSheet.BottomSheetModel(
                 title,
                 description,
