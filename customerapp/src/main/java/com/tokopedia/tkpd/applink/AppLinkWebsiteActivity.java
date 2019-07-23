@@ -106,8 +106,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
             webUrl = WEB_URL;
         }
 
-        Log.d("NISNIS", "getInstanceIntentAppLink "+ allowOverride);
-
         return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin, allowOverride);
     }
 
@@ -142,8 +140,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        Log.d("NISNIS", "setupBundlePass "+ extras.toString());
-
         url = extras.getString(EXTRA_URL);
 
         try {
