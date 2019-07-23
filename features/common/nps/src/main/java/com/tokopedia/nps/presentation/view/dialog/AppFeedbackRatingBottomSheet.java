@@ -57,11 +57,11 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
 
         if (sendButton != null) {
             sendButton.setOnClickListener(v -> {
-                if ((int) ratingValue < GOOD_RATING_THRESHOLD) {
-                    FeedbackActivity.start(getContext(), ratingValue);
-                } else {
-                    FeedbackThankPageActivity.startActivity(getContext(), ratingValue);
-                }
+//                if ((int) ratingValue < GOOD_RATING_THRESHOLD) {
+//                    FeedbackActivity.start(getContext(), ratingValue);
+//                } else {
+//                    FeedbackThankPageActivity.startActivity(getContext(), ratingValue);
+//                }
 
                 super.dismiss();
                 new AppFeedbackMessageBottomSheet();
