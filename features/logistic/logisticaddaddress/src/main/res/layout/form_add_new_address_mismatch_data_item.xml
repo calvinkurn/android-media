@@ -147,8 +147,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_16"
-            android:textColor="@color/label_grey"
-            android:text="@string/detail_alamat"/>
+            android:textColor="@color/label_grey"/>
 
     </LinearLayout>
 

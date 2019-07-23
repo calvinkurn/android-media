@@ -797,21 +797,31 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun setSaveAddressModel() {
-        var detailAddress = ""
+        var address1 = ""
+        val detailAddress: String
         if (!isMismatch && !isMismatchSolved) {
             detailAddress = et_detail_address.text.toString()
 
-            saveAddressDataModel?.address1 = "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress} [Tokopedia Note: ${detailAddress}]"
+            address1 = "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress}"
+            if (detailAddress.isNotEmpty()) address1 += " [Tokopedia Note: ${detailAddress}]"
+
+            saveAddressDataModel?.address1 = address1
             saveAddressDataModel?.address2 = "$currentLat,$currentLong"
 
         } else {
+            val etAlamat = et_alamat_mismatch.text.toString()
+            if (etAlamat.isNotEmpty()) address1 = "$etAlamat, "
             detailAddress = tv_detail_alamat_mismatch.text.toString()
             if (isMismatch) {
-                saveAddressDataModel?.address1 = "${saveAddressDataModel?.selectedDistrict} [Tokopedia Note: ${detailAddress}]"
+                address1 += "${saveAddressDataModel?.selectedDistrict}"
+                if (detailAddress.isNotEmpty()) address1 += " [Tokopedia Note: ${detailAddress}]"
+                saveAddressDataModel?.address1 = address1
                 saveAddressDataModel?.address2 = ""
 
             } else {
-                saveAddressDataModel?.address1 = "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress} [Tokopedia Note: ${detailAddress}]"
+                address1 += "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress}"
+                if (detailAddress.isNotEmpty()) address1 += " [Tokopedia Note: ${detailAddress}]"
+                saveAddressDataModel?.address1 = address1
                 saveAddressDataModel?.address2 = "$currentLat,$currentLong"
             }
         }
