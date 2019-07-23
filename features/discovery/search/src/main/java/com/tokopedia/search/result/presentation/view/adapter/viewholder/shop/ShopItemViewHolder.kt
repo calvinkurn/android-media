@@ -135,7 +135,7 @@ class ShopItemViewHolder(
         recyclerViewShopProductItem.layoutManager = createRecyclerViewShopProductItemLayoutManager()
 
         if (!hasItemDecoration(recyclerViewShopProductItem)) {
-            recyclerViewShopProductItem.addItemDecoration(createRecyclerViewShopProductItemDecoration())
+//            recyclerViewShopProductItem.addItemDecoration(createRecyclerViewShopProductItemDecoration())
         }
     }
 
