@@ -68,12 +68,11 @@ class RecommendationCarouselItemViewHolder (
             }
 
             setButtonWishlistOnClickListener {
-                element.listener.onWishlistClick(element.productItem, !it.isActivated){ success, throwable ->
+                element.listener.onWishlistClick(element.productItem, !element.productItem.isWishlist){ success, throwable ->
                     if(success){
-                        it.isActivated = !it.isActivated
-                        element.productItem.isWishlist = it.isActivated
-                        setButtonWishlistImage(it.isActivated)
-                        if(it.isActivated){
+                        element.productItem.isWishlist = !element.productItem.isWishlist
+                        setButtonWishlistImage(element.productItem.isWishlist)
+                        if(element.productItem.isWishlist){
                             showSuccessAddWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist))
                         } else {
                             showSuccessRemoveWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist))
