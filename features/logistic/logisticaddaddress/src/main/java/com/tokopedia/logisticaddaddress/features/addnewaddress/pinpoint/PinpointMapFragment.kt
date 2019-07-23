@@ -2,10 +2,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Rect
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -14,6 +11,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -77,7 +75,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var addNewAddressComponent: AddNewAddressComponent? = null
     private var isChangesRequested: Boolean? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
-    private val SCREEN_NAME = "/user/address/create/cart/pinpoint1"
     private var continueWithLocation: Boolean? = false
 
     @Inject
@@ -168,6 +165,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     private fun setViewListener() {
         back_button?.setOnClickListener {
+            // hide keyboard
+            val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
+            (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.rootView?.windowToken, 0)
+
             map_view?.onPause()
             AddNewAddressAnalytics.eventClickBackArrowOnPinPoint()
             activity?.finish()
@@ -192,7 +193,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }
         }
 
-        ic_current_location.setOnClickListener {
+        ic_current_location?.setOnClickListener {
             AddNewAddressAnalytics.eventClickButtonPilihLokasi()
             doUseCurrentLocation()
         }
@@ -337,7 +338,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun showAutocompleteGeocodeBottomSheet(lat: Double, long: Double, search: String) {
-        activity?.let { AddNewAddressAnalytics.sendScreenName(it, SCREEN_NAME) }
         val autocompleteGeocodeBottomSheetFragment =
                 AutocompleteBottomSheetFragment.newInstance(lat, long, search)
         autocompleteGeocodeBottomSheetFragment.setActionListener(this)
@@ -346,6 +346,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     override fun onGetPlaceId(placeId: String) {
+
         presenter.clearCacheGetDistrict()
         presenter.getDistrict(placeId)
     }
@@ -406,6 +407,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
             invalid_title?.text = getString(R.string.invalid_title)
             invalid_desc?.text = saveAddressDataModel.formattedAddress
+
+            invalid_ic_search_btn?.setOnClickListener {
+                currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+            }
             AddNewAddressAnalytics.eventViewErrorAlamatTidakValid()
 
         } else {
@@ -473,7 +478,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
             tkpdDialog.dismiss()
-            goToAddEditActivity(true, false)
+            goToAddEditActivity(isMismatch = true, isMismatchSolved = false)
         }
         tkpdDialog.show()
         AddNewAddressAnalytics.eventViewFailedPinPointNotification()
@@ -481,6 +486,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean) {
         Intent(context, AddEditAddressActivity::class.java).apply {
+            if (isMismatch && !isMismatchSolved) {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            }
             putExtra(AddressConstants.EXTRA_IS_MISMATCH, isMismatch)
             putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, presenter.getSaveAddressDataModel())
             putExtra(AddressConstants.KERO_TOKEN, token)
@@ -588,8 +596,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    val typed = s.toString().replace(" ", "")
-                    when (val countCharLeft = 60 - typed.length) {
+                    val countCharLeft = 60 - s.toString().length
+                    when (countCharLeft) {
                         60 -> {
                             tv_detail_address_counter.text = "0/60"
                         } else -> {
@@ -610,5 +618,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         return arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        presenter.detachView()
     }
 }

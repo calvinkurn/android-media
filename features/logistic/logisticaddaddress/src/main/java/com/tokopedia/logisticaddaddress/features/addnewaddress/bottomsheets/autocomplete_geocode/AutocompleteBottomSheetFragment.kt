@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
@@ -9,6 +10,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.view.inputmethod.InputMethodManager.SHOW_FORCED
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -128,15 +130,17 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         if (currentSearch?.isNotEmpty() == true) {
             etSearch.apply {
                 setText(currentSearch.toString())
-                setSelectAllOnFocus(true)
+                selectAll()
                 requestFocus()
+                setListenerClearBtn()
                 setSelection(etSearch.text.length)
-                showKeyboard()
             }
             currentSearch?.let {
                 loadAutocomplete(it)
             }
         } else {
+            icCloseBtn.visibility = View.GONE
+
             if (currentLat != 0.0 && currentLong != 0.0) {
                 context?.let {
                     if (AddNewAddressUtils.isLocationEnabled(it)) {
@@ -153,6 +157,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                         doLoadAutocompleteGeocode()
                     } else {
                         rlCurrentLocation.setOnClickListener {
+                            AddNewAddressUtils.hideKeyboard(etSearch, context)
                             showLocationInfoBottomSheet()
                         }
                     }
@@ -161,7 +166,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
 
         etSearch.run {
-            isFocusableInTouchMode = true
             setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldCariLokasi()
             }
@@ -173,8 +177,9 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int,
                                            count: Int) {
                     if (s.isNotEmpty()) {
+                        icCloseBtn.visibility = View.VISIBLE
                         val input = "$s"
-                        showClearBtn()
+                        setListenerClearBtn()
                         handler.postDelayed({
                             loadAutocomplete(input)
                         }, 500)
@@ -186,15 +191,21 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 override fun afterTextChanged(s: Editable) {
                 }
             })
+
+            isFocusableInTouchMode = true
+            isFocusable = true
+            requestFocus()
+            AddNewAddressUtils.showKeyboard(context)
         }
 
         rlCurrentLocation.setOnClickListener {
+            AddNewAddressUtils.hideKeyboard(etSearch, context)
             actionListener.useCurrentLocation()
             dismiss()
         }
     }
 
-    private fun showClearBtn() {
+    private fun setListenerClearBtn() {
         icCloseBtn.setOnClickListener {
             etSearch.setText("")
             hideListPointOfInterest()
@@ -215,6 +226,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnInputAddress()
             onCloseButtonClick()
+            AddNewAddressUtils.hideKeyboard(etSearch, context)
         }
     }
 
@@ -273,23 +285,12 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     override fun onPoiListClicked(placeId: String) {
-        context?.let {
-            placeId.run {
-                actionListener.onGetPlaceId(placeId)
-                dismiss()
-            }
+        placeId.run {
+            AddNewAddressUtils.hideKeyboard(etSearch, context)
+            actionListener.onGetPlaceId(placeId)
+            dismiss()
         }
         AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList()
-    }
-
-    private fun hideKeyboard() {
-        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
-        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0)
-    }
-
-    private fun showKeyboard() {
-        val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
     private fun showLocationInfoBottomSheet() {

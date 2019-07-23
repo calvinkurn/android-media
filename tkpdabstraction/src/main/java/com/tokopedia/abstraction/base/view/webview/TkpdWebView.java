@@ -171,20 +171,7 @@ public class TkpdWebView extends WebView {
                 Crashlytics.log(
                     getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
-            super.loadUrl(AbstractionBaseURL.MOBILE_DOMAIN);
-        }
-    }
-
-    @Override
-    public void loadUrl(String url) {
-        if(WebViewHelper.isUrlValid(url)){
             super.loadUrl(url);
-        }else {
-            if(!GlobalConfig.DEBUG)
-            Crashlytics.log(
-                    getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
-
-            super.loadUrl(AbstractionBaseURL.MOBILE_DOMAIN);
         }
     }
 }

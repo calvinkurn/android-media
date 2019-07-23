@@ -29,7 +29,6 @@ import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
-import com.tokopedia.chatbot.ChatbotRouter
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
@@ -39,7 +38,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
-import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
@@ -65,6 +64,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.IllegalStateException
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
 import javax.inject.Inject
@@ -168,10 +168,24 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return view
     }
 
+    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
+        return ChatbotTypeFactoryImpl(
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this
+        )
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return ChatbotAdapter(ChatbotTypeFactoryImpl(this,
-                this, this, this,
-                this, this, this))
+        if (adapterTypeFactory !is ChatbotTypeFactoryImpl) {
+            throw IllegalStateException("getAdapterTypeFactory() must return ChatbotTypeFactoryImpl")
+        }
+        val typeFactory = adapterTypeFactory as ChatbotTypeFactoryImpl
+        return ChatbotAdapter(typeFactory)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

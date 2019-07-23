@@ -505,6 +505,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         this.createPostUrl = createPostUrl
         if (isShowFeed && isFeedShopPageEnabled) {
             addFeed()
+            viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         }
     }
 
@@ -531,6 +532,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         val f: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(0)
         if (f != null && f is ShopProductListLimitedFragment) {
             f.clearCache()
+        }
+        val feedfragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_FEED)
+        if (feedfragment != null && feedfragment is FeedShopFragment){
+            feedfragment.setRefresh()
         }
         getShopInfo(true)
         swipeToRefresh.isRefreshing = true

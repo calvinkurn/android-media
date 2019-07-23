@@ -2,6 +2,7 @@ package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
@@ -17,21 +18,26 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.ApplinkOMSConstant;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
 import com.tokopedia.transaction.orders.orderdetails.data.Header;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
+import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListwebViewActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.customview.BookingCodeView;
 import com.tokopedia.transaction.orders.orderdetails.view.customview.CustomTicketView;
 import com.tokopedia.transaction.orders.orderdetails.view.customview.RedeemVoucherView;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface, RedeemVoucherView.SetTapActionDeals {
@@ -42,12 +48,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
     private static final int DEALS_CATEGORY_ID = 35;
+    private static final int EVENTS_CATEGORY_ID = 32;
     private boolean isShortLayout;
     private List<Items> itemsList;
     private Context context;
     public static final int ITEM_DEALS = 1;
     public static final int ITEM_DEALS_SHORT = 2;
     public static final int ITEM_EVENTS = 3;
+    private static final int ITEM_DEFAULT = 4;
     private String Insurance_File_Name = "E-policy Asuransi";
     OrderListDetailPresenter presenter;
     private String categoryDeals = "deal";
@@ -95,6 +103,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 v = inflater.inflate(R.layout.voucher_item_card_events, parent, false);
                 holder = new ItemViewHolder(v, viewType);
                 break;
+            case ITEM_DEFAULT:
+                v = inflater.inflate(R.layout.voucher_item_default, parent, false);
+                holder = new DefaultViewHolder(v, viewType);
+                break;
             default:
                 break;
         }
@@ -105,8 +117,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         this.position = position;
-        ((ItemViewHolder) holder).setIndex(position);
-        ((ItemViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
+        if(holder instanceof  ItemViewHolder) {
+            ((ItemViewHolder) holder).setIndex(position);
+            ((ItemViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
+        } else{
+            ((DefaultViewHolder) holder).setIndex(position);
+            ((DefaultViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
+        }
     }
 
     @Override
@@ -116,8 +133,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return ITEM_DEALS_SHORT;
             else
                 return ITEM_DEALS;
-        } else {
+        } else if(itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID){
             return ITEM_EVENTS;
+        } else {
+            return ITEM_DEFAULT;
         }
     }
 
@@ -148,9 +167,18 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
                     if (view == null)
                         RouteManager.route(context, actionButton.getBody().getAppURL());
-                    else
-                        ((UnifiedOrderListRouter) context.getApplicationContext())
-                                .actionOpenGeneralWebView((Activity) context, actionButton.getBody().getAppURL());
+                    else {
+                        Intent intent = null;
+                        try {
+                            intent = OrderListwebViewActivity.getWebViewIntent(context, URLDecoder.decode(
+                                    actionButton.getBody().getAppURL(), "UTF-8"), "Redeem Voucher");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        context.startActivity(intent);
+                    }
+//                        ((UnifiedOrderListRouter) context.getApplicationContext())
+//                                .actionOpenGeneralWebView((Activity) context, actionButton.getBody().getAppURL());
                 }
             }
         }
@@ -233,6 +261,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 }
                 if (itemType == ITEM_DEALS) {
+                    final MetaDataInfo metaDataInfo1 = metaDataInfo;
                     if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                         validDate.setText(" ".concat(metaDataInfo.getEndDate()));
                         llValid.setVisibility(View.VISIBLE);
@@ -244,9 +273,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                     brandName.setText(metaDataInfo.getEntityBrandName());
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label));
+                    dealImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            RouteManager.route(context, ApplinkOMSConstant.INTERNAL_DEALS + metaDataInfo1.getSeoUrl());
+                        }
+                    });
                 }
 
                 if (itemType == ITEM_EVENTS) {
+                    final MetaDataInfo metaDataInfo1 = metaDataInfo;
                     if (metaDataInfo.getEntityPackages() != null && !TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getCity())) {
                         eventCity.setText(metaDataInfo.getEntityPackages().get(0).getCity());
                     }
@@ -278,8 +314,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
                     }
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label_events));
+                    dealImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            RouteManager.route(context, ApplinkOMSConstant.INTERNAL_EVENTS + metaDataInfo1.getSeoUrl());
+                        }
+                    });
                 }
-
                 EntityAddress entityAddress = metaDataInfo.getEntityAddress();
                 if (entityAddress != null) {
                     if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT)
@@ -314,33 +355,17 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
                 if (item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.GONE);
-                    if (item.getTapActions() == null || item.getTapActions().size() == 0) {
-                        if (!TextUtils.isEmpty(item.getTrackingNumber())) {
-                            String[] voucherCodes = item.getTrackingNumber().split(",");
-                            if (voucherCodes.length > 0) {
-                                voucherCodeLayout.setVisibility(View.VISIBLE);
-                                for (int i = 0; i < voucherCodes.length; i++) {
-                                    BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
-                                    bookingCodeView.setBackground(null);
-                                    voucherCodeLayout.addView(bookingCodeView);
-                                }
-                            }
-                        } else {
-                            customTicketView.setVisibility(View.GONE);
-                            tapActionLayoutDeals.setVisibility(View.GONE);
-                        }
-                    } else {
-                        customTicketView.setVisibility(View.VISIBLE);
-                        tapActionLayoutDeals.setVisibility(View.VISIBLE);
-                        tapActionLayoutDeals.removeAllViews();
-                        int size = item.getTapActions().size();
-                        for (int i = 0; i < size; i++) {
-                            ActionButton actionButton = item.getTapActions().get(i);
-                            RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, ItemsAdapter.this);
-                            tapActionLayoutDeals.addView(redeemVoucherView);
-                        }
+                    customTicketView.setVisibility(View.VISIBLE);
+                    tapActionLayoutDeals.setVisibility(View.VISIBLE);
+                    tapActionLayoutDeals.removeAllViews();
+                    int size = item.getTapActions().size();
+                    for (int i = 0; i < size; i++) {
+                        ActionButton actionButton = item.getTapActions().get(i);
+                        RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, ItemsAdapter.this);
+                        tapActionLayoutDeals.addView(redeemVoucherView);
                     }
                 }
+
             } else if (itemType == ITEM_EVENTS) {
                 if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.VISIBLE);
@@ -371,45 +396,22 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
                 if (item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.GONE);
-                    if (item.getTapActions() == null || item.getTapActions().size() == 0) {
-                        if (!TextUtils.isEmpty(item.getTrackingNumber())) {
-                            String[] voucherCodes = item.getTrackingNumber().split(",");
-                            if (voucherCodes.length > 0) {
-                                if (metaDataInfo.getTotalTicketCount() > 0) {
-                                    brandName.setText(String.format("%s %s", metaDataInfo.getTotalTicketCount(), context.getResources().getString(R.string.event_ticket_booking_multiple)));
-                                } else {
-                                    brandName.setText(context.getResources().getString(R.string.event_ticket_booking_count));
-                                }
-                                voucherCodeLayout.setVisibility(View.VISIBLE);
-                                for (int i = 0; i < voucherCodes.length; i++) {
-                                    BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
-                                    bookingCodeView.setBackground(null);
-                                    voucherCodeLayout.addView(bookingCodeView);
-                                }
-                            }
+                    customTicketView.setVisibility(View.VISIBLE);
+                    tapActionLayoutEvents.setVisibility(View.VISIBLE);
+                    tapActionLayoutEvents.removeAllViews();
+                    int size = item.getTapActions().size();
+                    for (int i = 0; i < size; i++) {
+                        ActionButton actionButton = item.getTapActions().get(i);
+                        TextView tapActionTextView = renderActionButtons(i, actionButton, item);
+                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                            presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                         } else {
-                            customTicketView.setVisibility(View.GONE);
-                            tapActionLayoutEvents.setVisibility(View.GONE);
+                            setActionButtonClick(tapActionTextView, actionButton, item, metaDataInfo.getTotalTicketCount());
                         }
-                    } else {
-                        customTicketView.setVisibility(View.VISIBLE);
-                        tapActionLayoutEvents.setVisibility(View.VISIBLE);
-                        tapActionLayoutEvents.removeAllViews();
-                        int size = item.getTapActions().size();
-                        for (int i = 0; i < size; i++) {
-                            ActionButton actionButton = item.getTapActions().get(i);
-                            TextView tapActionTextView = renderActionButtons(i, actionButton, item);
-                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
-                            } else {
-                                setActionButtonClick(tapActionTextView, actionButton, item, metaDataInfo.getTotalTicketCount());
-                            }
-                            tapActionLayoutEvents.addView(tapActionTextView);
-                        }
+                        tapActionLayoutEvents.addView(tapActionTextView);
                     }
                 }
             }
-
         }
 
 
@@ -517,7 +519,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         @Override
         public void onClick(View v) {
-
         }
     }
 
@@ -530,4 +531,234 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
+    private class DefaultViewHolder extends RecyclerView.ViewHolder {
+        private View itemView;
+        private TextView validDate;
+        private ProgressBar progressBar;
+        private CustomTicketView customTicketView1;
+        private CustomTicketView customTicketView2;
+        private View clCard;
+        private View llValid;
+        private View llTanggalEvent;
+        private TextView tvEventDate;
+        private TextView tvRightTypeofEvents;
+        private TextView tvRightAddress;
+        private TextView tvRightCategoryTicket;
+        private TextView tvRightNumberOfBooking;
+        private LinearLayout tapActionLayout;
+        private LinearLayout actionLayout;
+        private TextView tvValidTill;
+        private int index;
+
+        public DefaultViewHolder(View itemView, int itemType) {
+            super(itemView);
+            this.itemView = itemView;
+            customTicketView1 = itemView.findViewById(R.id.customView1);
+            customTicketView2 = itemView.findViewById(R.id.customView2);
+
+            tvValidTill = itemView.findViewById(R.id.tv_valid_till);
+            validDate = itemView.findViewById(R.id.tv_valid_till_date);
+            clCard = itemView.findViewById(R.id.cl_card);
+            llValid = itemView.findViewById(R.id.ll_valid);
+            itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            progressBar = itemView.findViewById(R.id.prog_bar);
+            tvRightTypeofEvents = itemView.findViewById(R.id.right_event);
+            tvRightAddress = itemView.findViewById(R.id.right_address);
+            tvRightCategoryTicket = itemView.findViewById(R.id.right_category_ticket);
+            tvRightNumberOfBooking = itemView.findViewById(R.id.right_total_ticket);
+            llTanggalEvent = itemView.findViewById(R.id.ll_tanggal_event);
+            tvEventDate = itemView.findViewById(R.id.tv_start_date);
+            tapActionLayout = itemView.findViewById(R.id.tapAction);
+            actionLayout = itemView.findViewById(R.id.actionButton);
+        }
+
+        void bindData(final Items item, int itemType) {
+            MetaDataInfo metaDataInfo = null;
+            boolean hasViews=false;
+
+            if (item.getMetaData() != null) {
+                Gson gson = new Gson();
+                metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
+            }
+
+            if (metaDataInfo != null) {
+                presenter.sendThankYouEvent(metaDataInfo);
+                setEventDetails.setDetailTitle(context.getResources().getString(R.string.purchase_detail));
+                if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
+                    validDate.setText(" ".concat(metaDataInfo.getEndDate()));
+                    llValid.setVisibility(View.VISIBLE);
+                    hasViews = true;
+                } else {
+                    llValid.setVisibility(View.GONE);
+                }
+                if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
+                    itemView.findViewById(R.id.ll_event).setVisibility(View.GONE);
+                } else {
+                    hasViews = true;
+                    tvRightTypeofEvents.setText(metaDataInfo.getEntityProductName());
+                }
+                if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
+                    if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
+                        itemView.findViewById(R.id.ll_address).setVisibility(View.GONE);
+                    } else {
+                        hasViews = true;
+                        tvRightAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
+                    }
+                } else {
+                    itemView.findViewById(R.id.ll_address).setVisibility(View.GONE);
+                }
+                if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
+                    if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getDisplayName())) {
+                        itemView.findViewById(R.id.ll_category_ticket).setVisibility(View.GONE);
+                    } else {
+                        tvRightCategoryTicket.setText(metaDataInfo.getEntityPackages().get(0).getDisplayName());
+                        hasViews = true;
+                    }
+                } else {
+                    itemView.findViewById(R.id.ll_category_ticket).setVisibility(View.GONE);
+                }
+                if (item.getQuantity() == 0) {
+                    itemView.findViewById(R.id.ll_total_ticket).setVisibility(View.GONE);
+                } else {
+                    hasViews = true;
+                    tvRightNumberOfBooking.setText(String.valueOf(metaDataInfo.getTotalTicketCount()));
+                }
+                if (!TextUtils.isEmpty(metaDataInfo.getStartDate())) {
+                    hasViews = true;
+                    tvEventDate.setText(" ".concat(metaDataInfo.getStartDate()));
+                    llTanggalEvent.setVisibility(View.VISIBLE);
+                } else {
+                    llTanggalEvent.setVisibility(View.GONE);
+                }
+                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    tapActionLayout.setVisibility(View.GONE);
+                    presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                }
+                if(!hasViews){
+                    customTicketView1.setVisibility(View.GONE);
+                    itemView.findViewById(R.id.divider1).setVisibility(View.GONE);
+                } else {
+                    customTicketView1.setVisibility(View.VISIBLE);
+                    itemView.findViewById(R.id.divider1).setVisibility(View.VISIBLE);
+                }
+
+                if (item.isTapActionsLoaded()) {
+                    progressBar.setVisibility(View.GONE);
+                    if (item.getTapActions() == null || item.getTapActions().size() == 0) {
+                        tapActionLayout.setVisibility(View.GONE);
+                    } else {
+                        tapActionLayout.setVisibility(View.VISIBLE);
+                        tapActionLayout.removeAllViews();
+                        int size = item.getTapActions().size();
+                        for (int i = 0; i < size; i++) {
+                            ActionButton actionButton = item.getTapActions().get(i);
+                            TextView tapActionTextView = renderActionButtons(i, actionButton, item);
+                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                            } else {
+                                setActionButtonClick(tapActionTextView, actionButton);
+                            }
+                            tapActionLayout.addView(tapActionTextView);
+                        }
+                    }
+                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
+                    actionLayout.setVisibility(View.GONE);
+                } else {
+                    actionLayout.setVisibility(View.VISIBLE);
+                    actionLayout.removeAllViews();
+                    int size = item.getActionButtons().size();
+                    for (int i = 0; i < size; i++) {
+                        ActionButton actionButton = item.getActionButtons().get(i);
+
+                        TextView actionTextView = renderActionButtons(i, actionButton, item);
+                        if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
+                            if (item.isActionButtonLoaded()) {
+                                setActionButtonClick(null, actionButton);
+                            } else {
+                                actionTextView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                                            presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex(), false);
+                                        } else {
+                                            setActionButtonClick(actionTextView, actionButton);
+                                        }
+
+                                    }
+                                });
+                            }
+                        }
+                        actionLayout.addView(actionTextView);
+                    }
+                }
+            }
+        }
+
+        private void setActionButtonClick(TextView view, ActionButton actionButton) {
+            if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
+                if (!TextUtils.isEmpty(actionButton.getBody().toString())&& !TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
+                    if (view == null)
+                        RouteManager.route(context, actionButton.getBody().getAppURL());
+                    else
+                        view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                }
+            }
+        }
+
+        private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
+
+            TextView tapActionTextView = new TextView(context);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
+            tapActionTextView.setPadding((int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16));
+            tapActionTextView.setLayoutParams(params);
+            tapActionTextView.setTextColor(Color.WHITE);
+            tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+            tapActionTextView.setText(actionButton.getLabel());
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            if (!TextUtils.isEmpty(actionButton.getActionColor().getBackground())) {
+                shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
+            } else {
+                shape.setColor(context.getResources().getColor(R.color.green_nob));
+            }
+            if (!TextUtils.isEmpty(actionButton.getActionColor().getBorder())) {
+                shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
+            }
+            tapActionTextView.setBackground(shape);
+            if (!TextUtils.isEmpty(actionButton.getActionColor().getTextColor())) {
+                tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
+            } else {
+                tapActionTextView.setTextColor(Color.WHITE);
+            }
+
+
+            if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
+                float radius = context.getResources().getDimension(R.dimen.dp_4);
+                shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
+
+            } else {
+
+                shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+            }
+
+            tapActionTextView.setBackground(shape);
+
+            return tapActionTextView;
+        }
+
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+    }
 }

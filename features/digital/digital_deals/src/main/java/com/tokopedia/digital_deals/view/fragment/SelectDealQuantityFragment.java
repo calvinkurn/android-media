@@ -185,7 +185,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             mPresenter.verifyCart(packageViewModel);
             if (dealDetails.getBrand() != null) {
                 dealsAnalytics.sendEcommerceQuantity(dealDetails.getId(), currentQuantity, dealDetails.getSalesPrice(),
-                        dealDetails.getDisplayName(), dealDetails.getBrand().getTitle());
+                        dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), dealDetails.getCategoryId());
             }
 
         }

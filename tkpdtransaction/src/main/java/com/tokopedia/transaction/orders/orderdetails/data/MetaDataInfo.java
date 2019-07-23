@@ -52,6 +52,10 @@ public class MetaDataInfo {
     @Expose
     private int isHiburan;
 
+    @SerializedName("seo_url")
+    @Expose
+    private String seoUrl;
+
     public String getEndDate() {
         return endDate;
     }
@@ -170,5 +174,9 @@ public class MetaDataInfo {
 
     public void setIsHiburan(int isHiburan) {
         this.isHiburan = isHiburan;
+    }
+
+    public String getSeoUrl() {
+        return seoUrl;
     }
 }
