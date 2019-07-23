@@ -46,7 +46,8 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                                 recommendation,
                                 recomendationData.title ?: "",
                                 recomendationData.pageName ?: "",
-                                index + 1)
+                                index + 1,
+                                recomendationData.layoutType ?: "")
                     } ?: emptyList())
             return RecommendationWidget(
                     recommendationItemList,
@@ -67,7 +68,8 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                 data: RecomendationEntity.Recommendation,
                 title: String,
                 pageName: String,
-                position: Int): RecommendationItem {
+                position: Int,
+                layoutType: String): RecommendationItem {
             return RecommendationItem(
                     data.id,
                     data.name ?: "",
@@ -100,7 +102,9 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     pageName,
                     data.minOrder ?: 1,
                     data.shop?.city ?: "",
-                    data.badges?.map { it.imageUrl } ?: emptyList()
+                    data.badges?.map { it.imageUrl } ?: emptyList(),
+                    layoutType
+
             )
 
         }

@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -34,7 +33,7 @@ class RecommendationItemViewHolder(
             setLabelDiscountVisible(element.productItem.slashedPriceInt > 0 && element.productItem.discountPercentage > 0)
             setImageRatingVisible(element.productItem.rating > 0 && element.productItem.countReview > 0)
             setReviewCountVisible(element.productItem.rating > 0 && element.productItem.countReview > 0)
-            setShopLocationVisible(true)
+            setShopLocationVisible(element.productItem.badgesUrl.isNotEmpty())
             setButtonWishlistVisible(true)
             setShopBadgesVisible(true)
             setButtonWishlistImage(element.productItem.isWishlist)
@@ -61,14 +60,8 @@ class RecommendationItemViewHolder(
 //            }
 
             setOnClickListener {
-                if (element.productItem.isTopAds) {
-                    ImpresionTask().execute(element.productItem.clickUrl)
-                    //Click for topads item
-                    element.listener.onClickTopAds(element.productItem)
-                } else {
-                    //Click for organic item
-                    element.listener.onClickOrganic(element.productItem)
-                }
+                element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
+                if (element.productItem.isTopAds) ImpresionTask().execute(element.productItem.clickUrl)
             }
 
             setButtonWishlistOnClickListener {

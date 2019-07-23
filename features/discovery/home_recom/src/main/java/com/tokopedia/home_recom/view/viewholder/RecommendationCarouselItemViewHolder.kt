@@ -14,7 +14,7 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardView
-import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 class RecommendationCarouselItemViewHolder (
@@ -35,7 +35,7 @@ class RecommendationCarouselItemViewHolder (
             setImageRatingVisible(element.productItem.rating > 0 && element.productItem.countReview > 0)
             setReviewCountVisible(element.productItem.rating > 0 && element.productItem.countReview > 0)
             setShopLocationVisible(true)
-            setButtonWishlistVisible(true)
+            setButtonWishlistVisible(element.productItem.badgesUrl.isNotEmpty())
             setShopBadgesVisible(true)
             setButtonWishlistImage(element.productItem.isWishlist)
             setProductNameText(element.productItem.name)
@@ -61,13 +61,9 @@ class RecommendationCarouselItemViewHolder (
 //            }
 
             setOnClickListener {
+                element.listener.onProductClick(element.productItem, element.productItem.type, element.parentPosition, adapterPosition)
                 if (element.productItem.isTopAds) {
                     ImpresionTask().execute(element.productItem.clickUrl)
-                    //Click for topads item
-                    element.listener.onClickTopAds(element.productItem)
-                } else {
-                    //Click for organic item
-                    element.listener.onClickOrganic(element.productItem)
                 }
             }
 
