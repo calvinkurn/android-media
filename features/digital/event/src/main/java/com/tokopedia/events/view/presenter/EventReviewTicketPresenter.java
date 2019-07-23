@@ -600,7 +600,7 @@ public class EventReviewTicketPresenter
         String jsonResponse = intent.getStringExtra(EXTRA_VERIFY_RESPONSE);
         if (!StringUtils.isBlank(jsonResponse))
             this.verifiedSeatResponse = (JsonObject) new JsonParser().parse(jsonResponse);
-        mView.renderFromPackageVM(checkoutData, selectedSeatViewModel);
+        mView.renderFromPackageVM(checkoutData, selectedSeatViewModel, this.eventsDetailsViewModel.getCustomText1());
         getAndInitForms();
     }
 }
