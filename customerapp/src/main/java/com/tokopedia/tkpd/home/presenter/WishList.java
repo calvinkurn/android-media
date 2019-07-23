@@ -81,7 +81,7 @@ public interface WishList {
 
     void addToCart(String productId);
 
-    boolean isLoadedFirstPage();
+    boolean isFirstPage();
 
     void searchWishlist(String query);
 

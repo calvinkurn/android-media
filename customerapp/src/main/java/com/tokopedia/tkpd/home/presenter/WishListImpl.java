@@ -328,7 +328,8 @@ public class WishListImpl implements WishList {
                 wishListView.displayLoadMore(false);
                 wishListView.displayPull(false);
                 if (response != null) {
-                    if (response.getGqlWishList().getWishlistDataList().size() == 0) {
+                    if (response.getGqlWishList().getWishlistDataList().size() == 0 && isFirstPage()) {
+                        data.clear();
                         wishListView.setEmptyState();
                         setData();
                     } else {
@@ -418,21 +419,13 @@ public class WishListImpl implements WishList {
     @Override
     public void setData(GqlWishListDataResponse gqlWishListDataResponse) {
         GqlWishListDataResponse.GqlWishList wishlistData = gqlWishListDataResponse.getGqlWishList();
-        if (mPaging.getPage() == 1) {
-            data.clear();
-            if (wishlistData.getWishlistDataList().size() == 0)
-                wishListView.setSearchNotFound(query);
-        }
         wishListView.displayPull(false);
-
         wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
-
         dataWishlist.addAll(wishlistData.getWishlistDataList());
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList(),
                 gqlWishListDataResponse.getTopAdsModel(), query));
         mPaging.setPagination(wishlistData.getPagination());
         wishListView.setPullEnabled(true);
-
         wishListView.loadDataChange();
         wishListView.displayContentList(true);
         wishListView.displayLoading(false);
@@ -498,8 +491,8 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public boolean isLoadedFirstPage() {
-        return mPaging.getPage() >= 1;
+    public boolean isFirstPage() {
+        return mPaging.getPage() == 1;
     }
 
     @Override
@@ -641,10 +634,14 @@ public class WishListImpl implements WishList {
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
             products.add(new WishlistProductViewModel(product));
         }
-        if ((products.size() % 2 == 0) && adsModel != null && !adsModel.getData().isEmpty()) {
+        if (products.size() >= TOPADS_INDEX && isEven(products, adsModel)) {
             products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query));
         }
         return products;
+    }
+
+    private boolean isEven(List<Visitable> products, TopAdsModel adsModel) {
+        return products.size() % 2 == 0 && adsModel != null && !adsModel.getData().isEmpty();
     }
 
     private void onFinishedDeleteWishlist(final int position) {
