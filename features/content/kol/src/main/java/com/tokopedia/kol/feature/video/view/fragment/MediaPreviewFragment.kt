@@ -13,12 +13,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.UnifyButton
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -31,6 +34,7 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kol.feature.video.view.adapter.MediaTagAdapter
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -172,6 +176,9 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
             button_tag_action.text = getString(R.string.kol_see_product)
             button_tag_action.buttonType = UnifyButton.Type.MAIN
+            button_tag_action.setOnClickListener {
+                showTagList(tags)
+            }
 
             action_favorite.gone()
         } else {
@@ -181,25 +188,31 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             }
 
             tag_title.text = tags.items[0].price
-            if (mediaPreviewViewModel.isMyOwnPost(dynamicPostViewModel.header.followCta.authorID)){
-                button_tag_action.text = getString(R.string.kol_see_product)
-                button_tag_action.buttonType = UnifyButton.Type.MAIN
-                action_favorite.gone()
-            } else {
-                button_tag_action.text = getString(R.string.string_posttag_buy)
-                button_tag_action.buttonType = UnifyButton.Type.TRANSACTION
-                action_favorite.visible()
+            button_tag_action.text = getString(R.string.string_posttag_buy)
+            button_tag_action.buttonType = UnifyButton.Type.TRANSACTION
+            button_tag_action.setOnClickListener {  }
+            action_favorite.visible()
 
-                context?.let {
-                    action_favorite.setImageDrawable(ContextCompat.getDrawable(it,
-                            if (tags.items[0].isWishlisted) R.drawable.ic_wishlist_checked
-                            else R.drawable.ic_wishlist_unchecked))
-                }
+            context?.let {
+                action_favorite.setImageDrawable(ContextCompat.getDrawable(it,
+                        if (tags.items[0].isWishlisted) R.drawable.ic_wishlist_checked
+                        else R.drawable.ic_wishlist_unchecked))
             }
             tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(R.dimen.dp_8))
             tag_picture.visible()
         }
         button_tag_action.visible()
+    }
+
+    private fun showTagList(tags: PostTag) {
+        context?.let {
+            val closeBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(it)
+            val childView = LayoutInflater.from(it).inflate(R.layout.fragment_base_list, null)
+            val tagListView = childView.findViewById<VerticalRecyclerView>(R.id.recycler_view)
+            tagListView.adapter = MediaTagAdapter(tags.items)
+            closeBottomSheet.setCustomContentView(childView, getString(R.string.kol_lets_shop), true)
+            closeBottomSheet.show()
+        }
     }
 
     private fun bindToolbar(dynamicPost: DynamicPostViewModel) {

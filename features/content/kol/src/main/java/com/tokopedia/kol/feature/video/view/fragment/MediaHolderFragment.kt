@@ -161,17 +161,12 @@ class MediaHolderFragment : BaseDaggerFragment() {
         mExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 when(playbackState){
-                    Player.STATE_IDLE -> {
-                        showErrorLayout()
-                        loading?.gone()
-                        video_player?.gone()
-                    }
                     Player.STATE_READY -> {
                         loading?.gone()
                         error_layout?.gone()
                         video_player?.visible()
                     }
-                    Player.STATE_BUFFERING -> {
+                    Player.STATE_BUFFERING, Player.STATE_IDLE -> {
                         loading?.visible()
                         error_layout?.gone()
                     }

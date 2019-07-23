@@ -269,21 +269,21 @@
         <com.tokopedia.design.component.UnifyButton
             android:id="@+id/button_tag_action"
             android:layout_width="wrap_content"
-            android:minWidth="@dimen/dp_85"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
+            android:layout_height="21dp"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_28"
-            tools:text="@string/label_see_all"
+            android:minWidth="@dimen/dp_85"
+            android:textAllCaps="false"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:buttonVariant="filled"
-            app:buttonType="main"
             app:btnSize="small"
-            app:layout_constraintTop_toTopOf="parent"
+            app:buttonType="main"
+            app:buttonVariant="filled"
+            app:layout_constraintBottom_toTopOf="@+id/icon_thumb"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/icon_thumb" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/label_see_all"
+            tools:visibility="visible" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/action_favorite"
