@@ -2054,34 +2054,22 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
         if (this.recommendationList != null) {
             if (recommendationList.size() != 0) {
-                int previousItemCount = cartAdapter.getItemCount();
-                boolean rightPosition = previousItemCount % 2 == 1;
-                for (CartRecommendationItemHolderData recommendationItem : recommendationList) {
-                    recommendationItem.setRightPosition(rightPosition);
-                    rightPosition = !rightPosition;
-                }
                 cartRecommendationItemHolderDataList.addAll(this.recommendationList);
             } else {
                 if (recommendationItems != null) {
-                    int previousItemCount = cartAdapter.getItemCount();
-                    boolean rightPosition = previousItemCount % 2 == 1;
                     for (RecommendationItem recommendationItem : recommendationItems) {
                         CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                                new CartRecommendationItemHolderData(recommendationItem, rightPosition);
+                                new CartRecommendationItemHolderData(recommendationItem);
                         cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
-                        rightPosition = !rightPosition;
                     }
                 }
             }
         } else {
             if (recommendationItems != null) {
-                int previousItemCount = cartAdapter.getItemCount();
-                boolean rightPosition = previousItemCount % 2 == 1;
                 for (RecommendationItem recommendationItem : recommendationItems) {
                     CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                            new CartRecommendationItemHolderData(recommendationItem, rightPosition);
+                            new CartRecommendationItemHolderData(recommendationItem);
                     cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
-                    rightPosition = !rightPosition;
                 }
             }
         }
