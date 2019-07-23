@@ -43,7 +43,7 @@ class PromoCheckoutModule {
     @PromoCheckoutQualifier
     @Provides
     fun provideCheckVoucherDigitalUseCase(@ApplicationContext context: Context): CheckVoucherDigitalUseCase {
-        return CheckVoucherDigitalUseCase(context.resources)
+        return CheckVoucherDigitalUseCase(context, GraphqlUseCase())
     }
 
     @PromoCheckoutQualifier

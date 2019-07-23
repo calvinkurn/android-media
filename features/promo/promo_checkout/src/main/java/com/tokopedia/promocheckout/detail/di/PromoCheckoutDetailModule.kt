@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.detail.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
@@ -27,7 +28,7 @@ class PromoCheckoutDetailModule {
     @PromoCheckoutDetailScope
     @Provides
     fun provideCheckVoucherDigitalUseCase(@ApplicationContext context: Context): CheckVoucherDigitalUseCase {
-        return CheckVoucherDigitalUseCase(context.resources)
+        return CheckVoucherDigitalUseCase(context, GraphqlUseCase())
     }
 
     @PromoCheckoutDetailScope

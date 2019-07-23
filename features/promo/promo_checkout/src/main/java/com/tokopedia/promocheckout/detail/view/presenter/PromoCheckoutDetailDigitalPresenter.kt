@@ -106,7 +106,6 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
 
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
-        checkVoucherDigitalUseCase.unsubscribe()
         clearCacheAutoApplyStackUseCase.unsubscribe()
         super.detachView()
     }

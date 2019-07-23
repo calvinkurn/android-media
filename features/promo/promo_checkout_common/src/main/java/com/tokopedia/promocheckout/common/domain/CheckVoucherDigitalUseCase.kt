@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.domain
 
+import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -11,7 +12,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
-class CheckVoucherDigitalUseCase(val resources: Resources): GraphqlUseCase() {
+class CheckVoucherDigitalUseCase(private val context: Context, private val graphqlUseCase: GraphqlUseCase) {
 
     val INPUT_CODE = "code"
     val PRODUCT_ID = "product_id"
@@ -19,14 +20,14 @@ class CheckVoucherDigitalUseCase(val resources: Resources): GraphqlUseCase() {
     val PRICE = "price"
     val LABEL_DATA = "data"
 
-    override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
+    fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         requestParams?.let {
             val variables = mapOf(LABEL_DATA to it.parameters)
-            val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
+            val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                     R.raw.promo_checkout_digital_check_voucher), CheckVoucherDigital.Response::class.java, variables)
-            clearRequest()
-            addRequest(graphqlRequest)
-            execute(requestParams, subscriber)
+            graphqlUseCase.clearRequest()
+            graphqlUseCase.addRequest(graphqlRequest)
+            graphqlUseCase.execute(requestParams, subscriber)
         }
     }
 

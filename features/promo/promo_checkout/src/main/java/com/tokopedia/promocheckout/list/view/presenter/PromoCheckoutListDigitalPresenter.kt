@@ -75,11 +75,6 @@ class PromoCheckoutListDigitalPresenter(private val graphqlUseCase: GraphqlUseCa
 
     }
 
-    override fun detachView() {
-        checkVoucherUseCase.unsubscribe()
-        super.detachView()
-    }
-
     companion object {
         const val CATEGORY_IDS = "categoryIDs"
     }
