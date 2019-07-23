@@ -95,6 +95,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.productCard)
+    compile project(path: ':libraries:kotlin_extensions')
 }
 
 apply from: '../../../publish_local.gradle'

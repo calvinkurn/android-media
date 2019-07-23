@@ -36,6 +36,7 @@ ext {
     tkpdMerchantVoucherVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdNotifCenterVersion = '2.22'
+    tkpdOvoP2PTransfer = '1.00'
     tkpdPaymentVersion = '2.22'
     tkpdPaymentManagementSystem = '2.22'
     tkpdPhoneVerificationVersion = '2.22'
@@ -134,6 +135,7 @@ ext {
             loyalty                 : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             loyaltyCommon           : "com.tokopedia.loyalty.common:loyalti_common:${tkpdLoyaltyVersion}",
             mitraToppers            : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
+            ovop2p                  : "com.tokopedia.ovop2p:ovop2p:${tkpdOvoP2PTransfer}",
             payment                 : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             paymentSetting          : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
             paymentManagementSystem : "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
@@ -224,6 +226,7 @@ ext {
             productCard                     : ":features:discovery:productcard",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             homecredit                      : ":features:fintech:home_credit",
+            instantDebitBca                 : ":features:digital:instant_debit_bca",
             instantLoan                     : ":features:fintech:instant_loan",
 //            instantLoan                   : ":features:fintech:instant_loan_no_op",
             mitraToppers                    : ":features:fintech:mitra_toppers",
@@ -264,6 +267,7 @@ ext {
             productDetailCommon             : ":features:merchant:product_detail_common",
             productDetailRevamp             : ":features:merchant:product_detail",
             kyc                             : ":features:kyc",
+            ovop2p                          : ":features:ovop2p",
             productManageItem               : ":features:merchant:product_manage_item",
             productManageList               : ":features:merchant:product_manage_list",
             productManageDetail             : ":features:merchant:product_detail",

@@ -175,6 +175,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BELI_ON_WISHLIST = "click - beli on wishlist";
         String CLICK_BELI_ON_RECENT_VIEW_PAGE = "click - beli on recent view page";
         String CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT = "click add to cart on primary product";
+        String IMPRESSION_ERROR_COURIER_NO_AVAILABLE = "impression error courier no available";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -278,6 +279,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
         String CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION = "click batal on error promo confirmation";
         String VIEW_POP_UP_ERROR_PROMO_CONFIRMATION = "view pop up error promo confirmation";
+
+        String SEARCH_NOT_FOUND = "search result not found";
     }
 
     interface EventLabel {

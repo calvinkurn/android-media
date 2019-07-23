@@ -13,6 +13,7 @@ import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.feature.cornerlist.CornerListFragment;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.checkout.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
@@ -152,18 +154,19 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                if (isAddNewAddressEnabled()) {
+                // if (isAddNewAddressEnabled()) {
+                    AddNewAddressAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(this,
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
-                            false), LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
-                } else {
+                            false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
+                /*} else {
                     intent = AddAddressActivity
                             .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
                                     this, token);
                     startActivityForResult(intent,
                             LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
-                }
+                }*/
 
                 break;
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
@@ -197,7 +200,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE) {
+        if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE ||
+                requestCode == LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY) {
             if (resultCode == Activity.RESULT_OK) setResult(RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS);
             finish();
         } else if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT) {
@@ -207,7 +211,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
-    public void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult) {
+    public void finishAndSendResult(RecipientAddressModel selectedAddressResult) {
         Intent resultIntent;
         switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:

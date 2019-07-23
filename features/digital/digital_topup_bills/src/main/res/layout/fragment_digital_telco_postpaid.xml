@@ -14,7 +14,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/digital_bg_pdp" />
+            app:srcCompat="@drawable/digital_bg_pdp" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_view"

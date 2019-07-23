@@ -38,6 +38,8 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
@@ -48,6 +50,7 @@ dependencies {
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.tokoCash)
     implementation project(rootProject.ext.features.searchbar)

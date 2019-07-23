@@ -18,6 +18,7 @@ ext {
     tkpdYoutubeUtilVersion = '2.22'
     tkpdBaseAdapterlVersion = '2.22'
     tkpdGraphViewVersion = '2.22'
+    tkpdUrlVersion = '2.22'
 
     unifyIconVersion = '0.0.2'
     unifyPrinciplesVersion = '0.0.1'
@@ -89,6 +90,7 @@ ext {
 //            iris              : ":libraries:iris_no_op",
             cpm              : ":libraries:cpm",
             banner            : ":libraries:unify:unify_compositions:banner",
-            collapsingTabLayout: ":libraries:collapsing_tab_layout"
+            collapsingTabLayout: ":libraries:collapsing_tab_layout",
+            url: ":libraries:url"
     ]
 }
