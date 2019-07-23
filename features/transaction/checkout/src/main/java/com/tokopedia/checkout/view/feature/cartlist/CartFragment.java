@@ -396,7 +396,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
 
         if (cartListData != null) {
-            onContentAvailabilityChanged(true);
+            renderLoadGetCartDataFinish();
         }
     }
 
