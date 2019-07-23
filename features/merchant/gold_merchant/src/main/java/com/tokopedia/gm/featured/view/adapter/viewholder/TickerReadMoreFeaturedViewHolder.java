@@ -23,16 +23,16 @@ import org.jetbrains.annotations.NotNull;
 public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadMoreFeaturedModel> {
     private final TextView textViewTitle;
     private final TextView textViewDescription;
-    private TickerViewHolderViewHolderListener tickerViewHolderViewHolderListener;
+    private TickerViewHolderListener tickerViewHolderListener;
 
     public TickerReadMoreFeaturedViewHolder(
             View itemView,
-            TickerViewHolderViewHolderListener tickerViewHolderViewHolderListener
+            TickerViewHolderListener tickerViewHolderListener
     ) {
         super(itemView);
         textViewTitle = itemView.findViewById(R.id.txt_ticker_title);
         textViewDescription = itemView.findViewById(R.id.txt_ticker_description);
-        this.tickerViewHolderViewHolderListener = tickerViewHolderViewHolderListener;
+        this.tickerViewHolderListener = tickerViewHolderListener;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadM
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NotNull View view) {
-                tickerViewHolderViewHolderListener.onTickerReadMoreClicked();
+                tickerViewHolderListener.onTickerReadMoreClicked();
             }
 
             @Override
@@ -82,7 +82,7 @@ public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadM
         return new SpannableStringBuilder(originalText).append(" ").append(spannableText);
     }
 
-    public interface TickerViewHolderViewHolderListener {
+    public interface TickerViewHolderListener {
 
         void onTickerReadMoreClicked();
     }

@@ -10,9 +10,6 @@ import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.old.DataBindAdapter;
 import com.tokopedia.gm.R;
 
-/**
- * Created by Nisie on 2/26/16.
- */
 @Deprecated
 public class GMFeatureProductEmptyDataBinder extends BaseEmptyDataBinder {
 

@@ -88,7 +88,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         GMFeaturedProductAdapter.UseCaseListener,
         SimpleItemTouchHelperCallback.isEnabled,
         BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel>,
-        TickerReadMoreFeaturedViewHolder.TickerViewHolderViewHolderListener,
+        TickerReadMoreFeaturedViewHolder.TickerViewHolderListener,
         PowerMerchantSuccessBottomSheet.BottomSheetListener{
 
     private static final int REQUEST_CODE = 12314;

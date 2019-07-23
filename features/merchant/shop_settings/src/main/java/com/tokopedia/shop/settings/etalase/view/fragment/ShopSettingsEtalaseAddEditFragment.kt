@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.watcher.AfterTextWatcher
+import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
 import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet
 import com.tokopedia.shop.settings.R
@@ -116,7 +117,16 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     override fun onErrorAddEdit(throwable: Throwable?) {
         if (view != null && activity != null) {
             if (throwable is MessageErrorException) {
-                showRegularMerchantBottomSheet(FEATURE_ETALASE)
+                if (isIdlePowerMerchant()) {
+                    showIdlePowerMerchantBottomSheet(FEATURE_ETALASE)
+                } else if (!isPowerMerchant()) {
+                    showRegularMerchantBottomSheet(FEATURE_ETALASE)
+                } else {
+                    ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
+                            .setAction(R.string.title_retry) {
+                                saveAddEditEtalase()
+                            }.show()
+                }
             } else {
                 ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
                         .setAction(R.string.title_retry) {
@@ -124,6 +134,27 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
                         }.show()
             }
         }
+    }
+
+    private fun isIdlePowerMerchant(): Boolean {
+        return userSession.isPowerMerchantIdle
+    }
+
+    private fun isPowerMerchant(): Boolean {
+        return userSession.isGoldMerchant
+    }
+
+    private fun showIdlePowerMerchantBottomSheet(featureName: String) {
+        val title = String.format(
+                getString(R.string.bottom_sheet_idle_title),
+                featureName
+        )
+        val description = String.format(
+                getString(R.string.bottom_sheet_idle_desc),
+                featureName
+        )
+        val buttonName = getString(R.string.bottom_sheet_idle_btn)
+        showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName)
     }
 
     private fun showRegularMerchantBottomSheet(featureName: String) {
@@ -136,14 +167,14 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
                 featureName
         )
         val buttonName = getString(R.string.bottom_sheet_regular_btn)
-        showBottomSheet(title, description, buttonName)
+        showBottomSheet(title, IMG_URL_REGULAR_MERCHANT_POPUP, description, buttonName)
     }
 
-    private fun showBottomSheet(title: String, description: String, buttonName: String) {
+    private fun showBottomSheet(title: String, imageUrl : String, description: String, buttonName: String) {
         val model = PowerMerchantSuccessBottomSheet.BottomSheetModel(
                 title,
                 description,
-                IMG_URL_REGULAR_MERCHANT_POPUP,
+                imageUrl,
                 buttonName,
                 ""
         )
