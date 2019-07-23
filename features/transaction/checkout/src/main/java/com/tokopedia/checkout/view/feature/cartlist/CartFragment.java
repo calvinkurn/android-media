@@ -2052,22 +2052,24 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             } else {
                 if (recommendationItems != null) {
                     int previousItemCount = cartAdapter.getItemCount();
+                    boolean rightPosition = previousItemCount % 2 == 1;
                     for (RecommendationItem recommendationItem : recommendationItems) {
-                        boolean rightPosition = previousItemCount % 2 == 1;
                         CartRecommendationItemHolderData cartRecommendationItemHolderData =
                                 new CartRecommendationItemHolderData(recommendationItem, rightPosition);
                         cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
+                        rightPosition = !rightPosition;
                     }
                 }
             }
         } else {
             if (recommendationItems != null) {
                 int previousItemCount = cartAdapter.getItemCount();
+                boolean rightPosition = previousItemCount % 2 == 1;
                 for (RecommendationItem recommendationItem : recommendationItems) {
-                    boolean rightPosition = previousItemCount % 2 == 1;
                     CartRecommendationItemHolderData cartRecommendationItemHolderData =
                             new CartRecommendationItemHolderData(recommendationItem, rightPosition);
                     cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
+                    rightPosition = !rightPosition;
                 }
             }
         }

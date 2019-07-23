@@ -33,6 +33,13 @@ class CartRecommendationViewHolder(val view: View, val actionListener: ActionLis
         itemView.setOnClickListener {
             actionListener.onProductClicked(element.recommendationItem.productId.toString())
         }
+
+        if (element.rightPosition) {
+            itemView.setPadding(padding2, 0, padding14, 0)
+        } else {
+            itemView.setPadding(padding14, 0, padding2, 0)
+        }
+
     }
 
     override fun onImpressionTopAds(item: RecommendationItem) {
