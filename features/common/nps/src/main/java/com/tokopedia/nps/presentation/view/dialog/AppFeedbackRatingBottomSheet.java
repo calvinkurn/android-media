@@ -63,7 +63,6 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
 //                    FeedbackThankPageActivity.startActivity(getContext(), ratingValue);
 //                }
 
-                super.dismiss();
                 new AppFeedbackMessageBottomSheet();
             });
         }
