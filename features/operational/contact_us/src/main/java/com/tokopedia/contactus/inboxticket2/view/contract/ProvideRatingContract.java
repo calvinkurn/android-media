@@ -29,6 +29,9 @@ public interface ProvideRatingContract {
 
         void hideProgress();
 
+        void hideSubmitButton();
+
+        void showSubmitButton();
     }
     public interface ProvideRatingPresenter extends CustomerPresenter<ProvideRatingView> {
 

@@ -85,7 +85,9 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.functions.Func1;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToString;
 
@@ -145,6 +147,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private boolean buttonSellerSaldoStatus = false;
     private LinearLayout withdrawButtonWrapper;
 
+    private CompositeSubscription subscription;
 
     @Override
     protected String getScreenName() {
@@ -412,8 +415,12 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         Observable<Boolean> allField = nominalMapper.map(isValidNominal -> isValidNominal && isBankSelected());
 
-        allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButtonWrapper));
-        allField.subscribe(aBoolean -> canProceed((LinearLayout) withdrawButtonWrapper, aBoolean));
+        Subscription enableSubscription = allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButtonWrapper), Throwable::printStackTrace);
+        Subscription proceedSubscription = allField.subscribe(aBoolean -> canProceed((LinearLayout) withdrawButtonWrapper, aBoolean), Throwable::printStackTrace);
+
+        subscription = new CompositeSubscription();
+        subscription.add(enableSubscription);
+        subscription.add(proceedSubscription);
 
         snackBarError = ToasterError.make(getActivity().findViewById(android.R.id.content),
                 "", BaseToaster.LENGTH_LONG)
@@ -629,6 +636,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @Override
     public void onDestroy() {
         presenter.detachView();
+        if(subscription!=null) {
+            subscription.unsubscribe();
+        }
         super.onDestroy();
     }
 

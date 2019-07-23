@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.di.module;
 
 import android.content.Context;
-
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -18,35 +17,31 @@ import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
 import com.tokopedia.home.beranda.data.source.HomeDataSource;
 import com.tokopedia.home.beranda.di.HomeScope;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.SendGeolocationInfoUseCase;
+import com.tokopedia.home.beranda.domain.interactor.*;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel;
 import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import javax.inject.Named;
-
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import dagger.Module;
 import dagger.Provides;
 import kotlinx.coroutines.CoroutineDispatcher;
 import kotlinx.coroutines.Dispatchers;
 
+import javax.inject.Named;
+
 /**
  * @author by errysuprayogi on 11/28/17.
  */
 
-@Module
+@Module(includes = TopAdsWishlistModule.class)
 public class HomeModule {
 
     @HomeScope
@@ -63,8 +58,14 @@ public class HomeModule {
     }
 
     @Provides
-    protected HomeFeedPresenter homeFeedPresenter() {
-        return new HomeFeedPresenter();
+    protected HomeFeedPresenter homeFeedPresenter(
+            GetHomeFeedUseCase getHomeFeedUseCase,
+            AddWishListUseCase addWishListUseCase,
+            RemoveWishListUseCase removeWishListUseCase,
+            TopAdsWishlishedUseCase topAdsWishlishedUseCase,
+            UserSessionInterface userSessionInterface
+    ) {
+        return new HomeFeedPresenter(userSessionInterface, getHomeFeedUseCase, addWishListUseCase, removeWishListUseCase, topAdsWishlishedUseCase);
     }
 
     protected HomePresenter realHomePresenter(UserSessionInterface userSession,
@@ -119,7 +120,16 @@ public class HomeModule {
         return new GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper);
     }
 
+    @Provides
+    AddWishListUseCase provideAddWishlistUseCase(@ApplicationContext Context context){
+        return new AddWishListUseCase(context);
+    }
 
+
+    @Provides
+    RemoveWishListUseCase provideRemoveWishListUseCase(@ApplicationContext Context context){
+        return new RemoveWishListUseCase(context);
+    }
 
     @Provides
     FeedTabMapper feedTabMapper() {

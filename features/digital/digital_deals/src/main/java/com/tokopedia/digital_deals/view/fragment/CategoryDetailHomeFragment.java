@@ -92,6 +92,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private CategoriesModel categoriesModel;
     private String locationName;
     private DealsCategoryAdapter dealsAdapter;
+    private DealsBrandAdapter dealsBrandAdapter;
     private int adapterPosition = -1;
     private boolean forceRefresh;
     public static final String SEARCH_TEXT = "search_name";
@@ -298,6 +299,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         int maxBrands = Math.min(brandList.size(), itemCount);
         recyclerViewBrands.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
+        dealsBrandAdapter = new DealsBrandAdapter(brandList.subList(0, maxBrands), DealsBrandAdapter.ITEM_BRAND_HOME);
+        dealsBrandAdapter.setPageType("category");
         recyclerViewBrands.setAdapter(new DealsBrandAdapter(brandList.subList(0, maxBrands), DealsBrandAdapter.ITEM_BRAND_HOME));
     }
 

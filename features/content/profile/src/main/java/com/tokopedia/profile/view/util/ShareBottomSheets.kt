@@ -109,7 +109,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.bottomsheet_share
+        return R.layout.bottomsheet_feed_share
     }
 
     override fun state(): BottomSheetsState {
@@ -141,7 +141,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
                 .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
                 .build()
                 .inject(this)
-        mRecyclerView = view.findViewById(R.id.recyclerview)
+        mRecyclerView = view.findViewById(R.id.recyclerview_bottomsheet)
         mProgressBar = view.findViewById(R.id.progressbar)
         mLayoutError = view.findViewById(R.id.layout_error)
         mTextViewError = view.findViewById(R.id.message_error)
@@ -154,7 +154,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
 
     override fun setupDialog(dialog: Dialog?, style: Int) {
         super.setupDialog(dialog, style)
-        val btnClose = getDialog().findViewById<ImageButton>(com.tokopedia.design.R.id.btn_close)
+        val btnClose = getDialog().findViewById<ImageView>(com.tokopedia.design.R.id.btn_close)
         btnClose.setOnClickListener { dismiss() }
     }
 
