@@ -1,12 +1,14 @@
 package com.tokopedia.common_digital.common.constant
 
+import com.tokopedia.url.TokopediaUrl
+
 /**
  * Created by Rizky on 13/08/18.
  */
 object DigitalUrl {
 
     @JvmField
-    var DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/"
+    var DIGITAL_API_DOMAIN = TokopediaUrl.getInstance().PULSA_API
 
     val VERSION = "v1.4/"
 
