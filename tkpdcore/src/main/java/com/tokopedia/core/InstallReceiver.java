@@ -51,7 +51,7 @@ public class InstallReceiver extends BroadcastReceiver {
                         return Observable.just(true);
                     }
                 })
-                .subscribe();
+                .subscribe(ignored -> {}, throwable -> {});
 	}
 
     private void trackIfFromCampaignUrl(Context context,String referrer) {

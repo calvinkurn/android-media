@@ -67,4 +67,9 @@ query {
       vcc_expire_at
     }
   }
+  openDebitSettings() {
+      data {
+        redirectURL
+      }
+   }
 }

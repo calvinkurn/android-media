@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.di.module;
 
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
@@ -47,7 +48,7 @@ public class NetModule {
     @Provides
     public Retrofit provideWsV4Retrofit(@DefaultAuth OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS()).client(okHttpClient).build();
     }
 
     @WsV4QualifierWithErrorHander
@@ -55,7 +56,7 @@ public class NetModule {
     @Provides
     public Retrofit provideWsV4RetrofitWithErrorHandler(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
                                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS()).client(okHttpClient).build();
     }
 
     @AceQualifier
@@ -63,7 +64,7 @@ public class NetModule {
     @Provides
     public Retrofit provideAceRetrofit(@NoAuth OkHttpClient okHttpClient,
                                        Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.ACE_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getACE()).client(okHttpClient).build();
     }
 
     @MojitoQualifier
@@ -71,7 +72,7 @@ public class NetModule {
     @Provides
     public Retrofit provideMojitoRetrofit(@MojitoAuth OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getMOJITO()).client(okHttpClient).build();
     }
 
     @MojitoGetWishlistQualifier
@@ -79,7 +80,7 @@ public class NetModule {
     @Provides
     public Retrofit provideMojitoGetWishlistRetrofit(@MojitoSmallTimeoutNoAuth OkHttpClient okHttpClient,
                                                      Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getMOJITO()).client(okHttpClient).build();
     }
 
     @MojitoWishlistActionQualifier
@@ -87,7 +88,7 @@ public class NetModule {
     @Provides
     public Retrofit provideMojitoWishlistActionRetrofit(@MojitoNoRetryAuth OkHttpClient okHttpClient,
                                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getMOJITO()).client(okHttpClient).build();
     }
 
     @HadesQualifier
@@ -95,7 +96,7 @@ public class NetModule {
     @Provides
     public Retrofit provideHadesRetrofit(@NoAuth OkHttpClient okHttpClient,
                                          Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.HADES_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getHADES()).client(okHttpClient).build();
     }
 
     @AccountsQualifier
@@ -103,7 +104,7 @@ public class NetModule {
     @Provides
     public Retrofit provideAccountsRetrofit(@BearerAuth OkHttpClient okHttpClient,
                                             Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getACCOUNTS()).client(okHttpClient).build();
     }
 
     @YoutubeQualifier
@@ -126,7 +127,7 @@ public class NetModule {
     @Provides
     public Retrofit provideTomeRetrofit(@TomeBearerAuth OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getTOME()).client(okHttpClient).build();
     }
 
     @ResolutionQualifier
@@ -158,7 +159,7 @@ public class NetModule {
     @Provides
     public Retrofit provideUploadWsV4Retrofit(@UploadWsV4Auth OkHttpClient okHttpClient,
                                               Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS()).client(okHttpClient).build();
     }
 
     @TopAdsQualifier
@@ -166,6 +167,6 @@ public class NetModule {
     @Provides
     public Retrofit provideTopAdsRetrofit(@TopAdsQualifier OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.TOPADS_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getTA()).client(okHttpClient).build();
     }
 }

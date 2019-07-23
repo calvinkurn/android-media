@@ -1,10 +1,12 @@
 package com.tokopedia.loginregister.common.data;
 
+import com.tokopedia.url.TokopediaUrl;
+
 /**
  * @author by nisie on 10/11/18.
  */
 public class LoginRegisterUrl {
-    public static String BASE_DOMAIN = "https://accounts.tokopedia.com/";
+    public static String BASE_DOMAIN = TokopediaUrl.Companion.getInstance().getACCOUNTS();
     public static final String PATH_DISCOVER_LOGIN = "api/discover";
 
     //* ACTIVATION URL
