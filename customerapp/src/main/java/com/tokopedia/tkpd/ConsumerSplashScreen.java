@@ -79,6 +79,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
         Intent homeIntent = MainParentActivity.start(this);
         startActivity(homeIntent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finishSplashTrace();
     }
 
