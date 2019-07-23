@@ -83,7 +83,6 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
         categoryTextView = view.findViewById(R.id.tv_category_name);
         detailHolderView = view.findViewById(R.id.view_cart_detail);
         checkoutHolderView = view.findViewById(R.id.view_checkout_holder);
-        checkoutHolderView = view.findViewById(R.id.view_checkout_holder);
         inputPriceContainer = view.findViewById(R.id.input_price_container);
         inputPriceHolderView = view.findViewById(R.id.input_price_holder_view);
     }

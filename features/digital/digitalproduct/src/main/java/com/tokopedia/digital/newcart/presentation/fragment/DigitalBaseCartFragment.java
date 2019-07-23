@@ -156,7 +156,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public CheckoutDataParameter.Builder getCheckoutDataParameter() {
-        if (promoData.getState() == TickerCheckoutView.State.ACTIVE) checkoutDataParameterBuilder.voucherCode(promoData.getPromoCode());
+        checkoutDataParameterBuilder.voucherCode(promoData.getPromoCode());
         return checkoutDataParameterBuilder;
     }
 
