@@ -1,24 +1,18 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
-import android.content.Context
-import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.places.Places
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
-import com.tokopedia.logisticaddaddress.domain.mapper.AutofillMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.AutofillSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.GetDistrictSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
@@ -30,14 +24,14 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-08.
  */
+const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
 
 @AddNewAddressScope
 class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: GetDistrictUseCase,
                                                private val getDistrictMapper: GetDistrictMapper,
                                                private val autofillUseCase: AutofillUseCase,
-                                               private val autofillMapper: AutofillMapper,
                                                private val districtBoundaryUseCase: DistrictBoundaryUseCase,
-                                               private val districtBoundaryMapper: DistrictBoundaryMapper): BaseDaggerPresenter<PinpointMapListener>() {
+                                               private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapListener>() {
 
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
@@ -50,8 +44,16 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     }
 
     fun autofill(latlng: String) {
-        autofillUseCase.setParams(latlng)
-        autofillUseCase.execute(RequestParams.create(), AutofillSubscriber(view, autofillMapper))
+        autofillUseCase.execute(latlng)
+                .subscribe(
+                        {
+                            if (it.err_message.isNotEmpty()
+                                    && it.err_message[0].equals(FOREIGN_COUNTRY_MESSAGE, true)) {
+                                view.showFailedDialog()
+                            } else view.onSuccessAutofill(it.data)
+                        },
+                        { it?.printStackTrace() }, {}
+                )
     }
 
     override fun detachView() {
@@ -91,7 +93,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         }
     }
 
-    fun convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel: GetDistrictDataUiModel, zipCodes: MutableList<String>?) : SaveAddressDataModel {
+    fun convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel: GetDistrictDataUiModel, zipCodes: MutableList<String>?): SaveAddressDataModel {
         val saveAddressDataModel = SaveAddressDataModel()
         saveAddressDataModel.title = getDistrictDataUiModel.title
         saveAddressDataModel.formattedAddress = getDistrictDataUiModel.formattedAddress
@@ -109,7 +111,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         return saveAddressDataModel
     }
 
-    fun convertAutofillToSaveAddressDataUiModel(autofillDataUiModel: AutofillDataUiModel, zipCodes: MutableList<String>?) : SaveAddressDataModel {
+    fun convertAutofillToSaveAddressDataUiModel(autofillDataUiModel: AutofillDataUiModel, zipCodes: MutableList<String>?): SaveAddressDataModel {
         val saveAddressDataModel = SaveAddressDataModel()
         saveAddressDataModel.title = autofillDataUiModel.title
         saveAddressDataModel.formattedAddress = autofillDataUiModel.formattedAddress
@@ -127,7 +129,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         return saveAddressDataModel
     }
 
-    fun getSaveAddressDataModel() : SaveAddressDataModel {
+    fun getSaveAddressDataModel(): SaveAddressDataModel {
         return this.saveAddressDataModel
     }
 
@@ -142,7 +144,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                 LocationDetectorHelper(
                         permission,
                         LocationServices.getFusedLocationProviderClient(act),
-                        act) }
+                        act)
+            }
 
             locationDetectorHelper.getLocation(onGetLocation(), activity,
                     LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
@@ -150,15 +153,15 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         }
     }
 
-    private fun onGetLocation(): (DeviceLocation) -> Unit {
-        return {
-            view.showAutoComplete(it.latitude, it.longitude)
-        }
-    }
-
     fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {
         if (permissionCheckerHelper != null) {
             this.permissionCheckerHelper = permissionCheckerHelper
+        }
+    }
+
+    private fun onGetLocation(): (DeviceLocation) -> Unit {
+        return {
+            view.showAutoComplete(it.latitude, it.longitude)
         }
     }
 }
