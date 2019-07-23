@@ -532,7 +532,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public void onErrorSetCashback(Throwable t, final String productId, final int cashback) {
         if (t instanceof MessageErrorException && ((MessageErrorException) t).getErrorCode().equals(ERROR_CODE_LIMIT_CASHBACK)) {
             if (isIdlePowerMerchant()) {
-                showInActivePowerMerchantBottomSheet(FEATURE_CASHBACK);
+                showIdlePowerMerchantBottomSheet(FEATURE_CASHBACK);
             } else if (!isPowerMerchant()) {
                 showRegularMerchantBottomSheet(FEATURE_CASHBACK);
             } else {
@@ -576,7 +576,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         showBottomSheet(title, IMG_URL_REGULAR_MERCHANT_POPUP, description, buttonName);
     }
 
-    private void showInActivePowerMerchantBottomSheet(String featureName) {
+    private void showIdlePowerMerchantBottomSheet(String featureName) {
         String title = String.format(
                 getString(R.string.bottom_sheet_idle_title),
                 featureName

@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -18,6 +20,7 @@ import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;
+import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -34,17 +37,25 @@ import com.tokopedia.gm.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMDashboardPresenter;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_POWER_MERCHANT_IDLE_POPUP;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_MARKET_INSIGHT;
 
 /**
  * A placeholder fragment containing a simple view.
  * created by norman 02/01/2017
  */
 public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment
-        implements GMStatisticDashboardView, GMStatisticTransactionViewHolder.Listener, GMStatisticMarketInsightViewHolder.Listener {
+        implements GMStatisticDashboardView,
+        GMStatisticTransactionViewHolder.Listener,
+        GMStatisticMarketInsightViewHolder.Listener,
+        PowerMerchantSuccessBottomSheet.BottomSheetListener
+{
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
@@ -57,6 +68,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private GMStatisticTransactionViewHolder gmStatisticTransactionViewHolder;
     private GmStatisticBuyerViewHolder gmStatisticBuyerViewHolder;
     private GMStatisticMarketInsightViewHolder GMStatisticMarketInsightViewHolder;
+    private UserSession userSession;
+    public final String FEATURE_MARKET_INSIGHT = "Wawasan Pasar";
+
+
 
     private SnackbarRetry snackbarRetry;
 
@@ -112,6 +127,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        userSession = new UserSession(getContext());
         disableDateLabelView();
     }
 
@@ -189,7 +205,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onGetShopCategoryEmpty(boolean goldMerchant) {
-        GMStatisticMarketInsightViewHolder.bindNoShopCategory(goldMerchant);
+        GMStatisticMarketInsightViewHolder.bindNoShopCategory(goldMerchant, isIdlePowerMerchant());
     }
 
     @Override
@@ -223,8 +239,54 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onViewNotGmClicked() {
-        startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(getActivity()));
+    public void onButtonRedirectToClicked() {
+        if(isIdlePowerMerchant())
+            showIdlePowerMerchantBottomSheet(FEATURE_MARKET_INSIGHT);
+        else if(isPowerMerchant())
+            startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(getActivity()));
+
+    }
+
+    @Override
+    public void onReadMoreClicked() {
+        RouteManager.route(
+                getContext(),
+                ApplinkConstInternalGlobal.WEBVIEW, URL_MARKET_INSIGHT
+        );
+    }
+
+    private boolean isPowerMerchant() {
+        return userSession.isGoldMerchant();
+    }
+
+    private boolean isIdlePowerMerchant() {
+        return userSession.isPowerMerchantIdle();
+    }
+
+    private void showIdlePowerMerchantBottomSheet(String featureName) {
+        String title = String.format(
+                getString(R.string.bottom_sheet_idle_title),
+                featureName
+        );
+        String description = String.format(
+                getString(R.string.bottom_sheet_idle_desc),
+                featureName
+        );
+        String buttonName = getString(R.string.bottom_sheet_idle_btn);
+        showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName);
+    }
+
+    private void showBottomSheet(String title, String imageUrl, String description, String buttonName) {
+        PowerMerchantSuccessBottomSheet.BottomSheetModel model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                title,
+                description,
+                imageUrl,
+                buttonName,
+                ""
+        );
+        PowerMerchantSuccessBottomSheet bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model);
+        bottomSheet.setListener(this);
+        bottomSheet.show(getChildFragmentManager(), "merchant_warning_bottom_sheet");
     }
 
     private void showSnackbarRetry() {
@@ -258,5 +320,15 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onViewNotGmClicked() {
+
+    }
+
+    @Override
+    public void onButtonClicked() {
+
     }
 }

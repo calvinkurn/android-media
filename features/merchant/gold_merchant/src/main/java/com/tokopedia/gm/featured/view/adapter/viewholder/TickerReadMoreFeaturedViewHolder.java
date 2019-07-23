@@ -1,30 +1,16 @@
 package com.tokopedia.gm.featured.view.adapter.viewholder;
 
 import android.graphics.Color;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.AppCompatImageView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
-import com.tokopedia.base.list.seller.view.adapter.viewholder.BaseMultipleCheckViewHolder;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.gm.R;
-import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
-import com.tokopedia.gm.featured.helper.ItemTouchHelperViewHolder;
-import com.tokopedia.gm.featured.helper.OnStartDragListener;
-import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
 import com.tokopedia.gm.featured.view.adapter.model.TickerReadMoreFeaturedModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +61,7 @@ public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadM
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NotNull View view) {
-                tickerViewHolderViewHolderListener.onReadMoreClicked();
+                tickerViewHolderViewHolderListener.onTickerReadMoreClicked();
             }
 
             @Override
@@ -96,6 +82,6 @@ public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadM
 
     public interface TickerViewHolderViewHolderListener {
 
-        void onReadMoreClicked();
+        void onTickerReadMoreClicked();
     }
 }

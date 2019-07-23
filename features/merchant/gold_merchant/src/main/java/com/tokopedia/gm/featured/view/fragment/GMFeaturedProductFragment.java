@@ -71,6 +71,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_ICON_LOCK_WHITE_GREEN;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_FEATURED_PRODUCT;
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_POWER_MERCHANT_SCORE_TIPS;
 
 /**
@@ -82,9 +83,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         OnStartDragListener,
         GMFeaturedProductAdapter.UseCaseListener,
         SimpleItemTouchHelperCallback.isEnabled,
-        BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel> ,
-        TickerReadMoreFeaturedViewHolder.TickerViewHolderViewHolderListener
-{
+        BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel>,
+        TickerReadMoreFeaturedViewHolder.TickerViewHolderViewHolderListener {
 
     private static final int REQUEST_CODE = 12314;
     private static final int MAX_ITEM = 5;
@@ -110,7 +110,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     @Override
     protected BaseListAdapter<GMFeaturedProductModel> getNewAdapter() {
-        GMFeaturedProductAdapter gmFeaturedProductAdapter = new GMFeaturedProductAdapter(this,this);
+        GMFeaturedProductAdapter gmFeaturedProductAdapter = new GMFeaturedProductAdapter(this, this);
         gmFeaturedProductAdapter.setUseCaseListener(this);
         gmFeaturedProductAdapter.setCheckedCallback(this);
         return gmFeaturedProductAdapter;
@@ -159,8 +159,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     private void showUpgradeOverlay() {
         textViewOverlay.setText(createDescriptionWithSpannable(
-                "Pajang produk terbaikmu dengan fitur Produk Unggulan.",
-                "Selengkapnya"
+                getString(R.string.gm_featured_product_overlay_desc),
+                getString(R.string.gm_featured_product_overlay_read_more)
         ));
         viewOverlayRegularMerchant.setVisibility(View.VISIBLE);
         buttonOverlay.setOnClickListener(new View.OnClickListener() {
@@ -169,9 +169,9 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
             }
         });
-        buttonOverlay.setText("Upgrade Tokomu");
+        buttonOverlay.setText(getString(R.string.gm_featured_product_overlay_upgrade_shop));
         ImageHandler imageHandler = new ImageHandler(getContext());
-        imageHandler.loadImage(imageViewOverlay,IMG_URL_ICON_LOCK_WHITE_GREEN);
+        imageHandler.loadImage(imageViewOverlay, IMG_URL_ICON_LOCK_WHITE_GREEN);
 
     }
 
@@ -187,7 +187,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NotNull View view) {
-
+                RouteManager.route(
+                        getContext(),
+                        ApplinkConstInternalGlobal.WEBVIEW, URL_FEATURED_PRODUCT
+                );
             }
 
             @Override
@@ -338,8 +341,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     protected void showViewList(@NonNull List<GMFeaturedProductModel> list) {
         super.showViewList(list);
-        if(!adapter.isEmpty()){
-            if(isIdlePowerMerchant()){
+        if (!adapter.isEmpty()) {
+            if (isIdlePowerMerchant()) {
                 addTickerIdlePowerMerchant();
             }
         }
@@ -652,7 +655,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
-    public void onReadMoreClicked() {
+    public void onTickerReadMoreClicked() {
         RouteManager.route(
                 getContext(),
                 ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS

@@ -13,4 +13,10 @@
 
     <string name="gm_featured_product_submit_failed_title">Submit gagal</string>
     <string name="gm_featured_product_submit_failed_desc">Apakah anda ingin mencoba lagi ?</string>
+    <string name="gm_featured_product_overlay_desc">Pajang produk terbaikmu dengan fitur Produk Unggulan.</string>
+    <string name="gm_featured_product_overlay_read_more">Selengkapnya</string>
+    <string name="gm_featured_product_overlay_upgrade_shop">Upgrade Tokomu</string>
+
+
+
 </resources>
