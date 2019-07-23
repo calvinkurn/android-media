@@ -32,6 +32,7 @@
         android:text="@string/message_feedback_message" />
 
     <com.tokopedia.design.component.EditTextCompat
+        android:id="@+id/message_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
