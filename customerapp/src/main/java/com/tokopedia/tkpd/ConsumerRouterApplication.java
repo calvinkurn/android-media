@@ -90,6 +90,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.ovop2p.OvoP2pRouter;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
@@ -254,7 +255,6 @@ import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.NpsRouter;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
-import com.tokopedia.officialstore.activity.OldReactNativeOfficialStoreActivity;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
@@ -509,12 +509,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TradeInRouter,
         ProductDetailRouter,
         OvoPayWithQrRouter,
+        OvoP2pRouter,
         TopAdsAutoRouter,
-        KYCRouter {
-
-
-    private final static int IRIS_ROW_LIMIT = 50;
-    private final static long IRIS_TIME_MINUTES = 15;
+        KYCRouter{
 
     private static final String EXTRA = "extra";
 
@@ -2609,11 +2606,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 AppEventTracking.MOENGAGE.LOGIN_STATUS, legacySessionHandler().isV4Login()
         );
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
-    }
-
-    @Override
-    public Intent getOldOfficialStore(Context context) {
-        return OldReactNativeOfficialStoreActivity.getIntent(context);
     }
 
     @Override

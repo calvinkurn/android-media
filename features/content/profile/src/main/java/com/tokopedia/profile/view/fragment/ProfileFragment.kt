@@ -46,6 +46,7 @@ import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -59,6 +60,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
@@ -117,6 +119,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     PollAdapter.PollOptionListener,
     GridPostAdapter.GridItemListener,
     VideoViewHolder.VideoViewListener,
+    FeedMultipleImageView.FeedMultipleImageViewListener,
     EmptyAffiliateViewHolder.OnEmptyItemClickedListener {
 
     private var userId: Int = 0
@@ -200,79 +203,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         presenter.attachView(this)
         initVar(savedInstanceState)
         super.onViewCreated(view, savedInstanceState)
-        layoutManager = recyclerView.layoutManager as GridLayoutManager
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy < 0) { // going up
-                    if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
-                        showFooterOthers()
-                    }
-                } else if (dy > 0) { // going down
-                    if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
-                }
-            }
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                try {
-                    if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        val item: Visitable<*>?
-
-                        val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-                        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-                        val isItemFullScreen = lastVisibleItemPosition - firstVisibleItemPosition == 0
-                        val position = if (isItemFullScreen) {
-                            lastVisibleItemPosition
-                        } else {
-                            val findFirstCompletelyVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                            if (findFirstCompletelyVisibleItemPosition != -1) {
-                                findFirstCompletelyVisibleItemPosition
-                            } else {
-                                val findLastCompletelyVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
-                                if (findLastCompletelyVisibleItemPosition != -1) {
-                                    findLastCompletelyVisibleItemPosition
-                                } else {
-                                    0
-                                }
-                            }
-                        }
-                        item = adapter.list[position]
-
-                        if (item is DynamicPostViewModel) {
-                            if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
-                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
-                            }
-                        }
-                    }
-                } catch (e: Throwable) {
-                }
-            }
-        })
-        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            val spacing = context!!.resources.getDimensionPixelOffset(R.dimen.dp_16)
-            val halfSpacing = spacing / 2
-            val spanCount = 2
-            override fun getItemOffsets(outRect: Rect, view: View,
-                                        parent: RecyclerView, state: RecyclerView.State) {
-                // if in feed mode, will have no item decoration
-                if (hasFeed()) return
-                val position = parent.getChildAdapterPosition(view)
-                val viewType = adapter.getItemViewType(position)
-                val inGrid = viewType == OtherRelatedProfileViewHolder.LAYOUT
-                if (inGrid) {
-                    val column = position % spanCount
-                    if (column == 0) {
-                        outRect.left = spacing
-                        outRect.right = halfSpacing
-                    } else {
-                        outRect.left = halfSpacing
-                        outRect.right = spacing
-                    }
-                    outRect.bottom = spacing
-                }
-            }
-        })
     }
 
     override fun onStart() {
@@ -372,6 +303,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             this,
             this,
             this,
+                this,
             this,
             this::onOtherProfilePostItemClick,
             userSession)
@@ -1066,9 +998,59 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         isOwner = userId.toString() == userSession.userId
 
+        layoutManager = recyclerView.layoutManager as GridLayoutManager
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy < 0) { // going up
+                    if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
+                        showFooterOthers()
+                    }
+                } else if (dy > 0) { // going down
+                    if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                try {
+                    if (hasFeed()
+                            && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        recyclerView?.let {
+                            FeedScrollListener.onFeedScrolled(it, adapter.list)
+                        }
+                    }
+                } catch (e: IndexOutOfBoundsException) {
+                }
+            }
+        })
+        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            val spacing = context!!.resources.getDimensionPixelOffset(R.dimen.dp_16)
+            val halfSpacing = spacing / 2
+            val spanCount = 2
+            override fun getItemOffsets(outRect: Rect, view: View,
+                                        parent: RecyclerView, state: RecyclerView.State) {
+                // if in feed mode, will have no item decoration
+                if (hasFeed()) return
+                val position = parent.getChildAdapterPosition(view)
+                val viewType = adapter.getItemViewType(position)
+                val inGrid = viewType == OtherRelatedProfileViewHolder.LAYOUT
+                if (inGrid) {
+                    val column = position % spanCount
+                    if (column == 0) {
+                        outRect.left = spacing
+                        outRect.right = halfSpacing
+                    } else {
+                        outRect.left = halfSpacing
+                        outRect.right = spacing
+                    }
+                    outRect.bottom = spacing
+                }
+            }
+        })
     }
 
-    internal fun hasFeed(): Boolean {
+    private fun hasFeed(): Boolean {
         return (adapter.list != null
             && !adapter.list.isEmpty()
             && adapter.list[0] !is NoPostCardViewModel
