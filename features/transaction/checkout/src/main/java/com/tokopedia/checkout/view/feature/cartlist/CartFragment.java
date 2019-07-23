@@ -1914,8 +1914,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 
-    boolean firstTime = true;
-
     @Override
     public InsuranceCartShops getInsuranceCartShopData() {
         try {
@@ -1954,63 +1952,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
 //                            cartAdapter.getAllCartShopHolderData();
 
+                        } else {
+                            cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
                         }
                     }
                 }
             }
         }
-
-        if (!firstTime) {
-            /*if (cartListData.getAdsModel() != null) {
-                cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
-            }
-            dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
-            if (cbSelectAll != null) {
-                cbSelectAll.setChecked(cartListData.isAllSelected());
-            }
-
-            cartAdapter.checkForShipmentForm();
-
-            if (toolbar != null) {
-                setVisibilityRemoveButton(true);
-            } else {
-                if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
-                    mIsMenuVisible = true;
-                    getActivity().invalidateOptionsMenu();
-                }
-            }
-            cartPageAnalytics.eventViewCartListFinishRender();
-
-            if (recentViewList == null) {
-                dPresenter.processGetRecentViewData();
-            } else {
-                renderRecentView(null);
-            }
-
-            if (wishLists == null) {
-                dPresenter.processGetWishlistData();
-            } else {
-                renderWishlist(null);
-            }
-
-            if (recommendationList == null) {
-                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
-            } else {
-                renderRecommendation(null);
-            }
-
-            if (toolbar != null) {
-                setVisibilityRemoveButton(!cartListData.getShopGroupDataList().isEmpty());
-            } else {
-                if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
-                    mIsMenuVisible = true;
-                    getActivity().invalidateOptionsMenu();
-                }
-            }*/
-        }
-
-        firstTime = false;
-
 
     }
 
