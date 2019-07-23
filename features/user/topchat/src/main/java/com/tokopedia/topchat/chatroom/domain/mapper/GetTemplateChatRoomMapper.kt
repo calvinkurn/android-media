@@ -17,13 +17,18 @@ import javax.inject.Inject
 class GetTemplateChatRoomMapper @Inject constructor() : Func1<Response<DataResponse<TemplateData>>, GetTemplateViewModel> {
 
     override fun call(response: Response<DataResponse<TemplateData>>): GetTemplateViewModel {
-        if (response.body().header == null ||
-                (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                (response.body().header != null && response.body().header.messages[0].isBlank())) {
-            val pojo: TemplateData = response.body().data
-            return convertToDomain(pojo)
+        val body = response.body()
+        if(body != null) {
+            if (body.header == null ||
+                    (body.header != null && body.header.messages.isEmpty()) ||
+                    (body.header != null && body.header.messages[0].isBlank())) {
+                val pojo: TemplateData = body.data
+                return convertToDomain(pojo)
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 

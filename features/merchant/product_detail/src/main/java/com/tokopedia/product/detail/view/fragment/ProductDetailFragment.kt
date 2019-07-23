@@ -434,6 +434,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
          et_search.setOnClickListener { v ->
             RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
         }
+        et_search.hint = String.format(getString(R.string.pdp_search_hint),"")
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {

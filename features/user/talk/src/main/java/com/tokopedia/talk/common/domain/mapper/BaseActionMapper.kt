@@ -16,18 +16,23 @@ class BaseActionMapper @Inject constructor() : Func1<Response<DataResponse<BaseA
         BaseActionTalkViewModel> {
 
     override fun call(response: Response<DataResponse<BaseActionTalkPojo>>): BaseActionTalkViewModel {
-        if (response.body().header == null ||
-                (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                (response.body().header != null && response.body().header.messages[0].isBlank())) {
-            val pojo: BaseActionTalkPojo = response.body().data
+        val body = response.body()
+        if (body != null) {
+            if (body.header == null ||
+                    (body.header != null && body.header.messages.isEmpty()) ||
+                    (body.header != null && body.header.messages[0].isBlank())) {
+                val pojo: BaseActionTalkPojo = body.data
 
-            if (pojo.is_success == 1) {
-                return mapToViewModel(pojo)
+                if (pojo.is_success == 1) {
+                    return mapToViewModel(pojo)
+                } else {
+                    throw MessageErrorException("")
+                }
             } else {
-                throw MessageErrorException("")
+                throw MessageErrorException(body.header.messages[0])
             }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 
