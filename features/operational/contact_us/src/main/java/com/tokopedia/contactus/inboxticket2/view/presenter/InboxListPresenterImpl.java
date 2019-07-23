@@ -237,6 +237,11 @@ public class InboxListPresenterImpl
         }
     }
 
+    @Override
+    public void refreshLayout() {
+
+    }
+
     private void checkIfToLoad(LinearLayoutManager layoutManager) {
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();

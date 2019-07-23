@@ -60,7 +60,7 @@
         android:layout_height="@dimen/dp_25"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
-        android:background="@drawable/digital_topup_ic_close"
+        android:background="@drawable/digital_bg_topup_close"
         android:paddingBottom="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="@+id/ac_input_number"
         app:layout_constraintEnd_toStartOf="@+id/contact_picker_layout"
@@ -105,7 +105,7 @@
             android:id="@+id/btn_copy_promo"
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_25"
-            android:background="@drawable/digital_topup_ic_contact" />
+            android:background="@drawable/digital_bg_topup_contact_picker" />
 
     </LinearLayout>
 

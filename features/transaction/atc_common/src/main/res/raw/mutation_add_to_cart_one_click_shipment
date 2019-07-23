@@ -1,0 +1,23 @@
+mutation atcOCS($params: AtcOcsParams) {
+ atcOCS(params: $params) {
+	error_message
+  status
+  data {
+    success
+    message
+    data {
+      cart_id
+      product_id
+      quantity
+      notes
+      shop_id
+      warehouse_id
+      customer_id
+      tracker_attribution
+      tracker_list_name
+      uc_ut_param
+      is_trade_in
+    }
+  }
+ }
+}

@@ -11,9 +11,12 @@
     <string name="label_cancel">Batal</string>
     <string name="label_yes">Ya</string>
     <string name="label_login_button">Masuk</string>
+    <string name="branding">Powered by</string>
 
     <string name="label_browse_file">Browse File</string>
     <string name="label_see_all">Lihat Semua</string>
+    <string name="upld_fail_retry">Gagal mengupload foto. Silahkan ulangi kembali</string>
+    <string name="oke">OKE</string>
 
     <string name="label_share">Bagikan</string>
 
