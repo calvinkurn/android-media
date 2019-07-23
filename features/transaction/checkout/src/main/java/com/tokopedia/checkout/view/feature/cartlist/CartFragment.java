@@ -2051,9 +2051,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         if (recommendationItems != null) {
             // Render from API, add from cache first
-            if (recommendationList != null && recommendationList.size() != 0) {
-                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
-            }
             for (RecommendationItem recommendationItem : recommendationItems) {
                 CartRecommendationItemHolderData cartRecommendationItemHolderData =
                         new CartRecommendationItemHolderData(recommendationItem);
