@@ -8,10 +8,10 @@ import com.tokopedia.iris.DEFAULT_MAX_ROW
 import com.tokopedia.iris.JOB_IRIS_ID
 import com.tokopedia.iris.MAX_ROW
 import com.tokopedia.iris.data.TrackingRepository
+import com.tokopedia.iris.worker.IrisExecutor.handler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -20,10 +20,10 @@ import kotlin.coroutines.CoroutineContext
 class IrisService : JobIntentService(), CoroutineScope {
 
     private lateinit var mContext: Context
-    private val job: Job = Job()
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + job
+    override val coroutineContext: CoroutineContext by lazy {
+        IrisExecutor.executor + handler
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -45,7 +45,7 @@ class IrisService : JobIntentService(), CoroutineScope {
     }
 
     private fun startService(maxRow: Int) {
-        runBlocking(coroutineContext) {
+        launch(coroutineContext + Dispatchers.IO) {
             try {
                 val trackingRepository = TrackingRepository(applicationContext)
                 trackingRepository.sendRemainingEvent(maxRow)
@@ -57,11 +57,6 @@ class IrisService : JobIntentService(), CoroutineScope {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!job.isCancelled) {
-            job.children.forEach {
-                it.cancel()
-            }
-        }
     }
 }
 
