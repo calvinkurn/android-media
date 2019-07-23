@@ -29,6 +29,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
         element.mediaItemList.forEach{
             it.positionInFeed = element.positionInFeed
         }
+
         itemView.feedMultipleImageView.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
@@ -46,8 +47,17 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
                     }
                 }
         )
+        itemView.feedMultipleImageView.setOnClickListener{
+            if (isSingleItemVideo(element)) {
+                val mediaItem = element.mediaItemList.get(0)
+                if (canPlayVideo(mediaItem)) {
+                    playVideo(mediaItem.videos.get(0).url)
+                }
+            }
+        }
         itemView.feedMultipleImageView.bind(element.mediaItemList, feedType)
         itemView.feedMultipleImageView.setFeedMultipleImageViewListener(feedMultipleImageViewListener)
+
         if (isSingleItemVideo(element)) {
             val mediaItem = element.mediaItemList.get(0)
             if (canPlayVideo(mediaItem)) {
