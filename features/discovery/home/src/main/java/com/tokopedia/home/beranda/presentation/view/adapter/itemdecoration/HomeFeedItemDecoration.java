@@ -45,7 +45,7 @@ public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
         if (viewPosition < 0 || viewPosition > adapter.getItemCount() - 1) {
             return false;
         }
-        return adapter.getItemViewType(viewPosition) == HomeFeedViewHolder.LAYOUT;
+        return adapter.getItemViewType(viewPosition) == HomeFeedViewHolder.Companion.getLAYOUT();
     }
 
     private boolean isTopProductItem(int viewPosition) {

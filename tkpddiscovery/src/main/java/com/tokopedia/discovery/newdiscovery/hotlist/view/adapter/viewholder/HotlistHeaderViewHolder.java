@@ -168,8 +168,9 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     @Override
     public void selectFilter(String typeFilter) {
         String[] str = typeFilter.split("=");
-        mHotlistListener.onQuickFilterSelected(str[0], str[1]);
-
+        if(str.length > 1) {
+            mHotlistListener.onQuickFilterSelected(str[0], str[1]);
+        }
     }
 
     private static class HasTagAdapter extends RecyclerView.Adapter<HasTagAdapter.ItemViewHolder> {

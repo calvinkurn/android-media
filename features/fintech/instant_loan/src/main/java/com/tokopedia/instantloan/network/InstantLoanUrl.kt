@@ -1,11 +1,12 @@
 package com.tokopedia.instantloan.network
 
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.BaseUrl.WEB_DOMAIN
 
 object InstantLoanUrl {
 
     object BaseUrl {
-        lateinit var WEB_DOMAIN : String
+        var WEB_DOMAIN : String = TokopediaUrl.getInstance().WEB
     }
 
     object COMMON_URL{

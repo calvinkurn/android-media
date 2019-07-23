@@ -1,8 +1,7 @@
 package com.tokopedia.core.network.apiservices.tome;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.retrofit.services.AuthService;
-import com.tokopedia.core.network.retrofit.services.BaseService;
 
 import retrofit2.Retrofit;
 
@@ -21,7 +20,7 @@ public class TomeService extends AuthService<TomeApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.TOME_DOMAIN;
+        return TokopediaUrl.Companion.getInstance().getTOME();
     }
 
     @Override
