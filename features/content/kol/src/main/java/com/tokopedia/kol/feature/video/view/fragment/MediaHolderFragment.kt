@@ -181,7 +181,7 @@ class MediaHolderFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun showErrorLayout(isShowRetry: Boolean) {
+    private fun showErrorLayout(isShowRetry: Boolean = true) {
         error_layout?.visible()
         btn_retry.shouldShowWithAction(isShowRetry){
             btn_retry.setOnClickListener {
