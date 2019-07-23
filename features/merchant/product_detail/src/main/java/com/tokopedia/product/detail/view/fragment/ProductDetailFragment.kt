@@ -1343,10 +1343,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         context?.let {
             if (wishlisted) {
                 fab_detail.isActivated = true
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
+                fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_checked))
+                fab_detail.show()
             } else {
                 fab_detail.isActivated = false
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                fab_detail.show()
             }
         }
     }
