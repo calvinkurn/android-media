@@ -630,7 +630,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.goldOS?.shopTypeString,
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType)
-                if(!::tradeInParams.isInitialized) {
+                if(::tradeInParams.isInitialized) {
                     intent.putExtra(NormalCheckoutActivity.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
                 startActivityForResult(intent,

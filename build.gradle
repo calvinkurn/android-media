@@ -68,6 +68,10 @@ allprojects {
             }
         }
         maven { url "https://www.jitpack.io" }
+        maven {
+            url "https://jitpack.io"
+            credentials { username authToken }
+        }
         maven { url "$rootDir/node_modules/react-native/android" }
         flatDir {
             dirs '../aars'
