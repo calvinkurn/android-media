@@ -4,7 +4,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_20"
+    android:paddingTop="@dimen/dp_20"
+    android:paddingLeft="@dimen/dp_20"
+    android:paddingRight="@dimen/dp_20"
     android:gravity="center_horizontal"
     android:layout_marginBottom="@dimen/dp_10">
 
@@ -12,7 +14,7 @@
         android:id="@+id/txt_success_header_bs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Title"
+        tools:text="Yaah, Fitur [Fitur] hanya dapat diakses Power Merchant aktif"
         android:textColor="@color/black"
         app:fontSize="subHeadline"
         android:textStyle="bold"
@@ -22,9 +24,8 @@
     
     <ImageView
         android:id="@+id/img_btm_sheets"
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_200"
-        android:src="@drawable/bg_all_promo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginBottom="@dimen/dp_20"
         />
 
@@ -32,7 +33,7 @@
         android:id="@+id/txt_success_desc_bs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Description"
+        tools:text="Skor performa tokomu kurang dari 65 poin. Segera tingkatkan performa toko untuk menggunakan [Fitur] dan fitur eksklusif Power Merchant lainnya kembali."
         android:gravity="center"
         app:fontSize="micro"
         android:layout_marginBottom="@dimen/dp_20"/>
@@ -42,7 +43,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Button.Submit.Green.Full"
-        android:layout_marginBottom="@dimen/dp_64"
         tools:text="Button Text"/>
 
 </LinearLayout>
