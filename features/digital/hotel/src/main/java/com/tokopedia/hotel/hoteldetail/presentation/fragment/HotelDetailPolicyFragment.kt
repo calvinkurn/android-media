@@ -26,6 +26,7 @@ class HotelDetailPolicyFragment : BaseListFragment<PropertyPolicyData, HotelDeta
 
         if (::connector.isInitialized) {
             setupPolicySwitcher()
+            recycler_view.isFocusable = false
         }
     }
 

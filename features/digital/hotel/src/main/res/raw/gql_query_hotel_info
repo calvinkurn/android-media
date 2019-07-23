@@ -77,6 +77,8 @@ propertyDetail(input: $data){
   propertyPolicy {
     name
     content
+    icon
+    iconUrl
     propertyPolicyId
   }
 }
