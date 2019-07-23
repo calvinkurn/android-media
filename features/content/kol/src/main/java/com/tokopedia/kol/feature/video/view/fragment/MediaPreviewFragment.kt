@@ -232,35 +232,44 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
         }
 
-        groupLike.setOnClickListener {
-            if (mediaPreviewViewModel.isSessionActive) {
-                mediaPreviewViewModel.doLikePost(!footer.isLiked, this::onErrorLikePost)
-            } else {
-                activity?.let {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN)
-                }
-            }
-        }
+        icon_thumb.setOnClickListener { doLikePost(!footer.isLiked) }
+        label_like.setOnClickListener { doLikePost(!footer.isLiked) }
 
         groupComment.shouldShowWithAction(template?.comment == true){
             label_comment.text = if (footer.totalComment > 0) footer.totalComment.toString()
                 else getString(R.string.kol_action_comment)
         }
 
-        groupComment.setOnClickListener {
-            activity?.let {
-                val (intent, reqCode) = if (mediaPreviewViewModel.isSessionActive)
-                    KolCommentActivity.getCallingIntent(it, mediaPreviewViewModel.postId.toInt(), 0) to REQ_CODE_COMMENT
-                else RouteManager.getIntent(it, ApplinkConst.LOGIN) to REQ_CODE_LOGIN
-
-                startActivityForResult(intent, reqCode)
-            }
-        }
+        icon_comment.setOnClickListener { doComment() }
+        label_comment.setOnClickListener { doComment() }
 
         groupShare.showWithCondition(template?.share == true)
-        groupShare.setOnClickListener {
+
+        icon_share.setOnClickListener { doShare(String.format("%s %s", footer.shareData.description, footer.shareData.url)
+                , footer.shareData.title) }
+        label_share.setOnClickListener {
             doShare(String.format("%s %s", footer.shareData.description, footer.shareData.url)
                     , footer.shareData.title)
+        }
+    }
+
+    private fun doLikePost(isLikeAction: Boolean) {
+        if (mediaPreviewViewModel.isSessionActive) {
+            mediaPreviewViewModel.doLikePost(isLikeAction, this::onErrorLikePost)
+        } else {
+            activity?.let {
+                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN)
+            }
+        }
+    }
+
+    private fun doComment() {
+        activity?.let {
+            val (intent, reqCode) = if (mediaPreviewViewModel.isSessionActive)
+                KolCommentActivity.getCallingIntent(it, mediaPreviewViewModel.postId.toInt(), 0) to REQ_CODE_COMMENT
+            else RouteManager.getIntent(it, ApplinkConst.LOGIN) to REQ_CODE_LOGIN
+
+            startActivityForResult(intent, reqCode)
         }
     }
 
