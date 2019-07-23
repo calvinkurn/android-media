@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.locationmanager)
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 

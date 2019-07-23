@@ -9,6 +9,7 @@ import android.os.Parcelable
  * Created by fwidjaja on 2019-05-28.
  */
 data class SaveAddressDataModel (
+        var id: Int = 0,
         var title: String = "",
         var formattedAddress: String = "",
         var addressName: String = "",
@@ -27,6 +28,7 @@ data class SaveAddressDataModel (
         var zipCodes: List<String> = emptyList()) : Parcelable {
 
     constructor(parcel: Parcel) : this(
+            parcel.readInt(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -46,6 +48,7 @@ data class SaveAddressDataModel (
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
         parcel.writeString(title)
         parcel.writeString(formattedAddress)
         parcel.writeString(addressName)

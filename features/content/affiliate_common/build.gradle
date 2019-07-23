@@ -27,6 +27,7 @@ project.ext {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.graphql)

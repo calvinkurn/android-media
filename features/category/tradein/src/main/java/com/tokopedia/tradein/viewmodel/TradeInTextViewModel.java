@@ -37,6 +37,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
         if (activityWeakReference.get() != null) {
             FragmentManager fragmentManager = activityWeakReference.get().getSupportFragmentManager();
             AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
+            accessDialog.setNegativeButton("");
             accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
         }
     }
