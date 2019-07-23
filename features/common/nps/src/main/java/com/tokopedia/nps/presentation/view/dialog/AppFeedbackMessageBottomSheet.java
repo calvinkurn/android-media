@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.nps.R;
+import com.tokopedia.nps.presentation.di.DaggerFeedbackComponent;
 import com.tokopedia.nps.presentation.di.FeedbackComponent;
 import com.tokopedia.nps.presentation.di.FeedbackModule;
 import com.tokopedia.nps.presentation.presenter.FeedbackPresenter;

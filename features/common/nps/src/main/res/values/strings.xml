@@ -26,6 +26,7 @@
     <string name="message_feedback_title">Bantu kami menggapai bintang!</string>
     <string name="message_feedback_message">Yuk, berikan masukan agar Tokopedia bisa lebih memenuhi kebutuhanmu.</string>
     <string name="message_feedback_send_button_label">Beri Masukan</string>
+    <string name="message_feedback_hint">Tulis masukanmu di sini</string>
 
     <string name="fb_app_title">Feedback</string>
     <string name="fb_title">Ayo Terlibat Langsung dalam Peningkatan Kualitas Aplikasi Tokopedia</string>
