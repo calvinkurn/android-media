@@ -138,18 +138,18 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {
-                checkIsPowerMerchant();
+                checkMerchantStatus();
             }
 
             @Override
             public void onEmptyButtonClicked() {
-                checkIsPowerMerchant();
+                checkMerchantStatus();
             }
         });
         return emptyDataBinder;
     }
 
-    private void checkIsPowerMerchant() {
+    private void checkMerchantStatus() {
         if (!isPowerMerchant() || isIdlePowerMerchant()) {
             showUpgradeOverlay();
         } else {
@@ -397,7 +397,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private boolean isIdlePowerMerchant() {
-        return userSession.isPowerMerchantIdle();
+        return !userSession.isPowerMerchantIdle();
     }
 
     private void addTickerIdlePowerMerchant() {
