@@ -30,11 +30,8 @@ public class FeedScrollListener {
     public static void onFeedScrolled(RecyclerView recyclerView, List<Visitable> list) {
         if (canAutoplayVideo(recyclerView)) {
             LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-
             int firstPosition = layoutManager.findFirstVisibleItemPosition();
             int lastPosition = layoutManager.findLastVisibleItemPosition();
-
-
             for (int i = firstPosition; i <= lastPosition; i++) {
                 if (isVideoCard(list, i)) {
                     VideoViewModel item = getVideoCardViewModel(list, i);
