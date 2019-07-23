@@ -12,7 +12,8 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
-import javax.annotation.Nullable;
+import android.support.annotation.Nullable;
+
 
 public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
     private static final String REACT_CLASS = "RNCViewPager";
