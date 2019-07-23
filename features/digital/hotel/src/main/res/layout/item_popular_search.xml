@@ -41,7 +41,9 @@
                 android:layout_height="wrap_content"
                 app:fontSize="small"
                 app:weight="medium"
-                tools:text="Jakarta" />
+                tools:text="Jakarta"
+                app:textViewTheme="lightPrimary"
+                />
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
