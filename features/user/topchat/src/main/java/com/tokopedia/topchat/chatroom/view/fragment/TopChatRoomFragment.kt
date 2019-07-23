@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -49,6 +50,7 @@ import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatChatMenuFactory
 import com.tokopedia.topchat.chatroom.view.customview.*
 import com.tokopedia.topchat.chatroom.view.listener.*
@@ -62,9 +64,10 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import java.lang.IllegalStateException
+import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -74,7 +77,7 @@ import javax.inject.Inject
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener,
-        TopChatVoucherListener {
+        TopChatVoucherListener, InvoiceThumbnailListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -428,15 +431,25 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().clearEditText()
     }
 
+    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
+        return TopChatTypeFactoryImpl(
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this
+        )
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return TopChatRoomAdapter(TopChatTypeFactoryImpl(
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this))
+        if (adapterTypeFactory !is TopChatTypeFactoryImpl) {
+            throw IllegalStateException("getAdapterTypeFactory() must return TopChatTypeFactoryImpl")
+        }
+        val typeFactory = adapterTypeFactory as TopChatTypeFactoryImpl
+        return TopChatRoomAdapter(typeFactory)
     }
 
     override fun addDummyMessage(visitable: Visitable<*>) {
@@ -463,8 +476,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
         return {
-            getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
-                    .name, sendMessage, startTime)
             analytics.eventSendMessage()
             getViewState().scrollToBottom()
             clearEditText()
@@ -678,25 +689,27 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun onSuccessAddToCart(): (addToCartResult: AddToCartResult) -> Unit {
+    private fun onSuccessAddToCart(): (addToCartResult: AddToCartDataModel) -> Unit {
         return {
             showSnackbarAddToCart(it)
         }
     }
 
-    private fun showSnackbarAddToCart(it: AddToCartResult) {
-        if(it.isSuccess) {
-            ToasterNormal.make(view, it.message, ToasterNormal.LENGTH_LONG).show()
-        }else {
-            ToasterError.make(view, it.message, ToasterNormal.LENGTH_LONG).show()
+    private fun showSnackbarAddToCart(it: AddToCartDataModel) {
+        if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
+            ToasterNormal.make(view, it.data.message[0], ToasterNormal.LENGTH_LONG).show()
+        } else {
+            ToasterError.make(view, it.errorMessage[0], ToasterNormal.LENGTH_LONG).show()
         }
     }
 
-    private fun onSuccessBuyFromProdAttachment(): (addToCartResult: AddToCartResult) -> Unit {
+    private fun onSuccessBuyFromProdAttachment(): (addToCartResult: AddToCartDataModel) -> Unit {
         return {
             showSnackbarAddToCart(it)
-            activity?.startActivity((activity!!.application as TopChatRouter)
-                    .getCartIntent(activity))
+            if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
+                activity?.startActivity((activity!!.application as TopChatRouter)
+                        .getCartIntent(activity))
+            }
         }
     }
 
@@ -852,5 +865,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun createChatMenuFactory(): ChatMenuFactory {
         return TopChatChatMenuFactory()
+    }
+
+    override fun onClickInvoiceThumbnail(url: String, id: String) {
+        val encodedUrl = URLEncoder.encode(url, "UTF-8")
+        onGoToWebView(encodedUrl, id)
     }
 }

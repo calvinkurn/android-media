@@ -62,7 +62,7 @@
     <string name="flight_dashboard_at_least_one_adult_error">Harus ada penumpang dewasa</string>
     <string name="flight_dashboard_fligh_class_is_empty">Jenis Kelas penerbangan tidak boleh kosong</string>
     <string name="flight_label_refundable_info">Refundable</string>
-    <string name="flight_label_non_refundable_info">Non-Refundable</string>
+    <string name="flight_label_non_refundable_info">Non-refundable</string>
     <string name="departure_0000_to_0600">00:00 – 06:00</string>
     <string name="departure_0600_to_1200">06:00 – 12:00</string>
     <string name="departure_1200_to_1800">12:00 – 18:00</string>
@@ -72,7 +72,7 @@
     <string name="two_transit">2 Transit</string>
     <string name="more_than_2_transit">Lebih dari 2 transit</string>
     <string name="refundable">Refundable</string>
-    <string name="non_refundable">Non-Refundable</string>
+    <string name="non_refundable">Non-refundable</string>
     <string name="partial_refundable">Partial Refundable</string>
     <string name="flight_search_filter_label">Filter</string>
     <string name="flight_search_sort_label">Urutkan</string>

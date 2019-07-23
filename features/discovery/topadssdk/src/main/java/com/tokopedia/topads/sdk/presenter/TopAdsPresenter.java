@@ -21,6 +21,7 @@ import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -54,7 +55,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     @Inject
     RemoveWishListUseCase removeWishListUseCase;
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     public TopAdsPresenter(Context context) {
         this.preferedCategoryUseCase = new PreferedCategoryUseCase(context, this);

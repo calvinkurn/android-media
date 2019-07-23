@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class GraphqlCloudDataStore(private val api: GraphqlApi,
@@ -24,7 +25,7 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
             try {
                 result = api.getResponseDeferred(requests).await()
             } catch (e: Throwable) {
-                if (e !is UnknownHostException) {
+                if (e !is UnknownHostException && e!is SocketTimeoutException) {
                     Timber.e(e, requests.toString())
                 }
                 throw e

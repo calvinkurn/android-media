@@ -70,18 +70,17 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     }
 
     object ListSource {
-        const val FEED = "/feed - produk di post"
+        const val FEED = "/feed - produk di post - %s"
         const val MY_PROFILE_PAGE = "/my profile page - produk di post"
         const val USER_PROFILE_PAGE = "/user profile page - produk di post"
         const val MY_PROFILE_PAGE_DETAIL = "/my profile page detail - produk di post"
-        const val USER_PROFILE_PAGE_DETAIL = "/user profile page detail - produk di post"
+        const val USER_PROFILE_PAGE_DETAIL = "/user profile page detail - produk di post - %s"
     }
 
     private fun getBasicViewPostTagEvent(screenName: String,
                                          category: String,
                                          postId: Int,
-                                         postTag: PostTagItem,
-                                         postTagPosition: Int,
+                                         postItemList: List<PostTagItem>,
                                          trackingModel: TrackingPostModel,
                                          listSource: String) {
         val impressionString = if (listSource.equals(ListSource.FEED)) Action.IMPRESSION else Action.IMPRESSION_PRODUCT
@@ -96,16 +95,18 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                                 Action.PRODUCT
                         ),
                         postId.toString(),
-                        getProductList(
-                                postTag.id.toIntOrZero(),
-                                postTag.text,
-                                formatPriceToInt(postTag.price),
-                                "",
-                                "",
-                                "",
-                                listSource,
-                                postTagPosition
-                        ),
+                        postItemList.mapIndexed { pos, item ->
+                            getProductList(
+                                    item.id.toIntOrZero(),
+                                    item.text,
+                                    formatPriceToInt(item.price),
+                                    "",
+                                    "",
+                                    "",
+                                    listSource,
+                                    pos
+                            )
+                        }.flatten(),
                         userSessionInterface.userId.toIntOrZero()
                 )
         )
@@ -202,26 +203,25 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         )
     }
 
-
     fun trackViewPostTagFeed(
             postId: Int,
-            postTag: PostTagItem,
-            postTagPosition: Int,
+            postTagItemList: List<PostTagItem>,
+            author: String,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.FEED,
                 Category.CONTENT_FEED_TIMELINE,
                 postId,
-                postTag,
-                postTagPosition,
+                postTagItemList,
                 trackingModel,
-                ListSource.FEED)
+                String.format(ListSource.FEED, author))
     }
 
     fun trackClickPostTagFeed(
             postId: Int,
             postTag: PostTagItem,
             postTagPosition: Int,
+            author: String,
             trackingModel: TrackingPostModel) {
         getBasicClickPostTagEvent(
                 Screen.FEED,
@@ -230,20 +230,18 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 postTag,
                 postTagPosition,
                 trackingModel,
-                ListSource.FEED)
+                String.format(ListSource.FEED, author))
     }
 
     fun trackViewPostTagProfileSelf(
             postId: Int,
-            postTag: PostTagItem,
-            postTagPosition: Int,
+            postTagItemList: List<PostTagItem>,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.MY_PROFILE,
                 Category.MY_PROFILE_SOCIALCOMMERCE,
                 postId,
-                postTag,
-                postTagPosition,
+                postTagItemList,
                 trackingModel,
                 ListSource.MY_PROFILE_PAGE)
     }
@@ -265,15 +263,13 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     fun trackViewPostTagProfileOther(
             postId: Int,
-            postTag: PostTagItem,
-            postTagPosition: Int,
+            postTagItemList: List<PostTagItem>,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.PROFILE,
                 Category.USER_PROFILE_SOCIALCOMMERCE,
                 postId,
-                postTag,
-                postTagPosition,
+                postTagItemList,
                 trackingModel,
                 ListSource.USER_PROFILE_PAGE)
     }
@@ -295,15 +291,13 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     fun trackViewPostTagProfileDetailSelf(
             postId: Int,
-            postTag: PostTagItem,
-            postTagPosition: Int,
+            postTagItemList: List<PostTagItem>,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.MY_PROFILE_DETAIL,
                 Category.MY_PROFILE_SOCIALCOMMERCE_DETAIL,
                 postId,
-                postTag,
-                postTagPosition,
+                postTagItemList,
                 trackingModel,
                 ListSource.MY_PROFILE_PAGE_DETAIL)
     }
@@ -325,23 +319,23 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     fun trackViewPostTagProfileDetailOther(
             postId: Int,
-            postTag: PostTagItem,
-            postTagPosition: Int,
+            postTagItemList: List<PostTagItem>,
+            author: String,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.PROFILE_DETAIL,
                 Category.USER_PROFILE_SOCIALCOMMERCE_DETAIL,
                 postId,
-                postTag,
-                postTagPosition,
+                postTagItemList,
                 trackingModel,
-                ListSource.USER_PROFILE_PAGE_DETAIL)
+                String.format(ListSource.USER_PROFILE_PAGE_DETAIL, author))
     }
 
     fun trackClickPostTagProfileDetailOther(
             postId: Int,
             postTag: PostTagItem,
             postTagPosition: Int,
+            author: String,
             trackingModel: TrackingPostModel) {
         getBasicClickPostTagEvent(
                 Screen.PROFILE_DETAIL,
@@ -350,7 +344,6 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 postTag,
                 postTagPosition,
                 trackingModel,
-                ListSource.USER_PROFILE_PAGE_DETAIL)
+                String.format(ListSource.USER_PROFILE_PAGE_DETAIL, author))
     }
-
 }
