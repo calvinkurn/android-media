@@ -31,7 +31,7 @@ ext {
     powerMockVersion = '1.6.2'
     roomVersion = '1.1.1'
     multiDexVersion = '1.0.3'
-    guavaVersion = '21.0'
+    guavaVersion = '20.0'
 
     exoPlayerVersion = '2.9.6'
 
