@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.analytics.posttag
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Event.EVENT_CLICK_SOCIAL_COMMERCE
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -67,6 +68,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         const val IMPRESSION = "impression"
         const val IMPRESSION_PRODUCT = "impression product"
         const val PRODUCT = "product"
+        const val CLICK_BELI = "click beli"
     }
 
     object ListSource {
@@ -146,12 +148,39 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         )
     }
 
+    private fun getBasicClickBuyButtonPostTagEvent(screenName: String,
+                                                   category: String,
+                                                   postTag: PostTagItem,
+                                                   postTagPosition: Int,
+                                                   listSource: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                getEventSocialCommerceClick(
+                        screenName,
+                        category,
+                        Action.CLICK_BELI,
+                        postTag.id,
+                        getProductList(
+                                postTag.id.toIntOrZero(),
+                                postTag.text,
+                                formatPriceToInt(postTag.price),
+                                "",
+                                "",
+                                "",
+                                listSource,
+                                postTagPosition
+                        ),
+                        userSessionInterface.userId.toIntOrZero(),
+                        listSource
+                )
+        )
+    }
+
     private fun formatPriceToInt(price: String): Int {
         var result = 0
         try {
             var rex = Regex(REGEX_NUMERIC)
             result = rex.replace(price, "").toInt()
-        }catch (e: Exception) {
+        } catch (e: Exception) {
         }
         return result
     }
@@ -197,6 +226,26 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 EVENT_CATEGORY, category,
                 EVENT_ACTION, action,
                 EVENT_LABEL, label,
+                KEY_USER_ID, userId,
+                KEY_USER_ID_MOD, userId % 50,
+                EVENT_ECOMMERCE, PostTagEnhancedTracking.Ecommerce.getEcommerceClick(products, listSource)
+        )
+    }
+
+    private fun getEventSocialCommerceClick(screenName: String,
+                                            category: String,
+                                            action: String,
+                                            productId: String,
+                                            products: List<PostTagEnhancedTracking.Product>,
+                                            userId: Int,
+                                            listSource: String): Map<String, Any> {
+
+        return DataLayer.mapOf(
+                SCREEN_NAME, screenName,
+                EVENT_NAME, EVENT_CLICK_SOCIAL_COMMERCE,
+                EVENT_CATEGORY, category,
+                EVENT_ACTION, action,
+                EVENT_LABEL, productId,
                 KEY_USER_ID, userId,
                 KEY_USER_ID_MOD, userId % 50,
                 EVENT_ECOMMERCE, PostTagEnhancedTracking.Ecommerce.getEcommerceClick(products, listSource)
@@ -345,5 +394,18 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 postTagPosition,
                 trackingModel,
                 String.format(ListSource.USER_PROFILE_PAGE_DETAIL, author))
+    }
+
+    fun trackClickPostTagBuyKol(
+            postTag: PostTagItem,
+            postTagPosition: Int,
+            author: String
+    ) {
+        getBasicClickBuyButtonPostTagEvent(
+                screenName = Screen.PROFILE,
+                category = Category.USER_PROFILE_SOCIALCOMMERCE_DETAIL,
+                postTag = postTag,
+                postTagPosition = postTagPosition,
+                listSource = String.format(ListSource.USER_PROFILE_PAGE_DETAIL, author))
     }
 }

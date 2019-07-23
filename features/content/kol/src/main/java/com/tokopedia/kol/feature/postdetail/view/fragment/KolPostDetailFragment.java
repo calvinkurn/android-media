@@ -326,17 +326,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void bindShare(PostDetailFooterModel model, TemplateFooter template) {
         if (template.getShare()) {
-            shareButton.setOnClickListener(v -> onShareClick(0, model.getContentId(),
+            View.OnClickListener onClickListener = v -> onShareClick(0, model.getContentId(),
                     model.getShareData().getTitle(),
                     model.getShareData().getDescription(),
                     model.getShareData().getUrl(),
-                    model.getShareData().getImageUrl()));
+                    model.getShareData().getImageUrl());
 
-            shareText.setOnClickListener(v -> onShareClick(0, model.getContentId(),
-                    model.getShareData().getTitle(),
-                    model.getShareData().getDescription(),
-                    model.getShareData().getUrl(),
-                    model.getShareData().getImageUrl()));
+            shareButton.setOnClickListener(onClickListener);
+            shareText.setOnClickListener(onClickListener);
         } else {
             shareButton.setVisibility(View.GONE);
             shareText.setVisibility(View.GONE);
@@ -857,8 +854,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onBuyClicked(@NotNull PostTagItem postTagItem) {
-        presenter.addPostTagItemToCart(postTagItem);
+    public void onBuyClicked(int positionInFeed, @NotNull PostTagItem postTagItem) {
+        presenter.addPostTagItemToCart(positionInFeed, postTagItem);
     }
 
     @Override
@@ -903,8 +900,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAddToCartSuccess() {
+    public void onAddToCartSuccess(int positionInFeed, PostTagItem postTagItem) {
         RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
+        postTagAnalytics.trackClickPostTagBuyKol(
+                postTagItem,
+                positionInFeed,
+                dynamicPostViewModel.getHeader().getFollowCta().getAuthorType()
+        );
     }
 
     @Override

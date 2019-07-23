@@ -490,6 +490,6 @@ open class DynamicPostViewHolder(v: View,
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
 
-        fun onBuyClicked(postTagItem: PostTagItem)
+        fun onBuyClicked(positionInFeed: Int, postTagItem: PostTagItem)
     }
 }

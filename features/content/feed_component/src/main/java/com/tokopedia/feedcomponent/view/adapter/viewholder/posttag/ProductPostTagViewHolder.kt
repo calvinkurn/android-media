@@ -69,7 +69,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         val isCTADisabled = item.postTagItemPojo.buttonCTA.firstOrNull()?.isDisabled ?: true
         btnBuy.apply {
             isEnabled = !isCTADisabled
-            setOnClickListener { onBuyButtonClicked(listener, item.postTagItemPojo) }
+            setOnClickListener { onBuyButtonClicked(listener, item.positionInFeed, item.postTagItemPojo) }
         }
         textBtnBuy.apply {
             text =
@@ -184,8 +184,8 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         return trackList
     }
 
-    private fun onBuyButtonClicked(listener: DynamicPostViewHolder.DynamicPostListener, itemPojo: PostTagItem) {
-        listener.onBuyClicked(itemPojo)
+    private fun onBuyButtonClicked(listener: DynamicPostViewHolder.DynamicPostListener, positionInFeed: Int, itemPojo: PostTagItem) {
+        listener.onBuyClicked(positionInFeed, itemPojo)
     }
 
     companion object {
