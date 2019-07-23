@@ -351,6 +351,9 @@ public class SearchProductModel {
         @SerializedName("id")
         @Expose
         private String id;
+        @SerializedName("warehouse_id_default")
+        @Expose
+        private String warehouseId = "";
         @SerializedName("name")
         @Expose
         private String name;
@@ -453,6 +456,10 @@ public class SearchProductModel {
 
         public String getId() {
             return id;
+        }
+
+        public String getWarehouseId() {
+            return warehouseId;
         }
 
         public String getName() {

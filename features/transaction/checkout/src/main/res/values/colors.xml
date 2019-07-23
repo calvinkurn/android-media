@@ -14,5 +14,11 @@
     <color name="price_changes_color_text">#FA591D</color>
     <color name="price_changes_color_bg">#fff1b3</color>
     <color name="invenage_text_color">#f531353b</color>
+    <color name="button_checkout">#FA581D</color>
+    <color name="price_label">#FA591D</color>
+    <color name="address_green">#03AC0E</color>
+    <color name="text_black">#f531353b</color>
+    <color name="title_black">#e131353b</color>
+    <color name="subtext_black">#ae31353b</color>
 </resources>
 

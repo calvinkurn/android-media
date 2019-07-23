@@ -2,7 +2,7 @@ package com.tokopedia.groupchat.chatroom.websocket;
 
 import android.util.Log;
 
-import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.url.TokopediaUrl;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -41,7 +41,7 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
 
     private Request getRequest(String url, String accessToken) {
         return new Request.Builder().get().url(url)
-                .header("Origin", TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL)
+                .header("Origin", TokopediaUrl.Companion.getInstance().getWEB())
                 .header("Accounts-Authorization",
                         "Bearer " + accessToken)
                 .build();
