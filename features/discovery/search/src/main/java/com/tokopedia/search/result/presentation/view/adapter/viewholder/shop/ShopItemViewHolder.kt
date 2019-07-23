@@ -166,7 +166,7 @@ class ShopItemViewHolder(
     }
 
     private fun createRecyclerViewShopProductItemDecoration(): RecyclerView.ItemDecoration {
-        return ShopProductItemDecoration(getDimensionPixelSize(R.dimen.dp_8))
+        return ShopProductItemDecoration(getDimensionPixelSize(R.dimen.dp_6))
     }
 
     private fun initShopStatus(shopViewItem: ShopViewModel.ShopItem) {
