@@ -29,6 +29,8 @@ import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.common.data.entity.response.RechargePushEventRecommendationResponseEntity;
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
@@ -40,6 +42,7 @@ import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.track.TrackApp;
@@ -69,6 +72,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
     private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
+    private RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase;
     private String PROMO_CODE = "promoCode";
     public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
 
@@ -80,7 +84,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                                     UserSession userSession,
                                     DigitalCheckoutUseCase digitalCheckoutUseCase,
                                     DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                    DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
+                                    DigitalPostPaidLocalCache digitalPostPaidLocalCache,
+                                    RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase) {
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalAnalytics = digitalAnalytics;
         this.digitalModuleRouter = digitalModuleRouter;
@@ -89,6 +94,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
         this.digitalInstantCheckoutUseCase = digitalInstantCheckoutUseCase;
         this.digitalPostPaidLocalCache = digitalPostPaidLocalCache;
+        this.rechargePushEventRecommendationUseCase = rechargePushEventRecommendationUseCase;
     }
 
     @Override
@@ -191,6 +197,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                     getView().hideFullPageLoading();
                     getView().interruptRequestTokenVerification(userSession.getPhoneNumber());
                 } else {
+                    trackRechargePushEventRecommendation(Integer.parseInt(getView().getCartPassData().getCategoryId()));
                     renderCart(cartDigitalInfoData);
                 }
             }
@@ -757,5 +764,24 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         builder.userAgent(DeviceUtil.getUserAgentForApiCall());
         builder.needOtp(cartDigitalInfoData.isNeedOtp());
         return builder;
+    }
+
+    private void trackRechargePushEventRecommendation(int categoryId) {
+        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, "ATC"), new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                RechargePushEventRecommendationResponseEntity response = graphqlResponse.getData(RechargePushEventRecommendationResponseEntity.class);
+            }
+        });
     }
 }

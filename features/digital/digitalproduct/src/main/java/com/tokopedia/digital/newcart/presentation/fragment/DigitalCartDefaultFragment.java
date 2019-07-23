@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
@@ -105,9 +104,6 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     public void showCartView() {
-        if (StringUtils.isNotBlank(cartPassData.getCategoryId())) {
-            presenter.trackRechargePushEventRecommendation(Integer.parseInt(cartPassData.getCategoryId()), "ATC");
-        }
         containerLayout.setVisibility(View.VISIBLE);
     }
 
