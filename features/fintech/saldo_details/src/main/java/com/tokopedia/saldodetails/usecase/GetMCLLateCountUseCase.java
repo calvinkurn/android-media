@@ -47,3 +47,4 @@ public class GetMCLLateCountUseCase {
         graphqlUseCase.execute(subscriber);
     }
 }
+

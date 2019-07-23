@@ -318,7 +318,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         withdrawButtonWrapper.setEnabled(false);
                         withdrawButtonWrapper.setClickable(false);
                         sellerSaldoWithDrawTvStatus = true;
-                        String webViewMTDashBoardUrl = "tokopedia://webview?url=https://www.tokopedia.com/help/article/a-1815";
+                        String webViewMTDashBoardUrl = getString(R.string.saldolock_info_url);
                         SpannableString ss = new SpannableString(tvWithDrawInfo.getText());
                         String tickerMsg = tvWithDrawInfo.getText().toString();
                         int startIndex = tickerMsg.indexOf("di");
@@ -440,7 +440,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     public void showTicker(int mclLateCount) {
 
-        String webViewMTDashBoardUrl = "tokopedia://webview?url=https://www.tokopedia.com/fm/modal-toko/dashboard/pembayaran";
+        String webViewMTDashBoardUrl = getString(R.string.saldolock_pembayaran_url);
         String tickerMsg = tvTickerMessage.getText().toString();
         int startIndex = tickerMsg.indexOf('.')+1 ;
         String late=Integer.toString(mclLateCount);

@@ -251,8 +251,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         tvTickerMessage = view.findViewById(R.id.tv_desc_info);
         ivDismissTicker = view.findViewById(R.id.iv_dismiss_ticker);
 
-
-
         if (expandLayout) {
             saldoTypeLL.setVisibility(View.VISIBLE);
         } else {
@@ -539,7 +537,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     }
 
-
     @Override
     public void setWithdrawButtonState(boolean state) {
         if (state) {
@@ -598,7 +595,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     public void showTicker() {
 
-        String webViewMTDashBoardUrl = "tokopedia://webview?url=https://www.tokopedia.com/fm/modal-toko/dashboard/pembayaran";
+        String webViewMTDashBoardUrl = getString(R.string.saldo_pembarayan_url);
         String tickerMsg = tvTickerMessage.getText().toString();
         int startIndex = tickerMsg.indexOf('.') + 1;
         String late=Integer.toString(mclLateCount);
@@ -764,3 +761,4 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         super.onDestroy();
     }
 }
+

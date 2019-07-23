@@ -129,5 +129,6 @@
     <color name="clr_80000000">#80000000</color>
     <color name="clr_e6000000">#e6000000</color>
     <color name="clr_99000000">#99000000</color>
+    <color name="bg_saldolock_ticker">#fffae6</color>
 
 </resources>

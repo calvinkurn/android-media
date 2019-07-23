@@ -324,7 +324,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="5sp"
-                android:text="Tidak bisa tarik Saldo Penghasilan karena belum lunasi tagihan Modal Toko. Bantuan? Klik di sini."
+                android:text="@string/saldolock_info_text"
                 android:textColor="#8a000000"
                 android:textSize="12sp"
                 android:visibility="gone" />

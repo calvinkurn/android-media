@@ -80,6 +80,9 @@
     <string name="process_time_withdraw_title">Waktu Proses Penarikan</string>
     <string name="process_time_withdraw_body_one">BCA, BRI, BNI, CIMB, Mandiri paling lama 24 jam</string>
     <string name="process_time_withdraw_body_two">Bank lain - paling lama 2 hari kerja (tidak termasuk Sabtu/Minggu/Libur)</string>
+    <string name="saldolock_info_text">Tidak bisa tarik Saldo Penghasilan karena belum lunasi tagihan Modal Toko. Bantuan? Klik di sini.</string>
+    <string name="saldolock_info_url">tokopedia://webview?url=https://www.tokopedia.com/help/article/a-1815</string>
+    <string name="saldolock_pembayaran_url">tokopedia://webview?url=https://www.tokopedia.com/fm/modal-toko/dashboard/pembayaran</string>
 
 
 </resources>
