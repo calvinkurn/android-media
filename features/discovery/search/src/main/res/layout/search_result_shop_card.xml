@@ -67,7 +67,20 @@
             app:typographyType="body_3"
             app:layout_constraintTop_toBottomOf="@id/textViewShopName"
             app:layout_constraintLeft_toRightOf="@id/imageViewShopAvatar"
-            tools:text="Makassar |"/>
+            tools:text="Makassar "/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewShopLocationReputationSeparator"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_16"
+            android:text="@string/shop_separator"
+            android:textColor="@color/shop_separator_color"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toTopOf="@id/textViewShopLocation"
+            app:layout_constraintLeft_toRightOf="@id/textViewShopLocation"
+            tools:visibility="visible"/>
 
         <ImageView
             android:id="@+id/imageViewShopReputation"
@@ -77,22 +90,34 @@
             android:layout_marginStart="@dimen/dp_4"
             android:adjustViewBounds="true"
             app:layout_constraintTop_toTopOf="@id/textViewShopLocation"
-            app:layout_constraintLeft_toRightOf="@id/textViewShopLocation"
+            app:layout_constraintLeft_toRightOf="@id/textViewShopLocationReputationSeparator"
             tools:src="@drawable/ic_badge_gold"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewShopCredibilityInfo"
+            android:id="@+id/textViewShopReputationSocialProofSeparator"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
+            android:text="@string/shop_separator"
+            android:textColor="@color/shop_separator_color"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toTopOf="@id/textViewShopLocation"
+            app:layout_constraintLeft_toRightOf="@id/imageViewShopReputation"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewShopSocialProof"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_16"
             android:gravity="center_vertical"
             android:ellipsize="end"
             app:typographyType="body_3"
-            app:layout_constraintTop_toBottomOf="@id/textViewShopName"
-            app:layout_constraintLeft_toRightOf="@id/imageViewShopReputation"
-            tools:text="| 9rb terjual"/>
+            app:layout_constraintTop_toTopOf="@id/textViewShopLocation"
+            app:layout_constraintLeft_toRightOf="@id/textViewShopReputationSocialProofSeparator"
+            tools:text=" 9rb terjual"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerViewShopProductItem"
@@ -168,7 +193,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewShopStatus"

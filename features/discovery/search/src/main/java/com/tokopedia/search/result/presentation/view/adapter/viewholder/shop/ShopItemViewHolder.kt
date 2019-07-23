@@ -47,7 +47,7 @@ class ShopItemViewHolder(
         initShopName(shopViewItem)
         initShopLocation(shopViewItem)
         initImageShopReputation(shopViewItem)
-        initTextShopCredibilityInfo(shopViewItem)
+        initTextShopSocialProof(shopViewItem)
         initProductPreview(shopViewItem)
         initShopStatus(shopViewItem)
 
@@ -85,7 +85,7 @@ class ShopItemViewHolder(
     }
 
     private fun getShopLocation(shopViewItem: ShopViewModel.ShopItem): Spanned {
-        return MethodChecker.fromHtml(shopViewItem.location + " |")
+        return MethodChecker.fromHtml(shopViewItem.location + " ")
     }
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
@@ -94,17 +94,17 @@ class ShopItemViewHolder(
         }
     }
 
-    private fun initTextShopCredibilityInfo(shopViewItem: ShopViewModel.ShopItem) {
-        itemView.textViewShopCredibilityInfo?.text = getShopCredibilityInfo(shopViewItem)
+    private fun initTextShopSocialProof(shopViewItem: ShopViewModel.ShopItem) {
+        itemView.textViewShopSocialProof?.text = getShopSocialProofText(shopViewItem)
     }
 
-    private fun getShopCredibilityInfo(shopViewItem: ShopViewModel.ShopItem): String {
+    private fun getShopSocialProofText(shopViewItem: ShopViewModel.ShopItem): String {
         return when {
             shopViewItem.totalTransaction != "" -> {
-                "| " + context.getString(R.string.shop_total_transaction, shopViewItem.totalTransaction)
+                " " + context.getString(R.string.shop_total_transaction, shopViewItem.totalTransaction)
             }
             shopViewItem.totalFavorite != "" -> {
-                "| " + context.getString(R.string.shop_total_favorite, shopViewItem.totalFavorite)
+                " " + context.getString(R.string.shop_total_favorite, shopViewItem.totalFavorite)
             }
             else -> {
                 ""
@@ -184,11 +184,21 @@ class ShopItemViewHolder(
     }
 
     private fun finishBindShopItem() {
+        setTextViewShopNameMargin()
+        setTextSeparatorVisibility()
+    }
+
+    private fun setTextViewShopNameMargin() {
         itemView.textViewShopName?.let { textViewShopName ->
             if(textViewShopName.isVisible) {
                 setViewMargins(textViewShopName.id, ConstraintSet.START, getTextViewShopNameMarginLeft())
             }
         }
+    }
+
+    private fun setTextSeparatorVisibility() {
+        itemView.textViewShopLocationReputationSeparator?.showWithCondition(itemView.textViewShopLocation?.isVisible ?: false)
+        itemView.textViewShopReputationSocialProofSeparator?.showWithCondition(itemView.textViewShopSocialProof?.isVisible ?: false)
     }
 
     @DimenRes

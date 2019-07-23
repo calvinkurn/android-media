@@ -16,4 +16,5 @@
     <color name="shop_status_background">#ae31353b</color>
     <color name="shop_status_text_background">#e131353b</color>
     <color name="shop_status_text_color">#f5ffffff</color>
+    <color name="shop_separator_color">#DBDEE2</color>
 </resources>

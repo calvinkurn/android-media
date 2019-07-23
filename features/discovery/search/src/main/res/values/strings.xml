@@ -37,6 +37,7 @@
     <string name="shop_voucher_cashback_not_percentage">Cashback Rp%s</string>
     <string name="shop_status_closed">Toko Tutup</string>
     <string name="shop_status_moderated">Dalam Pengawasan</string>
+    <string name="shop_separator">|</string>
 
     <string name="title_total_prods">Produk</string>
 
