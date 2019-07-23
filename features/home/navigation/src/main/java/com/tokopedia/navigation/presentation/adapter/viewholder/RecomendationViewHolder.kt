@@ -56,10 +56,6 @@ class RecomendationViewHolder(itemView: View, private val listener: InboxAdapter
         }
     }
 
-    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-
-    }
-
     override fun bind(element: Recomendation) {
         recommendationCardView?.setRecommendationModel(element.recommendationItem, this)
         val item = element.recommendationItem

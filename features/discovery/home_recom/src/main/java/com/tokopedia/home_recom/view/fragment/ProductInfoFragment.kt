@@ -397,7 +397,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
             minOrder = productDataModel.productDetailData.minOrder,
             location = "",
             isWishlist = false,
-            badgesUrl = listOf()
+            badgesUrl = listOf(),
+            type = ""
     )
 
     private fun handleDiscount(){
