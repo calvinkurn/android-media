@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_holdwithdrawl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/view_hold_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:background="#fffae6"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_desc_info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_title_info" />
+
+    <ImageView
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginStart="-10dp"
+        android:layout_marginLeft="-10dp"
+        android:layout_marginTop="-10dp"
+        android:background="@drawable/ic_icon_alert"
+        android:tint="#40ffc400"
+        app:layout_constraintBottom_toTopOf="@+id/guideline1"
+        app:layout_constraintRight_toLeftOf="@+id/guideline" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/dp_26" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/dp_26" />
+
+    <ImageView
+        android:id="@+id/iv_dismiss_ticker"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginRight="@dimen/dp_8"
+        android:padding="@dimen/dp_8"
+        android:src="@drawable/ic_action_x"
+        android:tint="@color/black_36"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_title_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_40"
+        android:lineSpacingExtra="4sp"
+        android:paddingTop="@dimen/dp_8"
+        android:text="Tidak bisa tarik Saldo Penghasilan"
+        android:textColor="#f531353b"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_desc_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_40"
+        android:lineSpacingExtra="3sp"
+        android:paddingBottom="@dimen/dp_8"
+        android:text="Karena kamu belum membayar tagihan Modal Toko selama 2 bulan.Bayar sekarang"
+        android:textColor="#f531353b"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_info" />
+
+
+</android.support.constraint.ConstraintLayout>
