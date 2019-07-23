@@ -11,11 +11,6 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeFeedFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.TabBusinessFragment;
 import com.tokopedia.home.common.ApiModule;
-import com.tokopedia.home.beranda.di.module.HomeModule;
-import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
-import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
-
 import dagger.Component;
 
 /**
@@ -27,8 +22,7 @@ import dagger.Component;
         ApiModule.class,
         HomeModule.class,
         ShopModule.class,
-        ViewModelModule.class,
-        TopAdsWishlistModule.class
+        ViewModelModule.class
 }, dependencies = BaseAppComponent.class)
 public interface BerandaComponent {
 
