@@ -142,7 +142,19 @@ class ShopItemViewHolder(
     private fun createRecyclerViewShopProductItemAdapter(
             productList: List<ShopViewModel.ShopItem.ShopItemProduct>
     ): RecyclerView.Adapter<ShopProductItemViewHolder> {
-        return ShopProductItemAdapter(context, productList.take(SHOP_PRODUCT_ITEM_COUNT), shopListener)
+        return ShopProductItemAdapter(context, createShopItemProductPreviewList(productList), shopListener)
+    }
+
+    private fun createShopItemProductPreviewList(
+            productList: List<ShopViewModel.ShopItem.ShopItemProduct>
+    ): List<ShopViewModel.ShopItem.ShopItemProduct> {
+        val productPreviewList = productList.take(SHOP_PRODUCT_ITEM_COUNT).toMutableList()
+
+        while(productPreviewList.size < SHOP_PRODUCT_ITEM_COUNT) {
+            productPreviewList += ShopViewModel.ShopItem.ShopItemProduct()
+        }
+
+        return productPreviewList
     }
 
     private fun createRecyclerViewShopProductItemLayoutManager(): RecyclerView.LayoutManager {
