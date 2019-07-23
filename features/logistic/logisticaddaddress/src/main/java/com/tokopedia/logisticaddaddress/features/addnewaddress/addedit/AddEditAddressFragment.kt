@@ -819,7 +819,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 saveAddressDataModel?.address2 = ""
 
             } else {
-                address1 += "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress}"
+                address1 += "${saveAddressDataModel?.formattedAddress}"
                 if (detailAddress.isNotEmpty()) address1 += " [Tokopedia Note: ${detailAddress}]"
                 saveAddressDataModel?.address1 = address1
                 saveAddressDataModel?.address2 = "$currentLat,$currentLong"
