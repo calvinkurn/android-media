@@ -1,7 +1,6 @@
 package com.tokopedia.common_digital.cart.data.datasource
 
 import com.google.gson.Gson
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
@@ -10,8 +9,6 @@ import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutDa
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi
-import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
-
 import retrofit2.Response
 import rx.Observable
 import rx.functions.Func1
@@ -24,7 +21,7 @@ class DigitalInstantCheckoutDataSource(private val digitalRestApi: DigitalRestAp
     private val funcResponseToCheckoutDigitalData: Func1<Response<DataResponse<ResponseCheckoutData>>, InstantCheckoutData>
         get() = Func1 { tkpdDigitalResponseResponse ->
             cartMapperData.transformInstantCheckoutData(
-                    tkpdDigitalResponseResponse.body().data
+                    tkpdDigitalResponseResponse.body()!!.data
             )
         }
 

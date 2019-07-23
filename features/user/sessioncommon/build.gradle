@@ -18,6 +18,7 @@ buildscript {
 
 dependencies {
     implementation project(":libraries:akamai_bot_lib")
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

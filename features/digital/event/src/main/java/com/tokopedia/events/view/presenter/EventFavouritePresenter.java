@@ -83,7 +83,7 @@ public class EventFavouritePresenter extends BaseDaggerPresenter<EventBaseContra
 
     @Override
     public void shareEvent(CategoryItemsViewModel model) {
-        Utils.getSingletonInstance().shareEvent(mView.getActivity(), model.getTitle(), model.getSeoUrl());
+        Utils.getSingletonInstance().shareEvent(mView.getActivity(), model.getTitle(), model.getSeoUrl(), model.getImageWeb());
     }
 
     @Override
