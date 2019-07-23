@@ -28,24 +28,25 @@ public class FeedScrollListener {
     private static final String TYPE_VIDEO = "video";
 
     public static void onFeedScrolled(RecyclerView recyclerView, List<Visitable> list) {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        if (canAutoplayVideo(recyclerView)) {
+            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
-        int firstPosition = layoutManager.findFirstVisibleItemPosition();
-        int lastPosition = layoutManager.findLastVisibleItemPosition();
+            int firstPosition = layoutManager.findFirstVisibleItemPosition();
+            int lastPosition = layoutManager.findLastVisibleItemPosition();
 
 
-        for (int i =firstPosition ; i<=lastPosition; i ++) {
-            if (isVideoCard(list, i) && canAutoplayVideo(recyclerView)) {
-                VideoViewModel item = getVideoCardViewModel(list, i);
-                if (item != null) {
-                    getVideoModelScrollListener(item, layoutManager, recyclerView, i);
-                } else {
-                    MediaItem mediaItem = getVideoCardItemViewModel(list, i);
-                    getVideoCardModelScrollListener(mediaItem, layoutManager, recyclerView, i);
+            for (int i = firstPosition; i <= lastPosition; i++) {
+                if (isVideoCard(list, i)) {
+                    VideoViewModel item = getVideoCardViewModel(list, i);
+                    if (item != null) {
+                        getVideoModelScrollListener(item, layoutManager, recyclerView, i);
+                    } else {
+                        MediaItem mediaItem = getVideoCardItemViewModel(list, i);
+                        getVideoCardModelScrollListener(mediaItem, layoutManager, recyclerView, i);
+                    }
                 }
             }
         }
-
     }
 
     private static void getVideoModelScrollListener(VideoViewModel item, LinearLayoutManager layoutManager, RecyclerView recyclerView, int i) {
