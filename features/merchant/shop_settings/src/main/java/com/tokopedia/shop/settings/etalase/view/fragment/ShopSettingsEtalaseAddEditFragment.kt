@@ -18,7 +18,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
-import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet
+import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         ShopSettingsEtalaseAddEditView,
-        PowerMerchantSuccessBottomSheet.BottomSheetListener {
+        MerchantCommonBottomSheet.BottomSheetListener {
 
     @Inject
     lateinit var presenter: ShopSettingsEtalaseAddEditPresenter
@@ -171,14 +171,14 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     }
 
     private fun showBottomSheet(title: String, imageUrl : String, description: String, buttonName: String) {
-        val model = PowerMerchantSuccessBottomSheet.BottomSheetModel(
+        val model = MerchantCommonBottomSheet.BottomSheetModel(
                 title,
                 description,
                 imageUrl,
                 buttonName,
                 ""
         )
-        val bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model)
+        val bottomSheet = MerchantCommonBottomSheet.newInstance(model)
         bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager, "merchant_warning_bottom_sheet")
     }

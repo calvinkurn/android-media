@@ -3,7 +3,6 @@ package com.tokopedia.gm.featured.view.fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -43,7 +42,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;
-import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet;
+import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet;
 import com.tokopedia.gm.featured.constant.GMFeaturedConstant;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.di.component.DaggerGMFeaturedProductComponent;
@@ -88,8 +87,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         GMFeaturedProductAdapter.UseCaseListener,
         SimpleItemTouchHelperCallback.isEnabled,
         BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel>,
-        TickerReadMoreFeaturedViewHolder.TickerViewHolderListener,
-        PowerMerchantSuccessBottomSheet.BottomSheetListener{
+        TickerReadMoreFeaturedViewHolder.TickerReadMoreListener,
+        MerchantCommonBottomSheet.BottomSheetListener{
 
     private static final int REQUEST_CODE = 12314;
     private static final int MAX_ITEM = 5;
@@ -199,14 +198,14 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private void showBottomSheet(String title, String imageUrl, String description, String buttonName) {
-        PowerMerchantSuccessBottomSheet.BottomSheetModel model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+        MerchantCommonBottomSheet.BottomSheetModel model = new MerchantCommonBottomSheet.BottomSheetModel(
                 title,
                 description,
                 imageUrl,
                 buttonName,
                 ""
         );
-        PowerMerchantSuccessBottomSheet bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model);
+        MerchantCommonBottomSheet bottomSheet = MerchantCommonBottomSheet.newInstance(model);
         bottomSheet.setListener(this);
         bottomSheet.show(getChildFragmentManager(), "merchant_warning_bottom_sheet");
     }
@@ -218,7 +217,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         SpannableString spannableText = new SpannableString(readMoreText);
         int startIndex = 0;
         int endIndex = spannableText.length();
-        int color = Color.parseColor("#03ac0e");
+        int color = getResources().getColor(R.color.merchant_green);
         spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
@@ -287,13 +286,13 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             }
         });
         coordinatorLayoutContainer = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout_container);
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getString(R.string.title_loading));
         viewOverlayRegularMerchant = view.findViewById(R.id.layout_overlay);
         textViewOverlay = view.findViewById(R.id.text_view_overlay_description);
         imageViewOverlay = view.findViewById(R.id.image_view_overlay);
         buttonOverlay = view.findViewById(R.id.button_redirect_to);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     private void showSnackbarWithUndo() {

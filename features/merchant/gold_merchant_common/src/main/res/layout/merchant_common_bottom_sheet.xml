@@ -9,7 +9,7 @@
     android:layout_marginBottom="@dimen/dp_10">
 
     <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_success_header_bs"
+        android:id="@+id/text_view_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Yaah, Fitur [Fitur] hanya dapat diakses Power Merchant aktif"
@@ -22,7 +22,7 @@
 
     <ImageView
         android:adjustViewBounds="true"
-        android:id="@+id/img_btm_sheets"
+        android:id="@+id/image_view_icon"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_200"
         android:src="@drawable/bg_all_promo"
@@ -30,7 +30,7 @@
         />
 
     <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_success_desc_bs"
+        android:id="@+id/text_view_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Skor performa tokomu kurang dari 65 poin. Segera tingkatkan performa toko untuk menggunakan [Fitur] dan fitur eksklusif Power Merchant lainnya kembali."
@@ -39,7 +39,7 @@
         android:layout_marginBottom="@dimen/dp_20"/>
 
     <Button
-        android:id="@+id/button_checknow"
+        android:id="@+id/button_redirect_to"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Button.Submit.Green.Full"

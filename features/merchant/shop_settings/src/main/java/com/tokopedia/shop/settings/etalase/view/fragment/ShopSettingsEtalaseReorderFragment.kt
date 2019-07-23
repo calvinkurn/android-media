@@ -31,7 +31,7 @@ import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
 import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseReorderAdapter
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseReorderFactory
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListReorderPresenter
-import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreViewHolder
+import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreEtalaseViewHolder
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -43,7 +43,7 @@ class ShopSettingsEtalaseReorderFragment :
         BaseListFragment<ShopEtalaseViewModel, ShopEtalaseReorderFactory>(),
         ShopSettingEtalaseListReorderPresenter.View,
         OnStartDragListener,
-        TickerReadMoreViewHolder.TickerViewHolderViewHolderListener
+        TickerReadMoreEtalaseViewHolder.TickerReadMoreListener
 {
     @Inject
     lateinit var shopSettingEtalaseListReorderPresenter: ShopSettingEtalaseListReorderPresenter

@@ -8,17 +8,17 @@ import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
 import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseTitleViewHolder
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder
-import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreViewHolder
+import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreEtalaseViewHolder
 
 /**
  * Created by hendry on 16/08/18.
  */
 class ShopEtalaseFactory(
         private val onShopEtalaseViewHolderListener: ShopEtalaseViewHolder.OnShopEtalaseViewHolderListener,
-        private val tickerViewHolderViewHolderListener: TickerReadMoreViewHolder.TickerViewHolderViewHolderListener
+        private val tickerReadMoreListener: TickerReadMoreEtalaseViewHolder.TickerReadMoreListener
 ) : BaseShopEtalaseFactory() {
     override fun type(model: TickerReadMoreViewModel): Int {
-        return TickerReadMoreViewHolder.LAYOUT
+        return TickerReadMoreEtalaseViewHolder.LAYOUT
     }
 
     override fun type(model: ShopEtalaseViewModel): Int {
@@ -32,8 +32,8 @@ class ShopEtalaseFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return if (type == ShopEtalaseViewHolder.LAYOUT) {
             ShopEtalaseViewHolder(parent, onShopEtalaseViewHolderListener)
-        }else if(type == TickerReadMoreViewHolder.LAYOUT){
-            TickerReadMoreViewHolder(parent,tickerViewHolderViewHolderListener)
+        }else if(type == TickerReadMoreEtalaseViewHolder.LAYOUT){
+            TickerReadMoreEtalaseViewHolder(parent,tickerReadMoreListener)
         }else if (type == ShopEtalaseTitleViewHolder.LAYOUT) {
             ShopEtalaseTitleViewHolder(parent)
         } else {

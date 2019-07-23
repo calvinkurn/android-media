@@ -48,7 +48,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet;
+import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -110,7 +110,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         implements ProductManageView,
         ProductManageListAdapter.ClickOptionCallback,
         BaseMultipleCheckListAdapter.CheckedCallback<ProductManageViewModel>,
-        PowerMerchantSuccessBottomSheet.BottomSheetListener {
+        MerchantCommonBottomSheet.BottomSheetListener {
 
     public static final String ERROR_CODE_LIMIT_CASHBACK = "422";
     public static final int REQUEST_CODE_ADD_IMAGE = 3859;
@@ -590,14 +590,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showBottomSheet(String title, String imageUrl, String description, String buttonName) {
-        PowerMerchantSuccessBottomSheet.BottomSheetModel model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+        MerchantCommonBottomSheet.BottomSheetModel model = new MerchantCommonBottomSheet.BottomSheetModel(
                 title,
                 description,
                 imageUrl,
                 buttonName,
                 ""
         );
-        PowerMerchantSuccessBottomSheet bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model);
+        MerchantCommonBottomSheet bottomSheet = MerchantCommonBottomSheet.newInstance(model);
         bottomSheet.setListener(this);
         bottomSheet.show(getChildFragmentManager(), "merchant_warning_bottom_sheet");
     }

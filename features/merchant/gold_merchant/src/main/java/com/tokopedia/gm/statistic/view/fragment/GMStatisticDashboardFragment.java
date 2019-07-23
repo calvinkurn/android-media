@@ -1,6 +1,5 @@
 package com.tokopedia.gm.statistic.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -20,7 +19,7 @@ import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;
-import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet;
+import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -55,7 +54,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         implements GMStatisticDashboardView,
         GMStatisticTransactionViewHolder.Listener,
         GMStatisticMarketInsightViewHolder.Listener,
-        PowerMerchantSuccessBottomSheet.BottomSheetListener
+        MerchantCommonBottomSheet.BottomSheetListener
 {
 
     @Inject
@@ -273,19 +272,19 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                 getString(R.string.bottom_sheet_idle_desc),
                 featureName
         );
-        String buttonName = "Cara Tingkatkan Performa";
+        String buttonName = getString(R.string.gm_statistic_improve_performance);
         showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName);
     }
 
     private void showBottomSheet(String title, String imageUrl, String description, String buttonName) {
-        PowerMerchantSuccessBottomSheet.BottomSheetModel model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+        MerchantCommonBottomSheet.BottomSheetModel model = new MerchantCommonBottomSheet.BottomSheetModel(
                 title,
                 description,
                 imageUrl,
                 buttonName,
                 ""
         );
-        PowerMerchantSuccessBottomSheet bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model);
+        MerchantCommonBottomSheet bottomSheet = MerchantCommonBottomSheet.newInstance(model);
         bottomSheet.setListener(this);
         bottomSheet.show(getChildFragmentManager(), "merchant_warning_bottom_sheet");
     }
@@ -325,7 +324,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onViewNotGmClicked() {
-
+        startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(getActivity()));
     }
 
     @Override

@@ -11,15 +11,13 @@ import android.view.View
 import android.widget.TextView
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
 
 
-class TickerReadMoreViewHolder(
+class TickerReadMoreEtalaseViewHolder(
         itemView: View,
-        private val tickerViewHolderViewHolderListener: TickerViewHolderViewHolderListener?
+        private val tickerReadMoreListener: TickerReadMoreListener?
 ) : AbstractViewHolder<TickerReadMoreViewModel>(itemView) {
 
     private val textViewTitle: TextView
@@ -30,7 +28,7 @@ class TickerReadMoreViewHolder(
         textViewDescription = itemView.findViewById(R.id.txt_ticker_description)
     }
 
-    interface TickerViewHolderViewHolderListener {
+    interface TickerReadMoreListener {
         fun onReadMoreClicked()
     }
 
@@ -47,11 +45,11 @@ class TickerReadMoreViewHolder(
         val spannableText = SpannableString(readMoreText)
         val startIndex = 0
         val endIndex = spannableText.length
-        val color = Color.parseColor("#03ac0e")
+        val color = itemView.resources.getColor(R.color.merchant_green)
         spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(p0: View) {
-                tickerViewHolderViewHolderListener?.onReadMoreClicked()
+                tickerReadMoreListener?.onReadMoreClicked()
             }
 
             override fun updateDrawState(ds: TextPaint) {

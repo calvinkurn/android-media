@@ -27,15 +27,15 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
         ItemTouchHelperAdapter, GMFeaturedProductViewHolder.PostDataListener {
 
     private OnStartDragListener onStartDragListener;
-    private TickerReadMoreFeaturedViewHolder.TickerViewHolderListener tickerViewHolderListener;
+    private TickerReadMoreFeaturedViewHolder.TickerReadMoreListener tickerReadMoreListener;
     private UseCaseListener useCaseListener;
 
     public GMFeaturedProductAdapter(
             OnStartDragListener onStartDragListener,
-            TickerReadMoreFeaturedViewHolder.TickerViewHolderListener tickerViewHolderListener
+            TickerReadMoreFeaturedViewHolder.TickerReadMoreListener tickerReadMoreListener
     ) {
         this.onStartDragListener = onStartDragListener;
-        this.tickerViewHolderListener = tickerViewHolderListener;
+        this.tickerReadMoreListener = tickerReadMoreListener;
     }
 
     public void setUseCaseListener(UseCaseListener useCaseListener) {
@@ -75,7 +75,7 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
             case TickerReadMoreFeaturedModel.TYPE:
                 return new TickerReadMoreFeaturedViewHolder(
                         getLayoutView(parent, R.layout.item_featured_product_ticker_idle_pm),
-                        tickerViewHolderListener
+                        tickerReadMoreListener
                 );
             default:
                 return super.onCreateViewHolder(parent, viewType);

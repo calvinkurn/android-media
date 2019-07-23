@@ -58,8 +58,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.gm.common.utils.PowerMerchantTracking;
-import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet;
-import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
+import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
@@ -775,13 +774,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             );
         }
 
-        PowerMerchantSuccessBottomSheet.BottomSheetModel model = null;
+        MerchantCommonBottomSheet.BottomSheetModel model = null;
         String redirectUrl = "";
 
         if (shopStatusModel.isPowerMerchantInactive()
                 && !popUpManager.isRegularMerchantShown(shopId)) {
             popUpManager.setRegularMerchantShown(shopId, true);
-            model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+            model = new MerchantCommonBottomSheet.BottomSheetModel(
                     getString(R.string.pm_popup_regular_title),
                     getString(R.string.pm_popup_regular_desc),
                     IMG_URL_RM_ILLUSTRATION,
@@ -794,7 +793,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             if (shopStatusModel.isPowerMerchantActive()
                     && !popUpManager.isActivePowerMerchantShown(shopId)) {
                 popUpManager.setActivePowerMerchantShown(shopId, true);
-                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                model = new MerchantCommonBottomSheet.BottomSheetModel(
                         getString(R.string.pm_popup_active_title),
                         getString(R.string.pm_popup_active_desc),
                         IMG_URL_BS_SUCCESS,
@@ -805,7 +804,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             } else if (shopStatusModel.isPowerMerchantIdle()
                     && !popUpManager.isIdlePowerMerchantShown(shopId)) {
                 popUpManager.setIdlePowerMerchantShown(shopId, true);
-                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                model = new MerchantCommonBottomSheet.BottomSheetModel(
                         getString(R.string.pm_popup_idle_title),
                         getString(R.string.pm_popup_idle_desc),
                         IMG_URL_PM_IDLE,
@@ -817,7 +816,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             } else if (shopStatusModel.isPowerMerchantInactive()
                     && !popUpManager.isRegularMerchantShown(shopId)) {
                 popUpManager.setRegularMerchantShown(shopId, true);
-                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                model = new MerchantCommonBottomSheet.BottomSheetModel(
                         getString(R.string.pm_popup_deactivated_title),
                         getString(R.string.pm_popup_deactivated_desc),
                         IMG_URL_PM_IDLE,
@@ -829,7 +828,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         if (model != null) {
             final String finalUrl = redirectUrl;
-            PowerMerchantSuccessBottomSheet bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model);
+            MerchantCommonBottomSheet bottomSheet = MerchantCommonBottomSheet.newInstance(model);
             bottomSheet.setListener(() -> {
                 bottomSheet.dismiss();
                 onGoToLink(finalUrl);

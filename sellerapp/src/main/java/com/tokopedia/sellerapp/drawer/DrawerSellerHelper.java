@@ -393,14 +393,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-//                    if (adapter instanceof SellerDrawerAdapter && ((SellerDrawerAdapter) adapter).isGoldMerchant()) {
-//                        eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
-//                        intent = new Intent(context, GMFeaturedProductActivity.class);
-//                        context.startActivity(intent);
-//                    } else {
-//                        showDialogActionGoToGMSubscribe();
-//                        isNeedToCloseActivity = false;
-//                    }
+                    eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
                     intent = new Intent(context, GMFeaturedProductActivity.class);
                     context.startActivity(intent);
                     break;

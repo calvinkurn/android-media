@@ -48,6 +48,7 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
 
     private static final String DEFAULT_CATEGORY = "kaos";
 
+    private View itemView;
     private TextView tvMarketInsightFooter;
     private TitleCardView titleCardView;
     private GMMarketInsightAdapter GMMarketInsightAdapter;
@@ -55,7 +56,6 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     private Button buttonRedirectTo;
     private TextView tvOverlayDescription;
     private ImageView imageViewLock;
-
     private Listener listener;
 
     public void setListener(Listener listener) {
@@ -63,7 +63,8 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     }
 
     public GMStatisticMarketInsightViewHolder(View view) {
-        titleCardView = (TitleCardView) view.findViewById(R.id.market_insight_card_view);
+        itemView = view;
+        titleCardView = (TitleCardView) itemView.findViewById(R.id.market_insight_card_view);
         overlayWarningView = titleCardView.getContentView().findViewById(R.id.vg_market_insight_not_gm);
         buttonRedirectTo = titleCardView.getContentView().findViewById(R.id.button_redirect_to);
         tvOverlayDescription = titleCardView.getContentView().findViewById(R.id.text_view_overlay_description);
@@ -71,8 +72,8 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         tvOverlayDescription.setMovementMethod(LinkMovementMethod.getInstance());
         tvOverlayDescription.setText(
                 createDescriptionWithSpannable(
-                        view.getContext().getString(R.string.gm_statistic_get_access_to_see_gm_stat),
-                        view.getContext().getString(R.string.gm_statistic_read_more)
+                        itemView.getContext().getString(R.string.gm_statistic_get_access_to_see_gm_stat),
+                        itemView.getContext().getString(R.string.gm_statistic_read_more)
                 )
         );
         buttonRedirectTo.setText(view.getContext().getString(R.string.gm_statistic_upgrade_shop));
@@ -104,7 +105,7 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         SpannableString spannableText = new SpannableString(readMoreText);
         int startIndex = 0;
         int endIndex = spannableText.length();
-        int color = Color.parseColor("#03ac0e");
+        int color = itemView.getResources().getColor(R.color.merchant_green);
         spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override

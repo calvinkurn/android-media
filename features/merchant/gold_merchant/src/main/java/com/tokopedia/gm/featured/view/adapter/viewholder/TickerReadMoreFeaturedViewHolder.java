@@ -16,23 +16,19 @@ import com.tokopedia.gm.featured.view.adapter.model.TickerReadMoreFeaturedModel;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by normansyahputa on 9/8/17.
- */
-
 public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadMoreFeaturedModel> {
     private final TextView textViewTitle;
     private final TextView textViewDescription;
-    private TickerViewHolderListener tickerViewHolderListener;
+    private TickerReadMoreListener tickerReadMoreListener;
 
     public TickerReadMoreFeaturedViewHolder(
             View itemView,
-            TickerViewHolderListener tickerViewHolderListener
+            TickerReadMoreListener tickerReadMoreListener
     ) {
         super(itemView);
         textViewTitle = itemView.findViewById(R.id.txt_ticker_title);
         textViewDescription = itemView.findViewById(R.id.txt_ticker_description);
-        this.tickerViewHolderListener = tickerViewHolderListener;
+        this.tickerReadMoreListener = tickerReadMoreListener;
     }
 
     @Override
@@ -58,12 +54,12 @@ public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadM
         SpannableString spannableText = new SpannableString(readMoreText);
         int startIndex = 0;
         int endIndex = spannableText.length();
-        int color = Color.parseColor("#03ac0e");
+        int color = itemView.getResources().getColor(R.color.merchant_green);
         spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NotNull View view) {
-                tickerViewHolderListener.onTickerReadMoreClicked();
+                tickerReadMoreListener.onTickerReadMoreClicked();
             }
 
             @Override
@@ -82,7 +78,7 @@ public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadM
         return new SpannableStringBuilder(originalText).append(" ").append(spannableText);
     }
 
-    public interface TickerViewHolderListener {
+    public interface TickerReadMoreListener {
 
         void onTickerReadMoreClicked();
     }

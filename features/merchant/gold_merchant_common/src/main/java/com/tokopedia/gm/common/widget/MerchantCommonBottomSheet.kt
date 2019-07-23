@@ -16,12 +16,12 @@ import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.loadImage
 
-class PowerMerchantSuccessBottomSheet : BottomSheets() {
+class MerchantCommonBottomSheet : BottomSheets() {
 
-    private lateinit var buttonSubmit: Button
-    private lateinit var imgSuccessPm: ImageView
-    private lateinit var txtSuccessHeaderBs: TextViewCompat
-    private lateinit var txtSuccessDescBs: TextViewCompat
+    private lateinit var buttonRedirectTo: Button
+    private lateinit var imageViewIcon: ImageView
+    private lateinit var textViewTitle: TextViewCompat
+    private lateinit var textViewDescription: TextViewCompat
     private lateinit var model: BottomSheetModel
     private var listener: BottomSheetListener? = null
     private val powerMerchantTracking: PowerMerchantTracking by lazy {
@@ -32,8 +32,8 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
         private const val MODEL = "model"
 
         @JvmStatic
-        fun newInstance(model: BottomSheetModel): PowerMerchantSuccessBottomSheet {
-            return PowerMerchantSuccessBottomSheet().apply {
+        fun newInstance(model: BottomSheetModel): MerchantCommonBottomSheet {
+            return MerchantCommonBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putParcelable(MODEL, model)
                 arguments = bundle
@@ -46,22 +46,22 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.bottom_sheets_pm_success
+        return R.layout.merchant_common_bottom_sheet
     }
 
     override fun initView(view: View) {
         initVar()
-        imgSuccessPm = view.findViewById(R.id.img_btm_sheets)
-        buttonSubmit = view.findViewById(R.id.button_checknow)
-        txtSuccessHeaderBs = view.findViewById(R.id.txt_success_header_bs)
-        txtSuccessDescBs = view.findViewById(R.id.txt_success_desc_bs)
+        imageViewIcon = view.findViewById(R.id.image_view_icon)
+        buttonRedirectTo = view.findViewById(R.id.button_redirect_to)
+        textViewTitle = view.findViewById(R.id.text_view_title)
+        textViewDescription = view.findViewById(R.id.text_view_description)
 
-        imgSuccessPm.loadImage(model.imageUrl)
-        txtSuccessHeaderBs.text = MethodChecker.fromHtml(model.title)
-        txtSuccessDescBs.text = MethodChecker.fromHtml(model.desc)
+        imageViewIcon.loadImage(model.imageUrl)
+        textViewTitle.text = MethodChecker.fromHtml(model.title)
+        textViewDescription.text = MethodChecker.fromHtml(model.desc)
 
-        buttonSubmit.text = model.btnTitle
-        buttonSubmit.setOnClickListener {
+        buttonRedirectTo.text = model.btnTitle
+        buttonRedirectTo.setOnClickListener {
             when (model.trackingFlag) {
                 PM_HOME_NONACTIVE -> powerMerchantTracking.eventIncreaseScoreBottomSheet()
                 PM_SUBSCRIBE_SUCCESS -> powerMerchantTracking.eventLearnMoreSuccessPopUp()

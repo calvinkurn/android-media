@@ -31,7 +31,7 @@ import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
-import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet
+import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showEmptyState
@@ -67,7 +67,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var partialTncViewHolder: PartialTncViewHolder
     lateinit var shopStatusModel: ShopStatusModel
     lateinit var getApprovalStatusPojo: GetApprovalStatusPojo
-    lateinit var bottomSheetSuccess: PowerMerchantSuccessBottomSheet
+    lateinit var bottomSheetCommon: MerchantCommonBottomSheet
     lateinit var bottomSheetCancel: PowerMerchantCancelBottomSheet
 
     private var shopScore: Int = 0
@@ -251,27 +251,27 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private fun showBottomSheetSuccess(shopStatusModel: ShopStatusModel) {
         val imgUrl = IMG_URL_BS_SUCCESS
         isSuccessActivatedPm = false
-        val bottomSheetModel: PowerMerchantSuccessBottomSheet.BottomSheetModel =
+        val bottomSheetModel: MerchantCommonBottomSheet.BottomSheetModel =
                 if (shopStatusModel.isTransitionPeriod()) {
                     val headerString = getString(R.string.pm_label_bs_success_header_transition)
                     val descString = getString(R.string.pm_label_bs_success_desc_transition)
                     val btnString = getString(R.string.pm_label_bs_success_button_transition)
-                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, "")
+                    MerchantCommonBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, "")
                 } else {
                     val headerString = getString(R.string.pm_label_bs_success_header)
                     val descString = getString(R.string.pm_label_bs_success_desc)
                     val btnString = getString(R.string.pm_label_bs_success_button)
-                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, PM_SUBSCRIBE_SUCCESS)
+                    MerchantCommonBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, PM_SUBSCRIBE_SUCCESS)
                 }
 
-        bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(bottomSheetModel)
-        bottomSheetSuccess.setListener(object : PowerMerchantSuccessBottomSheet.BottomSheetListener {
+        bottomSheetCommon = MerchantCommonBottomSheet.newInstance(bottomSheetModel)
+        bottomSheetCommon.setListener(object : MerchantCommonBottomSheet.BottomSheetListener {
             override fun onBottomSheetButtonClicked() {
-                bottomSheetSuccess.dismiss()
+                bottomSheetCommon.dismiss()
                 refreshData()
             }
         })
-        bottomSheetSuccess.show(childFragmentManager, "power_merchant_success")
+        bottomSheetCommon.show(childFragmentManager, "power_merchant_success")
     }
 
     fun showBottomSheetCancel() {

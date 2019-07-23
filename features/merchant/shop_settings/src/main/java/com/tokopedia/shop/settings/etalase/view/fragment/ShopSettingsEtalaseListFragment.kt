@@ -39,7 +39,7 @@ import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseAdapter
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFactory
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListPresenter
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder
-import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreViewHolder
+import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreEtalaseViewHolder
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -50,7 +50,7 @@ class ShopSettingsEtalaseListFragment :
         BaseSearchListFragment<BaseShopEtalaseViewModel, ShopEtalaseFactory>(),
         ShopSettingEtalaseListPresenter.View,
         ShopEtalaseViewHolder.OnShopEtalaseViewHolderListener,
-        TickerReadMoreViewHolder.TickerViewHolderViewHolderListener
+        TickerReadMoreEtalaseViewHolder.TickerReadMoreListener
 {
     @Inject
     lateinit var shopSettingEtalaseListPresenter: ShopSettingEtalaseListPresenter
