@@ -199,7 +199,7 @@ public class DynamicFeedShopAdapter
             if (shop.isShop_is_official()) {
                 ivBadge.setVisibility(View.VISIBLE);
                 ivBadge.setImageDrawable(
-                        ImageLoader.getDrawable(ivBadge.getContext(), R.drawable.ic_official)
+                        ImageLoader.getDrawable(ivBadge.getContext(), R.drawable.ic_badge_shop_official)
                 );
                 layoutParams.leftMargin =
                         (int) ivBadge.getContext().getResources().getDimension(R.dimen.dp_4);
