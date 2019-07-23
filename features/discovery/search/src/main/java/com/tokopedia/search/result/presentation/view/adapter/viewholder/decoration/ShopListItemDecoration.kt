@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.decorat
 
 import android.graphics.Rect
 import android.support.v7.widget.CardView
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.search.R
@@ -23,14 +24,17 @@ class ShopListItemDecoration(private val left: Int,
     override fun getItemOffsets(outRect: Rect, view: View,
                                 parent: RecyclerView, state: RecyclerView.State) {
 
-        val position = parent.getChildAdapterPosition(view)
+        val absolutePosition = parent.getChildAdapterPosition(view)
 
-        if(isShopItem(parent, position)) {
+        if(isShopItem(parent, absolutePosition)) {
+            val relativePosition = getShopItemRelativePosition(parent, view)
+            val totalSpanCount = getTotalSpanCount(parent)
+
             horizontalCardViewOffset = getHorizontalCardViewOffset(view)
             verticalCardViewOffset = getVerticalCardViewOffset(view)
 
             outRect.left = getLeftOffset()
-            outRect.top = getTopOffset(parent, view)
+            outRect.top = getTopOffset(parent, absolutePosition, relativePosition, totalSpanCount)
             outRect.right = getRightOffset()
             outRect.bottom = getBottomOffset()
         }
@@ -53,6 +57,23 @@ class ShopListItemDecoration(private val left: Int,
             -1
         } else {
             adapter.getItemViewType(viewPosition)
+        }
+    }
+
+    private fun getShopItemRelativePosition(parent: RecyclerView, view: View): Int {
+        val absolutePos = parent.getChildAdapterPosition(view)
+        var firstProductItemPos = absolutePos
+        while (isShopItem(parent, firstProductItemPos - 1)) firstProductItemPos--
+        return absolutePos - firstProductItemPos
+    }
+
+    private fun getTotalSpanCount(parent: RecyclerView): Int {
+        val layoutManager = parent.layoutManager
+        return if(layoutManager is GridLayoutManager) {
+            layoutManager.spanCount
+        }
+        else {
+            1
         }
     }
 
@@ -84,12 +105,16 @@ class ShopListItemDecoration(private val left: Int,
         return left - horizontalCardViewOffset
     }
 
-    private fun getTopOffsetWithCardViewOffset(parent: RecyclerView, view: View): Int {
-        return if (isTopProductItem(parent, view)) top else top / 4
+    private fun getTopOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
+        return getTopOffsetWithCardViewOffset(parent, absolutePos, relativePos, totalSpanCount) - verticalCardViewOffset
     }
 
-    private fun isTopProductItem(parent: RecyclerView, view: View): Boolean {
-        return parent.getChildAdapterPosition(view) == 0
+    private fun getTopOffsetWithCardViewOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
+        return if (isTopShopItem(parent, absolutePos, relativePos, totalSpanCount)) top else top / 4
+    }
+
+    private fun isTopShopItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean {
+        return !isShopItem(parent, absolutePos - relativePos % totalSpanCount - 1)
     }
 
     private fun getRightOffset(): Int {
@@ -98,9 +123,5 @@ class ShopListItemDecoration(private val left: Int,
 
     private fun getBottomOffset(): Int {
         return (bottom / 4) - verticalCardViewOffset
-    }
-
-    private fun getTopOffset(parent: RecyclerView, view: View): Int {
-        return getTopOffsetWithCardViewOffset(parent, view) - verticalCardViewOffset
     }
 }
