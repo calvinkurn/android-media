@@ -20,6 +20,5 @@
         app:srcCompat="@drawable/ic_plus_white"
         android:visibility="gone"
         app:backgroundTint="@color/tkpd_main_green" />
-    <include layout="@layout/layout_gm_featured_product_overlay" />
 
 </android.support.design.widget.CoordinatorLayout>

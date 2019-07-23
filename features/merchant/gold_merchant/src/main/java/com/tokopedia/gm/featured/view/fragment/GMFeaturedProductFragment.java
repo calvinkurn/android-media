@@ -98,10 +98,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private ItemTouchHelper mItemTouchHelper;
     private ProgressDialog progressDialog;
     private CoordinatorLayout coordinatorLayoutContainer;
-    private View viewOverlayRegularMerchant;
-    private TextView textViewOverlay;
-    private ImageView imageViewOverlay;
-    private Button buttonOverlay;
     @GMFeaturedProductTypeView
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
@@ -129,7 +125,25 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
         GMFeatureProductEmptyDataBinder emptyDataBinder = new GMFeatureProductEmptyDataBinder(
                 adapter,
-                GMFeaturedConstant.IMG_URL_NO_FEATURED_PRODUCT
+                GMFeaturedConstant.IMG_URL_NO_FEATURED_PRODUCT,
+                new GMFeatureProductEmptyDataBinder.GMFeaturedProductEmptyDataBinderListener() {
+                    @Override
+                    public void buttonOverlayClicked() {
+                        if (!isPowerMerchant()) {
+                            RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+                        } else if (isIdlePowerMerchant()) {
+                            showIdlePowerMerchantBottomSheet("Produk Unggulan");
+                        }
+                    }
+
+                    @Override
+                    public void spanReadMoreClicked() {
+                        RouteManager.route(
+                                getContext(),
+                                ApplinkConstInternalGlobal.WEBVIEW, URL_FEATURED_PRODUCT
+                        );
+                    }
+                }
         );
         emptyDataBinder.setEmptyTitleText(getString(R.string.gm_featured_product_title_empty));
         emptyDataBinder.setEmptyContentText(getString(R.string.gm_featured_product_description_empty));
@@ -137,51 +151,19 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {
-                checkMerchantStatus();
+                moveToProductPicker();
             }
 
             @Override
             public void onEmptyButtonClicked() {
-                checkMerchantStatus();
+                moveToProductPicker();
             }
         });
         return emptyDataBinder;
     }
 
-    private void checkMerchantStatus() {
-        if (!isPowerMerchant() || isIdlePowerMerchant()) {
-            showUpgradeOverlay();
-        } else {
-            moveToProductPicker();
-        }
-
-    }
-
     private boolean isPowerMerchant() {
         return userSession.isGoldMerchant();
-    }
-
-    private void showUpgradeOverlay() {
-        textViewOverlay.setMovementMethod(LinkMovementMethod.getInstance());
-        textViewOverlay.setText(createSpannableLink(
-                getString(R.string.gm_featured_product_overlay_desc),
-                getString(R.string.gm_featured_product_overlay_read_more)
-        ));
-        viewOverlayRegularMerchant.setVisibility(View.VISIBLE);
-        buttonOverlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isPowerMerchant()) {
-                    RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
-                } else if (isIdlePowerMerchant()) {
-                    showIdlePowerMerchantBottomSheet("Produk Unggulan");
-                }
-            }
-        });
-        buttonOverlay.setText(getString(R.string.gm_featured_product_overlay_upgrade_shop));
-        ImageHandler imageHandler = new ImageHandler(getContext());
-        imageHandler.loadImage(imageViewOverlay, IMG_URL_ICON_LOCK_WHITE_GREEN);
-
     }
 
     private void showIdlePowerMerchantBottomSheet(String featureName) {
@@ -208,46 +190,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         MerchantCommonBottomSheet bottomSheet = MerchantCommonBottomSheet.newInstance(model);
         bottomSheet.setListener(this);
         bottomSheet.show(getChildFragmentManager(), "merchant_warning_bottom_sheet");
-    }
-
-    private SpannableStringBuilder createSpannableLink(
-            String originalText,
-            String readMoreText
-    ) {
-        SpannableString spannableText = new SpannableString(readMoreText);
-        int startIndex = 0;
-        int endIndex = spannableText.length();
-        int color = getResources().getColor(R.color.merchant_green);
-        spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ClickableSpan clickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(@NotNull View view) {
-                RouteManager.route(
-                        getContext(),
-                        ApplinkConstInternalGlobal.WEBVIEW, URL_FEATURED_PRODUCT
-                );
-            }
-
-            @Override
-            public void updateDrawState(@NotNull TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setUnderlineText(false);
-                ds.setColor(color);
-            }
-        };
-        spannableText.setSpan(
-                clickableSpan,
-                startIndex,
-                endIndex,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        );
-        spannableText.setSpan(
-                new StyleSpan(Typeface.BOLD),
-                startIndex,
-                endIndex,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        );
-        return new SpannableStringBuilder(originalText).append(" ").append(spannableText);
     }
 
     @Override
@@ -286,10 +228,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             }
         });
         coordinatorLayoutContainer = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout_container);
-        viewOverlayRegularMerchant = view.findViewById(R.id.layout_overlay);
-        textViewOverlay = view.findViewById(R.id.text_view_overlay_description);
-        imageViewOverlay = view.findViewById(R.id.image_view_overlay);
-        buttonOverlay = view.findViewById(R.id.button_redirect_to);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
