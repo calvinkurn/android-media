@@ -651,7 +651,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun sendMessage(): (PendingChatViewModel) -> Unit {
         return {
-            analytics.eventClickSendChat(channelInfoViewModel.channelId)
             presenter.sendMessage(it, ::afterSendMessage, ::onSuccessSendMessage, ::onErrorSendMessage)
         }
     }

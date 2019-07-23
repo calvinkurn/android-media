@@ -496,15 +496,6 @@ public class GroupChatAnalytics {
         ));
     }
 
-    //#31
-    public void eventClickSendChat(String channelId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
-                EVENT_CATEGORY_GROUPCHAT_ROOM,
-                "click on button send chat",
-                channelId
-        ));
-    }
-
     //#32
     public void eventShowStickyComponent(@NotNull StickyComponentViewModel item,
                                          ChannelInfoViewModel viewModel) {
