@@ -790,17 +790,17 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (!isMismatch && !isMismatchSolved) {
             detailAddress = et_detail_address.text.toString()
 
-            saveAddressDataModel?.address1 = "${saveAddressDataModel?.title} ${detailAddress}, ${saveAddressDataModel?.formattedAddress}"
+            saveAddressDataModel?.address1 = "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress} [Tokopedia Note: ${detailAddress}]"
             saveAddressDataModel?.address2 = "$currentLat,$currentLong"
 
         } else {
             detailAddress = tv_detail_alamat_mismatch.text.toString()
             if (isMismatch) {
-                saveAddressDataModel?.address1 = "${detailAddress} ${saveAddressDataModel?.selectedDistrict}"
+                saveAddressDataModel?.address1 = "${saveAddressDataModel?.selectedDistrict} [Tokopedia Note: ${detailAddress}]"
                 saveAddressDataModel?.address2 = ""
 
             } else {
-                saveAddressDataModel?.address1 = "${saveAddressDataModel?.title} ${detailAddress}, ${saveAddressDataModel?.formattedAddress}"
+                saveAddressDataModel?.address1 = "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress} [Tokopedia Note: ${detailAddress}]"
                 saveAddressDataModel?.address2 = "$currentLat,$currentLong"
             }
         }
@@ -810,8 +810,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         saveAddressDataModel?.phone = et_phone.text.toString()
     }
 
-    override fun onSuccessAddAddress(addAddressDataUiModel: AddAddressDataUiModel, saveAddressDataModel: SaveAddressDataModel) {
-        finishActivity(saveAddressDataModel)
+    override fun onSuccessAddAddress(saveAddressDataModel: SaveAddressDataModel) {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
+            })
+            finish()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -887,15 +892,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun onConnectionFailed(p0: ConnectionResult) {
-    }
-
-    private fun finishActivity(saveAddressDataModel: SaveAddressDataModel) {
-        activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
-            })
-            finish()
-        }
     }
 
     override fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
