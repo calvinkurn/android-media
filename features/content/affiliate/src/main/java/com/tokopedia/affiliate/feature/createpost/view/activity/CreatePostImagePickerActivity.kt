@@ -13,8 +13,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 
