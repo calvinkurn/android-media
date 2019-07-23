@@ -83,7 +83,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     // Used to load the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        System.loadLibrary("native-lib");
+//        System.loadLibrary("native-lib");
     }
 
     @Override
