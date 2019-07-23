@@ -7,17 +7,22 @@ import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFac
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 data class ShopHeaderViewModel(
-        val cpmModel: CpmModel = CpmModel()
+        val cpmModel: CpmModel = CpmModel(),
+        val totalShopCount: Int = 0
 ): Parcelable, Visitable<ShopListTypeFactory> {
 
     override fun type(typeFactory: ShopListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
 
-    constructor(parcel: Parcel) : this(parcel.readParcelable<CpmModel>(CpmModel::class.java.classLoader))
+    constructor(parcel: Parcel) : this(
+            parcel.readParcelable<CpmModel>(CpmModel::class.java.classLoader),
+            parcel.readInt()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(cpmModel, flags)
+        parcel.writeInt(totalShopCount)
     }
 
     override fun describeContents(): Int {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/tkpd_bg_color"
@@ -10,5 +11,15 @@
         android:id="@+id/adsBannerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewShopCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/shop_total_count_text_color"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        app:typographyType="heading_5"
+        tools:text="@string/shop_total_count"/>
 
 </LinearLayout>

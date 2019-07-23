@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.shop
 import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
@@ -35,6 +36,17 @@ class ShopHeaderViewHolder(
     override fun bind(shopHeaderViewModel: ShopHeaderViewModel?) {
         if(shopHeaderViewModel == null) return
 
+        initCpmModel(shopHeaderViewModel)
+        initTextViewShopCount(shopHeaderViewModel)
+    }
+
+    private fun initCpmModel(shopHeaderViewModel: ShopHeaderViewModel) {
         itemView.adsBannerView?.displayAds(shopHeaderViewModel.cpmModel)
+    }
+
+    private fun initTextViewShopCount(shopHeaderViewModel: ShopHeaderViewModel) {
+        itemView.textViewShopCount?.showWithCondition(shopHeaderViewModel.totalShopCount > 0)
+
+        itemView.textViewShopCount?.text = getString(R.string.shop_total_count, shopHeaderViewModel.totalShopCount.toString())
     }
 }

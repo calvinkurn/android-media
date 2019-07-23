@@ -128,7 +128,8 @@ final class ShopListPresenter
         enrichPositionData(shopViewModel.getShopItemList(), loadShopRow);
 
         ShopHeaderViewModel shopHeaderViewModel = new ShopHeaderViewModel(
-                shopViewModel.getCpmModel()
+                shopViewModel.getCpmModel(),
+                shopViewModel.getTotalShop()
         );
 
         List<Visitable> visitableList = createVisitableList(shopHeaderViewModel, shopViewModel.getShopItemList());

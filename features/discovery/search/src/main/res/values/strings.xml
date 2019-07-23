@@ -28,6 +28,7 @@
     <string name="label_follow_shop">Follow</string>
     <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
+    <string name="shop_total_count">%s toko</string>
     <string name="shop_has_no_product">Toko belum ada produk</string>
     <string name="shop_total_transaction">%s terjual</string>
     <string name="shop_total_favorite">%s pengikut</string>
