@@ -15,6 +15,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewMo
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.List;
 
@@ -25,7 +26,6 @@ public class FeedScrollListener {
 
     private static final int THRESHOLD_VIDEO_HEIGHT_SHOWN = 75;
     private static final String TYPE_VIDEO = "video";
-    private static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
 
     public static void onFeedScrolled(RecyclerView recyclerView, List<Visitable> list) {
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -134,7 +134,7 @@ public class FeedScrollListener {
 
     private static boolean canAutoplayVideo(RecyclerView recyclerView) {
         RemoteConfig config = new FirebaseRemoteConfigImpl(recyclerView.getContext());
-        return config.getBoolean(CONFIG_AUTOPLAY_VIDEO_WIFI,false);
+        return config.getBoolean(RemoteConfigKey.CONFIG_AUTOPLAY_VIDEO_WIFI,false);
     }
 
 }
