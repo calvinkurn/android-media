@@ -242,7 +242,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void onButtonRedirectToClicked() {
         if(isIdlePowerMerchant())
             showIdlePowerMerchantBottomSheet(FEATURE_MARKET_INSIGHT);
-        else if(isPowerMerchant())
+        else if(!isPowerMerchant())
             startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(getActivity()));
 
     }

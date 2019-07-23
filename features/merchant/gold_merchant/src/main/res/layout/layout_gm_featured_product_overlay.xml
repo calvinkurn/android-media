@@ -23,12 +23,10 @@
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/text_view_overlay_description"
-        style="@style/TextView.Small.WhiteDisabled"
+        style="@style/TextView.Micro.WhitePrimary"
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="center"
         android:textAlignment="center"
-        android:textColor="@color/white"
-        app:fontSize="micro"
         tools:text="@string/gm_statistic_get_access_to_see_gm_stat" />
 
     <com.tokopedia.design.component.ButtonCompat

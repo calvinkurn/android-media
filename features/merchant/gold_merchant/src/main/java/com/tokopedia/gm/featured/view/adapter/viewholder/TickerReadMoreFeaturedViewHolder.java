@@ -5,6 +5,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadM
 
     public void bindData(final TickerReadMoreFeaturedModel tickerReadMoreFeaturedModel) {
         textViewTitle.setText(tickerReadMoreFeaturedModel.getTitle());
+        textViewDescription.setMovementMethod(LinkMovementMethod.getInstance());
         textViewDescription.setText(
                 createDescriptionWithSpannable(
                         tickerReadMoreFeaturedModel.getDescription(),

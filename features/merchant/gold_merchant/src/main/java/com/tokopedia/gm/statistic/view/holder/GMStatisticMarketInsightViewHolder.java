@@ -1,6 +1,7 @@
 package com.tokopedia.gm.statistic.view.holder;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -8,7 +9,9 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -39,6 +42,7 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
 
     public interface Listener {
         void onButtonRedirectToClicked();
+
         void onReadMoreClicked();
     }
 
@@ -64,9 +68,10 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         buttonRedirectTo = titleCardView.getContentView().findViewById(R.id.button_redirect_to);
         tvOverlayDescription = titleCardView.getContentView().findViewById(R.id.text_view_overlay_description);
         imageViewLock = titleCardView.getContentView().findViewById(R.id.image_view_lock);
+        tvOverlayDescription.setMovementMethod(LinkMovementMethod.getInstance());
         tvOverlayDescription.setText(
                 createDescriptionWithSpannable(
-                        tvOverlayDescription.getText().toString(),
+                        view.getContext().getString(R.string.gm_statistic_get_access_to_see_gm_stat),
                         view.getContext().getString(R.string.gm_statistic_read_more)
                 )
         );
@@ -89,7 +94,7 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         GMMarketInsightAdapter = new GMMarketInsightAdapter(new ArrayList<GetKeyword.SearchKeyword>());
         recyclerView.setAdapter(GMMarketInsightAdapter);
         ImageHandler imageHandler = new ImageHandler(view.getContext());
-        imageHandler.loadImage(imageViewLock,IMG_URL_ICON_LOCK_WHITE_GREEN);
+        imageHandler.loadImage(imageViewLock, IMG_URL_ICON_LOCK_WHITE_GREEN);
     }
 
     private SpannableStringBuilder createDescriptionWithSpannable(
@@ -116,6 +121,12 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         };
         spannableText.setSpan(
                 clickableSpan,
+                startIndex,
+                endIndex,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+        spannableText.setSpan(
+                new StyleSpan(Typeface.BOLD),
                 startIndex,
                 endIndex,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -184,8 +195,7 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
                 displayOverlay();
             else
                 displayEmptyState();
-        }
-        else {
+        } else {
             displayOverlay();
         }
     }

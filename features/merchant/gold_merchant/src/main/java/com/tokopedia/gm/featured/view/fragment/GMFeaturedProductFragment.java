@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -16,7 +17,9 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,9 +41,9 @@ import com.tokopedia.base.list.seller.view.old.Pair;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;
+import com.tokopedia.gm.common.widget.PowerMerchantSuccessBottomSheet;
 import com.tokopedia.gm.featured.constant.GMFeaturedConstant;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.di.component.DaggerGMFeaturedProductComponent;
@@ -71,6 +74,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_ICON_LOCK_WHITE_GREEN;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_POWER_MERCHANT_IDLE_POPUP;
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_FEATURED_PRODUCT;
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_POWER_MERCHANT_SCORE_TIPS;
 
@@ -84,7 +88,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         GMFeaturedProductAdapter.UseCaseListener,
         SimpleItemTouchHelperCallback.isEnabled,
         BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel>,
-        TickerReadMoreFeaturedViewHolder.TickerViewHolderViewHolderListener {
+        TickerReadMoreFeaturedViewHolder.TickerViewHolderViewHolderListener,
+        PowerMerchantSuccessBottomSheet.BottomSheetListener{
 
     private static final int REQUEST_CODE = 12314;
     private static final int MAX_ITEM = 5;
@@ -145,10 +150,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private void checkIsPowerMerchant() {
-        if (isPowerMerchant()) {
-            moveToProductPicker();
-        } else {
+        if (!isPowerMerchant() || isIdlePowerMerchant()) {
             showUpgradeOverlay();
+        } else {
+            moveToProductPicker();
         }
 
     }
@@ -158,7 +163,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     private void showUpgradeOverlay() {
-        textViewOverlay.setText(createDescriptionWithSpannable(
+        textViewOverlay.setMovementMethod(LinkMovementMethod.getInstance());
+        textViewOverlay.setText(createSpannableLink(
                 getString(R.string.gm_featured_product_overlay_desc),
                 getString(R.string.gm_featured_product_overlay_read_more)
         ));
@@ -166,7 +172,11 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         buttonOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+                if (!isPowerMerchant()) {
+                    RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+                } else if (isIdlePowerMerchant()) {
+                    showIdlePowerMerchantBottomSheet("Produk Unggulan");
+                }
             }
         });
         buttonOverlay.setText(getString(R.string.gm_featured_product_overlay_upgrade_shop));
@@ -175,7 +185,33 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     }
 
-    private SpannableStringBuilder createDescriptionWithSpannable(
+    private void showIdlePowerMerchantBottomSheet(String featureName) {
+        String title = String.format(
+                getString(R.string.bottom_sheet_idle_title),
+                featureName
+        );
+        String description = String.format(
+                getString(R.string.bottom_sheet_idle_desc),
+                featureName
+        );
+        String buttonName = getString(R.string.bottom_sheet_idle_btn);
+        showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName);
+    }
+
+    private void showBottomSheet(String title, String imageUrl, String description, String buttonName) {
+        PowerMerchantSuccessBottomSheet.BottomSheetModel model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                title,
+                description,
+                imageUrl,
+                buttonName,
+                ""
+        );
+        PowerMerchantSuccessBottomSheet bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model);
+        bottomSheet.setListener(this);
+        bottomSheet.show(getChildFragmentManager(), "merchant_warning_bottom_sheet");
+    }
+
+    private SpannableStringBuilder createSpannableLink(
             String originalText,
             String readMoreText
     ) {
@@ -206,13 +242,23 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 endIndex,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         );
+        spannableText.setSpan(
+                new StyleSpan(Typeface.BOLD),
+                startIndex,
+                endIndex,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
         return new SpannableStringBuilder(originalText).append(" ").append(spannableText);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        userSession = new UserSession(getContext());
+        if (isIdlePowerMerchant())
+            setHasOptionsMenu(false);
+        else
+            setHasOptionsMenu(true);
     }
 
     @Override
@@ -232,7 +278,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        userSession = new UserSession(getContext());
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -462,7 +507,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 if (totalItem <= 0 || totalItem >= MAX_ITEM) {
                     hideFab();
                 } else {
-                    showFab();
+                    if (isIdlePowerMerchant())
+                        hideFab();
+                    else
+                        showFab();
                 }
         }
     }
@@ -660,5 +708,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 getContext(),
                 ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS
         );
+    }
+
+    @Override
+    public void onButtonClicked() {
+
     }
 }

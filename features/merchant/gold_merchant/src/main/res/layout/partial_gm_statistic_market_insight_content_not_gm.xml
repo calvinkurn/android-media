@@ -12,7 +12,7 @@
     android:paddingLeft="@dimen/dp_40"
     android:paddingRight="@dimen/dp_40"
     android:paddingTop="@dimen/dp_20"
-    android:visibility=""
+    android:visibility="gone"
     android:id="@+id/vg_market_insight_not_gm">
 
     <LinearLayout
@@ -29,12 +29,10 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/text_view_overlay_description"
-            style="@style/TextView.Small.WhiteDisabled"
+            style="@style/TextView.Micro.WhitePrimary"
             android:layout_marginLeft="@dimen/dp_2"
             android:gravity="center"
-            app:fontSize="micro"
-            android:textColor="@color/white"
-            tools:text="@string/gm_statistic_get_access_to_see_gm_stat"
+                tools:text="@string/gm_statistic_get_access_to_see_gm_stat"
             android:textAlignment="center" />
     </LinearLayout>
 
