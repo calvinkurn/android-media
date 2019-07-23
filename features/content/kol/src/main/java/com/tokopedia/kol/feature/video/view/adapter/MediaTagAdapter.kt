@@ -12,10 +12,16 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.item_media_tag.view.*
 
-class MediaTagAdapter(private val tags: List<PostTagItem> = listOf(),
-                      private val onFavoriteProduct: ((String) -> Unit)? = null,
+class MediaTagAdapter(private val tags: MutableList<PostTagItem> = mutableListOf(),
+                      private val onFavoriteProduct: ((Boolean, String, Int) -> Unit)? = null,
                       private val onProductActionClick: ((String) -> Unit)? = null)
     : RecyclerView.Adapter<MediaTagAdapter.MediaTagViewHolder>() {
+
+    fun updateTags(_tags: List<PostTagItem>){
+        tags.clear()
+        tags.addAll(_tags)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaTagViewHolder {
         return MediaTagViewHolder(parent.inflateLayout(R.layout.item_media_tag))
@@ -44,7 +50,7 @@ class MediaTagAdapter(private val tags: List<PostTagItem> = listOf(),
                 button_action.text = context.getString(R.string.string_posttag_buy)
 
                 favorite.setOnClickListener {
-                    onFavoriteProduct?.invoke(postTagItem.id)
+                    onFavoriteProduct?.invoke(!postTagItem.isWishlisted, postTagItem.id, adapterPosition)
                 }
                 button_action.setOnClickListener {
                     onProductActionClick?.invoke(postTagItem.id)

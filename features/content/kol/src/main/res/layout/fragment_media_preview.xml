@@ -269,7 +269,7 @@
         <com.tokopedia.design.component.UnifyButton
             android:id="@+id/button_tag_action"
             android:layout_width="wrap_content"
-            android:layout_height="21dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_28"
             android:minWidth="@dimen/dp_85"
@@ -293,7 +293,6 @@
             android:layout_marginEnd="@dimen/dp_16"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_wishlist_checked"
-            app:tint="@color/Neutral_N600"
             app:layout_constraintTop_toTopOf="@+id/button_tag_action"
             app:layout_constraintBottom_toBottomOf="@+id/button_tag_action"
             app:layout_constraintEnd_toStartOf="@+id/button_tag_action"

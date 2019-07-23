@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
@@ -37,6 +38,8 @@ import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import com.tokopedia.kol.feature.video.view.adapter.MediaTagAdapter
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_media_preview.*
@@ -46,6 +49,17 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var mediaPreviewViewModel: FeedMediaPreviewViewModel
+    private val tagsAdapter by lazy { MediaTagAdapter(mutableListOf(), this::toggleWishlist) }
+    private val tagsBottomSheet: CloseableBottomSheetDialog? by lazy {
+        context?.let {
+            val closeBottomSheet = CloseableBottomSheetDialog.createInstance(it)
+            val childView = LayoutInflater.from(it).inflate(R.layout.bottomsheet_content_tag_list, null)
+            val tagListView = childView.findViewById<VerticalRecyclerView>(R.id.recycler_view)
+            tagListView.adapter = tagsAdapter
+            closeBottomSheet.setCustomContentView(childView, getString(R.string.kol_lets_shop), true)
+            closeBottomSheet
+        }
+    }
 
     override fun getScreenName(): String? = null
 
@@ -65,6 +79,10 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         mediaPreviewViewModel.postFooterLive.observe(this, Observer {
             val (footer, footerTemplate) = it ?: return@Observer
             bindFooter(footer, footerTemplate)
+        })
+
+        mediaPreviewViewModel.postTagLive.observe(this, Observer { postTag ->
+            postTag?.let { bindTags(it) }
         })
     }
 
@@ -89,6 +107,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     override fun onDestroy() {
         mediaPreviewViewModel.postDetailLive.removeObservers(this)
         mediaPreviewViewModel.postFooterLive.removeObservers(this)
+        mediaPreviewViewModel.postTagLive.removeObservers(this)
         mediaPreviewViewModel.clear()
         super.onDestroy()
     }
@@ -97,7 +116,6 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
         dynamicPost?.let {
             bindToolbar(it)
-            bindTags(it)
             bindMedia(it.contentList.mapNotNull { media -> convertToMediaItem(media) })
         }
     }
@@ -157,8 +175,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun bindTags(dynamicPostViewModel: DynamicPostViewModel) {
-        val tags = dynamicPostViewModel.postTag
+    private fun bindTags(tags: PostTag) {
 
         if (tags.totalItems > 1){
             tag_count.text = getString(R.string.kol_total_post_tag, tags.totalItems)
@@ -176,8 +193,9 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
             button_tag_action.text = getString(R.string.kol_see_product)
             button_tag_action.buttonType = UnifyButton.Type.MAIN
+            tagsAdapter.updateTags(tags.items)
             button_tag_action.setOnClickListener {
-                showTagList(tags)
+                tagsBottomSheet?.show()
             }
 
             action_favorite.gone()
@@ -198,21 +216,26 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                         if (tags.items[0].isWishlisted) R.drawable.ic_wishlist_checked
                         else R.drawable.ic_wishlist_unchecked))
             }
+            action_favorite.setOnClickListener {
+                val product = tags.items[0]
+                toggleWishlist(!product.isWishlisted, product.id, 0)
+            }
             tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(R.dimen.dp_8))
             tag_picture.visible()
         }
         button_tag_action.visible()
     }
 
-    private fun showTagList(tags: PostTag) {
-        context?.let {
-            val closeBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(it)
-            val childView = LayoutInflater.from(it).inflate(R.layout.fragment_base_list, null)
-            val tagListView = childView.findViewById<VerticalRecyclerView>(R.id.recycler_view)
-            tagListView.adapter = MediaTagAdapter(tags.items)
-            closeBottomSheet.setCustomContentView(childView, getString(R.string.kol_lets_shop), true)
-            closeBottomSheet.show()
+    private fun toggleWishlist(isWishListAction: Boolean, productId: String, pos: Int){
+        if (mediaPreviewViewModel.isSessionActive){
+            mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist)
+        } else {
+            context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
+    }
+
+    private fun onErrorToggleWishlist(message: String) {
+        showToastError(message)
     }
 
     private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
@@ -296,11 +319,16 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     }
 
     private fun onErrorLikePost(t: Throwable) {
-
+        context?.let { showToastError(ErrorHandler.getErrorMessage(it, t)) }
     }
 
     private fun onErrorGetDetail(throwable: Throwable) {
+        context?.let { showToastError(ErrorHandler.getErrorMessage(it, throwable)) }
+    }
 
+    private fun showToastError(message: String){
+        view?.let { v ->  Toaster.showErrorWithAction(v, message,
+                Snackbar.LENGTH_LONG, getString(R.string.title_ok), View.OnClickListener {  })}
     }
 
     fun showDetail(visible: Boolean) {

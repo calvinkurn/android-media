@@ -6,12 +6,13 @@ import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.StateListDrawable
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
 import android.util.TypedValue.COMPLEX_UNIT_SP
+import android.view.Gravity
+import android.widget.TextView
 import com.tokopedia.design.R
 
-class UnifyButton : AppCompatButton {
+class UnifyButton : TextView {
     private val disableFillDrawable: GradientDrawable by lazy {
         GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
@@ -70,6 +71,7 @@ class UnifyButton : AppCompatButton {
     }
 
     private fun refresh() {
+        this.gravity = Gravity.CENTER
         initButtonBackground()
         initButtonSize()
         initButtonPadding()
@@ -94,7 +96,7 @@ class UnifyButton : AppCompatButton {
     }
 
     private fun initButtonSize() {
-        minHeight = resources.getDimensionPixelSize(
+        height = resources.getDimensionPixelSize(
                 when(buttonSize){
                     Size.MEDIUM -> R.dimen.dp_40
                     Size.SMALL -> R.dimen.dp_32

@@ -16,6 +16,8 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.concurrent.TimeUnit;
 
@@ -110,6 +112,18 @@ public class KolModule {
     @Provides
     public CoroutineDispatcher provideDispatcher(){
         return Dispatchers.getMain();
+    }
+
+    @KolScope
+    @Provides
+    public AddWishListUseCase provideAddWishListUseCase(@ApplicationContext Context context){
+        return new AddWishListUseCase(context);
+    }
+
+    @KolScope
+    @Provides
+    public RemoveWishListUseCase provideRemoveWishListUseCase(@ApplicationContext Context context){
+        return new RemoveWishListUseCase(context);
     }
 
 }
