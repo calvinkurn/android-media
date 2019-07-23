@@ -2,6 +2,8 @@ package com.tokopedia.core.gcm.network;
 
 import android.content.Context;
 
+import com.tokopedia.url.TokopediaUrl;
+
 import retrofit2.Retrofit;
 
 /**
@@ -10,7 +12,7 @@ import retrofit2.Retrofit;
 
 public class PushNotificationService extends BearerService<PushNotificationApi> {
 
-    public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
+    public static String ACCOUNTS_DOMAIN = TokopediaUrl.Companion.getInstance().getACCOUNTS();
 
     public PushNotificationService(Context context, String mToken) {
         super(context, mToken);

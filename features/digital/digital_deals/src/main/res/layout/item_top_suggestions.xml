@@ -59,7 +59,6 @@
         android:ellipsize="end"
         android:textSize="@dimen/sp_14"
         android:textColor="@color/clr_f531353b"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iv_product"
         app:layout_constraintTop_toBottomOf="@+id/tv_brand_name"
         tools:text="Durian Soupyfyufjvgvjkuvgfuyyyyyyyy" />

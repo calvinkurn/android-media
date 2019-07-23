@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/brnd_footer"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16">
+
+            <ImageView
+                android:id="@+id/chk_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_group_4"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sucs_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/ovop2p_brhsl"
+                android:textColor="@color/clr_73bd00"
+                android:textSize="@dimen/sp_24"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chk_img" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:gravity="center_horizontal"
+                android:textColor="@color/clr_6b767e"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sucs_msg" />
+
+            <TextView
+                android:id="@+id/rp_symbl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_14"
+                android:paddingTop="@dimen/dp_7"
+                android:text="@string/ovop2p_symb_rp"
+                android:textColor="@color/clr_2d263b"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintEnd_toStartOf="@+id/trnsfr_amt"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/date" />
+
+            <TextView
+                android:id="@+id/trnsfr_amt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/clr_2d263b"
+                android:textSize="@dimen/sp_36"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/rp_symbl"
+                app:layout_constraintTop_toTopOf="@+id/rp_symbl" />
+
+            <View
+                android:id="@+id/info_cntnr"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_0"
+                android:background="@color/clr_194c2a86"
+                app:layout_constraintBottom_toBottomOf="@+id/info_desc"
+                app:layout_constraintEnd_toEndOf="@+id/info_icon"
+                app:layout_constraintStart_toStartOf="@+id/info_desc"
+                app:layout_constraintTop_toTopOf="@+id/info_desc" />
+
+            <TextView
+                android:id="@+id/info_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_35"
+                android:paddingLeft="@dimen/dp_48"
+                android:paddingTop="@dimen/dp_14"
+                android:paddingBottom="@dimen/dp_14"
+                android:text="@string/ovop2p_bermen"
+                android:textColor="@color/clr_4c2a86"
+                android:textSize="@dimen/sp_11"
+                app:layout_constraintEnd_toStartOf="@id/info_icon"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trnsfr_amt" />
+
+            <ImageView
+                android:id="@+id/info_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_30"
+                android:paddingRight="@dimen/dp_26"
+                app:srcCompat="@drawable/ic_icon_ic_info"
+                app:layout_constraintBottom_toBottomOf="@+id/info_desc"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/info_desc"
+                app:layout_constraintTop_toTopOf="@+id/info_desc" />
+
+            <TextView
+                android:id="@+id/from"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_26"
+                android:layout_marginTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_6"
+                android:text="@string/ovop2p_dri"
+                android:textColor="@color/clr_6b767e"
+                android:textSize="@dimen/sp_12"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/info_desc" />
+
+            <ImageView
+                android:id="@+id/ic_ovo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_ovo_purple"
+                app:layout_constraintStart_toStartOf="@+id/from"
+                app:layout_constraintTop_toBottomOf="@+id/from" />
+
+            <TextView
+                android:id="@+id/name_sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_10"
+                android:textColor="@color/clr_2d263b"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/ic_ovo"
+                app:layout_constraintTop_toTopOf="@+id/ic_ovo" />
+
+            <TextView
+                android:id="@+id/num_sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_10"
+                android:textColor="@color/clr_2d263b"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintStart_toEndOf="@+id/ic_ovo"
+                app:layout_constraintTop_toBottomOf="@+id/name_sender" />
+
+            <TextView
+                android:id="@+id/to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_26"
+                android:layout_marginTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_6"
+                android:text="@string/ovop2p_trnk"
+                android:textColor="@color/clr_6b767e"
+                android:textSize="@dimen/sp_12"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/num_sender" />
+
+            <ImageView
+                android:id="@+id/ic_ovo_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_ovo_purple"
+                app:layout_constraintStart_toStartOf="@+id/to"
+                app:layout_constraintTop_toBottomOf="@+id/to" />
+
+            <TextView
+                android:id="@+id/name_rcvr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_10"
+                android:textColor="@color/clr_2d263b"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
+                app:layout_constraintTop_toTopOf="@+id/ic_ovo_to" />
+
+            <TextView
+                android:id="@+id/num_rcvr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_10"
+                android:textColor="@color/clr_2d263b"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
+                app:layout_constraintTop_toBottomOf="@+id/name_rcvr" />
+
+            <TextView
+                android:id="@+id/see_dtl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_30"
+                android:gravity="center_horizontal"
+                android:paddingTop="@dimen/dp_7"
+                android:paddingBottom="@dimen/dp_7"
+                android:text="@string/ovop2p_lihdet"
+                android:textColor="@color/clr_06b3ba"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintTop_toBottomOf="@+id/ic_ovo_to" />
+
+            <Button
+                android:id="@+id/back_to_app"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_30"
+                android:background="@drawable/btn_bg_rounded_corners"
+                android:gravity="center"
+                android:text="@string/ovop2p_kemke"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/see_dtl"
+                app:layout_constraintVertical_bias="0" />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/brnd_footer"
+        layout="@layout/branding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

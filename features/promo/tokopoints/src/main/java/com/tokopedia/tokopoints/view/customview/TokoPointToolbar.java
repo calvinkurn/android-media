@@ -32,7 +32,7 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
     Context mContext;
 
 
-    BitmapDrawable backArrowWhite, backArrowGrey, leaderboardWhiteDrawable,
+    Drawable backArrowWhite, backArrowGrey, leaderboardWhiteDrawable,
             couponWhiteDrawable, leaderboardGreyDrawable, couponGreyDrawable;
 
     private TransitionDrawable arrowCrossfader, leaderboardCrossfader, couponCrossfader;
@@ -175,9 +175,9 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
     }
 
 
-    private BitmapDrawable getBitmapDrawableFromVectorDrawable(Context context, int drawableId) {
+    private Drawable getBitmapDrawableFromVectorDrawable(Context context, int drawableId) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return (BitmapDrawable) ContextCompat.getDrawable(context, drawableId);
+            return ContextCompat.getDrawable(context, drawableId);
         } else
             return new BitmapDrawable(context.getResources(), getBitmapFromVectorDrawable(context, drawableId));
     }
