@@ -287,6 +287,7 @@ ext {
             officialStore                  : ":features:merchant:official_store",
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
+            csat_rating                       : ":features:operational:csat_rating",
 //            contactUs                       : ":features:operational:contact_us_no_op",
 
             payment                         : ":features:payment:payment",

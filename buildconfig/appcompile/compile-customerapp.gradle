@@ -107,6 +107,7 @@ include "features:merchant:shop_etalase_picker"
 include "features:merchant:official_store"
 
 include "features:operational:contact_us"
+include "features:operational:csat_rating"
 //include "features:operational:contact_us_no_op"
 
 include "features:payment:payment"

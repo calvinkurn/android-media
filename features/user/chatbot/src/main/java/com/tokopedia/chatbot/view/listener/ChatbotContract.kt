@@ -8,6 +8,8 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
+import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
+import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 
 /**
  * @author by nisie on 07/12/18.
@@ -21,6 +23,8 @@ interface ChatbotContract {
         fun showSnackbarError(stringId: Int)
 
         fun clearChatText()
+
+        fun openCsat(csatResponse: WebSocketCsatResponse)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -49,6 +53,9 @@ interface ChatbotContract {
                        onSuccess: (SendRatingPojo) -> Unit)
 
         fun sendReasonRating(messageId: String, reason: String, timestamp: String,
+                             onError: (Throwable) -> Unit,
+                             onSuccess: (String) -> Unit)
+        fun submitCsatRating(inputItem: InputItem,
                              onError: (Throwable) -> Unit,
                              onSuccess: (String) -> Unit)
 

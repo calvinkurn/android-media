@@ -27,13 +27,13 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
+import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
+import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
-import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
-import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
-import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
-import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
+import com.tokopedia.chatbot.domain.subscriber.SubmitCsatRatingSubscriber
+import com.tokopedia.chatbot.domain.usecase.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
@@ -64,8 +64,14 @@ class ChatbotPresenter @Inject constructor(
         private val fingerprintInterceptor: FingerprintInterceptor,
         private val sendChatRatingUseCase: SendChatRatingUseCase,
         private val sendRatingReasonUseCase: SendRatingReasonUseCase,
-        private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>)
+        private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
+        private val submitCsatRatingUseCase: SubmitCsatRatingUseCase)
     : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
+
+    override fun submitCsatRating(inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
+        submitCsatRatingUseCase.execute(SubmitCsatRatingUseCase.generateParam(inputItem
+        ), SubmitCsatRatingSubscriber(onError, onSuccess))
+    }
 
     override fun clearText() {
         view.clearChatText()
@@ -111,11 +117,16 @@ class ChatbotPresenter @Inject constructor(
             override fun onMessage(webSocketResponse: WebSocketResponse) {
                 try {
                     if (GlobalConfig.isAllowDebuggingTools()) {
-                        Log.d("RxWebSocket Presenter", "item")
+                        Log.d("RxWebSocket Presenter", webSocketResponse.toString())
                     }
                     val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
                     if (pojo.msgId.toString() != messageId) return
                     mappingEvent(webSocketResponse, messageId)
+                    val csatResponse: WebSocketCsatResponse =Gson().fromJson(webSocketResponse.getData(),
+                            WebSocketCsatResponse::class.java)
+                    if (csatResponse.attachment?.type==13){
+                        view.openCsat(csatResponse)
+                    }
                 } catch (e: JsonSyntaxException) {
                     e.printStackTrace()
                 }

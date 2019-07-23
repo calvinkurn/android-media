@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.csat_rating">
+
+    <application>
+        <activity android:name=".activity.BaseProvideRatingActivity"
+            android:exported="true"
+            android:label="@string/cu_surey_layana"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3.Launcher" />
+    </application>
+
+</manifest>

@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +41,10 @@ import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
+import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
+import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
+import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.viewholder.factory.ChatBotChatMenuFactory
@@ -59,7 +63,10 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
+import kotlinx.android.synthetic.main.fragment_chatbot.*
 import javax.inject.Inject
 
 /**
@@ -67,7 +74,8 @@ import javax.inject.Inject
  */
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
-        ChatActionListBubbleListener, ChatRatingListener, TypingListener {
+        ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener {
+
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -75,6 +83,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
     val REQUEST_CODE_CHAT_IMAGE = 115
+    val REQUEST_SUBMIT_FEEDBACK = 909
+    val SNACK_BAR_TEXT_OK = "OK"
+    val BOT_OTHER_REASON_TEXT = "bot_other_reason"
+    val SELECTED_ITEMS = "selected_items"
+    val EMOJI_STATE = "emoji_state"
 
     @Inject
     lateinit var presenter: ChatbotPresenter
@@ -83,6 +96,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var session: UserSessionInterface
 
     lateinit var replyEditText: EditText
+
+    lateinit var mCsatResponse: WebSocketCsatResponse
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -95,6 +110,50 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
+    override fun onClick(v: View?) {
+        reply_box.visibility = View.GONE
+        val id = v?.id
+        if (id == R.id.btn_inactive_1 || id == R.id.btn_inactive_2 || id == R.id.btn_inactive_3
+                || id == R.id.btn_inactive_4 || id == R.id.btn_inactive_5) {
+            onEmojiClick(v)
+        }
+    }
+
+    private fun onEmojiClick(view: View?) {
+        val id = view?.id
+        if (id == R.id.btn_inactive_1) {
+            onClickEmoji(1)
+        } else if (id == R.id.btn_inactive_2) {
+            onClickEmoji(2)
+        } else if (id == R.id.btn_inactive_3) {
+            onClickEmoji(3)
+        } else if (id == R.id.btn_inactive_4) {
+            onClickEmoji(4)
+        } else if (id == R.id.btn_inactive_5) {
+            onClickEmoji(5)
+        }
+    }
+
+    override fun openCsat(csatResponse: WebSocketCsatResponse) {
+        mCsatResponse = csatResponse
+        showCsatRatingView(View.VISIBLE)
+    }
+
+    private fun showCsatRatingView(visiblity: Int) {
+        reply_box.visibility = if (visiblity == View.VISIBLE) View.GONE else View.VISIBLE
+        chatbot_view_help_rate.visibility = View.VISIBLE
+    }
+
+    private fun hideCsatRatingView(visiblity: Int) {
+        reply_box.visibility = View.VISIBLE
+        chatbot_view_help_rate.visibility = if (visiblity == View.VISIBLE) View.GONE else View.VISIBLE
+    }
+
+    private fun onClickEmoji(number: Int) {
+        startActivityForResult(ChatBotProvideRatingActivity
+                .getInstance(context!!, number, mCsatResponse.attachment?.attributes?.reasons as List<String>), REQUEST_SUBMIT_FEEDBACK)
+    }
+
     override fun getUserSession(): UserSessionInterface {
         return session
     }
@@ -104,7 +163,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_chatroom, container, false)
+        val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         replyEditText = view.findViewById(R.id.new_comment)
         return view
     }
@@ -116,6 +175,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        chatbot_view_help_rate.btn_inactive_1.setOnClickListener(this@ChatbotFragment)
+        chatbot_view_help_rate.btn_inactive_2.setOnClickListener(this@ChatbotFragment)
+        chatbot_view_help_rate.btn_inactive_3.setOnClickListener(this@ChatbotFragment)
+        chatbot_view_help_rate.btn_inactive_4.setOnClickListener(this@ChatbotFragment)
+        chatbot_view_help_rate.btn_inactive_5.setOnClickListener(this@ChatbotFragment)
+
         super.onViewCreated(view, savedInstanceState)
         super.viewState = ChatbotViewStateImpl(
                 view,
@@ -250,8 +315,41 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         when (requestCode) {
             TOKOPEDIA_ATTACH_INVOICE_REQ_CODE -> onSelectedInvoiceResult(resultCode, data)
             REQUEST_CODE_CHAT_IMAGE -> onPickedAttachImage(resultCode, data)
+            REQUEST_SUBMIT_FEEDBACK -> if (resultCode.equals(Activity.RESULT_OK)) submitRating(data)
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun submitRating(data: Intent?) {
+        val attributes = mCsatResponse.attachment?.attributes
+        val reasonList = attributes?.reasons
+        val input = InputItem()
+        input.chatbotSessionId = attributes?.chatbotSessionId
+        input.livechatSessionId = attributes?.livechatSessionId
+        val selectedOption = data?.getStringExtra(SELECTED_ITEMS)?.split(";")
+        var filters = ""
+        if (!selectedOption.isNullOrEmpty()) {
+            for (filter in selectedOption) {
+                filters += reasonList?.get(filter.toInt()) + ","
+            }
+            filters = filters.substring(0, filters.length - 1)
+        }
+        input.reason = filters
+        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT)
+        input.score = data?.extras?.getInt(EMOJI_STATE)
+        input.timestamp = mCsatResponse?.message?.timestampUnix.toString()
+        input.triggerRuleType = attributes?.triggerRuleType
+
+        Log.d("bot", data?.getStringExtra(BOT_OTHER_REASON_TEXT) + " " + filters)
+        presenter.submitCsatRating(input, onError(),
+                onSuccessSubmitCsatRating())
+    }
+
+    private fun onSuccessSubmitCsatRating(): (String) -> Unit {
+        hideCsatRatingView(View.VISIBLE)
+        return {
+            Toaster.showNormalWithAction(view!!, it, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
+        }
     }
 
     private fun onPickedAttachImage(resultCode: Int, data: Intent?) {

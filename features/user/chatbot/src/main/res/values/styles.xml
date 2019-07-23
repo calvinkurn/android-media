@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ChatBotProvideRatingActivityTheme" parent="Theme.White">
+        <item name="colorAccent">@color/green_600</item>
+    </style>
+</resources>
