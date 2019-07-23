@@ -1,6 +1,7 @@
 <resources>
     <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3">
         <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
 
