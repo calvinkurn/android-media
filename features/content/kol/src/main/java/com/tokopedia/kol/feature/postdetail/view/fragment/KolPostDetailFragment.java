@@ -801,23 +801,20 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl, @NotNull PostTagItem postTagItem, int itemPosition) {
         onGoToLink(redirectUrl);
-        if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
-            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
-                if (isOwner()) {
-                    postTagAnalytics.trackClickPostTagProfileDetailSelf(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getTrackingPostModel());
-                } else {
-                    postTagAnalytics.trackClickPostTagProfileDetailOther(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
-                            dynamicPostViewModel.getTrackingPostModel());
-                }
-            }
+
+        if (isOwner()) {
+            postTagAnalytics.trackClickPostTagProfileDetailSelf(
+                    dynamicPostViewModel.getId(),
+                    postTagItem,
+                    itemPosition,
+                    dynamicPostViewModel.getTrackingPostModel());
+        } else {
+            postTagAnalytics.trackClickPostTagProfileDetailOther(
+                    dynamicPostViewModel.getId(),
+                    postTagItem,
+                    itemPosition,
+                    dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
+                    dynamicPostViewModel.getTrackingPostModel());
         }
     }
 
