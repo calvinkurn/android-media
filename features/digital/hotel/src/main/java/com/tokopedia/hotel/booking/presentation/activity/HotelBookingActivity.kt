@@ -3,7 +3,6 @@ package com.tokopedia.hotel.booking.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
-import android.view.View
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.hotel.HotelComponentInstance
@@ -12,7 +11,6 @@ import com.tokopedia.hotel.booking.di.DaggerHotelBookingComponent
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
-import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 
 class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingComponent> {
 

@@ -114,6 +114,8 @@ public class SelectPassengerView extends BaseCustomView {
 
         if (!TextUtils.isEmpty(subtitle)) {
             subtitleTextView.setText(subtitle);
+        } else {
+            subtitleTextView.setVisibility(GONE);
         }
     }
 
