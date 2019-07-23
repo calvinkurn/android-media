@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.UnrecognizedInputFormatException
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kol.R
 import kotlinx.android.synthetic.main.media_player_view.*
@@ -160,15 +161,35 @@ class MediaHolderFragment : BaseDaggerFragment() {
         mExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 when(playbackState){
+                    Player.STATE_IDLE -> {
+                        showErrorLayout()
+                        loading?.gone()
+                        video_player?.gone()
+                    }
                     Player.STATE_READY -> {
-                        loading.gone()
+                        loading?.gone()
+                        error_layout?.gone()
+                        video_player?.visible()
                     }
-                    else -> {
-                        loading.visible()
+                    Player.STATE_BUFFERING -> {
+                        loading?.visible()
+                        error_layout?.gone()
                     }
+                    else -> { }
                 }
             }
         })
+    }
+
+    private fun showErrorLayout(isShowRetry: Boolean) {
+        error_layout?.visible()
+        btn_retry.shouldShowWithAction(isShowRetry){
+            btn_retry.setOnClickListener {
+                backupState()
+                releaseExoPlayer()
+                playVideo(mediaSource)
+            }
+        }
     }
 
     private fun initPlayer(url: Uri?, protocol: VideoSourceProtocol) {
@@ -190,10 +211,6 @@ class MediaHolderFragment : BaseDaggerFragment() {
                 mExoPlayer?.seekTo(currentWindowIndex, currentPosition)
             }
 
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-                video_player.rotation = VIDEO_ROTATION_90
-            }
-
             video_player.controllerShowTimeoutMs = 0
             if (isMute){
                 mExoPlayer?.volume = 0f
@@ -201,7 +218,7 @@ class MediaHolderFragment : BaseDaggerFragment() {
 
             mExoPlayer?.prepare(buildMediaSource(url, protocol), !isHasStartPosition, false)
         } catch (t: Throwable){
-
+            showErrorLayout(t !is UnrecognizedInputFormatException)
         }
     }
 
@@ -244,12 +261,15 @@ class MediaHolderFragment : BaseDaggerFragment() {
     }
 
     fun imVisible(){
-        playVideo(mediaSource)
+        if(mediaType  == TYPE_VIDEO)
+            playVideo(mediaSource)
     }
 
     fun imInvisible(){
-        backupState()
-        releaseExoPlayer()
+        if (mediaType == TYPE_VIDEO) {
+            backupState()
+            releaseExoPlayer()
+        }
     }
 
     override fun onDestroyView() {

@@ -116,7 +116,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
         })
 
-        action_back.setOnClickListener {
+        action_prev.setOnClickListener {
             val currentIndex = media_pager.currentItem
             if (currentIndex > 0){
                 media_pager.currentItem = currentIndex - 1
@@ -132,7 +132,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     }
 
     private fun updateDirectionMedia(pos: Int, count: Int) {
-        action_back.showWithCondition(pos > 0 && count > 1)
+        action_prev.showWithCondition(pos > 0 && count > 1)
         action_next.showWithCondition(pos < count-1 && count > 1)
     }
 
