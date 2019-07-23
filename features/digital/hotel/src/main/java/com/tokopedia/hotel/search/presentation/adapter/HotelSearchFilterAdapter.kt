@@ -62,7 +62,7 @@ class HotelSearchFilterAdapter<E: HotelSearchFilterAdapter.HotelFilterItem>(
                     image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_stars_active_xxl))
                     title.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green))
                 } else {
-                    image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_stars_disable_xxl))
+                    image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_system_action_star_grayscale_24))
                     title.setTextColor(ContextCompat.getColor(context, R.color.light_secondary))
                 }
             }
