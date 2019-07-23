@@ -180,11 +180,10 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
     private void setRefundableInfo(FlightDetailRouteViewModel route) {
         if (route.isRefundable()) {
             refundableInfo.setText(R.string.flight_label_refundable_info);
-            refundableInfo.setVisibility(View.VISIBLE);
         } else {
             refundableInfo.setText(R.string.flight_label_non_refundable_info);
-            refundableInfo.setVisibility(View.GONE);
         }
+        refundableInfo.setVisibility(View.VISIBLE);
     }
 
     //set color circle to green if position holder is on first index

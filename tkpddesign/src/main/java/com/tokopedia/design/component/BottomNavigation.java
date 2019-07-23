@@ -871,7 +871,6 @@ public class BottomNavigation extends BottomNavigationView {
 
     public void setNotification(int badgeNumber, int positionItem) {
         if (getBottomNavigationItemView(positionItem) == null) {
-            Log.e(this.getClass().getSimpleName(), "BottomNavigationItemView NULL");
             return;
         }
 
