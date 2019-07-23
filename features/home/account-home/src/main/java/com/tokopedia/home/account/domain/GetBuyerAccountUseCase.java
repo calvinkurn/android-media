@@ -10,6 +10,7 @@ import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
+import com.tokopedia.navigation_common.model.DebitInstantModel;
 import com.tokopedia.navigation_common.model.SaldoModel;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
@@ -70,6 +71,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .doOnNext(this::saveLocallyVccUserStatus)
                 .doOnNext(this::savePhoneVerified)
                 .doOnNext(this::saveIsAffiliateStatus)
+                .doOnNext(this::saveDebitInstantData)
                 .map(mapper);
     }
 
@@ -137,6 +139,12 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
     private void saveIsAffiliateStatus(AccountModel accountModel) {
         if (accountModel != null) {
             userSession.setIsAffiliateStatus(accountModel.isAffiliate());
+        }
+    }
+
+    private void saveDebitInstantData(AccountModel accountModel) {
+        if (accountModel.getDebitInstant() != null) {
+            walletPref.saveDebitInstantUrl(accountModel.getDebitInstant().getData().getRedirectUrl());
         }
     }
 }

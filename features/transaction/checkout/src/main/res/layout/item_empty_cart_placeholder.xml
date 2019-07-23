@@ -26,25 +26,29 @@
             app:srcCompat="@drawable/ic_emptycart"
             tools:ignore="ContentDescription,VectorDrawableCompat" />
 
-        <TextView
-            style="@style/TextSmallNormalBlack38"
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
             android:gravity="center_horizontal"
             android:paddingBottom="@dimen/dp_8"
-            android:text="@string/checkout_module_keranjang_belanja_kosong" />
+            android:text="@string/checkout_module_keranjang_belanja_kosong_new"
+            android:textColor="@color/title_black"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"/>
 
-        <TextView
-            style="@style/TextSmallNormalBlack54"
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:paddingBottom="@dimen/dp_16"
-            android:text="@string/checkout_empty_cart_sub_message"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/dp_28"
+            android:layout_marginLeft="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_24"
+            android:text="@string/checkout_empty_cart_sub_message_new"
+            android:textColor="@color/text_black"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
 
         <TextView
             android:id="@+id/btn_add_from_whislist"
@@ -60,18 +64,17 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btn_shopping_now"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44"
-            android:background="@drawable/medium_green_button_rounded"
-            android:fontFamily="sans-serif-medium"
+            android:background="@drawable/medium_green_button_rounded_unify"
             android:gravity="center"
             android:text="@string/checkout_module_belanja_sekarang"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="13sp"
-            android:visibility="visible" />
+            android:visibility="visible"
+            app:typographyType="heading_6"/>
     </LinearLayout>
 
 </LinearLayout>

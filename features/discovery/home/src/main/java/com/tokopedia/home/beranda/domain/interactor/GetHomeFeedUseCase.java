@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.domain.interactor;
 
 import android.content.Context;
-
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -15,9 +14,6 @@ import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-
-import java.util.List;
-
 import rx.Observable;
 import rx.functions.Func1;
 

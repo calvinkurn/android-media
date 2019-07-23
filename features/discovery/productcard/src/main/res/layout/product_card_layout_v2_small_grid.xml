@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardViewProductCard"
     app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_6"
+    app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     android:layout_width="match_parent"
@@ -17,7 +17,7 @@
         android:paddingBottom="@dimen/dp_8"
         tools:layout_height="match_parent">
 
-        <com.tokopedia.topads.sdk.view.ImpressedImageView
+        <com.tokopedia.design.image.SquareImageView
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -25,19 +25,19 @@
             android:gravity="center"
             android:scaleType="centerCrop"
             android:visibility="gone"
-            app:corner_radius="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            tools:src="@color/colorPink"/>
 
         <ImageView
             android:id="@+id/buttonWishlist"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
             android:background="@drawable/product_card_wishlist_icon_background"
             android:padding="@dimen/dp_4"
             android:scaleType="fitXY"
@@ -51,6 +51,9 @@
             android:id="@+id/labelPromo"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
             app:layout_constraintBottom_toBottomOf="@id/imageProduct"
@@ -166,6 +169,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
+            android:paddingTop="@dimen/dp_1"
             app:layout_constraintTop_toBottomOf="@id/textViewPrice"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             android:orientation="horizontal"
@@ -173,7 +177,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewShopLocation"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
@@ -187,6 +191,7 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textViewPrice"
             app:layout_constraintStart_toEndOf="@id/linearLayoutShopBadges"
+            app:layout_constraintEnd_toEndOf="@id/imageProduct"
             app:typographyType="body_3"
             tools:visibility="visible"
             tools:text="Town Location" />
@@ -270,6 +275,7 @@
             android:id="@+id/labelCredibility"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
@@ -282,7 +288,7 @@
             android:id="@+id/labelOffers"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
