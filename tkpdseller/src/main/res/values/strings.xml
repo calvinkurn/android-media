@@ -233,6 +233,6 @@
 
 
     <string name="dynamic_feature_title_install">Instalasi tambahan</string>
-    <string name="dynamic_feature_description_install">Bagian ini membutuhkan instalasi tambahan. Apakah anda ingin melakukan instalasi sekarang ?</string>
+    <string name="dynamic_feature_description_install">Bagian ini membutuhkan instalasi tambahan. Apakah anda ingin melakukan instalasi sekarang?</string>
     <string name="dynamic_feature_button_install">Install</string>
 </resources>

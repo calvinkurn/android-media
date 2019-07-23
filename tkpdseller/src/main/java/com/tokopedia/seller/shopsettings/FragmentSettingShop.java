@@ -11,6 +11,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.play.core.splitinstall.SplitInstallManager;
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory;
 import com.google.android.play.core.splitinstall.SplitInstallRequest;
@@ -139,7 +140,7 @@ public class FragmentSettingShop extends TkpdFragment {
     private void loadAndLaunchModule(String deeplink) {
         String moduleName = getString(R.string.module_feature_shop_settings_sellerapp);
         if(splitInstallManager.getInstalledModules().contains(moduleName)) {
-            Toast.makeText(getActivity(), "Already Installed", Toast.LENGTH_LONG).show();
+            Crashlytics.logException(new Exception("Installing module shop_settings_sellerapp"));
             goToPage(deeplink);
             return;
         }
@@ -174,13 +175,13 @@ public class FragmentSettingShop extends TkpdFragment {
 
     @Override
     public void onResume() {
-        splitInstallManager.registerListener(splitInstallStateUpdatedListener);
+//        splitInstallManager.registerListener(splitInstallStateUpdatedListener);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        splitInstallManager.unregisterListener(splitInstallStateUpdatedListener);
+//        splitInstallManager.unregisterListener(splitInstallStateUpdatedListener);
         super.onPause();
     }
 }
