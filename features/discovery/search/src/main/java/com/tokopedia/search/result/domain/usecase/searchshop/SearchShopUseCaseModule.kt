@@ -23,16 +23,31 @@ class SearchShopUseCaseModule {
 
     @SearchScope
     @Provides
-    @Named(SearchConstant.SearchShop.SEARCH_SHOP_USE_CASE)
-    internal fun provideSearchShopModel(
+    @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
+    fun provideSearchShopFirstPageUseCase(
             @ApplicationContext context: Context,
             searchShopModelMapper: Func1<GraphqlResponse, SearchShopModel>
     ): UseCase<SearchShopModel> {
         val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources, R.raw.gql_search_shop),
+                GraphqlHelper.loadRawString(context.resources, R.raw.gql_search_shop_first_page),
                 SearchShopModel::class.java
         )
 
-        return SearchShopGqlUseCase(graphqlRequest, GraphqlUseCase(), searchShopModelMapper)
+        return SearchShopFirstPageGqlUseCase(graphqlRequest, GraphqlUseCase(), searchShopModelMapper)
+    }
+
+    @SearchScope
+    @Provides
+    @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
+    fun provideSearchShopLoadMoreUseCase(
+            @ApplicationContext context: Context,
+            searchShopModelMapper: Func1<GraphqlResponse, SearchShopModel>
+    ): UseCase<SearchShopModel> {
+        val graphqlRequest = GraphqlRequest(
+                GraphqlHelper.loadRawString(context.resources, R.raw.gql_search_shop_load_more),
+                SearchShopModel::class.java
+        )
+
+        return SearchShopLoadMoreGqlUseCase(graphqlRequest, GraphqlUseCase(), searchShopModelMapper)
     }
 }

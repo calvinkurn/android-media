@@ -5,6 +5,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 data class ShopViewModel(
         val source: String = "",
@@ -15,7 +16,7 @@ data class ShopViewModel(
         val shopItemList: List<ShopItem> = listOf(),
         val topSellerData: List<ShopItem> = listOf(),
         val topOfficialSellerData: List<ShopItem> = listOf(),
-        val query: String = ""
+        val cpmModel: CpmModel = CpmModel()
 ): Parcelable {
 
     val hasNextPage = paging.uriNext != ""
@@ -263,7 +264,8 @@ data class ShopViewModel(
             parcel.readString() ?: "",
             parcel.createTypedArrayList(ShopItem),
             parcel.createTypedArrayList(ShopItem),
-            parcel.createTypedArrayList(ShopItem))
+            parcel.createTypedArrayList(ShopItem),
+            parcel.readParcelable(CpmModel::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(source)
@@ -274,6 +276,7 @@ data class ShopViewModel(
         parcel.writeTypedList(shopItemList)
         parcel.writeTypedList(topSellerData)
         parcel.writeTypedList(topOfficialSellerData)
+        parcel.writeParcelable(cpmModel, flags)
     }
 
     override fun describeContents(): Int {

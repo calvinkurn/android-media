@@ -5,14 +5,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
@@ -29,6 +32,8 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.ShopListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactoryImpl;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
@@ -45,9 +50,6 @@ public class ShopListFragment
         BannerAdsListener {
 
     public static final String SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab";
-    private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
-    private static final int REQUEST_CODE_GOTO_SHOP_DETAIL = 125;
-    private static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_ACTIVITY_SORT_SHOP = 1235;
     private static final int REQUEST_ACTIVITY_FILTER_SHOP = 4322;
     private static final String SEARCH_SHOP_TRACE = "search_shop_trace";
@@ -61,11 +63,9 @@ public class ShopListFragment
     UserSessionInterface userSession;
 
     private int loadShopRow = START_ROW_FIRST_TIME_LOAD;
-    private int lastSelectedItemPosition = -1;
     private boolean isLoadingData;
     private boolean isNextPageAvailable = true;
 
-    private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
@@ -158,17 +158,7 @@ public class ShopListFragment
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
                     loadShopRow = totalItemsCount - 1;
-                    loadMoreShop();
-                }
-            }
-        };
-
-        linearLayoutLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(getLinearLayoutManager()) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                if (isAllowLoadMore()) {
-                    loadShopRow = totalItemsCount - 1;
-                    loadMoreShop();
+                    loadShop();
                 }
             }
         };
@@ -177,22 +167,8 @@ public class ShopListFragment
     public void updateScrollListenerState(boolean hasNextPage){
         if(getAdapter() == null) return;
 
-        switch (getAdapter().getCurrentLayoutType()) {
-            case GRID_1: // List
-                if (linearLayoutLoadMoreTriggerListener != null) {
-                    linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
-                    linearLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
-                }
-                break;
-            case GRID_2: // Grid 2x2
-            case GRID_3: // Grid 1x1
-                if (gridLayoutLoadMoreTriggerListener != null) {
-                    gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
-                    gridLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
-                }
-                break;
-        }
-
+        gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+        gridLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
     }
 
     private boolean isAllowLoadMore() {
@@ -206,58 +182,20 @@ public class ShopListFragment
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
 
         loadShopRow = START_ROW_FIRST_TIME_LOAD;
-        loadMoreShop();
+        loadShop();
     }
 
-    private void loadMoreShop() {
+    private void loadShop() {
         if(getSearchParameter() == null) return;
 
-        generateLoadMoreParameter(loadShopRow);
+        generateLoadShopParameter(loadShopRow);
 
         isLoadingData = true;
-        presenter.loadShop(getSearchParameter().getSearchParameterMap());
+
+        loadDataFromPresenter();
     }
 
-    @Override
-    public void onSearchShopSuccess(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage) {
-        if(adapter == null) return;
-
-        if (shopItemList.isEmpty()) {
-            handleEmptySearchResult();
-        } else {
-            if (performanceMonitoring != null) {
-                performanceMonitoring.stopTrace();
-                performanceMonitoring = null;
-            }
-            handleSearchResult(shopItemList, isHasNextPage, loadShopRow);
-        }
-
-        stopLoadingAndHideRefreshLayout();
-    }
-
-    @Override
-    public void onSearchShopFailed() {
-        if(adapter == null) return;
-
-        adapter.removeLoading();
-
-        NetworkErrorHelper.RetryClickedListener retryClickedListener = this::loadMoreShop;
-
-        if (adapter.isListEmpty()) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(), retryClickedListener).showRetrySnackbar();
-        }
-
-        stopLoadingAndHideRefreshLayout();
-    }
-
-    private void stopLoadingAndHideRefreshLayout() {
-        isLoadingData = false;
-        hideRefreshLayout();
-    }
-
-    private void generateLoadMoreParameter(int startRow) {
+    private void generateLoadShopParameter(int startRow) {
         if(getSearchParameter() == null) return;
 
         getSearchParameter().set(SearchApiConst.UNIQUE_ID, generateUniqueId());
@@ -279,10 +217,56 @@ public class ShopListFragment
                 AuthUtil.md5(getRegistrationId());
     }
 
-    private void handleSearchResult(List<ShopViewModel.ShopItem> shopViewItemList, boolean isHasNextPage, int startRow) {
-        isListEmpty = false;
+    private void loadDataFromPresenter() {
+        if(loadShopRow == START_ROW_FIRST_TIME_LOAD) {
+            presenter.loadData(getSearchParameter().getSearchParameterMap(), loadShopRow);
+        }
+        else {
+            presenter.loadMoreData(getSearchParameter().getSearchParameterMap(), loadShopRow);
+        }
+    }
 
-        enrichPositionData(shopViewItemList, startRow);
+    @Override
+    public void onSearchShopSuccess(List<Visitable> shopItemList, boolean isHasNextPage) {
+        if(adapter == null) return;
+
+        if (shopItemList.isEmpty()) {
+            handleEmptySearchResult();
+        } else {
+            if (performanceMonitoring != null) {
+                performanceMonitoring.stopTrace();
+                performanceMonitoring = null;
+            }
+            handleSearchResult(shopItemList, isHasNextPage);
+        }
+
+        stopLoadingAndHideRefreshLayout();
+    }
+
+    @Override
+    public void onSearchShopFailed() {
+        if(adapter == null) return;
+
+        adapter.removeLoading();
+
+        NetworkErrorHelper.RetryClickedListener retryClickedListener = this::loadShop;
+
+        if (adapter.isListEmpty()) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), retryClickedListener).showRetrySnackbar();
+        }
+
+        stopLoadingAndHideRefreshLayout();
+    }
+
+    private void stopLoadingAndHideRefreshLayout() {
+        isLoadingData = false;
+        hideRefreshLayout();
+    }
+
+    private void handleSearchResult(List<Visitable> shopViewItemList, boolean isHasNextPage) {
+        isListEmpty = false;
         isNextPageAvailable = isHasNextPage;
         adapter.removeLoading();
         adapter.appendItems(shopViewItemList);
@@ -291,14 +275,6 @@ public class ShopListFragment
 
         if (isHasNextPage) {
             adapter.addLoading();
-        }
-    }
-
-    private void enrichPositionData(List<ShopViewModel.ShopItem> shopViewItemList, int startRow) {
-        int position = startRow;
-        for (ShopViewModel.ShopItem shopItem : shopViewItemList) {
-            position++;
-            shopItem.setPosition(position);
         }
     }
 
@@ -351,11 +327,6 @@ public class ShopListFragment
         if(redirectionListener == null) return;
 
         redirectionListener.startActivityWithApplink(applink);
-    }
-
-    @Override
-    public void onBannerAdsClicked(String appLink) {
-
     }
 
     @Override
@@ -426,7 +397,7 @@ public class ShopListFragment
         adapter.clearData();
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
         loadShopRow = START_ROW_FIRST_TIME_LOAD;
-        loadMoreShop();
+        loadShop();
     }
 
     @Override
@@ -452,17 +423,14 @@ public class ShopListFragment
 
     @Override
     public void onChangeList() {
-        recyclerView.setLayoutManager(getLinearLayoutManager());
     }
 
     @Override
     public void onChangeDoubleGrid() {
-        recyclerView.setLayoutManager(getGridLayoutManager());
     }
 
     @Override
     public void onChangeSingleGrid() {
-        recyclerView.setLayoutManager(getGridLayoutManager());
     }
 
     public void backToTop() {

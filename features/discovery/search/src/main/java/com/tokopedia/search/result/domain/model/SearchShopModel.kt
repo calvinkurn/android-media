@@ -2,11 +2,16 @@ package com.tokopedia.search.result.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 data class SearchShopModel(
         @SerializedName("aceSearchShop")
         @Expose
-        val aceSearchShop: AceSearchShop = AceSearchShop()
+        val aceSearchShop: AceSearchShop = AceSearchShop(),
+
+        @SerializedName("headlineAds")
+        @Expose
+        val cpmModel: CpmModel = CpmModel()
 ) {
     data class AceSearchShop(
             @SerializedName("source")

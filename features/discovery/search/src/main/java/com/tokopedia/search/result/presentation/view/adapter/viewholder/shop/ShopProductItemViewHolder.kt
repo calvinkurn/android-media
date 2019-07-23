@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.search_result_shop_item_product_card.view.
 
 class ShopProductItemViewHolder(
     itemView: View,
-    private val shopListener: ShopListener
+    private val shopListener: ShopListener?
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -37,7 +37,7 @@ class ShopProductItemViewHolder(
         }
 
         itemView.imageViewShopItemProductImage?.setOnClickListener {
-            shopListener.onProductItemClicked(shopItemProductView.applink)
+            shopListener?.onProductItemClicked(shopItemProductView.applink)
         }
     }
 

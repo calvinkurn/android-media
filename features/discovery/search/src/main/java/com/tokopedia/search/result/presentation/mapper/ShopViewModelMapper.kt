@@ -17,7 +17,8 @@ class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
                 tabName = searchShopData.tabName,
                 shopItemList = createShopItemViewModelList(searchShopData.shopList),
                 topSellerData = createShopItemViewModelList(searchShopData.topSellerData),
-                topOfficialSellerData = createShopItemViewModelList(searchShopData.topOfficialSellerData)
+                topOfficialSellerData = createShopItemViewModelList(searchShopData.topOfficialSellerData),
+                cpmModel = source.cpmModel
         )
     }
 

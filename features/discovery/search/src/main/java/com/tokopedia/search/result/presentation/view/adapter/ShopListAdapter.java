@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
-import com.tokopedia.search.result.presentation.model.ShopViewModel;
 import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory;
 
@@ -31,6 +30,7 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
         loadingMoreModel = new LoadingMoreModel();
     }
 
+    @NonNull
     @Override
     public AbstractViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -53,7 +53,7 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
         return list.size();
     }
 
-    public void appendItems(List<ShopViewModel.ShopItem> list) {
+    public void appendItems(List<Visitable> list) {
         int newItemsFirstPosition = getItemCount();
 
         this.list.addAll(list);

@@ -37,6 +37,7 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -267,19 +268,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public String getUserId() {
         return userSession.getUserId();
-    }
-
-    @Override
-    public void onBannerAdsClicked(String appLink) {
-        if(getActivity() == null) return;
-
-        DiscoveryRouter router = ((DiscoveryRouter) getActivity().getApplicationContext());
-
-        if (router.isSupportApplink(appLink)) {
-            router.goToApplinkActivity(getActivity(), appLink);
-        } else if (!TextUtils.isEmpty(appLink)) {
-            router.actionOpenGeneralWebView(getActivity(), appLink);
-        }
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
+package com.tokopedia.search.result.presentation.view.adapter.viewholder;
 
 import android.content.Context;
 import android.content.Intent;
@@ -121,7 +121,11 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
                 .setEndpoint(Endpoint.CPM)
                 .build();
         topAdsBannerView.setConfig(bannerAdsConfig);
-        topAdsBannerView.setTopAdsBannerClickListener((position, appLink, data) -> bannerAdsListener.onBannerAdsClicked(appLink));
+        topAdsBannerView.setTopAdsBannerClickListener((position, appLink, data) -> {
+            if(bannerAdsListener != null) {
+                bannerAdsListener.onBannerAdsClicked(position, appLink, data);
+            }
+        });
         topAdsBannerView.setAdsListener(new TopAdsListener() {
             @Override
             public void onTopAdsLoaded(List<Item> list) {
