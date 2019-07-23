@@ -920,7 +920,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onButtonClicked() {
+    public void onBottomSheetButtonClicked() {
         if (isIdlePowerMerchant()) {
             RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS);
         } else if (!isPowerMerchant()) {

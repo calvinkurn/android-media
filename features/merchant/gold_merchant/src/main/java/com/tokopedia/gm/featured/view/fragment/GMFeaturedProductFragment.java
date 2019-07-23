@@ -711,7 +711,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     }
 
     @Override
-    public void onButtonClicked() {
-
+    public void onBottomSheetButtonClicked() {
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS);
     }
 }

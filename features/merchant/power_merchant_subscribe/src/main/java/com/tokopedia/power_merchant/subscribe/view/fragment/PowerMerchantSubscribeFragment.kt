@@ -266,7 +266,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
         bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(bottomSheetModel)
         bottomSheetSuccess.setListener(object : PowerMerchantSuccessBottomSheet.BottomSheetListener {
-            override fun onButtonClicked() {
+            override fun onBottomSheetButtonClicked() {
                 bottomSheetSuccess.dismiss()
                 refreshData()
             }

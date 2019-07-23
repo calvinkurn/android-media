@@ -328,7 +328,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onButtonClicked() {
+    public void onBottomSheetButtonClicked() {
 
     }
 }

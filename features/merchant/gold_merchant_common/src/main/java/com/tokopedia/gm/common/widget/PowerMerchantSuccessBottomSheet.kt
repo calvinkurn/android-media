@@ -66,7 +66,7 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
                 PM_HOME_NONACTIVE -> powerMerchantTracking.eventIncreaseScoreBottomSheet()
                 PM_SUBSCRIBE_SUCCESS -> powerMerchantTracking.eventLearnMoreSuccessPopUp()
             }
-            listener?.onButtonClicked()
+            listener?.onBottomSheetButtonClicked()
         }
     }
 
@@ -80,7 +80,7 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
     }
 
     interface BottomSheetListener {
-        fun onButtonClicked()
+        fun onBottomSheetButtonClicked()
     }
 
     override fun setupDialog(dialog: Dialog?, style: Int) {

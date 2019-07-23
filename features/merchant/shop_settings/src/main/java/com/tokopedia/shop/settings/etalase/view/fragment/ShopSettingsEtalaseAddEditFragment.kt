@@ -152,7 +152,7 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         bottomSheet.show(childFragmentManager, "merchant_warning_bottom_sheet")
     }
 
-    override fun onButtonClicked() {
+    override fun onBottomSheetButtonClicked() {
         RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
     }
 
