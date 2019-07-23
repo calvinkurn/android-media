@@ -1,10 +1,8 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
-import android.content.Context;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.design.component.BottomSheets;
@@ -47,6 +45,8 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
         sendButton = view.findViewById(R.id.send_button);
 
         if (ratingBar != null && ratingLevel != null) {
+            ratingLevel.setText(ratingDetails[((int) ratingBar.getRating()) - 1]);
+
             ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
                 ratingValue = rating;
                 int ratingIndex = ((int) rating) - 1;
@@ -62,6 +62,9 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
                 } else {
                     FeedbackThankPageActivity.startActivity(getContext(), ratingValue);
                 }
+
+                super.dismiss();
+                new AppFeedbackMessageBottomSheet();
             });
         }
 
