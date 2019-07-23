@@ -29,7 +29,9 @@
             android:layout_weight="1"
             app:fontSize="title"
             app:weight="medium"
-            tools:text="Fasilitas Umum" />
+            tools:text="Fasilitas Umum"
+            app:textViewTheme="lightPrimary"
+            />
 
     </LinearLayout>
 

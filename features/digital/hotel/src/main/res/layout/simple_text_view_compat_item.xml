@@ -12,6 +12,7 @@
         android:id="@+id/text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/dp_4"
         app:fontSize="small" />
 
 </android.support.v4.widget.NestedScrollView>

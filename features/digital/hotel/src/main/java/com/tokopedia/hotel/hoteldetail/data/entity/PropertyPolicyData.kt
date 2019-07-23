@@ -16,6 +16,12 @@ class PropertyPolicyData(@SerializedName("name")
                          @SerializedName("content")
                          @Expose
                          val content: String = "",
+                         @SerializedName("icon")
+                         @Expose
+                         val icon: String = "",
+                         @SerializedName("iconUrl")
+                         @Expose
+                         val iconUrl: String = "",
                          @SerializedName("propertyPolicyId")
                          @Expose
                          val propertyPolicyId: String = "")
@@ -24,11 +30,15 @@ class PropertyPolicyData(@SerializedName("name")
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
             parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
         parcel.writeString(content)
+        parcel.writeString(icon)
+        parcel.writeString(iconUrl)
         parcel.writeString(propertyPolicyId)
     }
 

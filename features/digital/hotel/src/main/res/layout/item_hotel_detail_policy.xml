@@ -24,10 +24,12 @@
             android:id="@+id/tv_policy_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginStart= "@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_weight="1"
+            android:lineSpacingExtra="@dimen/dp_2"
             app:fontSize="title"
+            app:textViewTheme="lightPrimary"
             app:weight="medium"
             tools:text="Fasilitas Umum" />
 
@@ -39,6 +41,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_24"
         android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_4"
+        android:lineSpacingExtra="@dimen/dp_4"
         app:fontSize="small"
         tools:text="Fasilitas Umum" />
 
