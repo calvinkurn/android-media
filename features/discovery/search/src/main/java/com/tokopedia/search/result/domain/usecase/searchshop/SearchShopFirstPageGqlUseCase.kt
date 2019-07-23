@@ -2,6 +2,7 @@ package com.tokopedia.search.result.domain.usecase.searchshop
 
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_HEADLINE_PARAMS
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.*
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -12,10 +13,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import rx.functions.Func1
-import java.util.HashMap
-import com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.HEADLINE
-import com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.HEADLINE_ITEM_VALUE
-import com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.HEADLINE_TEMPLATE_VALUE
+import java.util.*
 
 class SearchShopFirstPageGqlUseCase(
         private val graphqlRequest: GraphqlRequest,
@@ -47,6 +45,7 @@ class SearchShopFirstPageGqlUseCase(
         headlineParams[TopAdsParams.KEY_EP] = HEADLINE
         headlineParams[TopAdsParams.KEY_TEMPLATE_ID] = HEADLINE_TEMPLATE_VALUE
         headlineParams[TopAdsParams.KEY_ITEM] = HEADLINE_ITEM_VALUE
+        headlineParams[TopAdsParams.KEY_SRC] = ADS_SOURCE
 
         return UrlParamUtils.generateUrlParamString(headlineParams)
     }

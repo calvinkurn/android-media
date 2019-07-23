@@ -95,6 +95,7 @@ public interface SearchConstant {
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
+        String ADS_SOURCE = "search";
     }
 
     interface SearchCatalog {
