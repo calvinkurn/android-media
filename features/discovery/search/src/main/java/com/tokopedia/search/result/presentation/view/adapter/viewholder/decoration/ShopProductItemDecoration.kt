@@ -19,10 +19,10 @@ class ShopProductItemDecoration(
     }
 
     private fun getLeftOffset(itemPosition: Int): Int {
-        return if (itemPosition == 0) 0 else spacing / 2
+        return if (itemPosition == 0) spacing else spacing / 2
     }
 
     private fun getRightOffset(itemPosition: Int, itemCount: Int): Int {
-        return if (itemPosition == itemCount - 1) 0 else spacing / 2
+        return if (itemPosition == itemCount - 1) spacing else spacing / 2
     }
 }

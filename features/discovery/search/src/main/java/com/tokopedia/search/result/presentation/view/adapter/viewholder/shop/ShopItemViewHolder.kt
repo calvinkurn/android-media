@@ -14,6 +14,7 @@ import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.productcard.utils.doIfVisible
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.ShopProductItemAdapter
@@ -49,6 +50,7 @@ class ShopItemViewHolder(
         initImageShopReputation(shopViewItem)
         initTextShopSocialProof(shopViewItem)
         initProductPreview(shopViewItem)
+        initShopVoucherLabel(shopViewItem)
         initShopStatus(shopViewItem)
 
         finishBindShopItem()
@@ -135,7 +137,7 @@ class ShopItemViewHolder(
         recyclerViewShopProductItem.layoutManager = createRecyclerViewShopProductItemLayoutManager()
 
         if (!hasItemDecoration(recyclerViewShopProductItem)) {
-//            recyclerViewShopProductItem.addItemDecoration(createRecyclerViewShopProductItemDecoration())
+            recyclerViewShopProductItem.addItemDecoration(createRecyclerViewShopProductItemDecoration())
         }
     }
 
@@ -169,6 +171,32 @@ class ShopItemViewHolder(
         return ShopProductItemDecoration(getDimensionPixelSize(R.dimen.dp_6))
     }
 
+    private fun initShopVoucherLabel(shopViewItem: ShopViewModel.ShopItem) {
+        initShopVoucherFreeShipping(shopViewItem)
+        initShopVoucherCashback(shopViewItem)
+    }
+
+    private fun initShopVoucherFreeShipping(shopViewItem: ShopViewModel.ShopItem) {
+        itemView.labelVoucherFreeShipping?.showWithCondition(shopViewItem.voucher.freeShipping)
+    }
+
+    private fun initShopVoucherCashback(shopViewItem: ShopViewModel.ShopItem) {
+        itemView.labelVoucherCashback?.showWithCondition(shopViewItem.voucher.cashback.cashbackValue > 0)
+
+        itemView.labelVoucherCashback?.text = getShopVoucherCasbackText(shopViewItem.voucher.cashback)
+    }
+
+    private fun getShopVoucherCasbackText(voucherCashback: ShopViewModel.ShopItem.ShopItemVoucher.ShopItemVoucherCashback): String {
+        val cashbackValueString = voucherCashback.cashbackValue.toString()
+
+        return if (voucherCashback.isPercentage) {
+            getString(R.string.shop_voucher_cashback_percentage, cashbackValueString)
+        }
+        else {
+            getString(R.string.shop_voucher_cashback_not_percentage, cashbackValueString)
+        }
+    }
+
     private fun initShopStatus(shopViewItem: ShopViewModel.ShopItem) {
         if(shopViewItem.status == KEY_SHOP_STATUS_CLOSED) {
             showShopStatus(getString(R.string.shop_status_closed))
@@ -186,6 +214,7 @@ class ShopItemViewHolder(
     private fun finishBindShopItem() {
         setTextViewShopNameMargin()
         setTextSeparatorVisibility()
+        setLabelVoucherConstraints()
     }
 
     private fun setTextViewShopNameMargin() {
@@ -196,21 +225,69 @@ class ShopItemViewHolder(
         }
     }
 
-    private fun setTextSeparatorVisibility() {
-        itemView.textViewShopLocationReputationSeparator?.showWithCondition(itemView.textViewShopLocation?.isVisible ?: false)
-        itemView.textViewShopReputationSocialProofSeparator?.showWithCondition(itemView.textViewShopSocialProof?.isVisible ?: false)
-    }
-
     @DimenRes
     private fun getTextViewShopNameMarginLeft(): Int {
         return itemView.imageViewShopBadge?.let { if (it.isVisible) R.dimen.dp_2 else R.dimen.dp_8 }
                 ?: R.dimen.dp_8
     }
 
+    private fun setTextSeparatorVisibility() {
+        itemView.textViewShopLocationReputationSeparator?.showWithCondition(itemView.textViewShopLocation?.isVisible ?: false)
+        itemView.textViewShopReputationSocialProofSeparator?.showWithCondition(itemView.textViewShopSocialProof?.isVisible ?: false)
+    }
+
+    private fun setLabelVoucherConstraints() {
+        val topConstraintViewForLabelVoucher = getTopConstraintViewForLabelVoucher()
+
+        topConstraintViewForLabelVoucher?.let {
+            setLabelVoucherConstraintTop(it)
+        }
+    }
+
+    private fun setLabelVoucherConstraintTop(topConstraintViewForLabelVoucher: View) {
+        itemView.labelVoucherFreeShipping?.doIfVisible { labelVoucherFreeShipping ->
+            setViewConstraint(
+                    labelVoucherFreeShipping.id, ConstraintSet.TOP,
+                    topConstraintViewForLabelVoucher.id, ConstraintSet.BOTTOM,
+                    R.dimen.dp_4
+            )
+        }
+
+        itemView.labelVoucherCashback?.doIfVisible { labelVoucherCashback ->
+            setViewConstraint(
+                    labelVoucherCashback.id, ConstraintSet.TOP,
+                    topConstraintViewForLabelVoucher.id, ConstraintSet.BOTTOM,
+                    R.dimen.dp_4
+            )
+        }
+    }
+
+    private fun getTopConstraintViewForLabelVoucher(): View? {
+        return if (itemView.recyclerViewShopProductItem?.isVisible == true) {
+            itemView.recyclerViewShopProductItem
+        }
+        else {
+            itemView.textViewShopHasNoProduct
+        }
+    }
+
     private fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {
         applyConstraintSetToConstraintLayoutShopCard { constraintSet ->
             val marginPixel = getDimensionPixelSize(marginDp)
             constraintSet.setMargin(viewId, anchor, marginPixel)
+        }
+    }
+
+    private fun setViewConstraint(
+            @IdRes startLayoutId: Int,
+            startSide: Int,
+            @IdRes endLayoutId: Int,
+            endSide: Int,
+            @DimenRes marginDp: Int
+    ) {
+        applyConstraintSetToConstraintLayoutShopCard { constraintSet ->
+            val marginPixel = getDimensionPixelSize(marginDp)
+            constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
         }
     }
 
