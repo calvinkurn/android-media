@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
@@ -19,12 +20,19 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -34,6 +42,8 @@ import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
@@ -117,6 +127,23 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private CardView saldoTypeCV;
     private TextView saldoValueTV;
     private TextView saldoWithdrawHintTV;
+    private static final String IS_WITHDRAW_LOCK = "is_lock";
+    private static final String MCL_LATE_COUNT = "late_count";
+
+
+    private int statusWithDrawLock;
+    private int mclLateCount;
+    private ConstraintLayout tickerLayout;
+    private TextView tvTickerMessage;
+    private TextView tvWithDrawInfo;
+    private boolean sellerSaldoWithDrawTvStatus = false;
+    private ImageView ivDismissTicker;
+    private static final int MCL_STATUS_BLOCK1 = 700;
+    private static final int MCL_STATUS_BLOCK3 = 999;
+    private ImageView ivLockButton;
+
+    private boolean buttonSellerSaldoStatus = false;
+    private LinearLayout withdrawButtonWrapper;
 
 
     @Override
@@ -189,6 +216,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         saldoTypeCV = view.findViewById(R.id.saldo_type_card_view);
         saldoValueTV = view.findViewById(R.id.total_saldo_value);
         saldoWithdrawHintTV = view.findViewById(R.id.saldo_withdraw_hint);
+        tickerLayout = view.findViewById(R.id.layout_ticker);
+        tvTickerMessage = view.findViewById(R.id.tv_desc_info);
+
+        withdrawButtonWrapper = view.findViewById(R.id.custom_button);
+        tvWithDrawInfo = view.findViewById(R.id.tv_info);
+        ivDismissTicker = view.findViewById(R.id.iv_dismiss_ticker);
+        ivLockButton = view.findViewById(R.id.ivButtonLeft);
+
 
         return view;
     }
@@ -206,6 +241,12 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         if (getArguments() != null) {
             buyerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
             sellerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
+            statusWithDrawLock = getArguments().getInt(IS_WITHDRAW_LOCK);
+            mclLateCount = getArguments().getInt(MCL_LATE_COUNT);
+        }
+
+        if (statusWithDrawLock == MCL_STATUS_BLOCK1 || statusWithDrawLock == MCL_STATUS_BLOCK3) {
+            showTicker(mclLateCount);
         }
 
         saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
@@ -220,7 +261,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 , MethodChecker.getDrawable(getActivity(), R.drawable.divider));
         bankRecyclerView.addItemDecoration(itemDecoration);
 
-        withdrawButton.setOnClickListener(v -> {
+
+        withdrawButtonWrapper.setOnClickListener(v -> {
             KeyboardHandler.hideSoftKeyboard(getActivity());
             float balance;
             if (currentState == SELLER_STATE) {
@@ -235,9 +277,12 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             );
         });
 
+
         withdrawBuyerSaldoTV.setOnClickListener(v -> {
 
+
             if (currentState != BUYER_STATE) {
+
                 if (buyerSaldoBalance == 0) {
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.refund_saldo_inactive));
                 } else if (buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
@@ -261,6 +306,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         withdrawSellerSaldoTV.setOnClickListener(v -> {
 
             if (currentState != SELLER_STATE) {
+
                 if (sellerSaldoBalance == 0) {
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.seller_saldo_inactive));
                 } else if (sellerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
@@ -303,6 +349,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             }
         });
 
+
         if (buyerSaldoBalance == 0 || buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
             currentState = SELLER_STATE;
             sellerWithdrawal = true;
@@ -329,6 +376,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         if (currencyTextWatcher != null) {
             totalWithdrawal.removeTextChangedListener(currencyTextWatcher);
         }
+
 
         totalWithdrawal.addTextChangedListener(currencyTextWatcher);
         totalWithdrawal.setText("");
@@ -387,7 +435,39 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 });
 
         presenter.getWithdrawForm();
+
     }
+
+    public void showTicker(int mclLateCount) {
+
+        String webViewMTDashBoardUrl = "tokopedia://webview?url=https://www.tokopedia.com/fm/modal-toko/dashboard/pembayaran";
+        String tickerMsg = tvTickerMessage.getText().toString();
+        int startIndex = tickerMsg.indexOf('.')+1 ;
+        String late=Integer.toString(mclLateCount);
+        tickerMsg = tickerMsg.replace("2", late);
+        SpannableString ss = new SpannableString(tickerMsg);
+
+        tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
+        ss.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                RouteManager.route(getContext(), String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW, webViewMTDashBoardUrl));
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+            }
+        }, startIndex, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvTickerMessage.setText(ss);
+        ivDismissTicker.setOnClickListener(v -> tickerLayout.setVisibility(View.GONE));
+        tickerLayout.setVisibility(View.VISIBLE);
+    }
+
 
     private void startShowCase() {
         if (!ShowCasePreference.hasShown(getContext(), WithdrawFragment.class.getName())) {
@@ -479,6 +559,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), minAmount));
             saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.grey_500));
         }
+
     }
 
     private boolean checkMinimumWithdrawal(int withdrawal) {
@@ -499,6 +580,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         } else {
             return true;
         }
+
     }
 
     private int checkSelectedBankMinimumWithdrawal() {
@@ -532,14 +614,15 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 && (!TextUtils.isEmpty(bankAccountViewModel.getBankName()));
     }
 
-    public void canProceed(LinearLayout textView, boolean can) {
-        TextView textView1 = (TextView) textView.getChildAt(1);
+
+    public void canProceed(LinearLayout buttonWrapper, boolean can) {
+        TextView tvButton = (TextView) buttonWrapper.getChildAt(1);
         if (can && !sellerSaldoWithDrawTvStatus) {
-            textView.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
-            textView1.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+            buttonWrapper.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
+            tvButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         } else {
-            textView.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_300), PorterDuff.Mode.SRC_IN);
-            textView1.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+            buttonWrapper.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_300), PorterDuff.Mode.SRC_IN);
+            tvButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
         }
     }
 
@@ -671,6 +754,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         boolean isValid = checkMinimumWithdrawal(withdrawal);
         canProceed((LinearLayout) withdrawButtonWrapper, isValid);
         withdrawButtonWrapper.setEnabled(isValid);
+
+
     }
 
     @Override

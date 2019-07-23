@@ -10,8 +10,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +30,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -46,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.inject.Inject;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -105,6 +111,16 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private View merchantCreditFrameLayout;
     private LinearLayout merchantStatusLL;
     private long CHECK_VISIBILITY_DELAY = 700;
+
+    private ConstraintLayout layoutTicker;
+    private TextView tvTickerMessage;
+    private ImageView ivDismissTicker;
+    private int mclLateCount = 0;
+    private int statusWithDrawLock = -1;
+    private static final int MCL_STATUS_ZERO = 0;
+    private static final int MCL_STATUS_BLOCK1 = 700;
+    private static final int MCL_STATUS_BLOCK2 = 701;
+    private static final int MCL_STATUS_BLOCK3 = 999;
 
     public SaldoDepositFragment() {
     }
@@ -230,7 +246,12 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
         merchantDetailLL = view.findViewById(R.id.merchant_details_ll);
         merchantStatusLL = view.findViewById(R.id.merchant_status_ll);
-        saldoDepositExpandIV.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_arrow_up_grey));
+        saldoDepositExpandIV.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_arrow_up_grey));
+        layoutTicker = view.findViewById(R.id.layout_holdwithdrawl_dialog);
+        tvTickerMessage = view.findViewById(R.id.tv_desc_info);
+        ivDismissTicker = view.findViewById(R.id.iv_dismiss_ticker);
+
+
 
         if (expandLayout) {
             saldoTypeLL.setVisibility(View.VISIBLE);
@@ -369,7 +390,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private void goToWithdrawActivity() {
         if (getActivity() != null) {
             Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
-            saldoDetailsPresenter.onDrawClicked(intent);
+            saldoDetailsPresenter.onDrawClicked(intent, statusWithDrawLock,mclLateCount);
         }
     }
 
@@ -575,9 +596,46 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         tickeRMessageTV.setText(withdrawalTicker);
     }
 
+    public void showTicker() {
+
+        String webViewMTDashBoardUrl = "tokopedia://webview?url=https://www.tokopedia.com/fm/modal-toko/dashboard/pembayaran";
+        String tickerMsg = tvTickerMessage.getText().toString();
+        int startIndex = tickerMsg.indexOf('.') + 1;
+        String late=Integer.toString(mclLateCount);
+        tickerMsg = tickerMsg.replace("2", late);
+        SpannableString ss = new SpannableString(tickerMsg);
+
+        tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
+
+        ss.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                RouteManager.route(context, String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW, webViewMTDashBoardUrl));
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+            }
+        }, startIndex, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvTickerMessage.setText(ss);
+        ivDismissTicker.setOnClickListener(v -> layoutTicker.setVisibility(View.GONE));
+        layoutTicker.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void hideTickerMessage() {
         tickerMessageRL.setVisibility(View.GONE);
+    }
+
+    @Override
+    public int getLateCount(int count) {
+        mclLateCount = count;
+        return mclLateCount;
     }
 
     @Override
