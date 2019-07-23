@@ -147,6 +147,9 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                 percentage
                 isSelected
                 position
+                videos {
+                    url
+                }
                 tracking {
                 	clickURL
                 	viewURL

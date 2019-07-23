@@ -11,6 +11,7 @@ import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
@@ -69,8 +70,14 @@ abstract class ProductItemViewHolder(
 
         setImageProductUrl(productItem)
 
-        getProductCardView()?.setImageProductViewHintListener(productItem) {
-            productListener.onProductImpressed(productItem, adapterPosition)
+        getProductCardView()?.setImageProductViewHintListener(productItem, createImageProductViewHintListener(productItem))
+    }
+
+    protected fun createImageProductViewHintListener(productItem: ProductItemViewModel): ViewHintListener {
+        return object: ViewHintListener {
+            override fun onViewHint() {
+                productListener.onProductImpressed(productItem, adapterPosition)
+            }
         }
     }
 
