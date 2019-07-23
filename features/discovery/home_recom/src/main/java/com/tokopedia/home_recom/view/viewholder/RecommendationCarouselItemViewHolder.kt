@@ -12,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -49,16 +50,14 @@ class RecommendationCarouselItemViewHolder (
             mapBadges(element.productItem.badgesUrl)
             setShopLocationText(element.productItem.location)
             realignLayout()
-//            setImageProductViewHintListener(element.productItem){
-//                if(element.productItem.isTopAds){
-//                    ImpresionTask().execute(element.productItem.trackerImageUrl)
-//                    //Impression for topads item
-//                    element.listener.onImpressionTopAds(element.productItem)
-//                } else {
-//                    //Impression for organic item
-//                    element.listener.onImpressionOrganic(element.productItem)
-//                }
-//            }
+            setImageProductViewHintListener(element.productItem, object: ViewHintListener{
+                override fun onViewHint() {
+                    if(element.productItem.isTopAds){
+                        ImpresionTask().execute(element.productItem.trackerImageUrl)
+                    }
+                    element.listener.onProductImpression(element.productItem)
+                }
+            })
 
             setOnClickListener {
                 element.listener.onProductClick(element.productItem, element.productItem.type, element.parentPosition, adapterPosition)
