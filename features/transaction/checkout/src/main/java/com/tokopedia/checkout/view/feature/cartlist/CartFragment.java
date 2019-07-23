@@ -394,10 +394,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
         };
         cartRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
-
-        if (cartListData != null) {
-            renderLoadGetCartDataFinish();
-        }
     }
 
     private void setupToolbar(View view) {
