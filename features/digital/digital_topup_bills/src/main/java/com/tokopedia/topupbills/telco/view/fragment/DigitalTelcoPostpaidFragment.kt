@@ -151,6 +151,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
+                postpaidClientNumberWidget.clearFocusAutoComplete()
                 startActivityForResult(activity?.let {
                     DigitalSearchNumberActivity.newInstance(it,
                             ClientNumberType.TYPE_INPUT_TEL, "", favNumberList)
@@ -269,11 +270,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         postpaidClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
-        postpaidClientNumberWidget.clearFocus()
+        postpaidClientNumberWidget.clearFocusAutoComplete()
     }
 
     override fun handleCallbackSearchNumberCancel() {
-        postpaidClientNumberWidget.clearFocus()
+        postpaidClientNumberWidget.clearFocusAutoComplete()
     }
 
     override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
@@ -299,7 +300,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onResume() {
         super.onResume()
-        postpaidClientNumberWidget.clearFocus()
+        postpaidClientNumberWidget.clearFocusAutoComplete()
 
         if (::operatorSelected.isInitialized) {
             checkoutPassData = DigitalCheckoutPassData.Builder()
