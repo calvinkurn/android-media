@@ -2,14 +2,12 @@ package com.tokopedia.promocheckout.detail.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -225,7 +223,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
                 amount = data.cashbackWalletAmount,
                 state = data.message.state.mapToStatePromoStackingCheckout(),
                 variant = variant.mapToVariantPromoStackingCheckout(),
-                trackingDetails = data.trackingDetail)
+                trackingDetailUiModels = data.trackingDetailUiModel)
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_COUPON)
         activity?.setResult(Activity.RESULT_OK, intent)

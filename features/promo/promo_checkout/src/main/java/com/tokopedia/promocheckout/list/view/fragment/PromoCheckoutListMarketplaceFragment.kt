@@ -115,7 +115,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
                 counterLabel = "",
                 amount = data.cashbackWalletAmount,
                 state = data.message.state.mapToStatePromoStackingCheckout(),
-                trackingDetails = data.trackingDetail)
+                trackingDetailUiModels = data.trackingDetailUiModel)
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_PROMO_CODE)
         activity?.setResult(Activity.RESULT_OK, intent)

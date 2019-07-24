@@ -2,7 +2,7 @@ package com.tokopedia.promocheckout.common.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetail
+import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 
 data class PromoStackingData(var typePromo: Int = 0,
@@ -15,7 +15,7 @@ data class PromoStackingData(var typePromo: Int = 0,
                              var variant: TickerPromoStackingCheckoutView.Variant = TickerPromoStackingCheckoutView.Variant.GLOBAL,
                              var titleDefault: String = "",
                              var counterLabelDefault: String = "",
-                             var trackingDetails: List<TrackingDetail> = emptyList()
+                             var trackingDetailUiModels: List<TrackingDetailUiModel> = emptyList()
 ) : Parcelable {
 
     fun getPromoCodeSafe(): String {
@@ -37,7 +37,7 @@ data class PromoStackingData(var typePromo: Int = 0,
             parcel.readParcelable(TickerPromoStackingCheckoutView.Variant::class.java.classLoader),
             parcel.readString(),
             parcel.readString(),
-            parcel.createTypedArrayList(TrackingDetail))
+            parcel.createTypedArrayList(TrackingDetailUiModel))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(typePromo)
@@ -50,7 +50,7 @@ data class PromoStackingData(var typePromo: Int = 0,
         parcel.writeParcelable(variant, flags)
         parcel.writeString(titleDefault)
         parcel.writeString(counterLabelDefault)
-        parcel.writeTypedList(trackingDetails)
+        parcel.writeTypedList(trackingDetailUiModels)
     }
 
     override fun describeContents(): Int {
