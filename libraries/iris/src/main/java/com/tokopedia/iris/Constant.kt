@@ -18,7 +18,7 @@ const val HEADER_CONTENT_TYPE = "Content-Type"
 const val HEADER_USER_ID = "Tkpd-UserId"
 const val HEADER_DEVICE = "X-Device"
 const val HEADER_JSON = "application/json"
- val HEADER_ANDROID = "android-" + BuildConfig.VERSION_NAME
+const val HEADER_ANDROID = "android-" + BuildConfig.VERSION_NAME
 
 const val DATABASE_NAME = "iris-db"
 const val TABLE_TRACKING = "tracking"

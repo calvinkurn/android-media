@@ -38,8 +38,7 @@ class SaveChatBlastSellerUseCase @Inject constructor(
                 .flatMap {
                     val imageAttachment = it.dataResultImageUpload
                     if (imageAttachment == null)
-//                        throw RuntimeException()
-                        throw Throwable()
+                        throw RuntimeException()
 
                     createGqlSubmitBlastSeller(imageAttachment.picSrc, requestParams)
                 }

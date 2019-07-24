@@ -44,7 +44,7 @@ public class TopAdsStatisticLabelView extends BaseCustomView {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
             titleText = styledAttributes.getString(R.styleable.LabelView_title);
-            contentText = styledAttributes.getString(R.styleable.LabelView_content_text);
+            contentText = styledAttributes.getString(R.styleable.LabelView_content);
             contentColorValue = styledAttributes.getColor(R.styleable.LabelView_content_color, ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
         } finally {
             styledAttributes.recycle();

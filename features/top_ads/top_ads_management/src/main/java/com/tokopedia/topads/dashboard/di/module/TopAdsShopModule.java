@@ -32,8 +32,8 @@ public class TopAdsShopModule {
     @ShopQualifier
     @TopAdsScope
     @Provides
-    public CacheApiInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
-        return new CacheApiInterceptor(context, new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
+    public CacheApiInterceptor provideApiCacheInterceptor() {
+        return new CacheApiInterceptor(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
     }
 
     @ShopQualifier

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -35,7 +34,7 @@ import retrofit2.Retrofit;
  * @author sebastianuskh on 4/13/17.
  */
 @GMScope
-@Component(modules = GMModule.class, dependencies = BaseAppComponent.class)
+@Component(modules = GMModule.class, dependencies = AppComponent.class)
 public interface GMComponent {
     void inject(BaseDatePickerFragment datePickerFragment);
 
