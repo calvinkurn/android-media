@@ -31,6 +31,7 @@ import com.tokopedia.transactiondata.insurance.entity.response.InsuranceApplicat
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceProductApplicationDetails;
+import com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -39,8 +40,25 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MAX_DATE;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MAX_LENGTH;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MIN_DATE;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MIN_LENGTH;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_PATTERN;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.dateFormatter;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getDate;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getDateInServerFormat;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getDateStringInUIFormat;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getDay;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getStartMonth;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getStartYear;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.updateEditTextBackground;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.validateMaxDate;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.validateMaxLength;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.validateMinDate;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.validateMinLength;
+import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.validatePattern;
 
 public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
@@ -62,8 +80,6 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
     private Button btnValidate;
     private CloseableBottomSheetDialog closeableBottomSheetDialog;
     private String errorMessage;
-    private SimpleDateFormat sdfo1;
-    private SimpleDateFormat sdfo2;
     private SaldoDatePickerUtil datePicker;
 
     public InsuranceCartShopViewHolder(View itemView, InsuranceItemActionListener insuranceItemActionlistener) {
@@ -193,7 +209,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
                                             errorMessageView.setVisibility(View.VISIBLE);
                                             errorMessageView.setText(errorMessage);
                                         }
-                                        updateEditTextBackground(subtitle, errorMessageView.getCurrentTextColor());
+                                        updateEditTextBackground(subtitle, errorMessageView.getCurrentTextColor(), !TextUtils.isEmpty(errorMessage));
                                     }
 
                                     @Override
@@ -233,14 +249,14 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
                                         if (validateView(subTitleTextView, insuranceProductApplicationDetails)) {
                                             errorMessageView.setVisibility(View.GONE);
-                                            insuranceProductApplicationDetails.setValue(getDateStringInServerFormat(s.toString()));
+                                            insuranceProductApplicationDetails.setValue(getDateInServerFormat(s.toString()));
                                             insuranceProductApplicationDetails.setError(false);
                                         } else {
                                             errorMessageView.setVisibility(View.VISIBLE);
                                             errorMessageView.setText(errorMessage);
                                             insuranceProductApplicationDetails.setError(true);
                                         }
-                                        updateEditTextBackground(subTitleTextView, errorMessageView.getCurrentTextColor());
+                                        updateEditTextBackground(subTitleTextView, errorMessageView.getCurrentTextColor(), !TextUtils.isEmpty(errorMessage));
                                     }
 
                                     @Override
@@ -290,12 +306,9 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
         tvInsurancePrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceCartDigitalProduct.getPricePerProduct(), false));
 
-        cbSelectInsurance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
-                insuranceItemActionlistener.onInsuranceSelectStateChanges();
-            }
+        cbSelectInsurance.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
+            insuranceItemActionlistener.onInsuranceSelectStateChanges();
         });
 
         /*
@@ -304,43 +317,8 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
         cbSelectInsurance.setChecked(true);
 
-        ivDeleteInsurance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                insuranceItemActionlistener.deleteInsurance(insuranceCartShops, true);
-            }
-        });
+        ivDeleteInsurance.setOnClickListener(v -> insuranceItemActionlistener.deleteInsurance(insuranceCartShops, true));
     }
-
-
-    private String getDateStringInServerFormat(String value) {
-
-        Date date = new Date();
-        DateFormat formatter = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        try {
-            date = formatter.parse(value);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        String newDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
-        return newDate;
-    }
-
-    private String getDateStringInUIFormat(String value) {
-
-        Date date = new Date();
-        DateFormat formatter = new SimpleDateFormat(DATE_FORMAT_SERVER);
-        try {
-            date = formatter.parse(value);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        String newDate = new SimpleDateFormat(DATE_FORMAT_VIEW).format(date);
-        return newDate;
-    }
-
 
     private void onDateViewClicked(TextView view) {
         String date = dateFormatter(view.getText().toString());
@@ -350,101 +328,33 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    private String getDate(int year, int month, int day) {
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        Date date = new Date();
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(date);
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.DAY_OF_MONTH, day);
-        cal.set(Calendar.MONTH, month - 1);
-        return dateFormat.format(cal.getTime());
-    }
-
-    private int getStartYear(String date) {
-        String year = date.substring(6, 10);
-        return Integer.parseInt(year);
-    }
-
-    private int getStartMonth(String date) {
-        String month = date.substring(3, 5);
-        return Integer.parseInt(month);
-    }
-
-    private int getDay(String date) {
-        String day = date.substring(0, 2);
-        return Integer.parseInt(day);
-    }
-
-    private String dateFormatter(String date) {
-
-        DateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        DateFormat sdf_ws = new SimpleDateFormat("dd/MM/yyyy");
-        Date formattedStart = null;
-        try {
-            formattedStart = sdf.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return sdf_ws.format(formattedStart);
-
-    }
-
-    @SuppressLint("RestrictedApi")
-    private void updateEditTextBackground(TextView subtitle, int currentTextColor) {
-        if (subtitle == null) {
-            return;
-        }
-
-        Drawable editTextBackground = subtitle.getBackground();
-
-        if (editTextBackground == null) return;
-
-        if (android.support.v7.widget.DrawableUtils.canSafelyMutateDrawable(editTextBackground)) {
-            editTextBackground = editTextBackground.mutate();
-        }
-
-        boolean isErrorShowing = !TextUtils.isEmpty(errorMessage);
-        if (isErrorShowing) {
-            // Set a color filter of the error color
-            editTextBackground.setColorFilter(AppCompatDrawableManager.getPorterDuffColorFilter(
-                    currentTextColor, PorterDuff.Mode.SRC_IN));
-        } else {
-            // Else reset the color filter and refresh the drawable state so that the
-            // normal tint is used
-            DrawableCompat.clearColorFilter(editTextBackground);
-            subtitle.refreshDrawableState();
-        }
-    }
-
     private boolean validateView(TextView valueView, InsuranceProductApplicationDetails insuranceProductApplicationDetails) {
         errorMessage = "";
 
         for (InsuranceApplicationValidation insuranceApplicationValidation : insuranceProductApplicationDetails.getValidationsList()) {
-            if (insuranceApplicationValidation.getType().equalsIgnoreCase("minLength")) {
+            if (insuranceApplicationValidation.getType().equalsIgnoreCase(VALIDATION_TYPE_MIN_LENGTH)) {
                 if (!validateMinLength(valueView.getText(), insuranceApplicationValidation.getValidationValue())) {
                     errorMessage = insuranceApplicationValidation.getValidationErrorMessage();
                     return false;
                 }
-            } else if (insuranceApplicationValidation.getType().equalsIgnoreCase("maxLength")) {
+            } else if (insuranceApplicationValidation.getType().equalsIgnoreCase(VALIDATION_TYPE_MAX_LENGTH)) {
                 if (!validateMaxLength(valueView.getText(), insuranceApplicationValidation.getValidationValue())) {
                     errorMessage = insuranceApplicationValidation.getValidationErrorMessage();
 
                     return false;
                 }
-            } else if (insuranceApplicationValidation.getType().equalsIgnoreCase("pattern")) {
+            } else if (insuranceApplicationValidation.getType().equalsIgnoreCase(VALIDATION_TYPE_PATTERN)) {
                 if (!validatePattern(valueView.getText(), insuranceApplicationValidation.getValidationValue())) {
                     errorMessage = insuranceApplicationValidation.getValidationErrorMessage();
 
                     return false;
                 }
-            } else if (insuranceApplicationValidation.getType().equalsIgnoreCase("minDate")) {
+            } else if (insuranceApplicationValidation.getType().equalsIgnoreCase(VALIDATION_TYPE_MIN_DATE)) {
                 if (!validateMinDate(valueView.getText().toString(), insuranceApplicationValidation.getValidationValue())) {
                     errorMessage = insuranceApplicationValidation.getValidationErrorMessage();
                     return false;
                 }
-            } else if (insuranceApplicationValidation.getType().equalsIgnoreCase("maxDate")) {
+            } else if (insuranceApplicationValidation.getType().equalsIgnoreCase(VALIDATION_TYPE_MAX_DATE)) {
 
                 if (!validateMaxDate(valueView.getText().toString(), insuranceApplicationValidation.getValidationValue())) {
                     errorMessage = insuranceApplicationValidation.getValidationErrorMessage();
@@ -455,75 +365,16 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         return true;
     }
 
-    private String DATE_FORMAT_VIEW = "dd MMM yyyy";
-    private String DATE_FORMAT_SERVER = "yyyy-MM-dd";
-
-
-    private boolean validateMinDate(String text, String validationValue) {
-
-        sdfo1 = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        Date incomingValue = null;
-        try {
-            incomingValue = sdfo1.parse(text);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        sdfo2 = new SimpleDateFormat(DATE_FORMAT_SERVER);
-        Date minDate = null;
-        try {
-            minDate = sdfo2.parse(validationValue);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (incomingValue != null && incomingValue.compareTo(minDate) >= 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private boolean validateMaxDate(String text, String validationValue) {
-        sdfo1 = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        Date incomingValue = null;
-        try {
-            incomingValue = sdfo1.parse(text);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        sdfo2 = new SimpleDateFormat(DATE_FORMAT_SERVER);
-        Date minDate = null;
-        try {
-            minDate = sdfo2.parse(validationValue);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (incomingValue.compareTo(minDate) > 0) {
-            System.out.println("incomingValue is after minDate");
-            return false;
-        } else {
-            System.out.println("incomingValue is before minDate");
-            return true;
-        }
-    }
-
-
     private void setValidateListener() {
-        btnValidate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateViews()) {
-                    insuranceItemActionlistener.updateInsuranceProductData(insuranceCartShops, updateInsuranceProductApplicationDetailsArrayList);
-                    closeableBottomSheetDialog.dismiss();
-                }
+        btnValidate.setOnClickListener(v -> {
+            if (validateViews()) {
+                insuranceItemActionlistener.updateInsuranceProductData(insuranceCartShops, updateInsuranceProductApplicationDetailsArrayList);
+                closeableBottomSheetDialog.dismiss();
             }
         });
     }
 
-    ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList = new ArrayList<>();
+    private ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList = new ArrayList<>();
 
     private boolean validateViews() {
         String updatedValue = "";
@@ -531,7 +382,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         for (TextView valueView : typeValues) {
             InsuranceProductApplicationDetails data = (InsuranceProductApplicationDetails) valueView.getTag();
             for (InsuranceApplicationValidation validation : data.getValidationsList()) {
-                if (validation.getType().equalsIgnoreCase("minLength")) {
+                if (validation.getType().equalsIgnoreCase(VALIDATION_TYPE_MIN_LENGTH)) {
                     if (!validateMinLength(valueView.getText(), validation.getValidationValue())) {
                         //show Some Error
                         errorMessage = validation.getValidationErrorMessage();
@@ -540,7 +391,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
                     } else {
                         updatedValue = valueView.getText().toString();
                     }
-                } else if (validation.getType().equalsIgnoreCase("maxLength")) {
+                } else if (validation.getType().equalsIgnoreCase(VALIDATION_TYPE_MAX_LENGTH)) {
                     if (!validateMaxLength(valueView.getText(), validation.getValidationValue())) {
                         //show Some Error
                         errorMessage = validation.getValidationErrorMessage();
@@ -549,7 +400,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
                     } else {
                         updatedValue = valueView.getText().toString();
                     }
-                } else if (validation.getType().equalsIgnoreCase("pattern")) {
+                } else if (validation.getType().equalsIgnoreCase(VALIDATION_TYPE_PATTERN)) {
                     if (!validatePattern(valueView.getText(), validation.getValidationValue())) {
                         //show Some Error
                         errorMessage = validation.getValidationErrorMessage();
@@ -558,22 +409,22 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
                     } else {
                         updatedValue = valueView.getText().toString();
                     }
-                } else if (validation.getType().equalsIgnoreCase("minDate")) {
+                } else if (validation.getType().equalsIgnoreCase(VALIDATION_TYPE_MIN_DATE)) {
                     if (!validateMinDate(valueView.getText().toString(), validation.getValidationValue())) {
                         errorMessage = validation.getValidationErrorMessage();
                         Toast.makeText(ivInsuranceIcon.getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                         return false;
                     } else {
-                        updatedValue = getDateStringInServerFormat(valueView.getText().toString());
+                        updatedValue = getDateInServerFormat(valueView.getText().toString());
                     }
-                } else if (validation.getType().equalsIgnoreCase("maxDate")) {
+                } else if (validation.getType().equalsIgnoreCase(VALIDATION_TYPE_MAX_DATE)) {
 
                     if (!validateMaxDate(valueView.getText().toString(), validation.getValidationValue())) {
                         errorMessage = validation.getValidationErrorMessage();
                         Toast.makeText(ivInsuranceIcon.getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                         return false;
                     } else {
-                        updatedValue = getDateStringInServerFormat(valueView.getText().toString());
+                        updatedValue = getDateInServerFormat(valueView.getText().toString());
                     }
                 }
             }
@@ -583,24 +434,6 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
             updateInsuranceProductApplicationDetailsArrayList.add(updateInsuranceProductApplicationDetails);
         }
         return true;
-    }
-
-    public boolean validatePattern(CharSequence value, String regExPattern) {
-        if (value == null) {
-            return false;
-        } else {
-            Pattern pattern = Pattern.compile(regExPattern);
-            Matcher matcher = pattern.matcher(value);
-            return matcher.matches();
-        }
-    }
-
-    private boolean validateMaxLength(CharSequence text, String maxLength) {
-        return TextUtils.isEmpty(text) || text.length() <= Integer.valueOf(maxLength);
-    }
-
-    private boolean validateMinLength(CharSequence text, String minLength) {
-        return !TextUtils.isEmpty(text) && text.length() >= Integer.valueOf(minLength);
     }
 
     private ArrayList<TextView> typeValues = new ArrayList<>();

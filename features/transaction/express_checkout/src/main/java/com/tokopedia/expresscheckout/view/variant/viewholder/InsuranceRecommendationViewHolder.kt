@@ -1,11 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant.viewholder
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.AppCompatDrawableManager
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -22,11 +17,9 @@ import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceApplicationValueViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceProductApplicationDetailsViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceRecommendationViewModel
+import com.tokopedia.transactiondata.utils.*
 import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page.view.*
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.regex.Pattern
 
 class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceRecommendationViewModel>(view) {
 
@@ -113,7 +106,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                                 listener.onInsuranceSelectedStateChanged(null, insuranceCartDigitalProductViewModel.optIn)
                             }
                             listener.setErrorInInsuranceSelection(!errorMessage.isBlank())
-                            updateEditTextBackground(textView, errorMessageView.currentTextColor)
+                            updateEditTextBackground(textView, errorMessageView.currentTextColor, !errorMessage.isBlank())
                         }
                     })
 
@@ -128,18 +121,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                     val errorMessageView = view.findViewById<TextView>(R.id.error_message)
 
                     if (insuranceProductApplicationDetails.type.equals("date", true)) {
-                        subTitleTextView.text = ""
-                        val dateText = insuranceProductApplicationDetails.value
-
-                        val formatter = SimpleDateFormat("yyyy-MM-dd")
-                        try {
-                            val date = formatter.parse(dateText)
-                            val newDate = SimpleDateFormat(DATE_FORMAT_VIEW).format(date)
-                            subTitleTextView.text = newDate
-                        } catch (e: ParseException) {
-                            e.printStackTrace();
-                        }
-
+                        subTitleTextView.text = getDateStringInUIFormat(insuranceProductApplicationDetails.value)
                         subTitleTextView.setOnClickListener {
                             onDateViewClicked(subTitleTextView)
                         }
@@ -150,7 +132,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
 
                                 if (validateView(subTitleTextView, insuranceProductApplicationDetails)) {
                                     errorMessageView.visibility = View.GONE
-                                    insuranceProductApplicationDetails.value = getDateStringInServerFormat(s.toString())
+                                    insuranceProductApplicationDetails.value = getDateInServerFormat(s.toString())
                                     insuranceProductApplicationDetails.isError = false
                                     listener.onInsuranceSelectedStateChanged(element, insuranceCartDigitalProductViewModel.optIn)
                                 } else {
@@ -160,7 +142,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                                     listener.onInsuranceSelectedStateChanged(null, insuranceCartDigitalProductViewModel.optIn)
                                 }
                                 listener.setErrorInInsuranceSelection(!errorMessage.isBlank())
-                                updateEditTextBackground(subTitleTextView, errorMessageView.currentTextColor)
+                                updateEditTextBackground(subTitleTextView, errorMessageView.currentTextColor, !errorMessage.isBlank())
                             }
 
                             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -220,23 +202,6 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
         }
     }
 
-    private fun getDateStringInServerFormat(toString: String): String {
-
-        var date = Date()
-        val formatter = SimpleDateFormat(DATE_FORMAT_VIEW)
-        try {
-            date = formatter.parse(toString)
-
-        } catch (e: ParseException) {
-            e.printStackTrace();
-        }
-        val newDate = SimpleDateFormat("yyyy-MM-dd").format(date)
-        return newDate
-    }
-
-    private val DATE_FORMAT_VIEW = "dd MMM yyyy"
-
-
     private fun onDateViewClicked(view: TextView) {
 
         val date = dateFormatter(view.text.toString())
@@ -247,72 +212,6 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
             }
         })
 
-    }
-
-    private fun dateFormatter(date: String): String {
-
-        val sdf = SimpleDateFormat(DATE_FORMAT_VIEW)
-        val sdf_ws = SimpleDateFormat("dd/MM/yyyy")
-        var formattedStart: Date? = null
-        try {
-            formattedStart = sdf.parse(date)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-
-        return sdf_ws.format(formattedStart)
-
-    }
-
-    private fun getDate(year: Int, month: Int, day: Int): String {
-        val dateFormat = SimpleDateFormat(DATE_FORMAT_VIEW)
-        val date = Date()
-        val cal = GregorianCalendar()
-        cal.time = date
-        cal.set(Calendar.YEAR, year)
-        cal.set(Calendar.DAY_OF_MONTH, day)
-        cal.set(Calendar.MONTH, month - 1)
-        return dateFormat.format(cal.time)
-    }
-
-    private fun getStartYear(date: String): Int {
-        val year = date.substring(6, 10)
-        return Integer.parseInt(year)
-    }
-
-    private fun getStartMonth(date: String): Int {
-        val month = date.substring(3, 5)
-        return Integer.parseInt(month)
-    }
-
-    private fun getDay(date: String): Int {
-        val day = date.substring(0, 2)
-        return Integer.parseInt(day)
-    }
-
-    @SuppressLint("RestrictedApi")
-    private fun updateEditTextBackground(mEditText: TextView, colorInt: Int) {
-        if (mEditText == null) {
-            return
-        }
-
-        var editTextBackground: Drawable? = mEditText.background ?: return
-
-        if (android.support.v7.widget.DrawableUtils.canSafelyMutateDrawable(editTextBackground!!)) {
-            editTextBackground = editTextBackground.mutate()
-        }
-
-        val isErrorShowing = !errorMessage.isBlank()
-        if (isErrorShowing) {
-            // Set a color filter of the error color
-            editTextBackground!!.colorFilter = AppCompatDrawableManager.getPorterDuffColorFilter(
-                    colorInt, PorterDuff.Mode.SRC_IN)
-        } else {
-            // Else reset the color filter and refresh the drawable state so that the
-            // normal tint is used
-            DrawableCompat.clearColorFilter(editTextBackground!!)
-            mEditText.refreshDrawableState()
-        }
     }
 
     internal var updateInsuranceProductApplicationDetailsArrayList = ArrayList<InsuranceApplicationValueViewModel>()
@@ -328,28 +227,28 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
             updateInsuranceProductApplicationDetailsArrayList.clear()
             val insuranceProductApplicationDetailsViewModel = view1.tag as InsuranceProductApplicationDetailsViewModel
             for (data in insuranceProductApplicationDetailsViewModel.validationsList) {
-                if (data.type.equals("minLength", ignoreCase = true)) {
+                if (data.type.equals(VALIDATION_TYPE_MIN_LENGTH, ignoreCase = true)) {
                     if (!validateMinLength(view1.text, data.validationValue)) {
                         errorMessage = data.validationErrorMessage
                     }
 
-                } else if (data.type.equals("maxLength", ignoreCase = true)) {
+                } else if (data.type.equals(VALIDATION_TYPE_MAX_LENGTH, ignoreCase = true)) {
 
                     if (!validateMaxLength(view1.text, data.validationValue)) {
                         errorMessage = data.validationErrorMessage
                     }
 
-                } else if (data.type.equals("pattern", ignoreCase = true)) {
+                } else if (data.type.equals(VALIDATION_TYPE_PATTERN, ignoreCase = true)) {
 
                     if (!validatePattern(view1.text, data.validationValue)) {
                         errorMessage = data.validationErrorMessage
                     }
-                } else if (data.type.equals("minDate", ignoreCase = true)) {
+                } else if (data.type.equals(VALIDATION_TYPE_MIN_DATE, ignoreCase = true)) {
 
                     if (!validateMinDate(view1.text, data.validationValue)) {
                         errorMessage = data.validationErrorMessage
                     }
-                } else if (data.type.equals("maxDate", ignoreCase = true)) {
+                } else if (data.type.equals(VALIDATION_TYPE_MAX_DATE, ignoreCase = true)) {
 
                     if (!validateMaxDate(view1.text, data.validationValue)) {
                         errorMessage = data.validationErrorMessage
@@ -357,7 +256,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 }
             }
 
-            updateEditTextBackground(view1, errorView.currentTextColor)
+            updateEditTextBackground(view1, errorView.currentTextColor, !errorMessage.isBlank())
             if (errorMessage.isEmpty()) {
                 errorView.visibility = View.GONE
                 insuranceProductApplicationDetailsViewModel.isError = false
@@ -379,29 +278,29 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
     private fun validateView(valueView: TextView, insuranceApplicationDetail: InsuranceProductApplicationDetailsViewModel): Boolean {
         errorMessage = ""
         for (data in insuranceApplicationDetail.validationsList) {
-            if (data.type.equals("minLength", ignoreCase = true)) {
+            if (data.type.equals(VALIDATION_TYPE_MIN_LENGTH, ignoreCase = true)) {
                 if (!validateMinLength(valueView.text, data.validationValue)) {
                     errorMessage = data.validationErrorMessage
                     return false
                 }
-            } else if (data.type.equals("maxLength", ignoreCase = true)) {
+            } else if (data.type.equals(VALIDATION_TYPE_MAX_LENGTH, ignoreCase = true)) {
                 if (!validateMaxLength(valueView.text, data.validationValue)) {
                     errorMessage = data.validationErrorMessage
 
                     return false
                 }
-            } else if (data.type.equals("pattern", ignoreCase = true)) {
+            } else if (data.type.equals(VALIDATION_TYPE_PATTERN, ignoreCase = true)) {
                 if (!validatePattern(valueView.text, data.validationValue)) {
                     errorMessage = data.validationErrorMessage
 
                     return false
                 }
-            } else if (data.type.equals("minDate", ignoreCase = true)) {
+            } else if (data.type.equals(VALIDATION_TYPE_MIN_DATE, ignoreCase = true)) {
                 if (!validateMinDate(valueView.text, data.validationValue)) {
                     errorMessage = data.validationErrorMessage
                     return false
                 }
-            } else if (data.type.equals("maxDate", ignoreCase = true)) {
+            } else if (data.type.equals(VALIDATION_TYPE_MAX_DATE, ignoreCase = true)) {
 
                 if (!validateMaxDate(valueView.text, data.validationValue)) {
                     errorMessage = data.validationErrorMessage
@@ -410,58 +309,6 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
             }
         }
         return true
-    }
-
-
-    private fun validatePattern(value: CharSequence?, regExPattern: String): Boolean {
-        if (value == null) {
-            return false
-        } else {
-            val pattern = Pattern.compile(regExPattern)
-            val matcher = pattern.matcher(value)
-            return matcher.matches()
-        }
-    }
-
-    private fun validateMinDate(value: CharSequence?, minValue: String): Boolean {
-
-        val sdfo1 = SimpleDateFormat(DATE_FORMAT_VIEW)
-        val incomingValue = sdfo1.parse(value.toString())
-
-        val sdfo2 = SimpleDateFormat("yyyy-MM-dd")
-        val minDate = sdfo2.parse(minValue)
-
-        if (incomingValue.compareTo(minDate) >= 0) {
-            System.out.println("incomingValue is after minDate")
-            return true
-        } else {
-            System.out.println("incomingValue is before minDate")
-            return false
-        }
-    }
-
-    private fun validateMaxDate(value: CharSequence?, maxValue: String): Boolean {
-        val sdfo1 = SimpleDateFormat(DATE_FORMAT_VIEW)
-        val incomingValue = sdfo1.parse(value.toString())
-
-        val sdfo2 = SimpleDateFormat("yyyy-MM-dd")
-        val minDate = sdfo2.parse(maxValue)
-
-        if (incomingValue.compareTo(minDate) > 0) {
-            System.out.println("incomingValue is after minDate")
-            return false
-        } else {
-            System.out.println("incomingValue is before minDate")
-            return true
-        }
-    }
-
-    private fun validateMaxLength(text: CharSequence, maxLength: String): Boolean {
-        return TextUtils.isEmpty(text) || text.length <= Integer.valueOf(maxLength)
-    }
-
-    private fun validateMinLength(text: CharSequence, minLength: String): Boolean {
-        return !TextUtils.isEmpty(text) && text.length >= Integer.valueOf(minLength)
     }
 
     private val typeValues = ArrayList<View>()
