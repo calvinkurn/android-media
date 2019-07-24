@@ -31,7 +31,7 @@ ext {
     powerMockVersion = '1.6.2'
     roomVersion = '1.1.1'
     multiDexVersion = '1.0.3'
-    guavaVersion = '21.0'
+    guavaVersion = '20.0'
 
     exoPlayerVersion = '2.9.6'
 
@@ -216,7 +216,7 @@ ext {
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
             liveData              : "android.arch.lifecycle:livedata:$lifeCycleVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.11@aar",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.2",
     ]
 
     testDependencies = [
