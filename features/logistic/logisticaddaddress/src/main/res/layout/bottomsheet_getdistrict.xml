@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    android:id="@+id/bottomsheet_getdistrict"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:id="@+id/bottomsheet_getdistrict"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:clickable="true"
     app:behavior_hideable="false"
     app:behavior_peekHeight="600dp"
@@ -18,9 +17,9 @@
         android:layout_height="wrap_content"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
+        android:orientation="vertical"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        android:orientation="vertical"
         android:visibility="gone">
 
         <include
@@ -29,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_24"/>
+            android:layout_marginBottom="@dimen/dp_24" />
 
     </LinearLayout>
 
@@ -40,9 +39,10 @@
         android:background="@color/white"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
+        android:orientation="vertical"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        android:orientation="vertical">
+        tools:visibility="gone">
 
         <include
             android:id="@+id/loading_container"
@@ -50,24 +50,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_18"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/dp_18">
 
             <TextView
                 android:id="@+id/tv_title_getdistrict"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="@dimen/sp_16"
-                android:textColor="@color/title_search_location_color"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                tools:text="Jalan Taman Siswa"/>
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/title_search_location_color"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                tools:text="Jalan Taman Siswa" />
 
             <ImageView
                 android:id="@+id/ic_search_btn"
@@ -75,14 +75,14 @@
                 android:layout_height="@dimen/dp_18"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_5"
                 android:layout_marginEnd="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_5"
                 android:contentDescription="@string/research_description"
-                app:srcCompat="@drawable/ic_search_btn"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_search_btn" />
 
         </RelativeLayout>
 
@@ -91,17 +91,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
-            android:textSize="@dimen/sp_12"
             android:textColor="@color/label_grey"
-            tools:text="Wirogunan Mergangsan Kota Yogyakarta Daerah Istimewa Yogyakarta"/>
+            android:textSize="@dimen/sp_12"
+            tools:text="Wirogunan Mergangsan Kota Yogyakarta Daerah Istimewa Yogyakarta" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
-            android:textSize="@dimen/sp_12"
+            android:text="@string/detail_alamat"
             android:textColor="@color/label_grey"
-            android:text="@string/detail_alamat"/>
+            android:textSize="@dimen/sp_12" />
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/et_detail_address_layout"
@@ -119,13 +119,13 @@
                 android:hint="@string/et_detail_address_hint"
                 android:imeOptions="actionDone"
                 android:inputType="text"
-                android:maxLines="1"
                 android:maxLength="60"
-                android:textColor="#ae31353b"
-                android:textSize="@dimen/sp_15"
+                android:maxLines="1"
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical"
+                android:textColor="#ae31353b"
+                android:textSize="@dimen/sp_15" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -138,20 +138,20 @@
                 android:id="@+id/tv_detail_address_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_12"
-                android:textColor="@color/label_grey"
-                android:text="@string/tv_detail_address_info"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"/>
+                android:text="@string/tv_detail_address_info"
+                android:textColor="@color/label_grey"
+                android:textSize="@dimen/sp_12" />
 
             <TextView
                 android:id="@+id/tv_detail_address_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_12"
-                android:textColor="@color/label_grey"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"/>
+                android:textColor="@color/label_grey"
+                android:textSize="@dimen/sp_12" />
 
         </RelativeLayout>
 
@@ -173,14 +173,14 @@
         android:id="@+id/invalid_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -191,12 +191,12 @@
                 android:id="@+id/invalid_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/title_search_location_color"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
-                android:textColor="@color/title_search_location_color"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                tools:text="@string/invalid_title"/>
+                tools:text="@string/invalid_title" />
 
             <ImageView
                 android:id="@+id/invalid_ic_search_btn"
@@ -204,14 +204,14 @@
                 android:layout_height="@dimen/dp_18"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_5"
                 android:layout_marginEnd="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_5"
                 android:contentDescription="@string/research_description"
-                app:srcCompat="@drawable/ic_search_btn"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_search_btn" />
 
         </RelativeLayout>
 
@@ -219,9 +219,10 @@
             android:id="@+id/invalid_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_12"
+            android:layout_marginTop="@dimen/dp_4"
             android:textColor="@color/label_grey"
-            android:layout_marginTop="@dimen/dp_4"/>
+            android:textSize="@dimen/sp_12"
+            tools:text="Tenang, kamu tetap dapat memilih lokasi ini dengan menambahkan detail..." />
 
         <ImageView
             android:id="@+id/invalid_img"
@@ -229,7 +230,17 @@
             android:layout_height="@dimen/dp_180"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_12"
-            android:contentDescription="@string/invalid_description"/>
+            android:contentDescription="@string/invalid_description"
+            tools:srcCompat="@drawable/ic_invalid_location" />
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/invalid_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_this_location"
+            android:visibility="gone"
+            app:buttonCompatSize="medium"
+            app:buttonCompatType="primary" />
 
     </LinearLayout>
 
