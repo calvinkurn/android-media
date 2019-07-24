@@ -229,9 +229,4 @@ public class ProductManageModule {
         return new GraphqlUseCase();
     }
 
-    @Provides
-    @ProductManageScope
-    public UserSessionInterface provideUserSession(UserSession userSession){
-        return userSession;
-    }
 }

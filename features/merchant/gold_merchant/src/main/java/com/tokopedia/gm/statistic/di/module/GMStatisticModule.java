@@ -143,7 +143,7 @@ public class GMStatisticModule {
 
     @GMStatisticScope
     @Provides
-    UserSessionInterface provideUserSession(UserSession userSession){
-        return userSession;
+    UserSessionInterface provideUserSession(@ApplicationContext Context context){
+        return new UserSession(context);
     }
 }

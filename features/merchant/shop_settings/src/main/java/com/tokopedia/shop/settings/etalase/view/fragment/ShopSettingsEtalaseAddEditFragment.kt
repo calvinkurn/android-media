@@ -24,7 +24,6 @@ import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
 import com.tokopedia.shop.settings.etalase.view.listener.ShopSettingsEtalaseAddEditView
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingsEtalaseAddEditPresenter
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_etalase_add_edit.*
 import javax.inject.Inject

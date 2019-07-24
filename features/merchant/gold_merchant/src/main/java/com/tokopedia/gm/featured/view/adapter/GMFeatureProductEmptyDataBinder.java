@@ -42,7 +42,6 @@ public class GMFeatureProductEmptyDataBinder extends BaseEmptyDataBinder {
     private View viewOverlayRegularMerchant;
     private Context context;
     private GMFeaturedProductEmptyDataBinderListener gmFeaturedProductEmptyDataBinderListener;
-    @Inject
     private UserSessionInterface userSession;
 
     public interface GMFeaturedProductEmptyDataBinderListener {
@@ -68,6 +67,7 @@ public class GMFeatureProductEmptyDataBinder extends BaseEmptyDataBinder {
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
         context = parent.getContext();
+        userSession = new UserSession(context);
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gm_featured_empty_list, parent, false);
         ImageView imageViewEmptyResult = view.findViewById(R.id.no_result_image);
         viewOverlayRegularMerchant = view.findViewById(R.id.layout_overlay);

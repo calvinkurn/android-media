@@ -59,7 +59,7 @@ public class GMFeaturedProductModule {
 
     @GMFeaturedProductScope
     @Provides
-    UserSessionInterface provideUserSession(UserSession userSession){
-        return userSession;
+    UserSessionInterface provideUserSession(@ApplicationContext Context context){
+        return new UserSession(context);
     }
 }

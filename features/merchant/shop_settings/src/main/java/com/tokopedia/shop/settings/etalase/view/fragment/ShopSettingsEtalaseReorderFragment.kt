@@ -32,7 +32,6 @@ import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseReorderAdapte
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseReorderFactory
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListReorderPresenter
 import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreEtalaseViewHolder
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
 import java.util.ArrayList

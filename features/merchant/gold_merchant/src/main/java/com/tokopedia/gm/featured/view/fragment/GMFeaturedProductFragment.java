@@ -51,7 +51,6 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -80,6 +79,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private static final int MAX_ITEM = 5;
     @Inject
     GMFeaturedProductPresenterImpl featuredProductPresenter;
+    @Inject
+    UserSessionInterface userSession;
     private FloatingActionButton fab;
     private ItemTouchHelper mItemTouchHelper;
     private ProgressDialog progressDialog;
@@ -88,8 +89,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
     private List<Pair<Integer, GMFeaturedProductModel>> gmTemporaryDelete;
-    @Inject
-    private UserSessionInterface userSession;
 
     public static GMFeaturedProductFragment createInstance() {
         return new GMFeaturedProductFragment();
@@ -178,7 +177,6 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userSession = new UserSession(getContext());
         if (isIdlePowerMerchant())
             setHasOptionsMenu(false);
         else

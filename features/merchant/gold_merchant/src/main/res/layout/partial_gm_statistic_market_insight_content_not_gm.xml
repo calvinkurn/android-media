@@ -32,7 +32,7 @@
             style="@style/TextView.Micro.WhitePrimary"
             android:layout_marginLeft="@dimen/dp_2"
             android:gravity="center"
-                tools:text="@string/gm_statistic_get_access_to_see_gm_stat"
+            tools:text="@string/gm_statistic_get_access_to_see_gm_stat"
             android:textAlignment="center" />
     </LinearLayout>
 

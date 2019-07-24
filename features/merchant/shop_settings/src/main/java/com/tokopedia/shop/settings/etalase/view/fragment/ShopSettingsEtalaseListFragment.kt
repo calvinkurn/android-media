@@ -40,7 +40,6 @@ import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFacto
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListPresenter
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder
 import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreEtalaseViewHolder
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
