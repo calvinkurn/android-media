@@ -12,6 +12,7 @@ import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.videoplayer.utils.Video
 import kotlinx.android.synthetic.main.item_post_multimedia.view.*
 
 /**
@@ -47,23 +48,23 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
                     }
                 }
         )
-        itemView.feedMultipleImageView.setOnClickListener{
-            if (isSingleItemVideo(element)) {
-                val mediaItem = element.mediaItemList.get(0)
-                if (canPlayVideo(mediaItem)) {
-                    playVideo(mediaItem.videos.get(0).url)
-                }
-            }
-        }
+
         itemView.feedMultipleImageView.bind(element.mediaItemList, feedType)
         itemView.feedMultipleImageView.setFeedMultipleImageViewListener(feedMultipleImageViewListener)
 
         if (isSingleItemVideo(element)) {
             val mediaItem = element.mediaItemList.get(0)
-            if (canPlayVideo(mediaItem)) {
+            if (canPlayVideo(mediaItem) && ContentNetworkListener.getInstance(itemView.context).isWifiEnabled()) {
                 playVideo(mediaItem.videos.get(0).url)
             } else {
                 stopVideo()
+            }
+        }
+
+        itemView.layout_dummy.setOnClickListener{
+            if (isSingleItemVideo(element)) {
+                val mediaItem = element.mediaItemList.get(0)
+                playVideo(mediaItem.videos.get(0).url)
             }
         }
     }
@@ -73,7 +74,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
     }
 
     private fun canPlayVideo(element: MediaItem): Boolean {
-        return element.isCanPlayVideo && ContentNetworkListener.getInstance(itemView.context).isWifiEnabled()
+        return element.isCanPlayVideo
     }
 
     private fun playVideo(url: String) {
@@ -103,6 +104,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
         if (isPlaying) {
             itemView.layout_video.stopPlayback()
             itemView.layout_video.visibility = View.GONE
+            itemView.layout_dummy.visibility = View.VISIBLE
             isPlaying = false
         }
     }
