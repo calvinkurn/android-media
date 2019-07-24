@@ -25,6 +25,7 @@ import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 
 import java.util.ArrayList;
 
@@ -179,5 +180,15 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     @Override
     void notifyItemChanged(int position) {
         adapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onProductRecommendationClicked(RecommendationItem product) {
+
+    }
+
+    @Override
+    public void onProductRecommendationImpression(RecommendationItem product) {
+
     }
 }
