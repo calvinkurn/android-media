@@ -131,7 +131,7 @@ public class FeedScrollListener {
     }
 
     private static boolean canAutoplayVideo(RecyclerView recyclerView) {
-        RemoteConfig config = new FirebaseRemoteConfigImpl(recyclerView.getContext());;
+        RemoteConfig config = new FirebaseRemoteConfigImpl(recyclerView.getContext());
         return config.getBoolean(RemoteConfigKey.CONFIG_AUTOPLAY_VIDEO_WIFI,false);
     }
 
