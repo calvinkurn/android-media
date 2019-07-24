@@ -84,6 +84,7 @@ class ShopHeaderViewHolder(
 
     private fun isAdsBannerViewVisible(): Boolean {
         return itemView.adsBannerView != null
-                && (itemView.adsBannerView.isVisible || itemView.adsBannerView.childCount > 0)
+                && itemView.adsBannerView.isVisible
+                && itemView.adsBannerView.childCount > 0
     }
 }
