@@ -79,7 +79,7 @@ class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
             }
             val mlpWidgetAdapter = widget_container.adapter as MLPWidgetAdapter
             mlpWidgetAdapter.isexpanded = isExpanded
-            widget_container.adapter.notifyDataSetChanged()
+            widget_container?.adapter?.notifyDataSetChanged()
         }
     }
 
@@ -114,7 +114,7 @@ class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
 
                         widgetList.clear()
                         widgetList.addAll(it as List<WidgetsItem>)
-                        widget_container.adapter.notifyDataSetChanged()
+                        widget_container?.adapter?.notifyDataSetChanged()
                     }
                 }
             }
