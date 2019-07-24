@@ -46,18 +46,17 @@ class AllContactsListCursorAdapter(context: Context, c: Cursor, autoRequery: Boo
         viewHolder.numberTxTv.text = phoneNum ?: ""
         if (!TextUtils.isEmpty(imageUri)) {
             viewHolder.usrIv.setImageURI(Uri.parse(imageUri))
-        }
-        else{
+        } else {
             viewHolder.usrIv.setImageURI(Uri.EMPTY)
         }
     }
 
-    class ViewHolder{
+    class ViewHolder {
         var nameTxtv: TextView
         var numberTxTv: TextView
         var usrIv: ImageView
 
-        constructor(view:View){
+        constructor(view: View) {
             this.nameTxtv = view.findViewById(R.id.user_name)
             this.numberTxTv = view.findViewById(R.id.user_num)
             this.usrIv = view.findViewById(R.id.user_image)
