@@ -23,28 +23,24 @@ import com.tokopedia.groupchat.common.applink.ApplinkConstant
 import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
-import com.tokopedia.groupchat.room.view.listener.PlayActivityContract
-import com.tokopedia.groupchat.room.view.presenter.PlayActivityPresenter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * @author : Steven 11/02/19
  */
-open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
+open class PlayActivity : BaseSimpleActivity() {
 
     private lateinit var fragmentContainer: View
     private lateinit var pagerAdapter: FragmentPagerAdapter
 
     @Inject
     lateinit var analytics: GroupChatAnalytics
-
-    @Inject
-    lateinit var presenter: PlayActivityPresenter
 
     var channelId: String? = null
 
@@ -100,7 +96,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
                 .build()
 
         playComponent.inject(this)
-        presenter.attachView(this)
     }
 
     private fun initView() {
@@ -172,9 +167,9 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
     }
 
     private fun isPipActivated(): Boolean {
-//        remoteConfig?.let {
-//            return it.getBoolean(RemoteConfigKey.PLAY_PIP)
-//        }
+        remoteConfig?.let {
+            return it.getBoolean(RemoteConfigKey.PLAY_PIP)
+        }
         return true
     }
 

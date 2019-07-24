@@ -75,7 +75,7 @@ interface PlayContract {
         fun getVideoStream(
                 channelId: String?,
                 onSuccessGetVideoStream: (VideoStreamViewModel) -> Unit,
-                onErrorGetVideoStream: (String) -> Unit
+                onErrorGetVideoStream: (Throwable) -> Unit
         )
     }
 }

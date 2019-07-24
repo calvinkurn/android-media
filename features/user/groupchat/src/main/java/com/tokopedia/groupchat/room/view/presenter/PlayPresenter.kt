@@ -304,7 +304,7 @@ class PlayPresenter @Inject constructor(
         afterSendMessage()
     }
 
-    override fun getVideoStream(channelId: String?, onSuccessGetVideoStream: (VideoStreamViewModel) -> Unit, onErrorGetVideoStream: (String) -> Unit) {
+    override fun getVideoStream(channelId: String?, onSuccessGetVideoStream: (VideoStreamViewModel) -> Unit, onErrorGetVideoStream: (Throwable) -> Unit) {
         getVideoStreamUseCase.execute(GetVideoStreamUseCase.createParams(channelId),
                 object : Subscriber<VideoStreamViewModel>() {
             override fun onNext(t: VideoStreamViewModel) {
@@ -316,7 +316,7 @@ class PlayPresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable?) {
-                onErrorGetVideoStream(ErrorHandler.getErrorMessage(view.context, e))
+                onErrorGetVideoStream(e)
             }
 
         })
