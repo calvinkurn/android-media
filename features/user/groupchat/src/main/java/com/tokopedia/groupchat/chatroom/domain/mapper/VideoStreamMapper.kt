@@ -15,13 +15,18 @@ class VideoStreamMapper @Inject constructor() : Func1<Response<DataResponse<Vide
         VideoStreamViewModel> {
 
     override fun call(response: Response<DataResponse<VideoStreamParent>>): VideoStreamViewModel {
-        if ((response.body() != null) && (response.body().header == null ||
-                        (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                        (response.body().header != null && response.body().header.messages[0].isBlank()))) {
-            val pojo: VideoStreamParent = response.body().data
+        val body = response.body()
+        if ((body != null) && (body.header == null ||
+                        (body.header != null && body.header.messages.isEmpty()) ||
+                        (body.header != null && body.header.messages[0].isBlank()))) {
+            val pojo: VideoStreamParent = body.data
             return mapToViewModel(pojo)
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            if(body != null) {
+                throw MessageErrorException(body.header.messages[0])
+            } else {
+                throw MessageErrorException()
+            }
         }
     }
 

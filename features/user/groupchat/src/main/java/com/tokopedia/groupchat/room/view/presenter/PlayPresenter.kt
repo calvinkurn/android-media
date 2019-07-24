@@ -315,7 +315,7 @@ class PlayPresenter @Inject constructor(
 
             }
 
-            override fun onError(e: Throwable?) {
+            override fun onError(e: Throwable) {
                 onErrorGetVideoStream(e)
             }
 
