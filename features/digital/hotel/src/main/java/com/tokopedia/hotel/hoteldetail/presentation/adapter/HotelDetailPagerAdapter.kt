@@ -56,7 +56,7 @@ class HotelDetailPagerAdapter(fm: FragmentManager, val context: Context, var sel
                 } else {
                     returnImportantInfoFragment()
                 }
-                2 -> if (isImportantInfoTabExists()) {
+                2 -> if (isFacilityTabExists() && isImportantInfoTabExists()) {
                     returnImportantInfoFragment()
                 } else {
                     returnDescriptionFragment()
