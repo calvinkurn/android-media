@@ -192,6 +192,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
 
     private fun onBuyButtonClicked(listener: DynamicPostViewHolder.DynamicPostListener, itemPojo: PostTagItem) {
         listener.onBuyClicked(itemPojo)
+        listener.onAffiliateTrackClicked(mappingTracking(itemPojo.tracking), true)
     }
 
     companion object {
