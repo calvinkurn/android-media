@@ -11,10 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.utils.doIfVisible
 import com.tokopedia.productcard.utils.isNullOrNotVisible
 import com.tokopedia.search.R
@@ -75,7 +72,7 @@ class ShopItemViewHolder(
             when {
                 shopViewItem.isOfficial -> imageViewShopBadge.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.search_ic_official_store))
                 shopViewItem.goldShop == KEY_SHOP_IS_GOLD -> imageViewShopBadge.setImageDrawable(GMConstant.getGMDrawable(context))
-                else -> imageViewShopBadge.visibility = View.GONE
+                else -> imageViewShopBadge.gone()
             }
         }
     }
@@ -186,12 +183,17 @@ class ShopItemViewHolder(
             KEY_SHOP_STATUS_CLOSED -> showShopStatus(getString(R.string.shop_status_closed))
             KEY_SHOP_STATUS_MODERATED -> showShopStatus(getString(R.string.shop_status_moderated))
             KEY_SHOP_STATUS_INACTIVE -> showShopStatus(getString(R.string.shop_status_inactive))
+            else -> hideShopStatus()
         }
     }
 
     private fun showShopStatus(shopStatus: String) {
         itemView.constraintLayoutShopStatus?.visible()
         itemView.textViewShopStatus?.text = shopStatus
+    }
+
+    private fun hideShopStatus() {
+        itemView.constraintLayoutShopStatus?.gone()
     }
 
     private fun finishBindShopItem() {
