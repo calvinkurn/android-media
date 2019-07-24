@@ -316,12 +316,6 @@ public abstract class SellerRouterApplication extends MainApplication
         EtalaseUtils.clearDepartementCache(context);
     }
 
-    @Override
-    public void goToWallet(Context context, String url) {
-        //no route to wallet on seller, go to default
-        goToDefaultRoute(context);
-    }
-
     public Intent getMitraToppersActivityIntent(Context context) {
         return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
