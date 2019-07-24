@@ -5,11 +5,13 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -179,6 +181,11 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             }
         }
         bottom_action_view.setButton2OnClickListener(onFilterClick)
+
+        val filterTextView1: TextView = bottom_action_view.findViewById(R.id.text_view_label_1)
+        val filterTextView2: TextView = bottom_action_view.findViewById(R.id.text_view_label_2)
+        filterTextView1.typeface = Typeface.DEFAULT
+        filterTextView2.typeface = Typeface.DEFAULT
     }
 
     private fun generateSortMenu(sort: List<Sort>) {

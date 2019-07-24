@@ -1,9 +1,12 @@
 package com.tokopedia.hotel.search.presentation.widget
 
 import android.app.Dialog
+import android.graphics.Typeface
+import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageButton
+import android.widget.TextView
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Sort
@@ -38,7 +41,10 @@ class HotelClosedSortBottomSheets: BottomSheets() {
 
     override fun setupDialog(dialog: Dialog?, style: Int) {
         super.setupDialog(dialog, style)
-        val btnClose = getDialog().findViewById<ImageButton>(com.tokopedia.design.R.id.btn_close)
+        val btnClose = getDialog().findViewById<AppCompatImageView>(com.tokopedia.design.R.id.btn_close)
         btnClose.setOnClickListener { dismiss() }
+
+        val title = getDialog().findViewById<TextView>(R.id.tv_title)
+        title.typeface = Typeface.DEFAULT_BOLD
     }
 }
