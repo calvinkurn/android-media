@@ -79,6 +79,11 @@ class ShopHeaderViewHolder(
 
     @DimenRes
     private fun getTextViewShopCountMarginTop(): Int {
-        return if (itemView.adsBannerView?.isVisible == true) R.dimen.dp_0 else R.dimen.dp_16
+        return if (isAdsBannerViewVisible()) R.dimen.dp_0 else R.dimen.dp_16
+    }
+
+    private fun isAdsBannerViewVisible(): Boolean {
+        return itemView.adsBannerView != null
+                && (itemView.adsBannerView.isVisible || itemView.adsBannerView.childCount > 0)
     }
 }
