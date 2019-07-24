@@ -1,8 +1,11 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.shop
 
 import android.support.annotation.LayoutRes
+import android.support.constraint.ConstraintSet
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
@@ -21,16 +24,22 @@ class ShopHeaderViewHolder(
         val LAYOUT = R.layout.search_result_shop_header_layout
     }
 
+    private val context = itemView.context
+
     init {
         itemView.adsBannerView?.setTopAdsBannerClickListener { position, applink, data ->
             bannerAdsListener?.onBannerAdsClicked(position, applink, data)
         }
 
-        itemView.adsBannerView?.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
+        itemView.adsBannerView?.setTopAdsImpressionListener(createTopAdsItemImpressionListener())
+    }
+
+    private fun createTopAdsItemImpressionListener(): TopAdsItemImpressionListener {
+        return object : TopAdsItemImpressionListener() {
             override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
                 bannerAdsListener?.onBannerAdsImpressionListener(position, data)
             }
-        })
+        }
     }
 
     override fun bind(shopHeaderViewModel: ShopHeaderViewModel?) {
@@ -45,8 +54,24 @@ class ShopHeaderViewHolder(
     }
 
     private fun initTextViewShopCount(shopHeaderViewModel: ShopHeaderViewModel) {
-        itemView.textViewShopCount?.showWithCondition(shopHeaderViewModel.totalShopCount > 0)
+        itemView.textViewShopCount?.let { textViewShopCount ->
+            textViewShopCount.shouldShowWithAction(shopHeaderViewModel.totalShopCount > 0) {
+                textViewShopCount.text = getString(R.string.shop_total_count, shopHeaderViewModel.totalShopCount.toString())
+                setTextViewShopCountMargins(textViewShopCount)
+            }
+        }
+    }
 
-        itemView.textViewShopCount?.text = getString(R.string.shop_total_count, shopHeaderViewModel.totalShopCount.toString())
+    private fun setTextViewShopCountMargins(textViewShopCount: View) {
+        itemView.constraintLayoutShopHeader?.let {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(it)
+
+            val marginPixel = context.resources.getDimensionPixelSize(R.dimen.dp_16)
+            constraintSet.setMargin(textViewShopCount.id, ConstraintSet.TOP, marginPixel)
+
+            constraintSet.applyTo(it)
+        }
     }
 }
