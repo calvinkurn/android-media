@@ -90,6 +90,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        FirebaseApp.initializeApp(this);
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
 
