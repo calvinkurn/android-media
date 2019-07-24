@@ -205,10 +205,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
                                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                         intent.addCategory(Intent.CATEGORY_DEFAULT);
                                         intent.setData(Uri.parse("package:" + this.getPackageName()));
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         this.startActivityForResult(intent, APP_SETTINGS);
                                     });
-                            return;
                         } else {
                             showMessageWithAction("Perkenankan izin yang hilang untuk memulai memeriksa fungsi",
                                     getString(R.string.title_ok), (v) -> tradeInHomeViewModel.requestPermission());

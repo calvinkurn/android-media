@@ -204,12 +204,14 @@ public class TradeInHomeViewModel extends BaseViewModel implements LifecycleObse
 
     @Override
     public void onFinished(JSONObject jsonObject) {
+        progBarVisibility.setValue(false);
         minPriceData.setValue(jsonObject);
     }
 
 
     @Override
     public void onError(JSONObject jsonObject) {
+        progBarVisibility.setValue(false);
         priceFailData.setValue(jsonObject);
     }
 
@@ -232,6 +234,7 @@ public class TradeInHomeViewModel extends BaseViewModel implements LifecycleObse
     }
 
     public void getMaxPrice() {
+        progBarVisibility.setValue(true);
         laku6TradeIn.getMinMaxPrice(this);
     }
 
