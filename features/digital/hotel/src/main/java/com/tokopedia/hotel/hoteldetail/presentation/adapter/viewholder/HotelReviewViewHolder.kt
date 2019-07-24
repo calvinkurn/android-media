@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.hoteldetail.presentation.adapter.viewholder
 
+import android.text.Html
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.travel.utils.TravelDateUtil
@@ -15,14 +16,14 @@ class HotelReviewViewHolder(val view: View): AbstractViewHolder<HotelReview>(vie
 
     override fun bind(review: HotelReview) {
         with(itemView) {
-            review_title.text = review.headline
+            review_title.text = Html.fromHtml(review.headline)
             rating_text_view.text = review.score.toString()
 
             good_review_layout.visibility = if (review.pros.isNotBlank()) View.VISIBLE else View.GONE
-            good_review_text.text = review.pros
+            good_review_text.text = Html.fromHtml(review.pros)
 
             bad_review_layout.visibility = if (review.cons.isNotBlank()) View.VISIBLE else View.GONE
-            bad_review_text.text = review.cons
+            bad_review_text.text = Html.fromHtml(review.cons)
 
             reviewer_name.text = review.reviewerName
             reviewer_origin_and_date.text = resources.getString(R.string.hotel_review_country_date, review.country,
