@@ -75,11 +75,12 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             }
             room_facility_recycler_view.addView(refundableTextView)
 
-
-            for (i in 0..min(roomFacility.size, 1)) {
-                var textView = FacilityTextView(context)
-                textView.setIconAndText(roomFacility[i].iconUrl, roomFacility[i].name)
-                room_facility_recycler_view.addView(textView)
+            if (roomFacility.isNotEmpty()) {
+                for (i in 0..min(roomFacility.size, 1)) {
+                    var textView = FacilityTextView(context)
+                    textView.setIconAndText(roomFacility[i].iconUrl, roomFacility[i].name)
+                    room_facility_recycler_view.addView(textView)
+                }
             }
         }
     }
