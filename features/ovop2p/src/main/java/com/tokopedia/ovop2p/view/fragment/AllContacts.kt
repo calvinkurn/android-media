@@ -94,8 +94,9 @@ class AllContacts : BaseDaggerFragment(), View.OnClickListener, CoroutineScope {
 
 
     private suspend fun createAllContactsCursor(): Cursor? = withContext(Dispatchers.IO) {
+        var selection = ContactsContract.CommonDataKinds.Phone.ACCOUNT_TYPE_AND_DATA_SET + " = '" + ("com.google") + "'"
         activity?.contentResolver?.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                null, null,
+                selection, null,
                 ContactsContract.Contacts.DISPLAY_NAME + " ASC ")
     }
 
