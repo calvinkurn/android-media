@@ -28,6 +28,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
+import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.evoucher.presentation.activity.HotelEVoucherActivity
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
@@ -240,7 +242,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
         if (propertyDetail.extraInfo.content.isNotBlank()) {
             special_notes.setText(createHyperlinkText(propertyDetail.extraInfo.content,
-                    propertyDetail.extraInfo.uri), TextView.BufferType.SPANNABLE)
+                    propertyDetail.extraInfo.content, isUrl = false), TextView.BufferType.SPANNABLE)
             special_notes.visibility = View.VISIBLE
             special_notes.movementMethod = LinkMovementMethod.getInstance()
         } else special_notes.visibility = View.GONE
@@ -348,7 +350,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         }
     }
 
-    fun createHyperlinkText(htmlText: String = "", url: String = ""): SpannableString {
+    fun createHyperlinkText(htmlText: String = "", content: String = "", isUrl: Boolean = true): SpannableString {
 
         val text = Html.fromHtml(htmlText)
         val spannableString = SpannableString(text)
@@ -358,7 +360,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(view: View) {
                     try {
-                        RouteManager.route(context, url)
+                        if (isUrl) RouteManager.route(context, content)
+                        else onImportantNotesClicked(content)
                     } catch (e: UnsupportedEncodingException) {
                         e.printStackTrace()
                     }
@@ -372,6 +375,15 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             }, startIndexOfLink - "<hyperlink>".length, endIndexOfLink - "<hyperlink>".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         return spannableString
+    }
+
+    private fun onImportantNotesClicked(notes: String) {
+        val importantNotesBottomSheets = HotelBookingBottomSheets()
+        val textView = TextViewCompat(context!!)
+        textView.text = notes
+        importantNotesBottomSheets.title = getString(R.string.hotel_important_info_title)
+        importantNotesBottomSheets.addContentView(textView)
+        importantNotesBottomSheets.show(activity!!.supportFragmentManager, HotelBookingFragment.TAG_HOTEL_IMPORTANT_NOTES)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
