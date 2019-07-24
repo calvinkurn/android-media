@@ -17,9 +17,9 @@ import kotlin.math.min
  * @author by jessica on 25/03/19
  */
 
-class RoomListViewHolder(val view: View, val listener: OnClickBookListener): AbstractViewHolder<HotelRoom>(view) {
+class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : AbstractViewHolder<HotelRoom>(view) {
 
-   override fun bind(hotelRoom: HotelRoom) {
+    override fun bind(hotelRoom: HotelRoom) {
         with(itemView) {
             val roomListModel = mapToRoomListModel(hotelRoom)
 
@@ -75,8 +75,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             }
             room_facility_recycler_view.addView(refundableTextView)
 
-
-            for (i in 0..min(roomFacility.size, 1)) {
+            for (i in 0 until min(roomFacility.size, 2)) {
                 var textView = FacilityTextView(context)
                 textView.setIconAndText(roomFacility[i].iconUrl, roomFacility[i].name)
                 room_facility_recycler_view.addView(textView)
@@ -86,9 +85,9 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
 
     fun setImageViewPager(imageUrls: List<String>, room: HotelRoom) {
         with(itemView) {
-            if (imageUrls.size >= 5) room_image_view_pager.setImages(imageUrls.subList(0,5))
+            if (imageUrls.size >= 5) room_image_view_pager.setImages(imageUrls.subList(0, 5))
             else room_image_view_pager.setImages(imageUrls)
-            room_image_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
+            room_image_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     listener.onPhotoClickListener(room)
                     context.startActivity(ImagePreviewSliderActivity.getCallingIntent(
