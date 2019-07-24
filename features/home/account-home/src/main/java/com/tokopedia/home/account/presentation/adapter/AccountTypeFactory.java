@@ -6,6 +6,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.viewholder.AccountRecommendationTitleViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.AddProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.BuyerCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.InfoCardViewHolder;
@@ -19,6 +20,7 @@ import com.tokopedia.home.account.presentation.viewholder.SellerSaldoViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.ShopCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TickerViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TokopediaPayViewHolder;
+import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -121,6 +123,10 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
 
     public int type(PowerMerchantCardViewModel viewModel) {
         return PowerMerchantViewHolder.Companion.getLAYOUT();
+    }
+
+    public int type(AccountRecommendationTitleViewModel viewModel) {
+        return AccountRecommendationTitleViewHolder.Companion.getLAYOUT();
     }
 
     public int type(RecommendationProductViewModel viewModel) {

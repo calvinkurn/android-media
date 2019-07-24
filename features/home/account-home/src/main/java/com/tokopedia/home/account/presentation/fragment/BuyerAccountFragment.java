@@ -7,11 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -26,10 +29,17 @@ import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 
 /**
  * @author okasurya on 7/16/18.
@@ -41,14 +51,20 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     private static final String BUYER_DATA = "buyer_data";
     private static final String FPM_BUYER = "mp_account_buyer";
 
+    private static final int DEFAULT_SPAN_COUNT = 2;
+
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private BuyerAccountAdapter adapter;
     private PerformanceMonitoring fpmBuyer;
+
+    private StaggeredGridLayoutManager layoutManager;
+
 //    private RemoteConfig remoteConfig;
 
     @Inject
     BuyerAccount.Presenter presenter;
+    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     public static Fragment newInstance() {
         Fragment fragment = new BuyerAccountFragment();
@@ -71,6 +87,9 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
         View view = inflater.inflate(R.layout.fragment_buyer_account, container, false);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_buyer);
+        layoutManager = new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
+        endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener();
+        recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
@@ -95,6 +114,8 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     }
 
     private void getData() {
+        endlessRecyclerViewScrollListener.resetState();
+
         String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
                 .new_query_saldo_balance);
         presenter.getBuyerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
@@ -114,6 +135,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
         }
         fpmBuyer.stopTrace();
 
+        presenter.getFirstRecomData();
     }
 
     private void initInjector() {
@@ -183,12 +205,45 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     }
 
     @Override
-    public void onProductRecommendationClicked(RecommendationItem product) {
-
+    public void onProductRecommendationClicked(RecommendationItem product, int adapterPosition) {
+        if (product.isTopAds()) new ImpresionTask().execute(product.getClickUrl());
     }
 
     @Override
     public void onProductRecommendationImpression(RecommendationItem product) {
+        if (product.isTopAds()) {
+            new ImpresionTask().execute(product.getTrackerImageUrl());
+        }
+    }
 
+    @Override
+    public void onProductRecommendationWishlistClicked(@NotNull RecommendationItem product, boolean wishlistStatus, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
+
+    }
+
+    @NonNull
+    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewScrollListener() {
+        return new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                presenter.getRecomData(page);
+            }
+        };
+    }
+
+    @Override
+    public void hideLoadMoreLoading() {
+        adapter.hideLoading();
+        endlessRecyclerViewScrollListener.updateStateAfterGetData();
+    }
+
+    @Override
+    public void showLoadMoreLoading() {
+        adapter.showLoading();
+    }
+
+    @Override
+    public void onRenderRecomAccountBuyer(List<Visitable> list) {
+        adapter.addElement(list);
     }
 }
