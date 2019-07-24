@@ -19,43 +19,12 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
                                           private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailDigitalContract.Presenter {
 
-    override fun cancelPromo(codeCoupon: String) {
-        view.showProgressLoading()
-        val promoCodes = arrayListOf(codeCoupon)
-        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodes)
-        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                if (isViewAttached) {
-                    view.hideProgressLoading()
-                    view.onErrorCancelPromo(e)
-                }
-            }
-
-            override fun onNext(response: GraphqlResponse) {
-                if (isViewAttached) {
-                    view.hideProgressLoading()
-                    val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
-                    if (responseData.successData.success) {
-                        view.onSuccessCancelPromoStacking()
-                    } else {
-                        view.onErrorCancelPromo(RuntimeException())
-                    }
-                }
-            }
-
-        })
-
-    }
-
     override fun checkVoucher(promoCode: String, promoDigitalModel: PromoDigitalModel) {
         view.showProgressLoading()
 
         checkVoucherDigitalUseCase.execute(checkVoucherDigitalUseCase.createRequestParams(promoCode, promoDigitalModel), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
+                view.hideProgressLoading()
                 val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
                 if (checkVoucherData.voucherData.success) {
                     view.onSuccessValidatePromoStacking(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))

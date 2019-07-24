@@ -7,6 +7,5 @@ interface PromoCheckoutDetailDigitalContract {
     interface Presenter : CustomerPresenter<PromoCheckoutDetailContract.View>{
         fun getDetailPromo(codeCoupon: String)
         fun checkVoucher(promoCode: String, promoDigitalModel: PromoDigitalModel)
-        fun cancelPromo(codeCoupon: String)
     }
 }
