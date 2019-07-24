@@ -237,6 +237,9 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (hasCourierPromo) {
             sendAnalyticCourierPromo(shippingDurationViewModelList);
         }
+        if (promoViewModel != null) {
+            mPromoTracker.eventViewPromoLogisticTicker(promoViewModel.getPromoCode());
+        }
     }
 
     private boolean checkHasCourierPromo(List<ShippingDurationViewModel> shippingDurationViewModelList) {

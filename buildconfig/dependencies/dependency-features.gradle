@@ -194,6 +194,7 @@ ext {
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",
             digitalproduct                  : ":features:digital:digitalproduct",
+            digitalTopupBills               : ":features:digital:digital_topup_bills",
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
 //            flight                          : ":features:digital:flight_no_op",
@@ -305,6 +306,7 @@ ext {
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging             : ":features:top_ads:top_ads_management_sourcetagging",
 
+            atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
             transactionanalytics            : ":features:transaction:transactionanalytics",
             checkout                        : ":features:transaction:checkout",
