@@ -228,13 +228,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 }
                 cancellation_policy_ticker.tickerTitle = cancellationPolicy.title
                 cancellation_policy_ticker.setTextDescription(cancellationDesc)
-                cancellation_policy_ticker.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(p0: CharSequence?) {
-                        onCancellationPolicyClicked(property)
-                    }
-
-                    override fun onDismiss() {}
-                })
+                cancellation_policy_ticker.setOnClickListener { onCancellationPolicyClicked(property) }
             }
         }
     }
@@ -297,7 +291,6 @@ class HotelBookingFragment : HotelBaseFragment() {
                     phone = initContactData.phone
             )
         }
-        hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
         renderContactData()
 
         iv_edit_contact.setOnClickListener {
@@ -418,7 +411,9 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun onBookingButtonClicked() {
         progressDialog.show()
         if (validateData()) {
-            hotelBookingPageModel.guestName = tv_guest_input.text.toString()
+            if (radio_button_contact_guest.isSelected && tv_guest_input.text.toString().isNotEmpty())
+                hotelBookingPageModel.guestName = tv_guest_input.text.toString()
+            else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
             hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
             trackingHotelUtil.hotelClickNext(hotelBookingPageModel.guestName.isEmpty())
 
