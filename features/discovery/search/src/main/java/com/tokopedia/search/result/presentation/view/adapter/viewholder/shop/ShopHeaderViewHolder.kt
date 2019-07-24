@@ -1,12 +1,12 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.shop
 
+import android.support.annotation.DimenRes
 import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintSet
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
@@ -68,10 +68,15 @@ class ShopHeaderViewHolder(
 
             constraintSet.clone(it)
 
-            val marginPixel = context.resources.getDimensionPixelSize(R.dimen.dp_16)
+            val marginPixel = context.resources.getDimensionPixelSize(getTextViewShopCountMarginTop())
             constraintSet.setMargin(textViewShopCount.id, ConstraintSet.TOP, marginPixel)
 
             constraintSet.applyTo(it)
         }
+    }
+
+    @DimenRes
+    private fun getTextViewShopCountMarginTop(): Int {
+        return if (itemView.adsBannerView?.isVisible == true) R.dimen.dp_0 else R.dimen.dp_16
     }
 }
