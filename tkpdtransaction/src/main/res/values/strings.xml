@@ -279,7 +279,7 @@ Anda di sini.</string>
     <string name="thank_you">Thank You</string>
     <string name="help_text">disini</string>
     <string name="contact_us_text">Untuk bantuan silakan klik disini</string>
-    <string name="contact_us_applink">https://www.tokopedia.com/bantuan/</string>
+    <string name="contact_us_applink">https://www.tokopedia.com/help</string>
     <string name="type_of_ticket_events">Nama Event</string>
     <string name="address">Alamat</string>
     <string name="category_ticket">Kategori Tiket</string>
@@ -349,4 +349,5 @@ Anda di sini.</string>
     <string name="event_ticket_voucher_number_multiple">E-Voucher #</string>
     <string name="deal_voucher_code_copied">Berhasil! Silakan cek voucher di</string>
     <string name="event_voucher_code_copied">Berhasil! Silakan cek e-tiket di</string>
+    <string name="purchase_detail">Detail Pembelian</string>
 </resources>

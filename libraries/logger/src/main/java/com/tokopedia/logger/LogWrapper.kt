@@ -3,8 +3,10 @@ package com.tokopedia.logger
 import android.app.Application
 import android.os.Build
 import android.util.Log
+import com.rapid7.jul.LogentriesHandler
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSession
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,20 +24,28 @@ import kotlin.coroutines.CoroutineContext
  * LogWrapper.init(application);
  *
  * To send message to server:
- * LogWrapper.log(priority, message); or
- * LogWrapper.log(priority, message, throwable);
+ * LogWrapper.log(serverSeverity, priority, message); or
+ * LogWrapper.log(serverSeverity, priority, message, throwable);
+ * Server category: 1 means priority no. 1 (server) (highest)
+ * Server category: 2 means priority no. 2 (server)
  */
 class LogWrapper(val application: Application) : CoroutineScope {
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO
+        get() = Dispatchers.IO + handler
+
+    val handler: CoroutineExceptionHandler by lazy {
+        CoroutineExceptionHandler { _, ex -> }
+    }
 
     /**
      * To give "INFO" message log to logging server
      * INFO means generally useful information to log
      */
-    private fun info(message: String) {
-        launch {
-            logger.info(message)
+    private fun info(serverSeverity: Int, message: String) {
+        getLogger(serverSeverity)?.let {
+            launch {
+                it.info(message)
+            }
         }
     }
 
@@ -44,9 +54,11 @@ class LogWrapper(val application: Application) : CoroutineScope {
      * WARNING means Anything that can potentially cause application oddities,
      * but app can still handle the main functionality
      */
-    private fun warning(message: String) {
-        launch {
-            logger.warning(message)
+    private fun warning(serverSeverity: Int, message: String) {
+        getLogger(serverSeverity)?.let {
+            launch {
+                it.warning(message)
+            }
         }
     }
 
@@ -54,28 +66,32 @@ class LogWrapper(val application: Application) : CoroutineScope {
      * To give "SEVERE" message log to logging server
      * SEVERE means something quite fatal was happened and the main function might not be working properly
      */
-    private fun severe(message: String) {
-        launch {
-            logger.severe(message)
+    private fun severe(serverSeverity: Int, message: String) {
+        getLogger(serverSeverity)?.let {
+            launch {
+                it.severe(message)
+            }
         }
     }
 
-    private fun logMessage(level: Level, message: String) {
+    private fun logMessage(serverSeverity: Int, level: Level, message: String) {
         if (message.isEmpty()) {
             return
         }
         if (level == Level.SEVERE) {
-            severe(message)
+            severe(serverSeverity, message)
         } else if (level == Level.WARNING) {
-            warning(message)
+            warning(serverSeverity, message)
         }
     }
 
-    private fun logThrowable(level: Level, message: String, throwable: Throwable) {
-        launch {
-            logger.log(LogRecord(level, message).apply {
-                this.thrown = throwable
-            })
+    private fun logThrowable(serverSeverity: Int, level: Level, message: String, throwable: Throwable) {
+        getLogger(serverSeverity)?.let {
+            launch {
+                it.log(LogRecord(level, message).apply {
+                    this.thrown = throwable
+                })
+            }
         }
     }
 
@@ -99,33 +115,60 @@ class LogWrapper(val application: Application) : CoroutineScope {
     }
 
     companion object {
+        const val LOGGER_NAME = "logentries"
         var instance: LogWrapper? = null
-        val logger: Logger by lazy {
-            val logManager = LogManager.getLogManager()
-            logManager.readConfiguration(instance!!.application.resources.openRawResource(R.raw.logging))
-            logManager.getLogger(Logger.GLOBAL_LOGGER_NAME)
+        val TOKEN: Array<String> = arrayOf(
+            "0b653435-bd44-4ada-af6d-a511b42b2b08",
+            "b774630c-039b-4d58-aac2-6332fbc40712",
+            "78f40b14-98c6-435b-ae95-3f33cb85e199")
+
+        const val REGION = "us"
+        const val PORT = 10000
+
+        internal var loggers: ArrayList<Logger> = arrayListOf()
+
+        fun getLogger(serverSeverity: Int): Logger? {
+            return try {
+                return loggers.get(serverSeverity - 1)
+            } catch (e: Throwable) {
+                null
+            }
         }
 
         @JvmStatic
         fun init(application: Application) {
             instance = LogWrapper(application)
+            loggers.clear()
+            LogManager.getLogManager().readConfiguration(application.resources.openRawResource(R.raw.logging))
+            instance?.launch {
+                for (i in 0 until TOKEN.size) {
+                    loggers.add(Logger.getLogger(LOGGER_NAME + i))
+                    loggers.get(i).addHandler(LogentriesHandler().apply {
+                        region = REGION
+                        token = TOKEN[i].toByteArray()
+                        port = PORT
+                        formatter = LogFormatter()
+                    })
+                    loggers.get(i).useParentHandlers = false
+                }
+            }
         }
 
         /**
          * To give message log to logging server
-         * priority to be handled are: Log.ERROR, Log.WARNING
+         * logPriority to be handled are: Log.ERROR, Log.WARNING
          */
         @JvmStatic
-        fun log(priority: Int, message: String) {
-            if (toLevel(priority) == Level.OFF) {
+        fun log(serverSeverity: Int, logPriority: Int, message: String) {
+            if (toLevel(logPriority) == Level.OFF) {
                 return
             }
             instance?.run {
                 val messageWithUser = buildUserMessage() + "\n" + message
-                if (priority == Log.ERROR) {
-                    severe(messageWithUser)
-                } else if (priority == Log.WARN) {
-                    warning(messageWithUser)
+                if (logPriority == Log.ERROR) {
+                    severe(serverSeverity, messageWithUser)
+                } else if (logPriority == Log.WARN) {
+                    warning(serverSeverity, messageWithUser)
                 }
             }
 
@@ -136,23 +179,23 @@ class LogWrapper(val application: Application) : CoroutineScope {
          * priority to be handled are: Log.ERROR, Log.WARNING
          */
         @JvmStatic
-        fun log(priority: Int, message: String?, throwable: Throwable?) {
+        fun log(serverSeverity: Int, priority: Int, message: String?, throwable: Throwable?) {
             val level = toLevel(priority)
             if (level == Level.OFF) {
                 return
             }
             instance?.run {
-                val messageWithUser =  buildUserMessage()+ "\n" + (message ?: "")
+                val messageWithUser = buildUserMessage() + "\n" + (message ?: "")
                 if (throwable != null) {
-                    logThrowable(level, messageWithUser, throwable)
+                    logThrowable(serverSeverity, level, messageWithUser, throwable)
                 } else {
-                    logMessage(level, messageWithUser)
+                    logMessage(serverSeverity, level, messageWithUser)
                 }
             }
         }
 
-        private fun toLevel(priority: Int): Level {
-            return when (priority) {
+        internal fun toLevel(logPriority: Int): Level {
+            return when (logPriority) {
                 Log.ERROR -> Level.SEVERE
                 Log.WARN -> Level.WARNING
                 else -> Level.OFF

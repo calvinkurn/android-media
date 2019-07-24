@@ -41,6 +41,7 @@
     <string name="title_saldo_setting">Saldo</string>
     <string name="title_bank_account_setting">Akun Bank</string>
     <string name="title_credit_card_setting">Kartu Kredit</string>
+    <string name="title_debit_instant_setting">Debit Instan</string>
     <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
@@ -173,6 +174,8 @@
     <string name="account_home_label_cancel">Batal</string>
     <string name="title_app_review_setting">Review Aplikasi</string>
     <string name="label_wallet_activation">Aktivasi TokoCash</string>
+    <string name="title_pm_card">Pengaturan Power Merchant</string>
+    <string name="desc_pm_card">Kelola toko dengan fitur eksklusif</string>
 
 
     <string name="msg_has_no_shop">Mulai dengan Tokopedia!</string>

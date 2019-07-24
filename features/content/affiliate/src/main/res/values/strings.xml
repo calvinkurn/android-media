@@ -79,8 +79,8 @@
     <string name="af_leave_warning">Yakin nih mau keluar?</string>
     <string name="af_leave_warning_desc">Post yang telah kamu buat tidak akan disimpan loh.</string>
     <string name="af_leave_title">Keluar</string>
-    <string name="af_warning_empty_product">Tambah barang yang mau kamu post dulu ya.</string>
-    <string name="af_warning_empty_photo">Tambah foto dulu, dong.</string>
+    <string name="af_warning_empty_product">Masukkan barang yang mau kamu post dulu ya.</string>
+    <string name="af_warning_empty_photo">Tambah foto atau video dulu ya.</string>
     <string name="af_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
     <string name="af_title_update_post">Update Post</string>
     <string name="af_message_update_post">Media sebelumnya akan diganti dengan %1$s yang dipilih</string>
@@ -102,5 +102,7 @@
     <string name="af_title_header_product_attachment">Barang di post ini</string>
     <string name="af_label_post">Post</string>
     <string name="af_warning_over_char">Caption tidak boleh melebihi %1$s karakter.</string>
+    <string name="af_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="af_title_edit_post">Edit Post</string>
 
 </resources>

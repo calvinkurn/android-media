@@ -19,7 +19,8 @@ class GetWishlistSubscriber(private val view: ICartListView?, private val presen
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
-        view?.stopAllCartPerformanceTrace();
+        view?.setHasTriedToLoadWishList()
+        view?.stopAllCartPerformanceTrace()
     }
 
     override fun onNext(graphqlResponse: GraphqlResponse?) {
@@ -32,6 +33,8 @@ class GetWishlistSubscriber(private val view: ICartListView?, private val presen
                     view.renderWishlist(getWishlistResponse.gqlWishList.wishlistDataList)
                 }
             }
+            view.setHasTriedToLoadWishList()
+            view.stopAllCartPerformanceTrace()
         }
     }
 }

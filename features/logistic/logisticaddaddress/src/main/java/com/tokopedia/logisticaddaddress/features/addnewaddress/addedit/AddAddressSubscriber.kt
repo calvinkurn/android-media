@@ -22,7 +22,8 @@ class AddAddressSubscriber(val view: AddEditAddressListener,
         }
 
         val addAddressResponseUiModel = mapper.map(t)
-        view.onSuccessAddAddress(addAddressResponseUiModel.data, saveAddressDataModel)
+        saveAddressDataModel.id = addAddressResponseUiModel.data.addressId
+        view.onSuccessAddAddress(saveAddressDataModel)
     }
 
     override fun onCompleted() {

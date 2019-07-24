@@ -50,7 +50,5 @@ public interface GlobalNavRouter {
 
     void sendOpenHomeEvent();
 
-    Intent getOldOfficialStore(Context context);
-
     void setCategoryAbTestingConfig();
 }

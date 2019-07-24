@@ -15,7 +15,9 @@ import java.util.Map;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 /**
  * Created by zulfikarrahman on 12/19/17.
@@ -79,7 +81,8 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
                                     }
                                 });
                     }
-                });
+                })
+                .doOnError(throwable -> Timber.e(throwable, "P1"));
     }
 
     private Map<String, RequestBody> getParamsUploadImage(String serverIdUpload, Map<String, RequestBody> maps) {

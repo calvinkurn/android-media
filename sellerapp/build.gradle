@@ -71,7 +71,7 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -244,6 +244,7 @@ afterEvaluate {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.cacheApi)
@@ -268,13 +269,16 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.mitraToppers)
+    implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
+    implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.inbox)
@@ -291,7 +295,7 @@ dependencies {
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
-    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -299,7 +303,6 @@ dependencies {
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticgeolocation)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
@@ -347,7 +350,12 @@ dependencies {
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
+    implementation project(rootProject.ext.libraries.analytics)
 
+
+    implementation rootProject.ext.analyticsDependencies.moengageSdk
+    implementation rootProject.ext.analyticsDependencies.moengagePushbase
+    implementation rootProject.ext.analyticsDependencies.moengageInapp
     implementation(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
@@ -416,4 +424,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation rootProject.ext.testDependencies.junit
+    implementation project(rootProject.ext.libraries.url)
 }

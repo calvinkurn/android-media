@@ -182,8 +182,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_CONTACT_US;
                     break;
                 case DeepLinkChecker.PRODUCT:
-                    openProduct(linkSegment, uriData);
-                    screenName = AppScreen.SCREEN_PRODUCT_INFO;
+                    if (linkSegment.size() >= 2
+                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment))) {
+                        openShopInfo(linkSegment, uriData);
+                        screenName = AppScreen.SCREEN_SHOP_INFO;
+                    } else {
+                        openProduct(linkSegment, uriData);
+                        screenName = AppScreen.SCREEN_PRODUCT_INFO;
+                    }
                     break;
                 case DeepLinkChecker.ETALASE:
                 case DeepLinkChecker.SHOP:
@@ -507,10 +513,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopInfo shopInfo) {
                 viewListener.finishLoading();
                 if (shopInfo != null && shopInfo.getInfo() != null) {
-                    if (linkSegment.size() == 3){
-                        RouteManager.route(context, ApplinkConst.SHOP_ETALASE, shopInfo.getInfo().getShopId(), linkSegment.get(2));
+                    String shopId = shopInfo.getInfo().getShopId();
+                    String lastSegment = linkSegment.get(linkSegment.size() - 1);
+                    if (isEtalase(linkSegment)){
+                        RouteManager.route(context,
+                                ApplinkConst.SHOP_ETALASE,
+                                shopId,
+                                lastSegment);
+                    } else if (lastSegment.equals("info")) {
+                        RouteManager.route(context,
+                                ApplinkConst.SHOP_INFO,
+                                shopId);
                     } else {
-                        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopInfo.getInfo().getShopId());
+                        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopId);
                         context.startActivity(intent);
                     }
 
@@ -523,6 +538,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 }
             }
         });
+    }
+
+    private boolean isEtalase(List<String> linkSegment) {
+        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+        return lastSegment.equals("preorder")
+                || lastSegment.equals("sold")
+                || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {

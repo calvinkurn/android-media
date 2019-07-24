@@ -27,13 +27,18 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
     val SELLER_LABEL_ID = 3
 
     override fun call(response: Response<DataResponse<TalkDetailsPojo>>): TalkDetailViewModel {
-        if (response.body().header == null ||
-                (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                (response.body().header != null && response.body().header.messages[0].isBlank())) {
-            val pojo: TalkDetailsPojo = response.body().data
-            return mapToViewModel(pojo)
+        val body = response.body()
+        if (body != null) {
+            if (body.header == null ||
+                    (body.header != null && body.header.messages.isEmpty()) ||
+                    (body.header != null && body.header.messages[0].isBlank())) {
+                val pojo: TalkDetailsPojo = body.data
+                return mapToViewModel(pojo)
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 

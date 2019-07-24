@@ -14,6 +14,7 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -32,6 +33,7 @@ import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -39,7 +41,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
@@ -73,6 +74,8 @@ import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModule;
+import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModuleLoader;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
@@ -136,6 +139,8 @@ import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
 import com.tokopedia.tokopoints.TokopointApplinkModule;
 import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
+import com.tokopedia.topads.auto.internal.AutoAdsLinkModule;
+import com.tokopedia.topads.auto.internal.AutoAdsLinkModuleLoader;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
@@ -153,6 +158,8 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -177,6 +184,7 @@ import rx.schedulers.Schedulers;
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
         TrainApplinkModule.class,
+        InstantDebitBcaApplinkModule.class,
         DigitalBrowseApplinkModule.class,
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
@@ -222,6 +230,8 @@ import rx.schedulers.Schedulers;
         WebViewApplinkModule.class,
         RecommendationDeeplinkModule.class,
         TopAdsDashboardApplinkModule.class,
+        AutoAdsLinkModule.class,
+        PowerMerchantSubscribeDeeplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
@@ -249,6 +259,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new FeedDeeplinkModuleLoader(),
                     new FlightApplinkModuleLoader(),
                     new TrainApplinkModuleLoader(),
+                    new InstantDebitBcaApplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new ReputationApplinkModuleLoader(),
                     new TokoCashApplinkModuleLoader(),
@@ -292,45 +303,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoPayWithQrApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader(),
                     new RecommendationDeeplinkModuleLoader(),
-                    new TopAdsDashboardApplinkModuleLoader()
+                    new TopAdsDashboardApplinkModuleLoader(),
+                    new AutoAdsLinkModuleLoader(),
+                    new PowerMerchantSubscribeDeeplinkModuleLoader()
             );
         }
 
         return applinkDelegate;
-    }
-
-    @DeepLink({Constants.Applinks.SellerApp.SELLER_APP_HOME,
-            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
-            Constants.Applinks.SellerApp.SALES,
-            Constants.Applinks.SellerApp.TOPADS_CREDIT,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
-            Constants.Applinks.SellerApp.GOLD_MERCHANT,
-            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
-            Constants.Applinks.SellerApp.BROWSER})
-    public static Intent getIntentSellerApp(Context context, Bundle extras) {
-        Intent launchIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-
-        if (launchIntent == null) {
-            return RedirectCreateShopActivity.getCallingIntent(context);
-        } else {
-            launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
-            launchIntent.putExtras(extras);
-            launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-            return launchIntent;
-        }
-    }
-
-    @DeepLink(Constants.Applinks.BROWSER)
-    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
-        String webUrl = extras.getString(
-                Constants.ARG_NOTIFICATION_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
-        );
-        Intent destination = new Intent(Intent.ACTION_VIEW);
-        destination.setData(Uri.parse(webUrl));
-        return destination;
     }
 
     @Override
@@ -471,6 +450,40 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             } catch (Exception ignored) {
             }
         }
+    }
+
+    @DeepLink({Constants.Applinks.SellerApp.SELLER_APP_HOME,
+            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
+            Constants.Applinks.SellerApp.SALES,
+            Constants.Applinks.SellerApp.TOPADS_CREDIT,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
+            Constants.Applinks.SellerApp.GOLD_MERCHANT,
+            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
+            Constants.Applinks.SellerApp.BROWSER})
+    public static Intent getIntentSellerApp(Context context, Bundle extras) {
+        Intent launchIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+
+        if (launchIntent == null) {
+            return RedirectCreateShopActivity.getCallingIntent(context);
+        } else {
+            launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
+            launchIntent.putExtras(extras);
+            launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+            return launchIntent;
+        }
+    }
+
+    @DeepLink(Constants.Applinks.BROWSER)
+    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
+        String webUrl = extras.getString(
+                Constants.ARG_NOTIFICATION_URL, TokopediaUrl.Companion.getInstance().getWEB()
+        );
+        Intent destination = new Intent(Intent.ACTION_VIEW);
+        destination.setData(Uri.parse(webUrl));
+        return destination;
     }
 
     @Override

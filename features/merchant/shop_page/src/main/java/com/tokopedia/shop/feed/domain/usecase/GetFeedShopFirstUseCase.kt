@@ -51,9 +51,8 @@ class GetFeedShopFirstUseCase
 
     private fun getDynamicFeedData(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
         requestParams?.let {
-            if (it.getBoolean(IS_PULL_TO_REFRESH, false).not()) {
-                getDynamicFeedUseCase.graphqlUseCase.setCacheStrategy(getCacheFirstStrategy())
-            }
+            val forceToRefresh = it.getBoolean(IS_PULL_TO_REFRESH, false)
+            getDynamicFeedUseCase.graphqlUseCase.setCacheStrategy(getCacheFirstStrategy(forceToRefresh))
         }
         return getDynamicFeedUseCase
                 .createObservable(requestParams)
@@ -66,9 +65,9 @@ class GetFeedShopFirstUseCase
                 GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_ENTRY_POINT))
         )
         requestParams?.let {
-            if (it.getBoolean(IS_PULL_TO_REFRESH, false).not()) {
-                getWhitelistUseCase.setCacheStrategy(getCacheFirstStrategy())
-            }
+            val forceToRefresh = it.getBoolean(IS_PULL_TO_REFRESH, false)
+            getWhitelistUseCase.setCacheStrategy(getCacheFirstStrategy(forceToRefresh))
+
         }
         return getWhitelistUseCase
                 .createObservable(requestParams)
@@ -101,8 +100,8 @@ class GetFeedShopFirstUseCase
         }
     }
 
-    private fun getCacheFirstStrategy() : GraphqlCacheStrategy {
-       return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+    private fun getCacheFirstStrategy(forceRefresh: Boolean) : GraphqlCacheStrategy {
+       return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
                 .setSessionIncluded(true)
                 .build()
