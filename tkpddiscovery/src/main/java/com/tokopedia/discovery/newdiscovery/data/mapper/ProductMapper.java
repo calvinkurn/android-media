@@ -63,9 +63,7 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
 
         if (searchProductResponse.getData().getSuggestionText() != null) {
             model.setSuggestionText(searchProductResponse.getData().getSuggestionText().getText());
-            String suggestedQuery
-                    = NetworkParamHelper.getQueryValue(searchProductResponse.getData().getSuggestionText().getQuery());
-            model.setSuggestedQuery(suggestedQuery);
+            model.setSuggestedQuery(searchProductResponse.getData().getSuggestionText().getQuery());
         }
         if (searchProductResponse.getData().getSuggestionsInstead() != null) {
             model.setSuggestionCurrentKeyword(searchProductResponse.getData().getSuggestionsInstead().getCurrentKeyword());

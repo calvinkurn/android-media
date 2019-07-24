@@ -18,7 +18,6 @@ import android.webkit.URLUtil
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -27,6 +26,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
@@ -270,7 +270,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
         val logoUrl = shopBasicDataModel.logo
         if (TextUtils.isEmpty(logoUrl)) {
-            ivShopLogo.setImageResource(R.drawable.ic_shop_default_empty)
+            ivShopLogo.setImageDrawable(
+                    MethodChecker.getDrawable(ivShopLogo.getContext(),
+                            R.drawable.ic_shop_default_empty))
         } else {
             ImageHandler.LoadImage(ivShopLogo, logoUrl)
         }
@@ -405,7 +407,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         if (GlobalConfig.isSellerApp()) {
             RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
         } else {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
+            RouteManager.route(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
         }
     }
 

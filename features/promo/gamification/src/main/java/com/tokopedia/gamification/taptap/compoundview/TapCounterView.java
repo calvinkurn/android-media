@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.gamification.R;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class TapCounterView extends FrameLayout {
 
@@ -44,6 +45,7 @@ public class TapCounterView extends FrameLayout {
         View view = LayoutInflater.from(mContext).inflate(R.layout.widget_tap_view, null);
         this.addView(view);
         tapCountTextView = view.findViewById(R.id.tv_tapCount);
+        view.findViewById(R.id.parent_tv_tapCount).setBackground(MethodChecker.getDrawable(tapCountTextView.getContext(), R.drawable.bg_tap_widget));
         setVisibility(INVISIBLE);
     }
 

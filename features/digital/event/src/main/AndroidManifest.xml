@@ -8,22 +8,38 @@
         android:supportsRtl="true">
         <activity
             android:name=".view.activity.EventsHomeActivity"
-            android:label="Events"/>
-        <activity android:name=".view.activity.EventDetailsActivity"
-            android:label="Events"/>
+            android:label="Events"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.EventDetailsActivity"
+            android:label="Events"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.EventBookTicketActivity"
-            android:label="@string/book_ticket_title" />
-        <activity android:name=".view.activity.ReviewTicketActivity"
-            android:label="@string/event_review_title"/>
-        <activity android:name=".view.activity.EventSearchActivity"
-            android:label="Events"/>
-        <activity android:name=".view.activity.SeatSelectionActivity"
-            android:label="@string/event_seat_selection_title" />
-        <activity android:name=".view.activity.EventFavouriteActivity"
-            android:label="Favorit Saya"/>
-        <activity android:name=".view.activity.EventFilterActivity" />
-        <activity android:name=".view.activity.ScanQRCodeActivity"></activity>
+            android:label="@string/book_ticket_title"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.ReviewTicketActivity"
+            android:label="@string/event_review_title"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.EventSearchActivity"
+            android:label="Events"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.SeatSelectionActivity"
+            android:label="@string/event_seat_selection_title"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.EventFavouriteActivity"
+            android:label="Favorit Saya"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.EventFilterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.ScanQRCodeActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

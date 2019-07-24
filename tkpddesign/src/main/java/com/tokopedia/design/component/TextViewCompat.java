@@ -33,8 +33,11 @@ import static com.tokopedia.design.component.TextViewCompat.FontSize.TITLE_BIG;
  * textviewTheme = lightPrimary, lightSecondary, lightDisabled, darkPrimary, darkSecondary, darkDisabled
  *
  * http://product.tkp.me/styles/typography/design
+ *
+ * this class is deprecated please use com.tokopedia.unifyprinciples.Typography
  */
 
+@Deprecated
 public class TextViewCompat extends AppCompatTextView {
 
     @IntDef({HEADLINE, SUB_HEADLINE, TITLE_BIG, TITLE, SMALL, MICRO})

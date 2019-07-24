@@ -3,6 +3,7 @@ package com.tokopedia.changephonenumber.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -10,7 +11,6 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberUrl;
 import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
 import com.tokopedia.changephonenumber.data.api.ChangePhoneNumberApi;
@@ -169,10 +169,6 @@ public class ChangePhoneNumberModule {
     @Provides
     @ChangePhoneNumberScope
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        if (context instanceof ChangePhoneNumberRouter) {
-            return ((ChangePhoneNumberRouter) context).getChuckInterceptor();
-        }
-        throw new RuntimeException("App should implement " + ChangePhoneNumberRouter.class
-                .getSimpleName());
+        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
     }
 }

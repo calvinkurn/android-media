@@ -81,7 +81,7 @@ class TopProfileViewHolder(val view: View, val clickListener : ItemClickListener
         itemView.setOnClickListener {
             AutoCompleteTracking.eventClickTopProfile(itemView.context, getFormattedStringForAutoCompleteTracking())
 
-            clickListener.onItemClicked(boundedProfileSearch.applink, boundedProfileSearch.url, false)
+            clickListener.onItemClicked(boundedProfileSearch.applink, boundedProfileSearch.url)
         }
     }
 

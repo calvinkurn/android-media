@@ -14,14 +14,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 /**
@@ -47,36 +43,31 @@ public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderD
         private final View layoutProgress;
         private final ProgressBar progressBar;
 
-        @BindView(R2.id.user_avatar)
         ImageView avatar;
-
-        @BindView(R2.id.name_text)
         TextView name;
-
-        @BindView(R2.id.deposit_text)
         TextView deposit;
-
-        @BindView(R2.id.cover_img)
         ImageView coverImg;
-
-        @BindView(R2.id.drawer_points_layout)
         LinearLayout drawerPointsLayout;
-
-        @BindView(R2.id.drawer_saldo)
         RelativeLayout saldoLayout;
-
-        @BindView(R2.id.loading_saldo)
         View loadingSaldo;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
             percentText = (TextView) itemView.findViewById(R.id.percent_text);
             completeProfile = (TextView) itemView.findViewById(R.id.complete_profile);
             layoutProgress = itemView.findViewById(R.id.layout_progress);
             verifiedText = (TextView) itemView.findViewById(R.id.verified);
             verifiedIcon = itemView.findViewById(R.id.verified_icon);
             progressBar = (ProgressBar) itemView.findViewById(R.id.ProgressBar);
+
+            avatar = (ImageView) itemView.findViewById(R.id.user_avatar);
+            name = (TextView) itemView.findViewById(R.id.name_text);
+            deposit = (TextView) itemView.findViewById(R.id.deposit_text);
+            coverImg = (ImageView) itemView.findViewById(R.id.cover_img);
+            drawerPointsLayout = (LinearLayout) itemView.findViewById(R.id.drawer_points_layout);
+            saldoLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_saldo);
+            loadingSaldo = (View) itemView.findViewById(R.id.loading_saldo);
 
         }
     }

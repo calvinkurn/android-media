@@ -307,6 +307,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void askPermission() {
+
+    }
+
+    @Override
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
@@ -319,7 +324,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setContactUs(final ContactUs contactUs) {
+    public void setContactUs(final ContactUs contactUs, String helpLink) {
         String text = Html.fromHtml(contactUs.helpText()).toString();
         SpannableString spannableString = new SpannableString(text);
         int startIndexOfLink = text.indexOf("disini");
@@ -344,7 +349,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         helpLabel.setHighlightColor(Color.TRANSPARENT);
         helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
-
         helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE);
     }
 

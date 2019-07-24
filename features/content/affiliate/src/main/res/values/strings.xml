@@ -23,7 +23,7 @@
     <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah kurasi yang bisa diambil.</string>
 
     <!--EXPLORE-->
-    <string name="text_search_hint">Cari Barang Postmu</string>
+    <string name="text_search_hint">Cari Rekomendasimu</string>
     <string name="text_empty_search_title">Duh, kami gak nemu yang kamu cari.</string>
     <string name="text_empty_search_desc">Bisa coba pakai kata kunci lain, ya.</string>
     <string name="text_empty_product_title">Barang yang kamu cari belum ada.</string>
@@ -39,8 +39,8 @@
     <string name="text_button_apply">Terapkan</string>
     <string name="text_title_filter">Filter</string>
     <string name="text_button_sort">Sort</string>
-    <string name="title_showcase">Cek dan Bagikan Hasil Postmu</string>
-    <string name="desc_showcase">Semua kurasi akan disimpan di profilmu</string>
+    <string name="aff_title_showcase">Cek dan Bagikan Hasil Postmu</string>
+    <string name="aff_desc_showcase">Semua kurasi akan disimpan di profilmu</string>
     <string name="af_product_title">Barang lainnya</string>
     <string name="af_product_desc">Semua ada loh. Lihat yuk!</string>
     <string name="af_get_commission">Raih Komisi</string>
@@ -63,7 +63,7 @@
     <string name="af_add_video">Tambah Video</string>
     <string name="af_set_main_image">Tampilkan Pertama</string>
     <string name="af_main_image">Tampil Pertama</string>
-    <string name="af_caption_hint">Tulis caption, yuk!\nContoh: “Promo! Cek produk terbaru kami…”</string>
+    <string name="af_caption_hint">Tulis caption dengan #Hashtag</string>
     <string name="af_caption_hint_affiliate">Kenapa sih kamu suka barang ini?</string>
     <string name="af_related_product">Barang pada Post</string>
     <string name="af_add_product_tag">+ Tambah</string>
@@ -79,8 +79,8 @@
     <string name="af_leave_warning">Yakin nih mau keluar?</string>
     <string name="af_leave_warning_desc">Post yang telah kamu buat tidak akan disimpan loh.</string>
     <string name="af_leave_title">Keluar</string>
-    <string name="af_warning_empty_product">Tambah barang yang mau kamu post dulu ya.</string>
-    <string name="af_warning_empty_photo">Tambah foto dulu, dong.</string>
+    <string name="af_warning_empty_product">Masukkan barang yang mau kamu post dulu ya.</string>
+    <string name="af_warning_empty_photo">Tambah foto atau video dulu ya.</string>
     <string name="af_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
     <string name="af_title_update_post">Update Post</string>
     <string name="af_message_update_post">Media sebelumnya akan diganti dengan %1$s yang dipilih</string>
@@ -96,5 +96,13 @@
     <string name="af_share_product_buy">Bagikan dan raih Komisi saat produk terbeli</string>
     <string name="af_title_edit">Edit</string>
     <string name="af_duplicate_product">Barangnya udah ada di post kamu. Coba pilih yang lain ya.</string>
+    <string name="label_add_product">Masukkan Barang</string>
+    <string name="label_add_sticker">Aa</string>
+    <string name="kol_action_share_to">Share ke:</string>
+    <string name="af_title_header_product_attachment">Barang di post ini</string>
+    <string name="af_label_post">Post</string>
+    <string name="af_warning_over_char">Caption tidak boleh melebihi %1$s karakter.</string>
+    <string name="af_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="af_title_edit_post">Edit Post</string>
 
 </resources>

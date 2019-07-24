@@ -19,15 +19,12 @@ import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.util.TkpdWebViewClient;
-
-import butterknife.BindView;
 
 import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 import static android.app.Activity.RESULT_OK;
@@ -45,16 +42,8 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
-
-
-    @BindView(R2.id.scroll_view)
-    ScrollView mainView;
-
-    @BindView(R2.id.webview)
-    TkpdWebView webView;
-
-    @BindView(R2.id.progressbar)
-    ProgressBar progressBar;
+    private TkpdWebView webView;
+    private ProgressBar progressBar;
 
     ContactUsFaqListener listener;
     String url;
@@ -129,10 +118,14 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         if (webView != null) {
             webView.clearCache(true);
         }
+        webView = view.findViewById(R.id.webview);
+        progressBar = view.findViewById(R.id.progressbar);
+
         webView.setWebViewClient(new MyWebClient());
         webView.setWebChromeClient(new MyWebViewClient());
         progressBar.setIndeterminate(true);
         WebSettings webSettings = webView.getSettings();
+        webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setAppCacheEnabled(false);
@@ -259,18 +252,6 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
             }
         }
 
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            if (mainView != null)
-                mainView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mainView != null)
-                            mainView.smoothScrollTo(0, 0);
-                    }
-                }, 300);
-        }
 
         @Override
         protected boolean onOverrideUrl(Uri url) {

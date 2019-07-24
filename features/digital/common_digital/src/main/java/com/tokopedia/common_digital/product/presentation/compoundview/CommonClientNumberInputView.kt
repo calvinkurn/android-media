@@ -23,6 +23,7 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumber
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.common_digital.product.presentation.model.Validation
 import java.util.regex.Pattern
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 /**
  * @author anggaprasetiyo on 5/6/17.
@@ -87,6 +88,7 @@ abstract class CommonClientNumberInputView : LinearLayout {
         btnClear = view.findViewById(R.id.btn_clear_client_number)
         imgOperator = view.findViewById(R.id.iv_pic_operator)
         btnContactPicker = view.findViewById(R.id.btn_contact_picker)
+        btnContactPicker.setBackground(MethodChecker.getDrawable(btnContactPicker.getContext(), R.drawable.ic_digital_client_number_contact));
         pulsaFramelayout = view.findViewById(R.id.fl_holder_input_client_number)
         tvErrorClientNumber = view.findViewById(R.id.tv_error_client_number)
         buttonAditional = view.findViewById(R.id.button_additional)

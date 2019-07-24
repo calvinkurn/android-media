@@ -2,7 +2,7 @@ package com.tokopedia.discovery.newdiscovery.domain.gql
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.core.discovery.model.DynamicFilterModel
+import com.tokopedia.discovery.common.data.DynamicFilterModel
 
 class SearchFilterProductGqlResponse {
 

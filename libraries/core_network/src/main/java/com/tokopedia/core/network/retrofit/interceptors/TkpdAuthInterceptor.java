@@ -400,7 +400,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
             }
             if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)){
-                ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+                ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(),
+                        isUnauthorized(newestRequest, response),  isNeedGcmUpdate(response));
             }
 
             return chain.proceed(newestRequest);

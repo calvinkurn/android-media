@@ -22,10 +22,10 @@ import com.tokopedia.topads.auto.internal.RawQueryKeyObject
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import javax.inject.Inject
 

@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tkpd.library.utils.URLParser
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
-import java.io.Serializable
 
 class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
 

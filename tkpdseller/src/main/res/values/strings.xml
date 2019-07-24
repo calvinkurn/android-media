@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">tkpdseller</string>
 
     <string name="label_delete">Hapus</string>
@@ -156,7 +156,9 @@
     <!-- Open Shop -->
     <string name="shop_name">Nama Toko</string>
     <string name="domain_name">Nama Domain</string>
-    <string name="fill_domain_and_shop">Isi nama dan domain toko!</string>
+    <string name="shop_address">Kota atau Kecamatan</string>
+    <string name="shop_postal_code">Kode Pos</string>
+    <string name="fill_domain_and_shop">Isi detail tokomu!</string>
     <string name="hello_x">Halo, <![CDATA[<b>%1$s</b>]]></string>
     <string name="openshop_make_sure_pickup_location">Pastikan Lokasi Pickup Anda telah sesuai untuk jasa pengiriman Go-JEK, Grab &amp; Ninja Express</string>
     <string name="label_pickup_location">Lokasi Pickup</string>
@@ -232,4 +234,113 @@
     <string name="tooltip_fulfillment_desc">Semua pesanan berlabel Dilayani TokoCabang, akan diurus oleh admin TokoCabang</string>
     <string name="shop_performance">Skor Perfoma Toko</string>
     <string name="this_week_statistics">Statistik Minggu ini</string>
+
+
+    <string name="label_call_ondemand_driver_logistic_action_1">Telepon Driver</string>
+    <string name="label_call_ondemand_driver_logistic_action_2">SMS Driver</string>
+    <string name="error_message_sms_app_not_found">Maaf, aplikasi SMS tidak ditemukan</string>
+    <string name="error_message_phone_dialer_app_not_found">Maaf, aplikasi telepon tidak ditemukan</string>
+    <string name="weight_place_holder">(WEIGHT)</string>
+    <string name="protection_count_label">Biaya Proteksi Gadget (%d barang)</string>
+    <string name="label_title_button_no">Tidak</string>
+    <string name="label_title_button_yes">Ya</string>
+    <string name="label_response_auto_finish">Selesai Otomatis :</string>
+    <string name="title_bottomsheet_pin_code_pickup_booth">Kode Pin</string>
+    <string name="message_bottomsheet_pin_code_pickup_booth">Tunjukkan Kode Pin untuk verifikasi pada saat pengambilan barang</string>
+    <string name="notification_awb_copied">Nomor Resi sudah tersalin</string>
+    <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
+    <string name="success_finish_order_message">Pesanan Anda sudah selesai. Beri Rating dan Review di halaman ulasan.</string>
+    <string name="success_request_cancel_order">Sukses mengajukan pembatalan</string>
+    <string name="default_success_message_reject_order">Berhasil membatalkan pesanan</string>
+    <string name="title_detail_transaction">Detil Transaksi</string>
+    <string name="label_response_limit">Batas Respon :</string>
+    <string name="label_transaction_date_purchase">Tanggal Pembelian :</string>
+    <string name="label_purchase_of">Pembelian Oleh : </string>
+    <string name="label_seller_shop">Penjual: </string>
+    <string name="label_order_shipping_address">Alamat Pengiriman :</string>
+    <string name="label_order_detail_shipping_courier">Kurir Pengiriman : </string>
+    <string name="label_accept_partial_order">Terima Sebagian :</string>
+    <string name="label_tag_product_item_cart_preorder">Preorder :</string>
+    <string name="label_dropshipper">Dropshipper :</string>
+    <string name="label_dropshipper_name">Nama Dropshipper :</string>
+    <string name="label_dropshipper_number">Nomor Dropshipper :</string>
+    <string name="title_driver_detail">Detail Driver</string>
+    <string name="label_call_ondemand_driver_logistic">Hubungi</string>
+    <string name="title_buyer_cancelled_order">Pembeli mengajukan pembatalan pesanan</string>
+    <string name="sub_title_buyer_cancelled_order">dengan alasan: #</string>
+    <string name="label_oder_detail_btn_unggah_awb">Unggah</string>
+    <string name="title_look">Lihat</string>
+    <string name="kode_booking_label">Kode booking pengiriman</string>
+    <string name="lihat_detail">Lihat Detail</string>
+    <string name="label_item_quantity">Jumlah Barang</string>
+    <string name="label_transaction_total_cart">Total Belanja</string>
+    <string name="label_delivery_price">Ongkos Kirim</string>
+    <string name="label_insurance_price">Biaya Asuransi</string>
+    <string name="label_additional_cost">Biaya Tambahan Penjual</string>
+    <string name="label_transaction_total_payment">Total Pembayaran</string>
+    <string name="label_pin_code">Kode Pin</string>
+    <string name="label_colon">:</string>
+    <string name="request_pickup_step_2"><![CDATA[Mohon untuk <b>tidak</b> memberikan ongkos kirim pada driver]]></string>
+    <string name="request_pickup_step_1">Pastikan pesanan sudah siap untuk di pick up</string>
+    <string name="request_pickup_step_3">Perkiraan driver akan datang untuk mengambil barang:\n - Same day maksimal 4 jam \n - Instan maksimal 2 jam</string>
+    <string name="request_pickup_info"><![CDATA[Pelajari informasi lebih lengkap mengenai kurir yang menggunakan layanan pickup <font color = \'#42b549\'>disini</font>]]></string>
+    <string name="title_dialog_finish_order">Selesaikan Pesanan</string>
+    <string name="body_dialog_finish_order">Pilih selesai apabila barang sudah diterima dan tidak bermasalah</string>
+
+    <string name="label_change_varian_description">Ubah Keterangan</string>
+    <string name="title_reject_order_weight_price_fragment">Perbarui Harga atau Berat Produk</string>
+    <string name="title_cancellation_notes">Tulis Keterangan Anda di sini</string>
+    <string name="label_explanation">Keterangan</string>
+    <string name="button_order_detail_confirm">Konfirmasi</string>
+
+    <string name="title_change_awb_instruction">Mohon ubah nomor resi hanya jika resi Anda Invalid</string>
+    <string name="sub_title_change_awb_instruction">Karena kami tidak akan memproses resi invalid</string>
+    <string name="label_awb_number">Nomor Resi</string>
+    <string name="title_change">Ubah</string>
+    <string name="title_cancel_shipment_notes">Tulis alasan pembatalan</string>
+    <string name="sub_title_cancel_shipment_notes">Per 10 Mei 2018, diterapkan sistem penalti reputasi toko baru bagi penjual yang membatalkan pesanan saat pengiriman, sebesar: \n\n
+        -1 poin untuk penjual tanpa Badge \n
+        -3 poin untuk Badge Bronze \n
+        -8 poin untuk Badge Silver \n
+        -10 poin untuk Badge Gold \n
+        -15 poin untuk Badge Diamond</string>
+    <string name="label_cancel_shipment_notes">Alasan Pembatalan</string>
+    <string name="button_order_detail_confirm_request_pickup">Konfirmasi Request Pickup</string>
+
+
+    <string name="label_empty_stock">Stock Kosong</string>
+    <string name="item_place_holder"># item</string>
+    <string name="button_order_detail_accept_order">Terima Pesanan</string>
+    <string name="button_order_detail_accept_order_partially">Terima Sebagian</string>
+    <string name="button_order_detail_change_courier">Ganti Kurir</string>
+    <string name="button_order_detail_request_pickup" tools:ignore="ExtraTranslation">Request Pickup</string>
+
+    <string name="button_order_detail_finish">Selesai</string>
+    <string name="button_order_detail_change_awb">Ganti Resi</string>
+    <string name="button_order_detail_view_complaint">Lihat Komplain</string>
+    <string name="button_order_detail_confirm_shipping">Konfirmasi</string>
+    <string name="button_order_detail_confirm_shipping_alternative">Konfirmasi/Ganti Kurir</string>
+    <string name="button_order_detail_track">Lacak</string>
+    <string name="button_order_detail_ask_seller">Tanya Penjual</string>
+    <string name="button_order_detail_ask_buyer">Tanya Pembeli</string>
+    <string name="button_order_detail_reject_order">Tolak Pesanan</string>
+    <string name="button_order_detail_reject_shipment">Tolak Pengiriman</string>
+    <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
+    <string name="button_order_detail_complaint">Komplain</string>
+    <string name="button_order_detail_cancel_chance">Batalkan Pencarian</string>
+    <string name="button_order_detail_buy_again">Beli Lagi</string>
+    <string name="barcode_label_one">Kode booking pengiriman</string>
+    <string name="barcode_label_two">(tap untuk perbesar)</string>
+    <string name="barcode_helper">Tunjukkan barcode atau kode booking kepada petugas di gerai kurir saat mengirim barang.</string>
+    <string name="message_label">Informasi tambahan mengenai sistem kode booking</string>
+    <string name="barcode_image_content_description">Barcode Image</string>
+    <string name="booking_code_copied_notif">Kode booking berhasil disalin</string>
+    <string name="error_no_change_price_weight">Mohon Ubah Harga dan Berat Produk</string>
+    <string name="text_complaint_dialog">Apakah Pesanan dari toko %s bermasalah? \n\n\nKlik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\nKlik <b>Kembali</b> untuk membatalkan aksi ini</string>
+    <string name="label_change_weight_price">Ubah harga/berat</string>
+    <string name="title_booking_code_detail">Detail Kode Booking</string>
+    <string name="transaction_title_activity_order_history">Detail Status</string>
+    <string name="title_scan_awb">Scan Barcode</string>
+
+
 </resources>

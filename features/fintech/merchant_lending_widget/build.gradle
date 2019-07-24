@@ -17,7 +17,6 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.commonNetwork)
@@ -25,9 +24,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.cacheManager)
     implementation project(rootProject.ext.libraries.applink)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex
@@ -38,7 +38,6 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
 
     testImplementation rootProject.ext.testDependencies.assertJ
 }

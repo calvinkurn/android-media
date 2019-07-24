@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.newdynamicfilter.view;
 
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
 
 import java.util.List;
 

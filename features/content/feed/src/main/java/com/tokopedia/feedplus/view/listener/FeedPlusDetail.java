@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -47,13 +48,11 @@ public interface FeedPlusDetail {
 
         void showLoadingProgress();
 
-        void onGoToProductDetail(String productId, boolean wishlist, int adapterPosition);
+        void onGoToProductDetail(FeedDetailViewModel feedDetailViewModel, int adapterPosition);
 
         void onEmptyFeedDetail();
 
         void onBackPressed();
-
-        void onGoToBuyProduct(String productId, String price, String imageSource);
 
         void setHasNextPage(boolean hasNextPage);
     }

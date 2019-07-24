@@ -10,7 +10,7 @@
     <color name="text_warning_grey">#8b000000</color>
     <color name="text_cart_item_error_red">#d30b16</color>
     <color name="dropshipper_bg">#2ef5a623</color>
-    <color name="bg_upload_awb">#fde18e</color>
+
     <color name="bg_redeem_btn">#b4000000</color>
     <color name="grey_1100">#f6f6f6</color>
     <color name="black_38">#60000000</color>
@@ -25,5 +25,8 @@
     <color name="tradein_blue_text_bom">#009bff</color>
 
     <color name="black_70_new">#b3000000</color>
+    <color name="xco_button_color_disable">#B7C2C9</color>
+    <color name="title_gray_color">#f531353b</color>
+    <color name="subtitle_gray_color">#ae31353b</color>
 
 </resources>

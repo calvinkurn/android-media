@@ -8,9 +8,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.ExperimentalCoroutinesApi
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule

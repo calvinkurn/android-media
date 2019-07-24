@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherOwnerTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
@@ -81,15 +82,17 @@ class MerchantVoucherViewUsed : CustomVoucherView {
             }
         }
         merchantVoucherViewModel?.run {
-            ivVoucherLogo.setImageResource(when (merchantVoucherViewModel.ownerId) {
-                MerchantVoucherOwnerTypeDef.TYPE_TOKOPEDIA -> R.drawable.ic_big_notif_customerapp
-                else -> R.drawable.ic_store_logo
-            })
+            MethodChecker.getDrawable(getContext(),R.drawable.ic_store_logo)
+                    ?.apply {
+                        ivVoucherLogo.setImageDrawable(this)
+                    }
             tvVoucherTitle.text = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())
             tvVoucherDesc.text = merchantVoucherViewModel.getMinSpendLongString(context)
             tvCode.text = merchantVoucherViewModel.voucherCode
+            tvVoucherDetail.visibility = View.VISIBLE
+            tvVoucherDetail.text = context.getString(R.string.module_merchant_voucher_label_detail_promo)
             var isOwner = false
             onMerchantVoucherViewListener?.run {
                 isOwner = this.isOwner()

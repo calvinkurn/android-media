@@ -2,9 +2,8 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.fac
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogViewModel;
 
@@ -12,7 +11,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.Catalo
  * Created by hangnadi on 10/12/17.
  */
 
-public interface CatalogTypeFactory extends SearchSectionTypeFactory {
+public interface CatalogTypeFactory extends BrowseSectionTypeFactory {
 
     int type(CatalogViewModel viewModel);
 

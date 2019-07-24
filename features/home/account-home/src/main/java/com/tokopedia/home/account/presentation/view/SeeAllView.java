@@ -160,15 +160,33 @@ public class SeeAllView extends BottomSheets {
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_giftcard,
                     getContext().getString(R.string.title_menu_gift_card),
-                    String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW,
-                            AccountHomeUrl.GIFT_CARD_URL),
+                    ApplinkConst.GIFT_CARDS_ORDER,
                     0,
                     PEMBELI,
                     getContext().getString(R.string.title_menu_transaction)
             );
             list.add(gridItem);
         }
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_insurance_bom,
+                getContext().getString(R.string.title_menu_insurance),
+                ApplinkConst.INSURANCE_ORDER,
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
+        );
+        list.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_modal_toko_bom,
+                getContext().getString(R.string.title_menu_modal_toko),
+                ApplinkConst.MODAL_TOKO_ORDER,
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
+        );
+        list.add(gridItem);
 
         return list;
     }

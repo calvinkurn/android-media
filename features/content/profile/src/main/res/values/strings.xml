@@ -68,4 +68,20 @@
     <string name="profile_empty_title">Share barang kesukaanmu\n biar dapet komisi</string>
     <string name="profile_empty_subtitle">Pilih dulu yuk barangnya</string>
     <string name="profile_empty_button">Lihat Barang Lainnya</string>
+    <string name="error_failed_add_product">Anda Gagal Menambah Produk, Silakan Coba Lagi</string>
+    <string name="title_share">Bagikan</string>
+    <string name="title_share_en">Share</string>
+    <string name="copy">Salin Link</string>
+    <string name="other">Lainnya</string>
+    <string name="title_youtube">Youtube</string>
+    <string name="menu_copy">Salin</string>
+
+    <string name="msg_copy">Teks berhasil disalin.</string>
+    <string name="sticky_footer_follow">Dapetin update-nya!</string>
+    <string name="sticky_footer_following">Kasih tahu temanmu yuk!</string>
+
+    <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
+    <string name="no_post">Belum ada post</string>
+    <string name="af_see_other_post">Lihat Post Lainnya</string>
+    <string name="follow_x_fox_inspiration">Follow %1$s yuk untuk inspirasimu!</string>
 </resources>

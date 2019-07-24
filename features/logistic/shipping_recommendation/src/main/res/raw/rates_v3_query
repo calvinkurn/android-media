@@ -15,7 +15,7 @@
       cat_id:"$cat_id"
       lang:"$lang"
       user_history:$user_history
-      corner_id:$corner_id
+      is_corner:$is_corner
       is_blackbox:$is_blackbox
       address_id:"$address_id"
       preorder:$preorder
@@ -48,6 +48,19 @@
             text_etd
             text_notes
             text_service_desc
+        }
+        order_priority {
+            is_now
+            inactive_message
+            price
+            formatted_price
+            static_messages {
+                        duration_message
+                        checkbox_message
+                        warningbox_message
+                        fee_message
+                        pdp_message
+                      }
         }
         error {
             error_id
