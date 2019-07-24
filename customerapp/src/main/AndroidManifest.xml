@@ -39,6 +39,8 @@
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/Theme.Tokopedia3"
         tools:replace="name, label">
+        <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
+           android:value="false"/>
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true"/>
