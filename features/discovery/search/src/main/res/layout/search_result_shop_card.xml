@@ -55,69 +55,30 @@
             app:layout_constraintLeft_toRightOf="@id/imageViewShopBadge"
             tools:text="Putri Cabe"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewShopLocation"
+        <ImageView
+            android:id="@+id/imageViewShopReputation"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:gravity="center_vertical"
-            android:ellipsize="end"
-            app:typographyType="body_3"
+            android:adjustViewBounds="true"
             app:layout_constraintTop_toBottomOf="@id/textViewShopName"
             app:layout_constraintLeft_toRightOf="@id/imageViewShopAvatar"
-            tools:text="Makassar "/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewShopLocationReputationSeparator"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_16"
-            android:text="@string/shop_separator"
-            android:textColor="@color/shop_separator_color"
-            android:gravity="center_vertical"
-            android:visibility="gone"
-            app:typographyType="body_3"
-            app:layout_constraintTop_toTopOf="@id/textViewShopLocation"
-            app:layout_constraintLeft_toRightOf="@id/textViewShopLocation"
-            tools:visibility="visible"/>
-
-        <ImageView
-            android:id="@+id/imageViewShopReputation"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_4"
-            android:adjustViewBounds="true"
-            app:layout_constraintTop_toTopOf="@id/textViewShopLocation"
-            app:layout_constraintLeft_toRightOf="@id/textViewShopLocationReputationSeparator"
             tools:src="@drawable/ic_badge_gold"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewShopReputationSocialProofSeparator"
+            android:id="@+id/textViewShopLocation"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
-            android:text="@string/shop_separator"
-            android:textColor="@color/shop_separator_color"
-            android:gravity="center_vertical"
-            android:visibility="gone"
-            app:typographyType="body_3"
-            app:layout_constraintTop_toTopOf="@id/textViewShopLocation"
-            app:layout_constraintLeft_toRightOf="@id/imageViewShopReputation"
-            tools:visibility="visible"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewShopSocialProof"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_16"
             android:gravity="center_vertical"
             android:ellipsize="end"
             app:typographyType="body_3"
-            app:layout_constraintTop_toTopOf="@id/textViewShopLocation"
-            app:layout_constraintLeft_toRightOf="@id/textViewShopReputationSocialProofSeparator"
-            tools:text=" 9rb terjual"/>
+            app:layout_constraintTop_toTopOf="@id/imageViewShopReputation"
+            app:layout_constraintLeft_toRightOf="@id/imageViewShopReputation"
+            tools:text="Makassar "/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerViewShopProductItem"
@@ -183,7 +144,8 @@
             app:labelType="general_light_green"
             app:labelTitle="@string/shop_voucher_cashback_percentage"
             tools:visibility="visible"
-            tools:text="@string/shop_voucher_cashback_percentage" />
+            tools:text="@string/shop_voucher_cashback_percentage"
+            />
 
     </android.support.constraint.ConstraintLayout>
 

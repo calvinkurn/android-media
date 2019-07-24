@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.utils.doIfVisible
@@ -48,9 +49,8 @@ class ShopItemViewHolder(
         initImageShopAvatar(shopViewItem)
         initImageShopBadge(shopViewItem)
         initShopName(shopViewItem)
-        initShopLocation(shopViewItem)
         initImageShopReputation(shopViewItem)
-        initTextShopSocialProof(shopViewItem)
+        initShopLocation(shopViewItem)
         initProductPreview(shopViewItem)
         initShopVoucherLabel(shopViewItem)
         initShopStatus(shopViewItem)
@@ -95,24 +95,6 @@ class ShopItemViewHolder(
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
             ImageHandler.loadImageFitCenter(context, imageViewShopReputation, shopViewItem.reputationImageUri)
-        }
-    }
-
-    private fun initTextShopSocialProof(shopViewItem: ShopViewModel.ShopItem) {
-        itemView.textViewShopSocialProof?.text = getShopSocialProofText(shopViewItem)
-    }
-
-    private fun getShopSocialProofText(shopViewItem: ShopViewModel.ShopItem): String {
-        return when {
-            shopViewItem.totalTransaction != "" -> {
-                " " + context.getString(R.string.shop_total_transaction, shopViewItem.totalTransaction)
-            }
-            shopViewItem.totalFavorite != "" -> {
-                " " + context.getString(R.string.shop_total_favorite, shopViewItem.totalFavorite)
-            }
-            else -> {
-                ""
-            }
         }
     }
 
@@ -183,9 +165,9 @@ class ShopItemViewHolder(
     }
 
     private fun initShopVoucherCashback(shopViewItem: ShopViewModel.ShopItem) {
-        itemView.labelVoucherCashback?.showWithCondition(shopViewItem.voucher.cashback.cashbackValue > 0)
-
-        itemView.labelVoucherCashback?.text = getShopVoucherCashbackText(shopViewItem.voucher.cashback)
+        itemView.labelVoucherCashback?.shouldShowWithAction(shopViewItem.voucher.cashback.cashbackValue > 0) {
+            itemView.labelVoucherCashback?.text = getShopVoucherCashbackText(shopViewItem.voucher.cashback)
+        }
     }
 
     private fun getShopVoucherCashbackText(voucherCashback: ShopViewModel.ShopItem.ShopItemVoucher.ShopItemVoucherCashback): String {
@@ -214,7 +196,6 @@ class ShopItemViewHolder(
 
     private fun finishBindShopItem() {
         setTextViewShopNameMargin()
-        setTextSeparatorVisibility()
         setLabelVoucherCashbackMargin()
         setLabelVoucherConstraints()
     }
@@ -233,15 +214,10 @@ class ShopItemViewHolder(
                 ?: R.dimen.dp_8
     }
 
-    private fun setTextSeparatorVisibility() {
-        itemView.textViewShopLocationReputationSeparator?.showWithCondition(itemView.textViewShopLocation?.isVisible ?: false)
-        itemView.textViewShopReputationSocialProofSeparator?.showWithCondition(itemView.textViewShopSocialProof?.isVisible ?: false)
-    }
-
     private fun setLabelVoucherCashbackMargin() {
         itemView.labelVoucherCashback?.doIfVisible {
             if(itemView.labelVoucherFreeShipping.isNullOrNotVisible) {
-                setViewMargins(it.id, ConstraintSet.START, R.dimen.dp_0)
+                setViewMargins(it.id, ConstraintSet.LEFT, R.dimen.dp_0)
             }
         }
     }

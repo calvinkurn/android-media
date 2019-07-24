@@ -50,7 +50,9 @@ class ShopHeaderViewHolder(
     }
 
     private fun initCpmModel(shopHeaderViewModel: ShopHeaderViewModel) {
-        itemView.adsBannerView?.displayAds(shopHeaderViewModel.cpmModel)
+        itemView.adsBannerView?.shouldShowWithAction(shopHeaderViewModel.cpmModel.data.size > 0) {
+            itemView.adsBannerView?.displayAds(shopHeaderViewModel.cpmModel)
+        }
     }
 
     private fun initTextViewShopCount(shopHeaderViewModel: ShopHeaderViewModel) {
