@@ -3,6 +3,7 @@ package com.tokopedia.applink
 import android.content.Context
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 /**
@@ -71,6 +72,7 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromSellerapp(deeplink: String): String {
         return when (deeplink) {
             ApplinkConst.SellerApp.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
+            ApplinkConst.OVO_P2P_TRANSFER -> return ApplinkConsInternalDigital.OVO_P2P_TRANSFER
             else -> ""
         }
     }

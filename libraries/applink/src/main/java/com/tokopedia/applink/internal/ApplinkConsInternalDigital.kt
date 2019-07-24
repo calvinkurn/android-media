@@ -10,4 +10,6 @@ object ApplinkConsInternalDigital {
 
     const val CART_DIGITAL = "${INTERNAL_DIGITAL}/cart"
     const val TELCO_DIGITAL = "${INTERNAL_DIGITAL}/telco"
+    @JvmField
+    val OVO_P2P_TRANSFER = "${DeeplinkConstant.SCHEME_INTERNAL}://ovop2ptransfer"
 }
