@@ -201,6 +201,11 @@
             android:name="com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
             android:screenOrientation="portrait" />
+        <provider
+            android:name="com.facebook.internal.FacebookInitProvider"
+            android:authorities="com.tokopedia.tkpd.FacebookInitProvider"
+            android:exported="false"
+            tools:node="remove" />
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
