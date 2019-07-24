@@ -225,10 +225,11 @@ class HotelBookingFragment : HotelBaseFragment() {
                     spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.green_200)),
                             spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     cancellationDesc = spannableString
+
+                    cancellation_policy_ticker.setOnClickListener { onCancellationPolicyClicked(property) }
                 }
                 cancellation_policy_ticker.tickerTitle = cancellationPolicy.title
                 cancellation_policy_ticker.setTextDescription(cancellationDesc)
-                cancellation_policy_ticker.setOnClickListener { onCancellationPolicyClicked(property) }
             }
         }
     }
