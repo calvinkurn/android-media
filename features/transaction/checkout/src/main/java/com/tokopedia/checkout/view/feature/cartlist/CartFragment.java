@@ -2050,7 +2050,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
 
         if (recommendationItems != null) {
-            // Render from API, add from cache first
+            // Render from API
             for (RecommendationItem recommendationItem : recommendationItems) {
                 CartRecommendationItemHolderData cartRecommendationItemHolderData =
                         new CartRecommendationItemHolderData(recommendationItem);
