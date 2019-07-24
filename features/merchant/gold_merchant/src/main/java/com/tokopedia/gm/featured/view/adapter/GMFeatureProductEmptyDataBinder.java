@@ -95,7 +95,7 @@ public class GMFeatureProductEmptyDataBinder extends BaseEmptyDataBinder {
             }
         });
         buttonOverlay.setText(context.getString(R.string.gm_featured_product_overlay_upgrade_shop));
-        ImageHandler.loadImage(context,imageViewOverlay, IMG_URL_ICON_LOCK_WHITE_GREEN,1);
+        ImageHandler.loadImage(context,imageViewOverlay, IMG_URL_ICON_LOCK_WHITE_GREEN,-1);
     }
 
     private boolean isPowerMerchant() {
