@@ -79,6 +79,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
 
     private fun playVideo(url: String) {
         if (!isPlaying) {
+            itemView.layout_dummy.visibility = View.GONE
             itemView.frame_video.visibility = View.INVISIBLE
             itemView.layout_video.setVideoURI(Uri.parse(url))
             itemView.layout_video.setOnPreparedListener(object: MediaPlayer.OnPreparedListener{
