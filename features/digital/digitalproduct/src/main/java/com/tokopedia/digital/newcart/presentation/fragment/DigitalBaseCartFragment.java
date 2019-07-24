@@ -77,9 +77,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
     private SaveInstanceCacheManager saveInstanceCacheManager;
     private DigitalAnalytics digitalAnalytics;
-    protected PromoData promoData;
+    protected PromoData promoData = new PromoData();
 
     private static final String EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER";
+    private static final String EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA";
 
     protected P presenter;
 
@@ -89,7 +90,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         digitalAnalytics = new DigitalAnalytics();
-        promoData = new PromoData();
+        if (savedInstanceState != null) {
+            promoData = savedInstanceState.getParcelable(EXTRA_STATE_PROMO_DATA);
+        }
     }
 
     @Override
@@ -105,6 +108,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(EXTRA_STATE_PROMO_DATA, promoData);
         super.onSaveInstanceState(outState);
         saveInstanceCacheManager.onSave(outState);
         saveInstanceCacheManager.put(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER, checkoutDataParameterBuilder);
