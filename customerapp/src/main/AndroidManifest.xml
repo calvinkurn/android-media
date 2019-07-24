@@ -41,6 +41,8 @@
         tools:replace="name, label">
         <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
            android:value="false"/>
+        <meta-data android:name="com.facebook.sdk.AutoInitEnabled"
+           android:value="false"/>
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true"/>
