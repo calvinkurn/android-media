@@ -564,8 +564,6 @@ public class WishListImpl implements WishList {
                     wishListView.setPullEnabled(true);
                     if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                         wishListView.setEmptyState();
-                    } else {
-                        data.add(new WishlistTopAdsViewModel(gqlWishListDataResponse.getTopAdsModel(), query));
                     }
                 } else {
                     setData();
