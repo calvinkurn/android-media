@@ -15,7 +15,7 @@ data class RoomListModel(
         var isRefundable: Boolean = false,
         var roomFacility: List<HotelRoomInfo.Facility> = listOf(),
         var payInHotel: Boolean = false,
-        var isCcRequired: Boolean = false,
+        var creditCardHeader: String = "",
         var creditCardInfo: String = "",
         var price: String = "",
         var images: List<String> = listOf(),
