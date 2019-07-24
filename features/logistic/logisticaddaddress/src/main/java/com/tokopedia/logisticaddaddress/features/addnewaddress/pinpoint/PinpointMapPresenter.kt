@@ -49,7 +49,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                         {
                             if (it.err_message.isNotEmpty()
                                     && it.err_message[0].equals(FOREIGN_COUNTRY_MESSAGE, true)) {
-                                view.showFailedDialog()
+                                view.showInvalidDialog("out_of_indonesia")
                             } else view.onSuccessAutofill(it.data)
                         },
                         { it?.printStackTrace() }, {}

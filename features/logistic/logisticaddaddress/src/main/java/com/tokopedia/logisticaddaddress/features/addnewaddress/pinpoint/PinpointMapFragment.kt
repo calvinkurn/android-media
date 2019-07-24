@@ -56,7 +56,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var currentLong: Double? = 0.0
     private var bottomSheetBehavior: BottomSheetBehavior<CoordinatorLayout>? = null
     val handler = Handler()
-    private var unnamedRoad: String = "Unnamed Road"
+    private var UNNAMED_ROAD: String = "Unnamed Road"
     private var isShowingAutocomplete: Boolean? = null
     private var isRequestingLocation: Boolean? = null
     private var isGetDistrict = false
@@ -398,15 +398,32 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
+    override fun showInvalidDialog(error: String) {
+        whole_loading_container?.visibility = View.GONE
+        getdistrict_container?.visibility = View.GONE
+        invalid_container?.visibility = View.VISIBLE
+
+        if (error == "out_of_indonesia") {
+            invalid_title?.text = getString(R.string.out_of_indonesia_title)
+            invalid_desc?.text = getString(R.string.out_of_indonesia_desc)
+            invalid_img?.setImageResource(R.drawable.tokopedia_out_of_indonesia)
+
+            invalid_ic_search_btn?.setOnClickListener {
+                currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+            }
+        }
+    }
+
     private fun updateGetDistrictBottomSheet(saveAddressDataModel: SaveAddressDataModel) {
         this.saveAddressDataModel = saveAddressDataModel
-        if (saveAddressDataModel.title.equals(unnamedRoad, true)) {
+        if (saveAddressDataModel.title.equals(UNNAMED_ROAD, true)) {
             whole_loading_container?.visibility = View.GONE
             getdistrict_container?.visibility = View.GONE
             invalid_container?.visibility = View.VISIBLE
 
             invalid_title?.text = getString(R.string.invalid_title)
             invalid_desc?.text = saveAddressDataModel.formattedAddress
+            invalid_img?.setImageResource(R.drawable.ic_invalid_location)
 
             invalid_ic_search_btn?.setOnClickListener {
                 currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
@@ -457,6 +474,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }
         }
     }
+
 
     private fun showAutoCompleteBottomSheet(searchStr: String) {
         currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, searchStr) } }

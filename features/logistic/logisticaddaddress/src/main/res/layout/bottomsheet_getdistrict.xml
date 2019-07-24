@@ -228,7 +228,6 @@
             android:layout_width="@dimen/dp_180"
             android:layout_height="@dimen/dp_180"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_invalid_location"
             android:layout_marginTop="@dimen/dp_12"
             android:contentDescription="@string/invalid_description"/>
 
