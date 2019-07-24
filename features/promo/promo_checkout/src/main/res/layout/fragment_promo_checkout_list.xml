@@ -87,7 +87,7 @@
                 <TextView
                     style="@style/TextView.Micro.BlackSecondary"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:text="@string/promo_title_last_seen" />
+                    android:text="@string/promo_title_category" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerViewLastSeenPromo"
