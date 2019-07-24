@@ -1,6 +1,5 @@
 package com.tokopedia.gm.featured.view.adapter.viewholder;
 
-import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -19,16 +18,16 @@ import org.jetbrains.annotations.NotNull;
 public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadMoreFeaturedModel> {
     private final TextView textViewTitle;
     private final TextView textViewDescription;
-    private TickerReadMoreListener tickerReadMoreListener;
+    private TickerReadMoreFeaturedViewHolderListener tickerReadMoreFeaturedViewHolderListener;
 
     public TickerReadMoreFeaturedViewHolder(
             View itemView,
-            TickerReadMoreListener tickerReadMoreListener
+            TickerReadMoreFeaturedViewHolderListener tickerReadMoreFeaturedViewHolderListener
     ) {
         super(itemView);
         textViewTitle = itemView.findViewById(R.id.txt_ticker_title);
         textViewDescription = itemView.findViewById(R.id.txt_ticker_description);
-        this.tickerReadMoreListener = tickerReadMoreListener;
+        this.tickerReadMoreFeaturedViewHolderListener = tickerReadMoreFeaturedViewHolderListener;
     }
 
     @Override
@@ -59,7 +58,7 @@ public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadM
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NotNull View view) {
-                tickerReadMoreListener.onTickerReadMoreClicked();
+                tickerReadMoreFeaturedViewHolderListener.onTickerReadMoreClicked();
             }
 
             @Override
@@ -78,7 +77,7 @@ public class TickerReadMoreFeaturedViewHolder extends BaseViewHolder<TickerReadM
         return new SpannableStringBuilder(originalText).append(" ").append(spannableText);
     }
 
-    public interface TickerReadMoreListener {
+    public interface TickerReadMoreFeaturedViewHolderListener {
 
         void onTickerReadMoreClicked();
     }

@@ -1,11 +1,6 @@
 package com.tokopedia.gm.featured.view.adapter.model;
 
-import com.tokopedia.base.list.seller.common.util.ItemIdType;
 import com.tokopedia.base.list.seller.common.util.ItemType;
-
-/**
- * Created by normansyahputa on 9/6/17.
- */
 
 public class TickerReadMoreFeaturedModel implements ItemType {
     public static final int TYPE = 128392;
