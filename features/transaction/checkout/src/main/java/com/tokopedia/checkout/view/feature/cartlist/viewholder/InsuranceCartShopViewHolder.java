@@ -53,6 +53,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
     private TextView tvProductTitle;
     private TextView tvInsurancePrice;
     private TextView tvInsuranceInfo;
+    private TextView tvInsuranceDescription;
     private ImageView ivDeleteInsurance;
     private TextView tvChangeInsuranceApplicationDetails;
     private InsuranceCartShops insuranceCartShops;
@@ -76,6 +77,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         tvInsurancePrice = itemView.findViewById(R.id.insurance_tv_price);
         tvInsuranceInfo = itemView.findViewById(R.id.insurance_tv_info);
         ivDeleteInsurance = itemView.findViewById(R.id.insurance_delete_icon);
+        tvInsuranceDescription = itemView.findViewById(R.id.tv_description);
         tvChangeInsuranceApplicationDetails = itemView.findViewById(R.id.insurance_application_details_change);
         tvInsuranceApplicationDetails = itemView.findViewById(R.id.insurance_appliation_details);
     }
@@ -87,26 +89,34 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
         datePicker = new SaldoDatePickerUtil((Activity) ivInsuranceIcon.getContext());
 
-        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getTitle())) {
-            tvProductTitle.setText(insuranceCartDigitalProduct.getProductInfo().getTitle());
+        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getSectionTitle())) {
+            tvProductTitle.setText(insuranceCartDigitalProduct.getProductInfo().getSectionTitle());
         } else {
             tvProductTitle.setText("Produk Asuransi");
         }
 
-        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getSectionTitle())) {
-            tvInsuranceTitle.setText(insuranceCartDigitalProduct.getProductInfo().getSectionTitle());
+        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getTitle())) {
+            tvInsuranceTitle.setText(insuranceCartDigitalProduct.getProductInfo().getTitle());
         } else {
             tvInsuranceTitle.setText("Produk Asuransi");
+        }
+
+        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getDescription())) {
+            tvInsuranceDescription.setText(insuranceCartDigitalProduct.getProductInfo().getDescription());
+            tvInsuranceTitle.setVisibility(View.VISIBLE);
+        } else {
+            tvInsuranceTitle.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getIconUrl())) {
             ImageHandler.loadImage(ivInsuranceIcon.getContext(), ivInsuranceIcon, insuranceCartDigitalProduct.getProductInfo().getIconUrl(), R.drawable.ic_modal_toko);
         }
 
-        /*if (TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getLinkDetailInfoTitle())) {
+        if (TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getLinkName())) {
             tvInsuranceInfo.setVisibility(View.GONE);
         } else {
             tvInsuranceInfo.setVisibility(View.VISIBLE);
+            tvInsuranceInfo.setText(insuranceCartDigitalProduct.getProductInfo().getLinkName());
             tvInsuranceInfo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -116,7 +126,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
                 }
             });
-        }*/
+        }
 
         if (!insuranceCartDigitalProduct.getApplicationDetails().isEmpty()) {
 
@@ -204,17 +214,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
                                 TextView errorMessageView = view.findViewById(R.id.error_message);
 
                                 String dateText = insuranceProductApplicationDetails.getValue();
-
-                                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-                                try {
-                                    Date date = formatter.parse(dateText);
-                                    String newDate = new SimpleDateFormat(DATE_FORMAT_VIEW).format(date);
-                                    subTitleTextView.setText(newDate);
-                                } catch (ParseException exception) {
-                                    exception.printStackTrace();
-                                }
-
+                                subTitleTextView.setText(getDateStringInUIFormat(dateText));
                                 subTitleTextView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -324,6 +324,20 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
             e.printStackTrace();
         }
         String newDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+        return newDate;
+    }
+
+    private String getDateStringInUIFormat(String value) {
+
+        Date date = new Date();
+        DateFormat formatter = new SimpleDateFormat(DATE_FORMAT_SERVER);
+        try {
+            date = formatter.parse(value);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String newDate = new SimpleDateFormat(DATE_FORMAT_VIEW).format(date);
         return newDate;
     }
 
@@ -442,6 +456,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
     }
 
     private String DATE_FORMAT_VIEW = "dd MMM yyyy";
+    private String DATE_FORMAT_SERVER = "yyyy-MM-dd";
 
 
     private boolean validateMinDate(String text, String validationValue) {
@@ -454,7 +469,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
             e.printStackTrace();
         }
 
-        sdfo2 = new SimpleDateFormat("yyyy-MM-dd");
+        sdfo2 = new SimpleDateFormat(DATE_FORMAT_SERVER);
         Date minDate = null;
         try {
             minDate = sdfo2.parse(validationValue);
@@ -463,10 +478,8 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (incomingValue != null && incomingValue.compareTo(minDate) >= 0) {
-            System.out.println("incomingValue is after minDate");
             return true;
         } else {
-            System.out.println("incomingValue is before minDate");
             return false;
         }
     }
@@ -480,7 +493,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
             e.printStackTrace();
         }
 
-        sdfo2 = new SimpleDateFormat("yyyy-MM-dd");
+        sdfo2 = new SimpleDateFormat(DATE_FORMAT_SERVER);
         Date minDate = null;
         try {
             minDate = sdfo2.parse(validationValue);
@@ -513,33 +526,61 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
     ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList = new ArrayList<>();
 
     private boolean validateViews() {
+        String updatedValue = "";
+        updateInsuranceProductApplicationDetailsArrayList.clear();
         for (TextView valueView : typeValues) {
-            updateInsuranceProductApplicationDetailsArrayList.clear();
             InsuranceProductApplicationDetails data = (InsuranceProductApplicationDetails) valueView.getTag();
             for (InsuranceApplicationValidation validation : data.getValidationsList()) {
                 if (validation.getType().equalsIgnoreCase("minLength")) {
                     if (!validateMinLength(valueView.getText(), validation.getValidationValue())) {
                         //show Some Error
-                        Toast.makeText(ivInsuranceIcon.getContext(), "Min length Validation fail", Toast.LENGTH_SHORT).show();
+                        errorMessage = validation.getValidationErrorMessage();
+                        Toast.makeText(ivInsuranceIcon.getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                         return false;
+                    } else {
+                        updatedValue = valueView.getText().toString();
                     }
                 } else if (validation.getType().equalsIgnoreCase("maxLength")) {
                     if (!validateMaxLength(valueView.getText(), validation.getValidationValue())) {
                         //show Some Error
-                        Toast.makeText(ivInsuranceIcon.getContext(), "Max length Validation fail", Toast.LENGTH_SHORT).show();
+                        errorMessage = validation.getValidationErrorMessage();
+                        Toast.makeText(ivInsuranceIcon.getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                         return false;
+                    } else {
+                        updatedValue = valueView.getText().toString();
                     }
                 } else if (validation.getType().equalsIgnoreCase("pattern")) {
                     if (!validatePattern(valueView.getText(), validation.getValidationValue())) {
                         //show Some Error
-                        Toast.makeText(ivInsuranceIcon.getContext(), "Pattern Validation fail", Toast.LENGTH_SHORT).show();
+                        errorMessage = validation.getValidationErrorMessage();
+                        Toast.makeText(ivInsuranceIcon.getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                         return false;
+                    } else {
+                        updatedValue = valueView.getText().toString();
+                    }
+                } else if (validation.getType().equalsIgnoreCase("minDate")) {
+                    if (!validateMinDate(valueView.getText().toString(), validation.getValidationValue())) {
+                        errorMessage = validation.getValidationErrorMessage();
+                        Toast.makeText(ivInsuranceIcon.getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                        return false;
+                    } else {
+                        updatedValue = getDateStringInServerFormat(valueView.getText().toString());
+                    }
+                } else if (validation.getType().equalsIgnoreCase("maxDate")) {
+
+                    if (!validateMaxDate(valueView.getText().toString(), validation.getValidationValue())) {
+                        errorMessage = validation.getValidationErrorMessage();
+                        Toast.makeText(ivInsuranceIcon.getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                        return false;
+                    } else {
+                        updatedValue = getDateStringInServerFormat(valueView.getText().toString());
                     }
                 }
             }
-            UpdateInsuranceProductApplicationDetails updateInsuranceProductApplicationDetails = new UpdateInsuranceProductApplicationDetails(data.getId(), valueView.getText().toString());
+
+            UpdateInsuranceProductApplicationDetails updateInsuranceProductApplicationDetails =
+                    new UpdateInsuranceProductApplicationDetails(data.getId(), updatedValue);
             updateInsuranceProductApplicationDetailsArrayList.add(updateInsuranceProductApplicationDetails);
-            return true;
         }
         return true;
     }

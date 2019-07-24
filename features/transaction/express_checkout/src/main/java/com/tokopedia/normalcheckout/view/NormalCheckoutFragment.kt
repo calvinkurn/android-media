@@ -1200,7 +1200,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             if (viewModel.isUserSessionActive()) {
                 getInsuranceRecommendationProducts()
             }
-        }, 1000)
+        }, 400)
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {

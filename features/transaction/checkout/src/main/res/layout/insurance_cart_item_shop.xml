@@ -74,7 +74,6 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:lineSpacingExtra="6sp"
         android:visibility="gone"
-        android:text="Info"
         android:textColor="#03ac0e"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBaseline_toBaselineOf="@+id/insurance_tv_price"

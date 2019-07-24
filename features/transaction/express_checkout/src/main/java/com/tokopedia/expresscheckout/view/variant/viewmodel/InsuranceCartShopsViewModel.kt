@@ -161,7 +161,6 @@ data class InsuranceCartProductInfoViewModel(
         var tickerText: String,
         var detailInfoTitle: String,
         var sectionTitle: String,
-        var webLinkUrl: String,
         var infoText: String,
         var appLinkUrl: String,
         var linkName: String
@@ -192,7 +191,6 @@ data class InsuranceCartProductInfoViewModel(
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
-            parcel?.readString() ?: "",
             parcel?.readString() ?: ""
     )
 
@@ -204,7 +202,6 @@ data class InsuranceCartProductInfoViewModel(
         parcel.writeString(tickerText)
         parcel.writeString(detailInfoTitle)
         parcel.writeString(sectionTitle)
-        parcel.writeString(webLinkUrl)
         parcel.writeString(infoText)
         parcel.writeString(appLinkUrl)
         parcel.writeString(linkName)

@@ -51,7 +51,6 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
             val insuranceCartShopItemsViewModel = element.cartShopsList[0].shopItemsList[0]
             val insuranceCartDigitalProductViewModel = insuranceCartShopItemsViewModel.digitalProductList[0]
 
-            itemView.insurance_checkbox.setChecked(insuranceCartDigitalProductViewModel.optIn)
             itemView.tv_product_title.text = insuranceCartDigitalProductViewModel.productInfo.title
             itemView.insurance_tv_title.text = insuranceCartDigitalProductViewModel.productInfo.sectionTitle
 
@@ -213,7 +212,11 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 }
 
             })
+            itemView.insurance_checkbox.setChecked(insuranceCartDigitalProductViewModel.optIn)
 
+
+        } else {
+            itemView.visibility = View.GONE
         }
     }
 

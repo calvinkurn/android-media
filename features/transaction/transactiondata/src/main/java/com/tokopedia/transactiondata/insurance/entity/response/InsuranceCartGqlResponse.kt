@@ -138,9 +138,6 @@ data class InsuranceCartProductInfo(
         @SerializedName("icon_url")
         var iconUrl: String,
 
-        @SerializedName("web_link_url")
-        var webLinkUrl: String,
-
         @SerializedName("ticker_text")
         var tickerText: String,
 
@@ -163,7 +160,6 @@ data class InsuranceCartProductInfo(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readString() ?: "",
             parcel.readString() ?: "") {
     }
 
@@ -174,7 +170,6 @@ data class InsuranceCartProductInfo(
         parcel.writeString(description)
         parcel.writeString(sectionTitle)
         parcel.writeString(iconUrl)
-        parcel.writeString(webLinkUrl)
         parcel.writeString(tickerText)
         parcel.writeString(infoText)
         parcel.writeString(appLinkUrl)
