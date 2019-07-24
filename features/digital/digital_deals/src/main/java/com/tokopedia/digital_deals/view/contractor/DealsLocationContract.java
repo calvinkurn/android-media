@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.contractor;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 
@@ -14,13 +15,11 @@ import java.util.List;
 public class DealsLocationContract {
 
     public interface View extends CustomerView {
-        Activity getActivity();
+        Context getActivity();
 
         void renderPopularCities(List<Location> locationList, String... searchText);
 
         void renderPopularLocations(List<Location> locationList, String... searchText);
-
-        void showLoadMore(boolean showLoadMore, String uriNext);
 
         LinearLayoutManager getLayoutManager();
 

@@ -44,7 +44,6 @@ public class SelectLocationBottomSheet extends LinearLayout implements DealsLoca
     @Inject
     DealsLocationPresenter mPresenter;
     boolean isLoading = false;
-    List<Location> popularLocations = new ArrayList<>();
     private LinearLayoutManager layoutManager;
     private DealsPopularLocationAdapter dealsPopularLocationAdapter;
 
@@ -99,8 +98,8 @@ public class SelectLocationBottomSheet extends LinearLayout implements DealsLoca
     }
 
     @Override
-    public Activity getActivity() {
-        return this.getActivity();
+    public Context getActivity() {
+        return this.getActivity().getApplicationContext();
     }
 
     @Override
@@ -122,7 +121,6 @@ public class SelectLocationBottomSheet extends LinearLayout implements DealsLoca
 
     @Override
     public void renderPopularLocations(List<Location> locationList, String... searchText) {
-        popularLocations.addAll(locationList);
         dealsPopularLocationAdapter = new DealsPopularLocationAdapter(getContext(), locationList);
         rvLocationResults.setLayoutManager(layoutManager);
         rvLocationResults.setAdapter(dealsPopularLocationAdapter);
@@ -155,33 +153,10 @@ public class SelectLocationBottomSheet extends LinearLayout implements DealsLoca
     }
 
     @Override
-    public void showLoadMore(boolean showLoadMore, String uriNext) {
-        if (showLoadMore) {
-            rvLocationResults.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                }
-
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvLocationResults.getLayoutManager();
-                    if (!isLoading) {
-                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == popularLocations.size() - 1) {
-                            //bottom of list!
-                            mPresenter.loadMore();
-                            isLoading = true;
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
     public RequestParams getParams() {
-        return null;
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString("type", "city");
+        return requestParams;
     }
 
     public interface CloseSelectLocationBottomSheet {

@@ -702,7 +702,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
-        Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
+//        Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
         this.isFirstTime = isForFirstime;
         if (isForFirstime) {
             mPresenter.getDealsList(false);

@@ -28,12 +28,13 @@ public class GetLocationCityUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        String url = "http://10.255.13.78:9092/v1/api/s/location?type=city";
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LOCATIONS;
         //Request 1
         Type token = new TypeToken<DataResponse<LocationResponse>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)
+                .setQueryParams(params.getParameters())
                 .build();
         tempRequest.add(restRequest1);
         return tempRequest;

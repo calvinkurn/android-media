@@ -9,7 +9,7 @@ import java.util.List;
 
 public class LocationResponse {
 
-    @SerializedName("location")
+    @SerializedName("locations")
     @Expose
     private List<Location> locations;
 
