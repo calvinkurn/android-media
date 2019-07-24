@@ -23,9 +23,10 @@ import javax.inject.Inject
 import android.support.v7.widget.SimpleItemAnimator
 import android.transition.TransitionManager
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mlp.callback.MLPWidgetAdapterCallBack
 
-class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
+class MerchantLendingFragment : BaseDaggerFragment(), MLPWidgetAdapterCallBack {
 
     lateinit var drawable: Drawable
     lateinit var merchantLendingComponent: MerchantLendingComponent
@@ -35,7 +36,7 @@ class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
     lateinit var merchantLendingViewModel: MerchantLendingViewModel
     private val widgetList = ArrayList<WidgetsItem>()
     private var isExpanded: Boolean = false
-    private val animateDuration:Long=300
+    private val animateDuration: Long = 300
     private lateinit var toggleSaldoPrioritasListener: MLPWidgetAdapter.ToggleSaldoPrioritasLisneter
 
     override fun getScreenName(): String {
@@ -61,7 +62,7 @@ class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
         observeSPData()
     }
 
-    override fun toggleSaldoPrioritas( setsp:Boolean,listener: MLPWidgetAdapter.ToggleSaldoPrioritasLisneter) {
+    override fun toggleSaldoPrioritas(setsp: Boolean, listener: MLPWidgetAdapter.ToggleSaldoPrioritasLisneter) {
         merchantLendingViewModel.executeUseCaseToggle(setsp)
         toggleSaldoPrioritasListener = listener
     }
@@ -86,7 +87,7 @@ class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
     private fun initViewContainer() {
         (widget_container.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = true
         val linearLayoutManager = LinearLayoutManager(context)
-        val boxAdapter = MLPWidgetAdapter(widgetList, this.context!!, isExpanded,this)
+        val boxAdapter = MLPWidgetAdapter(widgetList, this.context!!, isExpanded, this)
         widget_container.layoutManager = linearLayoutManager
         widget_container.adapter = boxAdapter
     }
@@ -98,40 +99,28 @@ class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
 
     fun observeData() {
         merchantLendingViewModel.getCategoryList().observe(this, Observer { leWidgetData ->
-            if (leWidgetData?.leWidget?.widgets?.isEmpty()!!){
-                line.hide()
-                tv_title_widget.hide()
-                iv_collapsewidget.hide()
-                ll_recyclercontainer.hide()
-                line2.hide()
-                parentContainer.hide()
-            }
-            else {
-                leWidgetData.leWidget.widgets.let {
-                    val lengthDataLeWidget: Int = it.size
 
-                    for (widgetNo in 0 until lengthDataLeWidget) {
-
-                        widgetList.clear()
-                        widgetList.addAll(it as List<WidgetsItem>)
-                        widget_container?.adapter?.notifyDataSetChanged()
+            leWidgetData?.leWidget?.widgets?.let {
+                if (it.isEmpty()) {
+                    view?.hide()
+                } else {
+                    view?.show()
+                    it.let { widgetListIt ->
+                        val lengthDataLeWidget: Int = widgetListIt.size
+                        for (widgetNo in 0 until lengthDataLeWidget) {
+                            widgetList.clear()
+                            widgetList.addAll(widgetListIt as List<WidgetsItem>)
+                            widget_container?.adapter?.notifyDataSetChanged()
+                        }
                     }
                 }
-            }
+            } ?: view?.hide()
         })
     }
 
-    fun observeSPData(){
+    fun observeSPData() {
         merchantLendingViewModel.getSPUpdateData().observe(this, Observer {
             toggleSaldoPrioritasListener.onSuccessToggleSaldo(it!!)
         })
     }
 }
-
-
-
-
-
-
-
-
