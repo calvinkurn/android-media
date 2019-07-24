@@ -151,4 +151,8 @@ public class SelectPassengerView extends BaseCustomView {
         numberPickerWithCounterView.setMaxValue(number);
     }
 
+    public void hideSubtitle() {
+        subtitleTextView.setVisibility(GONE);
+    }
+
 }
