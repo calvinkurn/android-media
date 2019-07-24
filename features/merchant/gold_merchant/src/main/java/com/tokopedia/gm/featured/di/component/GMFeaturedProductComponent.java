@@ -4,6 +4,9 @@ package com.tokopedia.gm.featured.di.component;
  * Created by normansyahputa on 9/7/17.
  */
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.featured.di.module.GMFeaturedProductModule;
 import com.tokopedia.gm.featured.di.scope.GMFeaturedProductScope;
@@ -18,6 +21,9 @@ import dagger.Component;
 @GMFeaturedProductScope
 @Component(modules = GMFeaturedProductModule.class, dependencies = GMComponent.class)
 public interface GMFeaturedProductComponent {
+    @ApplicationContext
+    Context context();
+
     void inject(GMFeaturedProductActivity gmFeaturedProductActivity);
 
     void inject(GMFeaturedProductFragment gmFeaturedProductFragment);
