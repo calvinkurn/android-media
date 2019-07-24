@@ -11,7 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.deposit.listener.MerchantFinancialStatusActionListener;
-import com.tokopedia.saldodetails.response.lateCountModel.Response;
+import com.tokopedia.saldodetails.response.model.GqlMclLateCountResponse;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
@@ -196,9 +196,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 if (graphqlResponse != null) {
-                    Response response = graphqlResponse.getData(Response.class);
-                    if (response != null) {
-                        getView().getLateCount(response.getMclGetLatedetails().getLateCount());
+                    GqlMclLateCountResponse gqlMclLateCountResponse = graphqlResponse.getData(GqlMclLateCountResponse.class);
+                    if (gqlMclLateCountResponse != null) {
+                        getView().setLateCount(gqlMclLateCountResponse.getMclGetLatedetails().getLateCount());
                     }
                 }
             }
@@ -253,7 +253,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 getView().showErrorMessage(getView().getString(R.string.saldo_min_withdrawal_error));
             } else {
                 withdrawActivityBundle.putInt(IS_WITHDRAW_LOCK, statusWithDrawLock);
-                withdrawActivityBundle.putInt(MCL_LATE_COUNT, getView().getLateCount(mclLateCount));
+                withdrawActivityBundle.putInt(MCL_LATE_COUNT, mclLateCount);
                 withdrawActivityBundle.putBoolean(IS_SELLER, isSeller());
                 withdrawActivityBundle.putFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
                 withdrawActivityBundle.putFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());

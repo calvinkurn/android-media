@@ -597,8 +597,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         String webViewMTDashBoardUrl = getString(R.string.saldo_pembarayan_url);
         String tickerMsg = tvTickerMessage.getText().toString();
+
+        // TODO: 24/7/19 get index from separate string
         int startIndex = tickerMsg.indexOf('.') + 1;
         String late=Integer.toString(mclLateCount);
+
+        // TODO: 24/7/19 string.format
+
         tickerMsg = tickerMsg.replace("2", late);
         SpannableString ss = new SpannableString(tickerMsg);
 
@@ -630,9 +635,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public int getLateCount(int count) {
+    public void setLateCount(int count) {
         mclLateCount = count;
-        return mclLateCount;
     }
 
     @Override

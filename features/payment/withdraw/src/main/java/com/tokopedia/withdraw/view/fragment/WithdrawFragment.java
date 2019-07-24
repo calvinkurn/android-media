@@ -249,7 +249,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         }
 
         if (statusWithDrawLock == MCL_STATUS_BLOCK1 || statusWithDrawLock == MCL_STATUS_BLOCK3) {
-            showTicker(mclLateCount);
+            showTicker();
         }
 
         saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
@@ -445,7 +445,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     }
 
-    public void showTicker(int mclLateCount) {
+    public void showTicker() {
 
         String webViewMTDashBoardUrl = getString(R.string.saldolock_pembayaran_url);
         String tickerMsg = tvTickerMessage.getText().toString();

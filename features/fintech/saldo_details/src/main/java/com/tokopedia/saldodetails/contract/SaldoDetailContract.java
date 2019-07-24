@@ -57,7 +57,7 @@ public interface SaldoDetailContract {
 
         void hideTickerMessage();
 
-        int getLateCount(int count);
+        void setLateCount(int count);
 
         boolean isSellerEnabled();
 

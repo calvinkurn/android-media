@@ -1,7 +1,5 @@
 query{
  mcl_get_latedetails{
    lateCount
-   softblockThreshold
-   hardblockThreshold
  }
 }

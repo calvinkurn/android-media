@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.response.lateCountModel.Response;
+import com.tokopedia.saldodetails.response.model.GqlMclLateCountResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class GetMCLLateCountUseCase {
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_merchant_latecount),
-                Response.class,
+                GqlMclLateCountResponse.class,
                 variables, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
