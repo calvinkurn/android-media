@@ -125,6 +125,20 @@ final class ShopListPresenter
         isSearchShopReturnedNull = false;
 
         ShopViewModel shopViewModel = shopViewModelMapper.convert(searchShopModel);
+
+        if(shopViewModel.getShopItemList().isEmpty()) {
+            getViewToShowEmptyResult();
+        }
+        else {
+            getViewToShowSearchResultDataWithHeader(shopViewModel, loadShopRow);
+        }
+    }
+
+    private void getViewToShowEmptyResult() {
+        getView().onSearchShopSuccessEmptyResult();
+    }
+
+    private void getViewToShowSearchResultDataWithHeader(ShopViewModel shopViewModel, int loadShopRow) {
         enrichPositionData(shopViewModel.getShopItemList(), loadShopRow);
 
         ShopHeaderViewModel shopHeaderViewModel = new ShopHeaderViewModel(
@@ -134,7 +148,7 @@ final class ShopListPresenter
 
         List<Visitable> visitableList = createVisitableList(shopHeaderViewModel, shopViewModel.getShopItemList());
 
-        getView().onSearchShopSuccess(visitableList, shopViewModel.getHasNextPage());
+        getView().onSearchShopSuccessWithData(visitableList, shopViewModel.getHasNextPage());
     }
 
     private List<Visitable> createVisitableList(
@@ -229,11 +243,19 @@ final class ShopListPresenter
 
     private void getViewToShowLoadMoreDataSuccess(SearchShopModel searchShopModel, int loadShopRow) {
         ShopViewModel shopViewModel = shopViewModelMapper.convert(searchShopModel);
+
+        if(shopViewModel.getShopItemList().isEmpty()) {
+            getViewToShowEmptyResult();
+        }
+        else {
+            getViewToShowSearchResultData(shopViewModel, loadShopRow);
+        }
+    }
+
+    private void getViewToShowSearchResultData(ShopViewModel shopViewModel, int loadShopRow) {
         enrichPositionData(shopViewModel.getShopItemList(), loadShopRow);
-
         List<Visitable> visitableList = new ArrayList<>(shopViewModel.getShopItemList());
-
-        getView().onSearchShopSuccess(visitableList, shopViewModel.getHasNextPage());
+        getView().onSearchShopSuccessWithData(visitableList, shopViewModel.getHasNextPage());
     }
 
     @Override

@@ -10,7 +10,9 @@ public interface ShopListSectionContract {
     interface View extends SearchSectionContract.View {
         String getUserId();
 
-        void onSearchShopSuccess(List<Visitable> shopViewItemList, boolean isHasNextPage);
+        void onSearchShopSuccessWithData(List<Visitable> shopViewItemList, boolean isHasNextPage);
+
+        void onSearchShopSuccessEmptyResult();
 
         void onSearchShopFailed();
     }

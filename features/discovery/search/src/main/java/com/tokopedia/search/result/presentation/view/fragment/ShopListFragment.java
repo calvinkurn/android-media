@@ -227,18 +227,24 @@ public class ShopListFragment
     }
 
     @Override
-    public void onSearchShopSuccess(List<Visitable> shopItemList, boolean isHasNextPage) {
+    public void onSearchShopSuccessWithData(List<Visitable> shopItemList, boolean isHasNextPage) {
         if(adapter == null) return;
 
-        if (shopItemList.isEmpty()) {
-            handleEmptySearchResult();
-        } else {
-            if (performanceMonitoring != null) {
-                performanceMonitoring.stopTrace();
-                performanceMonitoring = null;
-            }
-            handleSearchResult(shopItemList, isHasNextPage);
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+            performanceMonitoring = null;
         }
+
+        handleSearchResult(shopItemList, isHasNextPage);
+
+        stopLoadingAndHideRefreshLayout();
+    }
+
+    @Override
+    public void onSearchShopSuccessEmptyResult() {
+        if(adapter == null) return;
+
+        handleEmptySearchResult();
 
         stopLoadingAndHideRefreshLayout();
     }
