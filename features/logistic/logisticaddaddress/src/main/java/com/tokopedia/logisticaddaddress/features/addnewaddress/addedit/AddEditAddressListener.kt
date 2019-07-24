@@ -8,5 +8,5 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_addr
  * Created by fwidjaja on 2019-05-22.
  */
 interface AddEditAddressListener: CustomerView {
-    fun onSuccessAddAddress(addAddressDataUiModel: AddAddressDataUiModel, saveAddressDataModel: SaveAddressDataModel)
+    fun onSuccessAddAddress(saveAddressDataModel: SaveAddressDataModel)
 }

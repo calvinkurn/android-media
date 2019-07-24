@@ -37,10 +37,14 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ReactUtils.startTracing(MP_OFFICIAL_STORE); // start trace when view created
-        super.onCreateView(inflater, container, savedInstanceState);
-        if (getActivity() != null) // set background color of react root view
-            reactRootView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
-        return reactRootView;
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        if (getActivity() != null && view != null) {
+            // set background color of react root view
+            view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            view.invalidate();
+        }
+        return view;
     }
 
     @Override

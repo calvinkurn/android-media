@@ -1,6 +1,7 @@
 package com.tokopedia.contactus.inboxticket2.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.contactus.inboxticket2.data.model.BadCsatReasonListItem;
 import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.SubmitRatingUseCase;
 import com.tokopedia.contactus.inboxticket2.view.contract.ProvideRatingContract;
@@ -10,7 +11,10 @@ import com.tokopedia.contactus.inboxticket2.view.presenter.screenState.FourthScr
 import com.tokopedia.contactus.inboxticket2.view.presenter.screenState.ScreenState;
 import com.tokopedia.contactus.inboxticket2.view.presenter.screenState.SecondScreenState;
 import com.tokopedia.contactus.inboxticket2.view.presenter.screenState.ThirdScreenState;
+import com.tokopedia.contactus.inboxticket2.view.presenter.screenState.ZeroScreenState;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -30,26 +34,47 @@ public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideR
         super.attachView(view);
         emojiState = getView().getSelectedEmoji();
         updateScreenState();
-        getView().setFilterList(getView().getReasonList());
+        if(emojiState==0){
+            getView().setFilterList(new ArrayList<BadCsatReasonListItem>());
+            view.hideSubmitButton();
+        }
+        else{
+            setFilterList(view);
+
+        }
     }
+
+    private void setFilterList(ProvideRatingContract.ProvideRatingView view) {
+        getView().setFilterList(getView().getReasonList());
+        view.showSubmitButton();
+    }
+
 
     public ScreenState getScreenState(int emoji) {
         ScreenState screenState = null;
         switch (emoji) {
+            case 0:
+                screenState = new ZeroScreenState();
+                break;
             case 1:
                 screenState = new FirstScreenState();
+                setFilterList(getView());
                 break;
             case 2:
                 screenState = new SecondScreenState();
+                setFilterList(getView());
                 break;
             case 3:
                 screenState = new ThirdScreenState();
+                setFilterList(getView());
                 break;
             case 4:
                 screenState = new FourthScreenState();
+                setFilterList(getView());
                 break;
             case 5:
                 screenState = new FifthScreenState();
+                setFilterList(getView());
                 break;
 
         }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -33,6 +32,7 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
+import com.tokopedia.feedcomponent.util.FeedScrollListener;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -45,6 +45,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionVie
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
@@ -94,7 +95,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
-        VideoViewHolder.VideoViewListener {
+        VideoViewHolder.VideoViewListener,
+        FeedMultipleImageView.FeedMultipleImageViewListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -182,9 +184,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         swipeToRefresh.setOnRefreshListener(this);
 
         KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this
-                , this, this, this, userSession);
+                , this, this, this, this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
         presenter.attachView(this);
@@ -247,28 +248,33 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             trackImpression(dynamicPostViewModel);
         }
         setFooter(postDetailViewModel);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    FeedScrollListener.onFeedScrolled(recyclerView, list);
+                }
+            }
+        });
     }
 
     private void trackImpression(DynamicPostViewModel dynamicPostViewModel) {
         if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
-            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
-                if (isOwner()) {
-                    postTagAnalytics.trackViewPostTagProfileDetailSelf(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getTrackingPostModel());
-                } else {
-                    postTagAnalytics.trackViewPostTagProfileDetailOther(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getTrackingPostModel());
-                }
-
-                onAffiliateTrackClicked(dynamicPostViewModel.getTracking(), false);
+            if (isOwner()) {
+                postTagAnalytics.trackViewPostTagProfileDetailSelf(
+                        dynamicPostViewModel.getId(),
+                        dynamicPostViewModel.getPostTag().getItems(),
+                        dynamicPostViewModel.getTrackingPostModel());
+            } else {
+                postTagAnalytics.trackViewPostTagProfileDetailOther(
+                        dynamicPostViewModel.getId(),
+                        dynamicPostViewModel.getPostTag().getItems(),
+                        dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
+                        dynamicPostViewModel.getTrackingPostModel());
             }
         }
+        onAffiliateTrackClicked(dynamicPostViewModel.getTracking(), false);
     }
 
     private boolean isOwner() {
@@ -813,6 +819,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             dynamicPostViewModel.getId(),
                             dynamicPostViewModel.getPostTag().getItems().get(i),
                             i,
+                            dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
                             dynamicPostViewModel.getTrackingPostModel());
                 }
             }
