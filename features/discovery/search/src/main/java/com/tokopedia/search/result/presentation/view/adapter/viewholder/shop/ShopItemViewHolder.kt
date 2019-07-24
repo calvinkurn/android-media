@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.utils.doIfVisible
+import com.tokopedia.productcard.utils.isNullOrNotVisible
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.ShopProductItemAdapter
@@ -214,6 +215,7 @@ class ShopItemViewHolder(
     private fun finishBindShopItem() {
         setTextViewShopNameMargin()
         setTextSeparatorVisibility()
+        setLabelVoucherCashbackMargin()
         setLabelVoucherConstraints()
     }
 
@@ -234,6 +236,14 @@ class ShopItemViewHolder(
     private fun setTextSeparatorVisibility() {
         itemView.textViewShopLocationReputationSeparator?.showWithCondition(itemView.textViewShopLocation?.isVisible ?: false)
         itemView.textViewShopReputationSocialProofSeparator?.showWithCondition(itemView.textViewShopSocialProof?.isVisible ?: false)
+    }
+
+    private fun setLabelVoucherCashbackMargin() {
+        itemView.labelVoucherCashback?.doIfVisible {
+            if(itemView.labelVoucherFreeShipping.isNullOrNotVisible) {
+                setViewMargins(it.id, ConstraintSet.START, R.dimen.dp_0)
+            }
+        }
     }
 
     private fun setLabelVoucherConstraints() {
