@@ -198,9 +198,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
                             finish();
                         });
                         if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {
-                            showMessageWithAction("Izinkan akses di Pengaturan Aplikasi-> Izin -> " +
-                                            "Camera, Telephone,Storage",
-                                    "Go To Settings", (v) -> {
+                            showMessageWithAction(getString(R.string.tradein_permission_setting),
+                                    getString(R.string.title_ok), (v) -> {
                                         final Intent intent = new Intent();
                                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                         intent.addCategory(Intent.CATEGORY_DEFAULT);
