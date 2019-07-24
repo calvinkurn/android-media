@@ -7,19 +7,26 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.KolAuthInterceptor;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.common.network.KolUrl;
+import com.tokopedia.kol.common.util.KolConstant;
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract;
 import com.tokopedia.kol.feature.video.view.presenter.VideoDetailPresenter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.domain.interactor.GetProductIsWishlistedUseCase;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -124,6 +131,21 @@ public class KolModule {
     @Provides
     public RemoveWishListUseCase provideRemoveWishListUseCase(@ApplicationContext Context context){
         return new RemoveWishListUseCase(context);
+    }
+
+    @KolScope
+    @Provides
+    @Named(KolConstant.KEY_QUERY_IS_WISHLISTED)
+    public String getQueryProductIsWishlisted(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_is_wishlisted);
+    }
+
+    @KolScope
+    @Provides
+    public GetProductIsWishlistedUseCase provideGetProductIsWishlistedUseCase(@Named(KolConstant.KEY_QUERY_IS_WISHLISTED)
+                                                                              String rawQuery,
+                                                                              GraphqlUseCase gqlUseCase){
+        return new GetProductIsWishlistedUseCase(rawQuery, gqlUseCase);
     }
 
 }

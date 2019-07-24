@@ -9,6 +9,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailWishlistedUseCase
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,7 +24,7 @@ import javax.inject.Inject
 
 class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDispatcher,
                                                     private val userSession: UserSessionInterface,
-                                                    private val getPostDetailUseCase: GetPostDetailUseCase,
+                                                    private val getPostDetailUseCase: GetPostDetailWishlistedUseCase,
                                                     private val likeKolPostUseCase: LikeKolPostUseCase,
                                                     private val addWishListUseCase: AddWishListUseCase,
                                                     private val removeWishListUseCase: RemoveWishListUseCase)

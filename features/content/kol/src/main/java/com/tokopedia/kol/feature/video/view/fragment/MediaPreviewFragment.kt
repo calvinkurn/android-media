@@ -194,7 +194,8 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             }
 
             action_favorite.gone()
-        } else {
+            button_tag_action.visible()
+        } else if (tags.totalItems == 1){
             tag_count.gone()
             tag_rating.shouldShowWithAction(tags.items[0].rating > 0){
                 tag_rating.rating = tags.items[0].rating.toFloat()
@@ -217,8 +218,10 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             }
             tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(R.dimen.dp_8))
             tag_picture.visible()
+            button_tag_action.visible()
+        } else {
+            overlay_tags.gone()
         }
-        button_tag_action.visible()
     }
 
     private fun toggleWishlist(isWishListAction: Boolean, productId: String, pos: Int){
