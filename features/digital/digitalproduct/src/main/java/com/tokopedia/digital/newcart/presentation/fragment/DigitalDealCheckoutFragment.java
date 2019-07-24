@@ -490,8 +490,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     @Override
-    public void renderPromo(String title, String message) {
-        super.renderPromo(title, message);
+    public void renderPromo() {
+        super.renderPromo();
         if (!isCartDetailViewVisible()) {
             containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));

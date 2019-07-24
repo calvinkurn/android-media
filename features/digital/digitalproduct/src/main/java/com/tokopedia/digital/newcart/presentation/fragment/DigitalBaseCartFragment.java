@@ -134,9 +134,18 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void renderPromo(String title, String message) {
+    public void renderPromo() {
         checkoutHolderView.setPromoTickerActionListener(this);
-        checkoutHolderView.setPromoInfo(title, message, promoData.getState());
+        checkoutHolderView.setPromoInfo(promoData.getTitle(), promoData.getDescription(), promoData.getState());
+    }
+
+    @Override
+    public void onAutoApplyPromo(String couponTitle, String couponMessage, String couponCode, int isCoupon) {
+        promoData.setTitle(couponTitle);
+        promoData.setDescription(couponMessage);
+        promoData.setPromoCode(couponCode);
+        promoData.setTypePromo(isCoupon);
+        promoData.setState(TickerCheckoutView.State.ACTIVE);
     }
 
     @Override
@@ -230,7 +239,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         Intent intent;
         String promoCode = promoData.getPromoCode();
         if (!promoCode.isEmpty()) {
-            if (promoData.getTypePromo() == 1) {
+            if (promoData.getTypePromo() == 0) {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
                 intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());

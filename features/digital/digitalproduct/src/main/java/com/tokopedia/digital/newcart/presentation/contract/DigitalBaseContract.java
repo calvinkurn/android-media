@@ -29,7 +29,12 @@ public interface DigitalBaseContract {
 
         void resetPromoTicker();
 
-        void renderPromo(String title, String message);
+        void renderPromo();
+
+        void onAutoApplyPromo(String couponTitle,
+                              String couponMessage,
+                              String couponCode,
+                              int isCoupon);
 
         void enableVoucherDiscount(long discountAmountPlain);
 
@@ -117,14 +122,10 @@ public interface DigitalBaseContract {
 
         void onViewCreated();
 
-        void onUseVoucherButtonClicked();
-
         void onReceivePromoCode(String couponTitle,
                              String couponMessage,
                              String couponCode,
                              int isCoupon);
-
-        void onClearVoucher();
 
         void processToCheckout();
 

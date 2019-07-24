@@ -253,6 +253,12 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 cartDigitalInfoData.getAttributes().getAutoApplyVoucher().isSuccess()) {
             if (!(cartDigitalInfoData.getAttributes().isCouponActive() == 0 && cartDigitalInfoData.getAttributes().getAutoApplyVoucher().isCoupon() == 1)) {
                 CartAutoApplyVoucher cartAutoApplyVoucher = cartDigitalInfoData.getAttributes().getAutoApplyVoucher();
+                getView().onAutoApplyPromo(
+                        cartAutoApplyVoucher.getTitle(),
+                        cartAutoApplyVoucher.getMessageSuccess(),
+                        cartAutoApplyVoucher.getCode(),
+                        cartAutoApplyVoucher.isCoupon()
+                );
                 VoucherDigital voucherDigital = new VoucherDigital();
                 VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
                 voucherAttributeDigital.setVoucherCode(cartAutoApplyVoucher.getCode());
@@ -343,6 +349,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             public void onNext(VoucherDigital voucherDigital) {
                 getView().hideFullPageLoading();
                 getView().showCartView();
+
+                VoucherAttributeDigital voucherAttributeDigital = voucherDigital.getAttributeVoucher();
+                getView().onAutoApplyPromo(
+                        voucherAttributeDigital.getTitle(),
+                        voucherAttributeDigital.getMessage(),
+                        voucherAttributeDigital.getVoucherCode(),
+                        voucherAttributeDigital.getIsCoupon()
+                );
                 renderCouponAndVoucher(voucherDigital);
             }
         };
@@ -383,10 +397,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     protected void renderCouponAndVoucher(VoucherDigital voucherDigital) {
-        getView().renderPromo(
-                voucherDigital.getAttributeVoucher().getTitle(),
-                voucherDigital.getAttributeVoucher().getMessage()
-        );
+        getView().renderPromo();
         renderIfHasDiscount(voucherDigital);
     }
 
@@ -423,27 +434,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     @Override
-    public void onUseVoucherButtonClicked() {
-        CartDigitalInfoData cartDigitalInfoData = getView().getCartInfoData();
-        if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
-            DigitalCheckoutPassData passData = getView().getCartPassData();
-            if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
-                if (cartDigitalInfoData.getAttributes().getDefaultPromoTab() != null &&
-                        cartDigitalInfoData.getAttributes().getDefaultPromoTab().equalsIgnoreCase(
-                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_STATE)) {
-                    getView().navigateToCouponActiveAndSelected(passData.getCategoryId());
-                } else {
-                    getView().navigateToCouponActive(passData.getCategoryId());
-                }
-            } else {
-                getView().navigateToCouponNotActive(passData.getCategoryId());
-            }
-        } else {
-            getView().hidePromoTicker();
-        }
-    }
-
-    @Override
     public void onReceivePromoCode(String couponTitle, String couponMessage, String couponCode, int isCoupon) {
         if (isViewAttached()){
             VoucherDigital voucherDigital = new VoucherDigital();
@@ -455,32 +445,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             voucherDigital.setAttributeVoucher(voucherAttributeDigital);
             renderCouponAndVoucher(voucherDigital);
         }
-    }
-
-    @Override
-    public void onClearVoucher() {
-        getView().renderAdditionalInfo(new ArrayList<>(getView().getCartInfoData().getAdditionalInfos()));
-        getView().disableVoucherCheckoutDiscount();
-        RequestBodyCancelVoucher requestBodyCancelVoucher = new RequestBodyCancelVoucher();
-        com.tokopedia.digital.newcart.data.entity.requestbody.voucher.Attributes attributes = new com.tokopedia.digital.newcart.data.entity.requestbody.voucher.Attributes();
-        attributes.setIdentifier(getView().getDigitalIdentifierParam());
-        requestBodyCancelVoucher.setAttributes(attributes);
-        cartDigitalInteractor.cancelVoucher(requestBodyCancelVoucher, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(String s) {
-
-            }
-        });
     }
 
     @Override
