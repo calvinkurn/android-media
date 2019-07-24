@@ -26,6 +26,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
                 app:fontSize="title"
                 app:textViewTheme="lightPrimary"
                 app:weight="medium"
