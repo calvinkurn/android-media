@@ -54,6 +54,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.config)
     
     implementation project(rootProject.ext.libraries.track)
+
+    implementation 'com.facebook.fresco:fresco:1.10.0'
+    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.1'
 }
 
 apply from: '../../publish_local.gradle'
