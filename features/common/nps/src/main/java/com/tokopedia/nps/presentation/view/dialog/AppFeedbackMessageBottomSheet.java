@@ -1,9 +1,10 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.AppCompatButton;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.component.EditTextCompat;
@@ -13,22 +14,37 @@ import com.tokopedia.nps.presentation.di.FeedbackComponent;
 import com.tokopedia.nps.presentation.di.FeedbackModule;
 import com.tokopedia.nps.presentation.presenter.FeedbackPresenter;
 import com.tokopedia.nps.presentation.view.FeedbackView;
+import com.tokopedia.unifycomponents.Toaster;
 
 import javax.inject.Inject;
 
 public class AppFeedbackMessageBottomSheet extends BottomSheets implements FeedbackView {
 
-    private EditTextCompat messageDesc;
-    private AppCompatButton sendButton;
+    private float appRating;
+    private String messageDesc;
+    private String messageCategory;
 
     @Inject
     FeedbackPresenter presenter;
+
+    public void showDialog(FragmentManager manager, float appRating, String tag) {
+        super.show(manager, tag);
+        this.appRating = appRating;
+    }
 
     private void initInjector() {
         FeedbackComponent component = DaggerFeedbackComponent.builder()
                 .feedbackModule(new FeedbackModule(getContext()))
                 .build();
         component.inject(this);
+    }
+
+    private void setSendButtonClickListener(FrameLayout button) {
+        if (button != null) {
+            button.setOnClickListener(view -> {
+                presenter.post(String.valueOf((int) appRating), messageCategory, messageDesc);
+            });
+        }
     }
 
     @Override
@@ -51,21 +67,13 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
         initInjector();
         this.presenter.setView(this);
 
-        messageDesc = view.findViewById(R.id.message_description);
-        sendButton = view.findViewById(R.id.send_button);
+        EditTextCompat messageDescView = view.findViewById(R.id.message_description);
+        FrameLayout sendButtonView = view.findViewById(R.id.send_button);
 
-        final String descriptionText = messageDesc.getText().toString();
+        messageDesc = messageDescView.getText().toString();
+        messageCategory = getString(R.string.message_default_category);
 
-        if (sendButton != null) {
-            sendButton.setOnClickListener(v -> {
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-
-                if (manager != null) {
-                    new AppFeedbackThankYouBottomSheet().show(manager, "AppFeedbackThankYouBottomSheet");
-                    this.dismiss();
-                }
-            });
-        }
+        setSendButtonClickListener(sendButtonView);
     }
 
     @Override
@@ -90,7 +98,11 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
 
     @Override
     public void showError(String message) {
+        View view = getView();
 
+        if (view != null) {
+            Toaster.Companion.showError(view, message, Snackbar.LENGTH_LONG);
+        }
     }
 
     @Override
@@ -103,8 +115,15 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
         FragmentManager manager = getActivity().getSupportFragmentManager();
 
         if (manager != null) {
-            new AppFeedbackThankYouBottomSheet().show(manager, "AppFeedbackThankYouBottomSheet");
+            new AppFeedbackThankYouBottomSheet()
+                    .showDialog(manager, appRating, "AppFeedbackThankYouBottomSheet");
             this.dismiss();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 }

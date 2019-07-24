@@ -13,7 +13,6 @@
     <string name="app_rating_button_later">Nanti</string>
     <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
     <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
-
     <string name="rating_feedback_title">Waktunya kasih bintang, nih!</string>
     <string name="rating_feedback_message">Seberapa puas sih kamu sama aplikasi Tokopedia?</string>
     <string name="rating_feedback_send_button_label">Kirim</string>
@@ -22,12 +21,11 @@
     <string name="rating_three">Cukup</string>
     <string name="rating_four">Puas</string>
     <string name="rating_five">Puas banget!</string>
-
+    <string name="message_default_category">Lainnya</string>
     <string name="message_feedback_title">Bantu kami menggapai bintang!</string>
     <string name="message_feedback_message">Yuk, berikan masukan agar Tokopedia bisa lebih memenuhi kebutuhanmu.</string>
     <string name="message_feedback_send_button_label">Beri Masukan</string>
     <string name="message_feedback_hint">Tulis masukanmu di sini</string>
-
     <string name="thank_you_feedback_title">Yay, terima kasih untuk bintangnya!</string>
     <string name="thank_you_feedback_message">Senang bisa memenuhi kebutuhanmu. Sering-sering berkunjung, ya!</string>
 
