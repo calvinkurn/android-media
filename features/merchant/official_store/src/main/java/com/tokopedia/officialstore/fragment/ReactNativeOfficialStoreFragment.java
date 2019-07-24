@@ -41,7 +41,6 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
             AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
             rating.show(manager, "AppFeedbackRatingBottomSheet");
         }
-
     }
 
     @Override
