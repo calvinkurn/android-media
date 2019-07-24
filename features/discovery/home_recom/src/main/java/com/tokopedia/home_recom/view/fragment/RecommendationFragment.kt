@@ -32,7 +32,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
 import com.tokopedia.recommendation_widget_common.TYPE_CUSTOM_HORIZONTAL
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
-import com.tokopedia.recommendation_widget_common.listener.TrackingListener
+import com.tokopedia.home_recom.view.listener.TrackingListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.trackingoptimizer.TrackingQueue

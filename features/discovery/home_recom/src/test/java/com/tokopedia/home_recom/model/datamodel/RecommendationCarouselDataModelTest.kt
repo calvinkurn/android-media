@@ -1,7 +1,7 @@
 package com.tokopedia.home_recom.model.datamodel
 
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
-import com.tokopedia.recommendation_widget_common.listener.TrackingListener
+import com.tokopedia.home_recom.view.listener.TrackingListener
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Test

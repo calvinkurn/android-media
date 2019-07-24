@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.listener
+package com.tokopedia.home_recom.view.listener
 
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
