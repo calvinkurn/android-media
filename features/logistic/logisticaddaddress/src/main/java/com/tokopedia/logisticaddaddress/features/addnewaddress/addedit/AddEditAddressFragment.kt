@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.view.ViewCompat
 import android.text.Editable
@@ -43,7 +42,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.dist
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.add_address.AddAddressDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
@@ -940,7 +938,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
     }
 
-    override fun showInvalidDialog(error: String) {
+    override fun showOutOfReachDialog() {
     }
 
     private fun hideKeyboard() {

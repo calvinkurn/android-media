@@ -398,19 +398,17 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
-    override fun showInvalidDialog(error: String) {
+    override fun showOutOfReachDialog() {
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.GONE
         invalid_container?.visibility = View.VISIBLE
 
-        if (error == "out_of_indonesia") {
-            invalid_title?.text = getString(R.string.out_of_indonesia_title)
-            invalid_desc?.text = getString(R.string.out_of_indonesia_desc)
-            invalid_img?.setImageResource(R.drawable.tokopedia_out_of_indonesia)
+        invalid_title?.text = getString(R.string.out_of_indonesia_title)
+        invalid_desc?.text = getString(R.string.out_of_indonesia_desc)
+        invalid_img?.setImageResource(R.drawable.tokopedia_out_of_indonesia)
 
-            invalid_ic_search_btn?.setOnClickListener {
-                currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
-            }
+        invalid_ic_search_btn?.setOnClickListener {
+            currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
         }
     }
 
