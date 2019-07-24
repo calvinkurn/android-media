@@ -30,12 +30,12 @@ class HotelDetailPagerAdapter(fm: FragmentManager, val context: Context, var sel
                 } else {
                     HotelDetailAllFacilityFragment.POLICY_TITLE
                 }
-                1 -> if (isFacilityTabExists()) {
-                    HotelDetailAllFacilityFragment.POLICY_TITLE
-                } else {
-                    HotelDetailAllFacilityFragment.IMPORTANT_INFO_TITLE
+                1 -> when {
+                    isFacilityTabExists() -> HotelDetailAllFacilityFragment.POLICY_TITLE
+                    isImportantInfoTabExists() -> HotelDetailAllFacilityFragment.IMPORTANT_INFO_TITLE
+                    else -> HotelDetailAllFacilityFragment.DESCRIPTION_TITLE
                 }
-                2 -> if (isImportantInfoTabExists()) {
+                2 -> if (isFacilityTabExists() && isImportantInfoTabExists()) {
                     HotelDetailAllFacilityFragment.IMPORTANT_INFO_TITLE
                 } else {
                     HotelDetailAllFacilityFragment.DESCRIPTION_TITLE
@@ -51,10 +51,10 @@ class HotelDetailPagerAdapter(fm: FragmentManager, val context: Context, var sel
                 } else {
                     returnPolicyFragment()
                 }
-                1 -> if (isFacilityTabExists()) {
-                    returnPolicyFragment()
-                } else {
-                    returnImportantInfoFragment()
+                1 -> when {
+                    isFacilityTabExists() -> returnPolicyFragment()
+                    isImportantInfoTabExists() -> returnImportantInfoFragment()
+                    else -> returnDescriptionFragment()
                 }
                 2 -> if (isFacilityTabExists() && isImportantInfoTabExists()) {
                     returnImportantInfoFragment()
