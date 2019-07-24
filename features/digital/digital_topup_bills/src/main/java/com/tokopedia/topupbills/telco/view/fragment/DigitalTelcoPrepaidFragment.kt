@@ -15,7 +15,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
