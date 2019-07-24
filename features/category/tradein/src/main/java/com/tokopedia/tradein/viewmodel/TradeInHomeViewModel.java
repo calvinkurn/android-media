@@ -23,6 +23,12 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein.model.DeviceAttr;
+import com.tokopedia.tradein.model.DeviceDiagInput;
+import com.tokopedia.tradein.model.DeviceDiagInputResponse;
+import com.tokopedia.tradein.model.DeviceDiagnostics;
+import com.tokopedia.tradein.model.TradeInParams;
+import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity;
 import com.tokopedia.tradein_common.Constants;
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 
@@ -34,13 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.tokopedia.tradein.model.DeviceAttr;
-import com.tokopedia.tradein.model.DeviceDiagInput;
-import com.tokopedia.tradein.model.DeviceDiagInputResponse;
-import com.tokopedia.tradein.model.DeviceDiagnostics;
-import com.tokopedia.tradein.model.TradeInParams;
 import rx.Subscriber;
-import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity;
 
 public class TradeInHomeViewModel extends BaseViewModel implements LifecycleObserver, Laku6TradeIn.TradeInListener {
     private MutableLiveData<Integer> insertResultData;
@@ -221,7 +221,10 @@ public class TradeInHomeViewModel extends BaseViewModel implements LifecycleObse
     public void requestPermission() {
         if (!laku6TradeIn.permissionGranted()) {
             ActivityCompat.requestPermissions(activityWeakReference.get(),
-                    new String[]{Manifest.permission.READ_PHONE_STATE},
+                    new String[]{Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA},
                     MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
         } else {
             getMaxPrice();

@@ -5,7 +5,10 @@ import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -18,13 +21,12 @@ import android.widget.TextView;
 
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein.model.TradeInParams;
+import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.tokopedia.tradein.model.TradeInParams;
-import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 
 public class TradeInHomeActivity extends BaseTradeInActivity {
 
@@ -39,6 +41,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
     private TradeInHomeViewModel tradeInHomeViewModel;
     private boolean isAlreadySet = false;
     public static final int TRADEIN_HOME_REQUEST = 22345;
+    private static final int APP_SETTINGS = 9988;
 
     public static Intent getIntent(Context context) {
         return new Intent(context, TradeInHomeActivity.class);
@@ -120,16 +123,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
                 mTvPriceElligible.setVisibility(View.VISIBLE);
                 tvIndicateive.setVisibility(View.GONE);
                 mTvGoToProductDetails.setText(R.string.go_to_product_details);
-                mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        sendGeneralEvent("clickTradeIn",
-                                "trade in start page",
-                                "click kembali ke detail produk",
-                                "");
+                mTvGoToProductDetails.setOnClickListener(v -> {
+                    sendGeneralEvent("clickTradeIn",
+                            "trade in start page",
+                            "click kembali ke detail produk",
+                            "");
 
-                        finish();
-                    }
+                    finish();
                 });
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -183,17 +183,46 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case TradeInHomeViewModel.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    showProgressBar();
-                    tradeInHomeViewModel.getMaxPrice();
-                } else {
-                    tradeInHomeViewModel.requestPermission();
+        // If request is cancelled, the result arrays are empty.
+        if (requestCode == TradeInHomeViewModel.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
+            if (grantResults.length > 0 && permissions.length == grantResults.length) {
+                for (int i = 0; i < permissions.length; i++) {
+                    int result = grantResults[i];
+                    if (result == PackageManager.PERMISSION_DENIED) {
+                        mTvGoToProductDetails.setOnClickListener(v -> {
+                            sendGeneralEvent("clickTradeIn",
+                                    "trade in start page",
+                                    "click kembali ke detail produk",
+                                    "");
+
+                            finish();
+                        });
+                        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {
+                            showMessageWithAction("Izinkan akses di Pengaturan Aplikasi-> Izin -> " +
+                                            "Camera, Telephone,Storage",
+                                    "Go To Settings", (v) -> {
+                                        final Intent intent = new Intent();
+                                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                        intent.addCategory(Intent.CATEGORY_DEFAULT);
+                                        intent.setData(Uri.parse("package:" + this.getPackageName()));
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        this.startActivityForResult(intent, APP_SETTINGS);
+                                    });
+                            return;
+                        } else {
+                            showMessageWithAction("Perkenankan izin yang hilang untuk memulai memeriksa fungsi",
+                                    getString(R.string.title_ok), (v) -> tradeInHomeViewModel.requestPermission());
+                        }
+                        return;
+                    }
                 }
+                showProgressBar();
+                tradeInHomeViewModel.getMaxPrice();
+            } else {
+                tradeInHomeViewModel.requestPermission();
             }
         }
+
     }
 
     @Override
@@ -204,6 +233,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
                 setResult(Activity.RESULT_OK, data);
                 finish();
             }
+        } else if (requestCode == APP_SETTINGS) {
+            tradeInHomeViewModel.requestPermission();
         }
     }
 
@@ -219,12 +250,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
             };
             tvIndicateive.setVisibility(View.GONE);
             mTvGoToProductDetails.setText(R.string.go_to_product_details);
-            mTvGoToProductDetails.setOnClickListener( v -> {
+            mTvGoToProductDetails.setOnClickListener(v -> {
                 sendGeneralEvent("clickTradeIn",
                         "trade in start page",
                         "click kembali ke detail produk",
                         "");
-                    finish();
+                finish();
             });
             int greenColor = getResources().getColor(R.color.green_nob);
             ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
