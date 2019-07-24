@@ -639,14 +639,10 @@ public class WishListImpl implements WishList {
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
             products.add(new WishlistProductViewModel(product));
         }
-        if (products.size() >= TOPADS_INDEX && isEven(products, adsModel)) {
+        if (products.size() >= TOPADS_INDEX && adsModel != null && !adsModel.getData().isEmpty()) {
             products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query));
         }
         return products;
-    }
-
-    private boolean isEven(List<Visitable> products, TopAdsModel adsModel) {
-        return products.size() % 2 == 0 && adsModel != null && !adsModel.getData().isEmpty();
     }
 
     private void onFinishedDeleteWishlist(final int position) {
