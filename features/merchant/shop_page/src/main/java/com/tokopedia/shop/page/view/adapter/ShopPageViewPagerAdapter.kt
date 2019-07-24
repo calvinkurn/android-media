@@ -10,6 +10,7 @@ import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.page.view.activity.ShopPageActivity
+import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 
 class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
@@ -17,50 +18,128 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                                var shopId: String?,
                                val shopAttribution: String?,
                                val router: ShopModuleRouter,
-                               val shopPageActivity: ShopPageActivity) : FragmentStatePagerAdapter(fragmentManager) {
+                               private val shopPageActivity: ShopPageActivity) : FragmentStatePagerAdapter(fragmentManager) {
 
+    var isRefresh = false
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
     override fun getItem(position: Int): Fragment {
-        if (shopPageActivity.isShowFeed) {
-            return when (position) {
-                ShopPageActivity.TAB_POSITION_HOME -> {
-                    val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
-                    shopPageActivity.getShopInfoData()?.run {
-                        f.setShopInfo(this)
-                    }
-                    return f
-                }
-                ShopPageActivity.TAB_POSITION_FEED -> {
-                    FeedShopFragment.createInstance(shopId ?: "", shopPageActivity.createPostUrl)
-                }
-                ShopPageActivity.TAB_POSITION_INFO -> {
-                    val f = ShopInfoFragment.createInstance()
-                    shopPageActivity.getShopInfoData()?.run {
-                        f.shopInfo = this
-                    }
-                    return f
-                }
-                else -> Fragment()
+        return if (shopPageActivity.isShowFeed) {
+            if (shopPageActivity.isOfficialStore) {
+                renderTabOsFeed(position)
+            } else {
+                renderTabFeed(position)
             }
         } else {
-            return when (position) {
-                0 -> {
-                    val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
-                    shopPageActivity.getShopInfoData()?.run {
-                        f.setShopInfo(this)
-                    }
-                    return f
-                }
-                1 -> {
-                    val f = ShopInfoFragment.createInstance()
-                    shopPageActivity.getShopInfoData()?.run {
-                        f.shopInfo = this
-                    }
-                    return f
-                }
-                else -> Fragment()
+            if (shopPageActivity.isOfficialStore) {
+                renderTabOsDefault(position)
+            } else {
+                renderTabDefault(position)
             }
+        }
+    }
+
+    fun setIsRefresh(isRefresh: Boolean){
+        this.isRefresh = isRefresh
+    }
+
+    private fun renderTabOsDefault(position: Int): Fragment {
+        return when (position) {
+            0 -> {
+                val f = HomeProductFragment.createInstance()
+                shopPageActivity.getShopInfoData()?.run {
+                    f.setShopInfo(this)
+                }
+                return f
+            }
+            1 -> {
+                val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                shopPageActivity.getShopInfoData()?.run {
+                    f.setShopInfo(this)
+                }
+                return f
+            }
+            2 -> {
+                val f = ShopInfoFragment.createInstance()
+                shopPageActivity.getShopInfoData()?.run {
+                    f.shopInfo = this
+                }
+                return f
+            }
+            else -> Fragment()
+        }
+    }
+
+    private fun renderTabOsFeed(position: Int): Fragment {
+        return when (position) {
+            0 -> {
+                val f = HomeProductFragment.createInstance()
+                shopPageActivity.getShopInfoData()?.run {
+                    f.setShopInfo(this)
+                }
+                return f
+            }
+            1 -> {
+                val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                shopPageActivity.getShopInfoData()?.run {
+                    f.setShopInfo(this)
+                }
+                return f
+            }
+            2 -> {
+                FeedShopFragment.createInstance(shopId ?: "", shopPageActivity.createPostUrl)
+            }
+            3 -> {
+                val f = ShopInfoFragment.createInstance()
+                shopPageActivity.getShopInfoData()?.run {
+                    f.shopInfo = this
+                }
+                return f
+            }
+            else -> Fragment()
+        }
+    }
+
+    private fun renderTabFeed(position: Int): Fragment {
+        return when (position) {
+            ShopPageActivity.TAB_POSITION_HOME -> {
+                val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                shopPageActivity.getShopInfoData()?.run {
+                    f.setShopInfo(this)
+                }
+                return f
+            }
+            ShopPageActivity.TAB_POSITION_FEED -> {
+                FeedShopFragment.createInstance(shopId ?: "", shopPageActivity.createPostUrl)
+            }
+            ShopPageActivity.TAB_POSITION_INFO -> {
+                val f = ShopInfoFragment.createInstance()
+                shopPageActivity.getShopInfoData()?.run {
+                    f.shopInfo = this
+                }
+                return f
+            }
+            else -> Fragment()
+        }
+    }
+
+    private fun renderTabDefault(position: Int): Fragment {
+        return when (position) {
+            0 -> {
+                val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                shopPageActivity.getShopInfoData()?.run {
+                    f.setShopInfo(this)
+                }
+                return f
+            }
+            1 -> {
+                val f = ShopInfoFragment.createInstance()
+                shopPageActivity.getShopInfoData()?.run {
+                    f.shopInfo = this
+                }
+                return f
+            }
+            else -> Fragment()
         }
     }
 
