@@ -621,17 +621,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         }
     }
 
-    private boolean appIsInstalled(String url) {
-        PackageManager pm = getActivity().getPackageManager();
-
-        try {
-            pm.getPackageInfo(url, PackageManager.GET_ACTIVITIES);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-    }
-
     private void openHomePage() {
         if (getActivity() != null
                 && getActivity().getApplicationContext() != null
