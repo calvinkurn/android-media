@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.utils;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -19,6 +20,8 @@ import com.tokopedia.network.data.model.FingerprintModel;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+
+import timber.log.Timber;
 
 /**
  * @author ricoharisin .
@@ -88,8 +91,12 @@ public class FingerprintModelGenerator {
         }
         return "";
     }
-    
+
     private static String generateFingerprintData(Context context) {
+        Timber.w("P2" + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+            + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
+            + " | "+Build.TAGS);
+
         String deviceName   = Utilities.getDeviceModel();
         String deviceFabrik = Utilities.getDeviceFabrik();
         String deviceOS     = Utilities.getDeviceOS();
