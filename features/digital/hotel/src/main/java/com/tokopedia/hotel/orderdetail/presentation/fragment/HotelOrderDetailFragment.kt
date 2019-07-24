@@ -242,7 +242,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
         if (propertyDetail.extraInfo.content.isNotBlank()) {
             special_notes.setText(createHyperlinkText(propertyDetail.extraInfo.content,
-                    propertyDetail.extraInfo.content, isUrl = false), TextView.BufferType.SPANNABLE)
+                    propertyDetail.extraInfo.longDesc, isUrl = false), TextView.BufferType.SPANNABLE)
             special_notes.visibility = View.VISIBLE
             special_notes.movementMethod = LinkMovementMethod.getInstance()
         } else special_notes.visibility = View.GONE
