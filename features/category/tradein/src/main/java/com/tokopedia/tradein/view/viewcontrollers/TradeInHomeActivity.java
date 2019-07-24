@@ -183,7 +183,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        // If request is cancelled, the result arrays are empty.
         if (requestCode == TradeInHomeViewModel.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
             if (grantResults.length > 0 && permissions.length == grantResults.length) {
                 for (int i = 0; i < permissions.length; i++) {
