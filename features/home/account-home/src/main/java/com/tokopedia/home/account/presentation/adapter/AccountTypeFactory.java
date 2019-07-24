@@ -13,6 +13,7 @@ import com.tokopedia.home.account.presentation.viewholder.MenuGridViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuListViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuTitleViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.PowerMerchantViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.SellerEmptyViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.SellerSaldoViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.ShopCardViewHolder;
@@ -25,6 +26,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.PowerMerchantCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
@@ -67,6 +69,8 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new SellerEmptyViewHolder(parent, listener);
         } else if (type == PowerMerchantViewHolder.Companion.getLAYOUT()) {
             return new PowerMerchantViewHolder(parent, listener);
+        } else if (type == RecommendationProductViewHolder.Companion.getLAYOUT()) {
+            return new RecommendationProductViewHolder(parent, listener);
         }
         return super.createViewHolder(parent, type);
     }
@@ -119,4 +123,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         return PowerMerchantViewHolder.Companion.getLAYOUT();
     }
 
+    public int type(RecommendationProductViewModel viewModel) {
+        return RecommendationProductViewHolder.Companion.getLAYOUT();
+    }
 }

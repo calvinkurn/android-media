@@ -8,6 +8,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 
 /**
  * @author okasurya on 7/26/18.
@@ -67,4 +68,7 @@ public interface AccountItemListener {
 
     void onShopStatusInfoButtonClicked();
 
+    void onProductRecommendationClicked(RecommendationItem product);
+
+    void onProductRecommendationImpression(RecommendationItem product);
 }
