@@ -48,6 +48,7 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -595,16 +596,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     public void showTicker() {
 
-        String webViewMTDashBoardUrl = getString(R.string.saldo_pembarayan_url);
-        String tickerMsg = tvTickerMessage.getText().toString();
-
-        // TODO: 24/7/19 get index from separate string
-        int startIndex = tickerMsg.indexOf('.') + 1;
+        String tickerMsg =getString(R.string.saldolock_tickerDescription);
+        int startIndex = tickerMsg.indexOf("Bayar sekarang");
         String late=Integer.toString(mclLateCount);
-
-        // TODO: 24/7/19 string.format
-
-        tickerMsg = tickerMsg.replace("2", late);
+        tickerMsg  =  String.format(getResources().getString(R.string.saldolock_tickerDescription),late);
         SpannableString ss = new SpannableString(tickerMsg);
 
         tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
@@ -613,7 +608,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             @Override
             public void onClick(@NonNull View view) {
                 RouteManager.route(context, String.format("%s?url=%s",
-                        ApplinkConst.WEBVIEW, webViewMTDashBoardUrl));
+                        ApplinkConst.WEBVIEW,SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL));
             }
 
             @Override

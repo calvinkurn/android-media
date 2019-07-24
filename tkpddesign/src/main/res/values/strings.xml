@@ -77,6 +77,5 @@
     <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
     <string name="saldolock_tickerTitle">Tidak bisa tarik Saldo Penghasilan</string>
     <string name="saldolock_tickerDescription">Karena kamu belum membayar tagihan Modal Toko selama %s bulan. Bayar sekarang</string>
-    <!--<string name="saldo_pembarayan_url">tokopedia://webview?url=https://www.tokopedia.com/fm/modal-toko/dashboard/pembayaran</string>-->
 
 </resources>

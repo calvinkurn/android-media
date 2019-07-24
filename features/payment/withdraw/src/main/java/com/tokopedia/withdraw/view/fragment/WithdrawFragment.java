@@ -66,6 +66,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.WithdrawRouter;
+import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
@@ -321,16 +322,15 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         withdrawButtonWrapper.setEnabled(false);
                         withdrawButtonWrapper.setClickable(false);
                         sellerSaldoWithDrawTvStatus = true;
-                        String webViewMTDashBoardUrl = getString(R.string.saldolock_info_url);
-                        SpannableString ss = new SpannableString(tvWithDrawInfo.getText());
-                        String tickerMsg = tvWithDrawInfo.getText().toString();
-                        int startIndex = tickerMsg.indexOf("di");
+                        SpannableString ss = new SpannableString(getString(R.string.saldolock_info_text));
+                        String tickerMsg = getString(R.string.saldolock_info_text);
+                        int startIndex = tickerMsg.indexOf("di sini");
                         tvWithDrawInfo.setMovementMethod(LinkMovementMethod.getInstance());
                         ss.setSpan(new ClickableSpan() {
                             @Override
                             public void onClick(@NonNull View view) {
                                 RouteManager.route(getContext(), String.format("%s?url=%s",
-                                        ApplinkConst.WEBVIEW, webViewMTDashBoardUrl));
+                                        ApplinkConst.WEBVIEW, WithdrawConstant.SALDOLOCK_INFO));
                             }
 
                             @Override
@@ -447,11 +447,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     public void showTicker() {
 
-        String webViewMTDashBoardUrl = getString(R.string.saldolock_pembayaran_url);
-        String tickerMsg = tvTickerMessage.getText().toString();
-        int startIndex = tickerMsg.indexOf('.')+1 ;
+        String tickerMsg = getString(R.string.saldolock_tickerDescription);
+        int startIndex = tickerMsg.indexOf("Bayar sekarang");
         String late=Integer.toString(mclLateCount);
-        tickerMsg = tickerMsg.replace("2", late);
+        tickerMsg  =  String.format(getResources().getString(R.string.saldolock_tickerDescription),late);
         SpannableString ss = new SpannableString(tickerMsg);
 
         tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
@@ -459,7 +458,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             @Override
             public void onClick(@NonNull View view) {
                 RouteManager.route(getContext(), String.format("%s?url=%s",
-                        ApplinkConst.WEBVIEW, webViewMTDashBoardUrl));
+                        ApplinkConst.WEBVIEW, WithdrawConstant.SALDOLOCK_PAYNOW_URL));
             }
 
             @Override
