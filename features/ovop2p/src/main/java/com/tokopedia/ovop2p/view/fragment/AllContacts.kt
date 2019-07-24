@@ -53,7 +53,7 @@ class AllContacts : BaseDaggerFragment(), View.OnClickListener, CoroutineScope {
         var id: Int = v?.id ?: -1
         if (id != -1) {
             when (id) {
-                R.id.scanqr_imgvw or R.id.scan_qr_header -> {
+                R.id.scanqr_imgvw -> {
                     startActivityForResult((context?.applicationContext as OvoP2pRouter)
                             .gotoQrScannerPage(true), Constants.Keys.CODE_QR_SCANNER_ACTIVITY)
                 }

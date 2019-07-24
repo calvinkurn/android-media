@@ -24,7 +24,9 @@ class AllContactsListCursorAdapter(context: Context, c: Cursor, autoRequery: Boo
 
     override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
         var view = mLayoutInflater.inflate(R.layout.all_contacts_item_layout, parent, false)
-        view.tag = ViewHolder(view)
+        if(view.tag == null) {
+            view.tag = ViewHolder(view)
+        }
         return view
     }
 
@@ -44,6 +46,9 @@ class AllContactsListCursorAdapter(context: Context, c: Cursor, autoRequery: Boo
         viewHolder.numberTxTv.text = phoneNum ?: ""
         if (!TextUtils.isEmpty(imageUri)) {
             viewHolder.usrIv.setImageURI(Uri.parse(imageUri))
+        }
+        else{
+            viewHolder.usrIv.setImageURI(Uri.EMPTY)
         }
     }
 

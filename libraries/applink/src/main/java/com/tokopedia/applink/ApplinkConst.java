@@ -32,7 +32,6 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
-    String OVO_P2P_TRANSFER = " tokopedia://ovop2ptransfer";
     String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
@@ -243,7 +242,7 @@ public interface ApplinkConst {
 
     String CATEGORY = "tokopedia://category";
     String QRSCAN = "tokopedia://scanqr";
-    String OVOP2PTRANSFERFORM = "tokopedia://ovop2ptransfer?phone";
+    String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
 
     interface WebViewUrl {

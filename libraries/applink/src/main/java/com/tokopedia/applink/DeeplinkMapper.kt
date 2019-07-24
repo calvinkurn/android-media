@@ -72,7 +72,6 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromSellerapp(deeplink: String): String {
         return when (deeplink) {
             ApplinkConst.SellerApp.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
-            ApplinkConst.OVO_P2P_TRANSFER -> return ApplinkConsInternalDigital.OVO_P2P_TRANSFER
             else -> ""
         }
     }
