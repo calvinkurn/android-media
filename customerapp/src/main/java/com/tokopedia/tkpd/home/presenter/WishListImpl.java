@@ -578,7 +578,8 @@ public class WishListImpl implements WishList {
 
     @Override
     public void refreshDataOnSearch(CharSequence query) {
-        mPaging.resetPage();
+        wishListView.displayLoadMore(false);
+        wishListView.loadDataChange();
         searchWishlist(query.toString());
     }
 
