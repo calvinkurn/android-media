@@ -34,7 +34,7 @@
     <string name="shop_total_favorite">%s pengikut</string>
     <string name="shop_product_item_price">Rp%s</string>
     <string name="shop_voucher_free_shipping">Ongkir Puas</string>
-    <string name="shop_voucher_cashback_percentage">Cashback %s\%</string>
+    <string name="shop_voucher_cashback_percentage">Cashback %s%%</string>
     <string name="shop_voucher_cashback_not_percentage">Cashback Rp%s</string>
     <string name="shop_status_closed">Toko Tutup</string>
     <string name="shop_status_moderated">Dalam Pengawasan</string>
