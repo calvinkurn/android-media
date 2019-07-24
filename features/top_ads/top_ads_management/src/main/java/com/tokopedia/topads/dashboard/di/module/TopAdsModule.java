@@ -53,7 +53,7 @@ public class TopAdsModule {
     @TopAdsScope
     @Provides
     public CacheApiInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
-        return new CacheApiInterceptor(context, new CacheApiTKPDResponseValidator<>(TopAdsResponseError.class));
+        return new CacheApiInterceptor(context, new CacheApiTKPDResponseValidator<TopAdsResponseError>(TopAdsResponseError.class));
     }
 
     @TopAdsManagementQualifier
