@@ -10,19 +10,18 @@ import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
@@ -203,9 +202,13 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 tv_room_facility.text = amenitiesString
             }
 
+            if (propertyDetail.extraInfo.content.isNotEmpty()) {
                 tv_additional_notes.setText(createHyperlinkText(propertyDetail.extraInfo.content,
                         propertyDetail.extraInfo.uri), TextView.BufferType.SPANNABLE)
                 tv_additional_notes.movementMethod = LinkMovementMethod.getInstance()
+            } else {
+                tv_additional_notes.visibility = View.GONE
+            }
 
             tv_request_label.text = propertyDetail.specialRequest.title
             tv_request_info.text = propertyDetail.specialRequest.content
@@ -260,6 +263,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                         e.printStackTrace()
                     }
                 }
+
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false

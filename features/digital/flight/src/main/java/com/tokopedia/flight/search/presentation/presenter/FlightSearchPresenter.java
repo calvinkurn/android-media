@@ -6,7 +6,6 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
-import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
@@ -167,7 +166,13 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new OnNextSubscriber<Long>() {
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() { }
+
+                    @Override
+                    public void onError(Throwable e) { }
+
                     @Override
                     public void onNext(Long aLong) {
                         getView().hideHorizontalProgress();
@@ -348,7 +353,13 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new OnNextSubscriber<Long>() {
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() { }
+
+                    @Override
+                    public void onError(Throwable e) { }
+
                     @Override
                     public void onNext(Long aLong) {
                         fetchSearchDataFromCloud(passDataViewModel, flightAirportCombineModelList);

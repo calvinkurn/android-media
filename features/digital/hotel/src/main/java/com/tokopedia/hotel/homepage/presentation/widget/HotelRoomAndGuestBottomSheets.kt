@@ -27,6 +27,9 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
         spvAdultCounter = view.findViewById(R.id.spv_hotel_adult) as SelectPassengerView
         btnSave = view.findViewById(R.id.btn_hotel_save_guest) as ButtonCompat
 
+        spvRoomCounter.hideSubtitle()
+        spvAdultCounter.hideSubtitle()
+
         spvRoomCounter.value = roomCount
         spvAdultCounter.value = adultCount
 
