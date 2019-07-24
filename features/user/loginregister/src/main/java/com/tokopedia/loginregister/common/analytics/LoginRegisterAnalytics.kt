@@ -485,14 +485,14 @@ class LoginRegisterAnalytics @Inject constructor() {
 
         TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), "Email")
         TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, "")
-        sendBranchRegisterEvent(email, "")
+        sendBranchRegisterEvent(email)
 
     }
 
-    private fun sendBranchRegisterEvent(email: String, phone: String) {
+    private fun sendBranchRegisterEvent(email: String) {
         val userData = UserData()
         userData.email = email
-        userData.phoneNumber = phone
+        userData.phoneNumber = ""
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData))
     }
 
