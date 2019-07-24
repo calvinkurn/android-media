@@ -529,8 +529,10 @@ class LoginRegisterAnalytics @Inject constructor() {
 
 
     fun eventSuccessLogin(context: Context?, actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
-        cashShield = CashShield(context)
-        cashShield.send()
+        if(context != null) {
+            cashShield = CashShield(context)
+            cashShield.send()
+        }
         when(actionLoginMethod){
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessLoginWithEmail(registerAnalytics)
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessLoginWithGoogle()

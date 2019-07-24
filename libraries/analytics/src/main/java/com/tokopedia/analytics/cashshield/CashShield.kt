@@ -5,7 +5,7 @@ import android.content.Context
 /**
  * @author okasurya on 2019-07-11.
  */
-class CashShield(val context: Context?) {
+class CashShield(val context: Context) {
     val cashShieldScope = CashShieldScope(context)
 
     fun send() {
