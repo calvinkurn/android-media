@@ -434,6 +434,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
          et_search.setOnClickListener { v ->
             RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
         }
+        et_search.hint = String.format(getString(R.string.pdp_search_hint),"")
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -1321,6 +1322,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }*/
 
         partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
+        productInfo?.run {
+            productDetailTracking.eventBranchItemView(this, (UserSession(activity)).userId)
+        }
 
     }
 
@@ -1592,6 +1596,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         productInfoViewModel.p2Login.value?.isWishlisted = true
         updateWishlist(true)
+        productDetailTracking.eventBranchAddToWishlist(productInfo, (UserSession(activity)).userId)
         //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", true)
     }

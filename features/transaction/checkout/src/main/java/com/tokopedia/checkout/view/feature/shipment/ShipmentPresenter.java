@@ -30,6 +30,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipe
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
+import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressPresenter;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
@@ -935,13 +936,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(CheckoutData checkoutData) {
-                NullCheckerKt.isContainNull(checkoutData, s -> {
-                    ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
-                    if (!BuildConfig.DEBUG) {
-                        Crashlytics.logException(exception);
-                    }
-                    return Unit.INSTANCE;
-                });
+
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
                     getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
@@ -1647,13 +1642,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 boolean resultSuccess = false;
                                 try {
                                     JSONObject jsonObject = new JSONObject(stringResponse);
-                                    NullCheckerKt.isContainNull(jsonObject, s -> {
-                                        ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
-                                        if (!BuildConfig.DEBUG) {
-                                            Crashlytics.logException(exception);
-                                        }
-                                        return Unit.INSTANCE;
-                                    });
 
                                     resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
                                             .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
@@ -1712,13 +1700,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onNext(SetShippingAddressData setShippingAddressData) {
-                                NullCheckerKt.isContainNull(setShippingAddressData, s -> {
-                                    ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
-                                    if (!BuildConfig.DEBUG) {
-                                        Crashlytics.logException(exception);
-                                    }
-                                    return Unit.INSTANCE;
-                                });
 
                                 getView().hideLoading();
                                 if (setShippingAddressData.isSuccess()) {

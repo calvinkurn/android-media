@@ -18,18 +18,22 @@ class ChangePasswordMapper : Func1<Response<ChangePasswordPojo>,
         var messageError: String = ""
 
         if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null) {
+                val pojo: ChangePasswordPojo = body.copy()
 
-            val pojo: ChangePasswordPojo = response.body().copy()
+                if (pojo.data != null
+                        && pojo.message_error?.isEmpty() == true) {
 
-            if (pojo.data != null
-                    && pojo.message_error?.isEmpty() == true) {
+                    return ChangePasswordDomain(
+                            pojo.data.is_success == IS_SUCCESS)
 
-                return ChangePasswordDomain(
-                        pojo.data.is_success == IS_SUCCESS)
-
-            } else if (pojo.message_error?.isNotEmpty()!!) {
-                messageError = response.body().message_error!![0]
-                throw MessageErrorException(messageError)
+                } else if (pojo.message_error?.isNotEmpty()!!) {
+                    messageError = body.message_error!![0]
+                    throw MessageErrorException(messageError)
+                } else {
+                    throw MessageErrorException("")
+                }
             } else {
                 throw MessageErrorException("")
             }
