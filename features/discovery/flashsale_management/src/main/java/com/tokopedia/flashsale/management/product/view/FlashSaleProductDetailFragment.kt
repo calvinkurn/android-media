@@ -57,7 +57,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
                 }
                 if (isEdit) {
                     etStock.setText(stockStr)
-                    etStock.setSelection(etStock.text.length)
+                    etStock.setSelection(etStock.text?.length ?: 0)
                 }
                 etStock.addTextChangedListener(stockTextWatcher)
                 isStockValid()
