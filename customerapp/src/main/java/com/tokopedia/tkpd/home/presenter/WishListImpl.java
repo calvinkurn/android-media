@@ -707,14 +707,6 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onNext(AddToCartDataModel addToCartResult) {
-                NullCheckerKt.isContainNull(addToCartResult, s -> {
-                    ContainNullException exception = new ContainNullException("Found " + s + " on " + WishListImpl.class.getSimpleName());
-                    if (!BuildConfig.DEBUG) {
-                        Crashlytics.logException(exception);
-                    }
-                    return Unit.INSTANCE;
-                });
-
                 wishListView.dismissProgressDialog();
                 if (addToCartResult.getStatus().equalsIgnoreCase(AddToCartDataModel.STATUS_OK) && addToCartResult.getData().getSuccess() == 1) {
                     wishListView.showAddToCartMessage(addToCartResult.getData().getMessage().get(0));
