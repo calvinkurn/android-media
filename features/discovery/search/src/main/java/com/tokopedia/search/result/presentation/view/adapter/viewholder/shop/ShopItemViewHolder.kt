@@ -34,6 +34,7 @@ class ShopItemViewHolder(
         private const val KEY_SHOP_IS_GOLD = 1
         private const val KEY_SHOP_STATUS_CLOSED = 2
         private const val KEY_SHOP_STATUS_MODERATED = 3
+        private const val KEY_SHOP_STATUS_INACTIVE = 4
         private const val SHOP_PRODUCT_ITEM_COUNT = 3
     }
 
@@ -198,11 +199,10 @@ class ShopItemViewHolder(
     }
 
     private fun initShopStatus(shopViewItem: ShopViewModel.ShopItem) {
-        if(shopViewItem.status == KEY_SHOP_STATUS_CLOSED) {
-            showShopStatus(getString(R.string.shop_status_closed))
-        }
-        else if(shopViewItem.status == KEY_SHOP_STATUS_MODERATED) {
-            showShopStatus(getString(R.string.shop_status_moderated))
+        when(shopViewItem.status) {
+            KEY_SHOP_STATUS_CLOSED -> showShopStatus(getString(R.string.shop_status_closed))
+            KEY_SHOP_STATUS_MODERATED -> showShopStatus(getString(R.string.shop_status_moderated))
+            KEY_SHOP_STATUS_INACTIVE -> showShopStatus(getString(R.string.shop_status_inactive))
         }
     }
 

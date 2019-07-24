@@ -523,11 +523,6 @@ public abstract class SearchSectionFragment
 
     }
 
-    protected void disableSwipeRefresh() {
-        refreshLayout.setEnabled(false);
-        refreshLayout.setRefreshing(false);
-    }
-
     protected void onSwipeToRefresh() {
 
     }
