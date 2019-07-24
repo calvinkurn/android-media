@@ -3,7 +3,9 @@ package com.tokopedia.core.webview.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -536,6 +538,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
+
             if (url.contains(HCI_CAMERA_KTP)) {
                 mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
                 startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
@@ -546,10 +549,14 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 return true;
             } else if (getActivity() != null
                     && url.contains(PARAM_EXTERNAL)) {
-                Intent destination = new Intent(Intent.ACTION_VIEW);
-                destination.setData(Uri.parse(url));
-                startActivity(destination);
-                return true;
+                try {
+                    Intent destination = new Intent(Intent.ACTION_VIEW);
+                    destination.setData(Uri.parse(url));
+                    startActivity(destination);
+                    return true;
+                } catch (ActivityNotFoundException e) {
+                    return false;
+                }
             } else if (getActivity() != null
                     && url.equalsIgnoreCase(PARAM_WEBVIEW_BACK)
                     && !getActivity().isTaskRoot()) {
@@ -611,6 +618,17 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean appIsInstalled(String url) {
+        PackageManager pm = getActivity().getPackageManager();
+
+        try {
+            pm.getPackageInfo(url, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
     }
 
