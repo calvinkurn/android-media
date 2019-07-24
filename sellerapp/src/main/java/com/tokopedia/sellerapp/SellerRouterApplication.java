@@ -99,6 +99,7 @@ import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActiv
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
+import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
@@ -143,6 +144,7 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.seller.purchase.detail.activity.OrderDetailActivity;
+import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
@@ -1507,17 +1509,17 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {
-        return null;
+        return UploadAwbLogisticActivity.newInstance(this, urlUpload);
     }
 
     @Override
     public boolean isToggleBuyAgainOn() {
-        return false;
+        return remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_ENABLE_BUY_AGAIN, false);
     }
 
     @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
-        return null;
+        return OrderHistoryActivity.createInstance(context, orderId, 1);
     }
 
     @Override
