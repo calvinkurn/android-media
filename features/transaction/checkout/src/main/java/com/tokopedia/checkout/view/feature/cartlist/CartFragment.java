@@ -377,10 +377,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (position < cartAdapter.getItemCount()) {
-                    if (cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
-                        return 1;
-                    }
+                if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
+                    return 1;
                 }
                 return 2;
             }
