@@ -17,7 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
@@ -94,8 +94,12 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
                 titleCardView.getContext(), LinearLayoutManager.VERTICAL, false));
         GMMarketInsightAdapter = new GMMarketInsightAdapter(new ArrayList<GetKeyword.SearchKeyword>());
         recyclerView.setAdapter(GMMarketInsightAdapter);
-        ImageHandler imageHandler = new ImageHandler(view.getContext());
-        imageHandler.loadImage(imageViewLock, IMG_URL_ICON_LOCK_WHITE_GREEN);
+        ImageHandler.loadImage(
+                itemView.getContext(),
+                imageViewLock,
+                IMG_URL_ICON_LOCK_WHITE_GREEN,
+                -1
+        );
     }
 
     private SpannableStringBuilder createDescriptionWithSpannable(

@@ -484,6 +484,7 @@ public class UserSession implements UserSessionInterface {
         editor.putString(PROFILE_PICTURE, null);
         editor.putString(GC_TOKEN, "");
         editor.putString(SHOP_AVATAR, "");
+        editor.putBoolean(IS_POWER_MERCHANT_IDLE,false);
         editor.apply();
     }
 }

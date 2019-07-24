@@ -41,7 +41,7 @@
         style="@style/Button.Submit.Green.Full"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:text="Button Text"
+        android:text="@string/gm_statistic_upgrade_shop"
         android:layout_marginTop="@dimen/dp_12"
         app:buttonCompatSize="big"
         />

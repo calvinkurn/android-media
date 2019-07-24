@@ -92,11 +92,13 @@ class MerchantCommonBottomSheet : BottomSheets() {
     override fun configView(parentView: View?) {
         super.configView(parentView)
         val displayMetrics = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val widthSpec = View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.EXACTLY)
-        parentView?.post {
-            parentView.measure(widthSpec, 0)
-            updateHeight(parentView.measuredHeight)
+        activity?.let {
+            it.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            val widthSpec = View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.EXACTLY)
+            parentView?.post {
+                parentView.measure(widthSpec, 0)
+                updateHeight(parentView.measuredHeight)
+            }
         }
     }
 

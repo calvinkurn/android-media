@@ -110,10 +110,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public SellerDashboardPresenter sellerDashboardPresenter;
 
     @Inject
-    public UserSessionInterface userSession;
+    PowerMerchantTracking powerMerchantTracking;
 
     @Inject
-    PowerMerchantTracking powerMerchantTracking;
+    public UserSessionInterface userSession;
 
     private TickerView tickerView;
     private LoadingStateView headerShopInfoLoadingStateView;

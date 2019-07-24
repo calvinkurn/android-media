@@ -54,6 +54,8 @@ class ShopSettingsEtalaseListFragment :
 {
     @Inject
     lateinit var shopSettingEtalaseListPresenter: ShopSettingEtalaseListPresenter
+    @Inject
+    lateinit var userSession: UserSessionInterface
     private var shopEtalaseViewModels: ArrayList<ShopEtalaseViewModel>? = null
     private var shopEtalaseAdapter: ShopEtalaseAdapter? = null
     private var progressDialog: ProgressDialog? = null
@@ -62,7 +64,6 @@ class ShopSettingsEtalaseListFragment :
     private var needReload: Boolean = false
     private var recyclerView: RecyclerView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
-    private var userSession: UserSessionInterface? = null
 
 
     private var onShopSettingsEtalaseFragmentListener: OnShopSettingsEtalaseFragmentListener? = null
@@ -102,7 +103,6 @@ class ShopSettingsEtalaseListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hideSearchInputView()
-        userSession = UserSession(activity)
         searchInputView.setSearchHint(getString(R.string.search_etalase))
     }
 
@@ -279,7 +279,7 @@ class ShopSettingsEtalaseListFragment :
     }
 
     private fun isIdlePowerMerchant(): Boolean {
-        return userSession!!.isPowerMerchantIdle
+        return userSession.isPowerMerchantIdle
     }
 
     private fun addIdlePowerMerchantTicker() {

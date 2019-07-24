@@ -35,13 +35,12 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var presenter: ShopSettingsEtalaseAddEditPresenter
-
+    @Inject
+    lateinit var userSession: UserSessionInterface
     private var isEdit: Boolean = false
     private var etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()
 
     private var isValid = true
-    lateinit var userSession: UserSessionInterface
-
 
     companion object {
         private const val PARAM_IS_EDIT = "IS_EDIT"
@@ -94,7 +93,6 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
                 }
             }
         })
-        userSession = UserSession(activity)
     }
 
     fun saveAddEditEtalase() {

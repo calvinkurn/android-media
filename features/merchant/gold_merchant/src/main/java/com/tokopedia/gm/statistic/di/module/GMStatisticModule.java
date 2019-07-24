@@ -41,6 +41,8 @@ import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoReposi
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -137,5 +139,11 @@ public class GMStatisticModule {
     @Provides
     public GMModuleRouter provideGmModuleRouter(@ApplicationContext Context context){
         return (GMModuleRouter)context;
+    }
+
+    @GMStatisticScope
+    @Provides
+    UserSessionInterface provideUserSession(UserSession userSession){
+        return userSession;
     }
 }

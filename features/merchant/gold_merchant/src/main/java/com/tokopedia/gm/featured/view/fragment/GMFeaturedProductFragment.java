@@ -52,6 +52,7 @@ import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,8 +88,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private int featuredProductTypeView = GMFeaturedProductTypeView.DEFAULT_DISPLAY;
     private List<GMFeaturedProductModel> gmFeaturedProductModelListFromServer;
     private List<Pair<Integer, GMFeaturedProductModel>> gmTemporaryDelete;
-    private UserSession userSession;
-    private final String FEATURE_FEATURED_PRODUCT = "Produk Unggulan";
+    @Inject
+    private UserSessionInterface userSession;
 
     public static GMFeaturedProductFragment createInstance() {
         return new GMFeaturedProductFragment();
@@ -118,7 +119,9 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                         if (!isPowerMerchant()) {
                             RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
                         } else if (isIdlePowerMerchant()) {
-                            showIdlePowerMerchantBottomSheet(FEATURE_FEATURED_PRODUCT);
+                            showIdlePowerMerchantBottomSheet(
+                                    getString(R.string.gm_featured_product_feature_name)
+                            );
                         }
                     }
 

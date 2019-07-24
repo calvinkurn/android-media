@@ -16,20 +16,23 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.old.DataBindAdapter;
 import com.tokopedia.gm.R;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_ICON_LOCK_WHITE_GREEN;
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_FEATURED_PRODUCT;
 
-@Deprecated
 public class GMFeatureProductEmptyDataBinder extends BaseEmptyDataBinder {
 
     private String imageUrl;
@@ -39,6 +42,8 @@ public class GMFeatureProductEmptyDataBinder extends BaseEmptyDataBinder {
     private View viewOverlayRegularMerchant;
     private Context context;
     private GMFeaturedProductEmptyDataBinderListener gmFeaturedProductEmptyDataBinderListener;
+    @Inject
+    private UserSessionInterface userSession;
 
     public interface GMFeaturedProductEmptyDataBinderListener {
         void buttonOverlayClicked();
@@ -63,14 +68,13 @@ public class GMFeatureProductEmptyDataBinder extends BaseEmptyDataBinder {
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
         context = parent.getContext();
-        ImageHandler imageHandler = new ImageHandler(parent.getContext());
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gm_featured_empty_list, parent, false);
         ImageView imageViewEmptyResult = view.findViewById(R.id.no_result_image);
         viewOverlayRegularMerchant = view.findViewById(R.id.layout_overlay);
         textViewOverlay = view.findViewById(R.id.text_view_overlay_description);
         imageViewOverlay = view.findViewById(R.id.image_view_overlay);
         buttonOverlay = view.findViewById(R.id.button_redirect_to);
-        imageHandler.loadImage(imageViewEmptyResult, imageUrl);
+        ImageHandler.loadImage(context, imageViewEmptyResult, imageUrl, -1);
         if (!isPowerMerchant() || isIdlePowerMerchant()) {
             showUpgradeOverlay();
         }
@@ -91,17 +95,15 @@ public class GMFeatureProductEmptyDataBinder extends BaseEmptyDataBinder {
             }
         });
         buttonOverlay.setText(context.getString(R.string.gm_featured_product_overlay_upgrade_shop));
-        ImageHandler imageHandler = new ImageHandler(context);
-        imageHandler.loadImage(imageViewOverlay, IMG_URL_ICON_LOCK_WHITE_GREEN);
-
+        ImageHandler.loadImage(context,imageViewOverlay, IMG_URL_ICON_LOCK_WHITE_GREEN,1);
     }
 
     private boolean isPowerMerchant() {
-        return new UserSession(context).isGoldMerchant();
+        return userSession.isGoldMerchant();
     }
 
     private boolean isIdlePowerMerchant() {
-        return new UserSession(context).isPowerMerchantIdle();
+        return userSession.isPowerMerchantIdle();
     }
 
     private SpannableStringBuilder createSpannableLink(
@@ -111,7 +113,7 @@ public class GMFeatureProductEmptyDataBinder extends BaseEmptyDataBinder {
         SpannableString spannableText = new SpannableString(readMoreText);
         int startIndex = 0;
         int endIndex = spannableText.length();
-        int color = context.getResources().getColor(R.color.merchant_green);
+        int color = MethodChecker.getColor(context,R.color.merchant_green);
         spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override

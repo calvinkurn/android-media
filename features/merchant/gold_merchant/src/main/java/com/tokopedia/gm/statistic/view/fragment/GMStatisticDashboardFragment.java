@@ -37,6 +37,7 @@ import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMDashboardPresenter;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -58,6 +59,9 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
+    @Inject
+    UserSessionInterface userSession;
+
 
     private NestedScrollView nestedScrollView;
 
@@ -67,9 +71,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private GMStatisticTransactionViewHolder gmStatisticTransactionViewHolder;
     private GmStatisticBuyerViewHolder gmStatisticBuyerViewHolder;
     private GMStatisticMarketInsightViewHolder GMStatisticMarketInsightViewHolder;
-    private UserSession userSession;
-    public final String FEATURE_MARKET_INSIGHT = "Wawasan Pasar";
-
 
     private SnackbarRetry snackbarRetry;
 
@@ -239,7 +240,9 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onButtonRedirectToClicked() {
         if (isIdlePowerMerchant())
-            showIdlePowerMerchantBottomSheet(FEATURE_MARKET_INSIGHT);
+            showIdlePowerMerchantBottomSheet(
+                    getString(R.string.gm_statistic_feature_name)
+            );
         else if (!isPowerMerchant())
             startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(getActivity()));
 

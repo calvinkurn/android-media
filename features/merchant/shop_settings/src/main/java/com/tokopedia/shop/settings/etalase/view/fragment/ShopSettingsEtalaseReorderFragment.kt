@@ -47,6 +47,8 @@ class ShopSettingsEtalaseReorderFragment :
 {
     @Inject
     lateinit var shopSettingEtalaseListReorderPresenter: ShopSettingEtalaseListReorderPresenter
+    @Inject
+    lateinit var userSession: UserSessionInterface
     private var shopEtalaseModels: ArrayList<ShopEtalaseViewModel>? = null
     private var shopEtalaseModelsDefault: ArrayList<ShopEtalaseViewModel>? = null
     private var progressDialog: ProgressDialog? = null
@@ -57,7 +59,6 @@ class ShopSettingsEtalaseReorderFragment :
 
     private var listener: OnShopSettingsEtalaseReorderFragmentListener? = null
     private var recyclerViewDefault: RecyclerView? = null
-    private var userSession: UserSessionInterface? = null
 
 
     interface OnShopSettingsEtalaseReorderFragmentListener {
@@ -103,7 +104,6 @@ class ShopSettingsEtalaseReorderFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userSession = UserSession(activity)
         val itemTouchHelperCallback = SimpleItemTouchHelperCallback(adapter)
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper!!.attachToRecyclerView(recyclerView)
@@ -121,7 +121,7 @@ class ShopSettingsEtalaseReorderFragment :
     }
 
     private fun isIdlePowerMerchant(): Boolean {
-        return userSession!!.isGoldMerchant && userSession!!.isPowerMerchantIdle
+        return userSession.isGoldMerchant && userSession.isPowerMerchantIdle
     }
 
     private fun addIdlePowerMerchantTicker() {

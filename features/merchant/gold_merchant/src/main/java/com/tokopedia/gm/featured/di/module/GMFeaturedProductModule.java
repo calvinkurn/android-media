@@ -16,6 +16,8 @@ import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoReposi
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,5 +55,11 @@ public class GMFeaturedProductModule {
     @Provides
     ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit) {
         return retrofit.create(ShopApi.class);
+    }
+
+    @GMFeaturedProductScope
+    @Provides
+    UserSessionInterface provideUserSession(UserSession userSession){
+        return userSession;
     }
 }

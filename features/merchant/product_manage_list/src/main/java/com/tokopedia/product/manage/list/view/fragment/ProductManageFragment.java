@@ -115,10 +115,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public static final String ERROR_CODE_LIMIT_CASHBACK = "422";
     public static final int REQUEST_CODE_ADD_IMAGE = 3859;
     public static final int INSTAGRAM_SELECT_REQUEST_CODE = 3860;
-    public static final String FEATURE_CASHBACK = "Cashback";
 
     @Inject
     ProductManagePresenter productManagePresenter;
+    @Inject
+    UserSessionInterface userSession;
     private BottomActionView bottomActionView;
     private ProgressDialog progressDialog;
     private CoordinatorLayout coordinatorLayout;
@@ -133,8 +134,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private Boolean goldMerchant;
     private boolean isOfficialStore;
     private String shopDomain;
-    private UserSessionInterface userSession;
-
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -532,9 +531,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public void onErrorSetCashback(Throwable t, final String productId, final int cashback) {
         if (t instanceof MessageErrorException && ((MessageErrorException) t).getErrorCode().equals(ERROR_CODE_LIMIT_CASHBACK)) {
             if (isIdlePowerMerchant()) {
-                showIdlePowerMerchantBottomSheet(FEATURE_CASHBACK);
+                showIdlePowerMerchantBottomSheet(
+                        getString(R.string.product_manage_feature_name_cashback)
+                );
             } else if (!isPowerMerchant()) {
-                showRegularMerchantBottomSheet(FEATURE_CASHBACK);
+                showRegularMerchantBottomSheet(
+                        getString(R.string.product_manage_feature_name_cashback)
+                );
             } else {
                 NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
                         ErrorHandler.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
