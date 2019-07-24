@@ -80,13 +80,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvErrorFormValidation;
     private TextView tvErrorFormRemarkValidation;
 
-    /*private LinearLayout layoutError;
-    private TextView tvErrorTitle;
-    private TextView tvErrorDescription;
-    private LinearLayout layoutWarning;
-    private TextView tvWarningTitle;
-    private TextView tvWarningDescription;*/
-
     private LinearLayout layoutError;
     private Ticker tickerError;
     private LinearLayout layoutWarning;
@@ -134,13 +127,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option);
         this.etRemark = itemView.findViewById(R.id.et_remark);
         this.btnDelete = itemView.findViewById(R.id.btn_delete_cart);
-
-        /*this.layoutError = itemView.findViewById(R.id.layout_error);
-        this.tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
-        this.tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
-        this.layoutWarning = itemView.findViewById(R.id.layout_warning);
-        this.tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
-        this.tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);*/
 
         this.layoutError = itemView.findViewById(R.id.layout_error);
         this.tickerError = itemView.findViewById(R.id.ticker_error);
@@ -641,16 +627,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tickerError.setVisibility(View.VISIBLE);
             layoutError.setVisibility(View.VISIBLE);
 
-            /*tvErrorTitle.setText(data.getCartItemData().getErrorMessageTitle());
-            String errorDescription = data.getCartItemData().getErrorMessageDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
-                tvErrorDescription.setText(errorDescription);
-                tvErrorDescription.setVisibility(View.VISIBLE);
-            } else {
-                tvErrorDescription.setVisibility(View.GONE);
-            }
-            layoutError.setVisibility(View.VISIBLE);*/
-
         } else {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart);
@@ -676,21 +652,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tickerWarning.setVisibility(View.GONE);
             layoutWarning.setVisibility(View.GONE);
         }
-
-
-        /*if (data.getCartItemData().isWarning()) {
-            tvWarningTitle.setText(data.getCartItemData().getWarningMessageTitle());
-            String warningDescription = data.getCartItemData().getWarningMessageDescription();
-            if (!TextUtils.isEmpty(warningDescription)) {
-                tvWarningDescription.setText(warningDescription);
-                tvWarningDescription.setVisibility(View.VISIBLE);
-            } else {
-                tvWarningDescription.setVisibility(View.GONE);
-            }
-            layoutWarning.setVisibility(View.VISIBLE);
-        } else {
-            layoutWarning.setVisibility(View.GONE);
-        }*/
     }
 
     private void checkQtyMustDisabled(CartItemHolderData cartItemHolderData, int qty) {

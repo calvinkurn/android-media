@@ -47,12 +47,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private ImageView imgFulfillment;
     private Typography tvFulfillDistrict;
     private RecyclerView rvCartItem;
-    /*private LinearLayout layoutError;
-    private TextView tvErrorTitle;
-    private TextView tvErrorDescription;
-    private LinearLayout layoutWarning;
-    private TextView tvWarningTitle;
-    private TextView tvWarningDescription;*/
 
     private LinearLayout layoutError;
     private Ticker tickerError;
@@ -80,13 +74,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         rvCartItem = itemView.findViewById(R.id.rv_cart_item);
-
-        /*layoutError = itemView.findViewById(R.id.layout_error);
-        tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
-        tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
-        layoutWarning = itemView.findViewById(R.id.layout_warning);
-        tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
-        tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);*/
 
         layoutError = itemView.findViewById(R.id.layout_error);
         tickerError = itemView.findViewById(R.id.ticker_error);
@@ -265,16 +252,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_disabled_item));
             llShopContainer.setBackgroundResource(R.drawable.bg_error_shop);
 
-            /*tvErrorTitle.setText(data.getShopGroupData().getErrorTitle());
-            String errorDescription = data.getShopGroupData().getErrorDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
-                tvErrorDescription.setText(errorDescription);
-                tvErrorDescription.setVisibility(View.VISIBLE);
-            } else {
-                tvErrorDescription.setVisibility(View.GONE);
-            }
-            layoutError.setVisibility(View.VISIBLE);*/
-
             String errorDescription = data.getShopGroupData().getErrorDescription();
             if (!TextUtils.isEmpty(errorDescription)) {
                 tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
@@ -300,20 +277,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderWarningItemHeader(CartShopHolderData data) {
-        /*if (data.getShopGroupData().isWarning()) {
-            tvWarningTitle.setText(data.getShopGroupData().getWarningTitle());
-            String warningDescription = data.getShopGroupData().getWarningDescription();
-            if (!TextUtils.isEmpty(warningDescription)) {
-                tvWarningDescription.setText(warningDescription);
-                tvWarningDescription.setVisibility(View.VISIBLE);
-            } else {
-                tvWarningDescription.setVisibility(View.GONE);
-            }
-            layoutWarning.setVisibility(View.VISIBLE);
-        } else {
-            layoutWarning.setVisibility(View.GONE);
-        }*/
-
         if (data.getShopGroupData().isWarning()) {
             String warningDescription = data.getShopGroupData().getWarningDescription();
             if (!TextUtils.isEmpty(warningDescription)) {
