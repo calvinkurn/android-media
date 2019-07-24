@@ -5,6 +5,13 @@ import com.tokopedia.csat_rating.R;
 
 public class ThirdScreenState extends ScreenState {
 
+    private String mCaption;
+    private String mQuestion;
+
+    public ThirdScreenState(String mCaption, String mQuestion) {
+        this.mCaption = mCaption;
+        this.mQuestion = mQuestion;
+    }
 
     @Override
     public int getFirstEmoji() {
@@ -23,12 +30,12 @@ public class ThirdScreenState extends ScreenState {
 
     @Override
     public String getMessage() {
-        return "Cukup Memuaskan";
+        return mCaption;
     }
 
     @Override
     public String getQuestion() {
-        return "Apa yang bisa ditingkatkan dari layanan kami?";
+        return mQuestion;
     }
 
     @Override

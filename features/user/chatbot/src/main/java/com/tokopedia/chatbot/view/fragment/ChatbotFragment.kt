@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -140,6 +142,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun showCsatRatingView(visiblity: Int) {
+        chatbot_view_help_rate.txt_help_title.setText(mCsatResponse.attachment?.attributes?.title)
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(new_comment.getWindowToken(), 0)
         reply_box.visibility = if (visiblity == View.VISIBLE) View.GONE else View.VISIBLE
         chatbot_view_help_rate.visibility = View.VISIBLE
     }
@@ -151,7 +156,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onClickEmoji(number: Int) {
         startActivityForResult(ChatBotProvideRatingActivity
-                .getInstance(context!!, number, mCsatResponse.attachment?.attributes?.reasons as List<String>), REQUEST_SUBMIT_FEEDBACK)
+                .getInstance(context!!, number,mCsatResponse), REQUEST_SUBMIT_FEEDBACK)
     }
 
     override fun getUserSession(): UserSessionInterface {

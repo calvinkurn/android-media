@@ -11,12 +11,21 @@ import com.tokopedia.csat_rating.presenter.screenState.ScreenState;
 import com.tokopedia.csat_rating.presenter.screenState.SecondScreenState;
 import com.tokopedia.csat_rating.presenter.screenState.ThirdScreenState;
 
+import java.util.ArrayList;
+
 public class BaseProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideRatingContract.ProvideRatingView>  implements ProvideRatingContract.ProvideRatingPresenter {
 
     public static final String EMOJI_STATE = "emoji_state";
     public static final String SELECTED_ITEM = "selected_items";
+    public static final int FIRST_EMOGI = 1;
+    public static final int SECOND_EMOGI = 2;
+    public static final int THIRD_EMOGI = 3;
+    public static final int FOURTH_EMOGI = 4;
+    public static final int FIFTH_EMOGI = 5;
+    private ArrayList<String> captionsList;
+    private ArrayList<String> questionList;
 
-    private int emojiState = 0;
+    protected int emojiState = 0;
 
     public BaseProvideRatingFragmentPresenter() {
     }
@@ -24,6 +33,8 @@ public class BaseProvideRatingFragmentPresenter extends BaseDaggerPresenter<Prov
     @Override
     public void attachView(ProvideRatingContract.ProvideRatingView view) {
         super.attachView(view);
+        captionsList = getView().getcaption();
+        questionList = getView().getQuestion();
         emojiState = getView().getSelectedEmoji();
         updateScreenState();
         getView().setFilterList(getView().getReasonList());
@@ -32,20 +43,20 @@ public class BaseProvideRatingFragmentPresenter extends BaseDaggerPresenter<Prov
     public ScreenState getScreenState(int emoji) {
         ScreenState screenState = null;
         switch (emoji) {
-            case 1:
-                screenState = new FirstScreenState();
+            case FIRST_EMOGI:
+                screenState = new FirstScreenState(captionsList.get(FIRST_EMOGI-1),questionList.get(FIRST_EMOGI-1));
                 break;
-            case 2:
-                screenState = new SecondScreenState();
+            case SECOND_EMOGI:
+                screenState = new SecondScreenState(captionsList.get(SECOND_EMOGI-1),questionList.get(SECOND_EMOGI-1));
                 break;
-            case 3:
-                screenState = new ThirdScreenState();
+            case THIRD_EMOGI:
+                screenState = new ThirdScreenState(captionsList.get(THIRD_EMOGI-1),questionList.get(THIRD_EMOGI-1));
                 break;
-            case 4:
-                screenState = new FourthScreenState();
+            case FOURTH_EMOGI:
+                screenState = new FourthScreenState(captionsList.get(FOURTH_EMOGI-1),questionList.get(FOURTH_EMOGI-1));
                 break;
-            case 5:
-                screenState = new FifthScreenState();
+            case FIFTH_EMOGI:
+                screenState = new FifthScreenState(captionsList.get(FIFTH_EMOGI-1),questionList.get(FIFTH_EMOGI-1));
                 break;
 
         }

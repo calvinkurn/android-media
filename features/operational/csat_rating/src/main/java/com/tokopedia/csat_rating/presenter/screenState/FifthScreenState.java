@@ -4,6 +4,14 @@ import com.tokopedia.csat_rating.R;
 
 public class FifthScreenState extends ScreenState {
 
+    private String mCaption;
+    private String mQuestion;
+
+    public FifthScreenState(String mCaption, String mQuestion) {
+        this.mCaption = mCaption;
+        this.mQuestion = mQuestion;
+    }
+
     @Override
     public int getFirstEmoji() {
         return getFifthEmoji();
@@ -36,11 +44,11 @@ public class FifthScreenState extends ScreenState {
 
     @Override
     public String getMessage() {
-        return "Sangat Memuaskan";
+        return mCaption;
     }
 
     @Override
     public String getQuestion() {
-        return "Apa yang sebaiknya dipertahankan dari layanan kami?";
+        return mQuestion;
     }
 }

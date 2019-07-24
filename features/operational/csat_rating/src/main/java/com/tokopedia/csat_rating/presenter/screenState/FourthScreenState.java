@@ -3,6 +3,15 @@ package com.tokopedia.csat_rating.presenter.screenState;
 import com.tokopedia.csat_rating.R;
 
 public class FourthScreenState extends ScreenState {
+
+    private String mCaption;
+    private String mQuestion;
+
+    public FourthScreenState(String mCaption, String mQuestion) {
+        this.mCaption = mCaption;
+        this.mQuestion = mQuestion;
+    }
+
     @Override
     public int getFirstEmoji() {
         return getFourthEmoji();
@@ -30,11 +39,11 @@ public class FourthScreenState extends ScreenState {
 
     @Override
     public String getMessage() {
-        return "Memuaskan";
+        return mCaption;
     }
 
     @Override
     public String getQuestion() {
-        return "Apa yang bisa ditingkatkan dari layanan kami?";
+        return mQuestion;
     }
 }

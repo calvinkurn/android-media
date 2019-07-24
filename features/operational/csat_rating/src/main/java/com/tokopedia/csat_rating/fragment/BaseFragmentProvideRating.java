@@ -36,6 +36,12 @@ import java.util.List;
 public class BaseFragmentProvideRating extends BaseDaggerFragment implements ProvideRatingContract.ProvideRatingView {
 
 
+    public static final String CSAT_TITLE = "csatTitle";
+    public static final String CLICKED_EMOJI = "clicked_emoji";
+    public static final String PARAM_OPTIONS_CSAT = "options_csat";
+    public static final String UPDATING = "Updating";
+    public static final String CAPTION_LIST = "captionList";
+    public static final String QUESTION_LIST = "questionList";
     private ProvideRatingContract.ProvideRatingPresenter presenter;
     private CsatComponent component;
     private TextView mTxtHelpTitle;
@@ -44,10 +50,6 @@ public class BaseFragmentProvideRating extends BaseDaggerFragment implements Pro
     private TextView mTxtFeedbackQuestion;
     private TextView mTxtFinished;
     private ProgressDialog progress;
-    public static final String CLICKED_EMOJI = "clicked_emoji";
-    public static final String PARAM_OPTIONS_CSAT = "options_csat";
-
-    public static final String UPDATING = "Updating";
     List<String> selectedOption = new ArrayList<>();
     private CustomQuickOptionView mFilterReview;
 
@@ -78,6 +80,7 @@ public class BaseFragmentProvideRating extends BaseDaggerFragment implements Pro
         initView(view);
         presenter = component.getProvideRatingPresenter();
         presenter.attachView(this);
+        mTxtHelpTitle.setText(getArguments().getString(CSAT_TITLE));
         disableSubmitButton();
     }
 
@@ -240,6 +243,16 @@ public class BaseFragmentProvideRating extends BaseDaggerFragment implements Pro
     public void onSuccessSubmit(Intent intent) {
         getActivity().setResult(Activity.RESULT_OK,intent);
         getActivity().finish();
+    }
+
+    @Override
+    public ArrayList<String> getcaption() {
+        return getArguments().getStringArrayList(CAPTION_LIST);
+    }
+
+    @Override
+    public ArrayList<String> getQuestion() {
+        return getArguments().getStringArrayList(QUESTION_LIST);
     }
 
 

@@ -5,6 +5,14 @@ import com.tokopedia.csat_rating.R;
 
 public class SecondScreenState extends ScreenState {
 
+    private String mCaption;
+    private String mQuestion;
+
+    public SecondScreenState(String mCaption,String question) {
+        this.mCaption = mCaption;
+        mQuestion = question;
+    }
+
     @Override
     public int getFirstEmoji() {
         return getSecondEmoji();
@@ -17,6 +25,11 @@ public class SecondScreenState extends ScreenState {
 
     @Override
     public String getMessage() {
-        return "Kurang Memuaskan";
+        return mCaption;
+    }
+
+    @Override
+    public String getQuestion() {
+        return mQuestion;
     }
 }

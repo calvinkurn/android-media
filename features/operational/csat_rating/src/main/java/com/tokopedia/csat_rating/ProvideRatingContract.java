@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ProvideRatingContract {
@@ -25,6 +26,9 @@ public interface ProvideRatingContract {
         public String getSelectedItem();
         List<BadCsatReasonListItem> getReasonList();
         void onSuccessSubmit(Intent intent);
+        public ArrayList<String> getcaption();
+        public ArrayList<String> getQuestion();
+
 
         void showProgress();
 

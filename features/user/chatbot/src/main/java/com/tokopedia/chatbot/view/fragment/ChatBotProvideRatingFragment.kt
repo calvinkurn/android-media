@@ -15,6 +15,7 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
 
     companion object {
         val BOT_OTHER_REASON= "bot_other_reason"
+        val OTHER_REASON_TITLE= "otherReasonTitle"
         fun newInstance(bundle: Bundle?): ChatBotProvideRatingFragment {
             val fragment = ChatBotProvideRatingFragment()
             fragment.arguments = bundle
@@ -30,6 +31,7 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bot_reason_text.setText(arguments?.getString(OTHER_REASON_TITLE))
         et_state.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 

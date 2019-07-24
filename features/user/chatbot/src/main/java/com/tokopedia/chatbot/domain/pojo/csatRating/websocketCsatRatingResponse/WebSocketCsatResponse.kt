@@ -1,5 +1,7 @@
 package com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class WebSocketCsatResponse(
@@ -51,4 +53,56 @@ data class WebSocketCsatResponse(
 
 	@SerializedName("is_bot")
 	val isBot: Boolean? = null
-)
+) : Parcelable {
+	constructor(parcel: Parcel) : this(
+			parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+			parcel.readString(),
+			parcel.readString(),
+			parcel.readParcelable(Message::class.java.classLoader),
+			parcel.readValue(Int::class.java.classLoader) as? Int,
+			parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+			parcel.readString(),
+			parcel.readString(),
+			parcel.readValue(Int::class.java.classLoader) as? Int,
+			parcel.readParcelable(Attachment::class.java.classLoader),
+			parcel.readValue(Int::class.java.classLoader) as? Int,
+			parcel.readValue(Int::class.java.classLoader) as? Int,
+			parcel.readString(),
+			parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+			parcel.readValue(Int::class.java.classLoader) as? Int,
+			parcel.readValue(Boolean::class.java.classLoader) as? Boolean) {
+	}
+
+	override fun writeToParcel(parcel: Parcel, flags: Int) {
+		parcel.writeValue(isOpposite)
+		parcel.writeString(thumbnail)
+		parcel.writeString(fromRole)
+		parcel.writeParcelable(message, flags)
+		parcel.writeValue(fromUid)
+		parcel.writeValue(showRating)
+		parcel.writeString(startTime)
+		parcel.writeString(fromUserName)
+		parcel.writeValue(ratingStatus)
+		parcel.writeParcelable(attachment, flags)
+		parcel.writeValue(toUid)
+		parcel.writeValue(attachmentId)
+		parcel.writeString(from)
+		parcel.writeValue(toBuyer)
+		parcel.writeValue(msgId)
+		parcel.writeValue(isBot)
+	}
+
+	override fun describeContents(): Int {
+		return 0
+	}
+
+	companion object CREATOR : Parcelable.Creator<WebSocketCsatResponse> {
+		override fun createFromParcel(parcel: Parcel): WebSocketCsatResponse {
+			return WebSocketCsatResponse(parcel)
+		}
+
+		override fun newArray(size: Int): Array<WebSocketCsatResponse?> {
+			return arrayOfNulls(size)
+		}
+	}
+}

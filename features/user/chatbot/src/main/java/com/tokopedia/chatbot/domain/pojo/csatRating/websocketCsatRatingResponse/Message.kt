@@ -1,5 +1,7 @@
 package com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class Message(
@@ -21,4 +23,36 @@ data class Message(
 
 	@SerializedName("timestamp")
 	val timestamp: String? = null
-)
+) : Parcelable {
+	constructor(parcel: Parcel) : this(
+			parcel.readString(),
+			parcel.readValue(Long::class.java.classLoader) as? Long,
+			parcel.readString(),
+			parcel.readString(),
+			parcel.readValue(Long::class.java.classLoader) as? Long,
+			parcel.readString()) {
+	}
+
+	override fun writeToParcel(parcel: Parcel, flags: Int) {
+		parcel.writeString(censoredReply)
+		parcel.writeValue(timestampUnix)
+		parcel.writeString(timestampFmt)
+		parcel.writeString(originalReply)
+		parcel.writeValue(timestampUnixNano)
+		parcel.writeString(timestamp)
+	}
+
+	override fun describeContents(): Int {
+		return 0
+	}
+
+	companion object CREATOR : Parcelable.Creator<Message> {
+		override fun createFromParcel(parcel: Parcel): Message {
+			return Message(parcel)
+		}
+
+		override fun newArray(size: Int): Array<Message?> {
+			return arrayOfNulls(size)
+		}
+	}
+}
