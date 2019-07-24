@@ -46,6 +46,7 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel;
@@ -216,12 +217,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickUsePromo() {
-//        presenter.onUseVoucherButtonClicked();
         digitalAnalytics.eventclickUseVoucher(cartDigitalInfoData.getAttributes().getCategoryName());
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
         intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
         intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
-        startActivityForResult(intent, 230);
+        startActivityForResult(intent, ConstantKt.getREQUST_CODE_LIST_PROMO());
     }
 
     private PromoDigitalModel getPromoDigitalModel() {
@@ -315,7 +315,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == 230 || requestCode == 231) && resultCode == Activity.RESULT_OK) { //TODO: Set request code constant in promo checkout common
+        if ((requestCode == ConstantKt.getREQUST_CODE_LIST_PROMO() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
             if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
                 promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
                 // Check between apply promo code or cancel promo from promo detail

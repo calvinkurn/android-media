@@ -27,6 +27,7 @@ import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
+import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketplaceFragment.Companion.REQUEST_CODE_DETAIL_PROMO
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
@@ -177,7 +178,6 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     }
 
     companion object {
-        val REQUEST_CODE_DETAIL_PROMO = 231
         val EXTRA_IS_COUPON_ACTIVE = "EXTRA_IS_COUPON_ACTIVE"
         val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
         val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
