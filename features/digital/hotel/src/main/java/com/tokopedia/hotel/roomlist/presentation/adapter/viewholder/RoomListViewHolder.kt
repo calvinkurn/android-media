@@ -46,7 +46,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
             } else {
                 room_description_layout.visibility = View.GONE
                 room_full_layout.visibility = View.VISIBLE
-                room_image_view_pager.setImages(listOf(roomListModel.images.first()))
+                if (roomListModel.images.isNotEmpty()) room_image_view_pager.setImages(listOf(roomListModel.images.first()))
                 room_image_view_pager.buildView()
                 room_full_room_name_text_view.text = roomListModel.roomName
             }
