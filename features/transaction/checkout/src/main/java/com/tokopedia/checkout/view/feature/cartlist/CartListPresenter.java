@@ -808,17 +808,19 @@ public class CartListPresenter implements ICartListPresenter {
                     insuranceCartShops.getShopItemsList().get(0) != null &&
                     insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0) != null) {
 
-                InsuranceCartDigitalProduct insuranceCartDigitalProduct = insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0);
+//                InsuranceCartDigitalProduct insuranceCartDigitalProduct = insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0);
 
-                if (insuranceCartDigitalProduct.getOptIn()) {
-                    totalPrice += insuranceCartDigitalProduct.getPricePerProduct();
-                    totalItemQty += 1;
-                } else {
-                    insuranceChecked = false;
+                for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
+                    for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+                        if (insuranceCartDigitalProduct.getOptIn()) {
+                            totalPrice += insuranceCartDigitalProduct.getPricePerProduct();
+                            totalItemQty += 1;
+                        } else {
+                            insuranceChecked = false;
+                        }
+                    }
                 }
-
             }
-
         }
 
         String totalPriceString = "-";
