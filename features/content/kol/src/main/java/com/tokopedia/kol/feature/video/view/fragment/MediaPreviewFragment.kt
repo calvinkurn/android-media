@@ -121,13 +121,8 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     }
 
     private fun bindMedia(mediaItems: List<MediaItem>) {
-        val items = mutableListOf<MediaItem>()
-        items.add(MediaItem(thumbnail = "https://pmdvod.nationalgeographic.com/NG_Video/205/467/1239312451613_1527008973501_1239317059527_mp4_video_1024x576_1632000_primary_audio_eng_3.mp4", type = "video"))
-        items.add(MediaItem(thumbnail = "https://pmdvod.nationalgeographic.com/NG_Video_DEV/986/87/deadliest-eagles-vs.mp4", type = "video"))
-        items.add(MediaItem(thumbnail = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/8/16/19829070/19829070_19948cbd-bd22-4edb-a553-d226f08e659a_960_1280.jpeg", type = "image"))
-        items.add(MediaItem(thumbnail = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/8/16/19829070/19829070_19948cbd-bd22-4edb-a553-d226f08e659a_960_1280.jpeg", type = "image"))
-        items.add(MediaItem(thumbnail = "https://pmdvod.nationalgeographic.com/NG_Video/821/547/0705687ANG_0.mp4", type = "video"))
-        val adapter = MediaPagerAdapter(items, childFragmentManager)
+        val items = mediaItems.map { MediaItem(thumbnail = it.thumbnail, type = it.type) }
+        val adapter = MediaPagerAdapter(items.toMutableList(), childFragmentManager)
         pager_indicator.text = getString(R.string.af_indicator_media, 1, adapter.count)
         media_pager.adapter = adapter
         updateDirectionMedia(0, adapter.count)
