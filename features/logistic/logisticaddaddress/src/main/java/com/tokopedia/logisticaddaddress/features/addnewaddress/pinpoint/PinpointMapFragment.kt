@@ -178,7 +178,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
         }
 
-        et_detail_address?.run  {
+        et_detail_address?.run {
             setOnClickListener {
                 getdistrict_container?.findViewById<ButtonCompat>(R.id.btn_choose_location)?.requestFocusFromTouch()
                 getdistrict_container?.findViewById<EditText>(R.id.et_detail_address)?.requestFocusFromTouch()
@@ -433,14 +433,16 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 text = saveAddressDataModel.title
                 setOnClickListener {
                     AddNewAddressAnalytics.eventClickFieldCariLokasi()
-                    showAutoCompleteBottomSheet(saveAddressDataModel.title) }
+                    showAutoCompleteBottomSheet(saveAddressDataModel.title)
+                }
             }
 
             tv_address_getdistrict?.apply {
                 text = saveAddressDataModel.formattedAddress
                 setOnClickListener {
                     AddNewAddressAnalytics.eventClickFieldCariLokasi()
-                    showAutoCompleteBottomSheet(saveAddressDataModel.title) }
+                    showAutoCompleteBottomSheet(saveAddressDataModel.title)
+                }
             }
 
             btn_choose_location?.setOnClickListener {
@@ -468,7 +470,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }
         }
 
-        presenter.loadAddEdit( isMismatchSolved, isChangesRequested)
+        presenter.loadAddEdit(isMismatchSolved, isChangesRequested)
     }
 
     override fun showFailedDialog() {
@@ -600,7 +602,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                     when (countCharLeft) {
                         60 -> {
                             tv_detail_address_counter.text = "0/60"
-                        } else -> {
+                        }
+                        else -> {
                             tv_detail_address_counter.text = "$countCharLeft/60"
                         }
                     }
