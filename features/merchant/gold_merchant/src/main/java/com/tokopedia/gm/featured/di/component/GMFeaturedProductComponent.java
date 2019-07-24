@@ -21,9 +21,6 @@ import dagger.Component;
 @GMFeaturedProductScope
 @Component(modules = GMFeaturedProductModule.class, dependencies = GMComponent.class)
 public interface GMFeaturedProductComponent {
-    @ApplicationContext
-    Context context();
-
     void inject(GMFeaturedProductActivity gmFeaturedProductActivity);
 
     void inject(GMFeaturedProductFragment gmFeaturedProductFragment);

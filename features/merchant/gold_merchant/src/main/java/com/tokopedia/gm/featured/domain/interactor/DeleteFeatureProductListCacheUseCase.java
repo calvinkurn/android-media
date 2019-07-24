@@ -1,9 +1,9 @@
-package com.tokopedia.gm.common.domain.interactor;
+package com.tokopedia.gm.featured.domain.interactor;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.usecase.RequestParams;
 
