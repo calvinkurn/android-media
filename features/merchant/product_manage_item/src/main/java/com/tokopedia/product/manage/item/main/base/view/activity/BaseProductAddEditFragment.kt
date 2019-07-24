@@ -564,13 +564,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY)
     }
 
-    override fun onErrorEtalase() {
-        showWarning(getString(R.string.product_error_product_etalase_empty), View.OnClickListener {
-            startProductEtalaseActivity()
-        })
-        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE)
-    }
-
     override fun onErrorPrice() {
         showWarning(getString(R.string.error_empty_price), View.OnClickListener {
             startPriceActivity()
