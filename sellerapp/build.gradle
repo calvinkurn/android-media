@@ -130,6 +130,9 @@ android {
             ext.enableHansel=false
         }
         release {
+            if (devMode()) {
+                signingConfig signingConfigs.debug
+            }
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
@@ -246,7 +249,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.datePickerRange)
@@ -260,9 +263,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.cpm)
-    
-
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.shopPage)
@@ -279,7 +280,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.session)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.inbox)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -294,7 +294,7 @@ dependencies {
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
-    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -302,7 +302,6 @@ dependencies {
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticgeolocation)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
@@ -339,6 +338,10 @@ dependencies {
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.sessioncommon)
+
+    implementation rootProject.ext.unifyDependencies.icon
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
@@ -357,7 +360,7 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.moengagePushbase
     implementation rootProject.ext.analyticsDependencies.moengageInapp
     implementation(rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-gcm'
+        exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
 
     implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
@@ -388,6 +391,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJavaMath
 
     implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.cpm)
 
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"

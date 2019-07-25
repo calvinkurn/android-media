@@ -3,40 +3,39 @@ package com.tokopedia.common_digital.cart.domain.model
 import android.os.Parcel
 import android.os.Parcelable
 
-class PostPaidPopupAttribute : Parcelable {
-    var title: String? = null
-    var content: String? = null
-    var imageUrl: String? = null
-    var confirmButtonTitle: String? = null
+class PostPaidPopupAttribute(
+        var title: String? = null,
+        var content: String? = null,
+        var imageUrl: String? = null,
+        var confirmButtonTitle: String? = null
+) : Parcelable {
 
-    protected constructor(`in`: Parcel) {
-        title = `in`.readString()
-        content = `in`.readString()
-        imageUrl = `in`.readString()
-        confirmButtonTitle = `in`.readString()
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString()) {
     }
 
-    constructor() {}
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(title)
+        parcel.writeString(content)
+        parcel.writeString(imageUrl)
+        parcel.writeString(confirmButtonTitle)
+    }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(title)
-        dest.writeString(content)
-        dest.writeString(imageUrl)
-        dest.writeString(confirmButtonTitle)
-    }
-
     companion object CREATOR : Parcelable.Creator<PostPaidPopupAttribute> {
-        override fun createFromParcel(`in`: Parcel): PostPaidPopupAttribute {
-            return PostPaidPopupAttribute(`in`)
+        override fun createFromParcel(parcel: Parcel): PostPaidPopupAttribute {
+            return PostPaidPopupAttribute(parcel)
         }
 
         override fun newArray(size: Int): Array<PostPaidPopupAttribute?> {
             return arrayOfNulls(size)
         }
-
     }
+
 }

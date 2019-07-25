@@ -1,8 +1,11 @@
 package com.tokopedia.abstraction.base.view.viewmodel
 
 import android.arch.lifecycle.ViewModel
-import kotlinx.coroutines.experimental.*
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
+import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModel(private val baseDispatcher: CoroutineDispatcher): ViewModel(), CoroutineScope{
     protected val masterJob = SupervisorJob()

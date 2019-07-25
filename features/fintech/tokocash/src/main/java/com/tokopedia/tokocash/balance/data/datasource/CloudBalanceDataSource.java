@@ -4,13 +4,13 @@ import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.balance.data.entity.BalanceTokoCashEntity;
 import com.tokopedia.tokocash.balance.data.entity.BalanceWalletEntity;
 import com.tokopedia.tokocash.network.api.WalletBalanceApi;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,17 +28,15 @@ public class CloudBalanceDataSource implements BalanceDataSource {
 
     private static final String TAG = CloudBalanceDataSource.class.getName();
     private static final String QUERY = "query";
-    private static final int DURATION_SAVE_TO_CACHE = 60;
+    private static final int DURATION_SAVE_TO_CACHE = 60_000;
 
     private WalletBalanceApi walletApi;
-    private CacheManager cacheManager;
 
 
     private Context context;
 
-    public CloudBalanceDataSource(WalletBalanceApi walletApi, CacheManager cacheManager, Context context) {
+    public CloudBalanceDataSource(WalletBalanceApi walletApi, Context context) {
         this.walletApi = walletApi;
-        this.cacheManager = cacheManager;
         this.context = context;
     }
 
@@ -51,7 +49,7 @@ public class CloudBalanceDataSource implements BalanceDataSource {
                     @Override
                     public void call(Response<GraphqlResponse<BalanceWalletEntity>> dataResponseResponse) {
                         if (dataResponseResponse.body().getData() != null && dataResponseResponse.body().getData().getWallet() != null && dataResponseResponse.body().getData().getWallet().getLinked()) {
-                            cacheManager.save(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE,
+                            PersistentCacheManager.instance.put(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE,
                                     CacheUtil.convertModelToString(dataResponseResponse.body().getData().getWallet(),
                                             new TypeToken<BalanceTokoCashEntity>() {
                                             }.getType()), DURATION_SAVE_TO_CACHE);

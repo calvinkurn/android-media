@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.product.manage.list.R;
+import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -44,6 +45,6 @@ public class ProductManageSortActivity extends BaseSimpleActivity implements Has
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter)getApplication()).getProductComponent();
+        return ProductEditItemComponentInstance.getComponent(getApplication());
     }
 }

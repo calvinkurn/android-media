@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.track.TrackApp;
 
 /**
  * @author ricoharisin
@@ -16,13 +17,14 @@ public class DialogForceLogout {
     private static final String IS_DIALOG_SHOWN_STORAGE = "IS_DIALOG_SHOWN_STORAGE";
     private static final String IS_DIALOG_SHOWN = "IS_DIALOG_SHOWN";
 
-    public static void createShow(Context context, @Nullable final ActionListener listener) {
-            AlertDialog alertDialog = create(context, listener);
-            alertDialog.show();
-            setIsDialogShown(context, true);
+    public static void createShow(Context context, String screenName, @Nullable final ActionListener listener) {
+        AlertDialog alertDialog = create(context, listener, screenName);
+        alertDialog.show();
+        setIsDialogShown(context, true);
     }
 
-    public static AlertDialog create(final Context context, final ActionListener listener) {
+    public static AlertDialog create(final Context context, final ActionListener listener,
+                                     String screenName) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setMessage(R.string.title_session_expired);
         dialog.setPositiveButton(context.getString(R.string.title_ok),
@@ -32,6 +34,14 @@ public class DialogForceLogout {
                         listener.onDialogClicked();
                         dialog.dismiss();
                         setIsDialogShown(context, false);
+
+                        String screen = screenName != null ? screenName : "";
+                        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                                "clickLogout",
+                                "force logout",
+                                screen,
+                                "get session expired pop up"
+                        );
 
                     }
                 });

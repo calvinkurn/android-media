@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
-import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -23,6 +21,7 @@ import okhttp3.Response;
 public class CartApiInterceptor extends TkpdAuthInterceptor {
 
     private static final String RESPONSE_STATUS_REQUEST_DENIED = "REQUEST_DENIED";
+    private static final String CART_ERROR_GLOBAL = "Maaf, terjadi sedikit kendala. Coba ulangi beberapa saat lagi ya";
 
     @Inject
     public CartApiInterceptor(Context context, AbstractionRouter abstractionRouter,
@@ -39,30 +38,10 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
                 CartErrorResponse cartErrorResponse = new Gson().fromJson(
                         responseError, CartErrorResponse.class
                 );
-                if (cartErrorResponse.getCartHeaderResponse() != null) {
-                    String message = cartErrorResponse.getCartHeaderResponse().getMessageFormatted();
-                    if (message == null || message.isEmpty()) {
-                        switch (errorCode) {
-                            case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
-                                message = ErrorNetMessage.MESSAGE_ERROR_SERVER;
-                                break;
-                            case ResponseStatus.SC_FORBIDDEN:
-                                message = ErrorNetMessage.MESSAGE_ERROR_FORBIDDEN;
-                                break;
-                            case ResponseStatus.SC_REQUEST_TIMEOUT:
-                            case ResponseStatus.SC_GATEWAY_TIMEOUT:
-                                message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
-                                break;
-                            default:
-                                message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
-                                break;
-                        }
-                    }
-                    throw new CartResponseErrorException(
-                            errorCode,
-                            cartErrorResponse.getCartHeaderResponse().getErrorCode(),
-                            message);
-                }
+                throw new CartResponseErrorException(
+                        errorCode,
+                        cartErrorResponse.getCartHeaderResponse().getErrorCode(),
+                        CART_ERROR_GLOBAL);
             }
     }
 

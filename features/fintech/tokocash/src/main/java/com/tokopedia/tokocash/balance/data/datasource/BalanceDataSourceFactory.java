@@ -25,10 +25,10 @@ public class BalanceDataSourceFactory {
     }
 
     public BalanceDataSource createBalanceTokoCashDataSource() {
-        return new CloudBalanceDataSource(walletApi, cacheManager, context);
+        return new CloudBalanceDataSource(walletApi, context);
     }
 
     public BalanceDataSource createLocalBalanceTokoCashDataSource() {
-        return new LocalBalanceDataSource(cacheManager);
+        return new LocalBalanceDataSource();
     }
 }

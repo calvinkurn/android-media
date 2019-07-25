@@ -22,7 +22,7 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.userSession)

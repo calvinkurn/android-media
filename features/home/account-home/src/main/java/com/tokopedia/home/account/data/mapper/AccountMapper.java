@@ -80,7 +80,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         buyerCardViewModel.setUserId(accountModel.getProfile().getUserId());
         buyerCardViewModel.setName(accountModel.getProfile().getFullName());
         buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
-        buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCoupon());
+        buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCouponStr());
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
         items.add(buyerCardViewModel);
@@ -169,6 +169,14 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
         menuGrid.setItems(menuGridItems);
         items.add(menuGrid);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.ulasan));
+        menuList.setMenuDescription(context.getString(R.string.ulasan_desc));
+        menuList.setApplink(ApplinkConst.REPUTATION);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
+        items.add(menuList);
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_buyer_complain));

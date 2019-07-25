@@ -5,7 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
-import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**

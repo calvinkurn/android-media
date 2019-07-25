@@ -55,7 +55,6 @@ mutation get_promo_stack_use($params: PromoStackRequest) {
         discount_amount
         title_description
         invoice_description
-        title_description
         message {
           state
           color

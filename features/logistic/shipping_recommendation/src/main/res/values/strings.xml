@@ -14,5 +14,6 @@
     <string name="shiprecc_next">Lanjutkan</string>
     <string name="shiprecc_cancel">Batalkan</string>
     <string name="logistic_promo_serviceid_mismatch_message">Tidak tersedia kurir untuk promo tersebut</string>
+    <string name="order_prioritas">Tersedia Layanan Order Prioritas</string>
 
 </resources>

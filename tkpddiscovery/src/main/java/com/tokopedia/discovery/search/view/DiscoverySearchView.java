@@ -121,6 +121,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private String lastQuery;
+    private String hint;
 
     public DiscoverySearchView(Context context) {
         this(context, null);
@@ -206,7 +207,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }
 
             if (a.hasValue(R.styleable.DiscoverySearchView_android_hint)) {
-                setHint(a.getString(R.styleable.DiscoverySearchView_android_hint));
+                setTextViewHint(a.getString(R.styleable.DiscoverySearchView_android_hint));
             }
 
             if (a.hasValue(R.styleable.DiscoverySearchView_searchVoiceIcon)) {
@@ -468,13 +469,29 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private void onSubmitQuery() {
-        CharSequence query = mSearchSrcTextView.getText();
-        if (query != null && TextUtils.getTrimmedLength(query) > 0) {
+        modifyQueryInSearchParameter(mSearchSrcTextView.getText());
+
+        if (searchParameter.getSearchQuery() != null && TextUtils.getTrimmedLength(searchParameter.getSearchQuery()) > 0) {
             if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(searchParameter)) {
                 closeSearch();
                 mSearchSrcTextView.setText(null);
             }
         }
+    }
+
+    private void modifyQueryInSearchParameter(CharSequence query) {
+        String finalQuery = query.toString();
+
+        if(isQueryEmptyAndHintExists(query)) {
+            finalQuery = hint;
+        }
+
+        searchParameter.setSearchQuery(finalQuery);
+    }
+
+    private boolean isQueryEmptyAndHintExists(CharSequence query) {
+        return TextUtils.isEmpty(query)
+                && !TextUtils.isEmpty(hint);
     }
 
     private boolean isVoiceAvailable() {
@@ -522,7 +539,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mSearchSrcTextView.setHintTextColor(color);
     }
 
-    public void setHint(CharSequence hint) {
+    public void setTextViewHint(CharSequence hint) {
         mSearchSrcTextView.setHint(hint);
     }
 
@@ -699,8 +716,21 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         this.searchParameter = searchParameter;
 
+        setHintIfExists(searchParameter.get(SearchApiConst.HINT));
         setLastQuery(searchParameter.getSearchQuery());
         showSearch(finishOnClose, animate);
+    }
+
+    private void setHintIfExists(String hint) {
+        if(!TextUtils.isEmpty(hint)) {
+            setHint(searchParameter.get(SearchApiConst.HINT));
+        }
+    }
+
+    private void setHint(CharSequence hint) {
+        this.hint = hint.toString();
+
+        setTextViewHint(hint);
     }
 
     public void showSearch(boolean finishOnClose, boolean animate) {
@@ -749,12 +779,18 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     private void textViewRequestFocus() {
         mSearchSrcTextView.setText(lastQuery);
-        searchTextViewRequestFocus();
-        searchTextViewSetCursorSelectionAtTextEnd();
+
+        searchTextViewShowKeyboard();
     }
 
-    public void searchTextViewRequestFocus() {
-        mSearchSrcTextView.requestFocus();
+    public void searchTextViewShowKeyboard() {
+        mSearchSrcTextView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showKeyboard(mSearchSrcTextView);
+                mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
+            }
+        }, 200);
     }
 
     public void searchTextViewSetCursorSelectionAtTextEnd() {
@@ -918,6 +954,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mSavedState.query = mUserQuery != null ? mUserQuery.toString() : null;
         mSavedState.isSearchOpen = this.mIsSearchOpen;
         mSavedState.allowImageSearch = this.allowImageSearch;
+        mSavedState.hint = this.hint;
 
         return mSavedState;
     }
@@ -934,6 +971,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         if (mSavedState.isSearchOpen) {
             showSearch(false);
             setQuery(mSavedState.query, false);
+            setHintIfExists(mSavedState.hint);
         }
 
         setImageSearch(mSavedState.allowImageSearch);
@@ -945,6 +983,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         String query;
         boolean isSearchOpen;
         boolean allowImageSearch;
+        String hint;
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -955,6 +994,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             this.query = in.readString();
             this.isSearchOpen = in.readInt() == 1;
             this.allowImageSearch = in.readInt() == 1;
+            this.hint = in.readString();
         }
 
         @Override
@@ -963,6 +1003,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             out.writeString(query);
             out.writeInt(isSearchOpen ? 1 : 0);
             out.writeInt(allowImageSearch ? 1 : 0);
+            out.writeString(hint);
         }
 
         //required field that makes Parcelables from a Parcel

@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -207,8 +208,7 @@ public class SessionHandler {
     }
 
     private static void deleteCacheBalanceTokoCash() {
-        GlobalCacheManager cacheBalanceTokoCash = new GlobalCacheManager();
-        cacheBalanceTokoCash.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
+        PersistentCacheManager.instance.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     private static void logoutInstagram(Context context) {

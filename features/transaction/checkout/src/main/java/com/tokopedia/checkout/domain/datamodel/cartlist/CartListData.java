@@ -28,6 +28,7 @@ public class CartListData implements Parcelable {
     private String defaultPromoDialogTab;
     private boolean allSelected;
     private TopAdsModel adsModel;
+    private boolean isShowOnboarding;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -125,6 +126,14 @@ public class CartListData implements Parcelable {
         this.allSelected = allSelected;
     }
 
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
+    }
+
+    public void setShowOnboarding(boolean showOnboarding) {
+        isShowOnboarding = showOnboarding;
+    }
+
     public CartListData() {
     }
 
@@ -143,6 +152,7 @@ public class CartListData implements Parcelable {
         dest.writeByte(this.allSelected ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.cartTickerErrorData, flags);
         dest.writeParcelable(this.autoApplyData, flags);
+        dest.writeByte(this.isShowOnboarding ? (byte) 1 : (byte) 0);
     }
 
     protected CartListData(Parcel in) {
@@ -154,6 +164,7 @@ public class CartListData implements Parcelable {
         this.allSelected = in.readByte() != 0;
         this.cartTickerErrorData = in.readParcelable(CartTickerErrorData.class.getClassLoader());
         this.autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
+        this.isShowOnboarding = in.readByte() != 0;
     }
 
     public static final Creator<CartListData> CREATOR = new Creator<CartListData>() {

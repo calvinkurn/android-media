@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.fragment_broadcast_message_preview.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePreviewView {
     @Inject
@@ -96,6 +97,10 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
         }
         message.text = model.message
         time_message.text = getString(R.string.time_template, getTimeNow())
+        time_message.setCompoundDrawablesWithIntrinsicBounds(null,
+                null,
+                MethodChecker.getDrawable(activity, R.drawable.ic_broadcast_message_grey),
+                null)
     }
 
     private fun getTimeNow() = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())

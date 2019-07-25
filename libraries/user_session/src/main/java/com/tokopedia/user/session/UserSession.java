@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -52,6 +53,9 @@ public class UserSession implements UserSessionInterface {
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
     private static final String HAS_SHOWN_SALDO_WARNING = "HAS_SHOWN_SALDO_WARNING";
     private static final String HAS_SHOWN_SALDO_INTRO_PAGE = "HAS_SHOWN_SALDO_INTRO_PAGE";
+    private static final String AUTOFILL_USER_DATA = "AUTOFILL_USER_DATA";
+    private static final String LOGIN_METHOD = "LOGIN_METHOD";
+
 
     private Context context;
 
@@ -67,6 +71,12 @@ public class UserSession implements UserSessionInterface {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
+    }
+
+    public String getTokenType() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TOKEN_TYPE, "Bearer").trim();
     }
 
     public String getFreshToken() {
@@ -218,6 +228,17 @@ public class UserSession implements UserSessionInterface {
     public boolean isPowerMerchantIdle() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(IS_POWER_MERCHANT_IDLE, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(IS_POWER_MERCHANT_IDLE, false);
+    }
+
+    public String getAutofillUserData(){
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(AUTOFILL_USER_DATA, "");
+    }
+
+    @Override
+    public String getLoginMethod() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(LOGIN_METHOD, "");
     }
 
     /**
@@ -465,6 +486,21 @@ public class UserSession implements UserSessionInterface {
         editor.putBoolean(IS_POWER_MERCHANT_IDLE, powerMerchantIdle);
         editor.apply();
     }
+  
+    public void setAutofillUserData(String autofillUserData){
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(AUTOFILL_USER_DATA, autofillUserData);
+        editor.apply();
+    }
+
+    @Override
+    public void setLoginMethod(@NotNull String loginMethod) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(LOGIN_METHOD, loginMethod);
+        editor.apply();
+    }
 
     public void logoutSession() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
@@ -485,6 +521,7 @@ public class UserSession implements UserSessionInterface {
         editor.putString(GC_TOKEN, "");
         editor.putString(SHOP_AVATAR, "");
         editor.putBoolean(IS_POWER_MERCHANT_IDLE,false);
+        editor.putString(LOGIN_METHOD,"");
         editor.apply();
     }
 }

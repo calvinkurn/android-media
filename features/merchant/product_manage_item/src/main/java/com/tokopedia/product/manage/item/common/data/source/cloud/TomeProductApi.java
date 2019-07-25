@@ -26,11 +26,11 @@ public interface TomeProductApi {
 
     @Headers({"Content-Type: application/json"})
     @POST(ProductUrl.URL_ADD_PRODUCT)
-    Observable<Response<DataResponse<Void>>> addProductSubmit(@Body String productViewModel);
+    Observable<Response<DataResponse<ProductSubmitResp>>> addProductSubmit(@Body String productViewModel);
 
     @Headers({"Content-Type: application/json"})
     @PATCH(ProductUrl.URL_ADD_PRODUCT + "/{" + ProductUrl.PRODUCT_ID + "}")
-    Observable<Response<DataResponse<Void>>> editProductSubmit(@Path(ProductUrl.PRODUCT_ID) String productId, @Body String productViewModel);
+    Observable<Response<DataResponse<ProductSubmitResp>>> editProductSubmit(@Path(ProductUrl.PRODUCT_ID) String productId, @Body String productViewModel);
 
     @GET(ProductUrl.URL_ADD_PRODUCT + "/{" + ProductUrl.PRODUCT_ID + "}")
     Observable<Response<DataResponse<ProductViewModel>>> getProductDetail(@Path(ProductUrl.PRODUCT_ID) String productId, @Query("show_variant") int showVariant);

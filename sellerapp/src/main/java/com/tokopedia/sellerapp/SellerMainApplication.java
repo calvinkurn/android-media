@@ -15,11 +15,8 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
-import com.tokopedia.analytics.Analytics;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
@@ -44,13 +41,12 @@ import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
-import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
+import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
@@ -138,7 +134,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
-        setVersionCode();
+        com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = DashboardActivity.class.getName();
+        com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeepLinkHandlerActivity.class.getName();
+        com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
@@ -155,7 +153,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-        Analytics.initDB(getApplicationContext());
 
 
         super.onCreate();
@@ -226,7 +223,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.HOME_DATA_BASE_URL = SellerAppBaseUrl.HOME_DATA_BASE_URL;
         CotpUrl.BASE_URL = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         GMCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
-        SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
         GraphqlUrl.BASE_URL = SellerAppBaseUrl.GRAPHQL_DOMAIN;
         ImageUploaderUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
@@ -256,17 +252,16 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         } catch (IllegalStateException e) {
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
-        FlowManager.initModule(ProductDraftGeneratedDatabaseHolder.class);
-        FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
-        PushNotification.initDatabase(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
     private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+        new CacheApiWhiteListUseCase(this).executeSync(
+                CacheApiWhiteListUseCase.createParams(
                 CacheApiWhiteList.getWhiteList(),
-                String.valueOf(getCurrentVersion(getApplicationContext()))));
+                String.valueOf(getCurrentVersion(getApplicationContext())))
+        );
     }
 
     @Override

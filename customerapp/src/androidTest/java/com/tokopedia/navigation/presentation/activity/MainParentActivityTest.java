@@ -14,13 +14,13 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.mapper.CartMapper;
-import com.tokopedia.checkout.domain.mapper.MapperUtil;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.TestAppModule;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.domain.mapper.CartMapper;
+import com.tokopedia.checkout.domain.mapper.MapperUtil;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.DaggerTestCartListComponent;
 import com.tokopedia.checkout.view.di.component.TestCartListComponent;
@@ -28,12 +28,8 @@ import com.tokopedia.checkout.view.di.module.TestCartListModule;
 import com.tokopedia.checkout.view.di.module.TestTrackingAnalyticsModule;
 import com.tokopedia.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.feedplus.data.mapper.FeedListMapper;
-import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
 import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
-import com.tokopedia.feedplus.domain.model.feed.FeedResult;
-import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
@@ -52,6 +48,7 @@ import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.kol.common.di.DaggerKolComponent;
 import com.tokopedia.kol.common.di.KolComponent;
+import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.presentation.di.DaggerTestGlobalNavComponent;
@@ -100,7 +97,6 @@ import static org.hamcrest.core.AllOf.allOf;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static rx.Observable.just;
 
@@ -378,11 +374,6 @@ public class MainParentActivityTest {
             Thread.sleep(1_000);
 
             // prepare the data
-            GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase = mock(GetFirstPageFeedsCloudUseCase.class);
-
-            fragment.getPresenter().setGetFirstPageFeedsCloudUseCase(getFirstPageFeedsCloudUseCase);
-
-            doReturn(Observable.just(provideFeedResult())).when(getFirstPageFeedsCloudUseCase).createObservable(any(RequestParams.class));
 
             onView(allOf(withId(R.id.swipe_refresh_layout), withTagValue(is((Object) "swipe_to_refresh_feed_plus")))).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
 
@@ -531,9 +522,6 @@ public class MainParentActivityTest {
         WhitelistQuery whitelistQuery = CacheUtil.convertStringToModel(
                 mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[0])
                 , WhitelistQuery.class);
-        feedResult.getFeedDomain().setWhitelist(
-                GetFirstPageFeedsCloudUseCase.getWhitelistDomain(whitelistQuery)
-        );
 
         return feedResult;
     }

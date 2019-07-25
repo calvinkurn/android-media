@@ -191,8 +191,8 @@ public class ImageUploaderModule {
 
     @ImageUploaderQualifier
     @Provides
-    public CacheApiInterceptor provideCacheApiInterceptor() {
-        return new CacheApiInterceptor();
+    public CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
+        return new CacheApiInterceptor(context);
     }
 
     @ImageUploaderQualifier

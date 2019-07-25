@@ -3,14 +3,13 @@ package com.tokopedia.product.manage.item.catalog.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.catalog.view.fragment.ProductEditCatalogPickerFragment
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
-import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance
 
 class ProductEditCatalogPickerActivity : BaseSimpleActivity(), HasComponent<ProductComponent> {
     private var productName: String = ""
@@ -37,7 +36,7 @@ class ProductEditCatalogPickerActivity : BaseSimpleActivity(), HasComponent<Prod
         super.onCreate(savedInstanceState)
     }
 
-    override fun getComponent() = (application as ProductEditModuleRouter).getProductComponent()
+    override fun getComponent() = ProductEditItemComponentInstance.getComponent(application)
 
     override fun getNewFragment() = ProductEditCatalogPickerFragment
             .createInstance(productName, categoryId, choosenCatalog)

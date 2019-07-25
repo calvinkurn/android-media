@@ -10,7 +10,7 @@ import java.util.*
  * @author by StevenFredian on 15/05/18.
  */
 
-class GroupChatQuickReplyViewModel : Visitable<QuickReplyTypeFactory>, Parcelable {
+class GroupChatQuickReplyViewModel() : Visitable<QuickReplyTypeFactory>, Parcelable {
 
     var list: List<GroupChatQuickReplyItemViewModel>? = null
 
@@ -27,9 +27,7 @@ class GroupChatQuickReplyViewModel : Visitable<QuickReplyTypeFactory>, Parcelabl
         dest.writeList(this.list)
     }
 
-    constructor() {}
-
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         this.list = ArrayList()
         `in`.readList(this.list, Visitable::class.java.classLoader)
     }
