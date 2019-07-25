@@ -1,16 +1,21 @@
 package com.tokopedia.expresscheckout.view.variant.viewholder
 
 import android.app.Activity
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetDialog
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.webkit.WebView
 import android.widget.CompoundButton
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.date.util.SaldoDatePickerUtil
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
@@ -66,14 +71,52 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
             }
             itemView.insurance_tv_price.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceCartDigitalProductViewModel.pricePerProduct, false))
 
-            if (insuranceCartDigitalProductViewModel.productInfo.linkName.isBlank()) {
+            if (insuranceCartDigitalProductViewModel.productInfo.linkName.isBlank() ||
+                    insuranceCartDigitalProductViewModel.productInfo.appLinkUrl.isBlank()) {
                 itemView.insurance_tv_info.visibility = View.GONE
             } else {
                 itemView.insurance_tv_info.visibility = View.VISIBLE
                 itemView.insurance_tv_info.text = insuranceCartDigitalProductViewModel.productInfo.linkName
-                itemView.insurance_tv_info.setOnClickListener({
-                    // TODO: 19/6/19 open bottom sheet with url
-                })
+                itemView.insurance_tv_info.setOnClickListener {
+
+                    val infoCloseableDialog = CloseableBottomSheetDialog.createInstanceRounded(itemView.context)
+
+                    val infoDialogView = (itemView.context as Activity?)?.layoutInflater?.inflate(R.layout.insurance_info_bottom_sheet, null)
+                    infoCloseableDialog.setContentView(infoDialogView)
+
+                    val webView = infoDialogView?.findViewById<WebView>(R.id.bottom_sheet_webview)
+
+                    infoDialogView?.findViewById<TextView>(R.id.info_bottom_sheet_title_tv)?.text =
+                            insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle
+
+                    val closeImageView = infoDialogView?.findViewById<WebView>(R.id.ic_close_icon)
+                    infoCloseableDialog.setOnShowListener { dialog ->
+                        val d = dialog as BottomSheetDialog
+                        val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+                        if (bottomSheet != null) {
+                            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+                        }
+                        val behavior = BottomSheetBehavior.from(bottomSheet!!)
+                        behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                                }
+                            }
+
+                            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                        })
+
+                        webView!!.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
+                        /*Handler().postDelayed({
+
+                        }, 50)*/
+                    }
+                    closeImageView?.setOnClickListener {
+                        infoCloseableDialog.dismiss()
+                    }
+                    infoCloseableDialog.show()
+                }
             }
 
             val applicationDetailsView = itemView.application_detail_ll
