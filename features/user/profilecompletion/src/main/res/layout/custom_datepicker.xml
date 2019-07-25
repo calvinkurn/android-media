@@ -9,7 +9,7 @@
     <ImageView
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@drawable/rounded_corner"
+            android:background="@drawable/rounded_corner_selected_datepicker"
             android:layout_centerInParent="true" />
 
     <LinearLayout
