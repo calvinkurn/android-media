@@ -127,7 +127,6 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         val adapter = MediaPagerAdapter(items.toMutableList(), childFragmentManager)
         pager_indicator.text = getString(R.string.af_indicator_media, selectedIndex+1, adapter.count)
         media_pager.adapter = adapter
-        media_pager.currentItem = selectedIndex
         updateDirectionMedia(0, adapter.count)
         media_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             var lastPosition = 0
@@ -144,6 +143,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             }
 
         })
+        media_pager.currentItem = selectedIndex
 
         action_prev.setOnClickListener {
             val currentIndex = media_pager.currentItem
