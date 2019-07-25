@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.utils.view.PhoneNumberUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
@@ -69,6 +68,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ImageHandler.LoadImage(headerPhoto, HEADER_PICT_URL)
+
         overlayView.setOnClickListener { }
         initObserver()
 
@@ -145,6 +147,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     REQUEST_CODE_ADD_BOD -> {
                         onSuccessAddBOD(data)
                     }
+                    REQUEST_CODE_EDIT_BOD -> {
+                        onSuccessChangeBOD(data)
+                    }
                     REQUEST_CODE_EDIT_PHONE -> {
                         onSuccessEditPhone(data)
                     }
@@ -169,6 +174,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun onSuccessChangeBOD(data: Intent?) {
+        refreshProfile()
+        view?.run {
+            Toaster.showNormal(this, getString(R.string.success_change_bod), Snackbar.LENGTH_LONG)
+        }
+    }
+
     private fun onSuccessEditPhone(data: Intent?) {
         refreshProfile()
         view?.run {
@@ -184,8 +196,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onSuccessAddGender(data: Intent?) {
         data?.extras?.run {
             val genderResult = getInt(ChangeGenderFragment.EXTRA_SELECTED_GENDER, 1)
-
-            //TODO ADE GENDER IS STILL SHOWING EMPTY
 
             view?.run {
                 Toaster.showNormal(this, getString(R.string.success_add_gender), Snackbar.LENGTH_LONG)
@@ -248,12 +258,15 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetProfilePhoto(errorException: Exception) {
-        //TODO show message error
+        view?.run {
+            Toaster.showError(
+                    this,
+                    ErrorHandlerSession.getErrorMessage(errorException, context, false),
+                    Snackbar.LENGTH_LONG)
+        }
     }
 
-    override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
@@ -411,17 +424,24 @@ class SettingProfileFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
     }
 
+    private fun goToChangeBod() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+        startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
+    }
+
     private fun goToChangeBod(bod: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD, bod)
-        startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
+        startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
 
     private fun onErrorGetProfileInfo(throwable: Throwable) {
         dismissLoading()
         view?.run {
             val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
-            NetworkErrorHelper.showEmptyState(context, this, error, null)
+            NetworkErrorHelper.showEmptyState(context, this, error) {
+                initSettingProfileData()
+            }
         }
     }
 
@@ -436,9 +456,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
             val MAX_SIZE = 2048
             val builder = ImagePickerBuilder.getDefaultBuilder(context)
             builder.maxFileSizeInKB = 2048
-            val multipleSelectionBuilder = ImagePickerMultipleSelectionBuilder.getDefaultBuilder()
-            multipleSelectionBuilder.maximumNoPick = 1
-            builder.imagePickerMultipleSelectionBuilder = multipleSelectionBuilder
+            builder.imagePickerMultipleSelectionBuilder = null
             val intent = ImagePickerActivity.getIntent(context, builder)
             startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE_PHOTO)
         }
@@ -464,12 +482,14 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
         const val REQUEST_CODE_EDIT_EMAIL = 202 //No Implementation yet
         const val REQUEST_CODE_EDIT_PHONE = 203
+        const val REQUEST_CODE_EDIT_BOD = 204
 
         const val REQUEST_CODE_ADD_BOD = 301
         const val REQUEST_CODE_ADD_EMAIL = 302
         const val REQUEST_CODE_ADD_PHONE = 303
         const val REQUEST_CODE_ADD_GENDER = 304
 
+        const val HEADER_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/bg_setting_profile_header.png"
 
         fun createInstance(bundle: Bundle): SettingProfileFragment {
             val fragment = SettingProfileFragment()

@@ -3,7 +3,6 @@ package com.tokopedia.profilecompletion.addbod.view.widget.datepicker
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
-import android.support.v4.os.ConfigurationCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -142,7 +141,8 @@ class DatePicker: FrameLayout{
         monthSpinner.setMinValue(tempDate.get(Calendar.MONTH))
         daySpinner.setMinValue(tempDate.get(Calendar.DAY_OF_MONTH))
 
-        if (tempDate.get(Calendar.YEAR) == minDate.get(Calendar.YEAR) && tempDate.get(Calendar.DAY_OF_YEAR) == minDate.get(Calendar.DAY_OF_YEAR)) {
+        if (tempDate.get(Calendar.YEAR) == minDate.get(Calendar.YEAR) &&
+                tempDate.get(Calendar.DAY_OF_YEAR) == minDate.get(Calendar.DAY_OF_YEAR)) {
             return
         }
 
@@ -159,7 +159,8 @@ class DatePicker: FrameLayout{
         monthSpinner.setMaxValue(tempDate.get(Calendar.MONTH))
         daySpinner.setMaxValue(tempDate.get(Calendar.DAY_OF_MONTH))
 
-        if (tempDate.get(Calendar.YEAR) == maxDate.get(Calendar.YEAR) && tempDate.get(Calendar.DAY_OF_YEAR) == maxDate.get(Calendar.DAY_OF_YEAR)) {
+        if (tempDate.get(Calendar.YEAR) == maxDate.get(Calendar.YEAR) &&
+                tempDate.get(Calendar.DAY_OF_YEAR) == maxDate.get(Calendar.DAY_OF_YEAR)) {
             return
         }
         maxDate.timeInMillis = date

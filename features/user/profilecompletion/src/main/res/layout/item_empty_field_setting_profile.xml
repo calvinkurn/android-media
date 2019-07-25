@@ -25,13 +25,15 @@
             <EditText
                 android:id="@+id/valueEmpty"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:textColor="@color/color_subtitle_value_setting_profile"
                 android:textSize="16sp"
                 android:clickable="true"
                 android:cursorVisible="false"
                 android:focusable="false"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:textColorHint="@color/color_background_tint_setting_profile"
+                android:background="@drawable/text_box_underline_selector"/>
 
             <TextView
                 android:id="@+id/btnAdd"

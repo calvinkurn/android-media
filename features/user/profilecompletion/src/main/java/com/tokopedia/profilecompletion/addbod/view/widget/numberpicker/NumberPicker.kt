@@ -12,6 +12,11 @@ import android.widget.OverScroller
 import com.tokopedia.profilecompletion.R
 import java.util.*
 
+/**
+ * Created by Ade Fulki on 2019-07-16.
+ * ade.hadian@tokopedia.com
+ */
+
 class NumberPicker @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {

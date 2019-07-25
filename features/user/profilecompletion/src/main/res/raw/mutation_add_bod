@@ -1,5 +1,5 @@
-mutation add_bod($bod: String!) {
-  userProfileCompletionUpdate(birthdate: $bod) {
+mutation add_bod($birthdate: String!) {
+  userProfileCompletionUpdate(birthdate: $birthdate) {
     isSuccess
     birthDateMessage
     completionScore

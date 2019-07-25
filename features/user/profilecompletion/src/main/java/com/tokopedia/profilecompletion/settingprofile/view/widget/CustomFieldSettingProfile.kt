@@ -3,14 +3,15 @@ package com.tokopedia.profilecompletion.settingprofile.view.widget
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
-import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.custom_field_setting_profile.view.*
 import kotlinx.android.synthetic.main.item_empty_field_setting_profile.view.*
 import kotlinx.android.synthetic.main.item_filled_field_setting_profile.view.*
@@ -49,7 +50,7 @@ class CustomFieldSettingProfile : LinearLayout {
     private val subtitleFilled: TextView by lazy { view.subtitleFilled }
     private val valueEmpty: EditText by lazy { view.valueEmpty }
     private val valueFilled: TextView by lazy { view.valueFilled }
-    private val verified: ImageView by lazy { view.verified }
+    private val verified: Label by lazy { view.verified }
     private val btnEdit: TextView by lazy { view.btnEdit }
     private val btnAdd: TextView by lazy { view.btnAdd }
     private val message: TextView by lazy { view.message }

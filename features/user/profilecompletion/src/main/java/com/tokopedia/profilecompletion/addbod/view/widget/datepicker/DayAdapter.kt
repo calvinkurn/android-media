@@ -3,6 +3,11 @@ package com.tokopedia.profilecompletion.addbod.view.widget.datepicker
 import com.tokopedia.kotlin.extensions.view.clamp
 import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPickerAdapter
 
+/**
+ * Created by Ade Fulki on 2019-07-16.
+ * ade.hadian@tokopedia.com
+ */
+
 class DayAdapter(var days: MutableList<Int> = mutableListOf()) : NumberPickerAdapter() {
 
     init {

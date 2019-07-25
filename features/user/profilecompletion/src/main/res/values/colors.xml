@@ -3,4 +3,5 @@
     <color name="color_subtitle_setting_profile">#ae31353b</color>
     <color name="color_subtitle_value_setting_profile">#f531353b</color>
     <color name="color_change_setting_profile">#03ac0e</color>
+    <color name="color_background_tint_setting_profile">#e5e7e9</color>
 </resources>

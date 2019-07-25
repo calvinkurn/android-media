@@ -5,6 +5,11 @@ import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPic
 import java.text.DateFormatSymbols
 import java.util.*
 
+/**
+ * Created by Ade Fulki on 2019-07-16.
+ * ade.hadian@tokopedia.com
+ */
+
 class MonthAdapter : NumberPickerAdapter() {
 
     private var months: Array<String> = DateFormatSymbols.getInstance().months
