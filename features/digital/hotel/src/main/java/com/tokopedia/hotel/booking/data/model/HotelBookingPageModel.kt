@@ -13,7 +13,8 @@ data class HotelBookingPageModel(
         var roomRequest: String = "",
         var contactData: TravelContactData = TravelContactData(),
         var guestName: String = "",
-        var promoCode: String = ""
+        var promoCode: String = "",
+        var isForOtherGuest: Int = 0
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -21,7 +22,8 @@ data class HotelBookingPageModel(
             parcel.readString(),
             parcel.readParcelable(TravelContactData::class.java.classLoader),
             parcel.readString(),
-            parcel.readString()
+            parcel.readString(),
+            parcel.readInt()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -30,6 +32,7 @@ data class HotelBookingPageModel(
         parcel.writeParcelable(contactData, flags)
         parcel.writeString(guestName)
         parcel.writeString(promoCode)
+        parcel.writeInt(isForOtherGuest)
     }
 
     override fun describeContents(): Int {
