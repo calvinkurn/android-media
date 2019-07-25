@@ -254,6 +254,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         } catch (IllegalStateException e) {
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(ProductDraftGeneratedDatabaseHolder.class)
+                .build());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
