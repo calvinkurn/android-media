@@ -26,10 +26,11 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactoryImpl
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
@@ -95,7 +96,8 @@ class TopChatViewStateImpl(
     }
 
     private fun initProductPreviewLayout() {
-        attachmentPreviewAdapter = AttachmentPreviewAdapter(this)
+        val previewAttachmentFactory = AttachmentPreviewFactoryImpl()
+        attachmentPreviewAdapter = AttachmentPreviewAdapter(this, previewAttachmentFactory)
         attachmentPreviewRecyclerView.apply {
             setHasFixedSize(true)
             adapter = attachmentPreviewAdapter
@@ -410,7 +412,7 @@ class TopChatViewStateImpl(
         scrollDownWhenInBottom()
     }
 
-    override fun showAttachmentPreview(attachmentPreview: ArrayList<ProductPreviewViewModel>) {
+    override fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>) {
         attachmentPreviewContainer.visibility = View.VISIBLE
         attachmentPreviewAdapter.updateAttachments(attachmentPreview)
     }

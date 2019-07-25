@@ -36,6 +36,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
@@ -92,7 +93,7 @@ class TopChatRoomPresenter @Inject constructor(
     var thisMessageId: String = ""
     private lateinit var addToCardSubscriber : Subscriber<AddToCartDataModel>
 
-    private var attachmentsPreview: ArrayList<ProductPreviewViewModel> = arrayListOf()
+    private var attachmentsPreview: ArrayList<PreviewViewModel> = arrayListOf()
 
     init {
         mSubscription = CompositeSubscription()

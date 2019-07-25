@@ -9,7 +9,7 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.common.TopChatRouter
 import kotlin.collections.ArrayList
 
@@ -44,7 +44,7 @@ interface TopChatContract {
 
         fun focusOnReply()
 
-        fun showAttachmentPreview(attachmentPreview: ArrayList<ProductPreviewViewModel>)
+        fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>)
 
         fun notifyAttachmentsSent()
     }

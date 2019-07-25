@@ -5,7 +5,7 @@ import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 
 interface TopChatViewState : BaseChatViewState {
 
@@ -22,7 +22,7 @@ interface TopChatViewState : BaseChatViewState {
                            blockedStatus: BlockedStatus,
                            onUnblockChatClicked: () -> Unit)
 
-    fun showAttachmentPreview(attachmentPreview: ArrayList<ProductPreviewViewModel>)
+    fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>)
 
     fun focusOnReply()
 
