@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
@@ -21,6 +22,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder
@@ -28,13 +30,9 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.*
-import com.tokopedia.profile.view.adapter.viewholder.EmptyAffiliateViewHolder
-import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
-import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
+import com.tokopedia.profile.view.adapter.viewholder.*
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
-import com.tokopedia.profile.view.viewmodel.EmptyAffiliateViewModel
-import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
-import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
+import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -52,7 +50,9 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val pollOptionListener: PollAdapter.PollOptionListener,
                              private val gridItemListener: GridPostAdapter.GridItemListener,
                              private val videoViewListener: VideoViewHolder.VideoViewListener,
+                             private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                              private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
+                             private val onOtherProfilePostItemClick: ((applink: String, authorId:String) -> Unit),
                              private val userSession : UserSessionInterface)
 
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
@@ -108,6 +108,18 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
     override fun setType(type: KolPostViewHolder.Type?) {
     }
 
+    override fun type(noPostCardViewModel: NoPostCardViewModel): Int {
+        return NoPostCardViewHolder.LAYOUT
+    }
+
+    override fun type(otherRelatedProfileViewModel: OtherRelatedProfileViewModel): Int {
+        return OtherRelatedProfileViewHolder.LAYOUT
+    }
+
+    override fun type(titleViewModel: TitleViewModel): Int {
+        return OtherPostTitleViewHolder.LAYOUT
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when(type) {
@@ -138,6 +150,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                         pollOptionListener,
                         gridItemListener,
                         videoViewListener,
+                        feedMultipleImageViewListener,
                         userSession) as AbstractViewHolder< Visitable<*>>
             FeedRecommendationViewHolder.LAYOUT ->
                 FeedRecommendationViewHolder(parent, recommendationCardListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
@@ -147,6 +160,12 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             EmptyAffiliateViewHolder.LAYOUT ->
                 EmptyAffiliateViewHolder(parent, onEmptyItemClickedListener) as AbstractViewHolder< Visitable<*>>
+            NoPostCardViewHolder.LAYOUT ->
+                NoPostCardViewHolder(parent) as AbstractViewHolder<Visitable<*>>
+            OtherRelatedProfileViewHolder.LAYOUT ->
+                OtherRelatedProfileViewHolder(parent, onOtherProfilePostItemClick) as AbstractViewHolder<Visitable<*>>
+            OtherPostTitleViewHolder.LAYOUT ->
+                OtherPostTitleViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }

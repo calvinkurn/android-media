@@ -42,7 +42,7 @@ data class SearchDestination(
         @Expose
         val location: String = "",
 
-        @SerializedName("hotel_count")
+        @SerializedName("hotelCount")
         @Expose
         val hotelCount: Int = 0
 ): Visitable<SearchDestinationTypeFactory> {

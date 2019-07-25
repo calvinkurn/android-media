@@ -39,7 +39,7 @@
                         android:layout_height="@dimen/dp_160"
                         android:layout_marginBottom="@dimen/dp_2"
                         android:scaleType="centerCrop"
-                        android:src="@color/grey_no_image" />
+                        app:srcCompat="@color/grey_no_image" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                             android:layout_height="@dimen/dp_76"
                             android:layout_weight="1"
                             android:scaleType="centerCrop"
-                            android:src="@color/grey_no_image" />
+                            app:srcCompat="@color/grey_no_image" />
 
                         <android.support.v7.widget.AppCompatImageView
                             android:id="@+id/iv_second_photo_preview"
@@ -62,7 +62,7 @@
                             android:layout_marginRight="@dimen/dp_2"
                             android:layout_weight="1"
                             android:scaleType="centerCrop"
-                            android:src="@color/grey_no_image" />
+                            app:srcCompat="@color/grey_no_image" />
 
                         <RelativeLayout
                             android:layout_width="0dp"
@@ -74,7 +74,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_76"
                                 android:scaleType="centerCrop"
-                                android:src="@color/grey_no_image" />
+                                app:srcCompat="@color/grey_no_image" />
 
                             <android.support.v7.widget.AppCompatImageView
                                 android:id="@+id/iv_third_photo_preview_black_layer"
@@ -214,7 +214,7 @@
                                 android:layout_height="@dimen/dp_20"
                                 android:layout_marginEnd="@dimen/dp_4"
                                 android:layout_marginRight="@dimen/dp_4"
-                                android:src="@drawable/ic_booking_logo" />
+                                app:srcCompat="@drawable/ic_booking_logo" />
 
                             <com.tokopedia.design.component.TextViewCompat
                                 android:id="@+id/tv_hotel_rating_number"
@@ -251,7 +251,7 @@
                                 tools:text="Berdasarkan 1.000 ulasan" />
 
                             <com.tokopedia.design.component.TextViewCompat
-                                android:id="@+id/tv_hotel_detail_all_promo"
+                                android:id="@+id/tv_hotel_detail_all_reviews"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
@@ -304,20 +304,29 @@
                                 android:layout_height="@dimen/dp_100"
                                 android:scaleType="centerCrop" />
 
-                            <com.tokopedia.design.component.ButtonCompat
-                                android:id="@+id/btn_hotel_detail_show"
+                            <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
                                 android:layout_alignParentBottom="true"
-                                android:layout_margin="@dimen/dp_8"
-                                android:paddingLeft="@dimen/dp_16"
-                                android:paddingRight="@dimen/dp_16"
-                                android:text="@string/hotel_show_map_text"
-                                android:textStyle="bold"
-                                app:buttonCompatSize="small"
-                                app:buttonCompatType="ghost" />
+                                android:orientation="vertical">
+
+                                <com.tokopedia.design.component.ButtonCompat
+                                    android:id="@+id/btn_hotel_detail_show"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="@dimen/dp_8"
+                                    android:layout_marginRight="@dimen/dp_8"
+                                    android:layout_marginBottom="@dimen/dp_8"
+                                    android:paddingLeft="@dimen/dp_16"
+                                    android:paddingRight="@dimen/dp_16"
+                                    android:text="@string/hotel_show_map_text"
+                                    android:textStyle="bold"
+                                    app:buttonCompatSize="small"
+                                    app:buttonCompatType="ghost" />
+
+                            </LinearLayout>
 
                         </RelativeLayout>
 

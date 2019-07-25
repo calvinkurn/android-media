@@ -1,76 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <ImageButton
         android:id="@+id/btn_close"
-        android:layout_margin="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_close"
-        android:background="@null"/>
+        android:layout_margin="16dp"
+        android:background="@null"
+        app:srcCompat="@drawable/ic_close" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clickable="false">
 
         <TextView
             android:id="@+id/text_checkin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:text="Check-in"
             android:textColor="#ae31353b"
-            android:textSize="10sp"
-            android:text="Check-in"/>
+            android:textSize="10sp" />
 
         <android.support.v7.widget.AppCompatEditText
-            android:layout_below="@+id/text_checkin"
             android:id="@+id/date_in"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/text_checkin"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:clickable="false"
+            android:hint="Pilih Tanggal   "
             android:textSize="16sp"
             android:textStyle="bold"
-            android:hint="Pilih Tanggal   "
-            app:backgroundTint="@color/bg_unify_tint_color"/>
+            app:backgroundTint="@color/bg_unify_tint_color" />
 
         <TextView
             android:id="@+id/text_checkout"
-            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:text="Check-out"
             android:textColor="#ae31353b"
-            android:textSize="10sp"
-            android:text="Check-out"/>
+            android:textSize="10sp" />
 
         <android.support.v7.widget.AppCompatEditText
-            android:layout_below="@+id/text_checkout"
             android:id="@+id/date_out"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/text_checkout"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:clickable="false"
             android:gravity="end"
+            android:hint="   Pilih Tanggal"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:backgroundTint="@color/bg_unify_tint_color"
-            android:hint="   Pilih Tanggal"/>
+            app:backgroundTint="@color/bg_unify_tint_color" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <com.tokopedia.calendar.UnifyCalendar
             android:id="@+id/calendar_unify"
             android:layout_width="match_parent"
@@ -80,11 +84,10 @@
             android:id="@+id/loading_progress_bar"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_60"
-            android:layout_centerHorizontal="true"
-            android:visibility="gone"
             android:layout_alignParentTop="true"
-            />
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_60"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </LinearLayout>

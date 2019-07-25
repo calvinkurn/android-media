@@ -114,6 +114,8 @@ public class SelectPassengerView extends BaseCustomView {
 
         if (!TextUtils.isEmpty(subtitle)) {
             subtitleTextView.setText(subtitle);
+        } else {
+            subtitleTextView.setVisibility(GONE);
         }
     }
 
@@ -147,6 +149,10 @@ public class SelectPassengerView extends BaseCustomView {
 
     public void setMaximalPassenger(int number) {
         numberPickerWithCounterView.setMaxValue(number);
+    }
+
+    public void hideSubtitle() {
+        subtitleTextView.setVisibility(GONE);
     }
 
 }

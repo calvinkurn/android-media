@@ -16,8 +16,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -65,6 +65,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     lateinit var progressDialog: ProgressDialog
 
+    private var roomIndex = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -72,6 +74,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             roomDetailViewModel = viewModelProvider.get(HotelRoomDetailViewModel::class.java)
         }
+
+        roomIndex = arguments!!.getInt(HotelRoomDetailActivity.EXTRA_ROOM_INDEX,0)
 
         saveInstanceCacheManager = SaveInstanceCacheManager(activity!!, savedInstanceState)
         val manager = if (savedInstanceState == null) SaveInstanceCacheManager(activity!!,
@@ -170,8 +174,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         if (hotelRoom.roomInfo.roomImages.isNotEmpty()) {
             val roomImageUrls300 = hotelRoom.roomInfo.roomImages.map { it.url300 }
             val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
-            val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.urlSquare }
-            room_detail_images.setImages(roomImageUrls300)
+            val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.url300 }
+
+            if (roomImageUrls300.size >= 5) room_detail_images.setImages(roomImageUrls300.subList(0,5))
+            else room_detail_images.setImages(roomImageUrls300)
 
             room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
                 override fun onImageClicked(position: Int) {
@@ -219,13 +225,13 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         if (!hotelRoom.additionalPropertyInfo.isDirectPayment) {
             pay_at_hotel_container.visibility = View.VISIBLE
 
-            val iconId = if (hotelRoom.additionalPropertyInfo.isCvCRequired)
+            val iconId = if (hotelRoom.creditCardInfo.isCCRequired)
                 R.drawable.ic_pay_at_hotel_cc else R.drawable.ic_pay_at_hotel_no_cc
             pay_at_hotel_icon.setBackgroundResource(iconId)
 
-            val spannableString = SpannableString(" " + hotelRoom.creditCardInfo.creditCardInfo
-                    + getString(R.string.hotel_room_detail_pay_at_hotel_desc))
-            spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.creditCardInfo.length,
+            val spannableString = SpannableString(" " + hotelRoom.creditCardInfo.header
+                    + "\n" + hotelRoom.creditCardInfo.creditCardInfo)
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.header.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(LeadingMarginSpan.Standard(50, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             pay_at_hotel_title.text = getString(R.string.hotel_room_detail_pay_at_hotel)
@@ -328,6 +334,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             room_detail_button.isEnabled = false
             trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
             if (userSessionInterface.isLoggedIn) {
+                trackingHotelUtil.hotelChooseRoom(hotelRoom, roomIndex)
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {
                 goToLoginPage()
@@ -357,10 +364,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         const val MINIMUM_ROOM_COUNT = 3
         const val ROOM_FACILITY_DEFAULT_COUNT = 6
 
-        fun getInstance(savedInstanceId: String): HotelRoomDetailFragment =
+        fun getInstance(savedInstanceId: String, roomIndex: Int): HotelRoomDetailFragment =
                 HotelRoomDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID, savedInstanceId)
+                        putInt(HotelRoomDetailActivity.EXTRA_ROOM_INDEX, roomIndex)
                     }
                 }
     }

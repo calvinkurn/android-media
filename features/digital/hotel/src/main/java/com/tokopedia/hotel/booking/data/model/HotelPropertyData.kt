@@ -2,6 +2,7 @@ package com.tokopedia.hotel.booking.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 
 class HotelPropertyData {
 
@@ -21,9 +22,9 @@ class HotelPropertyData {
     @Expose
     val address: String = ""
 
-    @SerializedName("image")
+    @SerializedName("propertyImage")
     @Expose
-    val image: String = ""
+    val image: PropertyImageItem = PropertyImageItem()
 
     @SerializedName("star")
     @Expose

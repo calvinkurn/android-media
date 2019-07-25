@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingLeft="@dimen/dp_16">
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/tv_hotel_menu_order_list"

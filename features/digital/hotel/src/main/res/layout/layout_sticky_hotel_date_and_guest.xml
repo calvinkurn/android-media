@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -15,36 +17,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingEnd="@dimen/dp_32"
-        android:paddingRight="@dimen/dp_32"
-        android:paddingBottom="@dimen/dp_12"
-        android:weightSum="5">
+        android:paddingStart="@dimen/dp_18"
+        android:paddingLeft="@dimen/dp_18"
+        android:paddingTop="@dimen/dp_11"
+        android:paddingEnd="@dimen/dp_18"
+        android:paddingRight="@dimen/dp_18"
+        android:paddingBottom="@dimen/dp_11"
+        android:weightSum="2">
 
         <LinearLayout
             android:id="@+id/hotel_date_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/dp_4"
-                android:paddingRight="@dimen/dp_4"
-                android:src="@drawable/ic_hotel_calendar" />
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
+                app:srcCompat="@drawable/ic_hotel_calendar" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/date_text_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:ellipsize="end"
+                android:lineSpacingExtra="@dimen/dp_6"
                 android:lines="1"
-                android:text="18 Des 2019 - 20 Jan 2020"
-                android:minWidth="@dimen/dp_150"
-                />
+                app:fontSize="micro"
+                tools:text="18 Des 2019 - 20 Jan 2020" />
         </LinearLayout>
 
         <View
@@ -59,24 +63,22 @@
 
         <LinearLayout
             android:id="@+id/hotel_room_and_guest_layout"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_weight="1"
-                >
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="@dimen/dp_4"
-                    android:paddingRight="@dimen/dp_4"
-                    android:src="@drawable/ic_hotel_room" />
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="@dimen/dp_4"
+                    app:srcCompat="@drawable/ic_hotel_room" />
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/total_room_text_view"
@@ -84,25 +86,26 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:ellipsize="end"
+                    android:lineSpacingExtra="@dimen/dp_6"
                     android:lines="1"
                     android:paddingEnd="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_8"
-                    android:text="1" />
+                    app:fontSize="micro"
+                    tools:text="1" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_4"
                     android:layout_marginLeft="@dimen/dp_4"
-                    android:paddingEnd="@dimen/dp_4"
-                    android:paddingRight="@dimen/dp_4"
-                    android:src="@drawable/ic_hotel_adult" />
+                    android:layout_marginRight="@dimen/dp_4"
+                    app:srcCompat="@drawable/ic_hotel_adult" />
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/total_guest_text_view"
@@ -110,10 +113,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:ellipsize="end"
+                    android:lineSpacingExtra="@dimen/dp_6"
                     android:lines="1"
                     android:paddingEnd="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_8"
-                    android:text="2" />
+                    app:fontSize="micro"
+                    tools:text="2" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

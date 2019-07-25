@@ -16,6 +16,7 @@ import com.tokopedia.design.intdef.CurrencyEnum
 import com.tokopedia.design.list.decoration.SpaceItemDecoration
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.presentation.widget.SpanningLinearLayoutManager
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
@@ -154,7 +155,8 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
 
     private fun setupStarFilter(filterStar: Filter.FilterStar) {
         val filterStars = filterStar.stars.map { FilterStar(it.toString(), it.toString()) }
-        filter_star.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        filter_star.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
+                false, resources.getDimensionPixelSize(R.dimen.dp_8))
         filter_star.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
         filter_star.adapter = starAdapter

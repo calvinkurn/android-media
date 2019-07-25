@@ -1,66 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_button_white_enabled_border"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:background="@drawable/bg_button_white_enabled_border"
+        android:orientation="horizontal">
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_switcher_left_subtitle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:fontSize="micro"
-            tools:text="Check-in" />
+            android:layout_margin="@dimen/dp_16"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_switcher_left_title"
-            android:layout_width="wrap_content"
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_switcher_left_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fontSize="micro"
+                tools:text="Check-in" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_switcher_left_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fontSize="small"
+                app:textViewTheme="lightPrimary"
+                app:weight="medium"
+                tools:text="Mulai 11:00" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:fontSize="small"
-            app:textViewTheme="lightPrimary"
-            app:weight="medium"
-            tools:text="Mulai 11:00" />
+            android:layout_margin="@dimen/dp_16"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_switcher_right_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fontSize="micro"
+                tools:text="Check-out" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_switcher_right_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fontSize="small"
+                app:textViewTheme="lightPrimary"
+                app:weight="medium"
+                tools:text="Sampai 21:00" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <View
         android:layout_width="1dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@color/grey_300"
-        android:visibility="visible" />
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_switcher_right_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fontSize="micro"
-            tools:text="Check-out" />
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_switcher_right_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fontSize="small"
-            app:textViewTheme="lightPrimary"
-            app:weight="medium"
-            tools:text="Sampai 21:00" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

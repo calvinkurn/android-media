@@ -1,9 +1,6 @@
 package com.tokopedia.recommendation_widget_common.data.mapper
 
-import com.crashlytics.android.Crashlytics
-import com.tokopedia.kotlin.util.ContainNullException
-import com.tokopedia.kotlin.util.isContainNull
-import com.tokopedia.recommendation_widget_common.BuildConfig
+import com.tokopedia.kotlin.util.throwIfNull
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -16,14 +13,7 @@ import rx.functions.Func1
 class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationData>,
         List<RecommendationWidget>> {
     override fun call(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
-        isContainNull(recommendations) {
-            val exception = ContainNullException("Found $it in ${RecommendationEntityMapper::class.java.simpleName}")
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(exception)
-            }
-            throw exception
-        }
-
+        throwIfNull(recommendations, RecommendationEntityMapper::class.java)
         return mappingToRecommendationModel(recommendations)
     }
 
@@ -96,8 +86,10 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     -1,
                     1,
                     title,
-                    pageName
-
+                    pageName,
+                    data.minOrder ?: 1,
+                    data.shop?.city ?: "",
+                    data.badges?.map { it.imageUrl } ?: emptyList()
             )
 
         }

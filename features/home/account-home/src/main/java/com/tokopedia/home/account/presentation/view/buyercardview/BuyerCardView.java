@@ -117,7 +117,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     @Override
     public void hideProfileProgress() {
         imageProfileCompleted.setVisibility(VISIBLE);
-        imageProfileProgress.setVisibility(GONE);
+        imageProfileProgress.setVisibility(INVISIBLE);
         progressBar.setVisibility(GONE);
     }
 

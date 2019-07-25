@@ -42,7 +42,6 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import java.util.*
 import javax.inject.Inject
 
-
 /**
  * @author by furqan on 22/04/19
  */
@@ -60,6 +59,7 @@ class HotelDetailFragment : HotelBaseFragment() {
     private var hotelName: String = ""
     private var hotelId: Int = 0
     private var roomPrice: String = "0"
+    private var roomPriceAmount: String = ""
 
     private val thumbnailImageList = mutableListOf<String>()
     private val imageList = mutableListOf<String>()
@@ -118,6 +118,8 @@ class HotelDetailFragment : HotelBaseFragment() {
                     GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
                     hotelHomepageModel.locId)
         }
+
+
 
     }
 
@@ -248,7 +250,7 @@ class HotelDetailFragment : HotelBaseFragment() {
 
         for ((imageIndex, item) in images.withIndex()) {
             imageList.add(item.urlOriginal)
-            thumbnailImageList.add(item.urlSquare6)
+            thumbnailImageList.add(item.urlMax300)
 
             when (imageCounter) {
                 0 -> {
@@ -295,7 +297,7 @@ class HotelDetailFragment : HotelBaseFragment() {
     }
 
     private fun onPhotoClicked() {
-        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
+        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPriceAmount)
     }
 
     private fun setupReviewLayout(data: HotelReview.ReviewData) {
@@ -306,25 +308,27 @@ class HotelDetailFragment : HotelBaseFragment() {
 
     private fun setupReviewHeader(data: HotelReview.ReviewData) {
         if (data.totalReview > 0 || data.averageScoreReview > 0) {
+            var hasHeadline = false
             if (data.totalReview > 0) {
                 tv_hotel_rating_count.text = getString(R.string.hotel_detail_based_on_review_number,
                         CurrencyFormatUtil.convertPriceValue(data.totalReview.toDouble(), false))
                 tv_hotel_rating_detail.text = data.headline
-            } else {
+                hasHeadline = true
+            } else if (!hasHeadline) {
                 tv_hotel_rating_count.visibility = View.GONE
             }
 
             if (data.averageScoreReview > 0) {
                 tv_hotel_rating_number.text = data.averageScoreReview.toString()
                 tv_hotel_rating_detail.text = data.headline
-            } else {
+            } else if (!hasHeadline) {
                 tv_hotel_rating_number.visibility = View.GONE
                 tv_hotel_rating_detail.text = getString(R.string.hotel_detail_no_rating)
             }
         } else {
             tv_hotel_rating_number.visibility = View.GONE
             tv_hotel_rating_count.visibility = View.GONE
-            tv_hotel_detail_all_promo.visibility = View.GONE
+            tv_hotel_detail_all_reviews.visibility = View.GONE
             tv_hotel_rating_detail.text = getString(R.string.hotel_detail_no_rating_review)
         }
     }
@@ -341,8 +345,8 @@ class HotelDetailFragment : HotelBaseFragment() {
             rv_best_review.isNestedScrollingEnabled = false
             rv_best_review.adapter = detailReviewAdapter
 
-            tv_hotel_detail_all_promo.setOnClickListener {
-                trackingHotelUtil.hotelClickHotelReviews(hotelId, roomPrice)
+            tv_hotel_detail_all_reviews.setOnClickListener {
+                trackingHotelUtil.hotelClickHotelReviews(hotelId, roomPriceAmount)
                 startActivityForResult(HotelReviewActivity.getCallingIntent(context!!, hotelHomepageModel.locId), RESULT_REVIEW)
             }
         } else {
@@ -392,20 +396,9 @@ class HotelDetailFragment : HotelBaseFragment() {
     }
 
     private fun setupPolicySwitcher(data: PropertyDetailData) {
-        scv_hotel_date.setLeftSubtitleText(data.property.checkinInfo)
-        scv_hotel_date.setRightSubtitleText(data.property.checkoutInfo)
 
-        if (data.property.checkinTo.isNotEmpty()) {
-            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_from_to, data.property.checkInFrom, data.property.checkinTo))
-        } else {
-            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_start_from, data.property.checkInFrom))
-        }
-
-        if (data.property.checkoutFrom.isNotEmpty()) {
-            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_from_to, data.property.checkoutFrom, data.property.checkoutTo))
-        } else {
-            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_to, data.property.checkoutTo))
-        }
+        scv_hotel_date.setLeftTitleText(data.property.checkinInfo)
+        scv_hotel_date.setRightTitleText(data.property.checkoutInfo)
 
         tv_hotel_detail_all_policies.setOnClickListener {
             startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
@@ -418,8 +411,10 @@ class HotelDetailFragment : HotelBaseFragment() {
         container_bottom.visibility = View.VISIBLE
 
         if (data.isNotEmpty()) {
-            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, data[0].roomPrice.priceAmount.toInt(), data[0].additionalPropertyInfo.isDirectPayment)
-            roomPrice = data[0].roomPrice.roomPrice
+            roomPrice = data.first().roomPrice.roomPrice
+            roomPriceAmount = data.first().roomPrice.priceAmount.toLong().toString()
+            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
+
             tv_hotel_price.text = roomPrice
 
             if (data[0].additionalPropertyInfo.isDirectPayment) {
@@ -428,14 +423,14 @@ class HotelDetailFragment : HotelBaseFragment() {
                 btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             } else {
                 btn_see_room.setOnClickListener {
-                    trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPrice)
+                    trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPriceAmount)
                     startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
                             hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
                             hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
                 }
             }
         } else {
-            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, false, 0, false)
+            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, false, "0", false)
             tv_hotel_price_subtitle.visibility = View.GONE
             tv_hotel_price.text = getString(R.string.hotel_detail_room_full_text)
             tv_hotel_price.setTextColor(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.light_disabled))

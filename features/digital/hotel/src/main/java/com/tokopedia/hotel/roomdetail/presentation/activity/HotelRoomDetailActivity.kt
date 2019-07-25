@@ -29,7 +29,8 @@ class HotelRoomDetailActivity : HotelBaseActivity(), HasComponent<HotelRoomDetai
 
     override fun getNewFragment(): Fragment =
         HotelRoomDetailFragment.getInstance(
-                intent.getStringExtra(EXTRA_SAVED_INSTANCE_ID)
+                intent.getStringExtra(EXTRA_SAVED_INSTANCE_ID),
+                intent.getIntExtra(EXTRA_ROOM_INDEX, 0)
         )
 
     override fun shouldShowOptionMenu(): Boolean = false
@@ -37,9 +38,11 @@ class HotelRoomDetailActivity : HotelBaseActivity(), HasComponent<HotelRoomDetai
     companion object {
 
         const val EXTRA_SAVED_INSTANCE_ID = "EXTRA_SAVED_INSTANCE_ID"
+        const val EXTRA_ROOM_INDEX = "EXTRA_ROOM_INDEX"
 
-        fun getCallingIntent(context: Context, savedInstanceId: String): Intent =
+        fun getCallingIntent(context: Context, savedInstanceId: String, roomIndex: Int): Intent =
                 Intent(context, HotelRoomDetailActivity::class.java)
                         .putExtra(EXTRA_SAVED_INSTANCE_ID, savedInstanceId)
+                        .putExtra(EXTRA_ROOM_INDEX, roomIndex)
     }
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.product.detail.data.util
 
+import com.tokopedia.url.TokopediaUrl
+
 object ProductDetailConstant {
     @JvmField
-    var BASE_REST_URL = "https://ws.tokopedia.com/"
+    var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
     const val MAINAPP_SHOW_PDP_TOPADS = "mainapp_show_pdp_topads"
 
@@ -29,4 +31,11 @@ object ProductDetailConstant {
     const val PATH_MOVE_TO_ETALASE = "edit_etalase.pl"
 
     const val PARAM_PRICE = "price"
+
+    const val URL_VALUE_PROPOSITION_READY ="https://www.tokopedia.com/help/article/a-1937"
+    const val URL_VALUE_PROPOSITION_ORI ="https://www.tokopedia.com/help/article/a-1938"
+    const val URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS ="https://www.tokopedia.com/help/article/a-1939"
+    const val URL_VALUE_PROPOSITION_GUARANTEE = "https://www.tokopedia.com/help/article/a-1940"
+
+
 }

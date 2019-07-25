@@ -6,7 +6,6 @@ import android.os.Bundle
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaModel
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -17,8 +16,6 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
@@ -42,33 +39,6 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
                 imagePickerBuilder.ratioOptionList)
     }
 
-    override fun onDoneClicked() {
-        val isImageExist = intent?.getBooleanExtra(
-                CreatePostImagePickerActivity.VIDEO_EXIST,
-                false)?: false
-
-        if (isImageExist) {
-            val dialog = Dialog(this, Dialog.Type.PROMINANCE)
-            dialog.setTitle(getString(R.string.af_title_update_post))
-            dialog.setDesc(
-                    getString(R.string.af_message_update_post,
-                    getString(R.string.af_title_photo)))
-            dialog.setBtnCancel(getString(R.string.cancel))
-            dialog.setBtnOk(getString(R.string.af_continue))
-            dialog.setOnOkClickListener{
-                dialog.dismiss()
-                super.onDoneClicked()
-            }
-            dialog.setOnCancelClickListener{
-                dialog.dismiss()
-            }
-            dialog.setCancelable(true)
-            dialog.show()
-        } else {
-            super.onDoneClicked()
-        }
-    }
-
     companion object {
         private const val ARGS_SHOW_WARNING = "show_warning"
         private const val VIDEO_EXIST = "video_exist"
@@ -83,6 +53,7 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
                     .toList()
                     .map { it.path })
 
+            /** Hide IG Since It's not working right now */
             val builder = ImagePickerBuilder(
                     context.getString(R.string.title_af_image_picker),
                     intArrayOf(TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM),

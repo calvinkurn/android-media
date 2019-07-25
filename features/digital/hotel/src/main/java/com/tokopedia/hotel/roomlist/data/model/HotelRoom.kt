@@ -159,7 +159,11 @@ data class HotelRoom(
 
             @SerializedName("info")
             @Expose
-            val creditCardInfo: String = ""
+            val creditCardInfo: String = "",
+
+            @SerializedName("header")
+            @Expose
+            val header: String = ""
     )
 
     data class RoomPolicy(

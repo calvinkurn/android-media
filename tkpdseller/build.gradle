@@ -27,6 +27,7 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.williamchart)
@@ -40,11 +41,9 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.features.logisticanalytics)
     implementation project(rootProject.ext.features.logisticinputreceiptshipment)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation project(rootProject.ext.features.logisticCommon)
 
 
     implementation project(rootProject.ext.features.topAdsSourceTagging)
@@ -61,7 +60,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.resourcesCommon)
 
     implementation rootProject.ext.miscDependencies.dagger

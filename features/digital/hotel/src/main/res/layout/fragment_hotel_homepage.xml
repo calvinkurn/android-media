@@ -194,7 +194,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_32"
                 android:text="@string/hotel_homepage_button_search"
-                app:buttonCompatSize="medium"
+                app:buttonCompatSize="big"
                 app:buttonCompatTextAllCaps="false"
                 app:buttonCompatType="primary" />
 

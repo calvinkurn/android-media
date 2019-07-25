@@ -68,7 +68,13 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
 
     private suspend fun getHotelReview(rawQuery: String, propertyId: Int) {
 
-        val requestReviewParams = HotelReviewParam(propertyId, DEFAULT_PAGE_REVIEW, DEFAULT_ROW_REVIEW, DEFAULT_SORT_BY_REVIEW, DEFAULT_SORT_ORDER)
+        val requestReviewParams = HotelReviewParam(propertyId = propertyId,
+                page = DEFAULT_PAGE_REVIEW,
+                rows = DEFAULT_ROW_REVIEW,
+                sortBy = DEFAULT_SORT_BY_REVIEW,
+                sortType = DEFAULT_SORT_ORDER,
+                filterByCountry = DEFAULT_REVIEW_BY_COUNTRY)
+
         val reviewParams = mapOf(PARAM_HOTEL_INFO_PROPERTY to requestReviewParams)
 
         try {
@@ -104,6 +110,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         const val DEFAULT_ROW_REVIEW = 5
         const val DEFAULT_SORT_BY_REVIEW = "score"
         const val DEFAULT_SORT_ORDER = "desc"
+        const val DEFAULT_REVIEW_BY_COUNTRY = "all"
 
         private val TYPE_HOTEL_INFO = PropertyDetailData.Response::class.java
         private val TYPE_HOTEL_REVIEW = HotelReview.Response::class.java

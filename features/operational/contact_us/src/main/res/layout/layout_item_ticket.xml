@@ -105,13 +105,14 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_10"
             android:textStyle="normal"
-            android:text="Prioritas"
+            android:text="@string/layanan_prioritas"
+            android:textColor="@color/purple"
             android:visibility="gone"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:gravity="center"
             android:drawablePadding="@dimen/dp_4"
-            android:drawableLeft="@drawable/priority_label_img"
+            android:drawableLeft="@drawable/priority_label_image"
             app:layout_constraintTop_toBottomOf="@id/tv_ticket_desc"
             app:layout_constraintLeft_toRightOf="@+id/tv_ticket_date"/>
 

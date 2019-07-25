@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.presentation.widget.hotelcalendar.HotelCalendarDialog
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
@@ -33,8 +35,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
-import android.support.v7.widget.RecyclerView
-import com.tokopedia.hotel.common.presentation.widget.hotelcalendar.HotelCalendarDialog
 
 /**
  * @author by furqan on 28/03/19
@@ -96,9 +96,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         hidePromoContainer()
                     }
                 }
-                is Fail -> {
-                    showErrorState(it.throwable)
-                }
+                is Fail -> {  }
             }
         })
     }
@@ -179,15 +177,17 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun onDestinationChangeClicked() {
         startActivityForResult(HotelDestinationActivity.createInstance(activity!!), REQUEST_CODE_DESTINATION)
+        activity?.run {
+            overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay)
+        }
     }
 
     private fun configAndRenderCheckInDate() {
-        openCalendarDialog()
+        openCalendarDialog(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
     }
 
     private fun configAndRenderCheckOutDate() {
-        openCalendarDialog(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD,
-                hotelHomepageModel.checkInDate))
+        openCalendarDialog(checkIn = hotelHomepageModel.checkInDate)
     }
 
     private fun onGuestInfoClicked() {
@@ -231,8 +231,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun trackRoomDates() {
         val dayDiff = HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate)
-        val dateRange = "${hotelHomepageModel.checkInDate} - ${hotelHomepageModel.checkOutDate}"
-        trackingHotelUtil.hotelSelectStayDate(dayDiff.toInt(), dateRange)
+        val dateRange = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
+        trackingHotelUtil.hotelSelectStayDate(dayDiff.toInt(), dateRange.toInt())
     }
 
     private fun onDestinationNearBy(longitude: Double, latitude: Double) {
@@ -257,7 +257,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun onSearchButtonClicked() {
         trackingHotelUtil.searchHotel(
-                "",
+                hotelHomepageModel.locType,
                 hotelHomepageModel.locName,
                 hotelHomepageModel.roomCount,
                 hotelHomepageModel.adultCount,
@@ -297,7 +297,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         rv_hotel_homepage_promo.isNestedScrollingEnabled = false
         rv_hotel_homepage_promo.adapter = promoAdapter
         rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
@@ -307,16 +307,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
         })
     }
 
-    private fun openCalendarDialog(selectedDate: Date? = null) {
-        val hotelCalendarDialog = HotelCalendarDialog()
+    private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
+        val hotelCalendarDialog = HotelCalendarDialog.getInstance(checkIn, checkOut)
         hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener{
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
             }
-
         }
-        hotelCalendarDialog.selectedDate = selectedDate
         hotelCalendarDialog.show(fragmentManager, "test")
     }
 

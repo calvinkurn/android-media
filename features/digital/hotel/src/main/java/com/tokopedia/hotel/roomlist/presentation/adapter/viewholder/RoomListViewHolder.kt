@@ -17,9 +17,9 @@ import kotlin.math.min
  * @author by jessica on 25/03/19
  */
 
-class RoomListViewHolder(val view: View, val listener: OnClickBookListener): AbstractViewHolder<HotelRoom>(view) {
+class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : AbstractViewHolder<HotelRoom>(view) {
 
-   override fun bind(hotelRoom: HotelRoom) {
+    override fun bind(hotelRoom: HotelRoom) {
         with(itemView) {
             val roomListModel = mapToRoomListModel(hotelRoom)
 
@@ -38,7 +38,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
                 pay_hotel_layout.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
                 room_left_text_view.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
                 room_left_text_view.text = getString(R.string.hotel_room_room_left_text, roomListModel.roomLeft.toString())
-                cc_not_required_text_view.visibility = if (roomListModel.isCcRequired) View.GONE else View.VISIBLE
+                cc_not_required_text_view.text = roomListModel.creditCardHeader
                 initRoomFacility(roomListModel.breakfastIncluded, roomListModel.isRefundable, roomListModel.roomFacility)
 
                 choose_room_button.setOnClickListener { listener.onClickBookListener(hotelRoom) }
@@ -46,7 +46,8 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             } else {
                 room_description_layout.visibility = View.GONE
                 room_full_layout.visibility = View.VISIBLE
-                setImageViewPager(listOf(roomListModel.images[0]), hotelRoom)
+                if (roomListModel.images.isNotEmpty()) room_image_view_pager.setImages(listOf(roomListModel.images.first()))
+                room_image_view_pager.buildView()
                 room_full_room_name_text_view.text = roomListModel.roomName
             }
         }
@@ -74,8 +75,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             }
             room_facility_recycler_view.addView(refundableTextView)
 
-
-            for (i in 0..min(roomFacility.size, 1)) {
+            for (i in 0 until min(roomFacility.size, 2)) {
                 var textView = FacilityTextView(context)
                 textView.setIconAndText(roomFacility[i].iconUrl, roomFacility[i].name)
                 room_facility_recycler_view.addView(textView)
@@ -85,13 +85,13 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
 
     fun setImageViewPager(imageUrls: List<String>, room: HotelRoom) {
         with(itemView) {
-            if (imageUrls.size >= 5) room_image_view_pager.setImages(imageUrls.subList(0,5))
+            if (imageUrls.size >= 5) room_image_view_pager.setImages(imageUrls.subList(0, 5))
             else room_image_view_pager.setImages(imageUrls)
-            room_image_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
+            room_image_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     listener.onPhotoClickListener(room)
                     context.startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                            context!!, room.additionalPropertyInfo.propertyName, imageUrls, imageUrls, position
+                            context!!, room.roomInfo.name, imageUrls, imageUrls, position
                     ))
                 }
             }
@@ -113,10 +113,10 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             roomListModel.occupancyText = hotelRoom.occupancyInfo.occupancyText
             roomListModel.bedInfo = hotelRoom.bedInfo
             roomListModel.roomFacility = hotelRoom.roomInfo.facility
-            roomListModel.payInHotel = hotelRoom.additionalPropertyInfo.isDirectPayment
+            roomListModel.payInHotel = !hotelRoom.additionalPropertyInfo.isDirectPayment
             roomListModel.breakfastIncluded = hotelRoom.breakfastInfo.isBreakfastIncluded
             roomListModel.isRefundable = hotelRoom.refundInfo.isRefundable
-            roomListModel.isCcRequired = hotelRoom.creditCardInfo.isCCRequired
+            roomListModel.creditCardHeader = hotelRoom.creditCardInfo.header
             roomListModel.creditCardInfo = hotelRoom.creditCardInfo.creditCardInfo
             roomListModel.price = hotelRoom.roomPrice.roomPrice
             roomListModel.roomLeft = hotelRoom.numberRoomLeft

@@ -8,7 +8,6 @@
         android:orderInCategory="100"
         app:showAsAction="always"
         android:icon="@drawable/ic_toolbar_overflow_level_two_black"
-        tools:ignore="AppCompatResource"
         android:title="" />
 
 </menu>

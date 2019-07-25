@@ -1,8 +1,5 @@
 package com.tokopedia.hotel.roomlist.data.model
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
-
 /**
  * @author by jessica on 15/04/19
  */
@@ -18,7 +15,7 @@ data class RoomListModel(
         var isRefundable: Boolean = false,
         var roomFacility: List<HotelRoomInfo.Facility> = listOf(),
         var payInHotel: Boolean = false,
-        var isCcRequired: Boolean = false,
+        var creditCardHeader: String = "",
         var creditCardInfo: String = "",
         var price: String = "",
         var images: List<String> = listOf(),

@@ -1,14 +1,14 @@
 package com.tokopedia.contactus.common.api;
 
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by sandeepgoyal on 15/12/17.
  */
 
 public interface ContactUsURL {
-    String BASE_URL = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;
+    String BASE_URL = TokopediaUrl.Companion.getInstance().getWEB();
     String TOPBOT_STATUS = "contact-us/ws/topbot/status";
     String POPULAR_ARTICLE = "/bantuan/wp-json/sf/v1/popular/?per_page=5";
     String BUYER_LIST ="/contact-us/ws/order/buyer";

@@ -24,9 +24,7 @@ import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragmen
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_calendar_dialog.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -47,14 +45,13 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var hotelCalendarDialogViewModel: HotelCalendarDialogViewModel
 
-    @Inject
-    lateinit var useCase: TravelCalendarHolidayUseCase
-
     var isFirstTime: Boolean = true
 
     var listener: OnDateClickListener? = null
     var title: String = "Pilih Tanggal"
-    var selectedDate: Date? = null
+
+    var checkIn: Date? = null
+    var checkOut: Date? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +63,13 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
             hotelCalendarDialogViewModel = viewModelProvider.get(HotelCalendarDialogViewModel::class.java)
         }
 
-        hotelCalendarDialogViewModel.getTravelHolidayDate()
+        arguments?.let {
+            if (it.getString(ARG_CHECK_IN) != null)
+                checkIn = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(ARG_CHECK_IN))
+
+            if (it.getString(ARG_CHECK_OUT) != null)
+                checkOut = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(ARG_CHECK_OUT))
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -81,10 +84,12 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
 
         loading_progress_bar.visibility = View.VISIBLE
 
+        hotelCalendarDialogViewModel.getTravelHolidayDate()
+
         hotelCalendarDialogViewModel.holidayResult.observe(this, Observer {
+            loading_progress_bar.visibility = View.GONE
             when (it) {
                 is Success -> {
-                    loading_progress_bar.visibility = View.GONE
                     if (isFirstTime && it.data.data.isNotEmpty()) {
                         renderCalendar(mappingHolidayData(it.data))
                         isFirstTime = false
@@ -116,21 +121,26 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
         yesterday.set(Calendar.SECOND, 0)
         yesterday.set(Calendar.MILLISECOND, 0)
 
+        if (checkIn != null && checkOut != null) {
+            calendar.init(yesterday.time, nextYear.time, legends)
+                    .inMode(CalendarPickerView.SelectionMode.RANGE)
+                    .maxRange(30)
+                    .withSelectedDates(listOf(checkIn, checkOut))
+            date_in.requestFocus()
+        } else if (checkIn != null && checkOut == null) {
+            calendar.init(yesterday.time, nextYear.time, legends)
+                    .inMode(CalendarPickerView.SelectionMode.RANGE)
+                    .maxRange(30)
+                    .withSelectedDate(checkIn)
+            date_out.requestFocus()
+        }
 
         val defaultIndLocale = Locale("id", "ID")
         val dateFormat = SimpleDateFormat("E, d MMM", defaultIndLocale)
         dateFormat.timeZone = TimeZone.getDefault()
 
-        calendar.init(yesterday.time, nextYear.time, legends)
-                .inMode(CalendarPickerView.SelectionMode.RANGE)
-                .maxRange(30)
-
-        var dateIn: Date? = null
-        if (selectedDate != null) {
-            dateIn = selectedDate
-            calendar.selectDate(selectedDate)
-            date_in.setText(dateFormat.format(selectedDate))
-        }
+        if (checkIn != null) date_in.setText(dateFormat.format(checkIn))
+        if (checkOut != null) date_out.setText(dateFormat.format(checkOut))
 
         calendar.setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
             override fun onNotifyMax() {
@@ -139,23 +149,35 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
 
         })
 
+        
+        date_in.setOnFocusChangeListener { view, hasFocus ->
+            if (checkOut == null) {
+                if (date_in.isFocused) date_out.requestFocus()
+            } else {
+                if (date_out.isFocused) date_in.requestFocus()
+            }
+        }
+
         calendar.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
 
             override fun onDateSelected(date: Date) {
-                if (dateIn != null && date.after(dateIn) && date_in.isFocused()) {
-                    date_out.setText(dateFormat.format(date))
+
+                if ((checkIn != null && checkOut != null) || (checkOut == null && date.before(checkIn))) {
+                    date_in.setText(dateFormat.format(date))
+                    date_out.setText("")
+                    checkIn = date
+                    checkOut = null
                     date_out.requestFocus()
-                    if (listener != null) listener!!.onDateClick(dateIn!!, date)
+                } else if (checkIn != null && checkOut == null && date.after(checkIn)) {
+                    date_out.setText(dateFormat.format(date))
+                    checkOut = date
+                    date_out.requestFocus()
+                    if (listener != null) listener!!.onDateClick(checkIn!!, checkOut!!)
 
                     GlobalScope.launch {
                         delay(300)
                         dismissAllowingStateLoss()
                     }
-                } else {
-                    dateIn = date
-                    date_out.setText("")
-                    date_in.setText(dateFormat.format(date))
-                    date_in.requestFocus()
                 }
             }
 
@@ -176,5 +198,19 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
 
     interface OnDateClickListener {
         fun onDateClick(dateIn: Date, dateOut: Date)
+    }
+
+    companion object {
+
+        const val ARG_CHECK_IN = "arg_check_in"
+        const val ARG_CHECK_OUT = "arg_check_out"
+
+        fun getInstance(checkIn: String?, checkOut: String?): HotelCalendarDialog =
+                HotelCalendarDialog().also {
+                    it.arguments = Bundle().apply {
+                        putString(ARG_CHECK_IN, checkIn)
+                        putString(ARG_CHECK_OUT, checkOut)
+                    }
+                }
     }
 }

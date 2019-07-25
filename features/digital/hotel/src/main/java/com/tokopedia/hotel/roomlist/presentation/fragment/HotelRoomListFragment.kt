@@ -102,13 +102,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer {
             when (it) {
                 is Success -> {
+                    if (firstTime) trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId)
                     firstTime = false
                     if (!roomListViewModel.isFilter) {
                         roomListViewModel.roomList = it.data
                         showFilterRecyclerView(it.data.size > 0)
                     } else showFilterRecyclerView(true)
                     clearAllData()
-                    trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId)
                     roomList = it.data
                     renderList(roomList, false)
                 }
@@ -241,7 +241,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
             put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
         }
-        startActivityForResult(HotelRoomDetailActivity.getCallingIntent(context!!, objectId), RESULT_ROOM_DETAIL)
+        startActivityForResult(HotelRoomDetailActivity.getCallingIntent(context!!, objectId, roomList.indexOf(room)), RESULT_ROOM_DETAIL)
     }
 
     fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
@@ -278,15 +278,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     private fun openCalendarDialog(selectedDate: Date? = null) {
-        val hotelCalendarDialog = HotelCalendarDialog()
+        val hotelCalendarDialog = HotelCalendarDialog.getInstance(hotelRoomListPageModel.checkIn, hotelRoomListPageModel.checkOut)
         hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener{
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
             }
-
         }
-        hotelCalendarDialog.selectedDate = selectedDate
         hotelCalendarDialog.show(fragmentManager, "test")
     }
 

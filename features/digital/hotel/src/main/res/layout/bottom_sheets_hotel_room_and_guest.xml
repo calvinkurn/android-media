@@ -4,35 +4,53 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16">
 
     <com.tokopedia.common.travel.widget.SelectPassengerView
         android:id="@+id/spv_hotel_room"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         app:spv_icon="@drawable/ic_hotel_room"
         app:spv_max_value="30"
         app:spv_min_value="1"
         app:spv_subtitle=""
         app:spv_title="@string/hotel_bottom_sheets_room_count_title" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/divider_color" />
+
     <com.tokopedia.common.travel.widget.SelectPassengerView
         android:id="@+id/spv_hotel_adult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         app:spv_icon="@drawable/ic_hotel_adult"
         app:spv_max_value="30"
         app:spv_min_value="1"
         app:spv_subtitle=""
         app:spv_title="@string/hotel_bottom_sheets_adult_count_title" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/divider_color" />
+
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_hotel_save_guest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:text="@string/hotel_button_save"
-        app:buttonCompatSize="medium"
+        app:buttonCompatSize="big"
         app:buttonCompatTextAllCaps="false"
         app:buttonCompatType="primary" />
 
