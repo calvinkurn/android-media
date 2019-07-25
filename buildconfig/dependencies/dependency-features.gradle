@@ -227,7 +227,6 @@ ext {
 //            saldodetails                    : ":features:fintech:saldo_details_no_op",
             tokoCash                        : ":features:fintech:tokocash",
 //            tokoCash                      : ":features:fintech:tokocash_no_op",
-            insurance                       : ":features:fintech:insurance",
 
             accountHome                     : ":features:home:account-home",
             navigation                      : ":features:home:navigation",

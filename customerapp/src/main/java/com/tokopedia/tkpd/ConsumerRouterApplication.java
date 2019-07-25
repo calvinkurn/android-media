@@ -1758,11 +1758,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @NotNull
     @Override
-    public AddInsuranceProductUsecase addInsuranceProductToCart(/*@NotNull AddInsuranceProductToCartRequest addInsuranceProductToCartRequest,
-                                                                                      @NotNull AddMarketPlaceToCartRequest addMarketPlaceToCartRequest*/) {
-        /*com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putObject(AddInsuranceProductUsecase.PARAM_ADD_TO_INSURANCE_CART_TRANSACTIONAL, addInsuranceProductToCartRequest);
-        requestParams.putObject(AddInsuranceProductUsecase.PARAM_ADD_TO_INSURANCE_CART_MARKETPLACE, addMarketPlaceToCartRequest);*/
+    public AddInsuranceProductUsecase addInsuranceProductToCart() {
         return CartComponentInjector.newInstance(this).getAddInsuranceProductUsecase();
     }
 
