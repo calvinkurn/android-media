@@ -1,19 +1,27 @@
 package com.tokopedia.home.account.presentation.viewholder
 
+import android.app.Activity
+import android.graphics.Color
 import android.support.annotation.LayoutRes
+import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.presentation.listener.AccountItemListener
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardView
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 /**
- * @author okasurya on 7/17/18.
+ * @author devarafikry on 24/07/19.
  */
 class RecommendationProductViewHolder(itemView: View, val accountItemListener: AccountItemListener) : AbstractViewHolder<RecommendationProductViewModel>(itemView) {
     companion object {
@@ -36,7 +44,7 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
             setShopLocationVisible(true)
             setButtonWishlistVisible(element.product.badgesUrl.isNotEmpty())
             setShopBadgesVisible(true)
-//            setButtonWishlistImage(element.product.isWishlist)
+            setButtonWishlistImage(element.product.isWishlist)
             setProductNameText(element.product.name)
             setPriceText(element.product.price)
             setImageProductUrl(element.product.imageUrl)
@@ -54,7 +62,6 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
                     if (element.product.isTopAds) {
                         ImpresionTask().execute(element.product.trackerImageUrl)
                     }
-                    accountItemListener.onProductRecommendationImpression(element.product)
                 }
             })
 
@@ -67,22 +74,48 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
 
 
             setButtonWishlistOnClickListener {
-                element.listener.onWishlistClick(element.productItem, !element.productItem.isWishlist) { success, throwable ->
-                    if (success) {
-                        element.productItem.isWishlist = !element.productItem.isWishlist
-                        setButtonWishlistImage(element.productItem.isWishlist)
-                        if (element.productItem.isWishlist) {
+                accountItemListener.onProductRecommendationWishlistClicked(element.product,
+                        !element.product.isWishlist){ success, throwable ->
+                    if(success){
+                        element.product.isWishlist = !element.product.isWishlist
+                        setButtonWishlistImage(element.product.isWishlist)
+                        if(element.product.isWishlist){
                             showSuccessAddWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist))
                         } else {
                             showSuccessRemoveWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist))
                         }
-                    } else {
+                    }else {
                         showError(rootView, throwable)
                     }
                 }
             }
 
         }
+    }
+
+    private fun showSuccessAddWishlist(view: View, message: String){
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                .setAction(R.string.account_go_to_wishlist) { RouteManager.route(view.context, ApplinkConst.WISHLIST) }
+                .show()
+    }
+
+    private fun showSuccessRemoveWishlist(view: View, message: String){
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun showError(view: View, throwable: Throwable?){
+        val snackbar = Snackbar.make(
+                view,
+                ErrorHandler.getErrorMessage(view.context, throwable),
+                Snackbar.LENGTH_LONG)
+        val snackbarView = snackbar.view
+        val padding = view.resources.getDimensionPixelSize(R.dimen.dp_16)
+        snackbarView.setPadding(padding, 0, padding, 0)
+        snackbarView.setBackgroundColor(Color.TRANSPARENT)
+        val rootSnackBarView = snackbarView as FrameLayout
+        rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_error)
+        snackbar.show()
+
     }
 
     private fun mapBadges(badges: List<String?>){

@@ -219,4 +219,5 @@
     <string name="account_home_ok_geolocation_alertdialog">OK</string>
     <string name="account_home_batal_geolocation_alertdialog">Batal</string>
 
+    <string name="account_go_to_wishlist">Lihat Wishlist</string>
 </resources>
