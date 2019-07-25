@@ -11,6 +11,7 @@ import android.view.View
 import android.webkit.WebView
 import android.widget.CompoundButton
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -89,7 +90,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                     infoDialogView?.findViewById<TextView>(R.id.info_bottom_sheet_title_tv)?.text =
                             insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle
 
-                    val closeImageView = infoDialogView?.findViewById<WebView>(R.id.ic_close_icon)
+                    val closeImageView = infoDialogView?.findViewById<ImageView>(R.id.ic_close_icon)
                     infoCloseableDialog.setOnShowListener { dialog ->
                         val d = dialog as BottomSheetDialog
                         val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
