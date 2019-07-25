@@ -269,12 +269,6 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
         viewModel.stateVideoPosition = playerOptions?.currentPosition!!
     }
 
-    override fun onPause() {
-        super.onPause()
-//        playerOptions?.stop()
-//        pause()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         playerOptions?.stop()
