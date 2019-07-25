@@ -14,9 +14,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.common.travel.data.entity.TravelCalendarHoliday
-import com.tokopedia.common.travel.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.di.component.DaggerHotelComponent
 import com.tokopedia.hotel.common.di.component.HotelComponent
