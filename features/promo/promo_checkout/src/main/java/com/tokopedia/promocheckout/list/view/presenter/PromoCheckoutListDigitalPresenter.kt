@@ -56,7 +56,7 @@ class PromoCheckoutListDigitalPresenter(private val graphqlUseCase: GraphqlUseCa
                 if (checkVoucherData.voucherData.success) {
                     view.onSuccessCheckPromoStackingCode(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))
                 } else {
-                    view.onErrorCheckPromoCode(MessageErrorException(checkVoucherData.errors.getOrNull(0)?.status))
+                    view.onErrorCheckPromoCode(MessageErrorException(checkVoucherData.voucherData.message.text))
                 }
             }
 
