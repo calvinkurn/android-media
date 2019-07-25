@@ -1205,9 +1205,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                             if (promoStackingData.getTrackingDetailUiModels().size() > 0) {
                                 for (TrackingDetailUiModel trackingDetailUiModel : promoStackingData.getTrackingDetailUiModels()) {
-                                    if (trackingDetailUiModel.getProductId() == cartItemModel.getProductId()) {
-                                        cartItemModel.setPromoCodes(trackingDetailUiModel.getPromoCodesTracking());
-                                        cartItemModel.setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
+                                    if (trackingDetailUiModel.getProductId() == cartItemModel.getProductId() &&
+                                            cartItemModel.getAnalyticsProductCheckoutData() != null) {
+                                        cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailUiModel.getPromoCodesTracking());
+                                        cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
                                     }
                                 }
                             }
@@ -2541,9 +2542,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                     for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                         for (TrackingDetailUiModel trackingDetailUiModel : promoData.getData().getTrackingDetailUiModel()) {
-                            if (trackingDetailUiModel.getProductId() == cartItemModel.getProductId()) {
-                                cartItemModel.setPromoCodes(trackingDetailUiModel.getPromoCodesTracking());
-                                cartItemModel.setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
+                            if (trackingDetailUiModel.getProductId() == cartItemModel.getProductId() &&
+                                    cartItemModel.getAnalyticsProductCheckoutData() != null) {
+                                cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailUiModel.getPromoCodesTracking());
+                                cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
                             }
                         }
                     }

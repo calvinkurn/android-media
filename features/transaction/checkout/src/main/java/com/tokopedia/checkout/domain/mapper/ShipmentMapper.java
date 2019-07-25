@@ -380,18 +380,6 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setWarehouseId(String.valueOf(groupShop.getWarehouse().getWarehouseId()));
                                 analyticsProductCheckoutData.setProductWeight(String.valueOf(product.getProductWeight()));
 
-                                AutoapplyStack autoapplyStack = shipmentAddressFormDataResponse.getAutoapplyStack();
-                                if (autoapplyStack != null) {
-                                    if (autoapplyStack.getTrackingDetails() != null && autoapplyStack.getTrackingDetails().size() > 0) {
-                                        for (TrackingDetail trackingDetail : autoapplyStack.getTrackingDetails()) {
-                                            if (trackingDetail.getProductId() == productResult.getProductId()) {
-                                                analyticsProductCheckoutData.setPromoCode(trackingDetail.getPromoCodesTracking());
-                                                analyticsProductCheckoutData.setPromoDetails(trackingDetail.getPromoDetailsTracking());
-                                            }
-                                        }
-                                    }
-                                }
-
                                 if (groupAddressResult.getUserAddress() != null) {
                                     analyticsProductCheckoutData.setBuyerAddressId(String.valueOf(groupAddressResult.getUserAddress().getAddressId()));
                                 }
@@ -498,6 +486,18 @@ public class ShipmentMapper implements IShipmentMapper {
                                         productShipmentListResult.add(productShipmentResult);
                                     }
                                     productResult.setProductShipment(productShipmentListResult);
+                                }
+
+                                AutoapplyStack autoapplyStack = shipmentAddressFormDataResponse.getAutoapplyStack();
+                                if (autoapplyStack != null) {
+                                    if (autoapplyStack.getTrackingDetails() != null && autoapplyStack.getTrackingDetails().size() > 0) {
+                                        for (TrackingDetail trackingDetail : autoapplyStack.getTrackingDetails()) {
+                                            if (trackingDetail.getProductId() == productResult.getProductId()) {
+                                                analyticsProductCheckoutData.setPromoCode(trackingDetail.getPromoCodesTracking());
+                                                analyticsProductCheckoutData.setPromoDetails(trackingDetail.getPromoDetailsTracking());
+                                            }
+                                        }
+                                    }
                                 }
 
                                 if (!mapperUtil.isEmpty(product.getProductShipmentMapping())) {

@@ -59,9 +59,6 @@ public class CartItemModel implements Parcelable {
     private int newDevicePrice;
     private int oldDevicePrice;
 
-    private String promoCodes;
-    private String promoDetails;
-
     public String getPreOrderInfo() {
         return preOrderInfo;
     }
@@ -368,22 +365,6 @@ public class CartItemModel implements Parcelable {
         this.protectionCheckboxDisabled = protectionCheckboxDisabled;
     }
 
-    public String getPromoCodes() {
-        return promoCodes;
-    }
-
-    public void setPromoCodes(String promoCodes) {
-        this.promoCodes = promoCodes;
-    }
-
-    public String getPromoDetails() {
-        return promoDetails;
-    }
-
-    public void setPromoDetails(String promoDetails) {
-        this.promoDetails = promoDetails;
-    }
-
     public CartItemModel() {
     }
 
@@ -494,8 +475,6 @@ public class CartItemModel implements Parcelable {
         dest.writeInt(this.newDevicePrice);
         dest.writeInt(this.oldDevicePrice);
         dest.writeByte(this.protectionCheckboxDisabled ? (byte) 1 : (byte) 0);
-        dest.writeString(this.promoCodes);
-        dest.writeString(this.promoDetails);
     }
 
     protected CartItemModel(Parcel in) {
@@ -529,8 +508,6 @@ public class CartItemModel implements Parcelable {
         this.newDevicePrice = in.readInt();
         this.oldDevicePrice = in.readInt();
         this.protectionCheckboxDisabled = in.readByte() != 0;
-        this.promoCodes = in.readString();
-        this.promoDetails = in.readString();
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {

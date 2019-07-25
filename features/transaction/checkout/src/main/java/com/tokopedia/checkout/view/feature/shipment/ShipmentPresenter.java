@@ -405,11 +405,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceCheckoutAnalytics(String step, String eventAction, String eventLabel) {
-        triggerSendEnhancedEcommerceCheckoutAnalytics(dataCheckoutRequestList, step, eventAction, eventLabel);
-    }
-
-    @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
                                                               String step,
                                                               String eventAction,
@@ -482,8 +477,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                                         for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
                                             if (productDataCheckoutRequest.getProductId() == cartItemModel.getProductId()) {
-                                                productDataCheckoutRequest.setPromoCode(cartItemModel.getPromoCodes());
-                                                productDataCheckoutRequest.setPromoDetails(cartItemModel.getPromoDetails());
+                                                productDataCheckoutRequest.setPromoCode(cartItemModel.getAnalyticsProductCheckoutData().getPromoCode());
+                                                productDataCheckoutRequest.setPromoDetails(cartItemModel.getAnalyticsProductCheckoutData().getPromoDetails());
                                             }
                                         }
                                     }
