@@ -53,6 +53,9 @@
     <string name="shop_settings_shop_status">Status Toko</string>
 
     <!--Power Merchant-->
+    <string name="active_label">Aktif</string>
+    <string name="inactive_label">Nonaktif</string>
+    <string name="upgrade_power_merchant">Upgrade Tokomu</string>
     <string name="score_of_total_score" translatable="false"><![CDATA[<b>%1$d</b>/%2$d]]></string>
     <string name="bracket_format">(%1$s)</string>
     <string name="regular_merchant_ticker"><![CDATA[Siap upgrade menjadi <b>Power Merchant</b> dengan poin minimum <b>75</b>.]]></string>

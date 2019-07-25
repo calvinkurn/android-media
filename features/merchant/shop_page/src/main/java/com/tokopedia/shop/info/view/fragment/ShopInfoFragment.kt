@@ -13,14 +13,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -165,7 +162,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun goToManageLogistic() {
-        val shippingIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SHIPPING_SETTING) ?: return
+        val shippingIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS) ?: return
         startActivity(shippingIntent)
     }
 
@@ -275,8 +272,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         shopInfo?.run {
             shopPageTracking.clickAddNote(CustomDimensionShopPage
                     .create(shopCore.shopID, goldOS.isOfficial == 1, goldOS.isGold == 1))
+            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES)
+        }
     }
-        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING)
+
 
     override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {
         shopInfo?.run {

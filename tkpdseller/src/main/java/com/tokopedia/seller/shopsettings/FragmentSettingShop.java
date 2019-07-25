@@ -26,6 +26,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.seller.BuildConfig;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 
@@ -140,7 +141,9 @@ public class FragmentSettingShop extends TkpdFragment {
     private void loadAndLaunchModule(String deeplink) {
         String moduleName = getString(R.string.module_feature_shop_settings_sellerapp);
         if(splitInstallManager.getInstalledModules().contains(moduleName)) {
-            Crashlytics.logException(new Exception("Installing module shop_settings_sellerapp"));
+            if (!BuildConfig.DEBUG) {
+                Crashlytics.logException(new Exception("Installing module shop_settings_sellerapp"));
+            }
             goToPage(deeplink);
             return;
         }

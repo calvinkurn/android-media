@@ -22,10 +22,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
@@ -334,7 +333,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel) {
         tvManageGmSubscribe.visibility = View.GONE
         iv_power_merchant_logo.visibility = View.GONE
-        tv_shop_membership_title.text = getString(R.string.label_regular_merchant)
+        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
         tv_ticker_info.visibility = View.VISIBLE
@@ -353,8 +352,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             navigateToPMSubscribe()
         }
         iv_power_merchant_logo.visibility = View.VISIBLE
-        iv_power_merchant_logo.setImageResource(R.drawable.ic_power_merchant)
-        tv_shop_membership_title.text = getString(R.string.label_power_merchant)
+        iv_power_merchant_logo.setImageResource(com.tokopedia.gm.resource.R.drawable.ic_power_merchant)
+        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_power_merchant)
         tv_shop_status.visibility = View.VISIBLE
         tv_shop_status.text = getString(if (shopStatusModel.isPowerMerchantActive()) {
             R.string.active_label
@@ -373,8 +372,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tvManageGmSubscribe.visibility = View.GONE
         button_activate.visibility = View.GONE
         iv_power_merchant_logo.visibility = View.VISIBLE
-        iv_power_merchant_logo.setImageResource(R.drawable.ic_badge_shop_official)
-        tv_shop_membership_title.text = getString(R.string.label_official_store)
+        iv_power_merchant_logo.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
+        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_official_store)
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
         tv_ticker_info.visibility = View.GONE
@@ -401,9 +400,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         textView.movementMethod = LinkMovementMethod.getInstance()
         textView.text = SpannableStringBuilder(previousText).append(" ").append(spannable)
-            } else {
-                RouteManager.route(this, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
-            }
     }
 
     private fun navigateToPMSubscribe() {

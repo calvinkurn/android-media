@@ -65,7 +65,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         updateShopSettingsInfoPresenter.attachView(this)
 
         parentTvBrowseFile.setBackground(MethodChecker
-                .getDrawable(parentTvBrowseFile.getContext(), R.drawable.ic_balloon_gray))
+                .getDrawable(parentTvBrowseFile.getContext(), com.tokopedia.design.R.drawable.ic_balloon_gray))
 
         etShopSlogan.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
