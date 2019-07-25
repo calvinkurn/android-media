@@ -53,6 +53,14 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 itemView.insurance_tv_subtitle.visibility = View.GONE
             }
 
+            if (insuranceCartDigitalProductViewModel.productInfo.description.isNotBlank()) {
+                itemView.tv_insurance_description.text = insuranceCartDigitalProductViewModel.productInfo.description
+                itemView.tv_insurance_description.visibility = View.VISIBLE
+            } else {
+                itemView.tv_insurance_description.visibility = View.GONE
+            }
+
+
             if (!TextUtils.isEmpty(insuranceCartDigitalProductViewModel.productInfo.iconUrl)) {
                 ImageHandler.loadImage(itemView.context, itemView.insurance_image_icon, insuranceCartDigitalProductViewModel.productInfo.iconUrl, R.drawable.ic_modal_toko)
             }
@@ -110,6 +118,11 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                                 insuranceProductApplicationDetails.isError = true
                                 listener.onInsuranceSelectedStateChanged(null, insuranceCartDigitalProductViewModel.optIn)
                             }
+                            if (errorMessage.isBlank()) {
+                                itemView.tv_info_text.visibility = View.VISIBLE
+                            } else {
+                                itemView.tv_info_text.visibility = View.GONE
+                            }
                             listener.setErrorInInsuranceSelection(!errorMessage.isBlank())
                             updateEditTextBackground(textView, errorMessageView.currentTextColor, !errorMessage.isBlank())
                         }
@@ -145,6 +158,11 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                                     errorMessageView.text = errorMessage
                                     insuranceProductApplicationDetails.isError = true
                                     listener.onInsuranceSelectedStateChanged(null, insuranceCartDigitalProductViewModel.optIn)
+                                }
+                                if (errorMessage.isBlank()) {
+                                    itemView.tv_info_text.visibility = View.VISIBLE
+                                } else {
+                                    itemView.tv_info_text.visibility = View.GONE
                                 }
                                 listener.setErrorInInsuranceSelection(!errorMessage.isBlank())
                                 updateEditTextBackground(subTitleTextView, errorMessageView.currentTextColor, !errorMessage.isBlank())
@@ -183,12 +201,12 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                         if (isChecked) {
                             validateViews()
                             applicationDetailsView.visibility = View.VISIBLE
-                            itemView.tv_info_text.text = insuranceCartDigitalProductViewModel.productInfo.infoText
+                            itemView.tv_insurance_description.visibility = View.GONE
                         } else {
+                            itemView.tv_insurance_description.visibility = View.VISIBLE
                             applicationDetailsView.visibility = View.GONE
                         }
-
-                        if (errorMessage.isNotBlank()) {
+                        if (errorMessage.isBlank() && isChecked) {
                             itemView.tv_info_text.visibility = View.VISIBLE
                         } else {
                             itemView.tv_info_text.visibility = View.GONE
@@ -203,6 +221,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 }
 
             })
+            itemView.tv_info_text.text = insuranceCartDigitalProductViewModel.productInfo.infoText
             itemView.insurance_checkbox.setChecked(insuranceCartDigitalProductViewModel.optIn)
 
 
