@@ -22,7 +22,7 @@
             android:layout_height="@dimen/dp_140"
             android:layout_marginTop="@dimen/dp_24"
             app:srcCompat="@drawable/ic_location_not_detected"
-            android:contentDescription="@string/invalid_description"
+            android:contentDescription="@string/invalid_img_description"
             android:layout_gravity="center_horizontal"/>
         
         <TextView

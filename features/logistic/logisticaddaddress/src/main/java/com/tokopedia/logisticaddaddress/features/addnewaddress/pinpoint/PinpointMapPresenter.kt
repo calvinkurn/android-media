@@ -83,7 +83,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                     if (isChanges) {
                         view.finishBackToAddEdit(false, isSolved)
                     } else {
-                        view.goToAddEditActivity(false, isSolved)
+                        view.goToAddEditActivity(false, isSolved, false)
                     }
                 }
             }
@@ -131,6 +131,11 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
 
     fun getSaveAddressDataModel(): SaveAddressDataModel {
         return this.saveAddressDataModel
+    }
+
+    fun getUnnamedRoadModelFormat(): SaveAddressDataModel {
+        val fmt = this.saveAddressDataModel.formattedAddress.replace("Unnamed Road, ", "")
+        return this.saveAddressDataModel.copy(formattedAddress = fmt, selectedDistrict = fmt)
     }
 
     fun getDistrictBoundary(districtId: Int, keroToken: String, keroUt: Int) {

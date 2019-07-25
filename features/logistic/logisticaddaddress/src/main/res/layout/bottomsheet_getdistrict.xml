@@ -230,7 +230,7 @@
             android:layout_height="@dimen/dp_180"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_12"
-            android:contentDescription="@string/invalid_description"
+            android:contentDescription="@string/invalid_img_description"
             tools:srcCompat="@drawable/ic_invalid_location" />
 
         <com.tokopedia.design.component.ButtonCompat

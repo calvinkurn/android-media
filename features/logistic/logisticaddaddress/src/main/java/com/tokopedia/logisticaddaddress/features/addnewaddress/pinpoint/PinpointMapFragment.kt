@@ -406,6 +406,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         invalid_title?.text = getString(R.string.out_of_indonesia_title)
         invalid_desc?.text = getString(R.string.out_of_indonesia_desc)
         invalid_img?.setImageResource(R.drawable.tokopedia_out_of_indonesia)
+        invalid_button?.visibility = View.GONE
 
         invalid_ic_search_btn?.setOnClickListener {
             currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
@@ -420,8 +421,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             invalid_container?.visibility = View.VISIBLE
 
             invalid_title?.text = getString(R.string.invalid_title)
-            invalid_desc?.text = saveAddressDataModel.formattedAddress
+            invalid_desc?.text = getString(R.string.invalid_desc)
             invalid_img?.setImageResource(R.drawable.ic_invalid_location)
+            invalid_button?.apply{
+                visibility = View.VISIBLE
+                setOnClickListener { goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true) }
+            }
 
             invalid_ic_search_btn?.setOnClickListener {
                 currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
@@ -496,21 +501,23 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
             tkpdDialog.dismiss()
-            goToAddEditActivity(isMismatch = true, isMismatchSolved = false)
+            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false)
         }
         tkpdDialog.show()
         AddNewAddressAnalytics.eventViewFailedPinPointNotification()
     }
 
-    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean) {
+    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean) {
+        val saveModel = if (isUnnamedRoad) presenter.getUnnamedRoadModelFormat() else presenter.getSaveAddressDataModel()
         Intent(context, AddEditAddressActivity::class.java).apply {
             if (isMismatch && !isMismatchSolved) {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             }
             putExtra(AddressConstants.EXTRA_IS_MISMATCH, isMismatch)
-            putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, presenter.getSaveAddressDataModel())
+            putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, saveModel)
             putExtra(AddressConstants.KERO_TOKEN, token)
             putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
+            putExtra(AddressConstants.EXTRA_IS_UNNAMED_ROAD, isUnnamedRoad)
             startActivityForResult(this, FINISH_FLAG)
         }
     }

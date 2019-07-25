@@ -80,6 +80,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var labelRumah: String? = "Rumah"
     private var isMismatch: Boolean = false
     private var isMismatchSolved: Boolean = false
+    private var isUnnamedRoad: Boolean = false
     private var districtId: Int? = 0
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
@@ -115,6 +116,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
                     putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
+                    putBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD, extra.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD))
                 }
             }
         }
@@ -129,6 +131,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             currentLat = saveAddressDataModel?.latitude?.toDouble()
             currentLong = saveAddressDataModel?.longitude?.toDouble()
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)!!
+            isUnnamedRoad = arguments?.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD) ?: false
         }
     }
 
@@ -740,6 +743,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private fun setMismatchForm() {
         ll_detail_alamat.visibility = View.GONE
         et_alamat_mismatch.clearFocus()
+
+        if (isUnnamedRoad) {
+            et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
+            et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
+        }
     }
 
     private fun setMismatchSolvedForm() {
@@ -932,7 +940,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun showFailedDialog() {
     }
 
-    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean) {
+    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean) {
     }
 
     override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
