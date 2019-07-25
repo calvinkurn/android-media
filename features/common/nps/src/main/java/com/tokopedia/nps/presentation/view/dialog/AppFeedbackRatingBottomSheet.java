@@ -31,18 +31,18 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
         }
     }
 
-    private void setSendButtonClickListener(FrameLayout button, float rating) {
+    private void setSendButtonClickListener(FrameLayout button) {
         if (button != null) {
             button.setOnClickListener(v -> {
                 FragmentManager manager = getActivity().getSupportFragmentManager();
 
                 if (manager != null) {
-                    if ((int) rating > NpsConstant.Feedback.GOOD_RATING_THRESHOLD) {
+                    if ((int) ratingValue > NpsConstant.Feedback.GOOD_RATING_THRESHOLD) {
                         new AppFeedbackThankYouBottomSheet()
-                                .showDialog(manager, rating, "AppFeedbackThankYouBottomSheet");
+                                .showDialog(manager, ratingValue, "AppFeedbackThankYouBottomSheet");
                     } else {
                         new AppFeedbackMessageBottomSheet()
-                                .showDialog(manager, rating, "AppFeedbackMessageBottomSheet");
+                                .showDialog(manager, ratingValue, "AppFeedbackMessageBottomSheet");
                     }
 
                     this.dismiss();
@@ -75,6 +75,6 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
         FrameLayout sendButtonView = view.findViewById(R.id.send_button);
 
         setRatingBarChangedListener(ratingBarView, ratingLevelView);
-        setSendButtonClickListener(sendButtonView, ratingValue);
+        setSendButtonClickListener(sendButtonView);
     }
 }
