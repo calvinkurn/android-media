@@ -26,6 +26,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.R
@@ -118,13 +119,15 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
         dynamicPost?.let {
             bindToolbar(it)
-            bindMedia(it.contentList.mapNotNull { media -> convertToMediaItem(media) })
+            val mediaGrid = it.contentList.filterIsInstance<MultimediaGridViewModel>().firstOrNull()
+            if (mediaGrid != null){
+                bindMedia(mediaGrid.mediaItemList)
+            }
         }
     }
 
     private fun bindMedia(mediaItems: List<MediaItem>) {
-        val items = mediaItems.map { MediaItem(thumbnail = it.thumbnail, type = it.type) }
-        val adapter = MediaPagerAdapter(items.toMutableList(), childFragmentManager)
+        val adapter = MediaPagerAdapter(mediaItems.toMutableList(), childFragmentManager)
         pager_indicator.text = getString(R.string.af_indicator_media, selectedIndex+1, adapter.count)
         media_pager.adapter = adapter
         updateDirectionMedia(0, adapter.count)

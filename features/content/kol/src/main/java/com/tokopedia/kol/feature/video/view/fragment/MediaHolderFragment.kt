@@ -50,8 +50,8 @@ class MediaHolderFragment : BaseDaggerFragment() {
         private const val CURRENT_MUTE_KEY = "current_mute"
         private const val CURRENT_VOLUME_KEY = "current_volume"
 
-        private const val TYPE_IMAGE = "image"
-        private const val TYPE_VIDEO = "video"
+        const val TYPE_IMAGE = "image"
+        const val TYPE_VIDEO = "video"
 
         private const val VIDEO_ROTATION_90 = 90f
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"

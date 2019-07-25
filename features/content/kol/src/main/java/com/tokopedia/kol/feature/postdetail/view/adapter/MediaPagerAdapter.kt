@@ -15,7 +15,12 @@ class MediaPagerAdapter(private val media: MutableList<MediaItem>, fm: FragmentM
     private val registeredFragment = SparseArrayCompat<Fragment>()
 
     override fun getItem(positon: Int): Fragment {
-        return MediaHolderFragment.createInstance(media[positon].thumbnail, media[positon].type)
+        val url = if (media[positon].type == MediaHolderFragment.TYPE_VIDEO){
+            media[positon].videos.firstOrNull()?.url ?: ""
+        } else {
+            media[positon].thumbnail
+        }
+        return MediaHolderFragment.createInstance(url, media[positon].type)
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Fragment {
