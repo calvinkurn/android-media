@@ -16,7 +16,7 @@ data class ShopHeaderViewModel(
     }
 
     constructor(parcel: Parcel) : this(
-            parcel.readParcelable<CpmModel>(CpmModel::class.java.classLoader),
+            parcel.readParcelable(CpmModel::class.java.classLoader) ?: CpmModel(),
             parcel.readInt()
     )
 

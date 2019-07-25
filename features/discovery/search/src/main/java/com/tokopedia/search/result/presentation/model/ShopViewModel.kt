@@ -164,7 +164,7 @@ data class ShopViewModel(
 
             constructor(parcel: Parcel) : this(
                     parcel.readByte() != 0.toByte(),
-                    parcel.readParcelable(ShopItemVoucherCashback::class.java.classLoader))
+                    parcel.readParcelable(ShopItemVoucherCashback::class.java.classLoader) ?: ShopItemVoucherCashback())
 
             override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeByte(if (freeShipping) 1 else 0)
@@ -205,8 +205,8 @@ data class ShopViewModel(
                 parcel.readInt(),
                 parcel.readInt(),
                 parcel.readInt(),
-                parcel.createTypedArrayList(ShopItemProduct),
-                parcel.readParcelable(ShopItemVoucher::class.java.classLoader),
+                parcel.createTypedArrayList(ShopItemProduct) ?: listOf(),
+                parcel.readParcelable(ShopItemVoucher::class.java.classLoader) ?: ShopItemVoucher(),
                 parcel.readString() ?: "",
                 parcel.readString() ?: "",
                 parcel.readInt(),
@@ -260,12 +260,12 @@ data class ShopViewModel(
             parcel.readString() ?: "",
             parcel.readInt(),
             parcel.readString() ?: "",
-            parcel.readParcelable(Paging::class.java.classLoader),
+            parcel.readParcelable(Paging::class.java.classLoader) ?: Paging(),
             parcel.readString() ?: "",
-            parcel.createTypedArrayList(ShopItem),
-            parcel.createTypedArrayList(ShopItem),
-            parcel.createTypedArrayList(ShopItem),
-            parcel.readParcelable(CpmModel::class.java.classLoader))
+            parcel.createTypedArrayList(ShopItem) ?: listOf(),
+            parcel.createTypedArrayList(ShopItem) ?: listOf(),
+            parcel.createTypedArrayList(ShopItem) ?: listOf(),
+            parcel.readParcelable(CpmModel::class.java.classLoader) ?: CpmModel())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(source)
