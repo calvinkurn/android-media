@@ -80,6 +80,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     var shopAttribution: String? = null
     var isShowFeed: Boolean = false
     var isOfficialStore: Boolean = false
+    var isUrlNotNull: Boolean = false
     var createPostUrl: String = ""
     private var performanceMonitoring: PerformanceMonitoring? = null
 
@@ -93,7 +94,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter
     lateinit var tabItemFeed: View
 
-    private lateinit var titles: Array<String>;
+    private lateinit var titles: Array<String>
 
     private var tabPosition = 0
     lateinit var remoteConfig: RemoteConfig
@@ -268,7 +269,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         mainLayout.requestFocus()
 
         shopViewModel.whiteListResp.observe(this, Observer { response ->
-            response?.let { (isWhiteList, url) -> onSuccessGetFeedWhitelist(isWhiteList, url) }
+            when (response) {
+                is Success -> onSuccessGetFeedWhitelist(response.data.first, response.data.second)
+                is Fail -> onErrorGetFeedWhitelist()
+            }
         })
 
         shopViewModel.shopBadgeResp.observe(this, Observer { reputation ->
@@ -327,8 +331,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun getNewFragment(): Fragment? = null
 
     private fun initAdapter() {
-        shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles,
-                shopId, shopAttribution, (application as ShopModuleRouter), this)
+        shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager,
+                titles,
+                shopId,
+                shopAttribution,
+                (application as ShopModuleRouter),
+                this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -388,6 +396,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         setViewState(VIEW_CONTENT)
         with(shopInfo) {
             isOfficialStore = goldOS.isOfficial == 1
+            isUrlNotNull = (shopInfo.topContent.topUrl != "")
             shopPageViewPagerAdapter.shopId = shopCore.shopID
             shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID))
             updateUIByShopName(shopCore.name)
@@ -438,13 +447,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
             shopViewModel.getFeedWhiteList(shopCore.shopID)
 
-
             if (shopInfo.statusInfo.shopStatus != ShopStatusDef.OPEN) {
                 shopViewModel.getModerateShopInfo()
             }
         }
 
-        viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         swipeToRefresh.isRefreshing = false
     }
 
@@ -453,23 +460,39 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopPageTracking.sendAllTrackingQueue()
     }
 
-    private fun addFeed() {
-        titles =
-                if (isOfficialStore) {
-                    arrayOf(getString(R.string.shop_info_title_tab_home),
-                            getString(R.string.shop_info_title_tab_product),
-                            getString(R.string.shop_info_title_tab_feed),
-                            getString(R.string.shop_info_title_tab_info))
-                } else {
-                    arrayOf(getString(R.string.shop_info_title_tab_product),
-                            getString(R.string.shop_info_title_tab_feed),
-                            getString(R.string.shop_info_title_tab_info))
-                }
+    private fun setupTabs() {
+        titles = when {
+            isShowFeed and isOfficialStore and isUrlNotNull -> {
+                arrayOf(getString(R.string.shop_info_title_tab_home),
+                        getString(R.string.shop_info_title_tab_product),
+                        getString(R.string.shop_info_title_tab_feed),
+                        getString(R.string.shop_info_title_tab_info))
+            }
+            isShowFeed -> {
+                arrayOf(getString(R.string.shop_info_title_tab_product),
+                        getString(R.string.shop_info_title_tab_feed),
+                        getString(R.string.shop_info_title_tab_info))
+            }
+            isOfficialStore and isUrlNotNull -> {
+                arrayOf(getString(R.string.shop_info_title_tab_home),
+                        getString(R.string.shop_info_title_tab_product),
+                        getString(R.string.shop_info_title_tab_info))
+            }
+            else -> {
+                arrayOf(getString(R.string.shop_info_title_tab_product),
+                        getString(R.string.shop_info_title_tab_info))
+            }
+        }
         shopPageViewPagerAdapter.titles = titles
         shopPageViewPagerAdapter.notifyDataSetChanged()
 
         val tabCustomView: View? = if (isShowFeed) tabItemFeed else null
         tabLayout.getTabAt(if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)?.customView = tabCustomView
+
+        if (isOfficialStore && tabPosition == 0) {
+            tabPosition = 1
+        }
+        viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
     }
 
     private fun onErrorGetShopInfo(e: Throwable?) {
@@ -513,31 +536,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun onSuccessGetFeedWhitelist(isWhitelist: Boolean, createPostUrl: String) {
         this.isShowFeed = isWhitelist
         this.createPostUrl = createPostUrl
-        if (isShowFeed && isFeedShopPageEnabled) {
-            addFeed()
-            viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
-        } else {
-            if (isOfficialStore) {
-                titles = arrayOf(getString(R.string.shop_info_title_tab_home),
-                        getString(R.string.shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_info))
-                shopPageViewPagerAdapter.titles = titles
-                shopPageViewPagerAdapter.notifyDataSetChanged()
-            }
-        }
-
-        if (isOfficialStore) {
-            viewPager.setCurrentItem(1)
-        } else {
-            return
-        }
+        setupTabs()
     }
 
-    private val isFeedShopPageEnabled: Boolean
-        get() {
-            val keyApp = if (GlobalConfig.isCustomerApp()) "mainapp" else "sellerapp"
-            return remoteConfig.getBoolean("${keyApp}_enable_feed_shop_page", java.lang.Boolean.TRUE)
-        }
+    private fun onErrorGetFeedWhitelist() {
+        setupTabs()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
