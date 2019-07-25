@@ -34,6 +34,22 @@ class ProductDetailTracking() {
             ProductTrackingConstant.ProductTalk.TALK)
     }
 
+    fun eventShippingClicked() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_SHIPPING,
+                "")
+    }
+
+    fun eventShippingRateEstimationClicked() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_SHIPPING_RATE_ESTIMATION,
+                "")
+    }
+
     fun eventClickBuy(productId: String, isVariant: Boolean) {
         if (productId.isEmpty()) return
         eventClickBuyOrAddToCart(productId, isVariant,
