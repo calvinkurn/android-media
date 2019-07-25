@@ -46,14 +46,23 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
                     }
                 }
         )
+
         itemView.feedMultipleImageView.bind(element.mediaItemList, feedType)
         itemView.feedMultipleImageView.setFeedMultipleImageViewListener(feedMultipleImageViewListener)
+
         if (isSingleItemVideo(element)) {
             val mediaItem = element.mediaItemList.get(0)
-            if (canPlayVideo(mediaItem)) {
+            if (canPlayVideo(mediaItem) && ContentNetworkListener.getInstance(itemView.context).isWifiEnabled()) {
                 playVideo(mediaItem.videos.get(0).url)
             } else {
                 stopVideo()
+            }
+        }
+
+        itemView.layout_dummy.setOnClickListener{
+            if (isSingleItemVideo(element)) {
+                val mediaItem = element.mediaItemList.get(0)
+                playVideo(mediaItem.videos.get(0).url)
             }
         }
     }
@@ -63,11 +72,12 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
     }
 
     private fun canPlayVideo(element: MediaItem): Boolean {
-        return element.isCanPlayVideo && ContentNetworkListener.getInstance(itemView.context).isWifiEnabled()
+        return element.isCanPlayVideo
     }
 
     private fun playVideo(url: String) {
         if (!isPlaying) {
+            itemView.layout_dummy.visibility = View.GONE
             itemView.frame_video.visibility = View.INVISIBLE
             itemView.layout_video.setVideoURI(Uri.parse(url))
             itemView.layout_video.setOnPreparedListener(object: MediaPlayer.OnPreparedListener{
@@ -93,6 +103,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
         if (isPlaying) {
             itemView.layout_video.stopPlayback()
             itemView.layout_video.visibility = View.GONE
+            itemView.layout_dummy.visibility = View.VISIBLE
             isPlaying = false
         }
     }
