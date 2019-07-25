@@ -13,7 +13,7 @@
     <string name="hotel_facility_title">Fasilitas</string>
     <string name="hotel_policy_title">Kebijakan</string>
 
-    <string name="hotel_google_map_intent_link">geo:%1$f,%2$f(%3$s)?z=20</string>
+    <string name="hotel_google_map_intent_link">geo:%1$f,%2$f?z=20%26q=%3$f,%4$f(%3$s)</string>
 
     <string name="hotel_bottomsheet_sort_title">Urutkan Berdasarkan</string>
     <string name="hotel_filter_reset">Reset</string>
