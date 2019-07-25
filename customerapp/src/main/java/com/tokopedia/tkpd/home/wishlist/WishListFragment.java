@@ -292,7 +292,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 if(parent.getAdapter().getItemViewType(parent.getChildAdapterPosition(view))
-                        == WishlistRecomendationViewHolder.Companion.getLAYOUT()) {
+                        == WishlistRecomendationViewHolder.LAYOUT) {
                     outRect.left = getResources().getDimensionPixelSize(R.dimen.dp_4);
                     outRect.right = getResources().getDimensionPixelSize(R.dimen.dp_4);
                     outRect.top = getResources().getDimensionPixelSize(R.dimen.dp_4);
@@ -537,8 +537,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (wishlistAdapter.getItemViewType(position) == WishlistProductListViewHolder.Companion.getLAYOUT()
-                        || wishlistAdapter.getItemViewType(position) == WishlistRecomendationViewHolder.Companion.getLAYOUT()) {
+                if (wishlistAdapter.getItemViewType(position) == WishlistProductListViewHolder.LAYOUT
+                        || wishlistAdapter.getItemViewType(position) == WishlistRecomendationViewHolder.LAYOUT) {
                     return 1;
                 } else {
                     return 2;
