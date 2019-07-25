@@ -66,21 +66,27 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         productImage.loadImageRounded(item.thumbnail, RAD_10f)
         productPrice.text = item.price
 
-        val isCTADisabled = item.postTagItemPojo.buttonCTA.firstOrNull()?.isDisabled ?: true
-        btnBuy.apply {
-            isEnabled = !isCTADisabled
-            setOnClickListener { onBuyButtonClicked(listener, item.positionInFeed, item.postTagItemPojo) }
-        }
-        textBtnBuy.apply {
-            text =
-                    if (!isCTADisabled) item.postTagItemPojo.buttonCTA.firstOrNull()?.text.orEmpty()
-                    else item.postTagItemPojo.buttonCTA.firstOrNull()?.textDisabled.orEmpty()
-            if (text.isEmpty()) text = getString(R.string.empty_product)
-            setTextColor(ContextCompat.getColor(
-                    context,
-                    if (isCTADisabled) R.color.Neutral_N200 else R.color.Neutral_N0
-            ))
-        }
+        val btnCtaPojo = item.postTagItemPojo.buttonCTA.firstOrNull()
+        if (btnCtaPojo != null) {
+            btnBuy.visible()
+
+            val isCTADisabled = btnCtaPojo.isDisabled
+            btnBuy.apply {
+                isEnabled = !isCTADisabled
+                setOnClickListener { onBuyButtonClicked(listener, item.positionInFeed, item.postTagItemPojo) }
+            }
+            textBtnBuy.apply {
+                text =
+                        if (!isCTADisabled) btnCtaPojo.text
+                        else btnCtaPojo.textDisabled
+                if (text.isEmpty()) text = getString(R.string.empty_product)
+                setTextColor(ContextCompat.getColor(
+                        context,
+                        if (isCTADisabled) R.color.Neutral_N200 else R.color.Neutral_N0
+                ))
+            }
+        } else btnBuy.gone()
+
         productLayout.setOnClickListener(
                 getItemClickNavigationListener(listener, item.positionInFeed, item.postTagItemPojo, adapterPosition)
         )
