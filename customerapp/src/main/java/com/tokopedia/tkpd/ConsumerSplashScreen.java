@@ -20,7 +20,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
@@ -70,15 +69,6 @@ public class ConsumerSplashScreen extends SplashScreen {
         } catch (Exception e) {
             isApkTempered = true;
             setTheme(R.style.Theme_Tokopedia3_PlainGreen);
-        }
-
-        try {
-            Toast.makeText(this, "Init Firebase", Toast.LENGTH_SHORT).show();
-            FirebaseApp.initializeApp(getApplicationContext());
-            Toast.makeText(this, "Done Init Firebase", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            Log.e("FirebaseInit", e.getMessage());
         }
 
         startWarmStart();
