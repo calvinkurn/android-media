@@ -434,7 +434,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun validateData(): Boolean {
         var isValid = true
         if ((tv_room_request_input.text?.length ?: 0) > roomRequestMaxCharCount) isValid = false
-        if (radio_button_contact_guest.isSelected && til_guest.editText.text.isEmpty()) {
+        if (radio_button_contact_guest.isSelected && tv_guest_input.text.isEmpty()) {
             toggleGuestFormError(true)
             isValid = false
         } else if (tv_guest_input.text.isNotEmpty() && !validateNameIsAlphabetOnly(tv_guest_input.text.toString())) {

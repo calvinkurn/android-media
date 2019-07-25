@@ -15,7 +15,7 @@ class HotelDetailReviewViewHolder(val view: View): RecyclerView.ViewHolder(view)
 
     fun bind(element: HotelReview) {
         with(itemView) {
-            tv_review_title.text = element.headline
+            tv_review_title.text = TextHtmlUtils.getTextFromHtml(element.headline)
             tv_review_description.text = TextHtmlUtils.getTextFromHtml(element.pros)
             tv_review_reviewer.text = element.reviewerName
             tv_review_score.text = element.score.toString()

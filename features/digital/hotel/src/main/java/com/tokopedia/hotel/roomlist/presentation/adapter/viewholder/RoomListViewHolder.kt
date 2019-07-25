@@ -38,7 +38,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
                 pay_hotel_layout.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
                 room_left_text_view.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
                 room_left_text_view.text = getString(R.string.hotel_room_room_left_text, roomListModel.roomLeft.toString())
-                cc_not_required_text_view.visibility = if (roomListModel.isCcRequired) View.VISIBLE else View.GONE
+                cc_not_required_text_view.text = roomListModel.creditCardHeader
                 initRoomFacility(roomListModel.breakfastIncluded, roomListModel.isRefundable, roomListModel.roomFacility)
 
                 choose_room_button.setOnClickListener { listener.onClickBookListener(hotelRoom) }
@@ -46,7 +46,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
             } else {
                 room_description_layout.visibility = View.GONE
                 room_full_layout.visibility = View.VISIBLE
-                room_image_view_pager.setImages(listOf(roomListModel.images.first()))
+                if (roomListModel.images.isNotEmpty()) room_image_view_pager.setImages(listOf(roomListModel.images.first()))
                 room_image_view_pager.buildView()
                 room_full_room_name_text_view.text = roomListModel.roomName
             }
@@ -116,7 +116,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
             roomListModel.payInHotel = !hotelRoom.additionalPropertyInfo.isDirectPayment
             roomListModel.breakfastIncluded = hotelRoom.breakfastInfo.isBreakfastIncluded
             roomListModel.isRefundable = hotelRoom.refundInfo.isRefundable
-            roomListModel.isCcRequired = hotelRoom.creditCardInfo.isCCRequired
+            roomListModel.creditCardHeader = hotelRoom.creditCardInfo.header
             roomListModel.creditCardInfo = hotelRoom.creditCardInfo.creditCardInfo
             roomListModel.price = hotelRoom.roomPrice.roomPrice
             roomListModel.roomLeft = hotelRoom.numberRoomLeft

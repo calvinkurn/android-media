@@ -16,7 +16,7 @@ class HotelReviewViewHolder(val view: View): AbstractViewHolder<HotelReview>(vie
 
     override fun bind(review: HotelReview) {
         with(itemView) {
-            review_title.text = review.headline
+            review_title.text = TextHtmlUtils.getTextFromHtml(review.headline)
             rating_text_view.text = review.score.toString()
 
             good_review_layout.visibility = if (review.pros.isNotBlank()) View.VISIBLE else View.GONE
