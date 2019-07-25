@@ -45,7 +45,7 @@ public interface CrackTokenContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void crackToken(int tokenUserId, int campaignId);
+        void crackToken(String tokenUserId, int campaignId);
 
         void getGetTokenTokopoints();
 

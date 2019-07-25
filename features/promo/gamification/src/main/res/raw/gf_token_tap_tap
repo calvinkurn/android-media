@@ -10,7 +10,7 @@ query {
     }
     tokensUser{
         state
-        tokenUserID
+        tokenUserIDstr
         campaignID
         title
     }

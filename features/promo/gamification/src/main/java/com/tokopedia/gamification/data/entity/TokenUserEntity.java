@@ -12,9 +12,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class TokenUserEntity implements Parcelable {
 
-    @SerializedName("tokenUserID")
+    @SerializedName("tokenUserIDstr")
     @Expose
-    private Integer tokenUserID;
+    private String tokenUserID;
 
     @SerializedName("campaignID")
     @Expose
@@ -48,7 +48,7 @@ public class TokenUserEntity implements Parcelable {
         if (in.readByte() == 0) {
             tokenUserID = null;
         } else {
-            tokenUserID = in.readInt();
+            tokenUserID = in.readString();
         }
         if (in.readByte() == 0) {
             campaignID = null;
@@ -84,7 +84,7 @@ public class TokenUserEntity implements Parcelable {
         }
     };
 
-    public Integer getTokenUserID() {
+    public String getTokenUserID() {
         return tokenUserID;
     }
 
@@ -131,7 +131,7 @@ public class TokenUserEntity implements Parcelable {
             dest.writeByte((byte) 0);
         } else {
             dest.writeByte((byte) 1);
-            dest.writeInt(tokenUserID);
+            dest.writeString(tokenUserID);
         }
         if (campaignID == null) {
             dest.writeByte((byte) 0);
