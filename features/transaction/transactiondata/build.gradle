@@ -29,7 +29,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.libraries.userSession)
-    implementation project(rootProject.ext.features.promoCheckoutCommon)
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"

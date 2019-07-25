@@ -2,7 +2,6 @@ package com.tokopedia.transactiondata.entity.response.cartlist;
 
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.TrackingDetail;
 
 public class AutoapplyStack {
 
