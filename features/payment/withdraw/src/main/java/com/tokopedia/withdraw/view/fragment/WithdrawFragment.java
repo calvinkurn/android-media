@@ -251,7 +251,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             mclLateCount = getArguments().getInt(MCL_LATE_COUNT);
         }
 
-        if ((statusWithDrawLock == MCL_STATUS_BLOCK1 || statusWithDrawLock == MCL_STATUS_BLOCK3)) {
+        if ((statusWithDrawLock == MCL_STATUS_BLOCK1 || statusWithDrawLock == MCL_STATUS_BLOCK3) && showMclBlockTickerFirebaseFlag) {
             showTicker();
         }
 
@@ -319,7 +319,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.seller_saldo_less_min));
                 } else {
 
-                    if ((statusWithDrawLock == MCL_STATUS_BLOCK3 || statusWithDrawLock == MCL_STATUS_BLOCK1)) {
+                    if ((statusWithDrawLock == MCL_STATUS_BLOCK3 || statusWithDrawLock == MCL_STATUS_BLOCK1) && showMclBlockTickerFirebaseFlag) {
                         ivLockButton.setVisibility(View.VISIBLE);
                         withdrawButtonWrapper.setEnabled(false);
                         withdrawButtonWrapper.setClickable(false);

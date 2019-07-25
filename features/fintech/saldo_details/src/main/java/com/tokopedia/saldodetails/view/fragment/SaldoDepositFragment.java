@@ -606,7 +606,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     public void showTicker() {
 
-        if(!showMclBlockTickerFirebaseFlag) {
+        if(showMclBlockTickerFirebaseFlag) {
             String tickerMsg =getString(R.string.saldolock_tickerDescription);
             int startIndex = tickerMsg.indexOf("Bayar sekarang");
             String late=Integer.toString(mclLateCount);
