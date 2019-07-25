@@ -412,7 +412,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun onBookingButtonClicked() {
         progressDialog.show()
         if (validateData()) {
-            if (radio_button_contact_guest.isSelected && tv_guest_input.text.toString().isNotEmpty())
+            if (radio_button_contact_guest.isChecked && tv_guest_input.text.toString().isNotEmpty())
                 hotelBookingPageModel.guestName = tv_guest_input.text.toString()
             else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
             hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
@@ -434,7 +434,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun validateData(): Boolean {
         var isValid = true
         if ((tv_room_request_input.text?.length ?: 0) > roomRequestMaxCharCount) isValid = false
-        if (radio_button_contact_guest.isSelected && tv_guest_input.text.isEmpty()) {
+        if (radio_button_contact_guest.isChecked && tv_guest_input.text.isEmpty()) {
             toggleGuestFormError(true)
             isValid = false
         } else if (tv_guest_input.text.isNotEmpty() && !validateNameIsAlphabetOnly(tv_guest_input.text.toString())) {
