@@ -154,7 +154,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                                                    postTagPosition: Int,
                                                    listSource: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getEventSocialCommerceClick(
+                getEventEcommerceClick(
                         screenName,
                         category,
                         Action.CLICK_BELI,
