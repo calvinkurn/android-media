@@ -26,13 +26,16 @@ class MediaPreviewActivity : BaseSimpleActivity(), HasComponent<KolComponent>, M
     }
 
     override fun getNewFragment(): Fragment = MediaPreviewFragment
-            .createInstance(intent.extras?.getString(MediaPreviewFragment.ARG_POST_ID) ?: "0")
+            .createInstance(intent.extras?.getString(MediaPreviewFragment.ARG_POST_ID) ?: "0",
+                    intent.extras?.getInt(MediaPreviewFragment.ARG_MEDIA_INDEX, 0) ?: 0)
 
     companion object{
 
         @JvmStatic
-        fun createIntent(context: Context, postId: String): Intent =
-                Intent(context, MediaPreviewActivity::class.java).putExtra(MediaPreviewFragment.ARG_POST_ID, postId)
+        fun createIntent(context: Context, postId: String, index: Int = 0): Intent =
+                Intent(context, MediaPreviewActivity::class.java)
+                        .putExtra(MediaPreviewFragment.ARG_POST_ID, postId)
+                        .putExtra(MediaPreviewFragment.ARG_MEDIA_INDEX, index)
     }
 
     override fun onTouch(isVisible: Boolean) {

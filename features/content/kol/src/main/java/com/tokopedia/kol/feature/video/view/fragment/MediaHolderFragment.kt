@@ -255,12 +255,12 @@ class MediaHolderFragment : BaseDaggerFragment() {
         outState.putFloat(CURRENT_VOLUME_KEY, currentVol)
     }
 
-    fun imVisible(){
+    fun fragmentShowing(){
         if(mediaType  == TYPE_VIDEO)
             playVideo(mediaSource)
     }
 
-    fun imInvisible(){
+    fun fragmentHiding(){
         if (mediaType == TYPE_VIDEO) {
             backupState()
             releaseExoPlayer()

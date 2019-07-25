@@ -46,6 +46,7 @@ import kotlinx.android.synthetic.main.fragment_media_preview.*
 import javax.inject.Inject
 
 class MediaPreviewFragment: BaseDaggerFragment() {
+    var selectedIndex = 0
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var mediaPreviewViewModel: FeedMediaPreviewViewModel
@@ -91,6 +92,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         activity?.let {
             mediaPreviewViewModel = ViewModelProviders.of(this, viewModelFactory)[FeedMediaPreviewViewModel::class.java]
             mediaPreviewViewModel.postId = arguments?.getString(ARG_POST_ID, "0") ?: "0"
+            selectedIndex = arguments?.getInt(ARG_MEDIA_INDEX, 0) ?: 0
         }
     }
 
@@ -123,8 +125,9 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     private fun bindMedia(mediaItems: List<MediaItem>) {
         val items = mediaItems.map { MediaItem(thumbnail = it.thumbnail, type = it.type) }
         val adapter = MediaPagerAdapter(items.toMutableList(), childFragmentManager)
-        pager_indicator.text = getString(R.string.af_indicator_media, 1, adapter.count)
+        pager_indicator.text = getString(R.string.af_indicator_media, selectedIndex+1, adapter.count)
         media_pager.adapter = adapter
+        media_pager.currentItem = selectedIndex
         updateDirectionMedia(0, adapter.count)
         media_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             var lastPosition = 0
@@ -134,8 +137,8 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
             override fun onPageSelected(position: Int) {
                 pager_indicator.text = getString(R.string.af_indicator_media, position+1, adapter.count)
-                (adapter.getRegisteredFragment(lastPosition) as? MediaHolderFragment)?.imInvisible()
-                (adapter.getRegisteredFragment(position) as? MediaHolderFragment)?.imVisible()
+                (adapter.getRegisteredFragment(lastPosition) as? MediaHolderFragment)?.fragmentHiding()
+                (adapter.getRegisteredFragment(position) as? MediaHolderFragment)?.fragmentShowing()
                 lastPosition = position
                 updateDirectionMedia(position, adapter.count)
             }
@@ -344,12 +347,16 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     companion object{
         const val ARG_POST_ID = "post_id"
+        const val ARG_MEDIA_INDEX = "media_index"
         private const val REQ_CODE_LOGIN = 0x01
         private const val REQ_CODE_COMMENT = 0x02
 
         @JvmStatic
-        fun createInstance(postId: String): Fragment = MediaPreviewFragment().apply {
-            arguments = Bundle().also { it.putString(ARG_POST_ID, postId) }
+        fun createInstance(postId: String, index: Int): Fragment = MediaPreviewFragment().apply {
+            arguments = Bundle().also {
+                it.putString(ARG_POST_ID, postId)
+                it.putInt(ARG_MEDIA_INDEX, index)
+            }
         }
     }
 }
