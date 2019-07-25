@@ -81,7 +81,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var isMismatch: Boolean = false
     private var isMismatchSolved: Boolean = false
     private var isUnnamedRoad: Boolean = false
-    private var districtId: Int? = 0
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
@@ -687,7 +686,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             setOnClickListener {
                 hideKeyboard()
                 saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
-                goToPinpointActivity(currentLat, currentLong, false, token, false, districtId,
+                goToPinpointActivity(currentLat, currentLong, false, token, false,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
                 AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive()
             }
@@ -709,7 +708,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
-                    goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
+                    goToPinpointActivity(currentLat, currentLong, false, token, true,
                             isMismatchSolved, isMismatch, saveAddressDataModel)
                     AddNewAddressAnalytics.eventClickButtonPilihLokasiIni()
                 }
@@ -729,7 +728,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             setOnClickListener {
                 hideKeyboard()
                 saveAddressDataModel?.editDetailAddress = tv_detail_alamat_mismatch.text.toString()
-                goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
+                goToPinpointActivity(currentLat, currentLong, false, token, true,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
             }
         }
@@ -915,7 +914,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         saveAddressDataModel?.longitude = ""
         saveAddressDataModel?.zipCodes = districtRecommendationItemUiModel.zipCodes
         autoCompletePresenter.getAutocomplete(districtName)
-        this.districtId = districtRecommendationItemUiModel.districtId
     }
 
     override fun hideListPointOfInterest() {
@@ -989,11 +987,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
     }
 
-    private fun goToPinpointActivity(lat: Double?, long: Double?, isShowAutocomplete: Boolean, token: Token?, isPolygon: Boolean, districtId: Int?,
+    private fun goToPinpointActivity(lat: Double?, long: Double?, isShowAutocomplete: Boolean, token: Token?, isPolygon: Boolean,
                                      isMismatchSolved: Boolean, isMismatch: Boolean, saveAddressDataModel: SaveAddressDataModel?) {
         startActivityForResult(context?.let {
             PinpointMapActivity.newInstance(it, lat, long, isShowAutocomplete, token, isPolygon,
-                    districtId, isMismatchSolved, isMismatch, saveAddressDataModel, true)
+                    isMismatchSolved, isMismatch, saveAddressDataModel, true)
         }, FINISH_PINPOINT_FLAG)
     }
 

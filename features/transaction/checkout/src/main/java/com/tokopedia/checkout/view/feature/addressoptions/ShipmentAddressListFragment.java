@@ -471,7 +471,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, 0, false, false, null,
+                            false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
                 /*} else {
@@ -489,7 +489,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, 0, false, false, null,
+                            false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
                 /*} else {

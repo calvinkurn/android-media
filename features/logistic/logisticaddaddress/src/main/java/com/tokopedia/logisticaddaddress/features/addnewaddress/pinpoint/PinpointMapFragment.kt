@@ -127,10 +127,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             isShowingAutocomplete = arguments?.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE)
             isRequestingLocation = arguments?.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION)
             isPolygon = arguments?.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
-            districtId = arguments?.getInt(AddressConstants.EXTRA_DISTRICT_ID)
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
             isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)
             saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+            districtId = saveAddressDataModel?.districtId
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             isChangesRequested = arguments?.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED)
         }

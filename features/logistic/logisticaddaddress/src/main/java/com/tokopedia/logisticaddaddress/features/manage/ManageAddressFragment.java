@@ -207,7 +207,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
                 AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_USER_NEW);
                 startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                         AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                        false, 0, false, false, null,
+                        false, false, false, null,
                         false), REQUEST_CODE_PARAM_CREATE);
 
             /*} else {
