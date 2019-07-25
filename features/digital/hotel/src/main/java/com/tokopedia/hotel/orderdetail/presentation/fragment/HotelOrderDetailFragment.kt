@@ -360,7 +360,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(view: View) {
                     try {
-                        if (isUrl) RouteManager.route(context, content)
+                        if (isUrl) RouteManager.route(context, "tokopedia://webview?url=${content}")
                         else onImportantNotesClicked(content)
                     } catch (e: UnsupportedEncodingException) {
                         e.printStackTrace()
