@@ -34,7 +34,7 @@ class RecommendationPageTracking {
         private const val FIELD_SHOP_ID = "shop_id"
         private const val FIELD_SHOP_TYPE = "shop_type"
         private const val FIELD_SHOP_NAME = "shop_name"
-        private const val FIELD_DIMENSION_42 = "dimension42"
+        private const val FIELD_DIMENSION_45 = "dimension45"
 
         private const val VALUE_NONE_OTHER = "none / other"
         private const val VALUE_IDR = "IDR"
@@ -202,7 +202,7 @@ class RecommendationPageTracking {
                                 FIELD_SHOP_TYPE, item.shopType,
                                 FIELD_SHOP_NAME, item.shopName,
                                 FIELD_CATEGORY_ID, item.departmentId.toString(),
-                                FIELD_DIMENSION_42, item.cartId.toString()
+                                FIELD_DIMENSION_45, item.cartId.toString()
                         )
                     )
             )
