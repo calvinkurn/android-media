@@ -475,7 +475,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onBuyClicked(postTagItem: PostTagItem) {
+    override fun onPostTagItemBuyClicked(postTagItem: PostTagItem) {
         presenter.addPostTagItemToCart(postTagItem)
     }
 
