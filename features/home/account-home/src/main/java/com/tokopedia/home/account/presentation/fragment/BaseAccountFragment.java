@@ -334,11 +334,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onGMInfoClicked() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            sendTracking(
-                    PENJUAL,
-                    SECTION_OTHER_FEATURE,
-                    ITEM_POWER_MERCHANT
-            );
             openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, GMConstant.getGMEduUrl(getContext())));
         }
     }
@@ -447,6 +442,16 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onShopStatusInfoButtonClicked() {
         RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
+    }
+
+    @Override
+    public void onPowerMerchantSettingClicked(){
+        sendTracking(
+                PENJUAL,
+                SECTION_OTHER_FEATURE,
+                ITEM_POWER_MERCHANT
+        );
+        RouteManager.route(getActivity(), ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
     }
 
 }
