@@ -326,6 +326,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvSelectedPriceOnly = itemView.findViewById(R.id.tv_selected_price_b);
         tvChangeSelectedCourierRecommendation = itemView.findViewById(R.id.tv_button_change_courier);
         tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
+        layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
         llCourierStateLoading = itemView.findViewById(R.id.ll_courier_state_loading);
         llCourierRecommendationStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_state_loading);
