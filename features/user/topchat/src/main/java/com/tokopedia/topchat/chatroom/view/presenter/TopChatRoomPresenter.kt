@@ -457,14 +457,11 @@ class TopChatRoomPresenter @Inject constructor(
             opponentId: String,
             onSendingMessage: () -> Unit
     ) {
-        if (doesNotHaveMessageToSend(sendMessage)) {
-            showErrorSnackbar(com.tokopedia.chat_common.R.string.error_empty_product)
-            return
-        }
-
         if (isValidReply(sendMessage)) {
             sendAttachments(messageId, opponentId)
             sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
+        } else {
+            showErrorSnackbar(R.string.error_empty_product)
         }
     }
 
@@ -474,10 +471,6 @@ class TopChatRoomPresenter @Inject constructor(
             attachment.sendTo(messageId, opponentId, listInterceptor)
         }
         view.notifyAttachmentsSent()
-    }
-
-    private fun doesNotHaveMessageToSend(sendMessage: String): Boolean {
-        return attachmentsPreview.isEmpty() && !isValidReply(sendMessage)
     }
 
     override fun sendProductAttachment(messageId: String, item: ResultProduct,
@@ -582,14 +575,13 @@ class TopChatRoomPresenter @Inject constructor(
 
         if (productPreview.notEnoughRequiredData()) {
             attachmentsPreview.remove(productPreview)
-        } else {
-            view.focusOnReply()
         }
     }
 
     override fun initAttachmentPreview() {
         if (attachmentsPreview.isEmpty()) return
         view.showAttachmentPreview(attachmentsPreview)
+        view.focusOnReply()
     }
 
     override fun clearAttachmentPreview() {
