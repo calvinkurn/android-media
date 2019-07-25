@@ -1,7 +1,6 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,7 +13,6 @@ import com.tokopedia.nps.presentation.di.FeedbackComponent;
 import com.tokopedia.nps.presentation.di.FeedbackModule;
 import com.tokopedia.nps.presentation.presenter.FeedbackPresenter;
 import com.tokopedia.nps.presentation.view.FeedbackView;
-import com.tokopedia.unifycomponents.Toaster;
 
 import javax.inject.Inject;
 
@@ -100,11 +98,7 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
 
     @Override
     public void showError(String message) {
-        View view = getView();
 
-        if (view != null) {
-            Toaster.Companion.showError(view, message, Snackbar.LENGTH_LONG);
-        }
     }
 
     @Override
