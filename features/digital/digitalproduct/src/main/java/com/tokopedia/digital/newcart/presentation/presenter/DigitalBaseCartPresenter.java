@@ -524,6 +524,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         param.put("category_id", categoryId);
         getView().showFullPageLoading();
         getView().hideCartView();
+        getView().startPerfomanceMonitoringTrace();
         cartDigitalInteractor.getCartInfoData(
                 getView().getGeneratedAuthParamNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 getSubscriberCartInfoAfterCheckout()
