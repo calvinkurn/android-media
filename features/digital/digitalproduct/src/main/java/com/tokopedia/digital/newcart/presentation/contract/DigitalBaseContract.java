@@ -66,12 +66,6 @@ public interface DigitalBaseContract {
 
         void hideFullPageLoading();
 
-        void navigateToCouponActiveAndSelected(String categoryId);
-
-        void navigateToCouponActive(String categoryId);
-
-        void navigateToCouponNotActive(String categoryId);
-
         RequestBodyIdentifier getDigitalIdentifierParam();
 
         void disableVoucherCheckoutDiscount();

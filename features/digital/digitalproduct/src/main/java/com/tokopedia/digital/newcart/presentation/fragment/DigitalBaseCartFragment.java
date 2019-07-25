@@ -235,6 +235,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onDisablePromoDiscount() {
+        digitalAnalytics.eventclickCancelApplyCoupon(cartDigitalInfoData.getAttributes().getCategoryName(), promoData.getPromoCode());
         promoData.setPromoCode("");
     }
 
@@ -243,63 +244,27 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         Intent intent;
         String promoCode = promoData.getPromoCode();
         if (!promoCode.isEmpty()) {
+            int requestCode;
             if (promoData.getTypePromo() == 0) {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
                 intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+                requestCode = ConstantKt.getREQUST_CODE_LIST_PROMO();
             } else {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);
                 intent.putExtra("EXTRA_IS_USE", true);
                 intent.putExtra("EXTRA_KUPON_CODE", promoCode);
+                requestCode = ConstantKt.getREQUEST_CODE_PROMO_DETAIL();
             }
             intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
-            startActivityForResult(intent, 231);
+            startActivityForResult(intent, requestCode);
         } else {
             showToastMessage("Tidak ada promo yang sedang dipakai");
         }
     }
 
-//    @Override
-//    public void trackingSuccessVoucher(String title, String promoCode) {
-//        this.promoCode = promoCode;
-//    }
-//
-//    @Override
-//    public void trackingCancelledVoucher() {
-//        digitalAnalytics.eventclickCancelApplyCoupon(cartDigitalInfoData.getAttributes().getCategoryName(), promoCode);
-//    }
-
-    @Override
-    public void navigateToCouponActiveAndSelected(String categoryId) {
-        Intent intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(
-                cartDigitalInfoData.getAttributes().getCategoryName(),
-                getActivity(), IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, categoryId
-        );
-        navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-    }
-
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
-    }
-
-
-    @Override
-    public void navigateToCouponActive(String categoryId) {
-        Intent intent = LoyaltyActivity.newInstanceCouponActive(
-                cartDigitalInfoData.getAttributes().getCategoryName(),
-                getActivity(), IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, categoryId
-        );
-        navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-    }
-
-    @Override
-    public void navigateToCouponNotActive(String categoryId) {
-        Intent intent = LoyaltyActivity.newInstanceCouponNotActive(
-                cartDigitalInfoData.getAttributes().getCategoryName(),
-                getActivity(), IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING,
-                categoryId
-        );
-        navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
     @Override
@@ -323,13 +288,16 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     case EMPTY: {
                         promoData.setPromoCode("");
                         resetPromoTicker();
+                        break;
                     }
                     case FAILED: {
                         promoData.setPromoCode("");
                         presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        break;
                     }
                     case ACTIVE: {
                         presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        break;
                     }
                     default: { }
                 }
