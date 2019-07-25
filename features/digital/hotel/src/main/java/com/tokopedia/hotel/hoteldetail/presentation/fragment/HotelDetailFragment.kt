@@ -42,7 +42,6 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import java.util.*
 import javax.inject.Inject
 
-
 /**
  * @author by furqan on 22/04/19
  */
