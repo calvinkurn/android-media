@@ -16,10 +16,8 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
-import com.tokopedia.analytics.Analytics;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
@@ -45,7 +43,6 @@ import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
-import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.product.detail.data.util.ProductDetailConstant;
@@ -158,7 +155,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-        Analytics.initDB(getApplicationContext());
 
 
         PersistentCacheManager.init(this);
@@ -237,7 +233,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.HOME_DATA_BASE_URL = SellerAppBaseUrl.HOME_DATA_BASE_URL;
         CotpUrl.BASE_URL = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         GMCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
-        SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
         GraphqlUrl.BASE_URL = SellerAppBaseUrl.GRAPHQL_DOMAIN;
         ImageUploaderUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
@@ -267,15 +262,16 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         } catch (IllegalStateException e) {
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
-        FlowManager.initModule(ProductDraftGeneratedDatabaseHolder.class);
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
     private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+        new CacheApiWhiteListUseCase(this).executeSync(
+                CacheApiWhiteListUseCase.createParams(
                 CacheApiWhiteList.getWhiteList(),
-                String.valueOf(getCurrentVersion(getApplicationContext()))));
+                String.valueOf(getCurrentVersion(getApplicationContext())))
+        );
     }
 
     @Override
