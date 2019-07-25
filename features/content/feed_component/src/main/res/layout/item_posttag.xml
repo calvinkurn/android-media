@@ -28,8 +28,9 @@
         android:layout_marginTop="@dimen/dp_8"
         android:clipToPadding="false"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_producttag_list" />
+        tools:listitem="@layout/item_producttag_list"
+        tools:ignore="RtlSymmetry" />
 </LinearLayout>
