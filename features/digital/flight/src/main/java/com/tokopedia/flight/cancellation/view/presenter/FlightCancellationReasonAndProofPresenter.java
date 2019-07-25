@@ -35,7 +35,6 @@ import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
@@ -165,9 +164,19 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                 }
             });
 
-            isValidRequiredAttachment.subscribe(new Action1<Boolean>() {
+            isValidRequiredAttachment.subscribe(new Subscriber<Boolean>() {
                 @Override
-                public void call(Boolean aBoolean) {
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Boolean aBoolean) {
                     if (!aBoolean)
                         getView().showRequiredMinimalOneAttachmentErrorMessage(R.string.flight_cancellation_attachment_required_error_message);
                 }
@@ -186,9 +195,19 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                         }
                     });
 
-            isValidAttachmentLength.subscribe(new Action1<Boolean>() {
+            isValidAttachmentLength.subscribe(new Subscriber<Boolean>() {
                 @Override
-                public void call(Boolean aBoolean) {
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Boolean aBoolean) {
                     if (!aBoolean) {
                         int totalPassenger = calculateTotalPassenger(getView().getCancellationViewModel());
                         getView().showAttachmentGreaterThanPassengersTotalAndRequiredAttachmentErrorMessage(
