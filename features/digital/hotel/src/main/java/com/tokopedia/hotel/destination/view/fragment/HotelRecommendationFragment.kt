@@ -160,15 +160,6 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                 is Fail -> checkGPS()
             }
         })
-
-        destinationViewModel.deleteSuccess.observe(this, android.arch.lifecycle.Observer {
-            when (it) {
-                true -> {
-                }
-                false -> {
-                }
-            }
-        })
     }
 
     fun onClickCurrentLocation(lang: Double, lat: Double) {

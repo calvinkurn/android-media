@@ -13,7 +13,8 @@ import kotlinx.android.synthetic.main.widget_info_text_view.view.*
  * @author by resakemal on 29/04/19
  */
 
-class InfoTextView: BaseCustomView {
+class InfoTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0):
+        BaseCustomView(context, attrs, defStyleAttr) {
 
     var descriptionLineCount = INFO_DESC_DEFAULT_LINE_COUNT
     var truncateDescription = true
@@ -24,14 +25,10 @@ class InfoTextView: BaseCustomView {
         infoViewListener?.let { listener -> info_more.setOnClickListener{ listener.onMoreClicked() } }
     }
 
-    constructor(context: Context) : super(context) { init() }
-    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet) { init() }
-    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int): super(context, attributeSet, defStyleAttr) { init() }
-
-    private fun init(attrs: AttributeSet? = null) {
+    init {
         View.inflate(context, R.layout.widget_info_text_view, this)
 
-        attrs.let {
+        attrs?.let {
             val styledAttributes = context.obtainStyledAttributes(it, R.styleable.InfoTextView)
             try {
                 info_title.text = styledAttributes.getString(R.styleable.InfoTextView_titleText) ?: ""

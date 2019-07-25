@@ -39,7 +39,6 @@ class HotelOrderDetailActivity : HotelBaseActivity(), HasComponent<HotelOrderDet
         }
 
         super.onCreate(savedInstanceState)
-        updateTitle(getString(R.string.hotel_order_detail_title))
     }
 
     companion object {

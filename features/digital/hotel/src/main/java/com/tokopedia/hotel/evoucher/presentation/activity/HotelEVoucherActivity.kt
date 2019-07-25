@@ -47,7 +47,7 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (shouldShowOptionMenu()) {
-            if (item?.itemId ?: "" == R.id.action_share) {
+            if (item?.itemId == R.id.action_share) {
                 showShareMenus()
                 return true
             }

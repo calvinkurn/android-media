@@ -28,8 +28,10 @@ class HotelDetailAllFacilityFragment : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val args: Bundle = savedInstanceState ?: arguments!!
-        propertyData = args.getParcelable(EXTRA_PROPERTY_DETAIL)
+        arguments?.run {
+            val args: Bundle = savedInstanceState ?: this
+            propertyData = args.getParcelable(EXTRA_PROPERTY_DETAIL)
+        }
         renderTabAndViewPager()
     }
 
@@ -46,9 +48,10 @@ class HotelDetailAllFacilityFragment : TkpdBaseV4Fragment() {
         view_pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         view_pager.adapter = getViewPagerAdapter()
 
+
         for (i in 0 until hotelDetailPagerAdapter.count) {
-            if (tab_layout.getTabAt(i)!!.text!! == arguments!!.getString(EXTRA_TAB_TITLE, FACILITY_TITLE)) {
-                tab_layout.getTabAt(i)!!.select()
+            if (tab_layout.getTabAt(i)?.text == arguments?.getString(EXTRA_TAB_TITLE, FACILITY_TITLE)) {
+                tab_layout.getTabAt(i)?.select()
                 break
             }
         }
@@ -56,8 +59,12 @@ class HotelDetailAllFacilityFragment : TkpdBaseV4Fragment() {
 
     private fun getViewPagerAdapter(): PagerAdapter {
         if (!::hotelDetailPagerAdapter.isInitialized) {
-            hotelDetailPagerAdapter = HotelDetailPagerAdapter(childFragmentManager, context!!,
-                    arguments!!.getString(EXTRA_TAB_TITLE, FACILITY_TITLE))
+            context?.run {
+                arguments?.let {
+                    hotelDetailPagerAdapter = HotelDetailPagerAdapter(childFragmentManager, this,
+                            it.getString(EXTRA_TAB_TITLE, FACILITY_TITLE))
+                }
+            }
         }
         hotelDetailPagerAdapter.setData(propertyData)
         return hotelDetailPagerAdapter

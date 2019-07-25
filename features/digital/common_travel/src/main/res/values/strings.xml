@@ -68,6 +68,7 @@
 
     <string name="travel_departure_trip_price_value"><![CDATA[<b>%s</b> /org]]></string>
 
+    <string name="travel_contact_data_activity_title">Data Kontak</string>
     <string name="travel_contact_data_name_title">Nama Lengkap</string>
     <string name="travel_contact_data_email_title">Alamat E-mail</string>
     <string name="travel_contact_data_phone_number_title">Nomor Telepon</string>

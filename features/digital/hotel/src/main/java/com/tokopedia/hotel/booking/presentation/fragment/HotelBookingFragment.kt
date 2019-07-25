@@ -140,8 +140,10 @@ class HotelBookingFragment : HotelBaseFragment() {
         when (requestCode) {
             REQUEST_CODE_CONTACT_DATA -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    hotelBookingPageModel.contactData = data!!.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
-                    renderContactData()
+                    data?.run {
+                        hotelBookingPageModel.contactData = this.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
+                        renderContactData()
+                    }
                 }
             }
         }
@@ -187,7 +189,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         tv_hotel_info_name.text = property.name
         tv_hotel_info_property_type.text = property.type
         for (i in 1..property.star) {
-            hotel_info_rating_container.addView(RatingStarView(context!!))
+            context?.run { hotel_info_rating_container.addView(RatingStarView(this)) }
         }
         tv_hotel_info_address.text = property.address
         iv_hotel_info_image.loadImage(property.image.urlMax300, R.drawable.ic_failed_load_image)
@@ -221,8 +223,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                 if (cancellationPolicy.isClickable) {
                     val moreInfoString = getString(R.string.hotel_booking_cancellation_policy_more_info)
                     val spannableString = SpannableString("$cancellationDesc $moreInfoString")
-                    spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.green_200)),
-                            spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    context?.run {
+                        spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.green_200)),
+                                spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
                     cancellationDesc = spannableString
 
                     cancellation_policy_ticker.setOnClickListener { onCancellationPolicyClicked(property) }
@@ -239,14 +243,16 @@ class HotelBookingFragment : HotelBaseFragment() {
             hotelCancellationPolicyBottomSheets.title = getString(R.string.hotel_booking_cancellation_policy_title)
 
             for (policy in property.rooms[0].cancellationPolicies.details) {
-                val policyView = InfoTextView(context!!)
-                policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
-                policyView.info_title.setFontSize(TextViewCompat.FontSize.SMALL)
-                policyView.info_container.setMargin(0, 0, 0, policyView.info_container.getDimens(R.dimen.dp_16))
-                hotelCancellationPolicyBottomSheets.addContentView(policyView)
+                context?.run {
+                    val policyView = InfoTextView(this)
+                    policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
+                    policyView.info_title.setFontSize(TextViewCompat.FontSize.SMALL)
+                    policyView.info_container.setMargin(0, 0, 0, policyView.info_container.getDimens(R.dimen.dp_16))
+                    hotelCancellationPolicyBottomSheets.addContentView(policyView)
+                }
             }
 
-            hotelCancellationPolicyBottomSheets.show(activity!!.supportFragmentManager, TAG_HOTEL_CANCELLATION_POLICY)
+            activity?.run { hotelCancellationPolicyBottomSheets.show(this.supportFragmentManager, TAG_HOTEL_CANCELLATION_POLICY) }
         }
     }
 
@@ -294,7 +300,9 @@ class HotelBookingFragment : HotelBaseFragment() {
         renderContactData()
 
         iv_edit_contact.setOnClickListener {
-            startActivityForResult(TravelContactDataActivity.getCallingIntent(context!!, hotelBookingPageModel.contactData), REQUEST_CODE_CONTACT_DATA)
+            context?.run {
+                startActivityForResult(TravelContactDataActivity.getCallingIntent(this, hotelBookingPageModel.contactData), REQUEST_CODE_CONTACT_DATA)
+            }
         }
 
         if (hotelBookingPageModel.guestName.isNotEmpty() && hotelBookingPageModel.isForOtherGuest == 1) {
@@ -380,7 +388,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
         tv_room_estimated_price_label.text = getString(priceLabelResId)
         tv_room_estimated_price.text = price
-        tv_room_estimated_price.setTextColor(ContextCompat.getColor(context!!, R.color.orange_607))
+        context?.run { tv_room_estimated_price.setTextColor(ContextCompat.getColor(this, R.color.orange_607)) }
     }
 
     private fun setupImportantNotes(property: HotelPropertyData) {
@@ -397,8 +405,11 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
             spannableString.setSpan(moreInfoSpan, spannableString.length - expandNotesLabel.length, spannableString.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.green_200)),
-                    spannableString.length - expandNotesLabel.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            context?.run {
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.green_200)),
+                        spannableString.length - expandNotesLabel.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
 
             tv_booking_important_notes.text = spannableString
             tv_booking_important_notes.movementMethod = LinkMovementMethod.getInstance()
@@ -406,12 +417,16 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun onImportantNotesClicked(notes: String) {
-        val importantNotesBottomSheets = HotelBookingBottomSheets()
-        val textView = TextViewCompat(context!!)
-        textView.text = notes
-        importantNotesBottomSheets.title = getString(R.string.hotel_important_info_title)
-        importantNotesBottomSheets.addContentView(textView)
-        importantNotesBottomSheets.show(activity!!.supportFragmentManager, TAG_HOTEL_IMPORTANT_NOTES)
+        context?.run {
+            val importantNotesBottomSheets = HotelBookingBottomSheets()
+            val textView = TextViewCompat(this)
+            textView.text = notes
+            importantNotesBottomSheets.title = getString(R.string.hotel_important_info_title)
+            importantNotesBottomSheets.addContentView(textView)
+            activity?.let {
+                importantNotesBottomSheets.show(it.supportFragmentManager, TAG_HOTEL_IMPORTANT_NOTES)
+            }
+        }
     }
 
     private fun onBookingButtonClicked() {

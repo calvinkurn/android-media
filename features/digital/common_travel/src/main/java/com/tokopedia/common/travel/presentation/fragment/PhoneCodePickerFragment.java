@@ -83,9 +83,4 @@ public class PhoneCodePickerFragment extends BaseSearchListFragment<CountryPhone
         flightBookingPhoneCodePresenter.onDestroyView();
         super.onDestroyView();
     }
-
-//    @Override
-//    protected String getMessageFromThrowable(Context context, Throwable t) {
-//        return FlightErrorUtil.getMessageFromException(context, t);
-//    }
 }

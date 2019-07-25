@@ -63,13 +63,17 @@ class HotelHomepageFragment : HotelBaseFragment(),
             homepageViewModel = viewModelProvider.get(HotelHomepageViewModel::class.java)
         }
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
-            hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)!!
-        } else if (arguments != null && arguments!!.containsKey(EXTRA_PARAM_TYPE)) {
-            hotelHomepageModel.locId = arguments!!.getInt(EXTRA_PARAM_ID)
-            hotelHomepageModel.locName = arguments!!.getString(EXTRA_PARAM_NAME)
-            hotelHomepageModel.locType = arguments!!.getString(EXTRA_PARAM_TYPE)
+        arguments?.run {
+            if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
+                hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL) ?: HotelHomepageModel()
+            } else if (arguments != null && this.containsKey(EXTRA_PARAM_TYPE)) {
+                hotelHomepageModel.locId = this.getInt(EXTRA_PARAM_ID)
+                hotelHomepageModel.locName = this.getString(EXTRA_PARAM_NAME) ?: ""
+                hotelHomepageModel.locType = this.getString(EXTRA_PARAM_TYPE) ?: ""
+            }
         }
+
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -176,8 +180,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onDestinationChangeClicked() {
-        startActivityForResult(HotelDestinationActivity.createInstance(activity!!), REQUEST_CODE_DESTINATION)
         activity?.run {
+            startActivityForResult(HotelDestinationActivity.createInstance(this), REQUEST_CODE_DESTINATION)
             overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay)
         }
     }
@@ -191,11 +195,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onGuestInfoClicked() {
-        val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
-        hotelRoomAndGuestBottomSheets.listener = this
-        hotelRoomAndGuestBottomSheets.roomCount = hotelHomepageModel.roomCount
-        hotelRoomAndGuestBottomSheets.adultCount = hotelHomepageModel.adultCount
-        hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
+        activity?.let {
+            val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
+            hotelRoomAndGuestBottomSheets.listener = this
+            hotelRoomAndGuestBottomSheets.roomCount = hotelHomepageModel.roomCount
+            hotelRoomAndGuestBottomSheets.adultCount = hotelHomepageModel.adultCount
+            hotelRoomAndGuestBottomSheets.show(it.supportFragmentManager, TAG_GUEST_INFO)
+        }
+
     }
 
     private fun onCheckInDateChanged(newCheckInDate: Date) {
@@ -265,16 +272,18 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 hotelHomepageModel.nightCounter.toInt()
         )
 
-        if (hotelHomepageModel.locType.equals(TYPE_PROPERTY, false)) {
-            startActivityForResult(HotelDetailActivity.getCallingIntent(activity!!, hotelHomepageModel.checkInDate,
-                    hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
-                    REQUEST_CODE_DETAIL)
-        } else {
-            startActivityForResult(HotelSearchResultActivity.createIntent(activity!!, hotelHomepageModel.locName,
-                    hotelHomepageModel.locId, hotelHomepageModel.locType, hotelHomepageModel.locLat.toFloat(),
-                    hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
-                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
-                    REQUEST_CODE_SEARCH)
+        activity?.run {
+            if (hotelHomepageModel.locType.equals(TYPE_PROPERTY, false)) {
+                startActivityForResult(HotelDetailActivity.getCallingIntent(this, hotelHomepageModel.checkInDate,
+                        hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
+                        REQUEST_CODE_DETAIL)
+            } else {
+                startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelHomepageModel.locName,
+                        hotelHomepageModel.locId, hotelHomepageModel.locType, hotelHomepageModel.locLat.toFloat(),
+                        hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
+                        hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
+                        REQUEST_CODE_SEARCH)
+            }
         }
     }
 

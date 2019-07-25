@@ -2,8 +2,10 @@ package com.tokopedia.hotel.common.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.common.travel.R
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,6 +17,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 
 /**
  * @author by furqan on 25/03/19
@@ -48,5 +51,12 @@ class HotelModule {
     @Provides
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
             MultiRequestGraphqlUseCase(graphqlRepository)
+
+    @HotelScope
+    @Provides
+    @Named("travel_calendar_holiday_query")
+    internal fun provideTravelCalendarHolidayQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_get_travel_calendar_holiday)
+    }
 
 }
