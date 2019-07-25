@@ -22,7 +22,6 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
@@ -37,8 +36,6 @@ import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-
 /**
  * Created by Alifa on 10/11/2016.
  */
@@ -46,16 +43,9 @@ import butterknife.BindView;
 public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFragmentPresenter> implements ChooseAddressFragmentView,
         ChooseAddressActivity.OnChooseAddressViewListener {
 
-    @BindView(R2.id.main_view)
     View mainView;
-
-    @BindView(R2.id.address_list)
     RecyclerView addressRV;
-
-    @BindView(R2.id.search)
     EditText search;
-
-    @BindView(R2.id.search_but)
     ImageView searchBut;
 
     ChooseAddressAdapter adapter;
@@ -140,6 +130,11 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
 
     @Override
     protected void initView(View view) {
+        mainView = (View) view.findViewById(R.id.main_view);
+        addressRV = (RecyclerView) view.findViewById(R.id.address_list);
+        search = (EditText) view.findViewById(R.id.search);
+        searchBut = (ImageView) view.findViewById(R.id.search_but);
+
         this.refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
         snackbar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_INDEFINITE);
         searchBut.setOnClickListener(new View.OnClickListener() {

@@ -57,8 +57,11 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
+    @JvmField
+    val DEFAULT_HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi"
 
-
+    @JvmField
+    val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/"
 
     // ImageReviewGalleryActivity
     @JvmField
@@ -72,13 +75,13 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
 
+
+    @JvmField
+    val CONTACT_US = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://customercare/{ticket_id}"
+
     // GmMembershipActivity
     @JvmField
     val GOLD_MERCHANT_MEMBERSHIP = "$INTERNAL_MARKETPLACE/gold-merchant-membership"
-
-    // CustomerApp only: GoldMerchantRedirectActivity
-    @JvmField
-    val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 
 
     //ShopSettingsInfoActivity
@@ -100,5 +103,13 @@ object ApplinkConstInternalMarketplace {
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
+
+    // OnboardingActivity
+    @JvmField
+    val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
+
+    // ShopScoreDetailActivity
+    @JvmField
+    val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
 
 }

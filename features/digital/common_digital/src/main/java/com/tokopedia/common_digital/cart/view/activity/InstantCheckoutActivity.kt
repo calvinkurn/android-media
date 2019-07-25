@@ -23,11 +23,13 @@ import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
+import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.common_digital.R
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.common_digital.common.DigitalRouter
 import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.user.session.UserSession
 
 import javax.inject.Inject
 
@@ -43,6 +45,7 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
 
     internal lateinit var webView: TkpdWebView
     internal var progressBar: ProgressBar? = null
+    lateinit var userSession : UserSession
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { v, keyCode, event ->
@@ -92,9 +95,16 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
         webView.webChromeClient = InstantCheckoutWebViewChromeClient()
         webView.setOnKeyListener(webViewOnKeyListener)
 
-        var url = instantCheckoutData!!.thanksUrl
-        if (url!!.isEmpty()) url = instantCheckoutData!!.redirectUrl
-        webView.loadUrl(url)
+        instantCheckoutData?.let {
+            var url = it.thanksUrl
+            if(url.isNullOrEmpty()){
+                url= it.redirectUrl
+            }
+            userSession = UserSession(this)
+            url = URLGenerator.generateURLSessionLogin(
+                    url, userSession.deviceId, userSession.userId)
+            webView.loadAuthUrl(url, userSession.userId, userSession.accessToken)
+        }
     }
 
 

@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.search.result.domain.model.GuidedSearchModel;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
@@ -10,6 +9,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -31,7 +31,12 @@ public class ProductViewModelMapper {
                 !TextUtils.isEmpty(searchProduct.getRelated().getRelatedKeyword())) {
             productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProduct.getRelated()));
         } else if (searchProductModel.getGuidedSearchModel() != null) {
-            productViewModel.setGuidedSearchViewModel(convertToGuidedSearchViewModel(searchProductModel.getGuidedSearchModel()));
+            productViewModel.setGuidedSearchViewModel(
+                    convertToGuidedSearchViewModel(
+                            searchProductModel.getGuidedSearchModel(),
+                            searchProduct.getQuery()
+                    )
+            );
         }
         productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts()));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
@@ -39,13 +44,15 @@ public class ProductViewModelMapper {
         productViewModel.setShareUrl(searchProduct.getShareUrl());
         productViewModel.setSuggestionModel(createSuggestionModel(searchProduct));
         productViewModel.setTotalData(searchProduct.getCount());
+        productViewModel.setIsQuerySafe(searchProduct.isQuerySafe());
         if (searchProductModel.getDynamicFilterModel() != null) {
             productViewModel.setDynamicFilterModel(searchProductModel.getDynamicFilterModel());
         }
         if (searchProductModel.getQuickFilterModel() != null) {
             productViewModel.setQuickFilterModel(searchProductModel.getQuickFilterModel());
         }
-        productViewModel.setAdditionalParams(searchProductModel.getSearchProduct().getAdditionalParams());
+        productViewModel.setAdditionalParams(searchProduct.getAdditionalParams());
+
         return productViewModel;
     }
 
@@ -98,23 +105,25 @@ public class ProductViewModelMapper {
         return relatedSearchModel;
     }
 
-    private GuidedSearchViewModel convertToGuidedSearchViewModel(GuidedSearchModel guidedSearchModel) {
+    private GuidedSearchViewModel convertToGuidedSearchViewModel(GuidedSearchModel guidedSearchModel, String query) {
         GuidedSearchViewModel model = new GuidedSearchViewModel();
         List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
 
         if (guidedSearchModel.getData() != null) {
-            for (GuidedSearchModel.GuidedSearchItem item : guidedSearchModel.getData()) {
-                itemList.add(mappingGuidedSearchItem(item));
+            for (int position = 0; position < guidedSearchModel.getData().size(); position++) {
+                itemList.add(mappingGuidedSearchItem(guidedSearchModel.getData().get(position), position, query));
             }
         }
         model.setItemList(itemList);
         return model;
     }
 
-    private GuidedSearchViewModel.Item mappingGuidedSearchItem(GuidedSearchModel.GuidedSearchItem networkItem) {
+    private GuidedSearchViewModel.Item mappingGuidedSearchItem(GuidedSearchModel.GuidedSearchItem networkItem, int position, String query) {
         GuidedSearchViewModel.Item viewModelItem = new GuidedSearchViewModel.Item();
         viewModelItem.setKeyword(networkItem.getKeyword());
         viewModelItem.setUrl(networkItem.getUrl());
+        viewModelItem.setPosition(position);
+        viewModelItem.setPreviousKey(query);
         return viewModelItem;
     }
 
@@ -148,7 +157,6 @@ public class ProductViewModelMapper {
         productItem.setShopName(productModel.getShop().getName());
         productItem.setShopCity(productModel.getShop().getCity());
         productItem.setGoldMerchant(productModel.getShop().isGoldmerchant());
-        productItem.setOfficial(productModel.getShop().isOfficial());
         productItem.setWishlisted(productModel.isWishlist());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadges()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabels()));
@@ -158,6 +166,9 @@ public class ProductViewModelMapper {
         productItem.setCategoryID(productModel.getCategoryId());
         productItem.setCategoryName(productModel.getCategoryName());
         productItem.setCategoryBreadcrumb(productModel.getCategoryBreadcrumb());
+        productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
+        productItem.setIsShopPowerBadge(productModel.getShop().isPowerBadge());
+        productItem.setIsShopOfficialStore(productModel.getShop().isOfficial());
         return productItem;
     }
 
@@ -191,6 +202,26 @@ public class ProductViewModelMapper {
         labelItem.setTitle(labelModel.getTitle());
         labelItem.setColor(labelModel.getColor());
         return labelItem;
+    }
+
+    private List<LabelGroupViewModel> convertToLabelGroupList(List<SearchProductModel.LabelGroup> labelGroupModelList) {
+        List<LabelGroupViewModel> labelGroupViewModelList = new ArrayList<>();
+        for(SearchProductModel.LabelGroup labelGroupModel : labelGroupModelList) {
+            labelGroupViewModelList.add(convertToLabelGroupViewModel(labelGroupModel));
+        }
+
+        return labelGroupViewModelList;
+    }
+
+    private LabelGroupViewModel convertToLabelGroupViewModel(SearchProductModel.LabelGroup labelGroupModel) {
+        LabelGroupViewModel labelGroupViewModel =
+                new LabelGroupViewModel(
+                        labelGroupModel.getPosition(),
+                        labelGroupModel.getType(),
+                        labelGroupModel.getTitle()
+                );
+
+        return labelGroupViewModel;
     }
 
     private SuggestionViewModel createSuggestionModel(SearchProductModel.SearchProduct searchProduct) {

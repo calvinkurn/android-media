@@ -69,7 +69,7 @@ public class FilterDetailActivityRouter {
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                FilterDbHelper.storeLocationFilterOptions(filter.getOptions());
+                FilterDbHelper.storeLocationFilterOptions(activity, filter.getOptions());
                 subscriber.onNext(true);
             }
         }).subscribeOn(Schedulers.newThread())

@@ -136,6 +136,7 @@ android {
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
+//            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             if (allowProguard()) {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
@@ -249,7 +250,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.datePickerRange)
@@ -263,19 +264,21 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.cpm)
-    implementation project(rootProject.ext.libraries.cacheManager)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.mitraToppers)
+    implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
+    implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.inbox)
@@ -292,7 +295,7 @@ dependencies {
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
-    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -300,7 +303,6 @@ dependencies {
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticgeolocation)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
@@ -347,9 +349,14 @@ dependencies {
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
+    implementation project(rootProject.ext.libraries.analytics)
 
+
+    implementation rootProject.ext.analyticsDependencies.moengageSdk
+    implementation rootProject.ext.analyticsDependencies.moengagePushbase
+    implementation rootProject.ext.analyticsDependencies.moengageInapp
     implementation(rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-gcm'
+        exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
 
     implementation(rootProject.ext.analyticsDependencies.moengageMSG) {

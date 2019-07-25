@@ -11,9 +11,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -23,8 +28,7 @@ import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
-import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
@@ -33,8 +37,8 @@ import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,16 +48,18 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
 
 public abstract class SearchSectionFragment
         extends BaseDaggerFragment
         implements
-        SearchSectionContract.View,
-        RequestDynamicFilterListener {
+        SearchSectionContract.View {
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
+    public static final int REQUEST_CODE_LOGIN = 561;
 
     protected static final int START_ROW_FIRST_TIME_LOAD = 0;
 
@@ -73,9 +79,10 @@ public abstract class SearchSectionFragment
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
-    private RedirectionListener redirectionListener;
+    protected RedirectionListener redirectionListener;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout refreshLayout;
     private boolean showBottomBar;
     public int spanCount;
@@ -83,7 +90,6 @@ public abstract class SearchSectionFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private boolean isGettingDynamicFilter;
     protected boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
 
@@ -94,25 +100,17 @@ public abstract class SearchSectionFragment
     SearchTracking searchTracking;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (getUserVisibleHint()) {
-            setupSearchNavigation();
-        }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initSpan();
+        initLayoutManager();
+        initSwipeToRefresh(view);
 
         if (savedInstanceState == null) {
             refreshLayout.post(this::onFirstTimeLaunch);
         } else {
             onRestoreInstanceState(savedInstanceState);
         }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initSpan();
-        initLayoutManager();
-        initSwipeToRefresh(view);
     }
 
     private void initSwipeToRefresh(View view) {
@@ -149,8 +147,12 @@ public abstract class SearchSectionFragment
 
     private void initLayoutManager() {
         linearLayoutManager = new LinearLayoutManager(getActivity());
+
         gridLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
+
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(getSpanCount(), StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
     }
 
     @Override
@@ -184,7 +186,7 @@ public abstract class SearchSectionFragment
         }
     }
 
-    private void setupSearchNavigation() {
+    protected void setupSearchNavigation() {
         searchNavigationListener
                 .setupSearchNavigation(new SearchNavigationListener.ClickListener() {
                     @Override
@@ -213,8 +215,12 @@ public abstract class SearchSectionFragment
         return linearLayoutManager;
     }
 
+    protected StaggeredGridLayoutManager getStaggeredGridLayoutManager() {
+        return staggeredGridLayoutManager;
+    }
+
     protected void switchLayoutType() {
-        if (!getUserVisibleHint()) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
             return;
         }
 
@@ -222,12 +228,14 @@ public abstract class SearchSectionFragment
             case GRID_1:
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
+                staggeredGridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
+                staggeredGridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
                 SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
@@ -241,7 +249,7 @@ public abstract class SearchSectionFragment
     }
 
     public void refreshMenuItemGridIcon() {
-        if(searchNavigationListener == null) return;
+        if(searchNavigationListener == null || getAdapter() == null) return;
 
         searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
     }
@@ -348,11 +356,6 @@ public abstract class SearchSectionFragment
     }
 
     @Override
-    public HashMap<String, String> getExtraFilter() {
-        return null;
-    }
-
-    @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
         if(filterController == null || getFilters() == null) return;
 
@@ -394,7 +397,7 @@ public abstract class SearchSectionFragment
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.FILTER);
         intent.putExtra(EXTRA_FILTER_LIST, getScreenName());
-        intent.putExtra(EXTRA_FILTER_PARAMETER, searchParameter);
+        intent.putExtra(EXTRA_FILTER_PARAMETER, searchParameter.getSearchParameterHashMap());
 
         startActivityForResult(intent, getFilterRequestCode());
 
@@ -432,21 +435,7 @@ public abstract class SearchSectionFragment
     }
 
     @Override
-    public void getDynamicFilter() {
-        if (canRequestDynamicFilter()) {
-            isGettingDynamicFilter = true;
-            getPresenter().requestDynamicFilter();
-        }
-    }
-
-    private boolean canRequestDynamicFilter() {
-        return !isFilterDataAvailable()
-                && !isGettingDynamicFilter;
-    }
-
-    @Override
     public void renderDynamicFilter(DynamicFilterModel pojo) {
-        isGettingDynamicFilter = false;
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
 
@@ -468,16 +457,20 @@ public abstract class SearchSectionFragment
         HashMap<String, String> selectedSort = new HashMap<>(
                 SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
         );
-
+        addDefaultSelectedSort(selectedSort);
         setSelectedSort(selectedSort);
+    }
+
+    private void addDefaultSelectedSort(HashMap<String, String> selectedSort) {
+        if (selectedSort.isEmpty()) {
+            selectedSort.put(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT);
+        }
     }
 
     protected abstract void refreshAdapterForEmptySearch();
 
     @Override
     public void renderFailRequestDynamicFilter() {
-        isGettingDynamicFilter = false;
-
         if(getActivity() == null) return;
 
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
@@ -495,19 +488,6 @@ public abstract class SearchSectionFragment
         return refreshLayout.isRefreshing();
     }
 
-    protected TopAdsParams enrichWithFilterAndSortParams(TopAdsParams topAdsParams) {
-        if (getSelectedSort() != null) {
-            topAdsParams.getParam().putAll(getSelectedSort());
-        }
-        if (getSelectedFilter() != null) {
-            topAdsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getExtraFilter() != null) {
-            topAdsParams.getParam().putAll(getExtraFilter());
-        }
-        return topAdsParams;
-    }
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -518,7 +498,6 @@ public abstract class SearchSectionFragment
         outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
         outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
-        outState.putBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER, isGettingDynamicFilter);
     }
 
     public abstract void reloadData();
@@ -556,7 +535,6 @@ public abstract class SearchSectionFragment
         setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
         setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
-        isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
     }
 
     @Override
@@ -632,5 +610,24 @@ public abstract class SearchSectionFragment
 
         return OptionHelper.combinePriceFilterIfExists(filterController.getActiveFilterOptionList(),
                 getResources().getString(R.string.empty_state_selected_filter_price_name));
+    }
+
+    public String getRegistrationId() {
+        if(getActivity() == null || getActivity().getApplicationContext() == null) return "";
+
+        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), GCM_STORAGE);
+        return cache.getString(GCM_ID, "");
+    }
+
+    @Nullable
+    public BaseAppComponent getBaseAppComponent() {
+        if(getActivity() == null || getActivity().getApplication() == null) return null;
+
+        return ((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent();
+    }
+
+    @Override
+    public void logDebug(String tag, String message) {
+        Log.d(tag, message);
     }
 }

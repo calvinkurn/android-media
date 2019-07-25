@@ -20,6 +20,7 @@ public class PurchaseProtectionPlanData implements Parcelable {
     private String protectionLinkText;
     private String protectionLinkUrl;
     private boolean protectionOptIn;
+    private boolean protectionCheckboxDisabled;
 
     public PurchaseProtectionPlanData() {
     }
@@ -96,6 +97,13 @@ public class PurchaseProtectionPlanData implements Parcelable {
         this.protectionOptIn = protectionOptIn;
     }
 
+    public boolean isProtectionCheckboxDisabled() {
+        return protectionCheckboxDisabled;
+    }
+
+    public void setProtectionCheckboxDisabled(boolean protectionCheckboxDisabled) {
+        this.protectionCheckboxDisabled = protectionCheckboxDisabled;
+    }
 
     @Override
     public int describeContents() {
@@ -113,6 +121,7 @@ public class PurchaseProtectionPlanData implements Parcelable {
         dest.writeString(this.protectionLinkText);
         dest.writeString(this.protectionLinkUrl);
         dest.writeByte(this.protectionOptIn ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.protectionCheckboxDisabled ? (byte) 1 : (byte) 0);
     }
 
     protected PurchaseProtectionPlanData(Parcel in) {
@@ -125,6 +134,7 @@ public class PurchaseProtectionPlanData implements Parcelable {
         this.protectionLinkText = in.readString();
         this.protectionLinkUrl = in.readString();
         this.protectionOptIn = in.readByte() != 0;
+        this.protectionCheckboxDisabled = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<PurchaseProtectionPlanData> CREATOR = new Parcelable.Creator<PurchaseProtectionPlanData>() {

@@ -17,8 +17,6 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     public static final int SPANNED_CONTACT = 1;
     public static final int SPANNED_MESSAGE = 2;
 
-    public static final String IS_TYPING = "sedang mengetik ...";
-
     String name;
     String message;
     String image;

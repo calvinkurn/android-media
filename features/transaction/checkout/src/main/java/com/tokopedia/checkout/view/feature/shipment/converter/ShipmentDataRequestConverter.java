@@ -31,8 +31,9 @@ public class ShipmentDataRequestConverter {
 
     }
 
-    public ShipmentAdapter.RequestData generateRequestData(
-            List<ShipmentCartItemModel> shipmentCartItemModels, RecipientAddressModel recipientAddress) {
+    public ShipmentAdapter.RequestData generateRequestData(List<ShipmentCartItemModel> shipmentCartItemModels,
+                                                           RecipientAddressModel recipientAddress,
+                                                           boolean isAnalyticsPurpose) {
         ShipmentAdapter.RequestData requestData = new ShipmentAdapter.RequestData();
         if (shipmentCartItemModels != null && shipmentCartItemModels.size() > 0) {
             List<ShopProductCheckoutRequest> shopProductCheckoutRequestList = new ArrayList<>();
@@ -40,7 +41,11 @@ public class ShipmentDataRequestConverter {
             if (recipientAddress != null) {
                 List<DataChangeAddressRequest> changeAddressRequestData = new ArrayList<>();
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-                    shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel));
+                    if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                        shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel));
+                    } else if (isAnalyticsPurpose) {
+                        shopProductCheckoutRequestList.add(getProductCheckoutRequestForAnalytics(shipmentCartItemModel));
+                    }
                     shopProductPromoRequest.add(getShopProductPromoRequest(shipmentCartItemModel));
                     createChangeAddressRequestData(changeAddressRequestData, shipmentCartItemModel, recipientAddress);
                 }
@@ -100,6 +105,38 @@ public class ShipmentDataRequestConverter {
         }
     }
 
+    private ShopProductCheckoutRequest getProductCheckoutRequestForAnalytics(ShipmentCartItemModel shipmentCartItemModel) {
+        // Create shop product model for shipment
+        ShopProductCheckoutRequest.Builder shopProductCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
+                .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
+                        .shippingId(0)
+                        .spId(0)
+                        .ratesId("")
+                        .checksum("")
+                        .ut("")
+                        .analyticsDataShippingCourierPrice("")
+                        .build())
+                .fcancelPartial(0)
+                .finsurance(0)
+                .isOrderPriority(0)
+                .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
+                .shopId(shipmentCartItemModel.getShopId())
+                .warehouseId(shipmentCartItemModel.getFulfillmentId())
+                .cartString(shipmentCartItemModel.getCartString())
+                .productData(convertToProductDataCheckout(shipmentCartItemModel));
+
+        ArrayList<String> promoCodes = new ArrayList<>();
+        if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
+            promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+        }
+
+        if (promoCodes.size() > 0) {
+            shopProductCheckoutBuilder.promoCodes(promoCodes);
+        }
+
+        return shopProductCheckoutBuilder.build();
+    }
+
     private ShopProductCheckoutRequest getProductCheckoutRequest(ShipmentCartItemModel shipmentCartItemModel) {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
@@ -111,8 +148,8 @@ public class ShipmentDataRequestConverter {
                             .shippingId(courierItemData.getShipperId())
                             .spId(courierItemData.getShipperProductId())
                             .ratesId(
-                                shipmentDetailData.getShippingCourierViewModels() != null ?
-                                shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
+                                    shipmentDetailData.getShippingCourierViewModels() != null ?
+                                            shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
                             )
                             .checksum(courierItemData.getChecksum())
                             .ut(courierItemData.getUt())
@@ -120,10 +157,12 @@ public class ShipmentDataRequestConverter {
                             .build())
                     .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
+                    .isOrderPriority((shipmentDetailData.isOrderPriority() != null && shipmentDetailData.isOrderPriority() ? 1 : 0))
                     .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
                     .shopId(shipmentCartItemModel.getShopId())
                     .warehouseId(shipmentCartItemModel.getFulfillmentId())
-                    .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
+                    .cartString(shipmentCartItemModel.getCartString())
+                    .productData(convertToProductDataCheckout(shipmentCartItemModel));
 
             ArrayList<String> promoCodes = new ArrayList<>();
             if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
@@ -184,16 +223,25 @@ public class ShipmentDataRequestConverter {
         return null;
     }
 
-    private List<ProductDataCheckoutRequest> convertToProductDataCheckout(List<CartItemModel> cartItems) {
+    private List<ProductDataCheckoutRequest> convertToProductDataCheckout(ShipmentCartItemModel shipmentCartItemModel) {
         List<ProductDataCheckoutRequest> productDataList = new ArrayList<>();
-        for (CartItemModel cartItem : cartItems) {
-            productDataList.add(convertToProductDataCheckout(cartItem));
+        for (CartItemModel cartItem : shipmentCartItemModel.getCartItemModels()) {
+            productDataList.add(convertToProductDataCheckout(cartItem, shipmentCartItemModel.getSelectedShipmentDetailData()));
         }
 
         return productDataList;
     }
 
-    private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem) {
+    private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem, ShipmentDetailData shipmentDetailData) {
+        String courierName = "";
+        String duration = "";
+        String shippingPrice = "";
+        if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
+            courierName = shipmentDetailData.getSelectedCourier().getName();
+            duration = shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery();
+            shippingPrice = String.valueOf(shipmentDetailData.getSelectedCourier().getShipperPrice());
+        }
+
         return new ProductDataCheckoutRequest.Builder()
                 .productId(cartItem.getProductId())
                 .purchaseProtection(cartItem.isProtectionOptIn())
@@ -210,6 +258,17 @@ public class ShipmentDataRequestConverter {
                 .productListName(cartItem.getAnalyticsProductCheckoutData().getProductListName())
                 .productAttribution(cartItem.getAnalyticsProductCheckoutData().getProductAttribution())
                 .cartId(cartItem.getCartId())
+                .warehouseId(cartItem.getAnalyticsProductCheckoutData().getWarehouseId())
+                .productWeight(cartItem.getAnalyticsProductCheckoutData().getProductWeight())
+                .promoCode(cartItem.getAnalyticsProductCheckoutData().getPromoCode())
+                .promoDetails(cartItem.getAnalyticsProductCheckoutData().getPromoDetails())
+                .buyerAddressId(cartItem.getAnalyticsProductCheckoutData().getBuyerAddressId())
+                .shippingDuration(duration)
+                .courier(courierName)
+                .shippingPrice(shippingPrice)
+                .codFlag(cartItem.getAnalyticsProductCheckoutData().getCodFlag())
+                .tokopediaCornerFlag(cartItem.getAnalyticsProductCheckoutData().getTokopediaCornerFlag())
+                .isFulfillment(cartItem.getAnalyticsProductCheckoutData().getIsFulfillment())
                 .build();
     }
 

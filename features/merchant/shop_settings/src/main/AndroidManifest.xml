@@ -70,7 +70,7 @@
             android:name=".notes.view.activity.ShopSettingsNotesActivity"
             android:label="@string/shop_settings_manage_notes"
             android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

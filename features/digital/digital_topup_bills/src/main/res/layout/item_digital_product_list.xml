@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/dp_5"
+    app:cardElevation="@dimen/dp_2">
+
+    <RelativeLayout
+        android:id="@+id/layout_product"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dp_10">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:lines="1"
+            android:textColor="@color/black_70"
+            app:typographyType="heading_5"
+            tools:text="Pulsa 40.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/desc_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_product"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:lines="1"
+            android:textColor="@color/clr_ae31353b"
+            app:typographyType="body_3"
+            tools:text="Masa aktif 30 hari" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/see_more_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/desc_product"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:lines="1"
+            android:text="@string/digital_see_more_btn"
+            android:textColor="@color/tkpd_main_green"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/product_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/see_more_btn"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:lines="1"
+            android:textColor="@color/tkpd_main_orange"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Pulsa 40.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/product_promo_price"
+            style="@style/TextView.Micro10"
+            android:layout_below="@+id/desc_product"
+            android:layout_alignTop="@+id/product_price"
+            android:layout_alignBottom="@+id/product_price"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_toRightOf="@+id/product_price"
+            android:gravity="center_vertical"
+            android:lines="1"
+            android:textColor="@color/Neutral_N700_44"
+            tools:text="Pulsa 40.000"
+            app:typographyType="small"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

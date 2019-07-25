@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -11,14 +10,14 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
-import com.tokopedia.search.result.presentation.presenter.subscriber.RequestDynamicFilterSubscriber;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.LabelGroup;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -51,9 +50,6 @@ final class ProductListPresenter
     @Named(SearchConstant.Wishlist.PRODUCT_WISHLIST_URL_USE_CASE)
     UseCase<Boolean> productWishlistUrlUseCase;
     @Inject
-    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_GQL_USE_CASE)
-    UseCase<DynamicFilterModel> dynamicFilterModelGqlUseCase;
-    @Inject
     AddWishListUseCase addWishlistActionUseCase;
     @Inject
     RemoveWishListUseCase removeWishlistActionUseCase;
@@ -61,7 +57,6 @@ final class ProductListPresenter
     RemoteConfig remoteConfig;
 
     private WishListActionListener wishlistActionListener;
-    private RequestDynamicFilterListener requestDynamicFilterListener;
     private boolean enableGlobalNavWidget;
     private boolean changeParamRow;
 
@@ -83,15 +78,9 @@ final class ProductListPresenter
     }
 
     @Override
-    public void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener) {
-        this.requestDynamicFilterListener = requestDynamicFilterListener;
-    }
-
-    @Override
-    public void requestDynamicFilter() {
+    public void requestDynamicFilter(Map<String, Object> searchParameterMap) {
         requestDynamicFilterCheckForNulls();
 
-        Map<String, Object> searchParameterMap = getView().getSearchParameterMap();
         Map<String, String> additionalParamsMap = getView().getAdditionalParamsMap();
 
         if(searchParameterMap == null) return;
@@ -103,12 +92,11 @@ final class ProductListPresenter
             enrichWithAdditionalParams(params, additionalParamsMap);
         }
 
-        dynamicFilterModelGqlUseCase.execute(params, new RequestDynamicFilterSubscriber(requestDynamicFilterListener));
+        getDynamicFilterUseCase.execute(params, getDynamicFilterSubscriber(false));
     }
 
     private void requestDynamicFilterCheckForNulls() {
-        if(requestDynamicFilterListener == null) throw new RuntimeException("UseCase<DynamicFilterModeL> is not injected.");
-        if(dynamicFilterModelGqlUseCase == null) throw new RuntimeException("RequestDynamicFilterListener is not set.");
+        if(getDynamicFilterUseCase == null) throw new RuntimeException("UseCase<DynamicFilterModeL> is not injected.");
     }
 
     @Override
@@ -125,6 +113,7 @@ final class ProductListPresenter
                 addWishlist(productItem.getProductID(), getView().getUserId());
             }
         } else {
+            getView().sendTrackingWishlistNonLogin(productItem.getProductID(), !productItem.isWishlisted());
             getView().launchLoginActivity(productItem.getProductID());
         }
     }
@@ -173,7 +162,6 @@ final class ProductListPresenter
         if(searchParameter == null || additionalParams == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
-        enrichWithFilterAndSortParams(requestParams);
         enrichWithRelatedSearchParam(requestParams);
         enrichWithAdditionalParams(requestParams, additionalParams);
 
@@ -290,7 +278,6 @@ final class ProductListPresenter
         return text == null || text.length() == 0;
     }
 
-    // TODO:: Create a new class that extends Subscriber<SearchProductModel> for easier unit testing. See InitiateSearchSubscriber for reference.
     private Subscriber<SearchProductModel> getLoadMoreDataSubscriber(final Map<String, Object> searchParameter) {
         return new Subscriber<SearchProductModel>() {
             @Override
@@ -393,6 +380,11 @@ final class ProductListPresenter
                     item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
+                    item.setIsShopOfficialStore(topAds.getShop().isShop_is_official());
+                    item.setShopName(topAds.getShop().getName());
+                    item.setOriginalPrice(topAds.getProduct().getCampaign().getOriginalPrice());
+                    item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
+                    item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     list.add(i, item);
                     j++;
                 }
@@ -403,7 +395,7 @@ final class ProductListPresenter
         return list;
     }
 
-    private static int convertCountReviewFormatToInt(String countReviewFormat) {
+    private int convertCountReviewFormatToInt(String countReviewFormat) {
         String countReviewString = countReviewFormat.replaceAll("[^\\d]", "");
 
         try {
@@ -415,12 +407,26 @@ final class ProductListPresenter
         }
     }
 
-    private static List<BadgeItemViewModel> mapBadges(List<Badge> badges) {
+    private List<BadgeItemViewModel> mapBadges(List<Badge> badges) {
         List<BadgeItemViewModel> items = new ArrayList<>();
         for (Badge b:badges) {
             items.add(new BadgeItemViewModel(b.getImageUrl(), b.getTitle(), b.isShow()));
         }
         return items;
+    }
+
+    private List<LabelGroupViewModel> mapLabelGroupList(List<LabelGroup> labelGroupList) {
+        List<LabelGroupViewModel> labelGroupViewModelList = new ArrayList<>();
+
+        for(LabelGroup labelGroup : labelGroupList) {
+            labelGroupViewModelList.add(
+                    new LabelGroupViewModel(
+                            labelGroup.getPosition(), labelGroup.getType(), labelGroup.getTitle()
+                    )
+            );
+        }
+
+        return labelGroupViewModelList;
     }
 
     private void loadMoreDataSubscriberOnCompleteIfViewAttached() {
@@ -452,15 +458,14 @@ final class ProductListPresenter
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
 
-        searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(isFirstTimeLoad));
+        searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(searchParameter, isFirstTimeLoad));
     }
 
     private boolean checkShouldEnrichWithAdditionalParams(Map<String, String> additionalParams) {
         return getView().isAnyFilterActive() && additionalParams != null;
     }
 
-    // TODO:: Create a new class that extends Subscriber<SearchProductModel> for easier unit testing. See InitiateSearchSubscriber for reference.
-    private Subscriber<SearchProductModel> getLoadDataSubscriber(final boolean isFirstTimeLoad) {
+    private Subscriber<SearchProductModel> getLoadDataSubscriber(final Map<String, Object> searchParameter, final boolean isFirstTimeLoad) {
         return new Subscriber<SearchProductModel>() {
             @Override
             public void onStart() {
@@ -469,7 +474,7 @@ final class ProductListPresenter
 
             @Override
             public void onCompleted() {
-                loadDataSubscriberOnCompleteIfViewAttached();
+                loadDataSubscriberOnCompleteIfViewAttached(searchParameter);
             }
 
             @Override
@@ -491,10 +496,10 @@ final class ProductListPresenter
         }
     }
 
-    private void loadDataSubscriberOnCompleteIfViewAttached() {
+    private void loadDataSubscriberOnCompleteIfViewAttached(Map<String, Object> searchParameter) {
         if (isViewAttached()) {
             getView().hideRefreshLayout();
-            getView().getDynamicFilter();
+            requestDynamicFilter(searchParameter);
         }
     }
 
@@ -541,8 +546,12 @@ final class ProductListPresenter
 
         HeaderViewModel headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
+        if (!productViewModel.isQuerySafe()) {
+            getView().showAdultRestriction();
+        }
         if (productViewModel.getGuidedSearchViewModel() != null) {
             headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
+            getView().sendImpressionGuidedSearch();
         }
         if (productViewModel.getQuickFilterModel() != null
                 && productViewModel.getQuickFilterModel().getFilter() != null) {
@@ -568,6 +577,7 @@ final class ProductListPresenter
         getView().setProductList(list);
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
         getView().addLoading();
+
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
     }
@@ -602,9 +612,10 @@ final class ProductListPresenter
     @Override
     public void detachView() {
         super.detachView();
-        searchProductFirstPageUseCase.unsubscribe();
-        searchProductLoadMoreUseCase.unsubscribe();
-        addWishlistActionUseCase.unsubscribe();
-        removeWishlistActionUseCase.unsubscribe();
+        if(searchProductFirstPageUseCase != null) searchProductFirstPageUseCase.unsubscribe();
+        if(searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
+        if(productWishlistUrlUseCase != null) productWishlistUrlUseCase.unsubscribe();
+        if(addWishlistActionUseCase != null) addWishlistActionUseCase.unsubscribe();
+        if(removeWishlistActionUseCase != null) removeWishlistActionUseCase.unsubscribe();
     }
 }

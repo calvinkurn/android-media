@@ -20,10 +20,10 @@
                 android:id="@+id/ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_15"
                 android:layout_marginLeft="@dimen/dp_15"
-                android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginBottom="@dimen/dp_15"
                 android:visibility="gone"
                 app:tckv_indicator_off_color="@color/grey"
                 app:tckv_indicator_on_color="@color/tkpd_main_green" />
@@ -34,16 +34,16 @@
                 android:background="@color/white"
                 app:lsv_error_layout="@layout/partial_dashboard_header_error_view"
                 app:lsv_loading_layout="@layout/partial_dashboard_header_loading_view">
-
                 <include layout="@layout/partial_dashboard_header" />
 
             </com.tokopedia.design.loading.LoadingStateView>
 
             <fragment
-                android:id="@+id/fragment_preapprove_label"
-                android:name="com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment"
+                android:id="@+id/mlp"
+                android:name="com.tokopedia.mlp.fragment.MerchantLendingFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
 
             <FrameLayout
                 android:layout_width="match_parent"

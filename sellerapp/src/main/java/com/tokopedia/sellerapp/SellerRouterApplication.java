@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -71,17 +70,14 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationActivity;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
-import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
-import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
 import com.tokopedia.flashsale.management.router.FlashSaleRouter;
@@ -97,7 +93,6 @@ import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -107,14 +102,16 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
+import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticgeolocation.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
+import com.tokopedia.mlp.router.MLPRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
@@ -189,6 +186,7 @@ import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.auto.router.TopAdsAutoRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardInternalRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
@@ -208,8 +206,8 @@ import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
-import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
-import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.seller.purchase.detail.activity.OrderDetailActivity;
+import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -228,7 +226,6 @@ import okhttp3.Response;
 import rx.Observable;
 
 import static com.tokopedia.core.analytics.AppEventTracking.Event.CLICK_PDP;
-import static com.tokopedia.core.analytics.AppEventTracking.Event.PRODUCT_DETAIL_PAGE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP;
 
@@ -247,6 +244,7 @@ public abstract class SellerRouterApplication extends MainApplication
         PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
         TopAdsDashboardRouter,
         TopAdsManagementRouter,
+        TopAdsAutoRouter,
         BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
@@ -259,7 +257,7 @@ public abstract class SellerRouterApplication extends MainApplication
         LinkerRouter,
         CharacterPerMinuteInterface,
         ResolutionRouter,
-        IAddressRouter {
+        MLPRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -540,18 +538,10 @@ public abstract class SellerRouterApplication extends MainApplication
         ScreenTracking.screen(this, screenName);
     }
 
-    @Override
     public void goToWebview(Context context, String url) {
         Intent intent = new Intent(this, BannerWebView.class);
         intent.putExtra(BannerWebView.EXTRA_URL, url);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void goToProfileShop(Context context, String userId) {
-        context.startActivity(
-                getTopProfileIntent(context, userId)
-        );
     }
 
     @Override
@@ -765,6 +755,7 @@ public abstract class SellerRouterApplication extends MainApplication
         return getShopComponent().getShopInfoUseCase();
     }
 
+    @Override
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
             activity.startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
@@ -833,11 +824,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public String applink(Activity activity, String deeplink) {
-        return null;
-    }
-
-    @Override
     public Intent getPhoneVerificationActivationIntent(Context context) {
         return PhoneVerificationActivationActivity.getCallingIntent(context);
     }
@@ -889,10 +875,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void navigateToEditAddressActivityRequest(final Fragment fragment, final int requestCode, Token token) {
-        fragment.startActivityForResult(DistrictRecommendationActivity.createInstanceIntent(fragment.getActivity(),
-                token),
-                requestCode);
+    public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
+        return DistrictRecommendationActivity.newInstance(activity, token);
     }
 
     @Override
@@ -963,23 +947,6 @@ public abstract class SellerRouterApplication extends MainApplication
                 .setId(shopId)
                 .build();
         new DefaultShare(activity, shareData).show();
-    }
-
-    @Override
-    public void goToManageShop(Context context) {
-        context.startActivity(getIntentManageShop(context));
-    }
-
-    @Override
-    public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
-        if (getSession().isLoggedIn()) {
-            UnifyTracking.eventShopSendChat();
-            Intent intent = getAskSellerIntent(this, shopId, shopName, TkpdInboxRouter.SHOP, avatar);
-            context.startActivity(intent);
-        } else {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
-            ((Activity) context).startActivityForResult(intent, 100);
-        }
     }
 
     @Override
@@ -1116,19 +1083,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToShopReview(Context context, String shopId, String shopDomain) {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        ReputationTracking tracking = new ReputationTracking(this);
-        tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, sessionHandler.getShopID().equals(shopId));
-        context.startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
-    }
-
-    @Override
-    public void goToManageShipping(Context context) {
-        context.startActivity(new Intent(context, EditShippingActivity.class));
-    }
-
-    @Override
     public FingerprintModel getFingerprintModel() {
         return FingerprintModelGenerator.generateFingerprintModel(this);
     }
@@ -1262,11 +1216,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToShopDiscussion(Context context, String shopId) {
-        context.startActivity(ShopTalkActivity.Companion.createIntent(context, shopId));
-    }
-
-    @Override
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
                                       String source) {
         return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
@@ -1349,11 +1298,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean isFeedShopPageEnabled() {
-        return remoteConfig.getBoolean("sellerapp_enable_feed_shop_page", Boolean.TRUE);
-    }
-
-    @Override
     public String getResourceUrlAssetPayment() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
         String baseUrl = remoteConfig.getString(RemoteConfigKey.IMAGE_HOST,
@@ -1367,11 +1311,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getIntentOtpPageVerifCreditCard(Context context, String phoneNumber) {
         return VerificationActivity.getCallingIntent(context, phoneNumber, RequestOtpUseCase.OTP_TYPE_VERIFY_AUTH_CREDIT_CARD,
                 false, RequestOtpUseCase.MODE_SMS);
-    }
-
-    @Override
-    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
-        InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 
     @Override
@@ -1487,7 +1426,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent navigateToGeoLocationActivityRequest(Context context, com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass locationPass) {
+    public Intent getGeoLocationActivityIntent(Context context, com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass locationPass) {
         return GeolocationActivity.createInstance(context, locationPass, false);
     }
 
@@ -1505,6 +1444,14 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void openTopAdsDashboardApplink(Context context) {
+        Intent topadsIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+
+        if (topadsIntent != null) {
+            goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD);
+        } else {
+            goToCreateMerchantRedirect(context);
+        }
     }
 
     @Override
@@ -1600,8 +1547,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
+                                         boolean isRequestDenied) {
+        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(), isInvalidToken, isRequestDenied);
     }
 
     @Override
@@ -1618,18 +1566,4 @@ public abstract class SellerRouterApplication extends MainApplication
         return false;
     }
 
-    @Override
-    public Intent getDistrictRecommendationIntent(Activity activity,
-                                                  com.tokopedia.logisticdata.data.entity.address.Token token,
-                                                  boolean isFromMarketplaceCart) {
-        if (isFromMarketplaceCart)
-            return DistrictRecommendationActivity.createInstanceFromMarketplaceCart(activity, new TokenMapper().convertTokenModel(token));
-        else
-            return DistrictRecommendationActivity.createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
-    }
-
-    @Override
-    public Intent getGeoLocationActivityIntent(Context context, LocationPass locationMap, boolean isFromMarketplaceCart) {
-        return GeolocationActivity.createInstance(context, locationMap, isFromMarketplaceCart);
-    }
 }

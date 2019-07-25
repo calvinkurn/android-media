@@ -24,6 +24,10 @@ project.ext {
 }
 
 dependencies {
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.inappupdate)

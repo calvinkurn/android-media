@@ -50,6 +50,8 @@ public interface CatalogListItemContract {
         void onPreValidateError(String title, String message);
 
         void gotoSendGiftPage(int id, String title, String pointStr);
+
+        void populateCatalog(int categoryId, int subCategoryId, int pointRange, boolean showLoader);
     }
 
     interface Presenter extends CustomerPresenter<View> {

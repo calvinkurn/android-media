@@ -38,8 +38,6 @@ public interface TkpdCoreRouter {
 
     void resetAddProductCache(Context context);
 
-    void goToWallet(Context context, String url);
-
     void actionAppLink(Context context, String linkUrl);
 
     /**
@@ -94,8 +92,6 @@ public interface TkpdCoreRouter {
 
     boolean isInMyShop(Context context, String shopId);
 
-    Intent getForgotPasswordIntent(Context context, String email);
-
     void invalidateCategoryMenuData();
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
@@ -136,8 +132,6 @@ public interface TkpdCoreRouter {
     Intent getResolutionCenterIntentBuyer(Context context);
 
     Intent getResolutionCenterIntentSeller(Context context);
-
-    String applink(Activity activity, String deeplink);
 
     Intent getKolFollowingPageIntent(Context context, int userId);
 

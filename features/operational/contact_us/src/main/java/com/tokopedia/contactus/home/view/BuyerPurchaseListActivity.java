@@ -12,24 +12,19 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.home.view.fragment.BuyerPurchaseFragment;
 import com.tokopedia.contactus.home.view.fragment.SellerPurchaseFragment;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by sandeepgoyal on 11/04/18.
  */
 
 public class BuyerPurchaseListActivity extends BaseSimpleActivity {
-    @BindView(R2.id.tab)
+
     TabLayout tab;
-    @BindView(R2.id.view_pager_list)
     TouchViewPager viewPagerList;
 
     @Override
@@ -52,7 +47,8 @@ public class BuyerPurchaseListActivity extends BaseSimpleActivity {
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
-        ButterKnife.bind(this);
+        tab = findViewById(R.id.tab);
+        viewPagerList = findViewById(R.id.view_pager_list);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         setupViewPager();
         viewPagerList.setOffscreenPageLimit(2);

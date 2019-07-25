@@ -7,7 +7,7 @@ import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.subscriber.GetBrowseCatalogLoadMoreSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.subscriber.GetBrowseCatalogSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
@@ -22,7 +22,7 @@ import javax.inject.Inject;
  * Created by hangnadi on 10/12/17.
  */
 
-public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<CatalogFragmentContract.View>
+public class CatalogPresenter extends BrowseSectionFragmentPresenterImpl<CatalogFragmentContract.View>
         implements CatalogFragmentContract.Presenter{
 
     @Inject

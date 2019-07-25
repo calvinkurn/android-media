@@ -44,7 +44,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewMod
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.logisticcommon.LogisticCommonConstant
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
@@ -926,8 +926,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                            recipientAddressModel: RecipientAddressModel,
                                            cartPosition: Int,
                                            selectedServiceId: Int,
-                                           selectedServiceName: String,
+                                           serviceData: ServiceData,
                                            flagNeedToSetPinpoint: Boolean,
+                                           isDurationClick: Boolean,
                                            isClearPromo: Boolean) {
         if (shippingCourierViewModels != null) {
             val summaryViewModel = fragmentViewModel.getSummaryViewModel()
@@ -1054,7 +1055,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }))
     }
 
-    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, selectedServiceId: Int, selectedServiceName: String, flagNeedToSetPinpoint: Boolean, promoCode: String) {
+    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, selectedServiceId: Int, serviceData: ServiceData, flagNeedToSetPinpoint: Boolean, promoCode: String) {
         // Haven't discussed yet
     }
 
