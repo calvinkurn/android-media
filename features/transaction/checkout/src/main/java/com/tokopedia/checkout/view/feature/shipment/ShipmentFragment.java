@@ -1114,7 +1114,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updateItemPromoGlobalStack(cartPromoStacking);
         if (shipmentAdapter.hasSetAllCourier()) {
             Promo promo = generateCheckPromoFirstStepParam();
-            shipmentPresenter.checkPromoStackShipment(promo);
+            shipmentPresenter.checkPromoFinalStackShipment(promo);
 
             shipmentAdapter.notifyDataSetChanged();
         }
@@ -1571,8 +1571,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (shipmentAdapter.hasAppliedPromoStackCode()) {
             Promo promo = generateCheckPromoFirstStepParam();
-            shipmentPresenter.checkPromoStackShipment(promo);
+            shipmentPresenter.checkPromoFinalStackShipment(promo);
         }
+
+        List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
+        shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                dataCheckoutRequests,
+                EnhancedECommerceActionField.STEP_3,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS);
+
     }
 
     @Override

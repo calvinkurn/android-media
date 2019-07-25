@@ -256,7 +256,7 @@ public interface ShipmentContract {
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoStackShipment(Promo promo);
+        void checkPromoFinalStackShipment(Promo promo);
 //
 //         void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
 //
