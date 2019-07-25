@@ -63,6 +63,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
     private ImageView ivDeleteInsurance;
     private TextView tvChangeInsuranceApplicationDetails;
     private InsuranceCartShops insuranceCartShops;
+    private ArrayList<TextView> typeValues = new ArrayList<>();
 
     private InsuranceItemActionListener insuranceItemActionlistener;
     private Button btnValidate;
@@ -161,17 +162,12 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
                         closeableBottomSheetDialog =
                                 CloseableBottomSheetDialog.createInstanceRounded(tvChangeInsuranceApplicationDetails.getContext());
-
-
                         View rootView = LayoutInflater.from(tvChangeInsuranceApplicationDetails.getContext()).inflate(R.layout.layout_insurance_bottom_sheet, null, false);
 
                         LinearLayout applicationDetailsView = rootView.findViewById(R.id.ll_application_details);
                         btnValidate = rootView.findViewById(R.id.btn_validate);
 
-                        /*ArrayList<InsuranceProductApplicationDetails> insuranceProductApplicationDetailsArrayList =
-                                insuranceCartDigitalProduct.getApplicationDetails();*/
-
-
+                        typeValues.clear();
                         for (InsuranceProductApplicationDetails insuranceProductApplicationDetails :
                                 insuranceCartDigitalProduct.getApplicationDetails()) {
 
@@ -426,8 +422,6 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         }
         return true;
     }
-
-    private ArrayList<TextView> typeValues = new ArrayList<>();
 
     private void addToValuesList(View view, InsuranceProductApplicationDetails data) {
         TextView view1 = view.findViewById(R.id.sub_title);

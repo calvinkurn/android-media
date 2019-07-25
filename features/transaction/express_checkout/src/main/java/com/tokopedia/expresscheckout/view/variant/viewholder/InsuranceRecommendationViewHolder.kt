@@ -1,6 +1,7 @@
 package com.tokopedia.expresscheckout.view.variant.viewholder
 
 import android.app.Activity
+import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.text.Editable
@@ -83,14 +84,14 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                     val infoCloseableDialog = CloseableBottomSheetDialog.createInstanceRounded(itemView.context)
 
                     val infoDialogView = (itemView.context as Activity?)?.layoutInflater?.inflate(R.layout.insurance_info_bottom_sheet, null)
-                    infoCloseableDialog.setContentView(infoDialogView)
+                    infoCloseableDialog.setContentView(infoDialogView!!)
 
-                    val webView = infoDialogView?.findViewById<WebView>(R.id.bottom_sheet_webview)
+                    val webView = infoDialogView.findViewById<WebView>(R.id.bottom_sheet_webview)
 
-                    infoDialogView?.findViewById<TextView>(R.id.info_bottom_sheet_title_tv)?.text =
+                    infoDialogView.findViewById<TextView>(R.id.info_bottom_sheet_title_tv)?.text =
                             insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle
 
-                    val closeImageView = infoDialogView?.findViewById<ImageView>(R.id.ic_close_icon)
+                    val closeImageView = infoDialogView.findViewById<ImageView>(R.id.ic_close_icon)
                     infoCloseableDialog.setOnShowListener { dialog ->
                         val d = dialog as BottomSheetDialog
                         val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
@@ -108,10 +109,11 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
                         })
 
-                        webView!!.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
-                        /*Handler().postDelayed({
+                        Handler().postDelayed({
+                            webView!!.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
+                        }, 50)
+//                        webView!!.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
 
-                        }, 50)*/
                     }
                     closeImageView?.setOnClickListener {
                         infoCloseableDialog.dismiss()
@@ -335,15 +337,12 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 val updateInsuranceProductApplicationDetails =
                         InsuranceApplicationValueViewModel(insuranceProductApplicationDetailsViewModel.id, view1.text.toString())
                 updateInsuranceProductApplicationDetailsArrayList.add(updateInsuranceProductApplicationDetails)
-//                return true
             } else {
                 errorView.text = errorMessage
                 errorView.visibility = View.VISIBLE
                 insuranceProductApplicationDetailsViewModel.isError = true
-//                return false
             }
         }
-//        return true
     }
 
 
