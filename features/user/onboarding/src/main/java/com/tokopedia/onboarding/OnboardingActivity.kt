@@ -104,6 +104,7 @@ class OnboardingActivity : BaseActivity() {
         val fragmentList = addFragments()
 
         viewPager.setPageTransformer(false, CustomAnimationPageTransformer())
+        viewPager.offscreenPageLimit = 5
         pagerAdapter = OnboardingPagerAdapter(supportFragmentManager, fragmentList)
         viewPager.adapter = pagerAdapter
 
@@ -198,7 +199,7 @@ class OnboardingActivity : BaseActivity() {
                 0,
                 RemoteConfigKey.NONB1_TTL,
                 RemoteConfigKey.NONB1_DESC,
-                getStringVideoPath(R.raw.onboard_2)
+                getStringVideoPath(R.raw.onboard_1)
         ))
 
         //#2
@@ -208,7 +209,7 @@ class OnboardingActivity : BaseActivity() {
                 1,
                 RemoteConfigKey.NONB2_TTL,
                 RemoteConfigKey.NONB2_DESC,
-                getStringVideoPath(R.raw.onboard_1)
+                getStringVideoPath(R.raw.onboard_2)
         ))
 
         //#3

@@ -2,6 +2,7 @@ package com.tokopedia.onboarding.fragment
 
 import android.animation.AnimatorSet
 import android.app.Activity
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -31,8 +32,7 @@ import javax.inject.Inject
 /**
  * @author by stevenfredian on 14/05/19.
  */
-class
-OnboardingFragment : BaseDaggerFragment(),
+class OnboardingFragment : BaseDaggerFragment(),
         CustomAnimationPageTransformerDelegate, OnboardingActivity.onBoardingFirsbaseCallBack {
 
     companion object {
@@ -114,7 +114,7 @@ OnboardingFragment : BaseDaggerFragment(),
                               container: ViewGroup?,
                               savedInstanceState: Bundle?)
             : View? {
-        val defaultView: View = inflater.inflate(R.layout.base_onboarding_fragment, container,
+        val defaultView: View = inflater.inflate(R.layout.base_onboarding_video_fragment, container,
                 false)
 
         videoView = defaultView.findViewById(R.id.video_view)
@@ -124,7 +124,9 @@ OnboardingFragment : BaseDaggerFragment(),
         titleView.text = MethodChecker.fromHtml(getTitleMsg())
         descView.text = MethodChecker.fromHtml(getDescMsg())
 
+        videoView.setZOrderOnTop(true)
         videoView.setVideoURI(Uri.parse(videoPath))
+        videoView.setOnErrorListener { p0, p1, p2 -> true }
 
         return defaultView
     }
