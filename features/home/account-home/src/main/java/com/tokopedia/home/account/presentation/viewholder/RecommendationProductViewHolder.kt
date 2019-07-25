@@ -50,6 +50,7 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
             realignLayout()
             setImageProductViewHintListener(element.product, object : ViewHintListener {
                 override fun onViewHint() {
+                    accountItemListener.onProductRecommendationImpression(element.product, adapterPosition)
                     if (element.product.isTopAds) {
                         ImpresionTask().execute(element.product.trackerImageUrl)
                     }
@@ -58,11 +59,12 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
             })
 
             setOnClickListener {
-                accountItemListener.onProductRecommendationClicked(element.productItem, element.productItem.type, element.parentPosition, adapterPosition)
-                if (element.productItem.isTopAds) {
-                    ImpresionTask().execute(element.productItem.clickUrl)
+                accountItemListener.onProductRecommendationClicked(element.product, adapterPosition, element.widgetTitle)
+                if (element.product.isTopAds) {
+                    ImpresionTask().execute(element.product.clickUrl)
                 }
             }
+
 
             setButtonWishlistOnClickListener {
                 element.listener.onWishlistClick(element.productItem, !element.productItem.isWishlist) { success, throwable ->
