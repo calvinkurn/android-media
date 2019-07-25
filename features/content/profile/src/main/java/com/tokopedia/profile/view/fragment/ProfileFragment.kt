@@ -331,9 +331,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getUserSession(): UserSession = UserSession(context)
 
-    fun onOtherProfilePostItemClick(applink: String, authorId: String) {
+    fun onOtherProfilePostItemClick(applink: String, position: Int, datum: FeedPostRelated.Datum) {
         RouteManager.route(context, applink)
-        profileAnalytics.eventClickOtherPost(userId.toString(), authorId)
+        profileAnalytics.eventClickOtherPost(userId.toString(), position, datum, userSession.userId, userSession.name)
     }
 
     override fun onSuccessGetProfileFirstPage(element: DynamicFeedProfileViewModel, isFromLogin: Boolean) {
@@ -462,10 +462,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             visitables.add(TitleViewModel())
             feedPostRelated.data
                 .filter { it.content.body.media[0].thumbnail.isNotEmpty() }
-                .forEach {
+                .also {
+                    profileAnalytics.eventImpressionOtherPost(userId.toString(), it, userSession.userId, userSession.name)
+                }
+                .forEachIndexed { index, datum ->
                     //this will be changed later by DA, because efficiency
-                    //profileAnalytics.eventImpressionOtherPost(userId.toString(), it.content.tracking.authorID)
-                    visitables.add(OtherRelatedProfileViewModel(it))
+//                    profileAnalytics.eventImpressionOtherPost(userId.toString(), it.content.tracking.authorID)
+                    visitables.add(OtherRelatedProfileViewModel(datum, index))
                 }
         }
         renderList(visitables, false)
