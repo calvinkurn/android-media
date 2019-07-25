@@ -67,7 +67,7 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
     }
 
     override fun createAndSetBcaWidget() {
-        widgetBca = BCARegistrasiXCOWidget(activity, XCOEnum.ENVIRONMENT.DEV)
+        widgetBca = BCARegistrasiXCOWidget(activity, XCOEnum.ENVIRONMENT.PROD)
         widgetBca.setListener(this)
         layoutWidget.addView(widgetBca)
     }
