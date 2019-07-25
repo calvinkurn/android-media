@@ -238,7 +238,7 @@ public class ShipmentDataRequestConverter {
         String shippingPrice = "";
         if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
             courierId = String.valueOf(shipmentDetailData.getSelectedCourier().getShipperProductId());
-            serviceId = String.valueOf(shipmentDetailData.getSelectedCourier().getShipperId());
+            serviceId = String.valueOf(shipmentDetailData.getSelectedCourier().getServiceId());
             shippingPrice = String.valueOf(shipmentDetailData.getSelectedCourier().getShipperPrice());
         }
 
