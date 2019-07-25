@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
@@ -128,6 +127,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     val currencyLabel = "IDR"
 
 
+    private var condition = ""
     private val page = "pdp"
     private val clientVersion = Build.VERSION.SDK_INT.toString()
 
@@ -138,6 +138,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_PRODUCT_ID = "product_id"
         const val EXTRA_PRODUCT_TITLE = "product_title"
         const val EXTRA_PRODUCT_PRICE = "product_price"
+        const val EXTRA_PRODUCT_CONDITION = "product_condition"
         const val EXTRA_NOTES = "notes"
         const val EXTRA_QUANTITY = "quantity"
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
@@ -162,7 +163,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
 
         fun createInstance(shopId: String?, categoryId: String?, categoryName: String, productId: String?,
-                           productTitle: String?, productPrice: Float? = 0f, notes: String? = "", quantity: Int? = 0,
+                           productTitle: String?, productPrice: Float? = 0f, condition: String, notes: String? = "", quantity: Int? = 0,
                            selectedVariantId: String? = null,
                            @ProductAction action: Int = ATC_AND_BUY,
                            placeholderProductImage: String?,
@@ -180,6 +181,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putString(EXTRA_PRODUCT_ID, productId)
                     putString(EXTRA_PRODUCT_TITLE, productTitle)
                     putFloat(EXTRA_PRODUCT_PRICE, productPrice!!)
+                    putString(EXTRA_PRODUCT_CONDITION, condition)
                     putString(EXTRA_NOTES, notes)
                     putInt(EXTRA_QUANTITY, quantity ?: 0)
                     putInt(EXTRA_ACTION, action)
@@ -513,6 +515,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             productId = argument.getString(EXTRA_PRODUCT_ID) ?: ""
             productTitle = argument.getString(EXTRA_PRODUCT_TITLE) ?: ""
             productPrice = argument.getFloat(EXTRA_PRODUCT_PRICE) ?: 0f
+            condition = argument.getString(EXTRA_PRODUCT_CONDITION)
             notes = argument.getString(EXTRA_NOTES)
             quantity = argument.getInt(EXTRA_QUANTITY)
             placeholderProductImage = argument.getString(EXTRA_PRODUCT_IMAGE)
@@ -666,6 +669,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         insuranceShops.categoryId = categoryId.toLongOrZero()
         insuranceShops.productTitle = productTitle
         insuranceShops.productPrice = productPrice?.toLong()!!
+
+        if (condition.equals("1", true)) {
+            insuranceShops.condition = "new"
+        } else {
+            insuranceShops.condition = "old"
+        }
+
         insuranceShops.shopCategory = insurnaceShopCategory
         insuranceShopsArrayList.add(insuranceShops)
 
@@ -933,56 +943,58 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         val addInsuranceProductToCartRequest = AddInsuranceProductToCartRequest()
 
 
-        addInsuranceProductToCartRequest.page = page
-        addInsuranceProductToCartRequest.clientVersion = clientVersion
-        addInsuranceProductToCartRequest.clientType = "android"
-        addInsuranceProductToCartRequest.clientLanguage = "en"
+        if (isInsuranceSelected) {
+            addInsuranceProductToCartRequest.page = page
+            addInsuranceProductToCartRequest.clientVersion = clientVersion
+            addInsuranceProductToCartRequest.clientType = "android"
+            addInsuranceProductToCartRequest.clientLanguage = "bhasa"
 
-        val addInsuranceProductDataList = ArrayList<AddInsuranceProductData>()
+            val addInsuranceProductDataList = ArrayList<AddInsuranceProductData>()
 
-        for (insuranceCartShopsViewModel in selectedInsuranceProduct.cartShopsList) {
-            val model = AddInsuranceProductData()
-            model.shopId = insuranceCartShopsViewModel.shopId
-            val addInsuranceProductItemList = ArrayList<AddInsuranceProductItems>()
+            for (insuranceCartShopsViewModel in selectedInsuranceProduct.cartShopsList) {
+                val model = AddInsuranceProductData()
+                model.shopId = insuranceCartShopsViewModel.shopId
+                val addInsuranceProductItemList = ArrayList<AddInsuranceProductItems>()
 
-            for (shopItem in insuranceCartShopsViewModel.shopItemsList) {
-                val addShopItem = AddInsuranceProductItems()
+                for (shopItem in insuranceCartShopsViewModel.shopItemsList) {
+                    val addShopItem = AddInsuranceProductItems()
 
-                addShopItem.productId = shopItem.productId
-                addShopItem.productQuantity = 1
+                    addShopItem.productId = shopItem.productId
+                    addShopItem.productQuantity = 1
 
-                val digitalProductList = ArrayList<AddInsuranceProduct>()
+                    val digitalProductList = ArrayList<AddInsuranceProduct>()
 
-                for (insuranceCartDigitalProduct in shopItem.digitalProductList) {
+                    for (insuranceCartDigitalProduct in shopItem.digitalProductList) {
 
-                    val digitalProduct = AddInsuranceProduct()
-                    digitalProduct.typeId = insuranceCartDigitalProduct.typeId
-                    digitalProduct.digitalProductId = insuranceCartDigitalProduct.digitalProductId
-                    val applicationDetailList = ArrayList<AddInsuranceProductApplicationDetails>()
+                        val digitalProduct = AddInsuranceProduct()
+                        digitalProduct.typeId = insuranceCartDigitalProduct.typeId
+                        digitalProduct.digitalProductId = insuranceCartDigitalProduct.digitalProductId
+                        val applicationDetailList = ArrayList<AddInsuranceProductApplicationDetails>()
 
-                    for (applicationDetail in insuranceCartDigitalProduct.applicationDetails) {
-                        val addApplicationDetail = AddInsuranceProductApplicationDetails()
-                        addApplicationDetail.id = applicationDetail.id
-                        addApplicationDetail.value = applicationDetail.value
-                        applicationDetailList.add(addApplicationDetail)
+                        for (applicationDetail in insuranceCartDigitalProduct.applicationDetails) {
+                            val addApplicationDetail = AddInsuranceProductApplicationDetails()
+                            addApplicationDetail.id = applicationDetail.id
+                            addApplicationDetail.value = applicationDetail.value
+                            applicationDetailList.add(addApplicationDetail)
+                        }
+
+                        digitalProduct.applicationDetails = applicationDetailList
+                        digitalProductList.add(digitalProduct)
+
                     }
 
-                    digitalProduct.applicationDetails = applicationDetailList
-                    digitalProductList.add(digitalProduct)
-
+                    addShopItem.digitalProductList = digitalProductList
+                    addInsuranceProductItemList.add(addShopItem)
                 }
 
-                addShopItem.digitalProductList = digitalProductList
-                addInsuranceProductItemList.add(addShopItem)
+                model.shopItems = addInsuranceProductItemList
+                addInsuranceProductDataList.add(model)
             }
 
-            model.shopItems = addInsuranceProductItemList
-            addInsuranceProductDataList.add(model)
+            addInsuranceProductToCartRequest.addInsuranceData = addInsuranceProductDataList
         }
 
-        addInsuranceProductToCartRequest.addInsuranceData = addInsuranceProductDataList
         addToInsuranceCartUseCase.setRequestParams(addInsuranceProductToCartRequest, addMarketPlaceToCartRequest)
-
         addToInsuranceCartUseCase.execute(object : Subscriber<GraphqlResponse>() {
             override fun onNext(graphqlResponse: GraphqlResponse?) {
                 hideLoadingDialog()
@@ -995,7 +1007,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         val addInsuranceResponse = graphqlResponse.getData<AddInsuranceProductToCartGqlResponse>(AddInsuranceProductToCartGqlResponse::class.java)
 
 
-                        if (addInsuranceResponse.addToCartTransactional.addCart.status.equals("ok",true)) {
+                        if (addInsuranceResponse.addToCartTransactional.addCart.status.equals("ok", true)) {
                             normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
                                     selectedProductInfo?.basic?.price.toString(),
                                     quantity,
@@ -1026,54 +1038,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             }
         })
 
-        /*router.addToCartProduct(AddToCartRequest.Builder()
-                .productId(if (selectedVariant != null && selectedVariant.toInt() > 0) {
-                    selectedVariant.toInt()
-                } else {
-                    productId.toInt()
-                })
-                .notes(notes)
-                .quantity(tempQuantity)
-                .isTradein(isTradeIn)
-                .shopId(shopId?.toInt() ?: 0)
-                .trackerAttribution(trackerAttribution)
-                .trackerListName(trackerListName)
-                .build(), true)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<AddToCartResult>() {
-                    override fun onNext(addToCartResult: AddToCartResult?) {
-                        hideLoadingDialog()
-                        addToCartResult?.run {
-                            if (isSuccess) {
-                                //success checkout
-                                normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
-                                        selectedProductInfo?.basic?.price.toString(),
-                                        quantity,
-                                        selectedProductInfo?.basic?.name ?: "",
-                                        selectedProductInfo?.category?.name ?: "")
-                                onFinish(addToCartResult.message, addToCartResult.cartId)
-                            } else {
-                                activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
-                                        addToCartResult.message
-                                                ?: getString(R.string.default_request_error_unknown_short))
-                            }
-                        }
-
-                    }
-
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        hideLoadingDialog()
-                        showToastError(e) {
-                            onRetryWhenError()
-                        }
-                    }
-                })*/
     }
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),
@@ -1194,13 +1158,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun loadData(page: Int) {
-        viewModel.getProductInfo(ProductParams(productId, null, null), resources)
 
-        Handler().postDelayed({
-            if (viewModel.isUserSessionActive()) {
-                getInsuranceRecommendationProducts()
-            }
-        }, 400)
+        if (viewModel.isUserSessionActive()) {
+            generateInsuranceRequest()
+        }
+
+        viewModel.getProductInfo(ProductParams(productId, null, null), resources, insuranceRecommendationRequest)
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
@@ -1262,7 +1225,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
         selectedProductInfo?.let {
             val viewModels = ModelMapper.convertVariantToModels(it, viewModel.selectedwarehouse,
-                    originalProduct.productVariant, notes, quantity)
+                    originalProduct.productVariant, originalProduct.insuranceRecommendation, notes, quantity)
             fragmentViewModel.viewModels = viewModels
             quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
                     ?: 0

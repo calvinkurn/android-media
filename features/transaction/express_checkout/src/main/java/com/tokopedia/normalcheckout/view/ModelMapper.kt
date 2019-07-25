@@ -23,7 +23,7 @@ object ModelMapper {
     fun convertVariantToModels(productInfo: ProductInfo,
                                multiorigin: MultiOriginWarehouse?,
                                productVariant: ProductVariant?,
-                               /*insuranceRecommendation: InsuranceRecommendationViewModel?,*/
+                               insuranceRecommendation: InsuranceRecommendationGqlResponse?,
                                noteString: String?, quantity: Int = 0): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
         dataList.add(convertToProductViewModel(productInfo, multiorigin))
@@ -41,10 +41,7 @@ object ModelMapper {
         }
         dataList.add(convertToQuantityViewModel(productInfo, quantity))
         dataList.add(convertToNoteViewModel(noteString))
-        /*insuranceRecommendation?.run {
-            if (!this.cartShopsList.isNullOrEmpty())
-                dataList.add(insuranceRecommendation)
-        }*/
+        dataList.add(convertToInsuranceRecommendationViewModel(insuranceRecommendation))
         return dataList
     }
 
@@ -120,12 +117,12 @@ object ModelMapper {
         return noteViewModel
     }
 
-    fun convertToInsuranceRecommendationViewModel(insuranceRecommendation: InsuranceRecommendationGqlResponse): InsuranceRecommendationViewModel {
+    fun convertToInsuranceRecommendationViewModel(insuranceRecommendation: InsuranceRecommendationGqlResponse?): InsuranceRecommendationViewModel {
 
         val insuranceCartShopsViewModelList = ArrayList<InsuranceCartShopsViewModel>()
 
 
-        for (data: InsuranceCartShops in insuranceRecommendation.data.cartShopsList) {
+        for (data: InsuranceCartShops in insuranceRecommendation?.data?.cartShopsList!!) {
 
             val insuranceCartShopsViewModel = InsuranceCartShopsViewModel()
             insuranceCartShopsViewModel.shopId = data.shopId

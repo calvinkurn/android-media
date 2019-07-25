@@ -336,7 +336,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processDeleteCartInsurance(InsuranceCartShops insuranceCartShops) {
+    public void processDeleteCartInsurance(InsuranceCartShops insuranceCartShops, boolean showToaster) {
 
         if (insuranceCartShops == null) return;
 
@@ -356,7 +356,7 @@ public class CartListPresenter implements ICartListPresenter {
         }
 
         removeInsuranceProductUsecase.setRequestParams(removeInsuranceDataArrayList, "cart", String.valueOf(Build.VERSION.SDK_INT), cartIdList);
-        removeInsuranceProductUsecase.execute(getSubscriberRemoveInsuranceProduct(productId));
+        removeInsuranceProductUsecase.execute(getSubscriberRemoveInsuranceProduct(productId, showToaster));
     }
 
     @Override
@@ -1011,7 +1011,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<GraphqlResponse> getSubscriberRemoveInsuranceProduct(long productId) {
+    private Subscriber<GraphqlResponse> getSubscriberRemoveInsuranceProduct(long productId, boolean showToaster) {
         return new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -1022,7 +1022,6 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 view.hideProgressLoading();
                 view.showToastMessageRed("Failed to remove insurance product!");
-                // TODO: 27/6/19 error case handling
             }
 
             @Override
@@ -1033,7 +1032,9 @@ public class CartListPresenter implements ICartListPresenter {
 
                     removeInsuranceProductGqlResponse = graphqlResponse.getData(RemoveInsuranceProductGqlResponse.class);
                     if (removeInsuranceProductGqlResponse.getResponse().getRemoveTransactional().getStatus()) {
-                        view.showToastMessageGreen("Success in remove insurance product!");
+                        if(showToaster) {
+                            view.showToastMessageGreen("Success in remove insurance product!");
+                        }
                         view.removeInsuranceProductItem(productId);
                     } else {
                         view.showToastMessageRed(
@@ -1109,7 +1110,7 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderLoadGetCartDataFinish();
 
                     if (removeInsurance) {
-                        processDeleteCartInsurance(view.getInsuranceCartShopData());
+                        processDeleteCartInsurance(view.getInsuranceCartShopData(), false);
                     }
 
                     if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()) {

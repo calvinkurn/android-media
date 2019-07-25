@@ -23,6 +23,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
         const val EXTRA_PRODUCT_ID = "product_id"
         const val EXTRA_PRODUCT_TITLE = "product_title"
         const val EXTRA_PRODUCT_PRICE = "product_price"
+        const val EXTRA_PRODUCT_CONDITION = "product_condition"
         const val EXTRA_NOTES = "notes"
         const val EXTRA_QUANTITY = "quantity"
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
@@ -44,7 +45,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
          */
         @JvmStatic
         fun getIntent(context: Context, shopId: String, categoryId: String, categoryName: String, productId: String,
-                      productTitle: String?, productPrice: Float?, notes: String? = "", quantity: Int? = 0,
+                      productTitle: String?, productPrice: Float?, condition: String, notes: String? = "", quantity: Int? = 0,
                       selectedVariantId: String? = null,
                       @ProductAction action: Int = ATC_AND_BUY,
                       placeholderProductImage: String? = "",
@@ -60,6 +61,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                 putExtra(EXTRA_PRODUCT_ID, productId)
                 putExtra(EXTRA_PRODUCT_TITLE, productTitle)
                 putExtra(EXTRA_PRODUCT_PRICE, productPrice)
+                putExtra(EXTRA_PRODUCT_CONDITION, condition)
                 putExtra(EXTRA_NOTES, notes)
                 putExtra(EXTRA_QUANTITY, quantity)
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
@@ -91,6 +93,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                     getString(EXTRA_PRODUCT_ID),
                     getString(EXTRA_PRODUCT_TITLE),
                     getFloat(EXTRA_PRODUCT_PRICE),
+                    getString(EXTRA_PRODUCT_CONDITION),
                     getString(EXTRA_NOTES),
                     getInt(EXTRA_QUANTITY),
                     getString(EXTRA_SELECTED_VARIANT_ID),

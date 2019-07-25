@@ -610,7 +610,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         final com.tokopedia.design.component.Dialog dialog;
 
-        boolean insurancePresent = cartAdapter.getInsuranceCartShops().isEmpty() && cartAdapter.getSelectedRecommendedInsuranceList().isEmpty();
+        boolean insurancePresent = !cartAdapter.getInsuranceCartShops().isEmpty();
         boolean removeAllItem = allCartItemDataList.size() == cartItemDatas.size();
         boolean removeInsurance = insurancePresent && removeAllItem;
 
@@ -2117,7 +2117,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             view.findViewById(R.id.button_positive).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dPresenter.processDeleteCartInsurance(insuranceCartShops);
+                    dPresenter.processDeleteCartInsurance(insuranceCartShops, showConfirmationDialog);
                     alertDialog.dismiss();
                 }
             });
@@ -2129,7 +2129,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
             });
         } else {
-            dPresenter.processDeleteCartInsurance(insuranceCartShops);
+            dPresenter.processDeleteCartInsurance(insuranceCartShops, showConfirmationDialog);
         }
 
 

@@ -624,6 +624,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         parentProductId,
                         basic.name,
                         productInfo?.basic?.price,
+                        basic.condition,
                         userInputNotes,
                         userInputQuantity,
                         userInputVariant,

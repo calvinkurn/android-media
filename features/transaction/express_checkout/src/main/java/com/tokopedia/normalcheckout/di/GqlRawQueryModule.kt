@@ -34,4 +34,11 @@ class GqlRawQueryModule {
     fun provideRawMultiOrigin(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_nearest_warehouse)
 
+    @NormalCheckoutScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_INSURANCE_RECOMMENDATION)
+    fun provideRawInsuranceRecommendation(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_insurance_recommendation)
+
 }

@@ -11,7 +11,7 @@ data class InsuranceCartGqlResponse(
 
 data class InsuranceCartResponse(
         @SerializedName("shops")
-        var cartShopsList: ArrayList<InsuranceCartShops>
+        var cartShopsList: ArrayList<InsuranceCartShops> = ArrayList()
 )
 
 data class InsuranceCartShops(

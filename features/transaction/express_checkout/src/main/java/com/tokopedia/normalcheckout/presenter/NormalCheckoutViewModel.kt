@@ -24,6 +24,8 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.transactiondata.insurance.entity.request.InsuranceRecommendationRequest
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -47,10 +49,11 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val productInfoResp = MutableLiveData<Result<ProductInfoAndVariant>>()
+    var insuranceRecommendationResponse = InsuranceRecommendationGqlResponse()
     var warehouses: Map<String, MultiOriginWarehouse> = mapOf()
     var selectedwarehouse: MultiOriginWarehouse? = null
 
-    fun getProductInfo(productParams: ProductParams, resources: Resources) {
+    fun getProductInfo(productParams: ProductParams, resources: Resources, insuranceRecommendationRequest: InsuranceRecommendationRequest) {
 
         launchCatchError(block = {
             val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
@@ -100,6 +103,22 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                                 .result.data.firstOrNull()
                     }
                 }
+
+                if (isUserSessionActive()) {
+                    val insuranceParams = mapOf("digitalProducts" to insuranceRecommendationRequest)
+                    val graphqlInsuranceRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSURANCE_RECOMMENDATION],
+                            InsuranceRecommendationGqlResponse::class.java, insuranceParams)
+                    val insuranceResponse = withContext(Dispatchers.IO) {
+                        graphqlRepository.getReseponse(listOf(graphqlInsuranceRecommendationRequest), cacheStrategy)
+                    }
+
+                    insuranceResponse.getSuccessData<InsuranceRecommendationGqlResponse>().let { it ->
+                        insuranceRecommendationResponse = it
+                    }
+
+                    productInfo.insuranceRecommendation = insuranceRecommendationResponse
+                }
+
                 productInfoResp.value = Success(productInfo)
             }
         }) {

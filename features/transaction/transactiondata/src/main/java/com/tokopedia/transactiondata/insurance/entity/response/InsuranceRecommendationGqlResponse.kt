@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class InsuranceRecommendationGqlResponse(
         @SerializedName("insuretechGetTransactionalProducts")
-        var data: InsuranceCartResponse
+        var data: InsuranceCartResponse = InsuranceCartResponse()
 )
