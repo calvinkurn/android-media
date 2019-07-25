@@ -455,4 +455,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                                          String widgetTitle) {
         accountAnalytics.eventAccountProductClick(recommendationItem, position, widgetTitle);
     }
+
+    public void sendProductWishlistClickTracking(boolean wishlistStatus) {
+        accountAnalytics.eventClickWishlistButton(wishlistStatus);
+    }
 }

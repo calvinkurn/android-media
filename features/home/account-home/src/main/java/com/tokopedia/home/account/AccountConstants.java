@@ -128,6 +128,7 @@ public class AccountConstants {
         public static final String DATA_ATTRIBUTION = "attribution";
         public static final String VALUE_PRODUCT_RECOMMENDATION_LIST = "/user - rekomendasi untuk anda - %s";
         public static final String VALUE_PRODUCT_TOPADS = " - product topads";
+        public static final String VALUE_WISHLIST_PRODUCT = "%s - wishlist on product recommendation";
     }
 
     public interface VccStatus {

@@ -104,7 +104,9 @@ class BuyerAccountPresenter(
     }
 
     override fun getBuyerData(query: String, saldoQuery: String) {
-        view!!.showLoading()
+        view?.run {
+            showLoading()
+        }
         val requestParams = RequestParams.create()
 
         requestParams.putString(AccountConstants.QUERY, query)
@@ -124,9 +126,8 @@ class BuyerAccountPresenter(
     }
 
     companion object {
-
-        val X_SOURCE_RECOM_WIDGET = "recom_widget"
-        val AKUN_PAGE = "inbox"
+        val X_SOURCE_RECOM_WIDGET = "account_buyer_page"
+        val AKUN_PAGE = "akun"
     }
 
     override fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit){

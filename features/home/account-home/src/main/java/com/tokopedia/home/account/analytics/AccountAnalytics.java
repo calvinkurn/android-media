@@ -374,4 +374,24 @@ public class AccountAnalytics {
             tracker.sendEnhanceEcommerceEvent(map);
         }
     }
+
+    public void eventClickWishlistButton(boolean wishlistStatus) {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        String status = "";
+        if (wishlistStatus) {
+            status = "add";
+        } else {
+            status = "remove";
+        }
+
+        if (analytics != null) {
+            analytics.sendGeneralEvent(
+                    CLICK_ACCOUNT,
+                    EVENT_CATEGORY_ACCOUNT_PAGE_BUYER,
+                    String.format(VALUE_WISHLIST_PRODUCT, status),
+                    ""
+            );
+        }
+    }
 }

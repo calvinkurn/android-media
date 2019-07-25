@@ -202,6 +202,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     override fun onProductRecommendationWishlistClicked(product: RecommendationItem, wishlistStatus: Boolean, callback: (Boolean, Throwable?) -> Unit) {
+        sendProductWishlistClickTracking(wishlistStatus)
         if (userSession.isLoggedIn) {
             if (wishlistStatus) {
                 presenter.addWishlist(product, callback)
