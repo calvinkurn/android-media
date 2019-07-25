@@ -76,5 +76,7 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
 
         setRatingBarChangedListener(ratingBarView, ratingLevelView);
         setSendButtonClickListener(sendButtonView);
+
+        updateHeight();
     }
 }

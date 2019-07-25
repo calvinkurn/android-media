@@ -74,6 +74,8 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
         messageCategory = getString(R.string.message_default_category);
 
         setSendButtonClickListener(sendButtonView);
+
+        updateHeight();
     }
 
     @Override
