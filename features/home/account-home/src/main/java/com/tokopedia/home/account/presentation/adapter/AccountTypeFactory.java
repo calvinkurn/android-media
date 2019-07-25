@@ -4,8 +4,14 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.viewholder.AccountLoadingMoreViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.AccountRecommendationTitleViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.AddProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.BuyerCardViewHolder;
@@ -71,8 +77,14 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new SellerEmptyViewHolder(parent, listener);
         } else if (type == PowerMerchantViewHolder.Companion.getLAYOUT()) {
             return new PowerMerchantViewHolder(parent, listener);
+        } else if (type == AccountRecommendationTitleViewHolder.Companion.getLAYOUT()) {
+            return new AccountRecommendationTitleViewHolder(parent);
         } else if (type == RecommendationProductViewHolder.Companion.getLAYOUT()) {
             return new RecommendationProductViewHolder(parent, listener);
+        } else if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
+            return new LoadingShimmeringGridViewHolder(parent);
+        } else if (type == AccountLoadingMoreViewHolder.LAYOUT) {
+            return new AccountLoadingMoreViewHolder(parent);
         }
         return super.createViewHolder(parent, type);
     }
@@ -131,5 +143,15 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
 
     public int type(RecommendationProductViewModel viewModel) {
         return RecommendationProductViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(LoadingModel viewModel) {
+        return LoadingShimmeringGridViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(LoadingMoreModel viewModel) {
+        return AccountLoadingMoreViewHolder.LAYOUT;
     }
 }

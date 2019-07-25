@@ -68,9 +68,9 @@ interface AccountItemListener {
 
     fun onShopStatusInfoButtonClicked()
 
-    fun onProductRecommendationClicked(product: RecommendationItem, adapterPosition: Int)
+    fun onProductRecommendationClicked(product: RecommendationItem, adapterPosition: Int, widgetTitle: String)
 
-    fun onProductRecommendationImpression(product: RecommendationItem)
+    fun onProductRecommendationImpression(product: RecommendationItem, adapterPosition: Int)
 
-    fun onProductRecommendationWishlistClicked(product: RecommendationItem, wishlistStatus: Boolean, callback: ((Boolean, Throwable) -> Unit))
+    fun onProductRecommendationWishlistClicked(product: RecommendationItem, wishlistStatus: Boolean, callback: ((Boolean, Throwable?) -> Unit))
 }

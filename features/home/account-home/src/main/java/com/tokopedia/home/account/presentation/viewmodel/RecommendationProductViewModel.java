@@ -11,7 +11,14 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 public class RecommendationProductViewModel implements ParcelableViewModel<AccountTypeFactory> {
 
+    public RecommendationProductViewModel(RecommendationItem product, String widgetTitle) {
+        this.product = product;
+        this.widgetTitle = widgetTitle;
+    }
+
     private RecommendationItem product;
+
+    private String widgetTitle;
 
     public RecommendationItem getProduct() {
         return product;
@@ -21,10 +28,19 @@ public class RecommendationProductViewModel implements ParcelableViewModel<Accou
         this.product = product;
     }
 
+    public String getWidgetTitle() {
+        return widgetTitle;
+    }
+
+    public void setWidgetTitle(String widgetTitle) {
+        this.widgetTitle = widgetTitle;
+    }
+
     @Override
     public int type(AccountTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
+
 
     @Override
     public int describeContents() {
@@ -34,6 +50,7 @@ public class RecommendationProductViewModel implements ParcelableViewModel<Accou
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.product, flags);
+        dest.writeString(this.widgetTitle);
     }
 
     public RecommendationProductViewModel() {
@@ -41,6 +58,7 @@ public class RecommendationProductViewModel implements ParcelableViewModel<Accou
 
     protected RecommendationProductViewModel(Parcel in) {
         this.product = in.readParcelable(RecommendationItem.class.getClassLoader());
+        this.widgetTitle = in.readString();
     }
 
     public static final Creator<RecommendationProductViewModel> CREATOR = new Creator<RecommendationProductViewModel>() {

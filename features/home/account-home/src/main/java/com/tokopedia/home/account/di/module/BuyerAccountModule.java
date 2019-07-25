@@ -16,8 +16,12 @@ import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.presenter.BuyerAccountPresenter;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import javax.inject.Named;
 
@@ -27,13 +31,23 @@ import dagger.Provides;
 /**
  * @author okasurya on 7/17/18.
  */
-@Module
+@Module(includes = {TopAdsWishlistModule.class})
 public class BuyerAccountModule {
     @Provides
     @BuyerAccountScope
     BuyerAccount.Presenter provideBuyerAccountPresenter(GetBuyerAccountUseCase getBuyerAccountUseCase,
-                                                        GetRecommendationUseCase getRecommendationUseCase) {
-        return new BuyerAccountPresenter(getBuyerAccountUseCase, getRecommendationUseCase);
+                                                        GetRecommendationUseCase getRecommendationUseCase,
+                                                        TopAdsWishlishedUseCase topAdsWishlishedUseCase,
+                                                        AddWishListUseCase addWishListUseCase,
+                                                        RemoveWishListUseCase removeWishListUseCase,
+                                                        UserSession userSession) {
+        return new BuyerAccountPresenter(
+                getBuyerAccountUseCase,
+                getRecommendationUseCase,
+                topAdsWishlishedUseCase,
+                addWishListUseCase,
+                removeWishListUseCase,
+                userSession);
     }
 
     @Provides
@@ -42,9 +56,19 @@ public class BuyerAccountModule {
     }
 
     @Provides
+    AddWishListUseCase provideAddWishlistUseCase(@ApplicationContext Context context) {
+        return new AddWishListUseCase(context);
+    }
+
+    @Provides
+    RemoveWishListUseCase provideRemoveWishlistUseCase(@ApplicationContext Context context) {
+        return new RemoveWishListUseCase(context);
+    }
+
+    @Provides
     GetRecommendationUseCase provideGetRecomendationUseCase(@Named("recommendationQuery") String recomQuery,
                                                             GraphqlUseCase graphqlUseCase,
-                                                            UserSessionInterface userSession){
+                                                            UserSession userSession){
         return new GetRecommendationUseCase(recomQuery, graphqlUseCase, userSession);
     }
 
@@ -79,6 +103,11 @@ public class BuyerAccountModule {
 
     @Provides
     UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 }

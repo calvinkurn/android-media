@@ -6,6 +6,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
 import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder
 

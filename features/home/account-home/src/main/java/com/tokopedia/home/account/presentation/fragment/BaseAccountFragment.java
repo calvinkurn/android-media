@@ -32,9 +32,11 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 
@@ -442,4 +444,15 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
     }
 
+    public void sendProductImpressionTracking(TrackingQueue trackingQueue,
+                                              RecommendationItem recommendationItem,
+                                              int position) {
+        accountAnalytics.eventAccountProductView(trackingQueue, recommendationItem, position);
+    }
+
+    public void sendProductClickTracking(RecommendationItem recommendationItem,
+                                         int position,
+                                         String widgetTitle) {
+        accountAnalytics.eventAccountProductClick(recommendationItem, position, widgetTitle);
+    }
 }

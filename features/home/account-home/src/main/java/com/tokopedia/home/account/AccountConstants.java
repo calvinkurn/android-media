@@ -102,6 +102,32 @@ public class AccountConstants {
         public static final String CATEGORY_ACCOUNT_SELL = "my account - sell";
         public static final String ACTION_CLICK_OPEN_SHOP = "click open shop";
         public static final String ACTION_CLICK_LEARN_MORE = "click learn more";
+
+        public static final String ECOMMERCE = "ecommerce";
+        public static final String EVENT_PRODUCT_VIEW = "productView";
+
+        public static final String EVENT_CATEGORY_ACCOUNT_PAGE_BUYER = "account page - buyer";
+        public static final String EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION = "impression - product recommendation";
+        public static final String CURRENCY_CODE = "currencyCode";
+        public static final String IDR = "IDR";
+        public static final String IMPRESSIONS = "impressions";
+        public static final String DATA_NAME = "name";
+        public static final String DATA_ID = "id";
+        public static final String DATA_PRICE = "price";
+        public static final String DATA_BRAND = "brand";
+        public static final String DATA_CATEGORY = "category";
+        public static final String DATA_VARIAN = "variant";
+        public static final String LIST = "list";
+        public static final String DATA_POSITION = "position";
+        public static final String NONE_OTHER = "none/other";
+        public static final String EVENT_PRODUCT_CLICK = "productClick";
+        public static final String EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION = "click - product recommendation";
+        public static final String EMPTY = "";
+        public static final String ACTION_FIELD = "actionField";
+        public static final String PRODUCTS = "products";
+        public static final String DATA_ATTRIBUTION = "attribution";
+        public static final String VALUE_PRODUCT_RECOMMENDATION_LIST = "/user - rekomendasi untuk anda - %s";
+        public static final String VALUE_PRODUCT_TOPADS = " - product topads";
     }
 
     public interface VccStatus {

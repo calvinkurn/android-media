@@ -39,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -51,6 +52,7 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
+    implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.miscDependencies.multiDex
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'

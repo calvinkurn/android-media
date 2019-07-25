@@ -2,41 +2,24 @@ package com.tokopedia.home.account.analytics;
 
 import android.content.Context;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
-import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_LEARN_MORE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_OPEN_SHOP;
-import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
-import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_ACCOUNT_SELL;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_FINTECH_MICROSITE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_HOME_PAGE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.EMAIL;
-import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT;
-import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION;
-import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY;
-import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CLICK_ACCOUNT;
-import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_LABEL;
-import static com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION;
-import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME;
-import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME_ACCOUNT;
-import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
-import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
-import static com.tokopedia.home.account.AccountConstants.Analytics.TOP_NAV;
-import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 
 /**
  * Created by meta on 04/08/18.
@@ -44,7 +27,6 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
  * Setting PIN : https://docs.google.com/spreadsheets/d/1H3CSARG5QtVACiffBxd2HJE7adKzAZ3xxmtEbR01Eho/edit?ts=5ca30084#gid=1785281730
  */
 public class AccountAnalytics {
-
     private final Context context;
     private UserSessionInterface userSessionInterface;
 
@@ -61,14 +43,14 @@ public class AccountAnalytics {
             analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                     CLICK_HOME_PAGE,
                     String.format("%s %s", AKUN_SAYA, title),
-                    String.format("%s - %s - %s", CLICK, section, item),
+                    String.format("%s - %s - %s", AccountConstants.Analytics.CLICK, section, item),
                     userSessionInterface.getUserId()
             ));
         } else {
             analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                     CLICK_HOME_PAGE,
                     String.format("%s %s", AKUN_SAYA, title),
-                    String.format("%s - %s - %s", CLICK, section, item),
+                    String.format("%s - %s - %s", AccountConstants.Analytics.CLICK, section, item),
                     ""
             ));
         }
@@ -93,7 +75,7 @@ public class AccountAnalytics {
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", USER, SETTING),
-                String.format("%s %s", CLICK, item),
+                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
                 ""
         ));
     }
@@ -104,7 +86,7 @@ public class AccountAnalytics {
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", ACCOUNT, SETTING),
-                String.format("%s %s", CLICK, item),
+                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
                 ""
         ));
     }
@@ -116,7 +98,7 @@ public class AccountAnalytics {
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", SHOP, SETTING),
-                String.format("%s %s", CLICK, item),
+                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
                 ""
         ));
     }
@@ -128,7 +110,7 @@ public class AccountAnalytics {
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", SHOP, SETTING),
-                String.format("%s %s", CLICK, item),
+                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
                 ""
         ));
     }
@@ -140,7 +122,7 @@ public class AccountAnalytics {
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", NOTIFICATION, SETTING),
-                String.format("%s %s", CLICK, item),
+                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
                 ""
         ));
     }
@@ -153,7 +135,7 @@ public class AccountAnalytics {
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", APPLICATION, SETTING),
-                String.format("%s %s", CLICK, item),
+                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
                 ""
         ));
     }
@@ -165,7 +147,7 @@ public class AccountAnalytics {
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", EMAIL, SETTING),
-                String.format("%s %s", CLICK, item),
+                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
                 ""
         ));
     }
@@ -253,7 +235,7 @@ public class AccountAnalytics {
         eventTracking.put(SCREEN_NAME, SCREEN_NAME_ACCOUNT);
         eventTracking.put(EVENT, CLICK_HOME_PAGE);
         eventTracking.put(EVENT_CATEGORY, TOP_NAV);
-        eventTracking.put(EVENT_ACTION, String.format("%s %s", CLICK, NOTIFICATION));
+        eventTracking.put(EVENT_ACTION, String.format("%s %s", AccountConstants.Analytics.CLICK, NOTIFICATION));
         eventTracking.put(EVENT_LABEL, "");
 
         analytics.sendGeneralEvent(eventTracking);
@@ -327,6 +309,69 @@ public class AccountAnalytics {
                     "click toggle off geolocation",
                     ""
             );
+        }
+    }
+
+    public void eventAccountProductView(TrackingQueue trackingQueue, RecommendationItem recommendationItem, int position) {
+        Map<String, Object> map = DataLayer.mapOf(
+                EVENT, EVENT_PRODUCT_VIEW,
+                EVENT_CATEGORY, EVENT_CATEGORY_ACCOUNT_PAGE_BUYER,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
+                EVENT_LABEL, "",
+                ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, IDR,
+                        IMPRESSIONS, DataLayer.listOf(
+                                addAccountProductViewImpressions(recommendationItem, position)
+                        )
+                ));
+        trackingQueue.putEETracking((HashMap<String, Object>) map);
+    }
+
+    private Object addAccountProductViewImpressions(RecommendationItem recommendationItem, int position) {
+        String list =
+                String.format(VALUE_PRODUCT_RECOMMENDATION_LIST, recommendationItem.getType());
+        if (recommendationItem.isTopAds()) {
+            list+=VALUE_PRODUCT_TOPADS;
+        }
+        return DataLayer.mapOf(DATA_NAME, recommendationItem.getName(),
+                DATA_ID, recommendationItem.getProductId(),
+                DATA_PRICE, recommendationItem.getPrice().replaceAll("[^0-9]", ""),
+                DATA_BRAND, NONE_OTHER,
+                DATA_CATEGORY, recommendationItem.getCategoryBreadcrumbs(),
+                DATA_VARIAN, NONE_OTHER,
+                LIST, list,
+                DATA_POSITION, String.valueOf(position));
+    }
+
+    public void eventAccountProductClick(RecommendationItem recommendationItem, int position, String widgetTitle) {
+        String list =
+                String.format(VALUE_PRODUCT_RECOMMENDATION_LIST, recommendationItem.getType());
+        if (recommendationItem.isTopAds()) {
+            list+=VALUE_PRODUCT_TOPADS;
+        }
+        final Analytics tracker = TrackApp.getInstance().getGTM();
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    EVENT, EVENT_PRODUCT_CLICK,
+                    EVENT_CATEGORY, EVENT_CATEGORY_ACCOUNT_PAGE_BUYER,
+                    EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
+                    EVENT_LABEL, EMPTY,
+                    ECOMMERCE, DataLayer.mapOf(
+                            CLICK, DataLayer.mapOf(ACTION_FIELD,
+                                    DataLayer.mapOf(LIST, list),
+                                    PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
+                                            DATA_NAME, recommendationItem.getName(),
+                                            DATA_ID, recommendationItem.getProductId(),
+                                            DATA_PRICE, recommendationItem.getPrice().replaceAll("[^0-9]", ""),
+                                            DATA_BRAND, NONE_OTHER,
+                                            DATA_CATEGORY, recommendationItem.getCategoryBreadcrumbs(),
+                                            DATA_VARIAN, NONE_OTHER,
+                                            LIST, widgetTitle,
+                                            DATA_POSITION, String.valueOf(position),
+                                            DATA_ATTRIBUTION, NONE_OTHER
+                                    )))
+                            )
+            );
+            tracker.sendEnhanceEcommerceEvent(map);
         }
     }
 }

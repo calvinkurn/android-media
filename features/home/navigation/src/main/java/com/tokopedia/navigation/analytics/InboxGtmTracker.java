@@ -61,7 +61,7 @@ public class InboxGtmTracker {
                 "price", recommendationItem.getPrice().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
                 "varian", "none/other",
-                "category", recommendationItem.getDepartmentId(),
+                "category", recommendationItem.getCategoryBreadcrumbs(),
                 "list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType(),
                 "position", String.valueOf(position)));
     }

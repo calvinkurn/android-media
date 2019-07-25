@@ -28,10 +28,16 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 
 /**
  * @author okasurya on 7/16/18.
@@ -215,5 +221,20 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     void notifyItemChanged(int position) {
         adapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onProductRecommendationClicked(@NotNull RecommendationItem product, int adapterPosition, String widgetTitle) {
+
+    }
+
+    @Override
+    public void onProductRecommendationImpression(@NotNull RecommendationItem product, int adapterPosition) {
+
+    }
+
+    @Override
+    public void onProductRecommendationWishlistClicked(@NotNull RecommendationItem product, boolean wishlistStatus, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
+
     }
 }

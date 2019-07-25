@@ -8,9 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.presentation.listener.AccountItemListener
-import com.tokopedia.home.account.presentation.view.buyercardview.BuyerCard
-import com.tokopedia.home.account.presentation.view.buyercardview.BuyerCardView
-import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardView
@@ -19,7 +16,11 @@ import com.tokopedia.productcard.v2.ProductCardView
  * @author okasurya on 7/17/18.
  */
 class RecommendationProductViewHolder(itemView: View, val accountItemListener: AccountItemListener) : AbstractViewHolder<RecommendationProductViewModel>(itemView) {
-    private val productCardView: ProductCardView by lazy { itemView.findViewById<ProductCardView>(R.id.product_item) }
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.item_account_product_recommendation
+    }
+    private val productCardView: ProductCardView by lazy { itemView.findViewById<ProductCardView>(R.id.account_product_recommendation) }
 
     override fun bind(element: RecommendationProductViewModel) {
         productCardView.run {
@@ -88,10 +89,5 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
             ImageHandler.loadImageFitCenter(productCardView.context, view.findViewById(com.tokopedia.productcard.R.id.badge), badge)
             productCardView.addShopBadge(view)
         }
-    }
-
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_product_recommendation
     }
 }
