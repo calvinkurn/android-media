@@ -42,7 +42,6 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
@@ -298,13 +297,19 @@ class HotelBookingFragment : HotelBaseFragment() {
             startActivityForResult(TravelContactDataActivity.getCallingIntent(context!!, hotelBookingPageModel.contactData), REQUEST_CODE_CONTACT_DATA)
         }
 
-        if (hotelBookingPageModel.guestName.isNotEmpty()) {
+        if (hotelBookingPageModel.guestName.isNotEmpty() && hotelBookingPageModel.isForOtherGuest == 1) {
             radio_button_contact_guest.isChecked = true
             tv_guest_input.setText(hotelBookingPageModel.guestName)
             toggleShowGuestForm(true)
         }
         radio_group_contact.setOnCheckedChangeListener { _, checkedId ->
-            toggleShowGuestForm(radio_button_contact_guest.id == checkedId)
+            if (radio_button_contact_guest.id == checkedId) {
+                toggleShowGuestForm(true)
+                hotelBookingPageModel.isForOtherGuest = 1
+            } else {
+                toggleShowGuestForm(false)
+                hotelBookingPageModel.isForOtherGuest = 0
+            }
         }
 
         til_guest.setLabel(getString(R.string.hotel_booking_guest_form_title))
