@@ -7,9 +7,20 @@
     android:foreground="?selectableItemBackground"
     android:orientation="vertical">
 
-    <include
+    <!--<include
         android:id="@+id/ll_warning_and_error"
-        layout="@layout/layout_item_warning_and_error" />
+        layout="@layout/layout_item_warning_and_error" />-->
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_cart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/fl_cart_item_container"
@@ -70,45 +81,27 @@
                     android:layout_toRightOf="@id/iv_product_card"
                     android:paddingLeft="@dimen/dp_8">
 
-                    <LinearLayout
-                        android:id="@+id/ll_product_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:id="@+id/tv_product_name"
-                            style="@style/TextMidMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:ellipsize="end"
-                            android:maxLines="2"
-                            android:textColor="@color/black"
-                            android:textStyle="bold"
-                            tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
-
-                        <ImageView
-                            android:id="@+id/btn_delete_cart"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingBottom="@dimen/dp_2"
-                            android:paddingLeft="@dimen/dp_16"
-                            android:paddingTop="@dimen/dp_2"
-                            app:srcCompat="@drawable/ic_delete_cart"
-                            tools:ignore="ContentDescription" />
-
-                    </LinearLayout>
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_product_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textColor="@color/black"
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold"
+                        tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
 
                     <include
                         android:id="@+id/product_properties"
                         layout="@layout/layout_cart_item_policy"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/ll_product_name"
+                        android:layout_below="@id/tv_product_name"
                         android:layout_marginTop="4dp" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_price_changes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -121,21 +114,21 @@
                         android:layout_marginTop="@dimen/dp_4"
                         android:textColor="@color/price_changes_color_text"
                         android:background="@drawable/bg_price_changes"
-                        android:textSize="@dimen/sp_10"
-                        android:textStyle="bold"
                         android:layout_below="@id/product_properties"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold"
                         android:visibility="gone"
                         tools:visibility="visible"/>
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_product_price"
-                        style="@style/TextMidMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_price_changes"
                         android:layout_marginTop="@dimen/dp_4"
-                        android:textColor="@color/orange_red"
-                        android:textStyle="bold"
+                        android:textColor="@color/price_label"
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold"
                         tools:text="Rp 200.000" />
 
                 </RelativeLayout>
@@ -158,7 +151,7 @@
                         android:layout_alignParentStart="true"
                         app:srcCompat="@drawable/ic_yellow_ticker"/>
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_invenage_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -170,7 +163,8 @@
                         android:layout_marginBottom="@dimen/dp_8"
                         android:lineSpacingMultiplier="1.5"
                         android:textColor="@color/invenage_text_color"
-                        android:textSize="@dimen/sp_12"/>
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"/>
 
                 </RelativeLayout>
 
@@ -193,21 +187,31 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical">
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-                            <ImageButton
+                            <ImageView
                                 android:id="@+id/img_wishlist"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="@dimen/dp_16"
-                                android:background="@drawable/bg_round_button_with_shadow"
+                                android:layout_width="@dimen/dp_24"
+                                android:layout_height="@dimen/dp_24"
+                                android:layout_marginRight="@dimen/dp_18"
+                                android:layout_marginEnd="@dimen/dp_18"
                                 app:srcCompat="@drawable/ic_wishlist_checkout_on" />
 
                             <ImageView
+                                android:id="@+id/btn_delete_cart"
+                                android:layout_width="@dimen/dp_24"
+                                android:layout_height="@dimen/dp_24"
+                                android:layout_marginRight="@dimen/dp_18"
+                                android:layout_marginEnd="@dimen/dp_18"
+                                app:srcCompat="@drawable/ic_delete_cart"
+                                tools:ignore="ContentDescription" />
+
+                            <ImageView
                                 android:id="@+id/btn_qty_min"
-                                android:layout_width="@dimen/dp_32"
-                                android:layout_height="@dimen/dp_32"
-                                app:srcCompat="@drawable/bg_button_counter_minus" />
+                                android:layout_width="@dimen/dp_24"
+                                android:layout_height="@dimen/dp_24"
+                                app:srcCompat="@drawable/bg_button_counter_minus_checkout" />
 
                             <android.support.v7.widget.AppCompatEditText
                                 android:id="@+id/et_qty"
@@ -224,14 +228,14 @@
 
                             <ImageView
                                 android:id="@+id/btn_qty_plus"
-                                android:layout_width="@dimen/dp_32"
-                                android:layout_height="@dimen/dp_32"
-                                app:srcCompat="@drawable/bg_button_counter_plus"
+                                android:layout_width="@dimen/dp_24"
+                                android:layout_height="@dimen/dp_24"
+                                app:srcCompat="@drawable/bg_button_counter_plus_checkout"
                                 tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tv_error_form_validation"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -241,8 +245,9 @@
                             android:textAlignment="gravity"
                             android:textColor="@color/text_cart_item_error_red"
                             android:textSize="@dimen/sp_12"
-                            android:textStyle="normal"
                             android:visibility="gone"
+                            app:typographyType="body_3"
+                            app:typographyWeight="reguler"
                             tools:ignore="SmallSp"
                             tools:text="Maksimal 2 broh hjadjf askjbfk kjabfdk ashfb aksbfkabsf "
                             tools:visibility="visible" />
@@ -266,33 +271,37 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_label_form_remark"
-                        style="@style/TextSmallMediumBlack38"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:text="@string/label_note_for_seller"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"
                         tools:visibility="gone" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_remark"
-                        style="@style/TextSmallMediumBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLength="20"
                         android:maxLines="1"
                         tools:text="12345123451234512345123 sdkjf skdjbfg jksdg kjsdbg jksdbg!"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"
                         tools:visibility="visible" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_ellipsize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_2"
-                        android:text="@string/label_ellipsize" />
+                        android:text="@string/label_ellipsize"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"/>
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_label_remark_option"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -301,8 +310,9 @@
                         android:fontFamily="sans-serif-medium"
                         android:text="@string/label_button_add_note"
                         android:textColor="@color/tkpd_main_green"
-                        android:textSize="@dimen/sp_12"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"/>
 
                 </LinearLayout>
 
@@ -330,14 +340,13 @@
                     tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim
 barangnya gan!" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_error_form_remark_validation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_below="@id/et_remark"
-                    android:fontFamily="sans-serif"
                     android:maxLines="1"
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingStart="@dimen/dp_4"
@@ -345,24 +354,26 @@ barangnya gan!" />
                     android:textSize="@dimen/sp_12"
                     android:textStyle="normal"
                     android:visibility="gone"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
                     tools:ignore="RtlSymmetry,SmallSp"
                     tools:text="Maksimal 2 broh"
                     tools:visibility="gone" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_note_char_counter"
-                    style="@style/TextSmallNormalBlack38"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_below="@id/et_remark"
                     android:layout_gravity="end"
-                    android:fontFamily="sans-serif"
                     android:lineSpacingExtra="0sp"
                     android:visibility="gone"
                     tools:text="60/140"
-                    tools:visibility="visible" />
+                    tools:visibility="visible"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"/>
 
             </LinearLayout>
 

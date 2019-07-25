@@ -1,19 +1,14 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scroll_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/white">
 
             <com.tokopedia.core.util.TkpdWebView
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:visibility="gone"
                 />
             <ProgressBar
@@ -24,5 +19,4 @@
                 android:layout_marginTop="-6dp"
                 android:max="100" />
 
-        </LinearLayout>
-</ScrollView>
+        </RelativeLayout>
