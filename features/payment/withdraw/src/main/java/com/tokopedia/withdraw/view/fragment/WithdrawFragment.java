@@ -132,7 +132,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private TextView saldoWithdrawHintTV;
     private static final String IS_WITHDRAW_LOCK = "is_lock";
     private static final String MCL_LATE_COUNT = "late_count";
-
+    private static final String FIREBASE_FLAG_STATUS="is_on";
 
     private int statusWithDrawLock;
     private int mclLateCount;
@@ -143,6 +143,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private ImageView ivDismissTicker;
     private static final int MCL_STATUS_BLOCK1 = 700;
     private static final int MCL_STATUS_BLOCK3 = 999;
+    private boolean showMclBlockTickerFirebaseFlag = false;
     private ImageView ivLockButton;
 
     private boolean buttonSellerSaldoStatus = false;
@@ -243,13 +244,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bankAdapter.setList(listBank);
 
         if (getArguments() != null) {
+            showMclBlockTickerFirebaseFlag=getArguments().getBoolean(FIREBASE_FLAG_STATUS);
             buyerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
             sellerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
             statusWithDrawLock = getArguments().getInt(IS_WITHDRAW_LOCK);
             mclLateCount = getArguments().getInt(MCL_LATE_COUNT);
         }
 
-        if (statusWithDrawLock == MCL_STATUS_BLOCK1 || statusWithDrawLock == MCL_STATUS_BLOCK3) {
+        if ((statusWithDrawLock == MCL_STATUS_BLOCK1 || statusWithDrawLock == MCL_STATUS_BLOCK3)) {
             showTicker();
         }
 
@@ -317,7 +319,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.seller_saldo_less_min));
                 } else {
 
-                    if (statusWithDrawLock == MCL_STATUS_BLOCK3 || statusWithDrawLock == MCL_STATUS_BLOCK1) {
+                    if ((statusWithDrawLock == MCL_STATUS_BLOCK3 || statusWithDrawLock == MCL_STATUS_BLOCK1)) {
                         ivLockButton.setVisibility(View.VISIBLE);
                         withdrawButtonWrapper.setEnabled(false);
                         withdrawButtonWrapper.setClickable(false);
@@ -467,7 +469,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 ds.setUnderlineText(false);
                 ds.setColor(getResources().getColor(R.color.tkpd_main_green));
             }
-        }, startIndex, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, startIndex-1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tvTickerMessage.setText(ss);
         ivDismissTicker.setOnClickListener(v -> tickerLayout.setVisibility(View.GONE));

@@ -80,7 +80,7 @@ public interface SaldoDetailContract {
 
         void getMerchantCreditLineDetails();
 
-        void onDrawClicked(Intent intent, int statusWithDrawLock,int mclLateCount);
+        void onDrawClicked(Intent intent, int statusWithDrawLock,int mclLateCount,boolean showMclBlockTickerFirebaseFlag);
 
         void getMCLLateCount();
     }

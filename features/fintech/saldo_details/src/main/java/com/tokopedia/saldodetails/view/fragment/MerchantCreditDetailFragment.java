@@ -110,12 +110,12 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                 mclTitleTV.setText(getString(R.string.modal_toko));
             }
 
-            if (!TextUtils.isEmpty(merchantCreditDetails.getSideText())) {
+         /*   if (!TextUtils.isEmpty(merchantCreditDetails.getSideText())) {
                 mclBlockedStatusTV.setVisibility(View.VISIBLE);
                 mclBlockedStatusTV.setText(merchantCreditDetails.getSideText());
             } else {
                 mclBlockedStatusTV.setVisibility(View.GONE);
-            }
+            }*/
 
             if (merchantCreditDetails.getAnchorList() != null) {
                 populateAnchorListData();

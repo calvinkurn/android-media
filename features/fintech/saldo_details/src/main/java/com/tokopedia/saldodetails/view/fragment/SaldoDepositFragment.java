@@ -32,6 +32,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -54,6 +56,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -122,6 +126,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private static final int MCL_STATUS_BLOCK1 = 700;
     private static final int MCL_STATUS_BLOCK2 = 701;
     private static final int MCL_STATUS_BLOCK3 = 999;
+
+    private boolean showMclBlockTickerFirebaseFlag = false;
 
     public SaldoDepositFragment() {
     }
@@ -389,7 +395,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private void goToWithdrawActivity() {
         if (getActivity() != null) {
             Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
-            saldoDetailsPresenter.onDrawClicked(intent, statusWithDrawLock,mclLateCount);
+            saldoDetailsPresenter.onDrawClicked(intent, statusWithDrawLock,mclLateCount,showMclBlockTickerFirebaseFlag);
         }
     }
 
@@ -406,7 +412,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     protected void initialVar() {
         saldoDetailsPresenter.setSeller(isSellerEnabled);
-        saldoDetailsPresenter.getMCLLateCount();
         totalBalanceTitle.setText(getResources().getString(R.string.total_saldo_text));
         totalBalanceInfo.setVisibility(View.GONE);
         buyerSaldoBalanceRL.setVisibility(View.VISIBLE);
@@ -488,8 +493,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void onFirstTimeLaunched() {
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        showMclBlockTickerFirebaseFlag = remoteConfig.getBoolean(APP_ENABLE_SALDO_LOCK, false);
+
         saldoDetailsPresenter.getSaldoBalance();
         saldoDetailsPresenter.getTickerWithdrawalMessage();
+        saldoDetailsPresenter.getMCLLateCount();
     }
 
     @Override
@@ -596,32 +606,35 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     public void showTicker() {
 
-        String tickerMsg =getString(R.string.saldolock_tickerDescription);
-        int startIndex = tickerMsg.indexOf("Bayar sekarang");
-        String late=Integer.toString(mclLateCount);
-        tickerMsg  =  String.format(getResources().getString(R.string.saldolock_tickerDescription),late);
-        SpannableString ss = new SpannableString(tickerMsg);
+        if(!showMclBlockTickerFirebaseFlag) {
+            String tickerMsg =getString(R.string.saldolock_tickerDescription);
+            int startIndex = tickerMsg.indexOf("Bayar sekarang");
+            String late=Integer.toString(mclLateCount);
+            tickerMsg  =  String.format(getResources().getString(R.string.saldolock_tickerDescription),late);
+            SpannableString ss = new SpannableString(tickerMsg);
 
-        tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
+            tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
 
-        ss.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View view) {
-                RouteManager.route(context, String.format("%s?url=%s",
-                        ApplinkConst.WEBVIEW,SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL));
-            }
+            ss.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View view) {
+                    RouteManager.route(context, String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW,SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL));
+                }
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
-            }
-        }, startIndex, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                    ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                }
+            }, startIndex-1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        tvTickerMessage.setText(ss);
-        ivDismissTicker.setOnClickListener(v -> layoutTicker.setVisibility(View.GONE));
-        layoutTicker.setVisibility(View.VISIBLE);
+            tvTickerMessage.setText(ss);
+            ivDismissTicker.setOnClickListener(v -> layoutTicker.setVisibility(View.GONE));
+            layoutTicker.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
