@@ -33,7 +33,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/imageMinTrans"
+            app:layout_constraintEnd_toStartOf="@+id/imageMinTrans"
             app:layout_constraintStart_toEndOf="@+id/imagePeriod"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteY="12dp">
