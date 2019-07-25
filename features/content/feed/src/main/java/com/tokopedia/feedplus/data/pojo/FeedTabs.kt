@@ -46,4 +46,9 @@ data class FeedTabs(
             @Expose
             val selectedIndex: Int = 0
     )
+
+    companion object {
+        const val TYPE_FEEDS = "feeds"
+        const val TYPE_EXPLORE = "explore"
+    }
 }
