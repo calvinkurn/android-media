@@ -60,7 +60,7 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                     PARAM_SHOP_DOMAIN to productParams.shopDomain,
                     PARAM_PRODUCT_KEY to productParams.productName)
             val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO], ProductInfo.Response::class.java, paramsInfo)
-            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+            var cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
             val productInfoData = withContext(Dispatchers.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
@@ -108,11 +108,14 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                     val insuranceParams = mapOf("digitalProducts" to insuranceRecommendationRequest)
                     val graphqlInsuranceRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSURANCE_RECOMMENDATION],
                             InsuranceRecommendationGqlResponse::class.java, insuranceParams)
+
+                    cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+
                     val insuranceResponse = withContext(Dispatchers.IO) {
                         graphqlRepository.getReseponse(listOf(graphqlInsuranceRecommendationRequest), cacheStrategy)
                     }
 
-                    insuranceResponse.getSuccessData<InsuranceRecommendationGqlResponse>().let { it ->
+                    insuranceResponse.getSuccessData<InsuranceRecommendationGqlResponse>().let {
                         insuranceRecommendationResponse = it
                     }
 
