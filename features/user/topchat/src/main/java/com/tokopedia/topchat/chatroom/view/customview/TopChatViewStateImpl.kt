@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
@@ -33,7 +32,6 @@ import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
-import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
@@ -52,7 +50,10 @@ class TopChatViewStateImpl(
         chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener,
         toolbar: Toolbar,
         val analytics: TopChatAnalytics
-) : BaseChatViewStateImpl(view, toolbar, typingListener, chatMenuListener), TopChatViewState {
+) : BaseChatViewStateImpl(view, toolbar, typingListener, chatMenuListener),
+        TopChatViewState,
+        ProductPreviewAdapter.AttachmentPreviewListener {
+
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
@@ -94,18 +95,16 @@ class TopChatViewStateImpl(
     }
 
     private fun initProductPreviewLayout() {
-        productPreviewAdapter = ProductPreviewAdapter(onEmptyProductPreview())
+        productPreviewAdapter = ProductPreviewAdapter(this)
         productPreviewRecyclerView.apply {
             setHasFixedSize(true)
             adapter = productPreviewAdapter
         }
     }
 
-    private fun onEmptyProductPreview(): () -> Unit {
-        return {
-            hideProductPreviewLayout()
-            sendListener.onEmptyProductPreview()
-        }
+    override fun clearAttachmentPreview() {
+        hideProductPreviewLayout()
+        sendListener.onEmptyProductPreview()
     }
 
     private fun hideProductPreviewLayout() {
@@ -411,13 +410,9 @@ class TopChatViewStateImpl(
         scrollDownWhenInBottom()
     }
 
-    override fun showProductPreview(productPreview: ProductPreview) {
+    override fun showAttachmentPreview(attachmentPreview: ArrayList<ProductPreview>) {
         productPreviewContainer.visibility = View.VISIBLE
-        productPreviewAdapter.updateProduct(productPreview)
-    }
-
-    override fun clearProductPreview() {
-        productPreviewAdapter.clearProductPreview()
+        productPreviewAdapter.updateAttachments(attachmentPreview)
     }
 
     override fun focusOnReply() {

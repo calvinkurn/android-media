@@ -22,9 +22,7 @@ interface TopChatViewState : BaseChatViewState {
                            blockedStatus: BlockedStatus,
                            onUnblockChatClicked: () -> Unit)
 
-    fun showProductPreview(productPreview: ProductPreview)
-
-    fun clearProductPreview()
+    fun showAttachmentPreview(attachmentPreview: ArrayList<ProductPreview>)
 
     fun focusOnReply()
 

@@ -1,6 +1,10 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.domain.SendWebsocketParam
+import com.tokopedia.websocket.RxWebSocket
+import okhttp3.Interceptor
 
 class ProductPreview(
         val id: String,
@@ -12,7 +16,7 @@ class ProductPreview(
         val sizeVariant: String,
         val url: String
 ) {
-    fun noProductPreview(): Boolean {
+    fun notEnoughRequiredData(): Boolean {
         return name.isEmpty() || imageUrl.isEmpty() || price.isEmpty() || id.isEmpty()
     }
 
@@ -24,8 +28,19 @@ class ProductPreview(
 
     fun hasSizeVariant(): Boolean = sizeVariant.isNotEmpty()
 
-    fun generateResultProduct(): ResultProduct {
+    private fun generateResultProduct(): ResultProduct {
         return ResultProduct(id.toInt(), url, imageUrl, price, name)
+    }
+
+    fun sendTo(messageId: String, opponentId: String, interceptors: List<Interceptor>) {
+        val startTime = SendableViewModel.generateStartTime()
+        val productPreviewParam = SendWebsocketParam.generateParamSendProductAttachment(
+                messageId,
+                generateResultProduct(),
+                startTime,
+                opponentId
+        )
+        RxWebSocket.send(productPreviewParam, interceptors)
     }
 
 }

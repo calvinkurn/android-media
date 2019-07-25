@@ -1,11 +1,13 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.graphics.BitmapFactory
+import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -89,6 +91,8 @@ class TopChatRoomPresenter @Inject constructor(
     private var dummyList: ArrayList<Visitable<*>>
     var thisMessageId: String = ""
     private lateinit var addToCardSubscriber : Subscriber<AddToCartDataModel>
+
+    private var attachmentsPreview: ArrayList<ProductPreview> = arrayListOf()
 
     init {
         mSubscription = CompositeSubscription()
@@ -403,7 +407,6 @@ class TopChatRoomPresenter @Inject constructor(
         RxWebSocket.send(messageText, listInterceptor)
     }
 
-
     override fun addProductToCart(
             router: TopChatRouter,
             element: ProductAttachmentViewModel,
@@ -447,38 +450,34 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun sendMessage(
+    override fun sendAttachmentsAndMessage(
             messageId: String,
             sendMessage: String,
             startTime: String,
             opponentId: String,
-            onSendingMessage: () -> Unit,
-            productPreview: ProductPreview?
+            onSendingMessage: () -> Unit
     ) {
-        if (doesNotHaveMessageToSend(productPreview, sendMessage)) {
+        if (doesNotHaveMessageToSend(sendMessage)) {
             showErrorSnackbar(com.tokopedia.chat_common.R.string.error_empty_product)
             return
         }
 
-        if (hasProductPreview(productPreview)) {
-            sendProductAttachment(
-                    messageId, productPreview!!.generateResultProduct(),
-                    SendableViewModel.generateStartTime(), opponentId
-            )
-            view.clearProductPreview()
-        }
-
         if (isValidReply(sendMessage)) {
+            sendAttachments(messageId, opponentId)
             sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
         }
     }
 
-    private fun doesNotHaveMessageToSend(productPreview: ProductPreview?, sendMessage: String): Boolean {
-        return productPreview == null && !isValidReply(sendMessage)
+    private fun sendAttachments(messageId: String, opponentId: String) {
+        if (attachmentsPreview.isEmpty()) return
+        attachmentsPreview.forEach { attachment ->
+            attachment.sendTo(messageId, opponentId, listInterceptor)
+        }
+        view.notifyAttachmentsSent()
     }
 
-    private fun hasProductPreview(productPreview: ProductPreview?): Boolean {
-        return productPreview != null
+    private fun doesNotHaveMessageToSend(sendMessage: String): Boolean {
+        return attachmentsPreview.isEmpty() && !isValidReply(sendMessage)
     }
 
     override fun sendProductAttachment(messageId: String, item: ResultProduct,
@@ -556,6 +555,45 @@ class TopChatRoomPresenter @Inject constructor(
                 onSuccess(success)
             }
         })
+    }
+
+    override fun initProductPreview(savedInstanceState: Bundle?) {
+        val productId = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, savedInstanceState)
+        val productImageUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, savedInstanceState)
+        val productName = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, savedInstanceState)
+        val productPrice = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, savedInstanceState)
+        val productUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, savedInstanceState)
+        val productColorVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, savedInstanceState)
+        val productColorHexVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, savedInstanceState)
+        val productSizeVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, savedInstanceState)
+
+        val productPreview = ProductPreview(
+                productId,
+                productImageUrl,
+                productName,
+                productPrice,
+                productColorVariant,
+                productColorHexVariant,
+                productSizeVariant,
+                productUrl
+        )
+
+        attachmentsPreview.add(productPreview)
+
+        if (productPreview.notEnoughRequiredData()) {
+            attachmentsPreview.remove(productPreview)
+        } else {
+            view.focusOnReply()
+        }
+    }
+
+    override fun initAttachmentPreview() {
+        if (attachmentsPreview.isEmpty()) return
+        view.showAttachmentPreview(attachmentsPreview)
+    }
+
+    override fun clearAttachmentPreview() {
+        attachmentsPreview.clear()
     }
 
 }
