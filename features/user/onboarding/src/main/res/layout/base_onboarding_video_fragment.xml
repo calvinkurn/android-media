@@ -9,62 +9,46 @@
         android:id="@+id/video_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_above="@+id/title"/>
+        android:layout_marginTop="70dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"/>
 
     <TextView
         android:id="@+id/title"
+        android:layout_below="@+id/video_view"
         android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="24dp"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:letterSpacing="0.02"
         android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="#f531353b"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_20"
         android:textStyle="bold"
-        android:layout_above="@+id/description"
         tools:text="Judul" />
 
     <TextView
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/title"
         android:id="@+id/description"
         android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_140"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:gravity="center"
         android:letterSpacing="0.02"
         android:lineSpacingExtra="@dimen/sp_4"
         android:minLines="2"
         android:textColor="#ae31353b"
-        android:textSize="@dimen/sp_18"
+        android:textSize="@dimen/sp_14"
         android:textStyle="normal"
         tools:text="Deskripsi" />
-
-    <!--<LinearLayout-->
-        <!--android:id="@+id/layout_descr"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:orientation="vertical"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/layout_video"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent">-->
-
-        <!---->
-
-    <!--</LinearLayout>-->
 
 </RelativeLayout>

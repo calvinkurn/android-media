@@ -128,6 +128,7 @@ class OnboardingFragment : BaseDaggerFragment(),
         videoView.setVideoURI(Uri.parse(videoPath))
         videoView.setOnErrorListener { p0, p1, p2 -> true }
 
+
         return defaultView
     }
 
@@ -150,10 +151,10 @@ class OnboardingFragment : BaseDaggerFragment(),
 
         val fadeTitle = OnboardingAnimationHelper.appearText(titleView)
         val fadeDesc = OnboardingAnimationHelper.appearText(descView)
-        slideDesc.startDelay = 100L
+        slideDesc.startDelay = 80L
         val set = AnimatorSet()
         set.playTogether(slideTitle, slideDesc, fadeTitle, fadeDesc)
-        set.duration = 1000L
+        set.duration = 600L
         set.start()
 
         videoView.start()
