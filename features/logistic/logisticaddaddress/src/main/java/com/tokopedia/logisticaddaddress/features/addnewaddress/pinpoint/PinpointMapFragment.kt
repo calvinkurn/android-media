@@ -299,10 +299,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
+        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == MONAS_LAT && currentLong == MONAS_LONG) {
+            presenter.requestLocation(requireActivity())
+        }
         if (AddNewAddressUtils.isGpsEnabled(context)) {
-            if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == MONAS_LAT && currentLong == MONAS_LONG) {
-                presenter.requestLocation(requireActivity())
-            }
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
             ic_current_location.setImageResource(R.drawable.ic_gps_disable)
