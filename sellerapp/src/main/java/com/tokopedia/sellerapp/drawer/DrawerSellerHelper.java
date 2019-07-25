@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.drawer;
 
 import android.app.Activity;
+import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
@@ -37,7 +38,6 @@ import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.gm.subscribe.tracking.GMTracking;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
-import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -342,9 +342,12 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.ADD_PRODUCT:
                     if (context.getApplication() instanceof TkpdCoreRouter) {
-                        TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
-                        tkpdCoreRouter.goToManageProduct(context);
-                        ProductAddNameCategoryActivity.Companion.createInstance(context);
+                        Intent manageProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST);
+                        Intent addProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM);
+                        TaskStackBuilder.create(context)
+                                .addNextIntent(manageProductIntent)
+                                .addNextIntent(addProductIntent)
+                                .startActivities();
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:
