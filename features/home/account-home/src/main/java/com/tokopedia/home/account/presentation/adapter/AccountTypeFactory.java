@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringListViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewholder.AccountLoadingMoreViewHolder;
@@ -81,8 +82,8 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new AccountRecommendationTitleViewHolder(parent);
         } else if (type == RecommendationProductViewHolder.Companion.getLAYOUT()) {
             return new RecommendationProductViewHolder(parent, listener);
-        } else if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
-            return new LoadingShimmeringGridViewHolder(parent);
+        } else if (type == LoadingShimmeringListViewHolder.LAYOUT) {
+            return new LoadingShimmeringListViewHolder(parent);
         } else if (type == AccountLoadingMoreViewHolder.LAYOUT) {
             return new AccountLoadingMoreViewHolder(parent);
         }
@@ -147,7 +148,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
 
     @Override
     public int type(LoadingModel viewModel) {
-        return LoadingShimmeringGridViewHolder.LAYOUT;
+        return LoadingShimmeringListViewHolder.LAYOUT;
     }
 
     @Override
