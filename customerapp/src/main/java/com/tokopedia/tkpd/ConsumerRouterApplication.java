@@ -1764,12 +1764,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @NotNull
     @Override
-    public GetInsuranceRecommendationUsecase getInsuranceRecommendationUsecase() {
-        return CartComponentInjector.newInstance(this).getInsuranceRecommendationUsecase();
-    }
-
-    @NotNull
-    @Override
     public Observable<CheckoutData> checkoutProduct(@NotNull CheckoutRequest checkoutRequest, boolean isOneClickShipment, boolean isExpressCheckout) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);

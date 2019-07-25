@@ -18,8 +18,6 @@ import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.di.module.DataUtilModule;
 import com.tokopedia.checkout.view.di.module.ShipmentUseCaseModule;
 import com.tokopedia.transactiondata.insurance.usecase.AddInsuranceProductUsecase;
-import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceRecommendationUsecase;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -46,8 +44,6 @@ public class CartComponentInjector {
     EditAddressUseCase editAddressUseCase;
     @Inject
     UserSessionInterface userSession;
-    @Inject
-    GetInsuranceRecommendationUsecase getInsuranceRecommendationUsecase;
     @Inject
     AddInsuranceProductUsecase addInsuranceProductUsecase;
 
@@ -88,10 +84,6 @@ public class CartComponentInjector {
 
     public AddInsuranceProductUsecase getAddInsuranceProductUsecase() {
         return addInsuranceProductUsecase;
-    }
-
-    public GetInsuranceRecommendationUsecase getInsuranceRecommendationUsecase(){
-        return getInsuranceRecommendationUsecase;
     }
 
     public CheckoutUseCase getCheckoutUseCase() {

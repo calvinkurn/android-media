@@ -13,8 +13,7 @@ import rx.Observable
 
 interface NormalCheckoutRouter {
 
-    fun addInsuranceProductToCart(/*request: AddInsuranceProductToCartRequest, marketPlaceRequest: AddMarketPlaceToCartRequest*/): AddInsuranceProductUsecase
-    fun getInsuranceRecommendationUsecase(): GetInsuranceRecommendationUsecase
+    fun addInsuranceProductToCart(): AddInsuranceProductUsecase
     fun getCheckoutIntent(context: Context, shipmentFormRequest: ShipmentFormRequest): Intent
     fun getCheckoutIntent(context: Context, deviceid: String): Intent
     fun getCartIntent(context: Context): Intent

@@ -84,9 +84,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                     val infoCloseableDialog = CloseableBottomSheetDialog.createInstanceRounded(itemView.context)
 
                     val infoDialogView = (itemView.context as Activity?)?.layoutInflater?.inflate(R.layout.insurance_info_bottom_sheet, null)
-                    infoCloseableDialog.setContentView(infoDialogView!!)
-
-                    val webView = infoDialogView.findViewById<WebView>(R.id.bottom_sheet_webview)
+                    val webView = infoDialogView!!.findViewById<WebView>(R.id.bottom_sheet_webview)
 
                     infoDialogView.findViewById<TextView>(R.id.info_bottom_sheet_title_tv)?.text =
                             insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle
@@ -99,7 +97,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                             BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
                         }
                         val behavior = BottomSheetBehavior.from(bottomSheet!!)
-                        behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                        /*behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                             override fun onStateChanged(bottomSheet: View, newState: Int) {
                                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                                     behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -107,7 +105,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                             }
 
                             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                        })
+                        })*/
 
                         Handler().postDelayed({
                             webView!!.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
@@ -115,9 +113,12 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
 //                        webView!!.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
 
                     }
+
                     closeImageView?.setOnClickListener {
                         infoCloseableDialog.dismiss()
                     }
+
+                    infoCloseableDialog.setContentView(infoDialogView!!)
                     infoCloseableDialog.show()
                 }
             }

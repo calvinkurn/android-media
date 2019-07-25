@@ -480,9 +480,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             dialog.setOnCancelClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
 
-                    // TODO: 1/7/19 remove insurance products as well
-
-
                     dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false, true);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                             dPresenter.generateCartDataAnalytics(
@@ -605,8 +602,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
         ArrayList<CartItemData> cartItemDatas = new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
-
-        // TODO: 12/7/19 check if any insurance products in cart is present
 
         final com.tokopedia.design.component.Dialog dialog;
 

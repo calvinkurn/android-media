@@ -595,44 +595,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         super.onDestroy()
     }
 
-    private fun getInsuranceRecommendationProducts() {
-
-        val getInsuranceRecommendationUsecase = router.getInsuranceRecommendationUsecase()
-
-        generateInsuranceRequest()
-
-        getInsuranceRecommendationUsecase.setRequestParams(insuranceRecommendationRequest)
-        getInsuranceRecommendationUsecase.execute(object : Subscriber<GraphqlResponse>() {
-
-            override fun onNext(graphqlResponse: GraphqlResponse?) {
-
-                graphqlResponse?.run {
-
-                    if (graphqlResponse.getSuccessData<InsuranceRecommendationGqlResponse>() != null) {
-
-                        insuranceRecommendationViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(graphqlResponse.getData(InsuranceRecommendationGqlResponse::class.java))
-
-                        insuranceRecommendationViewModel?.run {
-                            if (!this.cartShopsList.isNullOrEmpty()) {
-                                adapter.addSingleDataViewModel(this)
-                                adapter.notifyDataSetChanged()
-                            }
-                        }
-                    }
-                }
-            }
-
-            override fun onError(e: Throwable?) {
-                Toast.makeText(context, "Insurance Recommendation Fail", Toast.LENGTH_SHORT).show()
-
-            }
-
-            override fun onCompleted() {
-            }
-        })
-
-
-    }
 
     inline fun <reified T> GraphqlResponse.getSuccessData(): T {
         val error = getError(T::class.java)
