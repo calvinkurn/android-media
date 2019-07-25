@@ -144,7 +144,6 @@ object ModelMapper {
                     insuranceCartProductInfoViewModel.iconUrl = digitalProduct.productInfo.iconUrl
                     insuranceCartProductInfoViewModel.subTitle = digitalProduct.productInfo.subTitle
                     insuranceCartProductInfoViewModel.title = digitalProduct.productInfo.title
-                    insuranceCartProductInfoViewModel.tickerText = digitalProduct.productInfo.tickerText
 
                     insuranceCartProductInfoViewModel.detailInfoTitle = digitalProduct.productInfo.detailInfoTitle
                     insuranceCartProductInfoViewModel.sectionTitle = digitalProduct.productInfo.sectionTitle

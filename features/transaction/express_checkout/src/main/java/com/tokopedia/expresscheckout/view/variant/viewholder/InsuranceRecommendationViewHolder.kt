@@ -26,7 +26,6 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
     private var datePicker: SaldoDatePickerUtil? = null
     private var errorMessage: String = ""
     private var originalData = InsuranceRecommendationViewModel()
-//    private var isInsuranceSelected = false
 
     companion object {
         val LAYOUT = R.layout.item_insurance_recommendation_product_page
@@ -44,20 +43,26 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
             val insuranceCartShopItemsViewModel = element.cartShopsList[0].shopItemsList[0]
             val insuranceCartDigitalProductViewModel = insuranceCartShopItemsViewModel.digitalProductList[0]
 
-            itemView.tv_product_title.text = insuranceCartDigitalProductViewModel.productInfo.title
-            itemView.insurance_tv_title.text = insuranceCartDigitalProductViewModel.productInfo.sectionTitle
+            itemView.tv_product_title.text = insuranceCartDigitalProductViewModel.productInfo.sectionTitle
+            itemView.insurance_tv_title.text = insuranceCartDigitalProductViewModel.productInfo.title
+
+            if (insuranceCartDigitalProductViewModel.productInfo.subTitle.isNotBlank()) {
+                itemView.insurance_tv_subtitle.text = insuranceCartDigitalProductViewModel.productInfo.subTitle
+                itemView.insurance_tv_subtitle.visibility = View.VISIBLE
+            } else {
+                itemView.insurance_tv_subtitle.visibility = View.GONE
+            }
 
             if (!TextUtils.isEmpty(insuranceCartDigitalProductViewModel.productInfo.iconUrl)) {
                 ImageHandler.loadImage(itemView.context, itemView.insurance_image_icon, insuranceCartDigitalProductViewModel.productInfo.iconUrl, R.drawable.ic_modal_toko)
             }
             itemView.insurance_tv_price.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceCartDigitalProductViewModel.pricePerProduct, false))
 
-            itemView.tv_description.text = insuranceCartDigitalProductViewModel.productInfo.description
-            if (TextUtils.isEmpty(insuranceCartDigitalProductViewModel.productInfo.infoText)) {
+            if (insuranceCartDigitalProductViewModel.productInfo.linkName.isBlank()) {
                 itemView.insurance_tv_info.visibility = View.GONE
             } else {
                 itemView.insurance_tv_info.visibility = View.VISIBLE
-
+                itemView.insurance_tv_info.text = insuranceCartDigitalProductViewModel.productInfo.linkName
                 itemView.insurance_tv_info.setOnClickListener({
                     // TODO: 19/6/19 open bottom sheet with url
                 })
@@ -178,16 +183,20 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                         if (isChecked) {
                             validateViews()
                             applicationDetailsView.visibility = View.VISIBLE
-                            itemView.tv_description.visibility = View.GONE
-
+                            itemView.tv_info_text.text = insuranceCartDigitalProductViewModel.productInfo.infoText
                         } else {
                             applicationDetailsView.visibility = View.GONE
-                            itemView.tv_description.visibility = View.VISIBLE
+                        }
+
+                        if (errorMessage.isNotBlank()) {
+                            itemView.tv_info_text.visibility = View.VISIBLE
+                        } else {
+                            itemView.tv_info_text.visibility = View.GONE
                         }
 
                     } else {
                         applicationDetailsView.visibility = View.GONE
-                        itemView.tv_description.visibility = View.VISIBLE
+                        itemView.tv_info_text.visibility = View.GONE
                     }
                     listener.setErrorInInsuranceSelection(!errorMessage.isBlank())
                     listener.onInsuranceSelectedStateChanged(originalData, isChecked)

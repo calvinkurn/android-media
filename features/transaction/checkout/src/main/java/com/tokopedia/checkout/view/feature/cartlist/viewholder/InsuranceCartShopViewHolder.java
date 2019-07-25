@@ -1,11 +1,6 @@
 package com.tokopedia.checkout.view.feature.cartlist.viewholder;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -14,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,15 +25,8 @@ import com.tokopedia.transactiondata.insurance.entity.response.InsuranceApplicat
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceProductApplicationDetails;
-import com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MAX_DATE;
 import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MAX_LENGTH;
@@ -71,7 +58,8 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
     private TextView tvProductTitle;
     private TextView tvInsurancePrice;
     private TextView tvInsuranceInfo;
-    private TextView tvInsuranceDescription;
+    private TextView tvInsuranceSubtitle;
+    private TextView tvInsuranceTickerText;
     private ImageView ivDeleteInsurance;
     private TextView tvChangeInsuranceApplicationDetails;
     private InsuranceCartShops insuranceCartShops;
@@ -92,8 +80,9 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         tvProductTitle = itemView.findViewById(R.id.tv_product_title);
         tvInsurancePrice = itemView.findViewById(R.id.insurance_tv_price);
         tvInsuranceInfo = itemView.findViewById(R.id.insurance_tv_info);
+        tvInsuranceSubtitle = itemView.findViewById(R.id.insurance_tv_subtitle);
         ivDeleteInsurance = itemView.findViewById(R.id.insurance_delete_icon);
-        tvInsuranceDescription = itemView.findViewById(R.id.tv_description);
+        tvInsuranceTickerText = itemView.findViewById(R.id.tv_ticker_text);
         tvChangeInsuranceApplicationDetails = itemView.findViewById(R.id.insurance_application_details_change);
         tvInsuranceApplicationDetails = itemView.findViewById(R.id.insurance_appliation_details);
     }
@@ -117,11 +106,18 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
             tvInsuranceTitle.setText("Produk Asuransi");
         }
 
-        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getDescription())) {
-            tvInsuranceDescription.setText(insuranceCartDigitalProduct.getProductInfo().getDescription());
-            tvInsuranceTitle.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getSubTitle())) {
+            tvInsuranceSubtitle.setText(insuranceCartDigitalProduct.getProductInfo().getSubTitle());
+            tvInsuranceSubtitle.setVisibility(View.VISIBLE);
         } else {
-            tvInsuranceTitle.setVisibility(View.GONE);
+            tvInsuranceSubtitle.setVisibility(View.GONE);
+        }
+
+        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getTickerText())) {
+            tvInsuranceTickerText.setText(insuranceCartDigitalProduct.getProductInfo().getTickerText());
+            tvInsuranceTickerText.setVisibility(View.VISIBLE);
+        } else {
+            tvInsuranceTickerText.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getIconUrl())) {
@@ -133,14 +129,11 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         } else {
             tvInsuranceInfo.setVisibility(View.VISIBLE);
             tvInsuranceInfo.setText(insuranceCartDigitalProduct.getProductInfo().getLinkName());
-            tvInsuranceInfo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO: 19/6/19 open bottom sheet with url
-                    CloseableBottomSheetDialog dealsCategoryBottomSheet =
-                            CloseableBottomSheetDialog.createInstanceRounded(tvInsuranceInfo.getContext());
+            tvInsuranceInfo.setOnClickListener(v -> {
+                // TODO: 19/6/19 open bottom sheet with url
+                CloseableBottomSheetDialog dealsCategoryBottomSheet =
+                        CloseableBottomSheetDialog.createInstanceRounded(tvInsuranceInfo.getContext());
 
-                }
             });
         }
 
@@ -148,8 +141,6 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
             StringBuilder applicationDetails = new StringBuilder();
             for (int i = 0; i < insuranceCartDigitalProduct.getApplicationDetails().size(); i++) {
-                //InsuranceProductApplicationDetails insuranceProductApplicationDetails : insuranceCartDigitalProduct.getApplicationDetails()) {
-
                 if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getApplicationDetails().get(i).getValue())) {
                     applicationDetails.append(insuranceCartDigitalProduct.getApplicationDetails().get(i).getValue());
                 }
