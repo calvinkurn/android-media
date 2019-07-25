@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductPreviewViewHolder
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
 
 class AttachmentPreviewAdapter(
         private val attachmentPreviewListener: AttachmentPreviewListener
@@ -15,7 +15,7 @@ class AttachmentPreviewAdapter(
         fun clearAttachmentPreview()
     }
 
-    private var attachments = arrayListOf<ProductPreview>()
+    private var attachments = arrayListOf<ProductPreviewViewModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductPreviewViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_product_preview, parent, false)
@@ -28,12 +28,12 @@ class AttachmentPreviewAdapter(
         holder.bind(attachments[position], position)
     }
 
-    fun updateAttachments(attachmentPreview: ArrayList<ProductPreview>) {
+    fun updateAttachments(attachmentPreview: ArrayList<ProductPreviewViewModel>) {
         attachments = attachmentPreview
         notifyDataSetChanged()
     }
 
-    override fun closeItem(productPreview: ProductPreview, position: Int) {
+    override fun closeItem(productPreview: ProductPreviewViewModel, position: Int) {
         attachments.remove(productPreview)
         notifyItemRemoved(position)
         if (noProductPreview()) {

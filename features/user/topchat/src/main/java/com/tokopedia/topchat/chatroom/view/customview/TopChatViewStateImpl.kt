@@ -29,7 +29,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
@@ -410,7 +410,7 @@ class TopChatViewStateImpl(
         scrollDownWhenInBottom()
     }
 
-    override fun showAttachmentPreview(attachmentPreview: ArrayList<ProductPreview>) {
+    override fun showAttachmentPreview(attachmentPreview: ArrayList<ProductPreviewViewModel>) {
         attachmentPreviewContainer.visibility = View.VISIBLE
         attachmentPreviewAdapter.updateAttachments(attachmentPreview)
     }

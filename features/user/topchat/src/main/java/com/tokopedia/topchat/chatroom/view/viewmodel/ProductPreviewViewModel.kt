@@ -6,7 +6,7 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.websocket.RxWebSocket
 import okhttp3.Interceptor
 
-class ProductPreview(
+class ProductPreviewViewModel(
         val id: String,
         val imageUrl: String,
         val name: String,

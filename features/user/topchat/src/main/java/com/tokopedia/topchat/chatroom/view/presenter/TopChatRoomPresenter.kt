@@ -36,7 +36,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.common.TopChatRouter
@@ -92,7 +92,7 @@ class TopChatRoomPresenter @Inject constructor(
     var thisMessageId: String = ""
     private lateinit var addToCardSubscriber : Subscriber<AddToCartDataModel>
 
-    private var attachmentsPreview: ArrayList<ProductPreview> = arrayListOf()
+    private var attachmentsPreview: ArrayList<ProductPreviewViewModel> = arrayListOf()
 
     init {
         mSubscription = CompositeSubscription()
@@ -560,7 +560,7 @@ class TopChatRoomPresenter @Inject constructor(
         val productColorHexVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, savedInstanceState)
         val productSizeVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, savedInstanceState)
 
-        val productPreview = ProductPreview(
+        val productPreview = ProductPreviewViewModel(
                 productId,
                 productImageUrl,
                 productName,

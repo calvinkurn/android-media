@@ -14,7 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
 
 class ProductPreviewViewHolder(itemView: View, private val itemListener: ItemListener)
     : RecyclerView.ViewHolder(itemView) {
@@ -33,10 +33,10 @@ class ProductPreviewViewHolder(itemView: View, private val itemListener: ItemLis
     private val closeButton = itemView?.findViewById<ImageView>(R.id.iv_close)
 
     interface ItemListener {
-        fun closeItem(productPreview: ProductPreview, position: Int)
+        fun closeItem(productPreview: ProductPreviewViewModel, position: Int)
     }
 
-    fun bind(productPreview: ProductPreview, position: Int) {
+    fun bind(productPreview: ProductPreviewViewModel, position: Int) {
         ImageHandler.loadImageRounded(productImage?.context, productImage, productPreview.imageUrl, toDp(3))
         productName?.text = productPreview.name
         productPrice?.text = productPreview.price
