@@ -96,11 +96,11 @@ class PlayWebSocketMessageMapper @Inject constructor() {
         return VideoStreamViewModel(
                 pojo.isActive,
                 pojo.isLive,
-                pojo.orientation,
                 pojo.androidStreamHD,
                 pojo.androidStreamSD,
                 pojo.iosStreamHD,
-                pojo.iosStreamSD
+                pojo.iosStreamSD,
+                pojo.orientation
         )
     }
 

@@ -886,7 +886,7 @@ open class PlayViewStateImpl(
 
                         youTubePlayer?.let {
                             it.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
-                            it.setShowFullscreenButton(false)
+                            it.setShowFullscreenButton(true)
                             it.cueVideo(videoId)
                             autoPlayVideo()
 
