@@ -3,6 +3,7 @@ package com.tokopedia.onboarding
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.view.ViewPager
@@ -20,7 +21,7 @@ import com.tokopedia.onboarding.adapter.OnboardingPagerAdapter
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.fragment.OnboardingFragment
-import com.tokopedia.onboarding.listener.CustomAnimationPageTransformer
+import com.tokopedia.onboarding.listener.OnboardingVideoListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -34,9 +35,9 @@ import javax.inject.Inject
 
 class OnboardingActivity : BaseActivity() {
 
-    lateinit var viewPager: ViewPager
-    lateinit var indicator: ViewGroup
-    private lateinit var pagerAdapter: OnboardingPagerAdapter
+    var viewPager: ViewPager? = null
+    var indicator: ViewGroup? = null
+    var pagerAdapter: OnboardingPagerAdapter? = null
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -60,8 +61,10 @@ class OnboardingActivity : BaseActivity() {
     lateinit var registerButton: ButtonCompat
     lateinit var skipButton: TextView
     var currentPosition = 0
+    private var lastPosition = 0
 
-    protected var indicatorItems = java.util.ArrayList<ImageView>()
+    private var indicatorItems = java.util.ArrayList<ImageView>()
+    lateinit var fragmentList: ArrayList<Fragment>
 
     companion object {
         fun createIntent(context: Context) = Intent(context, OnboardingActivity::class.java)
@@ -101,30 +104,48 @@ class OnboardingActivity : BaseActivity() {
         registerButton = findViewById(R.id.btnRegister)
         skipButton = findViewById(R.id.skip)
 
-        val fragmentList = addFragments()
+        fragmentList = addFragments()
 
-        viewPager.setPageTransformer(false, CustomAnimationPageTransformer())
-        viewPager.offscreenPageLimit = 2
+        viewPager?.offscreenPageLimit = 2
         pagerAdapter = OnboardingPagerAdapter(supportFragmentManager, fragmentList)
-        viewPager.adapter = pagerAdapter
+        viewPager?.adapter = pagerAdapter
 
         addIndicator(fragmentList)
         setListener()
     }
 
+    private fun onFragmentSelected(position: Int) {
+        pagerAdapter?.let {
+            val fragment = it.fragmentList[position]
+            if (fragment is OnboardingVideoListener) {
+                fragment.onPageSelected(position, lastPosition < position)
+                lastPosition = position
+            }
+        }
+    }
+
+    private val pageChangeListener: ViewPager.OnPageChangeListener = (object: ViewPager.OnPageChangeListener {
+
+        var first: Boolean = true
+        override fun onPageScrollStateChanged(state: Int) {}
+
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            if (first && positionOffset == 0f && positionOffsetPixels == 0){
+                onPageSelected(0);
+                first = false
+            }
+        }
+
+        override fun onPageSelected(position: Int) {
+            onFragmentSelected(position)
+            setIndicator(position)
+            currentPosition = position
+            analytics.sendScreen(position)
+        }
+    })
+
     private fun setListener() {
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            }
-
-            override fun onPageSelected(position: Int) {
-                setIndicator(position)
-                currentPosition = position
-                analytics.sendScreen(position)
-            }
-        })
+        viewPager?.addOnPageChangeListener(pageChangeListener)
 
         loginButton.setOnClickListener {
             analytics.trackClickLogin(currentPosition)
@@ -137,7 +158,7 @@ class OnboardingActivity : BaseActivity() {
         }
 
         skipButton.setOnClickListener {
-            analytics.eventOnboardingSkip(applicationContext, viewPager.currentItem)
+            analytics.eventOnboardingSkip(applicationContext, currentPosition)
             finishOnboarding()
             RouteManager.route(this, ApplinkConst.HOME)
         }
@@ -185,7 +206,7 @@ class OnboardingActivity : BaseActivity() {
                 pointView.setImageResource(indicatorNormal)
             }
             indicatorItems.add(pointView)
-            indicator.addView(pointView)
+            indicator?.addView(pointView)
         }
     }
 

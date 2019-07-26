@@ -1,12 +1,10 @@
 package com.tokopedia.onboarding.fragment
 
 import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.app.Activity
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +20,7 @@ import com.tokopedia.onboarding.OnboardingActivity
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.animation.OnboardingAnimationHelper
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
-import com.tokopedia.onboarding.listener.CustomAnimationPageTransformerDelegate
+import com.tokopedia.onboarding.listener.OnboardingVideoListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,7 +31,8 @@ import javax.inject.Inject
  * @author by stevenfredian on 14/05/19.
  */
 class OnboardingFragment : BaseDaggerFragment(),
-        CustomAnimationPageTransformerDelegate, OnboardingActivity.onBoardingFirsbaseCallBack {
+        OnboardingActivity.onBoardingFirsbaseCallBack,
+        OnboardingVideoListener {
 
     companion object {
         val VIEW_DEFAULT = 100
@@ -80,10 +79,10 @@ class OnboardingFragment : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    lateinit var videoView: VideoView
-    lateinit var titleView: TextView
-    lateinit var descView: TextView
-    lateinit var main: View
+    var videoView: VideoView? = null
+    var titleView: TextView? = null
+    var descView: TextView? = null
+    var main: View? = null
 
     override fun getScreenName(): String {
         return ""
@@ -121,13 +120,15 @@ class OnboardingFragment : BaseDaggerFragment(),
         titleView = defaultView.findViewById(R.id.title)
         descView = defaultView.findViewById(R.id.description)
 
-        titleView.text = MethodChecker.fromHtml(getTitleMsg())
-        descView.text = MethodChecker.fromHtml(getDescMsg())
+        titleView?.text = MethodChecker.fromHtml(getTitleMsg())
+        descView?.text = MethodChecker.fromHtml(getDescMsg())
 
-        videoView.setZOrderOnTop(true)
-        videoView.setVideoURI(Uri.parse(videoPath))
-        videoView.setOnErrorListener { p0, p1, p2 -> true }
-
+        videoView?.setZOrderOnTop(true)
+        videoView?.setVideoURI(Uri.parse(videoPath))
+        videoView?.setOnErrorListener { p0, p1, p2 -> true }
+        videoView?.setOnPreparedListener {
+            it.isLooping = true
+        }
 
         return defaultView
     }
@@ -138,40 +139,43 @@ class OnboardingFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onPageSelected() {
-        playAnimationTitleDesc()
+    override fun onPageSelected(position: Int, isSlideRight: Boolean) {
+        playAnimationTitleDesc(isSlideRight)
     }
 
-    private fun playAnimationTitleDesc() {
-        titleView.visibility = View.VISIBLE
-        descView.visibility = View.VISIBLE
+    private fun playAnimationTitleDesc(isSlideRight: Boolean) {
+        titleView?.visibility = View.VISIBLE
+        descView?.visibility = View.VISIBLE
 
-        val slideTitle = OnboardingAnimationHelper.slideReverseX(titleView)
-        val slideDesc = OnboardingAnimationHelper.slideReverseX(descView)
+        val slideTitle: ValueAnimator?
+        val slideDesc: ValueAnimator?
+        if (isSlideRight) {
+            slideTitle = OnboardingAnimationHelper.slideLefttoRight(titleView)
+            slideDesc = OnboardingAnimationHelper.slideLefttoRight(descView)
+        } else {
+            slideTitle = OnboardingAnimationHelper.slideRightToLeft(titleView)
+            slideDesc = OnboardingAnimationHelper.slideRightToLeft(descView)
+        }
 
         val fadeTitle = OnboardingAnimationHelper.appearText(titleView)
         val fadeDesc = OnboardingAnimationHelper.appearText(descView)
-        slideDesc.startDelay = 80L
-        val set = AnimatorSet()
-        set.playTogether(slideTitle, slideDesc, fadeTitle, fadeDesc)
-        set.duration = 600L
-        set.start()
 
-        videoView.start()
+        if (slideTitle != null && slideDesc != null && fadeTitle != null && fadeDesc != null) {
+            slideDesc.startDelay = 80L
+            val set = AnimatorSet()
+            set.playTogether(slideTitle, slideDesc, fadeTitle, fadeDesc)
+            set.duration = 600L
+            set.start()
+        }
+
+        videoView?.start()
     }
 
     override fun onResume() {
         super.onResume()
         if (userVisibleHint) {
-            videoView.start()
+            videoView?.start()
         }
-    }
-
-    override fun onPageScrolled(page: View, position: Float) {}
-
-    override fun onPageInvisible(position: Float) {
-        titleView.visibility = View.INVISIBLE
-        descView.visibility = View.INVISIBLE
     }
 
     private fun getTitleMsg(): String {
@@ -203,12 +207,12 @@ class OnboardingFragment : BaseDaggerFragment(),
         var msg = remoteConfig.getString(descKey)
         if (!TextUtils.isEmpty(msg)) {
             val descTxt = msg
-            activity?.runOnUiThread { descView.text = MethodChecker.fromHtml(descTxt) }
+            activity?.runOnUiThread { descView?.text = MethodChecker.fromHtml(descTxt) }
         }
         msg = remoteConfig.getString(ttlKey)
         if (!TextUtils.isEmpty(msg)) {
             val ttlTxt = msg
-            activity?.runOnUiThread { titleView.text = MethodChecker.fromHtml(ttlTxt) }
+            activity?.runOnUiThread { titleView?.text = MethodChecker.fromHtml(ttlTxt) }
         }
     }
 }

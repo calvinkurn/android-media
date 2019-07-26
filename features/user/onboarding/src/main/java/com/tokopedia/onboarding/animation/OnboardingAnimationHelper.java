@@ -55,7 +55,7 @@ public class OnboardingAnimationHelper {
 
     public static ObjectAnimator appearText(final TextView v) {
         if (v != null) {
-            return ObjectAnimator.ofFloat(v, "alpha", 0, 1);
+            return ObjectAnimator.ofFloat(v, View.ALPHA, 0, 1);
         }
         return null;
     }
@@ -97,9 +97,22 @@ public class OnboardingAnimationHelper {
         return null;
     }
 
-    public static ValueAnimator slideReverseX(final View view) {
+    public static ValueAnimator slideLefttoRight(final View view) {
         if (view != null) {
             ValueAnimator valueAnimator = ValueAnimator.ofInt(-(int) (view.getWidth() * 1.5), 0);
+
+            valueAnimator.addUpdateListener(valueAnimator1 -> {
+                float val = (Integer) valueAnimator1.getAnimatedValue();
+                view.setTranslationX(val);
+            });
+            return valueAnimator;
+        }
+        return null;
+    }
+
+    public static ValueAnimator slideRightToLeft(final View view) {
+        if (view != null) {
+            ValueAnimator valueAnimator = ValueAnimator.ofInt((int)(view.getWidth() * 1.5),0);
 
             valueAnimator.addUpdateListener(valueAnimator1 -> {
                 float val = (Integer) valueAnimator1.getAnimatedValue();

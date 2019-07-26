@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -9,46 +10,47 @@
         android:id="@+id/video_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"/>
+        android:layout_marginTop="@dimen/margin_top_video"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_below="@+id/video_view"
         android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:fontFamily="sans-serif"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
         android:gravity="center"
         android:letterSpacing="0.02"
         android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="#f531353b"
         android:textSize="@dimen/sp_20"
         android:textStyle="bold"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
         tools:text="Judul" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_below="@+id/title"
         android:id="@+id/description"
         android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
         android:gravity="center"
         android:letterSpacing="0.02"
         android:lineSpacingExtra="@dimen/sp_4"
         android:minLines="2"
         android:textColor="#ae31353b"
         android:textSize="@dimen/sp_14"
-        android:textStyle="normal"
+        app:typographyType="body_2"
         tools:text="Deskripsi" />
 
 </RelativeLayout>
