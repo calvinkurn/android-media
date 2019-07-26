@@ -55,7 +55,8 @@ public class OnboardingAnimationHelper {
 
     public static ObjectAnimator appearText(final TextView v) {
         if (v != null) {
-            return ObjectAnimator.ofInt(v, "visibility", View.GONE, View.VISIBLE);
+            ObjectAnimator anim = ObjectAnimator.ofFloat(v, "alpha", 0, 1);
+            return anim;
         }
         return null;
     }
@@ -97,7 +98,7 @@ public class OnboardingAnimationHelper {
         return null;
     }
 
-    public static ValueAnimator slideLefttoRight(final View view) {
+    public static ValueAnimator slideReverseX(final View view) {
         if (view != null) {
             ValueAnimator valueAnimator = ValueAnimator.ofInt(-(int) (view.getWidth() * 1.5), 0);
 
