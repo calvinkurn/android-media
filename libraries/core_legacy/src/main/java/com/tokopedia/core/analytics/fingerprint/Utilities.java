@@ -77,7 +77,7 @@ public class Utilities {
         if(GlobalConfig.DEBUG)
             return "True";
         if(userSession != null && CommonUtils.checkStringNotNull(userSession.getEmail()))
-            return userSession.getEmail().contains("tokopedia") ? "True" : "False";
+            return userSession.getEmail().contains("@tokopedia") ? "True" : "False";
         else
             return "False";
     }
