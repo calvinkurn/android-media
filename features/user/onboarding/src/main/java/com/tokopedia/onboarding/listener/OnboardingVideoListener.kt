@@ -2,6 +2,6 @@ package com.tokopedia.onboarding.listener
 
 interface OnboardingVideoListener {
 
-    fun onPageSelected(position: Int, isSlideRight: Boolean)
+    fun onPageSelected(position: Int)
 
 }

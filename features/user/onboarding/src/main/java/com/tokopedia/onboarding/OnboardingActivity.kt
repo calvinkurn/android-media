@@ -3,7 +3,6 @@ package com.tokopedia.onboarding
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.view.ViewPager
@@ -61,7 +60,6 @@ class OnboardingActivity : BaseActivity() {
     lateinit var registerButton: ButtonCompat
     lateinit var skipButton: TextView
     var currentPosition = 0
-    private var lastPosition = 0
 
     private var indicatorItems = java.util.ArrayList<ImageView>()
     lateinit var fragmentList: ArrayList<Fragment>
@@ -118,8 +116,7 @@ class OnboardingActivity : BaseActivity() {
         pagerAdapter?.let {
             val fragment = it.fragmentList[position]
             if (fragment is OnboardingVideoListener) {
-                fragment.onPageSelected(position, lastPosition < position)
-                lastPosition = position
+                fragment.onPageSelected(position)
             }
         }
     }

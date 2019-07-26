@@ -139,43 +139,12 @@ class OnboardingFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onPageSelected(position: Int, isSlideRight: Boolean) {
-        playAnimationTitleDesc(isSlideRight)
+    override fun onPageSelected(position: Int) {
+        playAnimationTitleDesc()
     }
 
-    private fun playAnimationTitleDesc(isSlideRight: Boolean) {
-        titleView?.visibility = View.VISIBLE
-        descView?.visibility = View.VISIBLE
-
-        val slideTitle: ValueAnimator?
-        val slideDesc: ValueAnimator?
-        if (isSlideRight) {
-            slideTitle = OnboardingAnimationHelper.slideRightToLeft(titleView)
-            slideDesc = OnboardingAnimationHelper.slideRightToLeft(descView)
-        } else {
-            slideTitle = OnboardingAnimationHelper.slideLefttoRight(titleView)
-            slideDesc = OnboardingAnimationHelper.slideLefttoRight(descView)
-        }
-
-        val fadeTitle = OnboardingAnimationHelper.appearText(titleView)
-        val fadeDesc = OnboardingAnimationHelper.appearText(descView)
-
-        if (slideTitle != null && slideDesc != null) {
-            slideDesc.startDelay = 30L
-            val set = AnimatorSet()
-            set.playTogether(slideTitle, slideDesc, fadeTitle, fadeDesc)
-            set.duration = 800L
-            set.start()
-        }
-
+    private fun playAnimationTitleDesc() {
         videoView?.start()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (userVisibleHint) {
-            videoView?.start()
-        }
     }
 
     private fun getTitleMsg(): String {
