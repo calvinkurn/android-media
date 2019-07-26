@@ -207,7 +207,7 @@ public class EventReviewTicketPresenter
                 tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(getView().getActivity(),
                         Utils.Constants.EVENTS,
                         Utils.Constants.EVENTS,
-                        "");
+                        com.tokopedia.oms.view.utils.Utils.LOYALTY_DEFAULT_TAB);
         loyaltyIntent.putExtra(Utils.Constants.CHECKOUTDATA, requestBody.toString());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID,
                 checkoutData.getDigitalProductID());

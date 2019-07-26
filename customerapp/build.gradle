@@ -239,6 +239,9 @@ android {
         vectorDrawables.useSupportLibrary = vectorDrawable
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         resConfigs "en", "id"
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
     }
 
     dexOptions {
@@ -581,4 +584,3 @@ project.ext.sentryCli = [
 
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/sentry.gradle"
-apply plugin: 'com.google.gms.google-services'

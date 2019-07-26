@@ -92,6 +92,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
     private var labelAlamatList: Array<String> = emptyArray()
+    private var isLatitudeNotEmpty: Boolean? = false
+    private var isLongitudeNotEmpty: Boolean? = false
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
@@ -127,8 +129,17 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)!!
             saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
             token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
-            currentLat = saveAddressDataModel?.latitude?.toDouble()
-            currentLong = saveAddressDataModel?.longitude?.toDouble()
+
+            isLatitudeNotEmpty = saveAddressDataModel?.latitude?.isNotEmpty()
+            isLatitudeNotEmpty?.let {
+                if (it) currentLat = saveAddressDataModel?.latitude?.toDouble()
+            }
+
+            isLongitudeNotEmpty = saveAddressDataModel?.longitude?.isNotEmpty()
+            isLongitudeNotEmpty?.let {
+                if (it) currentLong = saveAddressDataModel?.longitude?.toDouble()
+            }
+
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)!!
             isUnnamedRoad = arguments?.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD) ?: false
         }
@@ -791,21 +802,31 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun setSaveAddressModel() {
-        var detailAddress = ""
+        var address1 = ""
+        val detailAddress: String
         if (!isMismatch && !isMismatchSolved) {
             detailAddress = et_detail_address.text.toString()
 
-            saveAddressDataModel?.address1 = "${saveAddressDataModel?.title} ${detailAddress}, ${saveAddressDataModel?.formattedAddress}"
+            address1 = "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress}"
+            if (detailAddress.isNotEmpty()) address1 += " [Tokopedia Note: ${detailAddress}]"
+
+            saveAddressDataModel?.address1 = address1
             saveAddressDataModel?.address2 = "$currentLat,$currentLong"
 
         } else {
+            val etAlamat = et_alamat_mismatch.text.toString()
+            if (etAlamat.isNotEmpty()) address1 = "$etAlamat, "
             detailAddress = tv_detail_alamat_mismatch.text.toString()
             if (isMismatch) {
-                saveAddressDataModel?.address1 = "${detailAddress} ${saveAddressDataModel?.selectedDistrict}"
+                address1 += "${saveAddressDataModel?.selectedDistrict}"
+                if (detailAddress.isNotEmpty()) address1 += " [Tokopedia Note: ${detailAddress}]"
+                saveAddressDataModel?.address1 = address1
                 saveAddressDataModel?.address2 = ""
 
             } else {
-                saveAddressDataModel?.address1 = "${saveAddressDataModel?.title} ${detailAddress}, ${saveAddressDataModel?.formattedAddress}"
+                address1 += "${saveAddressDataModel?.formattedAddress}"
+                if (detailAddress.isNotEmpty()) address1 += " [Tokopedia Note: ${detailAddress}]"
+                saveAddressDataModel?.address1 = address1
                 saveAddressDataModel?.address2 = "$currentLat,$currentLong"
             }
         }

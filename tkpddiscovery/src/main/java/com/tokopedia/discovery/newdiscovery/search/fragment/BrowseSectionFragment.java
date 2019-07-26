@@ -304,7 +304,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
                 } else {
                     SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }
-                clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
                 reloadData();
