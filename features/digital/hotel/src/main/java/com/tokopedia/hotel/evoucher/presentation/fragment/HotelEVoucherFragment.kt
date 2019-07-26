@@ -17,6 +17,7 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -149,6 +150,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 out.close()
                 uri = Uri.fromFile(file)
             } catch (e: Exception) {
+                Log.e("ErrorWhy", e.message)
             }
         }
         return uri
