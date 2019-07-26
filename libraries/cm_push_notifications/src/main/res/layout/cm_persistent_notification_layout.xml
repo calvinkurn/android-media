@@ -144,5 +144,5 @@
         android:layout_width="@dimen/dp_36"
         android:layout_height="@dimen/dp_36"
         android:padding="@dimen/dp_11"
-        android:src="@drawable/ic_close_black" />
+        android:src="@drawable/cm_ic_close_black" />
 </LinearLayout>
