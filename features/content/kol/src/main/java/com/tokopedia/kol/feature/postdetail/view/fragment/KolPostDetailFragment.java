@@ -785,7 +785,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
         if (getActivity() != null) {
-//            doShare(String.format("%s %s", description, url), title);
             new ShareBottomSheets().show(getActivity().getSupportFragmentManager(),
                     ShareBottomSheets.Companion.constructShareData("", imageUrl, url, description, title),
                     packageName -> {

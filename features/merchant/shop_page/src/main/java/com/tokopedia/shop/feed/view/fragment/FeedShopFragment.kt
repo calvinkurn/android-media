@@ -454,8 +454,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
         activity?.let {
-//            doShare(url, String.format("%s %s", description, "%s"), title)
-
             ShareBottomSheets().show(activity!!.supportFragmentManager,
                     ShareBottomSheets.constructShareData("", iamgeUrl, url, description, title),
                     object : ShareBottomSheets.OnShareItemClickListener {
