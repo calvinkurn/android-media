@@ -29,11 +29,13 @@ class InvoicePreviewViewModel(
         totalPriceAmount), PreviewViewModel {
 
     override fun notEnoughRequiredData(): Boolean {
-        return invoiceCode.isEmpty() ||
+        return id == -1 ||
+                invoiceCode.isEmpty() ||
                 productName.isEmpty() ||
                 date.isEmpty() ||
                 imageUrl.isEmpty() ||
                 invoiceUrl.isEmpty() ||
+                statusId == -1 ||
                 status.isEmpty() ||
                 totalPriceAmount.isEmpty()
     }

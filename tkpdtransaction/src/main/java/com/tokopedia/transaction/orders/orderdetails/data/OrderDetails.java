@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.data;
 
+import android.net.Uri;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
@@ -240,13 +242,10 @@ public class OrderDetails {
     }
 
     public String getInvoiceId() {
-        String invoice = "";
+        String invoiceUrl = getInvoiceUrl();
+        Uri invoiceUri = Uri.parse(invoiceUrl);
 
-        if (!items.isEmpty()) {
-            invoice = String.valueOf(items.get(0).getId());
-        }
-
-        return invoice;
+        return invoiceUri.getQueryParameter("id");
     }
 
     public String getProductImageUrl() {

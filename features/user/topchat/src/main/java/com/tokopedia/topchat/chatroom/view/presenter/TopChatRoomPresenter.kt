@@ -592,13 +592,13 @@ class TopChatRoomPresenter @Inject constructor(
         val totalPriceAmount = view.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
 
         val invoiceViewModel = InvoicePreviewViewModel(
-                id.toInt(),
+                id.toIntOrNull() ?: -1,
                 invoiceCode,
                 productName,
                 date,
                 imageUrl,
                 invoiceUrl,
-                statusId.toInt(),
+                statusId.toIntOrNull() ?: -1,
                 status,
                 totalPriceAmount
         )
