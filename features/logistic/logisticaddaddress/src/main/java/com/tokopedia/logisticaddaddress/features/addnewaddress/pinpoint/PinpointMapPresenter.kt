@@ -12,6 +12,7 @@ import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.GetDistrictSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
@@ -43,8 +44,13 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         getDistrictUseCase.execute(RequestParams.create(), GetDistrictSubscriber(view, getDistrictMapper))
     }
 
-    fun autofill(latlng: String) {
-        autofillUseCase.execute(latlng)
+    fun autofill(lat: Double, long: Double) {
+        if (AddNewAddressUtils.hasDefaultCoordinate(lat, long)) {
+            view.showUndetectedDialog()
+            return
+        }
+        val param = "$lat,$long"
+        autofillUseCase.execute(param)
                 .subscribe(
                         {
                             if (it.err_message.isNotEmpty()

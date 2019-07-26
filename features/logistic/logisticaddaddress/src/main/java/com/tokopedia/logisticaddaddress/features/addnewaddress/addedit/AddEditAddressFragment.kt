@@ -947,6 +947,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun showOutOfReachDialog() {
     }
 
+    override fun showUndetectedDialog() {
+    }
+
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);

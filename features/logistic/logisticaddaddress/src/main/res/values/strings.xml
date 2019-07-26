@@ -94,6 +94,8 @@
     <string name="invalid_desc">Tenang, kamu tetap dapat memilih lokasi ini dengan menambahkan detail alamat secara jelas.</string>
     <string name="out_of_indonesia_title">Lokasi di luar jangkauan</string>
     <string name="out_of_indonesia_desc">Saat ini Tokopedia hanya melayani pengiriman di Indonesia.</string>
+    <string name="undetected_title">Lokasi Anda belum terisi</string>
+    <string name="undetected_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="research_description">ic_research</string>
     <string name="invalid_img_description">alamat tidak mendukung</string>
     <string name="change_pinpoint">Ubah Pinpoint</string>

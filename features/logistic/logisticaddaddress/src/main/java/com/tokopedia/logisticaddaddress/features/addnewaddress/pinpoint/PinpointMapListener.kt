@@ -17,4 +17,5 @@ interface PinpointMapListener: CustomerView {
     fun showAutoComplete(lat: Double, long: Double)
     fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean)
     fun showOutOfReachDialog()
+    fun showUndetectedDialog()
 }

@@ -145,7 +145,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
-        presenter.autofill("$currentLat,$currentLong")
+        presenter.autofill(currentLat ?: 0.0, currentLong ?: 0.0)
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -256,11 +256,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private fun onMapIdleListener() {
         if (!isGetDistrict) {
             val target: LatLng? = this.googleMap?.cameraPosition?.target
-            val latTarget = target?.latitude
-            val longTarget = target?.longitude
+            val latTarget = target?.latitude ?: 0.0
+            val longTarget = target?.longitude ?: 0.0
 
             presenter.clearCacheAutofill()
-            presenter.autofill("$latTarget,$longTarget")
+            presenter.autofill(latTarget, longTarget)
         } else {
             whole_loading_container?.visibility = View.GONE
             invalid_container?.visibility = View.GONE
@@ -406,6 +406,21 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         invalid_title?.text = getString(R.string.out_of_indonesia_title)
         invalid_desc?.text = getString(R.string.out_of_indonesia_desc)
         invalid_img?.setImageResource(R.drawable.tokopedia_out_of_indonesia)
+        invalid_button?.visibility = View.GONE
+
+        invalid_ic_search_btn?.setOnClickListener {
+            currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+        }
+    }
+
+    override fun showUndetectedDialog() {
+        whole_loading_container?.visibility = View.GONE
+        getdistrict_container?.visibility = View.GONE
+        invalid_container?.visibility = View.VISIBLE
+
+        invalid_title?.text = getString(R.string.undetected_title)
+        invalid_desc?.text = getString(R.string.undetected_desc)
+        invalid_img?.setImageResource(R.drawable.tokopedia_konslet)
         invalid_button?.visibility = View.GONE
 
         invalid_ic_search_btn?.setOnClickListener {
