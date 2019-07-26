@@ -29,12 +29,6 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     private val productSizeVariant = itemView.findViewById<LinearLayout>(R.id.ll_variant_size)
     private val productSizeVariantValue = itemView.findViewById<TextView>(R.id.tv_variant_size)
 
-//    private val closeButton = itemView.findViewById<ImageView>(R.id.iv_close)
-
-//    interface ItemListener {
-//        fun closeItem(productPreview: ProductPreviewViewModel, position: Int)
-//    }
-
     override fun getButtonView(itemView: View): ImageView? {
         return itemView.findViewById(R.id.iv_close)
     }
@@ -45,10 +39,6 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         ImageHandler.loadImageRounded(productImage?.context, productImage, model.imageUrl, toDp(3))
         productName?.text = model.name
         productPrice?.text = model.price
-
-//        closeButton?.setOnClickListener {
-//            itemListener.closeItem(model, position)
-//        }
 
         if (model.doesNotHaveVariant()) {
             hideVariantLayout()
@@ -69,35 +59,6 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
             productSizeVariant?.visibility = View.GONE
         }
     }
-
-//    fun bind(productPreview: ProductPreviewViewModel, position: Int) {
-//        ImageHandler.loadImageRounded(productImage?.context, productImage, productPreview.imageUrl, toDp(3))
-//        productName?.text = productPreview.name
-//        productPrice?.text = productPreview.price
-//
-//        closeButton?.setOnClickListener {
-//            itemListener.closeItem(productPreview, position)
-//        }
-//
-//        if (productPreview.doesNotHaveVariant()) {
-//            hideVariantLayout()
-//            return
-//        }
-//
-//        if (productPreview.hasColorVariant()) {
-//            val backgroundDrawable = getBackgroundDrawable(productPreview.colorHexVariant)
-//            productColorVariantHex?.background = backgroundDrawable
-//            productColorVariantValue?.text = productPreview.colorVariant
-//        } else {
-//            productColorVariant?.visibility = View.GONE
-//        }
-//
-//        if (productPreview.hasSizeVariant()) {
-//            productSizeVariantValue?.text = productPreview.sizeVariant
-//        } else {
-//            productSizeVariant?.visibility = View.GONE
-//        }
-//    }
 
     private fun hideVariantLayout() {
         productVariantContainer?.visibility = View.GONE
