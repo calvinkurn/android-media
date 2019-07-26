@@ -74,10 +74,12 @@ public class Utilities {
     }
 
     public static String isNakama(UserSessionInterface userSession){
+        if(GlobalConfig.DEBUG)
+            return "True";
         if(userSession != null && CommonUtils.checkStringNotNull(userSession.getEmail()))
-            return userSession.getEmail().contains("tokokopedia") ? "Yes" : "No";
+            return userSession.getEmail().contains("tokopedia") ? "True" : "False";
         else
-            return "No";
+            return "False";
     }
 
     public static boolean isDeviceEmulated() {
