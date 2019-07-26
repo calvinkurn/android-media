@@ -30,7 +30,7 @@ class ProductDetailTracking() {
     }
 
     fun eventTalkClicked() {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK,
@@ -52,7 +52,7 @@ class ProductDetailTracking() {
     private fun eventClickBuyOrAddToCart(productId: String, isVariant: Boolean,
                                          action: String) {
         if (productId.isEmpty()) return
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             action,
@@ -64,28 +64,28 @@ class ProductDetailTracking() {
     }
 
     fun eventReviewClicked() {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
             ProductTrackingConstant.ProductReview.REVIEW)
     }
 
     fun eventReportLogin() {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.Report.EVENT,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.Report.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
             ProductTrackingConstant.Report.EVENT_LABEL)
     }
 
     fun eventReportNoLogin() {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.Report.EVENT,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.Report.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
             ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
     }
 
     fun eventCartMenuClicked(variant: String?) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT,
             variant ?: "")
@@ -177,7 +177,7 @@ class ProductDetailTracking() {
         if (productId.isNullOrEmpty()) {
             return
         }
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "click - cek keranjang",
@@ -185,7 +185,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickVariant(eventLabel: String) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "click - variants",
@@ -193,7 +193,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherSeeDetail(id: Int) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
                 ProductTrackingConstant.MerchantVoucher.DETAIL).joinToString(" - "),
@@ -201,7 +201,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherSeeAll(id: Int) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
                 ProductTrackingConstant.MerchantVoucher.SEE_ALL).joinToString(" - "),
@@ -301,7 +301,7 @@ class ProductDetailTracking() {
 
     fun eventClickWishlistOnAffiliate(userId: String,
                                       productId: String) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             mutableMapOf<String, Any>(KEY_EVENT to ProductTrackingConstant.Affiliate.CLICK_AFFILIATE,
                 KEY_CATEGORY to ProductTrackingConstant.Affiliate.CATEGORY,
                 KEY_ACTION to ProductTrackingConstant.Affiliate.ACTION_CLICK_WISHLIST,
@@ -322,11 +322,11 @@ class ProductDetailTracking() {
                 KEY_LABEL to productId)
         }
         params.put(KEY_USER_ID, userId)
-        TrackApp.getInstance().gtm.pushGeneralGTMV5(params)
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(params)
     }
 
     fun eventSendMessage() {
-        TrackApp.getInstance().gtm.pushGeneralGTMV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
             ProductTrackingConstant.Message.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
@@ -335,7 +335,7 @@ class ProductDetailTracking() {
     }
 
     fun eventSendChat() {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PRODUCT_PAGE.toLowerCase(),
             ProductTrackingConstant.Action.CLICK,
@@ -345,7 +345,7 @@ class ProductDetailTracking() {
 
     fun eventPDPAddToWishlist(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "add wishlist",
@@ -354,7 +354,7 @@ class ProductDetailTracking() {
 
     fun eventPDPAddToWishlistNonLogin(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "add wishlist - non logged in",
@@ -363,7 +363,7 @@ class ProductDetailTracking() {
 
     fun eventPDPRemoveToWishlist(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "remove wishlist",
@@ -371,7 +371,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickReviewOnSeeAllImage(productId: Int) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.ImageReview.ACTION_SEE_ALL,
@@ -380,7 +380,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickReviewOnBuyersImage(productId: Int, reviewId: String?) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.ImageReview.ACTION_SEE_ITEM,
@@ -598,7 +598,7 @@ class ProductDetailTracking() {
     }
 
     fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(event,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(event,
                 category,
                 action,
                 label)

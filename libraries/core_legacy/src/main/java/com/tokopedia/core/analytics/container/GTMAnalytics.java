@@ -358,7 +358,7 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent(keyEvent, bundle, context);
     }
 
-    public void pushGeneralGTMV5(Map<String, Object> params){
+    public void pushGeneralGtmV5(Map<String, Object> params){
         Bundle bundle = new Bundle();
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY)+"");
         bundle.putString(KEY_ACTION, params.get(KEY_ACTION)+"");
@@ -367,7 +367,7 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent(params.get(KEY_EVENT)+"", bundle, context);
     }
 
-    public void pushGeneralGTMV5(String event, String category, String action, String label){
+    public void pushGeneralGtmV5(String event, String category, String action, String label){
         Bundle bundle = new Bundle();
         bundle.putString(KEY_CATEGORY, category);
         bundle.putString(KEY_ACTION, action);
