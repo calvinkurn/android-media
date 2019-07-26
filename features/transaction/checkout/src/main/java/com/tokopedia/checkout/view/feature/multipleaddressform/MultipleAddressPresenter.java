@@ -246,13 +246,6 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
             @Override
             public void onNext(SetShippingAddressData setShippingAddressData) {
-                NullCheckerKt.isContainNull(setShippingAddressData, s -> {
-                    ContainNullException exception = new ContainNullException("Found " + s + " on " + MultipleAddressPresenter.class.getSimpleName());
-                    if (!BuildConfig.DEBUG) {
-                        Crashlytics.logException(exception);
-                    }
-                    return Unit.INSTANCE;
-                });
 
                 view.hideLoading();
                 if (setShippingAddressData.isSuccess()) {

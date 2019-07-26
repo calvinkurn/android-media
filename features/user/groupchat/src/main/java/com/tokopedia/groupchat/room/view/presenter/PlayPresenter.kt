@@ -4,6 +4,7 @@ import android.util.Log
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
@@ -18,8 +19,10 @@ import com.tokopedia.groupchat.room.domain.mapper.PlayWebSocketMessageMapper
 import com.tokopedia.groupchat.room.domain.usecase.GetDynamicButtonsUseCase
 import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.domain.usecase.GetStickyComponentUseCase
+import com.tokopedia.groupchat.room.domain.usecase.GetVideoStreamUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -41,7 +44,8 @@ class PlayPresenter @Inject constructor(
         var getPlayInfoUseCase: GetPlayInfoUseCase,
         var getDynamicButtonsUseCase: GetDynamicButtonsUseCase,
         var getStickyComponentUseCase: GetStickyComponentUseCase,
-        var webSocketMessageMapper: PlayWebSocketMessageMapper)
+        var webSocketMessageMapper: PlayWebSocketMessageMapper,
+        var getVideoStreamUseCase: GetVideoStreamUseCase)
     : BaseDaggerPresenter<PlayContract.View>(), PlayContract.Presenter {
 
     private var mSubscription: CompositeSubscription? = null
@@ -194,6 +198,7 @@ class PlayPresenter @Inject constructor(
                         is BackgroundViewModel -> view.onBackgroundUpdated(it)
                         is SprintSaleAnnouncementViewModel -> view.onSprintSaleReceived(it)
                         is StickyComponentViewModel -> view.onStickyComponentReceived(it)
+                        is VideoStreamViewModel -> view.onVideoStreamUpdated(it)
                         else -> {
                             view.addIncomingMessage(it)
                         }
@@ -297,5 +302,23 @@ class PlayPresenter @Inject constructor(
 
 
         afterSendMessage()
+    }
+
+    override fun getVideoStream(channelId: String?, onSuccessGetVideoStream: (VideoStreamViewModel) -> Unit, onErrorGetVideoStream: (Throwable) -> Unit) {
+        getVideoStreamUseCase.execute(GetVideoStreamUseCase.createParams(channelId),
+                object : Subscriber<VideoStreamViewModel>() {
+            override fun onNext(t: VideoStreamViewModel) {
+                onSuccessGetVideoStream(t)
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                onErrorGetVideoStream(e)
+            }
+
+        })
     }
 }
