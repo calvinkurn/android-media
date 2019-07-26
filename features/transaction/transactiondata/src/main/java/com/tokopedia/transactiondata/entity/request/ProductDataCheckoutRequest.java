@@ -294,6 +294,10 @@ public class ProductDataCheckoutRequest implements Parcelable {
         this.tokopediaCornerFlag = tokopediaCornerFlag;
     }
 
+    public boolean isDiscountedPrice() {
+        return isDiscountedPrice;
+    }
+
     public static final class Builder {
         private int productId;
         private boolean isPurchaseProtection;

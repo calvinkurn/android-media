@@ -397,6 +397,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(false));
                                 }
                                 analyticsProductCheckoutData.setIsFulfillment(String.valueOf(groupShop.isFulfillment()));
+                                analyticsProductCheckoutData.setDiscountedPrice(product.getProductOriginalPrice() > 0);
 
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
                                 if (product.getErrors() != null) {

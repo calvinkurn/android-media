@@ -269,7 +269,7 @@ public class ShipmentDataRequestConverter {
                 .codFlag(cartItem.getAnalyticsProductCheckoutData().getCodFlag())
                 .tokopediaCornerFlag(cartItem.getAnalyticsProductCheckoutData().getTokopediaCornerFlag())
                 .isFulfillment(cartItem.getAnalyticsProductCheckoutData().getIsFulfillment())
-//                .setDiscountedPrice()
+                .setDiscountedPrice(cartItem.getAnalyticsProductCheckoutData().isDiscountedPrice())
                 .build();
     }
 

@@ -1091,6 +1091,7 @@ public class CartListPresenter implements ICartListPresenter {
         );
         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(cartItemData.getOriginData().getCartId()));
         enhancedECommerceProductCartMapData.setDimension54(cartItemData.isFulfillment());
+        enhancedECommerceProductCartMapData.setDimension53(cartItemData.getOriginData().getPriceOriginal() > 0);
         enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
         enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
         enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));

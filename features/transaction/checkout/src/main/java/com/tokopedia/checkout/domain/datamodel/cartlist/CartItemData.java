@@ -188,6 +188,7 @@ public class CartItemData implements Parcelable {
         private int warehouseId;
         private String promoCodes;
         private String promoDetails;
+        private int priceOriginal;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -601,6 +602,14 @@ public class CartItemData implements Parcelable {
             this.promoDetails = promoDetails;
         }
 
+        public int getPriceOriginal() {
+            return priceOriginal;
+        }
+
+        public void setPriceOriginal(int priceOriginal) {
+            this.priceOriginal = priceOriginal;
+        }
+
         public OriginData() {
         }
 
@@ -656,6 +665,7 @@ public class CartItemData implements Parcelable {
             dest.writeInt(this.warehouseId);
             dest.writeString(this.promoCodes);
             dest.writeString(this.promoDetails);
+            dest.writeInt(this.priceOriginal);
         }
 
         protected OriginData(Parcel in) {
@@ -704,6 +714,7 @@ public class CartItemData implements Parcelable {
             this.warehouseId = in.readInt();
             this.promoCodes = in.readString();
             this.promoDetails = in.readString();
+            this.priceOriginal = in.readInt();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
