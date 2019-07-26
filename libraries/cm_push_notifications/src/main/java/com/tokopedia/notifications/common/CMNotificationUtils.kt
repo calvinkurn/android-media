@@ -111,7 +111,7 @@ object CMNotificationUtils {
             appId = UUID.randomUUID().toString()
             cacheHandler.saveStringValue(CMConstant.UNIQUE_APP_ID_CACHE_KEY, appId)
         }
-        return appId
+        return appId ?: ""
     }
 
     fun saveToken(context: Context, token: String) {
@@ -207,12 +207,12 @@ object CMNotificationUtils {
 }
 
 fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext,
-                                    block: suspend (()->Unit),
-                                    onError: (Throwable)-> Unit) =
-        launch (context){
-            try{
+                                    block: suspend (() -> Unit),
+                                    onError: (Throwable) -> Unit) =
+        launch(context) {
+            try {
                 block.invoke()
-            } catch (t: Throwable){
+            } catch (t: Throwable) {
                 onError(t)
             }
         }
