@@ -127,7 +127,7 @@ class BuyerAccountPresenter(
 
     companion object {
         val X_SOURCE_RECOM_WIDGET = "account_buyer_page"
-        val AKUN_PAGE = "akun"
+        val AKUN_PAGE = "account"
     }
 
     override fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit){
