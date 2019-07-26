@@ -1273,9 +1273,9 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setDimension57(cartRecentViewItemHolderData.getShopName());
         enhancedECommerceProductCartMapData.setDimension59(cartRecentViewItemHolderData.getShopType());
         enhancedECommerceProductCartMapData.setDimension77(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
-        enhancedECommerceProductCartMapData.setBrand("");
+        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceProductCartMapData.setCategoryId("");
-        enhancedECommerceProductCartMapData.setVariant("");
+        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
@@ -1302,9 +1302,9 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setShopType(cartRecommendationItemHolderData.getRecommendationItem().getShopType());
         enhancedECommerceProductCartMapData.setShopName(cartRecommendationItemHolderData.getRecommendationItem().getShopName());
         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
-        enhancedECommerceProductCartMapData.setBrand("");
+        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceProductCartMapData.setCategoryId("");
-        enhancedECommerceProductCartMapData.setVariant("");
+        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());

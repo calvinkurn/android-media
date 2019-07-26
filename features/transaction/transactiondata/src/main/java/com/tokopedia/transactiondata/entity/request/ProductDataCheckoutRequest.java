@@ -46,6 +46,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
     private String codFlag;
     private String tokopediaCornerFlag;
     private String isFulfillment;
+    private boolean isDiscountedPrice;
 
     public ProductDataCheckoutRequest() {
     }
@@ -78,6 +79,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         codFlag = builder.codFlag;
         tokopediaCornerFlag = builder.tokopediaCornerFlag;
         isFulfillment = builder.isFulfillment;
+        isDiscountedPrice = builder.isDiscountedPrice;
     }
 
     protected ProductDataCheckoutRequest(Parcel in) {
@@ -108,6 +110,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         codFlag = in.readString();
         tokopediaCornerFlag = in.readString();
         isFulfillment = in.readString();
+        isDiscountedPrice = in.readByte() != 0;
     }
 
     @Override
@@ -139,6 +142,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         dest.writeString(codFlag);
         dest.writeString(tokopediaCornerFlag);
         dest.writeString(isFulfillment);
+        dest.writeByte((byte) (isDiscountedPrice ? 1 : 0));
     }
 
     @Override
@@ -318,6 +322,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         private String codFlag;
         private String tokopediaCornerFlag;
         private String isFulfillment;
+        private boolean isDiscountedPrice;
 
         public Builder() {
         }
@@ -454,6 +459,11 @@ public class ProductDataCheckoutRequest implements Parcelable {
 
         public Builder isFulfillment(String val) {
             isFulfillment = val;
+            return this;
+        }
+
+        public Builder setDiscountedPrice(boolean val) {
+            isDiscountedPrice = val;
             return this;
         }
 
