@@ -25,6 +25,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_CIPF_OLD_PHONE = "oldPhone"
     @JvmField
     val PARAM_EMAIL = "email"
+    @JvmField
+    val PARAM_SOURCE = "source"
 
     //VerificationActivity Param
     @JvmField
