@@ -215,10 +215,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.title_loading));
         tvTitle.setText(getString(R.string.toppay_title));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            scroogeWebView.setWebContentsDebuggingEnabled(true);
-        }
-
     }
 
     private void setupURIPass(Uri data) {
