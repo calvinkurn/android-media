@@ -37,4 +37,6 @@
     <string name="product_manage_label_subscribe_gold_merchant">Berlangganan</string>
     <string name="product_manage_label_stock_counter">Stok %1$d</string>
     <string name="product_manage_desc_product_on_supervision">Produk dalam Pengawasan %1$s</string>
+    <string name="product_manage_feature_name_cashback">Cashback</string>
+
 </resources>

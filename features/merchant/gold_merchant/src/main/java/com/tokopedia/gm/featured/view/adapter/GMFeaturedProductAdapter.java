@@ -3,15 +3,21 @@ package com.tokopedia.gm.featured.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;
 import com.tokopedia.gm.featured.helper.OnStartDragListener;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
+import com.tokopedia.gm.featured.view.adapter.model.TickerReadMoreFeaturedModel;
 import com.tokopedia.gm.featured.view.adapter.viewholder.GMFeaturedProductViewHolder;
+import com.tokopedia.gm.featured.view.adapter.viewholder.TickerReadMoreFeaturedViewHolder;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by normansyahputa on 9/6/17.
@@ -21,10 +27,15 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
         ItemTouchHelperAdapter, GMFeaturedProductViewHolder.PostDataListener {
 
     private OnStartDragListener onStartDragListener;
+    private TickerReadMoreFeaturedViewHolder.TickerReadMoreFeaturedViewHolderListener tickerReadMoreFeaturedViewHolderListener;
     private UseCaseListener useCaseListener;
 
-    public GMFeaturedProductAdapter(OnStartDragListener onStartDragListener) {
+    public GMFeaturedProductAdapter(
+            OnStartDragListener onStartDragListener,
+            TickerReadMoreFeaturedViewHolder.TickerReadMoreFeaturedViewHolderListener tickerReadMoreFeaturedViewHolderListener
+    ) {
         this.onStartDragListener = onStartDragListener;
+        this.tickerReadMoreFeaturedViewHolderListener = tickerReadMoreFeaturedViewHolderListener;
     }
 
     public void setUseCaseListener(UseCaseListener useCaseListener) {
@@ -32,12 +43,50 @@ public class GMFeaturedProductAdapter extends BaseMultipleCheckListAdapter<GMFea
     }
 
     @Override
+    public List<GMFeaturedProductModel> getData() {
+        List<GMFeaturedProductModel> gmFeaturedProductModels = new ArrayList<>();
+        for (ItemType model : super.getData()) {
+            if(model instanceof GMFeaturedProductModel){
+                gmFeaturedProductModels.add((GMFeaturedProductModel) model);
+            }
+        }
+        return gmFeaturedProductModels;
+    }
+
+    @Override
+    public int getDataSize() {
+        List<GMFeaturedProductModel> gmFeaturedProductModels = new ArrayList<>();
+        for (ItemType model : super.getData()) {
+            if(model instanceof GMFeaturedProductModel){
+                gmFeaturedProductModels.add((GMFeaturedProductModel) model);
+            }
+        }
+        return gmFeaturedProductModels.size();
+    }
+
+    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case GMFeaturedProductModel.TYPE:
-                return new GMFeaturedProductViewHolder(getLayoutView(parent, R.layout.item_gm_featured_product), onStartDragListener, this);
+                return new GMFeaturedProductViewHolder(
+                        getLayoutView(parent, R.layout.item_gm_featured_product), onStartDragListener,
+                        this
+                );
+            case TickerReadMoreFeaturedModel.TYPE:
+                return new TickerReadMoreFeaturedViewHolder(
+                        getLayoutView(parent, R.layout.item_featured_product_ticker_idle_pm),
+                        tickerReadMoreFeaturedViewHolderListener
+                );
             default:
                 return super.onCreateViewHolder(parent, viewType);
+        }
+    }
+
+    @Override
+    protected void bindData(int position, RecyclerView.ViewHolder viewHolder) {
+        super.bindData(position, viewHolder);
+        if(viewHolder instanceof BaseViewHolder){
+            ((BaseViewHolder) viewHolder).bindObject(data.get(position));
         }
     }
 

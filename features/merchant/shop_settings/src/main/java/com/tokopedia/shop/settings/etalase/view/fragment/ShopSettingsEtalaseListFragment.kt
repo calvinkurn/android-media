@@ -20,10 +20,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
@@ -31,18 +34,28 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.etalase.data.BaseShopEtalaseViewModel
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
+import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
 import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity
 import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseAdapter
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFactory
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListPresenter
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder
+import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreEtalaseViewHolder
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
 
-class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseViewModel, ShopEtalaseFactory>(), ShopSettingEtalaseListPresenter.View, ShopEtalaseViewHolder.OnShopEtalaseViewHolderListener {
+class ShopSettingsEtalaseListFragment :
+        BaseSearchListFragment<BaseShopEtalaseViewModel, ShopEtalaseFactory>(),
+        ShopSettingEtalaseListPresenter.View,
+        ShopEtalaseViewHolder.OnShopEtalaseViewHolderListener,
+        TickerReadMoreEtalaseViewHolder.TickerReadMoreListener
+{
     @Inject
     lateinit var shopSettingEtalaseListPresenter: ShopSettingEtalaseListPresenter
+    @Inject
+    lateinit var userSession: UserSessionInterface
     private var shopEtalaseViewModels: ArrayList<ShopEtalaseViewModel>? = null
     private var shopEtalaseAdapter: ShopEtalaseAdapter? = null
     private var progressDialog: ProgressDialog? = null
@@ -51,6 +64,7 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     private var needReload: Boolean = false
     private var recyclerView: RecyclerView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+
 
     private var onShopSettingsEtalaseFragmentListener: OnShopSettingsEtalaseFragmentListener? = null
 
@@ -219,7 +233,7 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     }
 
     override fun getAdapterTypeFactory(): ShopEtalaseFactory {
-        return ShopEtalaseFactory(this)
+        return ShopEtalaseFactory(this, this)
     }
 
     override fun onIconMoreClicked(shopEtalaseViewModel: ShopEtalaseViewModel) {
@@ -262,6 +276,22 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
         this.shopEtalaseViewModels = shopEtalaseViewModels
         onSearchSubmitted(keyword)
         activity!!.invalidateOptionsMenu()
+        if (isIdlePowerMerchant()) {
+            addIdlePowerMerchantTicker()
+        }
+    }
+
+    private fun isIdlePowerMerchant(): Boolean {
+        return userSession.isPowerMerchantIdle
+    }
+
+    private fun addIdlePowerMerchantTicker() {
+        val model = TickerReadMoreViewModel(
+                getString(R.string.ticker_etalase_title),
+                getString(R.string.ticker_etalase_description),
+                getString(R.string.ticker_etalase_read_more)
+        )
+        adapter.addElement(0, model)
     }
 
     override fun onErrorGetShopEtalase(throwable: Throwable) {
@@ -272,7 +302,7 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
         shopEtalaseAdapter!!.clearAllElements()
         isLoadingInitialData = true
         val tempShopEtalaseViewModels = ArrayList<BaseShopEtalaseViewModel>()
-        if (this.shopEtalaseViewModels!= null &&
+        if (this.shopEtalaseViewModels != null &&
                 this.shopEtalaseViewModels!!.size > 0) {
             val textLowerCase = text.toLowerCase()
             for (shopEtalaseViewModel in this.shopEtalaseViewModels!!) {
@@ -298,10 +328,10 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
                 needReload = true
                 if (requestCode == REQUEST_CODE_ADD_ETALASE) {
                     ToasterNormal.showClose(activity!!,
-                            getString( R.string.success_add_etalase ))
-                } else if (requestCode == REQUEST_CODE_EDIT_ETALASE){
+                            getString(R.string.success_add_etalase))
+                } else if (requestCode == REQUEST_CODE_EDIT_ETALASE) {
                     ToasterNormal.showClose(activity!!,
-                            getString( R.string.success_edit_etalase ))
+                            getString(R.string.success_edit_etalase))
                 }
             }
         }
@@ -363,6 +393,10 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         onShopSettingsEtalaseFragmentListener = context as OnShopSettingsEtalaseFragmentListener
+    }
+
+    override fun onReadMoreClicked() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS)
     }
 
     companion object {
