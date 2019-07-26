@@ -279,7 +279,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
         var intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK
         intent.putExtras(getBundle(baseNotificationModel))
-        intent = getCouponCode(baseNotificationModel, intent)
+        intent = updateIntentWithCouponCode(baseNotificationModel, intent)
         return getPendingIntent(context, intent, requestCode)
     }
 
@@ -344,7 +344,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
                         PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
-        fun getCouponCode(baseNotificationModel: BaseNotificationModel, intent: Intent): Intent {
+        fun updateIntentWithCouponCode(baseNotificationModel: BaseNotificationModel, intent: Intent): Intent {
             if (baseNotificationModel.customValues != null)
                 intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE,
                         baseNotificationModel.customValues!!.optString(CMConstant.CustomValuesKeys.COUPON_CODE))

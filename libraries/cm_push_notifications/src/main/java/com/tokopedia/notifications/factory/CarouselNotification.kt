@@ -147,7 +147,7 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
                         notificationManager.cancel(baseNotificationModel.notificationId)
                     } else
                         notificationManager.notify(baseNotificationModel.notificationId, notification)
-                } catch (e: Throwable) {
+                } catch (e: Exception) {
                     notificationManager.cancel(baseNotificationModel.notificationId)
                 }
             }

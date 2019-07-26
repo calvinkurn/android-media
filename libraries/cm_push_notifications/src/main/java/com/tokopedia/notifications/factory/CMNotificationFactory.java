@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,7 +38,8 @@ import java.util.List;
 public class CMNotificationFactory {
 
     private static final String TAG = CMNotificationFactory.class.getSimpleName();
-
+    
+    @Nullable
     public static BaseNotification getNotification(Context context, Bundle bundle) {
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
 
@@ -160,6 +162,7 @@ public class CMNotificationFactory {
         return model;
     }
 
+    @Nullable
     private static Media getMedia(Bundle extras) {
         String actions = extras.getString(CMConstant.PayloadKeys.MEDIA);
         if (TextUtils.isEmpty(actions)) {
@@ -173,6 +176,7 @@ public class CMNotificationFactory {
         return null;
     }
 
+    @Nullable
     private static JSONObject getCustomValues(Bundle extras) {
         String values = extras.getString(CMConstant.PayloadKeys.CUSTOM_VALUE);
         if (TextUtils.isEmpty(values)) {
@@ -185,7 +189,7 @@ public class CMNotificationFactory {
         }
         return null;
     }
-
+    @Nullable
     private static List<ActionButton> getActionButtons(Bundle extras) {
         String actions = extras.getString(CMConstant.PayloadKeys.ACTION_BUTTON);
         if (TextUtils.isEmpty(actions)) {
@@ -202,7 +206,7 @@ public class CMNotificationFactory {
         }
         return null;
     }
-
+    @Nullable
     private static List<PersistentButton> getPersistentNotificationData(Bundle bundle) {
         String persistentData = bundle.getString(CMConstant.PayloadKeys.PERSISTENT_DATA);
         if (TextUtils.isEmpty(persistentData)) {
@@ -219,7 +223,7 @@ public class CMNotificationFactory {
         return null;
     }
 
-
+    @Nullable
     private static ArrayList<ProductInfo> getProductInfoList(Bundle bundle) {
         String productInfoListStr = bundle.getString(CMConstant.PayloadKeys.PRODUCT_INFO_LIST);
         if (TextUtils.isEmpty(productInfoListStr)) {
@@ -235,6 +239,7 @@ public class CMNotificationFactory {
         return null;
     }
 
+    @Nullable
     private static List<Grid> getGridList(Bundle bundle) {
         String persistentData = bundle.getString(CMConstant.PayloadKeys.GRID_DATA);
         if (TextUtils.isEmpty(persistentData)) {
@@ -250,6 +255,7 @@ public class CMNotificationFactory {
         return null;
     }
 
+    @Nullable
     private static JSONObject getVideoNotificationData(Bundle bundle) {
 
         String values = bundle.getString(CMConstant.PayloadKeys.VIDEO_DATA);
@@ -264,6 +270,7 @@ public class CMNotificationFactory {
         return null;
     }
 
+    @Nullable
     private static List<Carousel> getCarouselList(Bundle extras) {
         String carouselData = extras.getString(CMConstant.PayloadKeys.CAROUSEL_DATA);
         if (TextUtils.isEmpty(carouselData)) {
