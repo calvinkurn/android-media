@@ -3,6 +3,7 @@ package com.tokopedia.profile.view.listener
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 
@@ -34,7 +35,9 @@ interface ProfileContract {
         fun onSuccessShouldChangeUsername(shouldChange: Boolean, link: String)
 
         fun onErrorShouldChangeUsername(errorMessage: String, link: String)
+
     }
+
     interface Presenter : CustomerPresenter<View> {
         var cursor: String
 
@@ -54,8 +57,11 @@ interface ProfileContract {
 
         fun trackPostClick(uniqueTrackingId: String, redirectLink: String)
 
-        fun trackPostClickUrl(url:String)
+        fun trackPostClickUrl(url: String)
 
         fun shouldChangeUsername(userId: Int, link: String = "")
+
+        fun getRelatedProfile(onErrorGetRelatedProfile: ((throwable: Throwable?) -> Unit)?,
+                              onSuccessGetRelatedProfile: ((feedPostRelated: FeedPostRelated?) -> Unit)?)
     }
 }

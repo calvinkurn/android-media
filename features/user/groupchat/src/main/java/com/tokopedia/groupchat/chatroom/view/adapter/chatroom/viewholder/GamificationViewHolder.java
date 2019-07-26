@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by nisie on 2/27/18.
@@ -39,9 +40,10 @@ public class GamificationViewHolder extends AbstractViewHolder<GroupChatPointsVi
     @Override
     public void bind(final GroupChatPointsViewModel element) {
 
-        setIcon(element.getType());
-
         Context context = itemView.getContext();
+        setIcon(context, element.getType());
+
+
         String text = String.format("%s <b>" + context.getString(R.string.check_now) + "</b>",
                 element.getText());
         messageView.setText(MethodChecker.fromHtml(text));
@@ -53,27 +55,27 @@ public class GamificationViewHolder extends AbstractViewHolder<GroupChatPointsVi
         });
     }
 
-    private void setIcon(String type) {
+    private void setIcon(Context context, String type) {
         switch (type) {
             case GroupChatPointsViewModel.TYPE_POINTS:
-                loadIcon(R.drawable.ic_point);
+                loadIcon(context,R.drawable.ic_point);
                 break;
             case GroupChatPointsViewModel.TYPE_COUPON:
-                loadIcon(R.drawable.ic_coupon);
+                loadIcon(context,R.drawable.ic_coupon);
                 break;
             case GroupChatPointsViewModel.TYPE_LOYALTY:
-                loadIcon(R.drawable.ic_loyalty);
+                loadIcon(context,R.drawable.ic_loyalty);
                 break;
             default:
-                loadIcon(R.drawable.ic_loyalty);
+                loadIcon(context,R.drawable.ic_loyalty);
         }
     }
 
-    private void loadIcon(int resId) {
+    private void loadIcon( Context context, int resId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(icon, resId);
         } else {
-            icon.setImageResource(resId);
+            icon.setImageDrawable(MethodChecker.getDrawable(context,resId));
         }
     }
 

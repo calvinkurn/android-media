@@ -23,9 +23,9 @@ class TopChatRoomActivity() {
          * To create intent with header already initialized.
          */
         @JvmStatic
-        fun getCallingIntent(context: Context, messageId: String, name: String,
-                             label: String, senderId: String, role: String, mode: Int,
-                             keyword: String, image: String): Intent {
+        fun getCallingIntent(context: Context?, messageId: String?, name: String?,
+                             label: String?, senderId: String?, role: String?, mode: Int,
+                             keyword: String?, image: String?): Intent {
             return Intent()
         }
 
@@ -38,8 +38,7 @@ class TopChatRoomActivity() {
 
         @JvmStatic
         fun getAskSellerIntent(context: Context, toShopId: String, shopName: String,
-                               customSubject: String, customMessage: String, source: String,
-                               avatar: String): Intent {
+                               customMessage: String, source: String, avatar: String): Intent {
             return Intent()
         }
 
@@ -53,8 +52,7 @@ class TopChatRoomActivity() {
 
         @JvmStatic
         fun getAskBuyerIntent(context: Context, toUserId: String, customerName: String,
-                              customSubject: String, customMessage: String, source: String,
-                              avatar: String): Intent {
+                              customMessage: String, source: String, avatar: String): Intent {
             return Intent()
         }
 

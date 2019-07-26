@@ -1,19 +1,13 @@
 package com.tokopedia.checkout.view.feature.shipment.subscriber;
 
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
-import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
-import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
-import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
+import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.List;
 
 import rx.Subscriber;
@@ -49,25 +43,12 @@ public class GetShipmentAddressFormReloadFromMultipleAddressSubscriber extends S
         e.printStackTrace();
         view.hideLoading();
 
-        if (e instanceof UnknownHostException) {
-            view.showToastError(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            view.showToastError(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof CartResponseErrorException) {
-            view.showToastError(e.getMessage());
-        } else if (e instanceof CartResponseDataNullException) {
-            view.showToastError(e.getMessage());
-        } else if (e instanceof CartHttpErrorException) {
-            view.showToastError(e.getMessage());
-        } else if (e instanceof ResponseCartApiErrorException) {
-            view.showToastError(e.getMessage());
-        } else {
-            view.showToastError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        String errorMessage = e.getMessage();
+        if (!(e instanceof CartResponseErrorException)) {
+            errorMessage = ErrorHandler.getErrorMessage(view.getActivityContext(), e);
         }
+
+        view.showToastError(errorMessage);
     }
 
     @Override

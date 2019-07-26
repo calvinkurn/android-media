@@ -447,4 +447,25 @@ public class AffiliateAnalytics {
                 )
         );
     }
+
+    public void onAutoCompleteClicked(String keyword) {
+        getAnalyticTracker().sendGeneralEvent(AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                AffiliateEventTracking.Category.BYME_EXPLORE,
+                AffiliateEventTracking.Action.CLICK_SEARCH_SUGGESTION,
+                keyword);
+    }
+
+    public void trackProductImpressionNonEE(String productId) {
+        getAnalyticTracker().sendGeneralEvent(AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                AffiliateEventTracking.Category.BYME_EXPLORE,
+                AffiliateEventTracking.Action.IMPRESSION_PRODUCT,
+                AffiliateEventTracking.EventLabel.SEARCH_RESULT_PRODUCT_ID+productId);
+    }
+
+    public void onProductSearchClicked(String productId) {
+        getAnalyticTracker().sendGeneralEvent(AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                AffiliateEventTracking.Category.BYME_EXPLORE,
+                AffiliateEventTracking.Action.CLICK_PRODUCT,
+                AffiliateEventTracking.EventLabel.SEARCH_RESULT_PRODUCT_ID+productId);
+    }
 }

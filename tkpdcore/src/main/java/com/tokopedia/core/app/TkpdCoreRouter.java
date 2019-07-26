@@ -32,19 +32,11 @@ public interface TkpdCoreRouter {
 
     void goToManageProduct(Context context);
 
-    void goToEtalaseList(Context context);
-
     void goToDraftProductList(Context context);
 
     void clearEtalaseCache();
 
-    Intent goToEditProduct(Context context, boolean isEdit, String productId);
-
     void resetAddProductCache(Context context);
-
-    void goToWallet(Context context, String url);
-
-    void goToMerchantRedirect(Context context);
 
     void actionAppLink(Context context, String linkUrl);
 
@@ -98,11 +90,7 @@ public interface TkpdCoreRouter {
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
 
-    void goToAddProduct(Activity activity);
-
     boolean isInMyShop(Context context, String shopId);
-
-    Intent getForgotPasswordIntent(Context context, String email);
 
     void invalidateCategoryMenuData();
 
@@ -144,8 +132,6 @@ public interface TkpdCoreRouter {
     Intent getResolutionCenterIntentBuyer(Context context);
 
     Intent getResolutionCenterIntentSeller(Context context);
-
-    String applink(Activity activity, String deeplink);
 
     Intent getKolFollowingPageIntent(Context context, int userId);
 

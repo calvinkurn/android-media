@@ -68,7 +68,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_nav_arrow_right"
+                app:srcCompat="@drawable/ic_nav_arrow_right"
                 android:layout_alignParentEnd="true" />
 
         </RelativeLayout>

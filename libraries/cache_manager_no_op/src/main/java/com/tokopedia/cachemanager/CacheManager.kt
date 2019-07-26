@@ -75,6 +75,8 @@ abstract class CacheManager(val context: Context) {
         //no-op
     }
 
+    fun isExpired(key:String) = cacheRepository.get(key)?.isEmpty() ?: true
+
     companion object {
         const val KEY_ID = "KEY_ID"
         const val RANDOM_RANGE = 100

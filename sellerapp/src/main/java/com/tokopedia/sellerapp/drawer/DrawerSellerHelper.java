@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.drawer;
 
 import android.app.Activity;
+import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
@@ -14,8 +15,9 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -26,20 +28,20 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
-import com.tokopedia.gm.resource.GMConstant;
-import com.tokopedia.gm.subscribe.tracking.GMTracking;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
+import com.tokopedia.gm.subscribe.tracking.GMTracking;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
@@ -340,9 +342,12 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.ADD_PRODUCT:
                     if (context.getApplication() instanceof TkpdCoreRouter) {
-                        TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
-                        tkpdCoreRouter.goToManageProduct(context);
-                        tkpdCoreRouter.goToAddProduct(context);
+                        Intent manageProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST);
+                        Intent addProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM);
+                        TaskStackBuilder.create(context)
+                                .addNextIntent(manageProductIntent)
+                                .addNextIntent(addProductIntent)
+                                .startActivities();
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:
@@ -363,9 +368,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(new Intent(context, ProductDraftListActivity.class));
                     break;
                 case TkpdState.DrawerPosition.MANAGE_ETALASE:
-                    if (context.getApplication() instanceof TkpdCoreRouter) {
-                        ((TkpdCoreRouter) context.getApplication()).goToEtalaseList(context);
-                    }
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_STAT:

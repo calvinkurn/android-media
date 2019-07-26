@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.data.MessageViewModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
 import com.tokopedia.chat_common.R;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by nisie on 5/16/18.
@@ -23,7 +24,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     private static final String ROLE_USER = "User";
 
     private Context context;
-    private TextView message;
+    protected TextView message;
     private ImageView chatStatus;
     private View chatBalloon;
     private TextView name;
@@ -64,7 +65,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         }
     }
 
-    private void setChatLeft(View chatBalloon) {
+    protected void setChatLeft(View chatBalloon) {
         chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
                 .left_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
@@ -82,7 +83,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         view.setLayoutParams(params);
     }
 
-    private void setChatRight(View chatBalloon) {
+    protected void setChatRight(View chatBalloon) {
         chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
                 .right_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
@@ -124,7 +125,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
             if (element.isDummy()) {
                 imageResource = R.drawable.ic_chat_pending;
             }
-            chatStatus.setImageResource(imageResource);
+            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),imageResource));
         } else {
             chatStatus.setVisibility(View.GONE);
         }

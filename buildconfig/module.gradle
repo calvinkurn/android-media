@@ -23,11 +23,12 @@ android {
 
     buildTypes {
         debug{
-            testCoverageEnabled true
+            testCoverageEnabled (project.hasProperty('coverage')? true : false)
         }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -53,6 +54,10 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.cardViewV7
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
+
+    implementation (rootProject.ext.debugToolsDependencies.timber){
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava

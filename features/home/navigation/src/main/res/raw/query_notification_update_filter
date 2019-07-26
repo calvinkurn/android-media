@@ -1,0 +1,17 @@
+query get_notification_update_filter{
+  notifcenter_filter {
+    notifcenter_typeList {
+      list {
+        id
+        name
+      }
+    }
+    notifcenter_tagList {
+      list {
+        tag_id
+        tag_key
+        tag_name
+      }
+    }
+  }
+}

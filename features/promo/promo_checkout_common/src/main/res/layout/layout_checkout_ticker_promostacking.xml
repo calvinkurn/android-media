@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -22,7 +23,7 @@
             android:layout_centerInParent="true"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/ic_kupon_telur" />
+            app:srcCompat="@drawable/ic_kupon_telur" />
 
         <ImageView
             android:id="@+id/bg_button_coupon"
@@ -32,7 +33,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/bg_button_promostacking" />
+            app:srcCompat="@drawable/bg_button_promostacking" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/title_button_coupon"
@@ -120,7 +121,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/background_checkout_ticker_active_up" />
+                    app:srcCompat="@drawable/background_checkout_ticker_active_up" />
 
                 <ImageView
                     android:id="@+id/bg_active_down"
@@ -133,7 +134,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/background_checkout_ticker_active_down" />
+                    app:srcCompat="@drawable/background_checkout_ticker_active_down" />
 
                 <ImageView
                     android:id="@+id/imageCloseGlobal"
@@ -146,7 +147,7 @@
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingBottom="@dimen/dp_4"
                     android:scaleType="center"
-                    android:src="@drawable/ic_close_promo_checkout" />
+                    app:srcCompat="@drawable/ic_close_promo_checkout" />
 
                 <LinearLayout
                     android:id="@+id/layout_content"

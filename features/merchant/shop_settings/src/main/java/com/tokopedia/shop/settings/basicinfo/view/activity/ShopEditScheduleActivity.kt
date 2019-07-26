@@ -153,7 +153,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
             return
         }
 
-        showSubmitLoading(getString(R.string.title_loading))
+        showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
         @ShopScheduleActionDef val shopAction = if (isClosedNow || shopBasicDataModel.isClosed)
             ShopScheduleActionDef.CLOSED
         else
@@ -227,7 +227,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         val message = ErrorHandler.getErrorMessage(this, throwable)
         ToasterError.make(findViewById(android.R.id.content),
                 message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(getString(R.string.title_try_again)) { onSaveButtonClicked() }.show()
+                .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again)) { onSaveButtonClicked() }.show()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {

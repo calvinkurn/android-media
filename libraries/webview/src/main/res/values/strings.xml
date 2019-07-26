@@ -6,4 +6,7 @@
     <string name="dialog_cancel">BATAL</string>
     <string name="tokopedia">Tokopedia</string>
 
+    <string name="error_message_url_invalid">Url tidak valid</string>
+    <string name="error_message_url_invalid_crashlytics">Invalid webview url - </string>
+
 </resources>

@@ -156,8 +156,8 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
     @Override
-    public Context getContext() {
-        return getContext();
+    public Context getViewContext() {
+        return this;
     }
 
     @Override

@@ -24,7 +24,7 @@ public class GetWishlistUseCase {
     private static final String PAGE = "page";
     private static final String COUNT = "count";
     private static final int DEFAULT_PAGE = 1;
-    private static final int DEFAULT_COUNT = 3;
+    private static final int DEFAULT_COUNT = 10;
 
     private final Context context;
     private GraphqlUseCase graphqlUseCase;

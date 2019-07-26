@@ -338,8 +338,6 @@ public class CollapsingTabLayout extends TabLayout {
     private View getTabView(Context context, int position) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tab_home_feed_layout, null);
         TextView textView = (TextView) rootView.findViewById(R.id.tabTitle);
-        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
-        textView.setTypeface(typeface);
         textView.setText(tabItemDataList.get(position).getTitle());
         ImageView imageView = (ImageView) rootView.findViewById(R.id.tabBackgroundImage);
         ImageHandler.loadImageWithoutPlaceholder(imageView, tabItemDataList.get(position).getImageUrl());

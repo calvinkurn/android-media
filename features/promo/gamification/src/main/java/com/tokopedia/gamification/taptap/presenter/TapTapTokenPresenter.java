@@ -35,7 +35,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import dagger.Lazy;
 import rx.Subscriber;
 
 public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContract.View>
@@ -95,7 +94,8 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     showErrorView(R.drawable.gf_internet_not_connected_error
                             , getView().getResources().getString(R.string.internet_not_connected_error_occured), true);
                 } else {
-                    showErrorView(R.drawable.gf_server_full_error, getView().getResources().getString(R.string.error_server_full), true);
+                    getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap), true);
+
                 }
 
             }
@@ -111,23 +111,22 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     if (crackResult.isCrackTokenSuccess() || crackResult.isTokenHasBeenCracked()) {
                         getView().onSuccessCrackToken(crackResult);
                     } else if (crackResult.isCrackTokenExpired()) {
-                        showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.error_campaign_expired), false);
+                        getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap), true);
                     } else if (crackResult.getResultStatus() != null
                             && crackResult.isCrackButtonErrorTapTap()) {
                         if(crackResult.getResultStatus().getMessage() != null
                                 && crackResult.getResultStatus().getMessage().size() != 0){
-                            getView().showErrorSnackBarOnCrackError(TextUtils.join(",", crackResult.getResultStatus().getMessage()));
+                            getView().showErrorSnackBarOnCrackError(TextUtils.join(",", crackResult.getResultStatus().getMessage()), false);
                         }else{
-                            getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.error_campaign_expired));
+                            getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.error_campaign_expired), false);
                         }
                     } else {
-                        showErrorView(R.drawable.gf_server_full_error, getView().getResources().getString(R.string.error_server_full), true);
-                        getView().onFinishCrackToken();
+                        getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap), true);
                     }
                 } else {
-                    showErrorView(R.drawable.gf_server_full_error, getView().getResources().getString(R.string.error_server_full), true);
-                    getView().onFinishCrackToken();
+                    getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap), true);
                 }
+                getView().onFinishCrackToken();
             }
 
             private void showErrorView(int errorImage, String string, boolean showRetryButton) {

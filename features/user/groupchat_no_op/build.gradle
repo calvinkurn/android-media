@@ -1,13 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
