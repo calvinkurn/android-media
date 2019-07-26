@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:visibility="visible"
-            app:tabMode="scrollable"
+            app:tabMode="fixed"
             app:tabGravity="fill"
             app:tabIndicatorHeight="@dimen/dp_1"
             app:tabSelectedTextColor="@color/tkpd_main_green"
@@ -47,10 +47,24 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+
+        <include layout="@layout/partial_feed_loading"
+            android:id="@+id/feed_loading"
+            android:visibility="gone"/>
+
+        <include layout="@layout/partial_feed_error"
+            android:id="@+id/feed_error"
+            android:visibility="gone"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>
