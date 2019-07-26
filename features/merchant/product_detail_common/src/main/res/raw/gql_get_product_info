@@ -23,6 +23,7 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             isEligibleCOD
             needPrescription
             catalogID
+            isLeasing
         }
         brand {
             brandID

@@ -27,6 +27,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
         const val EXTRA_SHOP_TYPE = "shop_type"
         const val EXTRA_SHOP_NAME = "shop_name"
         const val EXTRA_OCS = "ocs"
+        const val EXTRA_IS_LEASING = "is_leasing"
         const val EXTRA_TRADE_IN_PARAMS = "trade_in_params"
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
@@ -48,7 +49,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                       trackerListName: String? = "",
                       shopType: String? = "",
                       shopName: String? = "",
-                      isOneClickShipment:Boolean): Intent {
+                      isOneClickShipment:Boolean,
+                      isLeasing: Boolean): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
                 putExtra(EXTRA_SHOP_ID, shopId)
                 putExtra(EXTRA_PRODUCT_ID, productId)
@@ -62,6 +64,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                 putExtra(EXTRA_SHOP_TYPE, shopType)
                 putExtra(EXTRA_SHOP_NAME, shopName)
                 putExtra(EXTRA_OCS, isOneClickShipment)
+                putExtra(EXTRA_IS_LEASING, isLeasing)
             }
         }
     }
@@ -88,6 +91,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                 getString(EXTRA_SHOP_TYPE),
                 getString(EXTRA_SHOP_NAME),
                 getBoolean(EXTRA_OCS),
+                getBoolean(EXTRA_IS_LEASING),
                 tradeInParams)
             return normalCheckoutFragment!!
         }

@@ -95,6 +95,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var tempQuantity = quantity
     var isTradeIn = 0
     var isOcs = true
+    var isLeasing = true
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
     @ProductAction
@@ -122,6 +123,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_SHOP_TYPE = "shop_type"
         const val EXTRA_SHOP_NAME = "shop_name"
         const val EXTRA_OCS = "ocs"
+        const val EXTRA_IS_LEASING = "is_leasing"
         const val EXTRA_TRADE_IN_PARAMS = "trade_in_params"
         const val EXTRA_CART_ID = "cart_id"
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
@@ -147,6 +149,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            shopType: String? = "",
                            shopName: String? = "",
                            isOneClickShipment: Boolean,
+                           isLeasing: Boolean,
                            tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
@@ -162,6 +165,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putString(EXTRA_SHOP_TYPE, shopType ?: "")
                     putString(EXTRA_SHOP_NAME, shopName ?: "")
                     putBoolean(EXTRA_OCS, isOneClickShipment)
+                    putBoolean(EXTRA_IS_LEASING, isLeasing)
                     putParcelable(EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
             }
@@ -397,11 +401,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else {
                 button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
             }
-//            if(isLeasing){
-//                button_cart.gone()
-//                button_buy_partial.gone()
-//            }
-            if(true){
+            if(isLeasing){
                 button_cart.gone()
                 button_buy_partial.gone()
             }
@@ -499,6 +499,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             shopName = argument.getString(EXTRA_SHOP_NAME)
             tradeInParams = argument.getParcelable(EXTRA_TRADE_IN_PARAMS)
             isOcs = argument.getBoolean(EXTRA_OCS)
+            isLeasing = argument.getBoolean(EXTRA_IS_LEASING)
         }
         if (savedInstanceState == null) {
             if (argument != null) {

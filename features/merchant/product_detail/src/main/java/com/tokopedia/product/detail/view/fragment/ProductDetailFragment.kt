@@ -158,6 +158,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var isFromDeeplink: Boolean = false
     private var isAffiliate: Boolean = false
     private var isSpecialPrize: Boolean = false
+    private var isLeasing: Boolean = false
 
     lateinit var headerView: PartialHeaderView
     lateinit var productStatsView: PartialProductStatisticView
@@ -631,7 +632,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         trackerListName,
                         shopInfo?.goldOS?.shopTypeString,
                         shopInfo?.shopCore?.name,
-                        isOcsCheckoutType)
+                        isOcsCheckoutType,
+                        isLeasing)
                 if(::tradeInParams.isInitialized) {
                     intent.putExtra(NormalCheckoutActivity.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
@@ -1404,6 +1406,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productInfo = data
         et_search.hint = String.format(getString(R.string.pdp_search_hint),productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
+        isLeasing = data.basic.isLeasing
         headerView.renderData(data)
         varPictureImage.renderData(data.pictures, this::onPictureProductClicked)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
@@ -1496,6 +1499,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (userInputVariant == null && data.variant.isVariant && data.variant.parentID != productId) {
             userInputVariant = productId
         }
+        actionButtonView.isLeasing = isLeasing
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)
                         || shopInfo?.allowManage == true),
