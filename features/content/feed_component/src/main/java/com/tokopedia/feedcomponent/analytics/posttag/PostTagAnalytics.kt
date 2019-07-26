@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.analytics.posttag
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Action.CLICK_PRODUCT
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -27,6 +28,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         private const val MULTIPLE = "multiple"
         private const val FORMAT_PROMOTION_NAME = "%s - %s - %s - %s";
         private const val FORMAT_EVENT_ACTION = "%s - %s - %s - %s";
+        private const val FORMAT_FEED_EVENT_ACTION = "%s - %s - %s"
 
         private const val EVENT_NAME = "event"
         private const val EVENT_CATEGORY = "eventCategory"
@@ -67,6 +69,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         const val IMPRESSION = "impression"
         const val IMPRESSION_PRODUCT = "impression product"
         const val PRODUCT = "product"
+        const val CLICK_PRODUCT = "click product"
     }
 
     object ListSource {
@@ -118,17 +121,20 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                                           postTag: PostTagItem,
                                           postTagPosition: Int,
                                           trackingModel: TrackingPostModel,
-                                          listSource: String) {
+                                          listSource: String,
+                                          action: String = String.format(FORMAT_EVENT_ACTION,
+                                                  Action.CLICK,
+                                                  trackingModel.templateType,
+                                                  trackingModel.activityName,
+                                                  Action.PRODUCT
+                                          )
+    ) {
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
                         screenName,
                         category,
-                        String.format(FORMAT_EVENT_ACTION,
-                                Action.CLICK,
-                                trackingModel.templateType,
-                                trackingModel.activityName,
-                                Action.PRODUCT
-                        ),
+                        action,
                         postId.toString(),
                         getProductList(
                                 postTag.id.toIntOrZero(),
@@ -230,7 +236,8 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 postTag,
                 postTagPosition,
                 trackingModel,
-                String.format(ListSource.FEED, author))
+                String.format(ListSource.FEED, author),
+                String.format(FORMAT_FEED_EVENT_ACTION, CLICK_PRODUCT, trackingModel.activityName, trackingModel.templateType))
     }
 
     fun trackViewPostTagProfileSelf(

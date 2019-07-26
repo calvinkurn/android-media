@@ -40,12 +40,11 @@
 
             <ImageView
                 android:id="@+id/financial_product_image_one"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/financial_product_image_one"
-                android:padding="@dimen/dp_16"
+                android:layout_width="@dimen/dp_26"
+                android:layout_height="@dimen/dp_26"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/financial_product_image_one" />
 
             <TextView
                 android:id="@+id/financial_product_heading_one"
@@ -99,12 +98,11 @@
 
             <ImageView
                 android:id="@+id/financial_product_image_two"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/financial_product_image_two"
-                android:padding="@dimen/dp_16"
+                android:layout_width="@dimen/dp_26"
+                android:layout_height="@dimen/dp_26"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/financial_product_image_two" />
 
             <TextView
                 android:id="@+id/financial_product_heading_two"
