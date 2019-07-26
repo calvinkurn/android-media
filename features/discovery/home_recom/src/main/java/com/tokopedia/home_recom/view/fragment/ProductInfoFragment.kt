@@ -376,6 +376,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
             departmentId = productDataModel.productDetailData.departmentId,
             imageUrl = productDataModel.productDetailData.imageUrl,
             isTopAds = productDataModel.productDetailData.isTopads,
+            isWishlist = productDataModel.productDetailData.isWishlist,
             price = productDataModel.productDetailData.price,
             priceInt = productDataModel.productDetailData.priceInt,
             rating = productDataModel.productDetailData.rating,
