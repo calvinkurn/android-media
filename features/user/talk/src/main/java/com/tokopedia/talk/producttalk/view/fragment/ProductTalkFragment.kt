@@ -303,6 +303,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
         productUrl = productTalkViewModel.productUrl
         shopName = productTalkViewModel.shopName
         shopAvatar = productTalkViewModel.shopAvatar
+
+        activity?.run{
+            invalidateOptionsMenu()
+        }
     }
 
     override fun onSuccessGetTalks(productTalkViewModel: ProductTalkViewModel) {

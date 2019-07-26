@@ -409,6 +409,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductName(product.getProductName());
                                 productResult.setProductPriceFmt(product.getProductPriceFmt());
                                 productResult.setProductPrice(product.getProductPrice());
+                                productResult.setProductOriginalPrice(product.getProductOriginalPrice());
                                 if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
                                     productResult.setProductPrice(product.getTradeInInfo().getNewDevicePrice());
                                 }
