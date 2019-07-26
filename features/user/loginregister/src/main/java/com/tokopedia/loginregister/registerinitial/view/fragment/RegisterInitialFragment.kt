@@ -32,6 +32,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
@@ -46,7 +47,6 @@ import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegist
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract
 import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -89,8 +89,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         private val GPLUS = "gplus"
         private val PHONE_NUMBER = "phonenumber"
 
-        fun createInstance(): RegisterInitialFragment {
-            return RegisterInitialFragment()
+        fun createInstance(bundle : Bundle): RegisterInitialFragment {
+            val fragment = RegisterInitialFragment()
+            fragment.arguments = bundle
+            return fragment
         }
     }
 
@@ -104,6 +106,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     lateinit var tickerAnnouncement: Ticker
 
     private var phoneNumber: String? = ""
+    private var source : String? = ""
 
     @Inject
     lateinit var presenter: RegisterInitialPresenter
@@ -185,9 +188,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         }
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(PHONE_NUMBER)) {
-            phoneNumber = savedInstanceState.getString(PHONE_NUMBER)
-        }
+        phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
+        source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
     }
 
     private fun clearData() {
@@ -731,13 +733,21 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     private fun onSuccessRegister() {
         activity?.let{
             registerAnalytics.trackSuccessRegister(userSession.loginMethod)
-            val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
-            startActivity(intent)
+
+            if(isFromAccount()) {
+                val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+                startActivity(intent)
+            }
+
             it.setResult(Activity.RESULT_OK)
             it.finish()
         }
 
 
+    }
+
+    private fun isFromAccount(): Boolean {
+        return source == "account"
     }
 
     override fun onGoToChangeName() {
@@ -842,6 +852,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString(PHONE_NUMBER, phoneNumber)
+        outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         super.onSaveInstanceState(outState)
     }
 
