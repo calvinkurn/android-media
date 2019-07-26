@@ -35,7 +35,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
     val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(ArrayList(), this) }
 
-    open var menuId: Int = 0
     abstract var serviceId : String
     open var categoryId : Int = 0
     open var isCouponActive : Boolean = true
@@ -145,7 +144,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     override fun loadData(page: Int) {
         if(isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
-            promoCheckoutListPresenter.getListLastSeen(menuId, resources)
+//            promoCheckoutListPresenter.getListLastSeen(resources)
         }
     }
 
