@@ -23,6 +23,7 @@ import com.tokopedia.checkout.view.feature.shipment.util.Utils;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 
@@ -35,11 +36,11 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
 
     private RelativeLayout rlRecipientAddressLayout;
-    private TextView tvAddressStatus;
-    private TextView tvAddressName;
-    private TextView tvRecipientName;
-    private TextView tvRecipientAddress;
-    private TextView tvRecipientPhone;
+    private Typography tvAddressStatus;
+    private Typography tvAddressName;
+    private Typography tvRecipientName;
+    private Typography tvRecipientAddress;
+    private Typography tvRecipientPhone;
     private TextView tvRecipientChangeAddress;
     private TextView tvSendToMultipleAddress;
     private LinearLayout llTradeIn;

@@ -30,6 +30,7 @@ import com.tokopedia.logisticaddaddress.di.ManageAddressModule;
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -42,6 +43,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_CREATE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_EDIT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.SCREEN_NAME_USER_NEW;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
@@ -202,6 +204,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         Token token = mPresenter.getToken();
         if (data == null) {
             if (isAddNewAddressEnabled()) {
+                AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_USER_NEW);
                 startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                         AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                         false, 0, false, false, null,

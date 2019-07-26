@@ -30,6 +30,7 @@ dependencies {
         transitive = true
     }
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
@@ -50,6 +51,7 @@ dependencies {
     implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.feedComponent)
+    implementation project(rootProject.ext.features.atc_common)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

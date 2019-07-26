@@ -16,11 +16,11 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
-import com.tokopedia.home_recom.router.HomeRecommendationRouter
 import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -31,21 +31,22 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_product_info.product_name
-import kotlinx.android.synthetic.main.fragment_product_info.badge
-import kotlinx.android.synthetic.main.fragment_product_info.fab_detail
-import kotlinx.android.synthetic.main.fragment_product_info.product_price
-import kotlinx.android.synthetic.main.fragment_product_info.location
-import kotlinx.android.synthetic.main.fragment_product_info.product_image
 import kotlinx.android.synthetic.main.fragment_product_info.product_card
-import kotlinx.android.synthetic.main.fragment_product_info.rating
-import kotlinx.android.synthetic.main.fragment_product_info.review_count
-import kotlinx.android.synthetic.main.fragment_product_info.product_slashed_price
-import kotlinx.android.synthetic.main.fragment_product_info.product_discount
 import kotlinx.android.synthetic.main.fragment_product_info.buy_now
-import kotlinx.android.synthetic.main.fragment_product_info.pb_buy_now
 import kotlinx.android.synthetic.main.fragment_product_info.add_to_cart
+import kotlinx.android.synthetic.main.fragment_product_info.pb_buy_now
+import kotlinx.android.synthetic.main.fragment_product_info.product_name
+import kotlinx.android.synthetic.main.fragment_product_info.product_price
+import kotlinx.android.synthetic.main.fragment_product_info.product_discount
+import kotlinx.android.synthetic.main.fragment_product_info.fab_detail
+import kotlinx.android.synthetic.main.fragment_product_info.review_count
+import kotlinx.android.synthetic.main.fragment_product_info.rating
+import kotlinx.android.synthetic.main.fragment_product_info.product_slashed_price
+import kotlinx.android.synthetic.main.fragment_product_info.location
+import kotlinx.android.synthetic.main.fragment_product_info.badge
 import kotlinx.android.synthetic.main.fragment_product_info.pb_add_to_cart
+import kotlinx.android.synthetic.main.fragment_product_info.product_image
+import kotlinx.android.synthetic.main.fragment_product_info.bg_product_info
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
@@ -54,6 +55,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
     private val REQUEST_CODE_LOGIN = 283
+    private val REQUEST_CODE_PDP = 284
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -79,17 +81,16 @@ class ProductInfoFragment : BaseDaggerFragment() {
         getComponent(HomeRecommendationComponent::class.java).inject(this)
     }
 
-    private val CART_ID = "cartId"
-    private val MESSAGE = "message"
-    private val STATUS  = "status"
-
     companion object{
         fun newInstance(dataModel: ProductInfoDataModel) = ProductInfoFragment().apply {
             this.productDataModel = dataModel
         }
 
-        private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
+
+        val CART_ID = "cartId"
+        val MESSAGE = "message"
+        val STATUS = "status"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,6 +110,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         if(this::productDataModel.isInitialized && productDataModel != null) {
             product_name.text = productDataModel.productDetailData.name
             handleDiscount()
+            bg_product_info.setImageResource(R.drawable.background_product_info)
             product_price.text = productDataModel.productDetailData.price
             location.text = productDataModel.productDetailData.shop.location
             if (productDataModel.productDetailData.badges.isNotEmpty()) {
@@ -155,10 +157,11 @@ class ProductInfoFragment : BaseDaggerFragment() {
             } else {
                 onClickOrganic(recommendationItem)
             }
-            RouteManager.route(
+            val intent = RouteManager.getIntent(
                     context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     productDataModel.productDetailData.id.toString())
+            startActivityForResult(intent, REQUEST_CODE_PDP)
         }
     }
 
@@ -168,7 +171,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 pb_add_to_cart.show()
                 addToCart(
                         success = { result ->
-                            recommendationItem.cartId = (result["cartId"] as String).toInt()
+                            recommendationItem.cartId = result[CART_ID] as Int
                             RecommendationPageTracking.eventUserClickAddToCart(recommendationItem)
                             pb_add_to_cart.hide()
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
@@ -253,25 +256,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
             success: (Map<String, Any>) -> Unit,
             error: (Throwable) -> Unit
     ){
-        context?.let { context ->
-            (context.applicationContext as HomeRecommendationRouter).getNormalCheckoutIntent(
-                    productId = productDataModel.productDetailData.id,
-                    shopId = productDataModel.productDetailData.shop.id,
-                    quantity =  productDataModel.productDetailData.minOrder,
-                    isOneClickShipment = false
-            ).subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe (
-                            { result ->
-                                success.invoke(result)
-                            },
-                            {
-                                it.printStackTrace()
-                                error.invoke(it)
-                            }
-                    )
-        }
+        val addToCartRequestParams = AddToCartRequestParams()
+        addToCartRequestParams.productId = productDataModel.productDetailData.id.toLong()
+        addToCartRequestParams.shopId = productDataModel.productDetailData.shop.id
+        addToCartRequestParams.quantity = productDataModel.productDetailData.minOrder
+        addToCartRequestParams.notes = ""
+
+        primaryProductViewModel.addToCart(addToCartRequestParams, success, error)
     }
 
     private fun onErrorRemoveWishList(errorMessage: String?) {
@@ -385,6 +376,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
             departmentId = productDataModel.productDetailData.departmentId,
             imageUrl = productDataModel.productDetailData.imageUrl,
             isTopAds = productDataModel.productDetailData.isTopads,
+            isWishlist = productDataModel.productDetailData.isWishlist,
             price = productDataModel.productDetailData.price,
             priceInt = productDataModel.productDetailData.priceInt,
             rating = productDataModel.productDetailData.rating,
@@ -405,7 +397,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
             pageName = "",
             minOrder = productDataModel.productDetailData.minOrder,
             location = "",
-            badgesUrl = listOf()
+            badgesUrl = listOf(),
+            type = ""
     )
 
     private fun handleDiscount(){
@@ -454,7 +447,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_CANCELED) {
+        if (requestCode == REQUEST_CODE_PDP) {
             data?.let {
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         productDataModel.productDetailData.isWishlist)

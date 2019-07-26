@@ -238,16 +238,11 @@ android {
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = vectorDrawable
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
-        ndk {
-            abiFilters "x86", "armeabi-v7a"
-        }
-        packagingOptions {
-            exclude "lib/arm64-v8a/libgnustl_shared.so"
-        }
         resConfigs "en", "id"
-
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
     }
-
 
     dexOptions {
         javaMaxHeapSize "8g"
@@ -262,6 +257,7 @@ android {
         resolutionStrategy.force 'com.android.support:multidex:1.0.3'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
+        resolutionStrategy.force 'com.facebook.soloader:soloader:0.6.0'
     }
 
     // Specifies 4 flavor dimensions.
@@ -323,6 +319,7 @@ dependencies {
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.homeRecommendation)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -336,9 +333,11 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.homecredit)
+    implementation project(rootProject.ext.features.instantDebitBca)
     implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.digitalDeals)
+    implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.expressCheckout)
     implementation project(rootProject.ext.features.logisticdata)
@@ -432,12 +431,16 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation rootProject.ext.miscDependencies.bcaxcoWidget
 
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
+
+    implementation project(rootProject.ext.libraries.url)
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
@@ -543,6 +546,10 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    implementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
+
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
 
@@ -564,6 +571,10 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     implementation project(rootProject.ext.features.navigationCommon)
+    implementation 'com.facebook.soloader:soloader:0.6.0'
+
+    implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
+    implementation project(rootProject.ext.features.ovop2p)
 }
 
 
@@ -573,5 +584,4 @@ project.ext.sentryCli = [
 ]
 
 apply from: "../buildconfig/reactnative/react.gradle"
-apply from: "../buildconfig/reactnative/codepush.gradle"
 apply from: "../buildconfig/reactnative/sentry.gradle"

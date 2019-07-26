@@ -1914,12 +1914,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onPriorityChecked(int position) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(new Runnable() {
-                @Override
-                public void run() {
-                    shipmentAdapter.updateShipmentCostModel();
-                    shipmentAdapter.updateItemAndTotalCost(position);
-                }
+            rvShipment.post(() -> {
+                shipmentAdapter.updateShipmentCostModel();
+                shipmentAdapter.updateItemAndTotalCost(position);
             });
         } else {
             shipmentAdapter.updateShipmentCostModel();
@@ -1930,13 +1927,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onInsuranceChecked(final int position) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(new Runnable() {
-                @Override
-                public void run() {
-                    shipmentAdapter.updateShipmentCostModel();
-                    shipmentAdapter.updateItemAndTotalCost(position);
-                    shipmentAdapter.updateInsuranceTncVisibility();
-                }
+            rvShipment.post(() -> {
+                shipmentAdapter.updateShipmentCostModel();
+                shipmentAdapter.updateItemAndTotalCost(position);
+                shipmentAdapter.updateInsuranceTncVisibility();
             });
         } else {
             shipmentAdapter.updateShipmentCostModel();
@@ -1948,12 +1942,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onNeedUpdateViewItem(final int position) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(new Runnable() {
-                @Override
-                public void run() {
-                    shipmentAdapter.notifyItemChanged(position);
-                }
-            });
+            rvShipment.post(() -> shipmentAdapter.notifyItemChanged(position));
         } else {
             shipmentAdapter.notifyItemChanged(position);
         }
@@ -2004,12 +1993,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onDonationChecked(boolean checked) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(new Runnable() {
-                @Override
-                public void run() {
-                    shipmentAdapter.updateDonation(checked);
-                }
-            });
+            rvShipment.post(() -> shipmentAdapter.updateDonation(checked));
         } else {
             shipmentAdapter.updateDonation(checked);
         }
@@ -2165,6 +2149,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (message.contains(getString(R.string.corner_error_stub)))
             mTrackerCorner.sendViewCornerError();
         if (getActivity() != null) {
+            checkoutAnalyticsCourierSelection.eventViewCourierImpressionErrorCourierNoAvailable();
+
             Tooltip tooltip = new Tooltip(getActivity());
             tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
             tooltip.setDesc(message);
@@ -2401,9 +2387,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onPurchaseProtectionChangeListener(int position) {
-        shipmentAdapter.updateShipmentCostModel();
-        shipmentAdapter.updateItemAndTotalCost(position);
-        shipmentAdapter.updateInsuranceTncVisibility();
+        if (rvShipment.isComputingLayout()) {
+            rvShipment.post(() -> {
+                shipmentAdapter.updateShipmentCostModel();
+                shipmentAdapter.updateItemAndTotalCost(position);
+                shipmentAdapter.updateInsuranceTncVisibility();
+            });
+        } else {
+            shipmentAdapter.updateShipmentCostModel();
+            shipmentAdapter.updateItemAndTotalCost(position);
+            shipmentAdapter.updateInsuranceTncVisibility();
+        }
     }
 
     @Override

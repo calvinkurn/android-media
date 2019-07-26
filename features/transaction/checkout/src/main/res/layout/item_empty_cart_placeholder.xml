@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
@@ -17,34 +17,35 @@
 
         <ImageView
             android:id="@+id/iv_icon"
-            android:layout_width="154dp"
-            android:layout_height="130dp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_150"
+            android:scaleType="fitCenter"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_8"
             android:gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_emptycart"
+            app:srcCompat="@drawable/ic_empty_cart"
             tools:ignore="ContentDescription,VectorDrawableCompat" />
 
-        <TextView
-            style="@style/TextSmallNormalBlack38"
-            android:layout_width="wrap_content"
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
             android:gravity="center_horizontal"
-            android:paddingBottom="@dimen/dp_8"
-            android:text="@string/checkout_module_keranjang_belanja_kosong" />
+            android:layout_marginBottom="@dimen/dp_8"
+            android:text="@string/checkout_module_keranjang_belanja_kosong_new"
+            android:textColor="@color/text_black"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold"/>
 
-        <TextView
-            style="@style/TextSmallNormalBlack54"
-            android:layout_width="wrap_content"
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:paddingBottom="@dimen/dp_16"
-            android:text="@string/checkout_empty_cart_sub_message"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/dp_24"
+            android:text="@string/checkout_empty_cart_sub_message_new"
+            android:textColor="@color/subtext_black"
+            app:typographyType="body_3"
+            android:lineSpacingExtra="6sp"
+            app:typographyWeight="reguler" />
 
         <TextView
             android:id="@+id/btn_add_from_whislist"
@@ -60,18 +61,18 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btn_shopping_now"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_44"
-            android:background="@drawable/medium_green_button_rounded"
-            android:fontFamily="sans-serif-medium"
+            android:layout_width="@dimen/dp_160"
+            android:layout_height="@dimen/dp_40"
+            android:background="@drawable/medium_green_button_rounded_unify"
             android:gravity="center"
-            android:text="@string/checkout_module_belanja_sekarang"
+            android:text="@string/checkout_module_mulai_belanja"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="13sp"
-            android:visibility="visible" />
+            android:visibility="visible"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -15,6 +15,7 @@ import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import rx.Observable
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 import rx.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -68,13 +69,14 @@ class InteractionAnimationHelper(private var interactionGuideline: FrameLayout) 
         val time = Random().nextInt(4) + 2
         val numParticles = Random().nextInt(4) + 1
         destroy()
+        val doShot = Action1<Long> {
+            shootInteractionButton(anchorView, numParticles)
+            fakeShot(anchorView)
+        }
         interactionSubscription = Observable.timer(time.toLong(), TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    shootInteractionButton(anchorView, numParticles)
-                    fakeShot(anchorView)
-                }
+                .subscribe(doShot, Action1<Throwable>{it.printStackTrace()})
     }
 
     fun destroy() {

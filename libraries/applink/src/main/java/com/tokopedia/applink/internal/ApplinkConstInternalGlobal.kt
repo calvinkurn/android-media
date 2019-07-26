@@ -23,6 +23,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_CIPF_OLD_PHONE = "oldPhone"
     @JvmField
     val PARAM_EMAIL = "email"
+    @JvmField
+    val PARAM_SOURCE = "source"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"

@@ -60,7 +60,7 @@
     <string name="invoice_id">ID: #%1$s</string>
     <string name="need_rating">Beri Penilaian</string>
     <string name="max_image_warning">Maksimal 5 lampiran diizinkan</string>
-    <string name="text_satisfied">Beri nilai pada kualitas layanan kami</string>
+    <string name="text_satisfied">Beri nilai untuk kualitas layanan Tokopedia Care</string>
     <string name="select_bad_reason">Keluhan tentang CS kami</string>
     <string name="cu_no_more_results">Tidak Ada Lagi Hasil</string>
     <string name="hint_attachment">Catatan: Mohon lampirkan data yang diminta</string>
@@ -78,9 +78,16 @@
     <string name="bad_reason_5">Jawaban terlalu kaku</string>
     <string name="bad_reason_6">Kurang ramah</string>
     <string name="other_reason">Lainnya</string>
-    <string name="survei_layanan">Survei Layanan</string>
+    <string name="survey_layanan">Survey Layanan</string>
     <string name="cu_surey_layana">Survey Layana</string>
     <string name="cu_terima_kasih_atas_masukannya">Terima kasih atas masukannya</string>
+    <string name="_close_this_complaint">Tutup komplain ini?</string>
+    <string name="close_complain_message">Kamu tidak dapat membalas pesan ini lagi dan komplain dianggap telah selesai.</string>
+    <string name="yes_close">Ya,Tutup</string>
+    <string name="not">Tidak</string>
+    <string name="yes">Ya</string>
+    <string name="helped_with_this_answer">Terbantu dengan jawaban ini?</string>
+    <string name="balas">Balas</string>
     <string name="service_priorities_officialstore_desc">Kami akan utamakan &amp; selesaikan kendala terkait Official Store dengan lebih cepat. \n<b>Pelajari Selengkapnya</b></string>
     <string name="tv_service_priorities_officialstore" >Layanan Prioritas Official Store</string>
     <string name="learn_more_link">https://www.tokopedia.com/help/article/a-0827?refid=st-1109</string>
