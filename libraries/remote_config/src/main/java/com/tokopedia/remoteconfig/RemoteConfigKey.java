@@ -132,5 +132,10 @@ public class RemoteConfigKey {
     public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
     
     public static final String ANDROID_PM_F1_ENABLED = "android_power_merchant_f1_enabled";
-    public static final String APP_ENABLE_SALDO_LOCK = "android_app_enable_saldo_lock";
+
+
+    //feed section
+
+    public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
+    public static final String APP_ENABLE_SALDO_LOCK = "app_enable_saldo_lock";
 }
