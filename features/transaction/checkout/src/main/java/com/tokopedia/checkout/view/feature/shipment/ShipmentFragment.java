@@ -926,6 +926,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     .amount(dataUiModel.getCashbackWalletAmount())
                     .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()))
                     .title(dataUiModel.getTitleDescription())
+                    .trackingDetailUiModels(responseGetPromoStackUiModel.getData().getTrackingDetailUiModel())
                     .build();
 
             if (responseGetPromoStackUiModel.getData().getMessage().getState().equals("red")) {
@@ -944,6 +945,37 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 sendAnalyticsOnViewPromoManualApply("coupon");
             } else {
                 sendAnalyticsOnViewPromoManualApply("voucher");
+            }
+        }
+
+        updatePromoTrackingData(dataUiModel.getTrackingDetailUiModel());
+        sendEEStep3();
+    }
+
+    private boolean stillHasAppliedPromo() {
+        PromoStackingData promoStackingGlobalData = shipmentAdapter.getPromoGlobalStackData();
+        if (promoStackingGlobalData != null && promoStackingGlobalData.getState() != TickerPromoStackingCheckoutView.State.EMPTY) {
+            return true;
+        }
+        List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null ||
+                    shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void clearPromoTrackingData() {
+        List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                if (cartItemModel.getAnalyticsProductCheckoutData() != null) {
+                    cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails("");
+                    cartItemModel.getAnalyticsProductCheckoutData().setPromoCode("");
+                }
             }
         }
     }
@@ -1120,8 +1152,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentAdapter.hasSetAllCourier()) {
             Promo promo = generateCheckPromoFirstStepParam();
             shipmentPresenter.checkPromoFinalStackShipment(promo);
-            sendEEStep3();
-
             shipmentAdapter.notifyDataSetChanged();
         }
     }
@@ -1206,21 +1236,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 PromoStackingData promoStackingData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
                 if (promoStackingData != null) {
                     updateAppliedPromoStack(promoStackingData);
-
-                    for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
-                        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                            if (promoStackingData.getTrackingDetailUiModels().size() > 0) {
-                                for (TrackingDetailUiModel trackingDetailUiModel : promoStackingData.getTrackingDetailUiModels()) {
-                                    if (trackingDetailUiModel.getProductId() == cartItemModel.getProductId() &&
-                                            cartItemModel.getAnalyticsProductCheckoutData() != null) {
-                                        cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailUiModel.getPromoCodesTracking());
-                                        cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
-                                    }
-                                }
-                            }
-                        }
-                    }
-
+                    updatePromoTrackingData(promoStackingData.getTrackingDetailUiModels());
                 }
             }
         } else if (resultCode == TickerCheckoutUtilKt.getRESULT_CLASHING()) {
@@ -1231,6 +1247,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     String type = bundle.getString(TickerCheckoutUtilKt.getEXTRA_TYPE());
                     if (type == null) type = "";
                     onClashCheckPromo(clashingInfoDetailUiModel, type);
+                }
+            }
+        }
+    }
+
+    private void updatePromoTrackingData(List<TrackingDetailUiModel> trackingDetailUiModels) {
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                if (trackingDetailUiModels.size() > 0) {
+                    for (TrackingDetailUiModel trackingDetailUiModel : trackingDetailUiModels) {
+                        if (trackingDetailUiModel.getProductId() == cartItemModel.getProductId() &&
+                                cartItemModel.getAnalyticsProductCheckoutData() != null) {
+                            cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailUiModel.getPromoCodesTracking());
+                            cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
+                        }
+                    }
                 }
             }
         }
@@ -1579,9 +1611,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentAdapter.hasAppliedPromoStackCode()) {
             Promo promo = generateCheckPromoFirstStepParam();
             shipmentPresenter.checkPromoFinalStackShipment(promo);
+        } else {
+            sendEEStep3();
         }
-
-        sendEEStep3();
 
     }
 
@@ -1600,7 +1632,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
                 EnhancedECommerceActionField.STEP_3,
-                "",
+                ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
                 "");
     }
 
@@ -2443,34 +2475,36 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onSuccessClearPromoStack(int shopIndex) {
         setBenefitSummaryInfoUiModel(null);
 
-        String promoCode = "";
         if (shopIndex == INDEX_PROMO_GLOBAL) {
             PromoStackingData promoStackingData = shipmentAdapter.getPromoGlobalStackData();
-            promoCode = promoStackingData.getPromoCode();
             promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
             promoStackingData.setAmount(0);
             promoStackingData.setPromoCode("");
             promoStackingData.setDescription("");
             promoStackingData.setTitle(promoStackingData.getTitleDefault());
             promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
+            promoStackingData.setTrackingDetailUiModels(new ArrayList<>());
             shipmentAdapter.updateItemPromoStackVoucher(promoStackingData);
         } else {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(shopIndex);
             if (shipmentCartItemModel != null) {
                 if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                    promoCode = shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode();
                     shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
                     shipmentAdapter.notifyItemChanged(shopIndex);
                 }
             }
         }
+
+        if (!stillHasAppliedPromo()) {
+            clearPromoTrackingData();
+        }
+
         shipmentAdapter.clearTotalPromoStackAmount();
         shipmentAdapter.updateShipmentCostModel();
         shipmentAdapter.updateCheckoutButtonData(null);
         shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
         shipmentAdapter.checkHasSelectAllCourier(false);
         shipmentPresenter.setCouponStateChanged(true);
-
     }
 
     @Override
@@ -2603,6 +2637,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentAdapter.notifyDataSetChanged();
+        if (!stillHasAppliedPromo()) {
+            clearPromoTrackingData();
+        }
     }
 
     @Override

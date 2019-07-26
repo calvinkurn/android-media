@@ -83,6 +83,7 @@ data class PromoStackingData(var typePromo: Int = 0,
         var variant: TickerPromoStackingCheckoutView.Variant = TickerPromoStackingCheckoutView.Variant.GLOBAL
         var titleDefault: String = ""
         var counterLabelDefault: String = ""
+        var trackingDetailUiModels: List<TrackingDetailUiModel> = emptyList()
 
         fun typePromo(typePromo: Int) = apply { this.typePromo = typePromo }
         fun promoCode(promoCode: String) = apply { this.promoCode = promoCode }
@@ -94,6 +95,7 @@ data class PromoStackingData(var typePromo: Int = 0,
         fun variant(variant: TickerPromoStackingCheckoutView.Variant) = apply { this.variant = variant }
         fun titleDefault(titleDefault: String) = apply { this.titleDefault = titleDefault }
         fun counterLabelDefault(counterLabelDefault: String) = apply { this.counterLabelDefault = counterLabelDefault }
+        fun trackingDetailUiModels(trackingDetailUiModel: List<TrackingDetailUiModel>) = apply { this.trackingDetailUiModels = trackingDetailUiModel }
 
         fun build() = PromoStackingData(
                 typePromo,
@@ -105,7 +107,8 @@ data class PromoStackingData(var typePromo: Int = 0,
                 state,
                 variant,
                 titleDefault,
-                counterLabelDefault
+                counterLabelDefault,
+                trackingDetailUiModels
         )
     }
 }
