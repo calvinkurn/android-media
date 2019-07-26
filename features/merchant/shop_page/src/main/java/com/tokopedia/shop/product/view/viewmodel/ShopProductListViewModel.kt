@@ -143,7 +143,7 @@ class ShopProductListViewModel @Inject constructor(private val userSession: User
         it.totalReview = stats.reviewCount.toString()
         it.rating = stats.rating.toDouble()
         if (cashback.cashbackPercent > 0) {
-            it.cashback = cashback.cashbackValue.toDouble()
+            it.cashback = cashback.cashbackPercent.toDouble()
         }
         it.isWholesale = flags.isWholesale
         it.isPo = flags.isPreorder

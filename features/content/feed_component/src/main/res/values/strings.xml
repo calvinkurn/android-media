@@ -30,5 +30,7 @@
 
     <string name="string_posttag_buy">Beli</string>
 
+    <string name="empty_product">Kosong</string>
+
 
 </resources>

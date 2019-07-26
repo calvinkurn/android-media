@@ -3,11 +3,14 @@ package com.tokopedia.kol.feature.post.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
 import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
@@ -28,6 +31,8 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,14 +58,14 @@ public class KolProfileModule {
 
     @KolProfileScope
     @Provides
-    KolPostDetailContract.Presenter
-    provideKolPostDetailPresenter(GetPostDetailUseCase getPostDetailUseCase,
+    KolPostDetailContract.Presenter provideKolPostDetailPresenter(GetPostDetailUseCase getPostDetailUseCase,
                                   LikeKolPostUseCase likeKolPostUseCase,
                                   FollowKolPostGqlUseCase followKolPostGqlUseCase,
                                   ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
                                   SendVoteUseCase sendVoteUseCase,
                                   TrackAffiliateClickUseCase trackAffiliateClickUseCase,
                                   DeletePostUseCase deletePostUseCase,
+                                  AddToCartUseCase atcUseCase,
                                   UserSessionInterface userSession) {
         return new KolPostDetailPresenter(getPostDetailUseCase,
                 likeKolPostUseCase,
@@ -69,6 +74,7 @@ public class KolProfileModule {
                 sendVoteUseCase,
                 trackAffiliateClickUseCase,
                 deletePostUseCase,
+                atcUseCase,
                 userSession);
     }
 
@@ -111,5 +117,12 @@ public class KolProfileModule {
     KolPostShopContract.Presenter
     provideKolPostShopPresenter(GetContentListUseCase getContentListUseCase) {
         return new KolPostShopPresenter(getContentListUseCase);
+    }
+
+    @Provides
+    @KolProfileScope
+    @Named("atcMutation")
+    String provideAddToCartMutation(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
     }
 }

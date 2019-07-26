@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
@@ -187,7 +188,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this
                 , this, this, this, this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
         presenter.attachView(this);
@@ -249,9 +249,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             this.dynamicPostViewModel = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
             trackImpression(dynamicPostViewModel);
         }
-
-        FeedScrollListener.onFeedScrolled(recyclerView, list);
         setFooter(postDetailViewModel);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    FeedScrollListener.onFeedScrolled(recyclerView, list);
+                }
+            }
+        });
     }
 
     private void trackImpression(DynamicPostViewModel dynamicPostViewModel) {
@@ -324,17 +331,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void bindShare(PostDetailFooterModel model, TemplateFooter template) {
         if (template.getShare()) {
-            shareButton.setOnClickListener(v -> onShareClick(0, model.getContentId(),
+            View.OnClickListener onClickListener = v -> onShareClick(0, model.getContentId(),
                     model.getShareData().getTitle(),
                     model.getShareData().getDescription(),
                     model.getShareData().getUrl(),
-                    model.getShareData().getImageUrl()));
+                    model.getShareData().getImageUrl());
 
-            shareText.setOnClickListener(v -> onShareClick(0, model.getContentId(),
-                    model.getShareData().getTitle(),
-                    model.getShareData().getDescription(),
-                    model.getShareData().getUrl(),
-                    model.getShareData().getImageUrl()));
+            shareButton.setOnClickListener(onClickListener);
+            shareText.setOnClickListener(onClickListener);
         } else {
             shareButton.setVisibility(View.GONE);
             shareText.setVisibility(View.GONE);
@@ -801,23 +805,20 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl, @NotNull PostTagItem postTagItem, int itemPosition) {
         onGoToLink(redirectUrl);
-        if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
-            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
-                if (isOwner()) {
-                    postTagAnalytics.trackClickPostTagProfileDetailSelf(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getTrackingPostModel());
-                } else {
-                    postTagAnalytics.trackClickPostTagProfileDetailOther(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
-                            dynamicPostViewModel.getTrackingPostModel());
-                }
-            }
+
+        if (isOwner()) {
+            postTagAnalytics.trackClickPostTagProfileDetailSelf(
+                    dynamicPostViewModel.getId(),
+                    postTagItem,
+                    itemPosition,
+                    dynamicPostViewModel.getTrackingPostModel());
+        } else {
+            postTagAnalytics.trackClickPostTagProfileDetailOther(
+                    dynamicPostViewModel.getId(),
+                    postTagItem,
+                    itemPosition,
+                    dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
+                    dynamicPostViewModel.getTrackingPostModel());
         }
     }
 
@@ -852,6 +853,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 presenter.trackAffiliate(track.getViewURL());
             }
         }
+    }
+
+    @Override
+    public void onPostTagItemBuyClicked(int positionInFeed, @NotNull PostTagItem postTagItem) {
+        presenter.addPostTagItemToCart(positionInFeed, postTagItem);
     }
 
     @Override
@@ -893,6 +899,21 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
         startActivityForResult(VideoDetailActivity.Companion.getInstance(getActivity(), postId), OPEN_VIDEO_DETAIL);
+    }
+
+    @Override
+    public void onAddToCartSuccess(int positionInFeed, PostTagItem postTagItem) {
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
+        postTagAnalytics.trackClickPostTagBuyKol(
+                postTagItem,
+                positionInFeed,
+                dynamicPostViewModel.getHeader().getFollowCta().getAuthorType()
+        );
+    }
+
+    @Override
+    public void onAddToCartFailed(String pdpAppLink) {
+        onGoToLink(pdpAppLink);
     }
 
     private void onGoToLink(String link) {
