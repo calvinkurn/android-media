@@ -50,7 +50,7 @@ public interface KolPostDetailContract {
 
         void onEmptyDetailClicked();
 
-        void onAddToCartSuccess();
+        void onAddToCartSuccess(int positionInFeed, PostTagItem postTagItem);
 
         void onAddToCartFailed(String pdpAppLink);
     }
@@ -74,6 +74,6 @@ public interface KolPostDetailContract {
 
         void deletePost(int id, int rowNumber);
 
-        void addPostTagItemToCart(PostTagItem postTagItem);
+        void addPostTagItemToCart(int positionInFeed, PostTagItem postTagItem);
     }
 }
