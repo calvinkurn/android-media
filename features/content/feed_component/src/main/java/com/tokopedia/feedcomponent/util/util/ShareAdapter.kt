@@ -1,4 +1,4 @@
-package com.tokopedia.profile.view.util
+package com.tokopedia.feedcomponent.util.util
 
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.profile.R
+import com.tokopedia.feedcomponent.R
 
 /**
  * @author by yfsx on 17/05/19.

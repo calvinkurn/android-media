@@ -89,7 +89,7 @@ import com.tokopedia.profile.view.adapter.viewholder.OtherRelatedProfileViewHold
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
-import com.tokopedia.profile.view.util.ShareBottomSheets
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -149,7 +149,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
     private var isAppBarCollapse = false
     private var linkerData: LinkerData? = null
-    private var isShareProfile: Boolean? = null
+    private var isShareProfile = false
 
     override lateinit var profileRouter: ProfileModuleRouter
     lateinit var layoutManager: GridLayoutManager
@@ -440,7 +440,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
             }
         } else {
-            showShareBottomSheets()
+            showShareBottomSheets(object : ShareBottomSheets.OnShareItemClickListener {
+                override fun onShareItemClicked(packageName: String) {
+                    sendTracker(packageName)
+                }
+            })
             profilePreference.setShouldChangeUsername(shouldChange)
         }
     }
@@ -1085,7 +1089,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_title)))
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
-                showShareBottomSheets()
+                showShareBottomSheets(object: ShareBottomSheets.OnShareItemClickListener{
+                    override fun onShareItemClicked(packageName: String) {
+                        sendTracker(packageName)
+                    }
+                })
             }
         }
     }
@@ -1154,7 +1162,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_title)))
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
-                showShareBottomSheets()
+                showShareBottomSheets(object: ShareBottomSheets.OnShareItemClickListener{
+                    override fun onShareItemClicked(packageName: String) {
+                        sendTracker(packageName)
+                    }
+                })
             }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_af_graph))
@@ -1243,7 +1255,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         linkerData.name = name
         linkerData.imgUri = avatar
         linkerData.uri = link
-        linkerData.textContent = String.format(shareFormat, link)
+        linkerData.textContent = shareFormat
         linkerData.ogTitle = shareTitle
         return linkerData
     }
@@ -1442,7 +1454,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (shouldChangeUsername()) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         } else {
-            showShareBottomSheets()
+            showShareBottomSheets(object: ShareBottomSheets.OnShareItemClickListener{
+                override fun onShareItemClicked(packageName: String) {
+                    sendTracker(packageName)
+                }
+            })
         }
     }
 
@@ -1671,22 +1687,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun showShareBottomSheets() {
+    private fun showShareBottomSheets(listener: ShareBottomSheets.OnShareItemClickListener) {
         fragmentManager?.let { fragmentManager ->
             linkerData?.let { linkerData ->
-                isShareProfile?.let { isShareProfile->
-                    ShareBottomSheets().show(
-                            fragmentManager,
-                            linkerData,
-                            isOwner,
-                            userId.toString(),
-                            isShareProfile
-                    )
-                }
+                ShareBottomSheets().show(
+                        fragmentManager,
+                        linkerData,
+                        listener)
             }
         }
         linkerData = null
-        isShareProfile = null
     }
 
+    private fun sendTracker(packageName: String) {
+        if (isShareProfile)
+            profileAnalytics.eventClickShareProfileOpsiIni(isOwner, userId.toString(), packageName)
+        else
+            profileAnalytics.eventClickSharePostOpsiIni(isOwner, userId.toString(), packageName)
+    }
 }

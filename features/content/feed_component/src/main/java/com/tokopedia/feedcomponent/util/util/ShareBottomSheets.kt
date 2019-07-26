@@ -1,4 +1,4 @@
-package com.tokopedia.profile.view.util
+package com.tokopedia.feedcomponent.util.util
 
 import android.app.Dialog
 import android.content.BroadcastReceiver
@@ -7,24 +7,21 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ResolveInfo
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.*
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.kol.KolComponentInstance
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.profile.R
-import com.tokopedia.profile.analytics.ProfileAnalytics
-import com.tokopedia.profile.di.DaggerProfileComponent
 import java.util.*
-import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 /**
@@ -33,13 +30,8 @@ import kotlin.collections.ArrayList
 class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     val TITLE_EN = "Share"
 
-    @Inject
-    lateinit var profileAnalytics: ProfileAnalytics
-
     val KEY_ADDING = ".isAddingProduct"
-    val KEY_ISOWNER = "isOwner"
-    val KEY_PROFILEID = "profileId"
-    val KEY_SHARE_PROFILE = "share_profile"
+    val KEY_LISTENER = ".listener"
 
     private val PACKAGENAME_WHATSAPP = "com.whatsapp.ContactPicker"
     private val PACKAGENAME_FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias"
@@ -47,6 +39,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     private val PACKAGENAME_TWITTER = "com.twitter.composer.ComposerShareActivity"
     private val PACKAGENAME_GPLUS = "com.google.android.apps.plus.GatewayActivityAlias"
     private val PACKAGENAME_INSTAGRAM = "com.instagram.android";
+
 
     private val ClassNameApplications = arrayOf(PACKAGENAME_WHATSAPP,
             PACKAGENAME_FACEBOOK,
@@ -88,24 +81,13 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     private lateinit var data: LinkerData
     private lateinit var adapter: ShareAdapter
     private var isAdding: Boolean = false
-    private var isOwner = false
-    private var profileId = ""
-    private var isShareProfile = false
+    private lateinit var listener: OnShareItemClickListener
 
-    fun newInstance(data: LinkerData, isAddingProduct: Boolean, isOwner: Boolean, profileId: String, isShareProfile: Boolean): ShareBottomSheets {
-        val fragment = ShareBottomSheets()
-        val bundle = Bundle()
-        bundle.putParcelable(ShareBottomSheets::class.java.getName(), data)
-        bundle.putBoolean(ShareBottomSheets::class.java.getName() + KEY_ADDING, isAddingProduct)
-        bundle.putBoolean(KEY_ISOWNER, isOwner)
-        bundle.putString(KEY_PROFILEID, profileId)
-        bundle.putBoolean(KEY_SHARE_PROFILE, isShareProfile)
-        fragment.setArguments(bundle)
-        return fragment
-    }
 
-    fun show(fragmentManager: FragmentManager, data: LinkerData, isOwner: Boolean, profileId: String, isShareProfile: Boolean) {
-        newInstance(data, false, isOwner, profileId, isShareProfile).show(fragmentManager, TITLE_EN)
+    fun show(fragmentManager: FragmentManager, data: LinkerData, listener: OnShareItemClickListener) {
+        this.data = data
+        this.listener = listener
+        show(fragmentManager, TITLE_EN)
     }
 
     override fun getLayoutResourceId(): Int {
@@ -121,13 +103,6 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     override fun configView(parentView: View) {
-        arguments?.let{
-            data = it.getParcelable(ShareBottomSheets::class.java.getName())
-            isAdding = it.getBoolean(ShareBottomSheets::class.java.getName() + KEY_ADDING, false)
-            isOwner = it.getBoolean(KEY_ISOWNER, false)
-            profileId = it.getString(KEY_PROFILEID, "")
-            isShareProfile = it.getBoolean(KEY_SHARE_PROFILE, false)
-        }
         super.configView(parentView)
     }
 
@@ -136,11 +111,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     private lateinit var mLayoutError: LinearLayout
     private lateinit var mTextViewError: TextView
 
-    override fun initView(view: View) {
-        DaggerProfileComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
-                .build()
-                .inject(this)
+    override fun initView(view: View){
         mRecyclerView = view.findViewById(R.id.recyclerview_bottomsheet)
         mProgressBar = view.findViewById(R.id.progressbar)
         mLayoutError = view.findViewById(R.id.layout_error)
@@ -364,7 +335,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
      * @param packageName
      * @return String media tracking
      */
-    private fun constantMedia(packageName: String): String {
+    fun constantMedia(packageName: String): String {
         return when {
             packageName.contains(KEY_WHATSAPP) -> KEY_WHATSAPP
             packageName.contains(KEY_LINE) -> KEY_LINE
@@ -377,9 +348,10 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun sendTracker(packageName: String) {
-        if (isShareProfile)
-            profileAnalytics.eventClickShareProfileOpsiIni(isOwner, profileId, constantMedia(packageName))
-        else
-            profileAnalytics.eventClickSharePostOpsiIni(isOwner, profileId, constantMedia(packageName))
+        listener.onShareItemClicked(constantMedia(packageName))
+    }
+
+    interface OnShareItemClickListener {
+        fun onShareItemClicked(packageName: String)
     }
 }
