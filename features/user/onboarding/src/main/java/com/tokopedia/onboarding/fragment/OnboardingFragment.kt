@@ -147,26 +147,26 @@ class OnboardingFragment : BaseDaggerFragment(),
         titleView?.visibility = View.VISIBLE
         descView?.visibility = View.VISIBLE
 
-        val slideTitle: ValueAnimator?
-        val slideDesc: ValueAnimator?
-        if (isSlideRight) {
-            slideTitle = OnboardingAnimationHelper.slideLefttoRight(titleView)
-            slideDesc = OnboardingAnimationHelper.slideLefttoRight(descView)
-        } else {
-            slideTitle = OnboardingAnimationHelper.slideRightToLeft(titleView)
-            slideDesc = OnboardingAnimationHelper.slideRightToLeft(descView)
-        }
+//        val slideTitle: ValueAnimator?
+//        val slideDesc: ValueAnimator?
+//        if (isSlideRight) {
+//            slideTitle = OnboardingAnimationHelper.slideRightToLeft(titleView)
+//            slideDesc = OnboardingAnimationHelper.slideRightToLeft(descView)
+//        } else {
+//            slideTitle = OnboardingAnimationHelper.slideLefttoRight(titleView)
+//            slideDesc = OnboardingAnimationHelper.slideLefttoRight(descView)
+//        }
 
-        val fadeTitle = OnboardingAnimationHelper.appearText(titleView)
-        val fadeDesc = OnboardingAnimationHelper.appearText(descView)
+//        val fadeTitle = OnboardingAnimationHelper.appearText(titleView)
+//        val fadeDesc = OnboardingAnimationHelper.appearText(descView)
 
-        if (slideTitle != null && slideDesc != null && fadeTitle != null && fadeDesc != null) {
-            slideDesc.startDelay = 80L
-            val set = AnimatorSet()
-            set.playTogether(slideTitle, slideDesc, fadeTitle, fadeDesc)
-            set.duration = 600L
-            set.start()
-        }
+//        if (slideTitle != null && slideDesc != null) {
+//            slideDesc.startDelay = 30L
+//            val set = AnimatorSet()
+//            set.playTogether(slideTitle, slideDesc)
+//            set.duration = 800L
+//            set.start()
+//        }
 
         videoView?.start()
     }
