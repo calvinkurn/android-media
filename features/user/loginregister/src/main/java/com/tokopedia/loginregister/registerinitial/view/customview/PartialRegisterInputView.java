@@ -146,14 +146,14 @@ public class PartialRegisterInputView extends BaseCustomView {
                 if(PartialRegisterInputUtils.isValidPhone(value))
                     onValidValue();
                 else if(!value.isEmpty())
-                    onInvalidValuePhone();
+                    onInvalidValue();
                 break;
             }
             case PartialRegisterInputUtils.EMAIL_TYPE: {
                 if(PartialRegisterInputUtils.isValidEmail(value))
                     onValidValue();
                 else if(!value.isEmpty())
-                    onInvalidValueEmail();
+                    onInvalidValue();
                 break;
             }
         }
@@ -167,16 +167,6 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     private void onInvalidValue(){
         btnAction.setButtonCompatType(ButtonCompat.PRIMARY_DISABLED);
-    }
-
-    private void onInvalidValueEmail(){
-        onErrorValidate("Format email salah");
-        onInvalidValue();
-    }
-
-    private void onInvalidValuePhone(){
-        onErrorValidate("Format phone number salah");
-        onInvalidValue();
     }
 
     public String getTextValue() {
