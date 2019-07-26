@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -147,7 +148,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheId) } ?: return
                 val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java) ?: ParamFilter()
 
-                trackingHotelUtil.hotelUserClickFilter(paramFilter.toString())
+                val gson = GsonBuilder().setPrettyPrinting().create()
+                trackingHotelUtil.hotelUserClickFilter(gson.toJson(paramFilter.toString()))
                 searchResultviewModel.addFilter(paramFilter)
                 loadInitialData()
             }
