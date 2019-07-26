@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -305,16 +306,19 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    if (getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
-                        ((DigitalModuleRouter) getActivity().getApplicationContext()).
-                                showAdvancedAppRatingDialog(getActivity(), dialog -> {
-                                    getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
-                                    closeView();
-                                });
+                    if (getActivity() != null && getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
+
+                        ((DigitalModuleRouter) getActivity().getApplicationContext())
+                                .showAppFeedbackRatingDialog(
+                                        manager,
+                                        () -> {
+                                            getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
+                                            closeView();
+                                        }
+                                );
                     }
-
                     presenter.onPaymentSuccess(cartPassData.getCategoryId());
-
                     break;
                 case TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(

@@ -142,11 +142,12 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
 
     @Override
     public void successPostFeedback() {
-        FragmentManager manager = getActivity().getSupportFragmentManager();
+        if (getActivity() != null) {
+            FragmentManager manager = getActivity().getSupportFragmentManager();
 
-        if (manager != null) {
             new AppFeedbackThankYouBottomSheet()
                     .showDialog(manager, appRating, "AppFeedbackThankYouBottomSheet");
+
             this.dismiss();
         }
     }

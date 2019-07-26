@@ -37,9 +37,9 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
             button.setEnabled(false);
 
             button.setOnClickListener(v -> {
-                FragmentManager manager = getActivity().getSupportFragmentManager();
+                if (getActivity() != null) {
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
 
-                if (manager != null) {
                     if ((int) ratingValue > NpsConstant.Feedback.GOOD_RATING_THRESHOLD) {
                         new AppFeedbackThankYouBottomSheet()
                                 .showDialog(manager, ratingValue, "AppFeedbackThankYouBottomSheet");
@@ -52,6 +52,10 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
                 }
             });
         }
+    }
+
+    public void setDialogDismissListener(BottomSheetDismissListener dismissListener) {
+        setDismissListener(dismissListener);
     }
 
     @Override
