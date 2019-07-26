@@ -78,20 +78,11 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
         }
         val intent = Intent()
-        val promoData = PromoData(PromoData.VALUE_COUPON, data.codes[0],
+        val promoData = PromoData(PromoData.TYPE_COUPON, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-    }
-
-    override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
-        val intent = Intent()
-        intent.putExtra(EXTRA_CLASHING_DATA, clasingInfoDetailUiModel)
-        activity?.setResult(RESULT_CLASHING, intent)
-        activity?.finish()
-
-        super.onClashCheckPromo(clasingInfoDetailUiModel)
     }
 
     override fun onErrorValidatePromo(e: Throwable) {

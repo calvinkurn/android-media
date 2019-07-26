@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -40,7 +39,6 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetail
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
@@ -245,7 +243,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         String promoCode = promoData.getPromoCode();
         if (!promoCode.isEmpty()) {
             int requestCode;
-            if (promoData.getTypePromo() == 0) {
+            if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
                 intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
@@ -259,7 +257,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
             startActivityForResult(intent, requestCode);
         } else {
-            showToastMessage("Tidak ada promo yang sedang dipakai");
+            showToastMessage(getString(R.string.promo_none_applied));
         }
     }
 

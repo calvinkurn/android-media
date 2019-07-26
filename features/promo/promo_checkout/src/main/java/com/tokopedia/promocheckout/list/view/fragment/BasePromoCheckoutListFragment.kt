@@ -144,7 +144,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     override fun loadData(page: Int) {
         if(isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
-//            promoCheckoutListPresenter.getListLastSeen(resources)
         }
     }
 
