@@ -86,7 +86,7 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Ol
 
     @Override
     public void onEmptyButtonClicked() {
-        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING);
+        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES);
     }
 
     @Override

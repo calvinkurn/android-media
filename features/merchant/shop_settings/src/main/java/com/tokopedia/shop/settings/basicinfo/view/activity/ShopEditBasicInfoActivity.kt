@@ -65,7 +65,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         updateShopSettingsInfoPresenter.attachView(this)
 
         parentTvBrowseFile.setBackground(MethodChecker
-                .getDrawable(parentTvBrowseFile.getContext(), R.drawable.ic_balloon_gray))
+                .getDrawable(parentTvBrowseFile.getContext(), com.tokopedia.design.R.drawable.ic_balloon_gray))
 
         etShopSlogan.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
@@ -90,7 +90,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
     }
 
     private fun onSaveButtonClicked() {
-        showSubmitLoading(getString(R.string.title_loading))
+        showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
         val tagLine = etShopSlogan.text.toString()
         val desc = etShopDesc.text.toString()
         if (!savedLocalImageUrl.isNullOrEmpty()) {
@@ -194,7 +194,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
             val logoUrl = shopBasicDataModel.logo
             if (TextUtils.isEmpty(logoUrl)) {
                 ivLogo.setImageDrawable(
-                        MethodChecker.getDrawable(ivLogo.getContext(),R.drawable.ic_camera_add))
+                        MethodChecker.getDrawable(ivLogo.getContext(),com.tokopedia.design.R.drawable.ic_camera_add))
             } else {
                 ImageHandler.LoadImage(ivLogo, logoUrl)
             }
@@ -212,7 +212,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         val message = ErrorHandler.getErrorMessage(this, throwable)
         ToasterError.make(findViewById(android.R.id.content),
                 message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(getString(R.string.title_try_again)) { loadShopBasicData() }.show()
+                .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again)) { loadShopBasicData() }.show()
     }
 
     override fun onErrorUploadShopImage(throwable: Throwable) {
@@ -223,7 +223,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         val message = ErrorHandler.getErrorMessage(this, throwable)
         ToasterError.make(findViewById(android.R.id.content),
                 message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(getString(R.string.title_try_again)) { onSaveButtonClicked() }.show()
+                .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again)) { onSaveButtonClicked() }.show()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {

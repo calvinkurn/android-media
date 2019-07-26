@@ -235,6 +235,9 @@
     <string name="shop_performance">Skor Perfoma Toko</string>
     <string name="this_week_statistics">Statistik Minggu ini</string>
 
+    <string name="dynamic_feature_title_install">Instalasi tambahan</string>
+    <string name="dynamic_feature_description_install">Bagian ini membutuhkan instalasi tambahan. Apakah anda ingin melakukan instalasi sekarang?</string>
+    <string name="dynamic_feature_button_install">Install</string>
 
     <string name="label_call_ondemand_driver_logistic_action_1">Telepon Driver</string>
     <string name="label_call_ondemand_driver_logistic_action_2">SMS Driver</string>

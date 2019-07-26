@@ -96,9 +96,9 @@ class ShopSettingsEtalaseReorderFragment :
         adapterDefault = ShopEtalaseReorderAdapter(ShopEtalaseReorderFactory(null,null))
     }
 
-    override fun getRecyclerView(view: View): RecyclerView? {
-        recyclerView = super.getRecyclerView(view)
-        return recyclerView
+    override fun getRecyclerView(view: View): RecyclerView {
+        recyclerView = view.findViewById<View>(R.id.recycler_view) as RecyclerView?
+        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -141,7 +141,7 @@ class ShopSettingsEtalaseReorderFragment :
     }
 
     fun saveReorder() {
-        showSubmitLoading(getString(R.string.title_loading))
+        showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
         val shopNoteList = ArrayList<String>()
         val sortDataList = adapter!!.data
         for (shopEtalaseViewModel in sortDataList) {
@@ -154,7 +154,7 @@ class ShopSettingsEtalaseReorderFragment :
         hideSubmitLoading()
         ToasterNormal.make(activity!!.findViewById(android.R.id.content),
                 getString(R.string.etalase_success_reorder), BaseToaster.LENGTH_LONG)
-                .setAction(getString(R.string.close)) {
+                .setAction(getString(com.tokopedia.abstraction.R.string.close)) {
                     // no-op
                 }.show()
         listener!!.onSuccessReorderEtalase()
@@ -165,7 +165,7 @@ class ShopSettingsEtalaseReorderFragment :
         val message = ErrorHandler.getErrorMessage(context, throwable)
         ToasterError.make(activity!!.findViewById(android.R.id.content),
                 message, BaseToaster.LENGTH_LONG)
-                .setAction(getString(R.string.close)) {
+                .setAction(getString(com.tokopedia.design.R.string.close)) {
                     // no-op
                 }.show()
     }

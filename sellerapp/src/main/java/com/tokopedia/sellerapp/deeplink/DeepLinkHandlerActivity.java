@@ -103,7 +103,11 @@ import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeep
         PowerMerchantSubscribeDeeplinkModule.class,
         AutoAdsLinkModule.class
 })
-
+/* **
+ * Navigation will via RouteManager -> manifest instead.
+ * Put new Deeplink directly into the target activity
+ */
+@Deprecated
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
 

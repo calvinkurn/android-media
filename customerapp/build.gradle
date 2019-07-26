@@ -171,21 +171,20 @@ android {
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles  'proguard-rules.txt'
+            proguardFiles 'proguard-rules.txt'
             buildConfigField "boolean", "IS_PREINSTALL", "false"
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
-            ext.enableHansel=false
+            ext.enableHansel = false
         }
         release {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            ext.enableHansel=true
+            ext.enableHansel = true
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
@@ -265,7 +264,7 @@ android {
     }
 
     // Specifies 4 flavor dimensions.
-    flavorDimensions "tier" , "client"
+    flavorDimensions "tier", "client"
 
     productFlavors {
         live {
@@ -281,6 +280,8 @@ android {
             dimension "client"
         }
     }
+
+
 }
 
 dependencies {
@@ -447,7 +448,7 @@ dependencies {
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.paymentSetting)
 
-    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+    implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
@@ -472,10 +473,10 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.moengageSdk
     implementation rootProject.ext.analyticsDependencies.moengagePushbase
     implementation rootProject.ext.analyticsDependencies.moengageInapp
-    implementation (rootProject.ext.analyticsDependencies.moengage) {
+    implementation(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
-    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
+    implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
 
@@ -537,7 +538,7 @@ dependencies {
     }
 
     // Cloud testing
-    androidTestImplementation (name:'cloudtestingscreenshotter_lib', ext:'aar')
+    androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
 
     androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
@@ -568,7 +569,7 @@ dependencies {
 
 
 project.ext.sentryCli = [
-        logLevel: "debug",
+        logLevel   : "debug",
         flavorAware: true
 ]
 

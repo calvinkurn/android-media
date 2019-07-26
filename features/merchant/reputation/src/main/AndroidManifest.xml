@@ -8,8 +8,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         >
-        <meta-data android:name="android.support.VERSION" android:value="26.1.0"
-            tools:replace="android:value" />
         <activity
             android:name=".inbox.view.activity.InboxReputationActivity"
             android:label="@string/title_activity_reputation"

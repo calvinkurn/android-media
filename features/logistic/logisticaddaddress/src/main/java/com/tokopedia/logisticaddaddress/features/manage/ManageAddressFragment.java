@@ -203,19 +203,19 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     public void openFormAddressView(AddressModel data) {
         Token token = mPresenter.getToken();
         if (data == null) {
-            // if (isAddNewAddressEnabled()) {
+            if (isAddNewAddressEnabled()) {
                 AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_USER_NEW);
                 startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                         AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                         false, 0, false, false, null,
                         false), REQUEST_CODE_PARAM_CREATE);
 
-            /*} else {
+            } else {
                 startActivityForResult(
                     AddAddressActivity.createInstanceAddAddressFromManageAddressWhenDefaultAddressIsEmpty(
                             getActivity(), token
                     ), REQUEST_CODE_PARAM_CREATE);
-            }*/
+            }
 
         } else {
             startActivityForResult(

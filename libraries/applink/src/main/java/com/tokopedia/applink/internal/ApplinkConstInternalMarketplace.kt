@@ -83,28 +83,22 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val GOLD_MERCHANT_MEMBERSHIP = "$INTERNAL_MARKETPLACE/gold-merchant-membership"
 
-    // CustomerApp only: GoldMerchantRedirectActivity
-    @JvmField
-    val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 
     //ShopSettingsInfoActivity
     @JvmField
-    val SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/shop/setting"
+    val SHOP_SETTINGS_INFO = "$INTERNAL_MARKETPLACE/shop-settings-info"
 
-    //ShopSettingsNoteActivity
+    //ShopSettingsNotesActivity
     @JvmField
-    val SHOP_NOTE_SETTING = "$INTERNAL_MARKETPLACE/shop/setting/notes"
-
-    @JvmField
-    val SHOP_SHIPPING_SETTING = "$INTERNAL_MARKETPLACE/shop/setting/shipping"
+    val SHOP_SETTINGS_NOTES = "$INTERNAL_MARKETPLACE/shop-settings-notes"
 
     //ShopSettingsEtalaseActivity
     @JvmField
-    val SHOP_SETTINGS_ETALASE = "$INTERNAL_MARKETPLACE/shop/setting/etalase"
+    val SHOP_SETTINGS_ETALASE = "$INTERNAL_MARKETPLACE/shop-settings-etalase"
 
     //ShopSettingsAddressActivity
     @JvmField
-    val SHOP_SETTINGS_ADDRESS = "$INTERNAL_MARKETPLACE/shop/setting/address"
+    val SHOP_SETTINGS_ADDRESS = "$INTERNAL_MARKETPLACE/shop-settings-address"
 
     //DistrictRecommendationShopSettingsActivity
     @JvmField

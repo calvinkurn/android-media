@@ -134,10 +134,21 @@
     <string name="drawer_title_challenges">Challenges</string>
     <string name="share_link">Share Link!!!</string>
     <string name="produk_yang_mungkin_anda_suka">Produk yang mungkin Anda suka</string>
-    <string name="title_header_saldo_intro" >Info Detail Saldo</string>
+    <string name="title_header_saldo_intro">Info Detail Saldo</string>
     <string name="rationale_need_location_for_promotion">Akses lokasi diperlukan untuk memudahkan
         pengiriman dan mendapatkan rekomendasi produk. Perbolehkan?</string>
 
     <string name="title_dialog_tokopedia_app_not_valid">Aplikasi Tokopedia tidak valid</string>
     <string name="title_message_install_from_playstore">Install Tokopedia dari Google Play Store untuk melanjutkan</string>
+
+    <!-- Dynamic features Shop Setting -->
+    <string name="shop_settings_manage_shop_info">Informasi</string>
+    <string name="shop_settings_manage_address">Lokasi</string>
+    <string name="shop_settings_manage_etalase">Etalase</string>
+    <string name="shop_settings_manage_notes">Catatan</string>
+    <string name="shop_settings_basic_info">Informasi Dasar</string>
+    <string name="shop_settings_add_note">Tambah Catatan</string>
+    <string name="shop_settings_add_etalase">Tambah Etalase</string>
+    <string name="shop_settings_add_address">Tambah Lokasi</string>
+    <string name="shop_settings_shop_status">Status Toko</string>
 </resources>

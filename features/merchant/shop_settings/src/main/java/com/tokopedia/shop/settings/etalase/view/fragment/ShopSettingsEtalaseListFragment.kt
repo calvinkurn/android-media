@@ -27,6 +27,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.settings.R
@@ -116,6 +117,14 @@ class ShopSettingsEtalaseListFragment :
         }
     }
 
+    override fun getSearchInputView(view: View): SearchInputView {
+        return view.findViewById<View>(R.id.search_input_view) as SearchInputView
+    }
+
+    override fun getRecyclerView(view: View): RecyclerView {
+        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
+    }
+
     private fun hasCustomEtalaseAtLeast2(shopEtalaseViewModelList: List<ShopEtalaseViewModel>): Boolean {
         var count = 0
         for (shopEtalaseViewModel in shopEtalaseViewModelList) {
@@ -166,11 +175,6 @@ class ShopSettingsEtalaseListFragment :
         super.onSwipeRefresh()
     }
 
-    override fun getRecyclerView(view: View): RecyclerView? {
-        recyclerView = super.getRecyclerView(view)
-        return recyclerView
-    }
-
     private fun onAddEtalaseButtonClicked() {
         goToAddEtalase()
     }
@@ -180,7 +184,7 @@ class ShopSettingsEtalaseListFragment :
 
         if (TextUtils.isEmpty(searchText)) {
             val emptyModel = EmptyModel()
-            emptyModel.iconRes = R.drawable.ic_empty_state
+            emptyModel.iconRes = com.tokopedia.design.R.drawable.ic_empty_state
             emptyModel.title = getString(R.string.shop_has_no_etalase)
             emptyModel.content = getString(R.string.shop_etalase_info)
             emptyModel.buttonTitleRes = R.string.shop_settings_add_etalase
@@ -196,7 +200,7 @@ class ShopSettingsEtalaseListFragment :
             return emptyModel
         } else {
             val emptyModel = EmptyResultViewModel()
-            emptyModel.iconRes = R.drawable.ic_empty_search
+            emptyModel.iconRes = com.tokopedia.design.R.drawable.ic_empty_search
             emptyModel.title = getString(R.string.shop_has_no_etalase_search, searchText)
             emptyModel.content = getString(R.string.change_your_keyword)
             return emptyModel
@@ -239,10 +243,10 @@ class ShopSettingsEtalaseListFragment :
         } else {
             menus.setItemMenuList(resources.getStringArray(R.array.shop_etalase_menu_more_change_delete))
         }
-        menus.setActionText(getString(R.string.close))
+        menus.setActionText(getString(com.tokopedia.abstraction.R.string.close))
         menus.setOnActionClickListener { menus.dismiss() }
         menus.setOnItemMenuClickListener { itemMenus, _ ->
-            if (itemMenus.title.equals(getString(R.string.label_change), ignoreCase = true)) {
+            if (itemMenus.title.equals(getString(com.tokopedia.design.R.string.label_change), ignoreCase = true)) {
                 goToEditEtalase(shopEtalaseViewModel)
             } else {
                 activity?.let { it ->
@@ -250,11 +254,11 @@ class ShopSettingsEtalaseListFragment :
                         setTitle(getString(R.string.title_dialog_delete_shop_etalase))
                         setDesc(getString(R.string.desc_dialog_delete_shop_etalase, shopEtalaseViewModel.name))
                         setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(R.string.cancel))
+                        setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
                         setOnOkClickListener {
                             shopEtalaseIdToDelete = shopEtalaseViewModel.id
                             shopEtalaseNameToDelete = shopEtalaseViewModel.name
-                            showSubmitLoading(getString(R.string.title_loading))
+                            showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                             shopSettingEtalaseListPresenter.deleteShopEtalase(shopEtalaseIdToDelete!!)
                             dismiss()
                         }
