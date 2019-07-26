@@ -11,10 +11,10 @@ import android.arch.persistence.room.PrimaryKey
 class CountryPhoneCodeTable(
         @PrimaryKey
         @ColumnInfo(name = "country_id")
-        var countryId: String,
+        var countryId: String = "",
 
         @ColumnInfo(name = "country_name")
-        var countryName: String? = null,
+        var countryName: String = "",
 
         @ColumnInfo(name = "phone_code")
         var phoneCode: Long = 0)

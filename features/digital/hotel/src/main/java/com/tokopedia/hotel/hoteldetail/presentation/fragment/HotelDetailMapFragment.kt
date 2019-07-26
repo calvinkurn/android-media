@@ -86,13 +86,16 @@ class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
             googleMap.uiSettings.isRotateGesturesEnabled = true
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
-            googleMap.addMarker(MarkerOptions().position(latLng).icon(bitmapDescriptorFromVector(context!!, R.drawable.ic_hotel_pin_location))
-                    .title(getString(R.string.hotel_detail_map_marker_title, propertyName))
-                    .snippet(getString(R.string.hotel_detail_map_marker_snippet, address))
-                    .draggable(false))
+            context?.run {
+                googleMap.addMarker(MarkerOptions().position(latLng).icon(bitmapDescriptorFromVector(this, R.drawable.ic_hotel_pin_location))
+                        .title(getString(R.string.hotel_detail_map_marker_title, propertyName))
+                        .snippet(getString(R.string.hotel_detail_map_marker_snippet, address))
+                        .draggable(false))
+            }
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
             googleMap.setOnMapClickListener {
+                // do nothing
                 // need this even it's not used
                 // it's used to override default function of OnMapClickListener
                 // which is navigate to default Google Map Apps
@@ -108,15 +111,18 @@ class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
 
     private fun bitmapDescriptorFromVector(context: Context, @DrawableRes drawableId: Int): BitmapDescriptor {
         var drawable = ContextCompat.getDrawable(context, drawableId)
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = DrawableCompat.wrap(drawable!!).mutate()
+            drawable?.run {
+                drawable = DrawableCompat.wrap(this).mutate()
+            }
         }
 
-        val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth,
-                drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(drawable?.intrinsicWidth ?: 0,
+                drawable?.intrinsicHeight ?: 0, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
+        drawable?.setBounds(0, 0, canvas.width, canvas.height)
+        drawable?.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 

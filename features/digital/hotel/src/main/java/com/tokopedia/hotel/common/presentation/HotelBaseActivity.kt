@@ -10,7 +10,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.common.applink.ApplinkConstant
 import com.tokopedia.hotel.common.di.component.HotelComponent
 import com.tokopedia.hotel.common.presentation.widget.HotelMenuBottomSheets
 import com.tokopedia.user.session.UserSessionInterface
@@ -69,7 +68,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
 
     override fun onOrderListClicked() {
         if (userSessionInterface.isLoggedIn) {
-            RouteManager.route(this, ApplinkConstant.HOTEL_ORDER_LIST)
+            RouteManager.route(this, ApplinkConst.HOTEL_ORDER)
         } else {
             RouteManager.route(this, ApplinkConst.LOGIN)
         }

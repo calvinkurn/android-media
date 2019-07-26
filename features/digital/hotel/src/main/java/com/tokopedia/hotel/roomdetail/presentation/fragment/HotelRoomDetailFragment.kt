@@ -73,17 +73,19 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             roomDetailViewModel = viewModelProvider.get(HotelRoomDetailViewModel::class.java)
+
+            roomIndex = arguments?.getInt(HotelRoomDetailActivity.EXTRA_ROOM_INDEX, 0) ?: 0
+
+            saveInstanceCacheManager = SaveInstanceCacheManager(this, savedInstanceState)
+            val manager = if (savedInstanceState == null) SaveInstanceCacheManager(this,
+                    arguments?.getString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID)) else saveInstanceCacheManager
+
+            val hotelRoomDetailModel = manager.get(EXTRA_ROOM_DATA, HotelRoomDetailModel::class.java)
+                    ?: HotelRoomDetailModel()
+            hotelRoom = hotelRoomDetailModel.hotelRoom
+            addToCartParam = hotelRoomDetailModel.addToCartParam
+
         }
-
-        roomIndex = arguments!!.getInt(HotelRoomDetailActivity.EXTRA_ROOM_INDEX,0)
-
-        saveInstanceCacheManager = SaveInstanceCacheManager(activity!!, savedInstanceState)
-        val manager = if (savedInstanceState == null) SaveInstanceCacheManager(activity!!,
-                arguments!!.getString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID)) else saveInstanceCacheManager
-
-        val hotelRoomDetailModel = manager.get(EXTRA_ROOM_DATA, HotelRoomDetailModel::class.java, HotelRoomDetailModel())!!
-        hotelRoom = hotelRoomDetailModel.hotelRoom
-        addToCartParam = hotelRoomDetailModel.addToCartParam
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -94,7 +96,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             when (it) {
                 is Success -> {
                     val cartId = it.data.response.cartId
-                    startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
+                    context?.run {
+                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId))
+                    }
                 }
                 is Fail -> {
                     NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
@@ -176,16 +180,18 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
             val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.url300 }
 
-            if (roomImageUrls300.size >= 5) room_detail_images.setImages(roomImageUrls300.subList(0,5))
+            if (roomImageUrls300.size >= 5) room_detail_images.setImages(roomImageUrls300.subList(0, 5))
             else room_detail_images.setImages(roomImageUrls300)
 
-            room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
+            room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.roomPrice)
-                    startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                            context!!, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position
-                    ))
+                    context?.run {
+                        startActivity(ImagePreviewSliderActivity.getCallingIntent(
+                                this, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position
+                        ))
+                    }
                 }
             }
         }
@@ -198,21 +204,23 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 hotelRoom.occupancyInfo.occupancyText)
         tv_room_detail_size.text = getString(R.string.hotel_room_detail_header_room_size, hotelRoom.roomInfo.size, hotelRoom.bedInfo)
 
-        val breakfastTextView = FacilityTextView(context!!)
-        if (hotelRoom.breakfastInfo.isBreakfastIncluded) {
+        context?.run {
+            val breakfastTextView = FacilityTextView(this)
+            if (hotelRoom.breakfastInfo.isBreakfastIncluded) {
                 breakfastTextView.setIconAndText(R.drawable.ic_hotel_free_breakfast, getString(R.string.hotel_room_list_free_breakfast))
             } else {
                 breakfastTextView.setIconAndText(R.drawable.ic_hotel_no_breakfast, getString(R.string.hotel_room_list_breakfast_not_included))
             }
-        room_detail_header_facilities.addView(breakfastTextView)
+            room_detail_header_facilities.addView(breakfastTextView)
 
-        val refundableTextView = FacilityTextView(context!!)
-        if (hotelRoom.refundInfo.isRefundable) {
-            refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
-        } else {
-            refundableTextView.setIconAndText(R.drawable.ic_hotel_not_refundable, getString(R.string.hotel_room_list_not_refundable))
+            val refundableTextView = FacilityTextView(this)
+            if (hotelRoom.refundInfo.isRefundable) {
+                refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
+            } else {
+                refundableTextView.setIconAndText(R.drawable.ic_hotel_not_refundable, getString(R.string.hotel_room_list_not_refundable))
+            }
+            room_detail_header_facilities.addView(refundableTextView)
         }
-        room_detail_header_facilities.addView(refundableTextView)
 
         if (hotelRoom.numberRoomLeft <= MINIMUM_ROOM_COUNT) {
             tv_room_detail_count.visibility = View.VISIBLE
@@ -332,9 +340,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         room_detail_button.setOnClickListener {
             progressDialog.show()
             room_detail_button.isEnabled = false
-            trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
             if (userSessionInterface.isLoggedIn) {
-                trackingHotelUtil.hotelChooseRoom(hotelRoom, roomIndex)
+                trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {
                 goToLoginPage()

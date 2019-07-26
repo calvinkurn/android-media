@@ -91,7 +91,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
                 override fun onImageClicked(position: Int) {
                     listener.onPhotoClickListener(room)
                     context.startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                            context!!, room.roomInfo.name, imageUrls, imageUrls, position
+                            context, room.roomInfo.name, imageUrls, imageUrls, position
                     ))
                 }
             }

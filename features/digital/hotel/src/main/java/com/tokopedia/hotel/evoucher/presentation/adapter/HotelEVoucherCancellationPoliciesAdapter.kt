@@ -27,7 +27,7 @@ class HotelEVoucherCancellationPoliciesAdapter(private var cancellationPolicies:
 
         fun bind(element: HotelTransportDetail.Cancellation.CancellationPolicy) {
             with(itemView) {
-                itv_cancellation_policy.setTitleAndDescription(element.shortTitle, element.longDesc)
+                itv_cancellation_policy.setTitleAndDescription(element.longTitle, element.longDesc)
                 itv_cancellation_policy.truncateDescription = false
                 itv_cancellation_policy.buildView()
             }

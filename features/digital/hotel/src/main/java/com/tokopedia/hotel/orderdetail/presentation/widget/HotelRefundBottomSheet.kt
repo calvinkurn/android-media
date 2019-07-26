@@ -37,5 +37,5 @@ class HotelRefundBottomSheet: BottomSheets(){
         updateHeight()
     }
 
-    override fun title(): String = "Ketentuan Pembatalan"
+    override fun title(): String = getString(R.string.hotel_order_detail_refund_sheet_title)
 }

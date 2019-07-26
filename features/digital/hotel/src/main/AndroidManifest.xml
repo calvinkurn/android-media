@@ -98,6 +98,7 @@
         <activity
             android:name=".orderdetail.presentation.activity.HotelOrderDetailActivity"
             android:screenOrientation="portrait"
+            android:label="@string/hotel_order_detail_title"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -114,7 +115,7 @@
 
         <activity
             android:name=".booking.presentation.activity.HotelBookingActivity"
-            android:label="Pemesanan"
+            android:label="@string/hotel_booking_activity_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

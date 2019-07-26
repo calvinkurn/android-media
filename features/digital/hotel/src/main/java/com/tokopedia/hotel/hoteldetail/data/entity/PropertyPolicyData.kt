@@ -56,6 +56,6 @@ class PropertyPolicyData(@SerializedName("name")
         }
     }
 
-    override fun type(typeFactory: HotelDetailFacilityAdapterTypeFactory?): Int =
-        typeFactory!!.type(this)
+    override fun type(typeFactory: HotelDetailFacilityAdapterTypeFactory): Int =
+        typeFactory.type(this)
 }

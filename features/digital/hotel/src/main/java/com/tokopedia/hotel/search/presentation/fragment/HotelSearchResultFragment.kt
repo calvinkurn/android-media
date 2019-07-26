@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -147,7 +148,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheId) } ?: return
                 val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java) ?: ParamFilter()
 
-                trackingHotelUtil.hotelUserClickFilter(paramFilter.toString())
+                val gson = GsonBuilder().setPrettyPrinting().create()
+                trackingHotelUtil.hotelUserClickFilter(gson.toJson(paramFilter.toString()))
                 searchResultviewModel.addFilter(paramFilter)
                 loadInitialData()
             }
@@ -212,9 +214,11 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         with(searchResultviewModel.searchParam) {
             trackingHotelUtil.chooseHotel(t, checkIn, searchProperties)
 
-            startActivityForResult(HotelDetailActivity.getCallingIntent(context!!,
-                    checkIn, checkOut, t.id, room, guest.adult),
-                    REQUEST_CODE_DETAIL_HOTEL)
+            context?.run {
+                startActivityForResult(HotelDetailActivity.getCallingIntent(this,
+                        checkIn, checkOut, t.id, room, guest.adult),
+                        REQUEST_CODE_DETAIL_HOTEL)
+            }
         }
     }
 
@@ -239,7 +243,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun onEmptyButtonClicked() {
-        if (!searchResultviewModel.isFilter) activity!!.onBackPressed()
+        if (!searchResultviewModel.isFilter) activity?.onBackPressed()
         else {
             context?.let {
                 val cacheManager = SaveInstanceCacheManager(it, true).apply {

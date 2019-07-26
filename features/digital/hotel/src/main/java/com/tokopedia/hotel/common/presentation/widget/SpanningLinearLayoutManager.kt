@@ -19,9 +19,7 @@ class SpanningLinearLayoutManager : LinearLayoutManager {
         get() = height - paddingBottom - paddingTop
     private var itemSpacing: Int = 0
 
-    constructor(context: Context?) : super(context) {}
-
-    constructor(context: Context?, orientation: Int, reverseLayout: Boolean) : super(context, orientation, reverseLayout) {}
+    constructor(context: Context?, itemSpacing: Int = 0) : super(context) { this.itemSpacing = itemSpacing }
 
     constructor(context: Context?, orientation: Int, reverseLayout: Boolean, itemSpacing: Int = 0) : super(context, orientation, reverseLayout) {
         this.itemSpacing = itemSpacing

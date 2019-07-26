@@ -1,6 +1,5 @@
 package com.tokopedia.flight.booking.di;
 
-import com.tokopedia.common.travel.di.CommonTravelModule;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase;

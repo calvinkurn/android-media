@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomlist.widget
 
+import android.support.annotation.ColorRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,7 @@ import com.tokopedia.hotel.R
 
 class ChipAdapter(val list: List<String>, val listener: OnClickListener,
                   val onResetChipListener: ResetChipListener,
-                  val selectedColor: Int = com.tokopedia.design.R.color.black_56)
+                  @ColorRes val selectedColor: Int = com.tokopedia.design.R.color.black_56)
     : RecyclerView.Adapter<ChipAdapter.ViewHolder>() {
 
     var selectOnlyOneChip = false
@@ -30,7 +31,7 @@ class ChipAdapter(val list: List<String>, val listener: OnClickListener,
             chips.setOnClickListener {
                 if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
                 chips.isSelected = !chips.isSelected
-                if (selectedColor != 0) {
+                if (selectedColor > 0) {
                     if (chips.isSelected) setTextColor(selectedColor)
                     else setTextColor(com.tokopedia.design.R.color.black_56)
                 }

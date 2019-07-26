@@ -20,7 +20,6 @@ class HotelUtil{
                 }
                 return hexString.toString()
             } catch (e: NoSuchAlgorithmException) {
-                e.printStackTrace()
                 return ""
             }
 

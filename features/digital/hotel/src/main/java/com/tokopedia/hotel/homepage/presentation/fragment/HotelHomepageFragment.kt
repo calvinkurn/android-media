@@ -41,7 +41,7 @@ import javax.inject.Inject
  */
 class HotelHomepageFragment : HotelBaseFragment(),
         HotelRoomAndGuestBottomSheets.HotelGuestListener,
-        HotelPromoAdapter.PromoClickListener{
+        HotelPromoAdapter.PromoClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -63,13 +63,16 @@ class HotelHomepageFragment : HotelBaseFragment(),
             homepageViewModel = viewModelProvider.get(HotelHomepageViewModel::class.java)
         }
 
+
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
-            hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)!!
-        } else if (arguments != null && arguments!!.containsKey(EXTRA_PARAM_TYPE)) {
-            hotelHomepageModel.locId = arguments!!.getInt(EXTRA_PARAM_ID)
-            hotelHomepageModel.locName = arguments!!.getString(EXTRA_PARAM_NAME)
-            hotelHomepageModel.locType = arguments!!.getString(EXTRA_PARAM_TYPE)
+            hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)
+                    ?: HotelHomepageModel()
+        } else if (arguments != null && arguments?.containsKey(EXTRA_PARAM_TYPE) == true) {
+            hotelHomepageModel.locId = arguments?.getInt(EXTRA_PARAM_ID) ?: 4712
+            hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
+            hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
         }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -96,7 +99,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         hidePromoContainer()
                     }
                 }
-                is Fail -> {  }
+                is Fail -> {
+                }
             }
         })
     }
@@ -146,15 +150,17 @@ class HotelHomepageFragment : HotelBaseFragment(),
         val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
         val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
 
-        hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, tomorrow)
-        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
-        hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
-        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
-        hotelHomepageModel.nightCounter = countRoomDuration()
+        if (hotelHomepageModel.checkInDate.isBlank() && hotelHomepageModel.checkOutDate.isBlank()) {
+            hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
+                    TravelDateUtil.YYYY_MM_DD, tomorrow)
+            hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
+                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
+                    TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
+            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
+                    TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
+            hotelHomepageModel.nightCounter = countRoomDuration()
+        }
 
         tv_hotel_homepage_destination.setOnClickListener { onDestinationChangeClicked() }
         tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
@@ -176,10 +182,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onDestinationChangeClicked() {
-        startActivityForResult(HotelDestinationActivity.createInstance(activity!!), REQUEST_CODE_DESTINATION)
-        activity?.run {
-            overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay)
+        context?.run {
+            startActivityForResult(HotelDestinationActivity.createInstance(this), REQUEST_CODE_DESTINATION)
         }
+        activity?.overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay)
     }
 
     private fun configAndRenderCheckInDate() {
@@ -191,11 +197,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onGuestInfoClicked() {
-        val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
-        hotelRoomAndGuestBottomSheets.listener = this
-        hotelRoomAndGuestBottomSheets.roomCount = hotelHomepageModel.roomCount
-        hotelRoomAndGuestBottomSheets.adultCount = hotelHomepageModel.adultCount
-        hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
+        activity?.let {
+            val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
+            hotelRoomAndGuestBottomSheets.listener = this
+            hotelRoomAndGuestBottomSheets.roomCount = hotelHomepageModel.roomCount
+            hotelRoomAndGuestBottomSheets.adultCount = hotelHomepageModel.adultCount
+            hotelRoomAndGuestBottomSheets.show(it.supportFragmentManager, TAG_GUEST_INFO)
+        }
+
     }
 
     private fun onCheckInDateChanged(newCheckInDate: Date) {
@@ -265,16 +274,18 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 hotelHomepageModel.nightCounter.toInt()
         )
 
-        if (hotelHomepageModel.locType.equals(TYPE_PROPERTY, false)) {
-            startActivityForResult(HotelDetailActivity.getCallingIntent(activity!!, hotelHomepageModel.checkInDate,
-                    hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
-                    REQUEST_CODE_DETAIL)
-        } else {
-            startActivityForResult(HotelSearchResultActivity.createIntent(activity!!, hotelHomepageModel.locName,
-                    hotelHomepageModel.locId, hotelHomepageModel.locType, hotelHomepageModel.locLat.toFloat(),
-                    hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
-                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
-                    REQUEST_CODE_SEARCH)
+        context?.run {
+            if (hotelHomepageModel.locType.equals(TYPE_PROPERTY, false)) {
+                startActivityForResult(HotelDetailActivity.getCallingIntent(this, hotelHomepageModel.checkInDate,
+                        hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
+                        REQUEST_CODE_DETAIL)
+            } else {
+                startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelHomepageModel.locName,
+                        hotelHomepageModel.locId, hotelHomepageModel.locType, hotelHomepageModel.locLat.toFloat(),
+                        hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
+                        hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
+                        REQUEST_CODE_SEARCH)
+            }
         }
     }
 
@@ -301,7 +312,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                    trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId ?: "")
+                    trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId
+                            ?: "")
                 }
             }
         })
@@ -309,7 +321,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
         val hotelCalendarDialog = HotelCalendarDialog.getInstance(checkIn, checkOut)
-        hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener{
+        hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
@@ -331,10 +343,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     companion object {
-        const val MAX_SELECTION_DATE = 30
-        const val DEFAULT_LAST_HOUR_IN_DAY = 23
-        const val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
-
         const val REQUEST_CODE_DESTINATION = 101
         const val REQUEST_CODE_SEARCH = 102
         const val REQUEST_CODE_DETAIL = 103

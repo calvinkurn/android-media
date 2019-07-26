@@ -7,21 +7,19 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.HotelUtils
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.widget_hotel_room_duration.view.*
 
 /**
  * @author by resakemal on 20/05/19
  */
 
-class RoomDurationView : BaseCustomView {
+class RoomDurationView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0):
+        BaseCustomView(context, attrs, defStyleAttr)  {
 
     init {
         View.inflate(context, R.layout.widget_hotel_room_duration, this)
     }
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet)
-    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int): super(context, attributeSet, defStyleAttr)
 
     fun setRoomDates(checkInDate: String, checkOutDate: String) {
         hotel_check_in_date.text = changeDateStringFormat(checkInDate,
@@ -34,8 +32,8 @@ class RoomDurationView : BaseCustomView {
     }
 
     fun setRoomCheckTimes(checkInTime: String, checkOutTime: String) {
-        hotel_check_in_time.visibility = View.VISIBLE
-        hotel_check_out_time.visibility = View.VISIBLE
+        hotel_check_in_time.show()
+        hotel_check_out_time.show()
 
         hotel_check_in_time.text = checkInTime
         hotel_check_out_time.text = checkOutTime

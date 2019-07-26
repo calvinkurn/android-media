@@ -81,6 +81,6 @@ constructor(private val countryPhoneCodeDao: CountryPhoneCodeDao,
     }
 
     companion object {
-        val FLIGHT_SEARCH_AIRPORT_JSON = "flight_search_airport.json"
+        val FLIGHT_SEARCH_AIRPORT_JSON = "travel_country_list.json"
     }
 }

@@ -154,11 +154,15 @@
     <string name="hotel_order_detail_guest_name">Nama Tamu</string>
     <string name="hotel_order_detail_payment_method">Metode Pembayaran</string>
     <string name="hotel_order_detail_title">Detail Pesanan</string>
+    <string name="hotel_order_detail_contact_phone_sheet_title">Kontak Hotel</string>
+    <string name="hotel_order_detail_refund_sheet_title">Ketentuan Pembatalan</string>
+    <string name="hotel_order_detail_day_and_time">%1$s, %2$s</string>
 
     <string name="hotel_detail_room_full_text">Kamar Penuh</string>
     <string name="hotel_detail_change_search_text">Ganti Pencarian</string>
     <string name="hotel_detail_coming_soon_text">Segera Hadir</string>
 
+    <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_booking_title">Pembayaran</string>
     <string name="hotel_room_night_count">%1$d Malam</string>
     <string name="hotel_booking_pay_at_hotel_label">\u0020Bayar di Hotel (Perlu Jaminan Kartu Kredit)</string>

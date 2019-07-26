@@ -25,7 +25,7 @@ class HotelDetailAllFacilityActivity : HotelBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportActionBar!!.elevation = 0F
+        supportActionBar?.elevation = 0F
         updateTitle(intent.getStringExtra(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_NAME))
     }
 

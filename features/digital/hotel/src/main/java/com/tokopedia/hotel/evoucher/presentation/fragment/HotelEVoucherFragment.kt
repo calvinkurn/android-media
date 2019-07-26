@@ -34,6 +34,8 @@ import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewMode
 import com.tokopedia.hotel.evoucher.presentation.widget.HotelSharePdfBottomSheets
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
@@ -100,10 +102,13 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val args = savedInstanceState ?: arguments!!
-        orderId = args.getString(EXTRA_ORDER_ID, "")
-        eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_hotel_order_list_detail), orderId)
+        arguments?.let {
+            val args = savedInstanceState ?: it
+            orderId = args.getString(EXTRA_ORDER_ID, "")
+            eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
+                    R.raw.gql_query_hotel_order_list_detail), orderId)
+        }
+
     }
 
     override fun initInjector() = getComponent(HotelEVoucherComponent::class.java).inject(this)
@@ -144,7 +149,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 out.close()
                 uri = Uri.fromFile(file)
             } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
         return uri
@@ -163,7 +167,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     fun shareAsPdf() {
         val shareAsPdfBottomSheets = HotelSharePdfBottomSheets()
         shareAsPdfBottomSheets.listener = this
-        shareAsPdfBottomSheets.show(activity!!.supportFragmentManager, TAG_SHARE_AS_PDF)
+        activity?.let {
+            shareAsPdfBottomSheets.show(it.supportFragmentManager, TAG_SHARE_AS_PDF)
+        }
     }
 
     private fun renderData(data: HotelOrderDetail) {
@@ -183,7 +189,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                     propertyDetail.stayLength.content)
 
             for (i in 1..propertyDetail.propertyInfo.starRating) {
-                container_rating_view.addView(RatingStarView(context!!))
+                context?.run {
+                    container_rating_view.addView(RatingStarView(this))
+                }
             }
 
             tv_booking_title.text = propertyDetail.bookingKey.title
@@ -200,6 +208,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 }
 
                 tv_room_facility.text = amenitiesString
+                if (amenitiesString.isEmpty()) tv_room_facility.hide() else tv_room_facility.show()
             }
 
             if (propertyDetail.extraInfo.content.isNotEmpty()) {
@@ -210,9 +219,15 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 tv_additional_notes.visibility = View.GONE
             }
 
-            tv_request_label.text = propertyDetail.specialRequest.title
-            tv_request_info.text = propertyDetail.specialRequest.content
+            if (propertyDetail.specialRequest.content.isEmpty()) {
+                tv_request_label.hide()
+                tv_request_info.hide()
+            } else {
+                tv_request_label.text = propertyDetail.specialRequest.title
+                tv_request_info.text = propertyDetail.specialRequest.content
+            }
 
+            if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) hotel_detail_seperator.hide()
         }
 
         var phoneString = ""
@@ -260,7 +275,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                     try {
                         RouteManager.route(context, url)
                     } catch (e: UnsupportedEncodingException) {
-                        e.printStackTrace()
                     }
                 }
 

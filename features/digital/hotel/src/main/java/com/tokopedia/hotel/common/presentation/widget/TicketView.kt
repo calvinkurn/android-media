@@ -35,14 +35,14 @@ class TicketView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
         setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
-        val a = context.obtainStyledAttributes(attrs, R.styleable.TicketView)
+        val attrs = context.obtainStyledAttributes(attrs, R.styleable.TicketView)
         try {
-            circleRadius = a.getDimension(R.styleable.TicketView_tv_circleRadius, getDp(DEFAULT_RADIUS).toFloat())
-            anchorViewId1 = a.getResourceId(R.styleable.TicketView_tv_anchor1, NO_VALUE)
-            anchorViewId2 = a.getResourceId(R.styleable.TicketView_tv_anchor2, NO_VALUE)
-            circleSpace = a.getDimension(R.styleable.TicketView_tv_circleSpace, getDp(15f).toFloat())
+            circleRadius = attrs.getDimension(R.styleable.TicketView_tv_circleRadius, getDp(DEFAULT_RADIUS).toFloat())
+            anchorViewId1 = attrs.getResourceId(R.styleable.TicketView_tv_anchor1, NO_VALUE)
+            anchorViewId2 = attrs.getResourceId(R.styleable.TicketView_tv_anchor2, NO_VALUE)
+            circleSpace = attrs.getDimension(R.styleable.TicketView_tv_circleSpace, getDp(15f).toFloat())
         } finally {
-            a.recycle()
+            attrs.recycle()
         }
 
         eraser.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
@@ -71,7 +71,7 @@ class TicketView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
     override fun drawChild(canvas: Canvas?, child: View?, drawingTime: Long): Boolean {
         val drawChild = super.drawChild(canvas, child, drawingTime)
-        drawHoles(canvas!!)
+        canvas?.run { drawHoles(this) }
         return drawChild
     }
 

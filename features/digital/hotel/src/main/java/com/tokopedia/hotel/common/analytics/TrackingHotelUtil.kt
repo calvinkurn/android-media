@@ -1,13 +1,9 @@
 package com.tokopedia.hotel.common.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.hotel.common.util.HotelUtils
-import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.search.data.model.Property
-import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
@@ -76,7 +72,7 @@ class TrackingHotelUtil {
     private fun getViewHotelListProducts(listProduct: List<Property>): List<Any> {
         val list = ArrayList<Map<String, Any>>()
         for (product in listProduct) {
-            val map = java.util.HashMap<String, Any>()
+            val map = HashMap<String, Any>()
             map["name"] = product.name
             map["direct_payment"] = product.isDirectPayment
             map["id"] = product.id
@@ -112,7 +108,7 @@ class TrackingHotelUtil {
     private fun getChooseHotelProducts(listProduct: List<Property>): List<Any> {
         val list = ArrayList<Map<String, Any>>()
         for ((index, product) in listProduct.withIndex()) {
-            val map = java.util.HashMap<String, Any>()
+            val map = HashMap<String, Any>()
             map["name"] = product.name
             map["id"] = product.id
             map["price"] = if (product.roomPrice.isNotEmpty())
