@@ -73,15 +73,15 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             }
         })
 
-        autoCompleteInputNumber.onFocusChangeListener = object : OnFocusChangeListener {
-            override fun onFocusChange(view: View?, hasFocus: Boolean) {
-                if (hasFocus) {
-                    view?.run {
-                        listener.onClientNumberHasFocus((this as TextView).text.toString())
-                    }
-                }
+        autoCompleteInputNumber.setOnClickListener {
+            it?.run {
+                listener.onClientNumberHasFocus((this as TextView).text.toString())
             }
         }
+    }
+
+    fun clearFocusAutoComplete() {
+        autoCompleteInputNumber.clearFocus()
     }
 
     open fun getLayout(): Int {

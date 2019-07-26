@@ -630,7 +630,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.goldOS?.shopTypeString,
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType)
-                intent.putExtra(NormalCheckoutActivity.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                if(::tradeInParams.isInitialized) {
+                    intent.putExtra(NormalCheckoutActivity.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                }
                 startActivityForResult(intent,
                         REQUEST_CODE_NORMAL_CHECKOUT)
             }
@@ -1342,11 +1344,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun updateWishlist(wishlisted: Boolean) {
         context?.let {
             if (wishlisted) {
+                fab_detail.hide()
                 fab_detail.isActivated = true
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
+                fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_checked))
+                fab_detail.show()
             } else {
+                fab_detail.hide()
                 fab_detail.isActivated = false
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                fab_detail.show()
             }
         }
     }

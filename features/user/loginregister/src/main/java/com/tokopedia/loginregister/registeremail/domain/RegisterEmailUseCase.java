@@ -20,15 +20,13 @@ public class RegisterEmailUseCase extends UseCase<RegisterEmailPojo> {
     public static final String PARAM_EMAIL = "email";
     public static final String PARAM_FULLNAME = "full_name";
     public static final String PARAM_PASSWORD = "password";
-    public static final String PARAM_PHONE = "phone";
     public static final String PARAM_IS_AUTO_VERIFY = "is_auto_verify";
 
     private final LoginRegisterApi api;
     private final RegisterEmailMapper mapper;
 
     @Inject
-    public RegisterEmailUseCase(LoginRegisterApi api,
-                                RegisterEmailMapper mapper) {
+    public RegisterEmailUseCase(LoginRegisterApi api, RegisterEmailMapper mapper) {
         this.api = api;
         this.mapper= mapper;
     }
@@ -39,14 +37,12 @@ public class RegisterEmailUseCase extends UseCase<RegisterEmailPojo> {
                 map(mapper);
     }
 
-    public static RequestParams getParam(String email, String name, String password, String
-            confirmPassword, String phone, int isAutoVerify) {
+    public static RequestParams getParam(String email, String name, String password, String confirmPassword, int isAutoVerify) {
         RequestParams param = RequestParams.create();
         param.putString(RegisterEmailUseCase.PARAM_EMAIL, email);
         param.putString(RegisterEmailUseCase.PARAM_FULLNAME, name);
         param.putString(RegisterEmailUseCase.PARAM_PASSWORD, password);
         param.putString(RegisterEmailUseCase.PARAM_CONFIRM_PASSWORD, confirmPassword);
-        param.putString(RegisterEmailUseCase.PARAM_PHONE, phone);
         param.putInt(RegisterEmailUseCase.PARAM_IS_AUTO_VERIFY, isAutoVerify);
         return param;
     }

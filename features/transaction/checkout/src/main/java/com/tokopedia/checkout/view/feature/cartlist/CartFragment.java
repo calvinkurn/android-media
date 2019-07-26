@@ -377,7 +377,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.Companion.getLAYOUT()) {
+                if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
                     return 1;
                 }
                 return 2;
@@ -2046,29 +2046,18 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void renderRecommendation(@Nullable List<RecommendationItem> recommendationItems) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
-        if (this.recommendationList != null) {
-            if (recommendationList.size() != 0) {
-                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
-            } else {
-                if (recommendationItems != null) {
-                    int previousItemCount = cartAdapter.getItemCount();
-                    for (RecommendationItem recommendationItem : recommendationItems) {
-                        boolean rightPosition = previousItemCount % 2 == 1;
-                        CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                                new CartRecommendationItemHolderData(recommendationItem, rightPosition);
-                        cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
-                    }
-                }
+
+        if (recommendationItems != null) {
+            // Render from API
+            for (RecommendationItem recommendationItem : recommendationItems) {
+                CartRecommendationItemHolderData cartRecommendationItemHolderData =
+                        new CartRecommendationItemHolderData(recommendationItem);
+                cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
             }
         } else {
-            if (recommendationItems != null) {
-                int previousItemCount = cartAdapter.getItemCount();
-                for (RecommendationItem recommendationItem : recommendationItems) {
-                    boolean rightPosition = previousItemCount % 2 == 1;
-                    CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                            new CartRecommendationItemHolderData(recommendationItem, rightPosition);
-                    cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
-                }
+            // Render from Cache
+            if (recommendationList != null && recommendationList.size() != 0) {
+                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
             }
         }
 
@@ -2080,8 +2069,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         hasLoadRecommendation = true;
-        cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
-        this.recommendationList = cartRecommendationItemHolderDataList;
+        if (cartRecommendationItemHolderDataList.size() > 0) {
+            cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
+            recommendationList = cartRecommendationItemHolderDataList;
+        }
     }
 
     @Override
