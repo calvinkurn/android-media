@@ -52,11 +52,11 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Product
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.payment.model.PaymentPassData
-import com.tokopedia.shipping_recommendation.domain.shipping.*
-import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet
-import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
+import com.tokopedia.logisticcart.domain.shipping.*
+import com.tokopedia.logisticcart.shippingcourier.view.ShippingCourierBottomsheet
+import com.tokopedia.logisticcart.shippingcourier.view.ShippingCourierBottomsheetListener
+import com.tokopedia.logisticcart.shippingduration.view.ShippingDurationBottomsheet
+import com.tokopedia.logisticcart.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics
 import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker

@@ -1,9 +1,8 @@
 package com.tokopedia.checkout.data.repository;
 
 import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
 
 import java.util.List;
 import java.util.Map;

@@ -13,13 +13,12 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel
 import com.tokopedia.checkout.view.di.component.CartComponent
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
+import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel
 import java.util.*
 import javax.inject.Inject
 

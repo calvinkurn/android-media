@@ -5,7 +5,7 @@ import com.tokopedia.expresscheckout.domain.mapper.checkout.CheckoutDomainModelM
 import com.tokopedia.transactiondata.usecase.DoAtcExpressUseCase
 import com.tokopedia.expresscheckout.domain.usecase.DoCheckoutExpressUseCase
 import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
-import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
+import com.tokopedia.logisticcart.domain.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import org.junit.Before
 import org.junit.Test

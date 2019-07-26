@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
+import com.tokopedia.logisticcart.domain.shipping.ShipmentData;
 
 /**
  * @author anggaprasetiyo on 15/02/18.

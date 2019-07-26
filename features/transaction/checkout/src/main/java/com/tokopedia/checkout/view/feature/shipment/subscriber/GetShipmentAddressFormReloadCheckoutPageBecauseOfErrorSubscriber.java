@@ -3,10 +3,10 @@ package com.tokopedia.checkout.view.feature.shipment.subscriber;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.domain.shipping.CartItemModel;
+import com.tokopedia.logisticcart.domain.shipping.ShipProd;
+import com.tokopedia.logisticcart.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.domain.shipping.ShopShipment;
 
 import java.util.List;
 

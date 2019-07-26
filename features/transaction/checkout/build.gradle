@@ -55,7 +55,7 @@ dependencies {
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.shippingRecommendation)
+    implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)

@@ -1,6 +1,6 @@
-package com.tokopedia.shipping_recommendation.logisticinsurance.view;
+package com.tokopedia.logisticcart.logisticinsurance.view;
 
-import com.tokopedia.shipping_recommendation.logisticinsurance.NoOpRuntimeException;
+import com.tokopedia.logisticcart.logisticinsurance.NoOpRuntimeException;
 
 public class InsuranceTnCActivity {
 

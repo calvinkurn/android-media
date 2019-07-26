@@ -10,8 +10,8 @@ import com.tokopedia.checkout.view.feature.shippingoptions.viewholder.CourierTic
 import com.tokopedia.checkout.view.feature.shippingoptions.viewholder.CourierViewHolder;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentTickerInfoData;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentTypeData;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentOptionData;
+import com.tokopedia.logisticcart.domain.shipping.CourierItemData;
+import com.tokopedia.logisticcart.domain.shipping.ShipmentOptionData;
 
 import java.util.List;
 

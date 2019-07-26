@@ -26,10 +26,10 @@ import com.tokopedia.checkout.view.feature.shippingoptions.di.CourierComponent;
 import com.tokopedia.checkout.view.feature.shippingoptions.di.CourierModule;
 import com.tokopedia.checkout.view.feature.shippingoptions.di.DaggerCourierComponent;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.domain.shipping.CourierItemData;
+import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.domain.shipping.ShipmentDetailData;
+import com.tokopedia.logisticcart.domain.shipping.ShopShipment;
 
 import java.util.List;
 

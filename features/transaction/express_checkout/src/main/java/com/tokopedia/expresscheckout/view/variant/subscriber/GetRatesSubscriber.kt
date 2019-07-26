@@ -5,9 +5,9 @@ import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationViewModel
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData
+import com.tokopedia.logisticcart.domain.shipping.ShippingCourierViewModel
+import com.tokopedia.logisticcart.domain.shipping.ShippingDurationViewModel
+import com.tokopedia.logisticcart.domain.shipping.ShippingRecommendationData
 import rx.Subscriber
 
 /**

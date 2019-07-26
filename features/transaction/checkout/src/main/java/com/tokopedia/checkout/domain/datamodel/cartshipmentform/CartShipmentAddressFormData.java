@@ -7,7 +7,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.promostacking.GlobalCouponAttrData;
-import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
+import com.tokopedia.logisticcart.domain.shipping.CodModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 
 import java.util.ArrayList;

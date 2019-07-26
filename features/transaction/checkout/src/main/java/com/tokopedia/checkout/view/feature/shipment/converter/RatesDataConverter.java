@@ -7,15 +7,15 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.logisticdata.data.entity.rates.Attribute;
 import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.domain.shipping.CartItemModel;
+import com.tokopedia.logisticcart.domain.shipping.CourierItemData;
+import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.domain.shipping.ShipProd;
+import com.tokopedia.logisticcart.domain.shipping.ShipmentCartData;
+import com.tokopedia.logisticcart.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.domain.shipping.ShipmentDetailData;
+import com.tokopedia.logisticcart.domain.shipping.ShipmentItemData;
+import com.tokopedia.logisticcart.domain.shipping.ShopShipment;
 
 import org.apache.commons.lang3.text.WordUtils;
 

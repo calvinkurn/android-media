@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.cornerlist
 
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
+import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel
 
 /**
  * Created by fajarnuha on 2019-05-26.

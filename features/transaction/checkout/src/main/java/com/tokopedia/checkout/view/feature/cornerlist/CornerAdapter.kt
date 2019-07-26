@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 import com.tokopedia.checkout.R
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
+import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel
 
 /**
  * Created by fajarnuha on 09/02/19.

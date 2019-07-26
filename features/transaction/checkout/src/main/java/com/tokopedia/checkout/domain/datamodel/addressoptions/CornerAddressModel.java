@@ -1,9 +1,6 @@
 package com.tokopedia.checkout.domain.datamodel.addressoptions;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
 
 /**
  * Created by fajarnuha on 09/02/19.

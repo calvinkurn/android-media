@@ -70,7 +70,7 @@ include "features:logistic:tracking"
 //include 'features:logistic:tracking_no_op'
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
-include "features:logistic:shipping_recommendation"
+include "features:logistic:logisticcart"
 include "features:logistic:logisticuploadawb"
 //include "features:logistic:logisticuploadawb_no_op"
 include "features:logistic:logisticinputreceiptshipment"

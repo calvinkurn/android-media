@@ -3,12 +3,9 @@ package com.tokopedia.checkout.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
-import com.tokopedia.checkout.domain.datamodel.addresscorner.CornerBranch;
 import com.tokopedia.checkout.domain.datamodel.addresscorner.Datum;
-import com.tokopedia.checkout.domain.datamodel.addresscorner.TokopediaCornerDatum;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;

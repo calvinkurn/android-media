@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentCartItemViewHolder;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.logisticcart.domain.shipping.CartItemModel;
 
 import java.util.List;
 
