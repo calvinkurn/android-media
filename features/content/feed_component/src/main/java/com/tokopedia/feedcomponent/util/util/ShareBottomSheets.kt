@@ -49,6 +49,17 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
             PACKAGENAME_INSTAGRAM)
 
     companion object {
+
+        fun constructShareData(name: String, avatar: String, link: String, shareFormat: String, shareTitle: String): LinkerData {
+            val linkerData = LinkerData()
+            linkerData.name = name
+            linkerData.imgUri = avatar
+            linkerData.uri = link
+            linkerData.textContent = shareFormat
+            linkerData.ogTitle = shareTitle
+            return linkerData
+        }
+
         val COPY = "Copy"
         val STATUS_FLAG = "STATUS_FLAG"
         val STATUS_RUNNING = 1

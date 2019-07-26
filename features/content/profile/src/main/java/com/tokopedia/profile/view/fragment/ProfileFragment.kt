@@ -108,19 +108,20 @@ import javax.inject.Inject
  * @author by milhamj on 9/17/18.
  */
 class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-    ProfileContract.View, KolPostListener.View.ViewHolder, KolPostListener.View.Like,
-    DynamicPostViewHolder.DynamicPostListener,
-    BannerAdapter.BannerItemListener,
-    TopadsShopViewHolder.TopadsShopListener,
-    RecommendationCardAdapter.RecommendationCardListener,
-    CardTitleView.CardTitleListener,
-    ImagePostViewHolder.ImagePostListener,
-    YoutubeViewHolder.YoutubePostListener,
-    PollAdapter.PollOptionListener,
-    GridPostAdapter.GridItemListener,
-    VideoViewHolder.VideoViewListener,
-    FeedMultipleImageView.FeedMultipleImageViewListener,
-    EmptyAffiliateViewHolder.OnEmptyItemClickedListener {
+        ProfileContract.View, KolPostListener.View.ViewHolder, KolPostListener.View.Like,
+        DynamicPostViewHolder.DynamicPostListener,
+        BannerAdapter.BannerItemListener,
+        TopadsShopViewHolder.TopadsShopListener,
+        RecommendationCardAdapter.RecommendationCardListener,
+        CardTitleView.CardTitleListener,
+        ImagePostViewHolder.ImagePostListener,
+        YoutubeViewHolder.YoutubePostListener,
+        PollAdapter.PollOptionListener,
+        GridPostAdapter.GridItemListener,
+        VideoViewHolder.VideoViewListener,
+        FeedMultipleImageView.FeedMultipleImageViewListener,
+        EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
+        ShareBottomSheets.OnShareItemClickListener {
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -440,11 +441,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
             }
         } else {
-            showShareBottomSheets(object : ShareBottomSheets.OnShareItemClickListener {
-                override fun onShareItemClicked(packageName: String) {
-                    sendTracker(packageName)
-                }
-            })
+            showShareBottomSheets(this)
             profilePreference.setShouldChangeUsername(shouldChange)
         }
     }
@@ -801,7 +798,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
                               url: String, iamgeUrl: String) {
         activity?.let {
-            linkerData = constructShareData("", "", url, String.format("%s %s", description, "%s"), title)
+            linkerData = ShareBottomSheets.constructShareData("", "", url, String.format("%s %s", description, "%s"), title)
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
             checkShouldChangeUsername(url)
@@ -968,6 +965,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         profileAnalytics.eventClickEmptyStateCta()
     }
 
+    override fun onShareItemClicked(packageName: String) {
+        sendTracker(packageName)
+    }
+
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             userId = savedInstanceState.getInt(ProfileActivity.EXTRA_PARAM_USER_ID, 0)
@@ -1080,7 +1081,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
         footerOthersShare.setOnClickListener {
             profileHeader?.let {
-                linkerData = constructShareData(
+                linkerData = ShareBottomSheets.constructShareData(
                         it.name,
                         it.avatar,
                         it.link,
@@ -1089,11 +1090,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_title)))
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
-                showShareBottomSheets(object: ShareBottomSheets.OnShareItemClickListener{
-                    override fun onShareItemClicked(packageName: String) {
-                        sendTracker(packageName)
-                    }
-                })
+                showShareBottomSheets(this)
             }
         }
     }
@@ -1153,7 +1150,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
             iv_action.gone()
             View.OnClickListener {
-                linkerData = constructShareData(
+                linkerData = ShareBottomSheets.constructShareData(
                         element.name,
                         element.avatar,
                         element.link,
@@ -1162,11 +1159,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_title)))
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
-                showShareBottomSheets(object: ShareBottomSheets.OnShareItemClickListener{
-                    override fun onShareItemClicked(packageName: String) {
-                        sendTracker(packageName)
-                    }
-                })
+                showShareBottomSheets(this)
             }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_af_graph))
@@ -1248,16 +1241,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         } else {
             followAfterLogin()
         }
-    }
-
-    private fun constructShareData(name: String, avatar: String, link: String, shareFormat: String, shareTitle: String): LinkerData {
-        val linkerData = LinkerData()
-        linkerData.name = name
-        linkerData.imgUri = avatar
-        linkerData.uri = link
-        linkerData.textContent = shareFormat
-        linkerData.ogTitle = shareTitle
-        return linkerData
     }
 
     private fun getFollowersText(element: ProfileHeaderViewModel): SpannableString {
@@ -1389,7 +1372,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             shareProfile.setOnClickListener {
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
 
-                linkerData = constructShareData(
+                linkerData = ShareBottomSheets.constructShareData(
                         headerViewModel.name,
                         headerViewModel.avatar,
                         headerViewModel.link,
@@ -1454,11 +1437,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (shouldChangeUsername()) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         } else {
-            showShareBottomSheets(object: ShareBottomSheets.OnShareItemClickListener{
-                override fun onShareItemClicked(packageName: String) {
-                    sendTracker(packageName)
-                }
-            })
+            showShareBottomSheets(this)
         }
     }
 
