@@ -122,8 +122,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
         if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_KEY_ORDER_ID) &&
                 savedInstanceState.containsKey(SAVED_KEY_ORDER_CATEGORY)) {
-            orderId = savedInstanceState.getString(SAVED_KEY_ORDER_ID)!!
-            orderCategory = savedInstanceState.getString(SAVED_KEY_ORDER_CATEGORY)
+            orderId = savedInstanceState.getString(SAVED_KEY_ORDER_ID) ?: ""
+            orderCategory = savedInstanceState.getString(SAVED_KEY_ORDER_CATEGORY) ?: ""
         }
 
         loadingState.visibility = View.VISIBLE
@@ -207,7 +207,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     }
 
     fun goToEvoucherPage() {
-        startActivity(HotelEVoucherActivity.getCallingIntent(context!!, orderId))
+        context?.run { startActivity(HotelEVoucherActivity.getCallingIntent(this, orderId)) }
     }
 
     fun renderHotelDetail(propertyDetail: HotelTransportDetail.PropertyDetail) {
@@ -259,13 +259,13 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         val bottomSheet = HotelContactPhoneBottomSheet()
         bottomSheet.contactList = contactList
         bottomSheet.listener = this
-        bottomSheet.show(activity!!.supportFragmentManager, TAG_CONTACT_INFO)
+        activity?.let { bottomSheet.show(it.supportFragmentManager, TAG_CONTACT_INFO) }
     }
 
     fun showRefundInfo(cancellationPolicies: List<HotelTransportDetail.Cancellation.CancellationPolicy>) {
         val bottomSheet = HotelRefundBottomSheet()
         bottomSheet.cancellationPolicies = cancellationPolicies
-        bottomSheet.show(activity!!.supportFragmentManager, TAG_CANCELLATION_INFO)
+        activity?.let { bottomSheet.show(it.supportFragmentManager, TAG_CANCELLATION_INFO) }
     }
 
     fun renderGuestDetail(guestDetail: TitleContent) {
@@ -363,7 +363,6 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                         if (isUrl) RouteManager.route(context, "tokopedia://webview?url=${content}")
                         else onImportantNotesClicked(content)
                     } catch (e: UnsupportedEncodingException) {
-                        e.printStackTrace()
                     }
                 }
 
@@ -379,11 +378,13 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
     private fun onImportantNotesClicked(notes: String) {
         val importantNotesBottomSheets = HotelBookingBottomSheets()
-        val textView = TextViewCompat(context!!)
-        textView.text = notes
-        importantNotesBottomSheets.title = getString(R.string.hotel_important_info_title)
-        importantNotesBottomSheets.addContentView(textView)
-        importantNotesBottomSheets.show(activity!!.supportFragmentManager, HotelBookingFragment.TAG_HOTEL_IMPORTANT_NOTES)
+        activity?.let {
+            val textView = TextViewCompat(it)
+            textView.text = notes
+            importantNotesBottomSheets.title = getString(R.string.hotel_important_info_title)
+            importantNotesBottomSheets.addContentView(textView)
+            importantNotesBottomSheets.show(it.supportFragmentManager, HotelBookingFragment.TAG_HOTEL_IMPORTANT_NOTES)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -397,7 +398,6 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     }
 
     override fun onClickCall(contactNumber: String) {
-        Toast.makeText(context, contactNumber, Toast.LENGTH_SHORT).show()
         val callIntent = Intent(ACTION_DIAL)
         callIntent.data = Uri.parse("tel:$contactNumber")
         startActivity(callIntent)

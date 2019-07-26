@@ -2,11 +2,11 @@ package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v4.app.Fragment
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailPagerAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail_all_facility.*
 /**
  * @author by furqan on 06/05/19
  */
-class HotelDetailAllFacilityFragment : TkpdBaseV4Fragment() {
+class HotelDetailAllFacilityFragment : Fragment() {
 
     private var propertyName: String = ""
     private lateinit var propertyData: HotelDetailAllFacilityModel
@@ -28,9 +28,9 @@ class HotelDetailAllFacilityFragment : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.run {
-            val args: Bundle = savedInstanceState ?: this
-            propertyData = args.getParcelable(EXTRA_PROPERTY_DETAIL)
+        val args: Bundle? = savedInstanceState ?: arguments
+        args?.let {
+            propertyData = it.getParcelable(EXTRA_PROPERTY_DETAIL) ?: HotelDetailAllFacilityModel()
         }
         renderTabAndViewPager()
     }
@@ -40,8 +40,6 @@ class HotelDetailAllFacilityFragment : TkpdBaseV4Fragment() {
         outState.putString(EXTRA_PROPERTY_NAME, propertyName)
         outState.putParcelable(EXTRA_PROPERTY_DETAIL, propertyData)
     }
-
-    override fun getScreenName(): String = ""
 
     private fun renderTabAndViewPager() {
         tab_layout.setupWithViewPager(view_pager)

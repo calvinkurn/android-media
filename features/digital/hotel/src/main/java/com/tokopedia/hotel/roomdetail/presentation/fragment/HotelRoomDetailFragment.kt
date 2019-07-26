@@ -74,17 +74,17 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             roomDetailViewModel = viewModelProvider.get(HotelRoomDetailViewModel::class.java)
 
-            arguments?.let {
-                roomIndex = it.getInt(HotelRoomDetailActivity.EXTRA_ROOM_INDEX,0)
+            roomIndex = arguments?.getInt(HotelRoomDetailActivity.EXTRA_ROOM_INDEX, 0) ?: 0
 
-                saveInstanceCacheManager = SaveInstanceCacheManager(this, savedInstanceState)
-                val manager = if (savedInstanceState == null) SaveInstanceCacheManager(this,
-                        it.getString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID)) else saveInstanceCacheManager
+            saveInstanceCacheManager = SaveInstanceCacheManager(this, savedInstanceState)
+            val manager = if (savedInstanceState == null) SaveInstanceCacheManager(this,
+                    arguments?.getString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID)) else saveInstanceCacheManager
 
-                val hotelRoomDetailModel = manager.get(EXTRA_ROOM_DATA, HotelRoomDetailModel::class.java) ?: HotelRoomDetailModel()
-                hotelRoom = hotelRoomDetailModel.hotelRoom
-                addToCartParam = hotelRoomDetailModel.addToCartParam
-            }
+            val hotelRoomDetailModel = manager.get(EXTRA_ROOM_DATA, HotelRoomDetailModel::class.java)
+                    ?: HotelRoomDetailModel()
+            hotelRoom = hotelRoomDetailModel.hotelRoom
+            addToCartParam = hotelRoomDetailModel.addToCartParam
+
         }
     }
 
@@ -180,10 +180,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
             val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.url300 }
 
-            if (roomImageUrls300.size >= 5) room_detail_images.setImages(roomImageUrls300.subList(0,5))
+            if (roomImageUrls300.size >= 5) room_detail_images.setImages(roomImageUrls300.subList(0, 5))
             else room_detail_images.setImages(roomImageUrls300)
 
-            room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
+            room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.roomPrice)

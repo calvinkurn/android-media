@@ -2,10 +2,9 @@ package com.tokopedia.hotel.common.presentation.widget
 
 import android.content.Context
 import android.view.View
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.hotel.R
+import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_hotel_room_facility_list.view.*
 
 /**
@@ -19,19 +18,7 @@ class FacilityTextView(context: Context) : BaseCustomView(context) {
     }
 
     fun setIconAndText(iconUrl: String, text: String) {
-        try {
-            Glide.with(context)
-                    .load(iconUrl)
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
-                    .error(R.drawable.ic_facility_add)
-                    .centerCrop()
-                    .into(facility_icon)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
+        facility_icon.loadImage(iconUrl, R.drawable.ic_loading_image)
         facility_text_view.text = text
     }
 

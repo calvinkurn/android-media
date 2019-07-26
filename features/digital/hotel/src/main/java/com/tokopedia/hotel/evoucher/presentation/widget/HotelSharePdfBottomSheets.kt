@@ -11,6 +11,7 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.EditTextCompat
 import com.tokopedia.design.component.TextViewCompat
+import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.evoucher.presentation.adapter.HotelShareAsPdfAdapter
 import kotlinx.android.synthetic.main.bottom_sheets_share_as_pdf.view.*
@@ -116,7 +117,7 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
                 evError.text = getString(R.string.hotel_share_empty_email_error)
                 evError.visibility = View.VISIBLE
             }
-            !isValidEmail(email) || !isEmailWithoutProhibitSymbol(email) -> {
+            !StringUtils.isValidEmail(email) || !isEmailWithoutProhibitSymbol(email) -> {
                 valid = false
                 evError.text = getString(R.string.hotel_share_format_email_error)
                 evError.visibility = View.VISIBLE
@@ -124,10 +125,6 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
         }
         return valid
     }
-
-    private fun isValidEmail(contactEmail: String): Boolean =
-            Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() &&
-                    !contactEmail.contains(".@") && !contactEmail.contains("@.")
 
     private fun isEmailWithoutProhibitSymbol(contactEmail: String): Boolean =
             !contactEmail.contains("+")

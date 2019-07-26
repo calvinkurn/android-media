@@ -102,10 +102,13 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val args = savedInstanceState ?: arguments!!
-        orderId = args.getString(EXTRA_ORDER_ID, "")
-        eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_hotel_order_list_detail), orderId)
+        arguments?.let {
+            val args = savedInstanceState ?: it
+            orderId = args.getString(EXTRA_ORDER_ID, "")
+            eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
+                    R.raw.gql_query_hotel_order_list_detail), orderId)
+        }
+
     }
 
     override fun initInjector() = getComponent(HotelEVoucherComponent::class.java).inject(this)
@@ -146,7 +149,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 out.close()
                 uri = Uri.fromFile(file)
             } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
         return uri
@@ -165,7 +167,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     fun shareAsPdf() {
         val shareAsPdfBottomSheets = HotelSharePdfBottomSheets()
         shareAsPdfBottomSheets.listener = this
-        shareAsPdfBottomSheets.show(activity!!.supportFragmentManager, TAG_SHARE_AS_PDF)
+        activity?.let {
+            shareAsPdfBottomSheets.show(it.supportFragmentManager, TAG_SHARE_AS_PDF)
+        }
     }
 
     private fun renderData(data: HotelOrderDetail) {
@@ -185,7 +189,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                     propertyDetail.stayLength.content)
 
             for (i in 1..propertyDetail.propertyInfo.starRating) {
-                container_rating_view.addView(RatingStarView(context!!))
+                context?.run {
+                    container_rating_view.addView(RatingStarView(this))
+                }
             }
 
             tv_booking_title.text = propertyDetail.bookingKey.title
@@ -269,7 +275,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                     try {
                         RouteManager.route(context, url)
                     } catch (e: UnsupportedEncodingException) {
-                        e.printStackTrace()
                     }
                 }
 

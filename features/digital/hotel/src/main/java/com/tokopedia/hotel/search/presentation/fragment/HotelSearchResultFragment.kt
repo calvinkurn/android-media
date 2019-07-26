@@ -212,9 +212,11 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         with(searchResultviewModel.searchParam) {
             trackingHotelUtil.chooseHotel(t, checkIn, searchProperties)
 
-            startActivityForResult(HotelDetailActivity.getCallingIntent(context!!,
-                    checkIn, checkOut, t.id, room, guest.adult),
-                    REQUEST_CODE_DETAIL_HOTEL)
+            context?.run {
+                startActivityForResult(HotelDetailActivity.getCallingIntent(this,
+                        checkIn, checkOut, t.id, room, guest.adult),
+                        REQUEST_CODE_DETAIL_HOTEL)
+            }
         }
     }
 
@@ -239,7 +241,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun onEmptyButtonClicked() {
-        if (!searchResultviewModel.isFilter) activity!!.onBackPressed()
+        if (!searchResultviewModel.isFilter) activity?.onBackPressed()
         else {
             context?.let {
                 val cacheManager = SaveInstanceCacheManager(it, true).apply {

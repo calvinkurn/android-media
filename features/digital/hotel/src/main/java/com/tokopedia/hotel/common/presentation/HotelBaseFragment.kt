@@ -19,7 +19,7 @@ abstract class HotelBaseFragment: BaseDaggerFragment() {
 
     fun showErrorState(e: Throwable) {
         try {
-            ((view!!.parent) as ViewGroup).main_retry!!.visibility = View.VISIBLE
+            ((view?.parent) as ViewGroup).main_retry?.visibility = View.VISIBLE
         } catch (exception: Exception) {
             val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val retryLoad = inflater.inflate(R.layout.item_network_error_view, view?.parent as ViewGroup)

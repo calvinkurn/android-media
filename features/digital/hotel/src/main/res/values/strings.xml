@@ -154,6 +154,8 @@
     <string name="hotel_order_detail_guest_name">Nama Tamu</string>
     <string name="hotel_order_detail_payment_method">Metode Pembayaran</string>
     <string name="hotel_order_detail_title">Detail Pesanan</string>
+    <string name="hotel_order_detail_contact_phone_sheet_title">Kontak Hotel</string>
+    <string name="hotel_order_detail_refund_sheet_title">Ketentuan Pembatalan</string>
 
     <string name="hotel_detail_room_full_text">Kamar Penuh</string>
     <string name="hotel_detail_change_search_text">Ganti Pencarian</string>

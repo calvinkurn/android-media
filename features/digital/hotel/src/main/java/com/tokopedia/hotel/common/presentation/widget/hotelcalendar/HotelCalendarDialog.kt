@@ -75,7 +75,7 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
     }
 
     override fun getComponent(): HotelComponent
-            = DaggerHotelComponent.builder().baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent).build()
+            = DaggerHotelComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -170,7 +170,7 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
                     date_out.setText(dateFormat.format(date))
                     checkOut = date
                     date_out.requestFocus()
-                    if (listener != null) listener!!.onDateClick(checkIn!!, checkOut!!)
+                    if (listener != null) listener?.onDateClick(checkIn ?: Date(), checkOut ?: date)
 
                     GlobalScope.launch {
                         delay(300)

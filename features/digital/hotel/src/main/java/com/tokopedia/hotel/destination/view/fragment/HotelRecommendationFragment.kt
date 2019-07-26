@@ -73,9 +73,9 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
-        }
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -95,9 +95,9 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        val staticDimen8dp = context!!.getResources().getDimensionPixelOffset(R.dimen.dp_8)
+        val staticDimen8dp = context?.getResources()?.getDimensionPixelOffset(R.dimen.dp_8)
         val recentSearchRecyclerView = view.findViewById(R.id.recent_search_recycler_view) as RecyclerView
-        recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp, staticDimen8dp))
+        recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp ?: 0, staticDimen8dp ?: 0))
         recentSearchRecyclerView.layoutManager = layoutManager
         ViewCompat.setLayoutDirection(recentSearchRecyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
         recentSearchAdapter = RecentSearchAdapter(this)

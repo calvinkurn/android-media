@@ -1,4 +1,5 @@
 query propertyRecentSearch($id: Int!){
+ status
  travelRecentSearch(dataType:HOTEL,userID:$id){
    UUID
    property {

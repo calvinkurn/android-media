@@ -38,14 +38,12 @@ import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
 import com.tokopedia.hotel.roomlist.widget.ChipAdapter
-import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -123,7 +121,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
-                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.response.cartId))
+                    context?.run {
+                        startActivity(HotelBookingActivity.getCallingIntent(this,it.data.response.cartId))
+                    }
                 }
                 is Fail -> {
                     NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
@@ -141,7 +141,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_ROOM_LIST_MODEL)) {
-            hotelRoomListPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_ROOM_LIST_MODEL)!!
+            hotelRoomListPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_ROOM_LIST_MODEL) ?: HotelRoomListPageModel()
         }
 
         (activity as HotelRoomListActivity).updateTitle(hotelRoomListPageModel.propertyName)
@@ -194,7 +194,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         hotelRoomAndGuestBottomSheets.listener = this
         hotelRoomAndGuestBottomSheets.roomCount = hotelRoomListPageModel.room
         hotelRoomAndGuestBottomSheets.adultCount = hotelRoomListPageModel.adult
-        hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
+        activity?.let {
+            hotelRoomAndGuestBottomSheets.show(it.supportFragmentManager, TAG_GUEST_INFO)
+        }
     }
 
     fun onDateClicked() {
@@ -237,11 +239,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onItemClicked(room: HotelRoom) {
         trackingHotelUtil.hotelClickRoomDetails(hotelRoomListPageModel.propertyId, room.roomId, room.roomPrice.roomPrice)
         val objectId = System.currentTimeMillis().toString()
-        SaveInstanceCacheManager(context!!, objectId).apply {
-            val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
-            put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
+        context?.run {
+            SaveInstanceCacheManager(this, objectId).apply {
+                val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
+                put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
+            }
+            startActivityForResult(HotelRoomDetailActivity.getCallingIntent(this, objectId, roomList.indexOf(room)), RESULT_ROOM_DETAIL)
         }
-        startActivityForResult(HotelRoomDetailActivity.getCallingIntent(context!!, objectId, roomList.indexOf(room)), RESULT_ROOM_DETAIL)
     }
 
     fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {

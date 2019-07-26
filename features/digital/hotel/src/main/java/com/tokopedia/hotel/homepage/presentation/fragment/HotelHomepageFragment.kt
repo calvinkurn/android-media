@@ -41,7 +41,7 @@ import javax.inject.Inject
  */
 class HotelHomepageFragment : HotelBaseFragment(),
         HotelRoomAndGuestBottomSheets.HotelGuestListener,
-        HotelPromoAdapter.PromoClickListener{
+        HotelPromoAdapter.PromoClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -63,16 +63,15 @@ class HotelHomepageFragment : HotelBaseFragment(),
             homepageViewModel = viewModelProvider.get(HotelHomepageViewModel::class.java)
         }
 
-        arguments?.run {
-            if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
-                hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL) ?: HotelHomepageModel()
-            } else if (arguments != null && this.containsKey(EXTRA_PARAM_TYPE)) {
-                hotelHomepageModel.locId = this.getInt(EXTRA_PARAM_ID)
-                hotelHomepageModel.locName = this.getString(EXTRA_PARAM_NAME) ?: ""
-                hotelHomepageModel.locType = this.getString(EXTRA_PARAM_TYPE) ?: ""
-            }
-        }
 
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
+            hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)
+                    ?: HotelHomepageModel()
+        } else if (arguments != null && arguments?.containsKey(EXTRA_PARAM_TYPE) == true) {
+            hotelHomepageModel.locId = arguments?.getInt(EXTRA_PARAM_ID) ?: 4712
+            hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
+            hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
+        }
 
     }
 
@@ -100,7 +99,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         hidePromoContainer()
                     }
                 }
-                is Fail -> {  }
+                is Fail -> {
+                }
             }
         })
     }
@@ -150,15 +150,17 @@ class HotelHomepageFragment : HotelBaseFragment(),
         val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
         val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
 
-        hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, tomorrow)
-        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
-        hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
-        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
-        hotelHomepageModel.nightCounter = countRoomDuration()
+        if (hotelHomepageModel.checkInDate.isBlank() && hotelHomepageModel.checkOutDate.isBlank()) {
+            hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
+                    TravelDateUtil.YYYY_MM_DD, tomorrow)
+            hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
+                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
+                    TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
+            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
+                    TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
+            hotelHomepageModel.nightCounter = countRoomDuration()
+        }
 
         tv_hotel_homepage_destination.setOnClickListener { onDestinationChangeClicked() }
         tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
@@ -180,8 +182,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onDestinationChangeClicked() {
-        activity?.let {
-            startActivityForResult(HotelDestinationActivity.createInstance(it), REQUEST_CODE_DESTINATION)
+        context?.run {
+            startActivityForResult(HotelDestinationActivity.createInstance(this), REQUEST_CODE_DESTINATION)
         }
         activity?.overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay)
     }
@@ -272,7 +274,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 hotelHomepageModel.nightCounter.toInt()
         )
 
-        activity?.run {
+        context?.run {
             if (hotelHomepageModel.locType.equals(TYPE_PROPERTY, false)) {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this, hotelHomepageModel.checkInDate,
                         hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
@@ -310,7 +312,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                    trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId ?: "")
+                    trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId
+                            ?: "")
                 }
             }
         })
@@ -318,7 +321,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
         val hotelCalendarDialog = HotelCalendarDialog.getInstance(checkIn, checkOut)
-        hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener{
+        hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
@@ -340,10 +343,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     companion object {
-        const val MAX_SELECTION_DATE = 30
-        const val DEFAULT_LAST_HOUR_IN_DAY = 23
-        const val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
-
         const val REQUEST_CODE_DESTINATION = 101
         const val REQUEST_CODE_SEARCH = 102
         const val REQUEST_CODE_DETAIL = 103
