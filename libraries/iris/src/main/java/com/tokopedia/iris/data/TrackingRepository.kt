@@ -45,16 +45,15 @@ class TrackingRepository (
         } catch (e: Throwable) {}
     }
 
-    suspend fun sendSingleEvent(data: String, session: Session) : Boolean =
-            withContext(Dispatchers.Default) {
-                val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
-                        session.getUserId(), session.getDeviceId())
-                val service = ApiService(context).makeRetrofitService()
-                val requestBody = ApiService.parse(dataRequest)
-                val request = service.sendSingleEvent(requestBody)
-                val response = request.await()
-                response.isSuccessful
-            }
+    suspend fun sendSingleEvent(data: String, session: Session) : Boolean {
+        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
+                session.getUserId(), session.getDeviceId())
+        val service = ApiService(context).makeRetrofitService()
+        val requestBody = ApiService.parse(dataRequest)
+        val request = service.sendSingleEvent(requestBody)
+        val response = request.await()
+        return response.isSuccessful
+    }
 
     private fun isSizeOver() : Boolean {
         val f: File? = context.getDatabasePath(DATABASE_NAME)
@@ -64,5 +63,20 @@ class TrackingRepository (
             return sizeDbInMb >= 2
         }
         return false
+    }
+
+    suspend fun sendRemainingEvent(maxRow: Int) {
+        val trackings: List<Tracking> = getFromOldest(maxRow)
+
+        if (trackings.isNotEmpty()) {
+            val request: String = TrackingMapper().transformListEvent(trackings)
+
+            val service = ApiService(context).makeRetrofitService()
+            val requestBody = ApiService.parse(request)
+            val response = service.sendMultiEvent(requestBody).await()
+            if (response.isSuccessful && response.code() == 200) {
+                delete(trackings)
+            }
+        }
     }
 }

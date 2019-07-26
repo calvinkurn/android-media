@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.shipment.viewholder;
 import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -86,18 +87,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ShipmentAdapterActionListener mActionListener;
     private Context context;
 
-    /*private LinearLayout layoutError;
-    private TextView tvErrorTitle;
-    private TextView tvErrorDescription;
+    private LinearLayout layoutError;
+    private Ticker tickerError;
     private LinearLayout layoutWarning;
-    private TextView tvWarningTitle;
-    private TextView tvWarningDescription;*/
-    private Ticker tickerWarningAndError;
+    private Ticker tickerWarning;
     private Typography tvShopName;
     private LinearLayout llShippingWarningContainer;
     private ImageView ivProductImage;
     private TextView tvProductName;
     private TextView tvProductPrice;
+    private TextView tvProductOriginalPrice;
     private ImageView ivFreeReturnIcon;
     private TextView tvFreeReturnLabel;
     private TextView tvPreOrder;
@@ -241,18 +240,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void bindViewIds(View itemView) {
-        /*layoutError = itemView.findViewById(R.id.layout_error);
-        tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
-        tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
+        layoutError = itemView.findViewById(R.id.layout_error);
+        tickerError = itemView.findViewById(R.id.ticker_error);
         layoutWarning = itemView.findViewById(R.id.layout_warning);
-        tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
-        tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);*/
-        tickerWarningAndError = itemView.findViewById(R.id.ticker_shipment);
+        tickerWarning = itemView.findViewById(R.id.ticker_warning);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         llShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
         tvProductPrice = itemView.findViewById(R.id.tv_product_price);
+        tvProductOriginalPrice = itemView.findViewById(R.id.tv_product_original_price);
         rlPurchaseProtection = itemView.findViewById(R.id.rlayout_purchase_protection);
         tvPPPLinkText = itemView.findViewById(R.id.text_link_text);
         tvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
@@ -332,8 +329,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvSelectedPriceOnly = itemView.findViewById(R.id.tv_selected_price_b);
         tvChangeSelectedCourierRecommendation = itemView.findViewById(R.id.tv_button_change_courier);
         tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
+        layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
-        // layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         llCourierStateLoading = itemView.findViewById(R.id.ll_courier_state_loading);
         llCourierRecommendationStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_state_loading);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
@@ -437,11 +434,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderErrorAndWarning(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isWarning() || shipmentCartItemModel.isError()) {
-            // layoutWarningAndError.setVisibility(View.VISIBLE);
-            tickerWarningAndError.setVisibility(View.VISIBLE);
+            layoutWarningAndError.setVisibility(View.VISIBLE);
         } else {
-            // layoutWarningAndError.setVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.GONE);
+            layoutWarningAndError.setVisibility(View.GONE);
         }
         renderError(shipmentCartItemModel);
         renderWarnings(shipmentCartItemModel);
@@ -574,6 +569,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvProductName.setText(cartItemModel.getName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItemModel.getPrice(), false));
+        if (cartItemModel.getOriginalPrice() > 0) {
+            tvProductOriginalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    cartItemModel.getOriginalPrice(), false
+            ));
+            tvProductOriginalPrice.setPaintFlags(tvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            tvProductOriginalPrice.setVisibility(View.VISIBLE);
+        } else {
+            tvProductOriginalPrice.setVisibility(View.GONE);
+        }
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItemModel.getQuantity()),
@@ -637,9 +641,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             rvCartItem.setVisibility(View.VISIBLE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(R.string.label_hide_other_item_new);
-            // tvExpandOtherProduct.setTextColor(ContextCompat.getColor(tvExpandOtherProduct.getContext(), R.color.black_54));
-            // tvExpandOtherProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_up_24dp, 0);
-            // tvExpandOtherProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_up, 0);
             ivExpandOtherProduct.setImageResource(R.drawable.ic_up);
         } else {
             rvCartItem.setVisibility(View.GONE);
@@ -647,8 +648,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_other_item_count_format),
                     String.valueOf(cartItemModels.size())));
             tvExpandOtherProduct.setTextColor(ContextCompat.getColor(tvExpandOtherProduct.getContext(), R.color.medium_green));
-            // tvExpandOtherProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_24dp, 0);
-            // tvExpandOtherProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_down, 0);
             ivExpandOtherProduct.setImageResource(R.drawable.ic_down);
         }
     }
@@ -708,7 +707,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvLogPromoDiscAmount.setText(labelCouponAmount);
             } else tvLogPromoLabel.setVisibility(View.GONE);
             tvChangeSelectedCourierRecommendation.setTextColor(
-                    ContextCompat.getColor(context, R.color.button_change_courier_disabled));
+                    ContextCompat.getColor(context, R.color.n_700_44));
             tvChangeSelectedCourierRecommendation.setOnClickListener(null);
         } else llLogPromo.setVisibility(View.GONE);
 
@@ -1265,28 +1264,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderError(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isError()) {
-
-            /*tvErrorTitle.setText(shipmentCartItemModel.getErrorTitle());
             String errorDescription = shipmentCartItemModel.getErrorDescription();
             if (!TextUtils.isEmpty(errorDescription)) {
-                tvErrorDescription.setText(errorDescription);
-                tvErrorDescription.setVisibility(View.VISIBLE);
+                tickerError.setTickerTitle(shipmentCartItemModel.getErrorTitle());
+                tickerError.setTextDescription(errorDescription);
             } else {
-                tvErrorDescription.setVisibility(View.GONE);
+                tickerError.setTextDescription(shipmentCartItemModel.getErrorTitle());
             }
-            layoutError.setVisibility(View.VISIBLE);*/
-
-            String errorDescription = shipmentCartItemModel.getErrorDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
-                tickerWarningAndError.setTickerTitle(shipmentCartItemModel.getErrorTitle());
-                tickerWarningAndError.setTextDescription(errorDescription);
-            } else {
-                tickerWarningAndError.setTextDescription(shipmentCartItemModel.getErrorTitle());
-            }
-            tickerWarningAndError.setTickerType(Ticker.TYPE_ERROR);
-            tickerWarningAndError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerWarningAndError.setCloseButtonVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.VISIBLE);
+            tickerError.setTickerType(Ticker.TYPE_ERROR);
+            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerError.setCloseButtonVisibility(View.GONE);
+            tickerError.setVisibility(View.VISIBLE);
+            layoutError.setVisibility(View.VISIBLE);
 
             flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), R.drawable.fg_disabled_item));
             cbPPP.setEnabled(false);
@@ -1308,8 +1297,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             etShipperPhone.setFocusable(false);
             etShipperPhone.setFocusableInTouchMode(false);
         } else {
-            // layoutError.setVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.GONE);
+            layoutError.setVisibility(View.GONE);
+            tickerError.setVisibility(View.GONE);
 
             flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), R.drawable.fg_enabled_item));
             cbPPP.setEnabled(true);
@@ -1334,34 +1323,22 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderWarnings(ShipmentCartItemModel shipmentCartItemModel) {
-        /*if (shipmentCartItemModel.isWarning()) {
-            tvWarningTitle.setText(shipmentCartItemModel.getWarningTitle());
-            String warningDescription = shipmentCartItemModel.getWarningDescription();
-            if (!TextUtils.isEmpty(warningDescription)) {
-                tvWarningDescription.setText(warningDescription);
-                tvWarningDescription.setVisibility(View.VISIBLE);
-            } else {
-                tvWarningDescription.setVisibility(View.GONE);
-            }
-            layoutWarning.setVisibility(View.VISIBLE);
-        } else {
-            layoutWarning.setVisibility(View.GONE);
-        }*/
-
         if (shipmentCartItemModel.isWarning()) {
             String warningDescription = shipmentCartItemModel.getWarningDescription();
             if (!TextUtils.isEmpty(warningDescription)) {
-                tickerWarningAndError.setTickerTitle(shipmentCartItemModel.getWarningTitle());
-                tickerWarningAndError.setTextDescription(warningDescription);
+                tickerWarning.setTickerTitle(shipmentCartItemModel.getWarningTitle());
+                tickerWarning.setTextDescription(warningDescription);
             } else {
-                tickerWarningAndError.setTextDescription(shipmentCartItemModel.getWarningTitle());
+                tickerWarning.setTextDescription(shipmentCartItemModel.getWarningTitle());
             }
-            tickerWarningAndError.setTickerType(Ticker.TYPE_WARNING);
-            tickerWarningAndError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerWarningAndError.setCloseButtonVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.VISIBLE);
+            tickerWarning.setTickerType(Ticker.TYPE_WARNING);
+            tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerWarning.setCloseButtonVisibility(View.GONE);
+            tickerWarning.setVisibility(View.VISIBLE);
+            layoutWarning.setVisibility(View.VISIBLE);
         } else {
-            tickerWarningAndError.setVisibility(View.GONE);
+            layoutWarning.setVisibility(View.GONE);
+            tickerWarning.setVisibility(View.GONE);
         }
     }
 
@@ -1520,6 +1497,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         int nonActiveTextColor = ContextCompat.getColor(tvProductName.getContext(), R.color.grey_nonactive_text);
         tvProductName.setTextColor(nonActiveTextColor);
         tvProductPrice.setTextColor(nonActiveTextColor);
+        tvProductOriginalPrice.setTextColor(nonActiveTextColor);
         tvFreeReturnLabel.setTextColor(nonActiveTextColor);
         tvPreOrder.setTextColor(nonActiveTextColor);
         tvNoteToSellerLabel.setTextColor(nonActiveTextColor);
@@ -1543,6 +1521,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void enableItemView() {
         tvProductName.setTextColor(ContextCompat.getColor(tvProductName.getContext(), R.color.black_70));
         tvProductPrice.setTextColor(ContextCompat.getColor(tvProductPrice.getContext(), R.color.orange_red));
+        tvProductOriginalPrice.setTextColor(ContextCompat.getColor(tvProductOriginalPrice.getContext(), R.color.n_700_44));
         tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
         tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.font_black_secondary_54));
         tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.black_38));
