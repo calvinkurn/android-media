@@ -87,6 +87,16 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_buy_now.visibility = View.VISIBLE
             if (isSpecialPrize) btn_add_to_cart.gone()
             else btn_add_to_cart.visible()
+//            if(isLeasing){
+//                btn_apply_credit.visibility  = View.VISIBLE
+//                btn_add_to_cart.visibility = View.GONE
+//                btn_buy_now.visibility = View.GONE
+//            }
+            if(true){
+                btn_apply_credit.visibility  = View.VISIBLE
+                btn_add_to_cart.visibility = View.GONE
+                btn_buy_now.visibility = View.GONE
+            }
 
             btn_buy_now.setOnClickListener {
                 if (hasComponentLoading) return@setOnClickListener
@@ -97,6 +107,7 @@ class PartialButtonActionView private constructor(private val view: View,
                 addToCartClick?.invoke()
             }
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
+            btn_apply_credit.setOnClickListener(this@PartialButtonActionView)
         }
     }
 
