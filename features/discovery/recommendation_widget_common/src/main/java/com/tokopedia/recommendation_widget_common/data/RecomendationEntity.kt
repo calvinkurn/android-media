@@ -43,7 +43,8 @@ class RecomendationEntity {
         var clickUrl: String? = ""
         @SerializedName("wishlistUrl")
         var wishlistUrl: String? = ""
-
+        @SerializedName("isWishlist")
+        var isWishlist: Boolean? = false
         @SerializedName("discountPercentage")
         var discountPercentage: Int = 0
         @SerializedName("slashedPrice")

@@ -55,6 +55,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
     private val REQUEST_CODE_LOGIN = 283
+    private val REQUEST_CODE_PDP = 284
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -156,10 +157,11 @@ class ProductInfoFragment : BaseDaggerFragment() {
             } else {
                 onClickOrganic(recommendationItem)
             }
-            RouteManager.route(
+            val intent = RouteManager.getIntent(
                     context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     productDataModel.productDetailData.id.toString())
+            startActivityForResult(intent, REQUEST_CODE_PDP)
         }
     }
 
@@ -394,7 +396,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
             pageName = "",
             minOrder = productDataModel.productDetailData.minOrder,
             location = "",
-            badgesUrl = listOf()
+            isWishlist = false,
+            badgesUrl = listOf(),
+            type = ""
     )
 
     private fun handleDiscount(){
@@ -443,7 +447,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_CANCELED) {
+        if (requestCode == REQUEST_CODE_PDP) {
             data?.let {
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         productDataModel.productDetailData.isWishlist)
