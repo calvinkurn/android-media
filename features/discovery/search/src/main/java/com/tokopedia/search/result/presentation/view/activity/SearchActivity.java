@@ -417,24 +417,18 @@ public class SearchActivity extends BaseActivity
     }
 
     private void getExtrasFromIntent(Intent intent) {
-        searchParameter = getSearchParameterFromIntent(intent);
+        searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
         isForceSwipeToShop = intent.getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
         isHasCatalog = intent.getBooleanExtra(EXTRA_HAS_CATALOG, false);
         isFromApplink = intent.getBooleanExtra(EXTRA_IS_FROM_APPLINK, false);
+
+        createNewSearchParameterIfNull();
     }
 
-    private SearchParameter getSearchParameterFromIntent(Intent intent) {
-        SearchParameter searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
-
+    private void createNewSearchParameterIfNull() {
         if(searchParameter == null) {
-            searchParameter = createSearchParameterFromUri(intent.getData());
+            searchParameter = new SearchParameter();
         }
-
-        return searchParameter;
-    }
-
-    private SearchParameter createSearchParameterFromUri(@Nullable Uri uri) {
-        return (uri == null) ? new SearchParameter() : new SearchParameter(uri.toString());
     }
 
     private void loadSection() {
