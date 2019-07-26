@@ -83,12 +83,10 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         if(GlobalConfig.isAllowDebuggingTools()) {
-            super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_developer_options);
-
             userSession = new UserSession(this);
-
             setupView();
             initListener();
         } else {

@@ -1,21 +1,17 @@
 package com.tokopedia.home_recom.view.viewholder
 
 import android.app.Activity
-import android.graphics.Color
-import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
+import com.tokopedia.home_recom.util.RecomSnackBar
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardView
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 class RecommendationCarouselItemViewHolder (
@@ -31,13 +27,13 @@ class RecommendationCarouselItemViewHolder (
             setPriceVisible(true)
             setImageProductVisible(true)
             setButtonWishlistVisible(true)
-            setSlashedPriceVisible(element.productItem.slashedPriceInt > 0 && element.productItem.discountPercentage > 0)
-            setLabelDiscountVisible(element.productItem.slashedPriceInt > 0 && element.productItem.discountPercentage > 0)
-            setImageRatingVisible(element.productItem.rating > 0 && element.productItem.countReview > 0)
-            setReviewCountVisible(element.productItem.rating > 0 && element.productItem.countReview > 0)
+            setSlashedPriceInvisible(element.productItem.slashedPriceInt <= 0 && element.productItem.discountPercentage <= 0)
+            setLabelDiscountInvisible(element.productItem.slashedPriceInt <= 0 && element.productItem.discountPercentage <= 0)
+            setImageRatingInvisible(element.productItem.rating <= 0 && element.productItem.countReview <= 0)
+            setReviewCountInvisible(element.productItem.rating <= 0 && element.productItem.countReview <= 0)
             setShopLocationVisible(true)
-            setButtonWishlistVisible(element.productItem.badgesUrl.isNotEmpty())
-            setShopBadgesVisible(true)
+            setShopBadgesVisible(element.productItem.badgesUrl.isNotEmpty())
+            setLinesProductTitle(2)
             setButtonWishlistImage(element.productItem.isWishlist)
             setProductNameText(element.productItem.name)
             setPriceText(element.productItem.price)
@@ -93,28 +89,17 @@ class RecommendationCarouselItemViewHolder (
     }
 
     private fun showSuccessAddWishlist(view: View, message: String){
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                .setAction(R.string.recom_go_to_wishlist) { RouteManager.route(view.context, ApplinkConst.WISHLIST) }
-                .show()
+        RecomSnackBar.showSuccessWithAction(view, message, view.context.getString(R.string.recom_go_to_wishlist)){
+            RouteManager.route(view.context, ApplinkConst.WISHLIST)
+        }
     }
 
     private fun showSuccessRemoveWishlist(view: View, message: String){
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        RecomSnackBar.showSuccess(view, message)
     }
 
     private fun showError(view: View, throwable: Throwable?){
-        val snackbar = Snackbar.make(
-                view,
-                ErrorHandler.getErrorMessage(view.context, throwable),
-                Snackbar.LENGTH_LONG)
-        val snackbarView = snackbar.view
-        val padding = view.resources.getDimensionPixelSize(R.dimen.dp_16)
-        snackbarView.setPadding(padding, 0, padding, 0)
-        snackbarView.setBackgroundColor(Color.TRANSPARENT)
-        val rootSnackBarView = snackbarView as FrameLayout
-        rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_error)
-        snackbar.show()
-
+        RecomSnackBar.showError(view, throwable)
     }
 
 }

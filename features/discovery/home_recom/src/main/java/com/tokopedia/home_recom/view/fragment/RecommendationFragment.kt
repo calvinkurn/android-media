@@ -11,6 +11,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_recom.R
@@ -213,6 +214,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item))
             }
         }else{
+            RouteManager.route(context, ApplinkConst.LOGIN)
             RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item))
         }
     }
