@@ -50,6 +50,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
+    implementation project(rootProject.ext.libraries.url)
 
     implementation rootProject.ext.playServicesDependencies.analytics
 
