@@ -15,4 +15,11 @@
     <string name="title_replacement_reason_3">Saya sudah menemukan barang dari toko lain</string>
     <string name="title_other_reason">Lainnya</string>
     <string name="button_order_detail_confirm">Konfirmasi</string>
+    <string name="tkpdtransaction_common_cancellation_heading">Pilih satu alasan pengajuan pembatalan:</string>
+    <string name="tkpdtransaction_title_replacement_reason_1">Produk tidak sesuai atau kosong</string>
+    <string name="tkpdtransaction_title_replacement_reason_2">Ingin merubah pesanan</string>
+    <string name="tkpdtransaction_title_replacement_reason_3">Kendala pengiriman</string>
+    <string name="tkpdtransaction_title_replacement_reason_4">Penjual tidak merespon</string>
+    <string name="tkpdtransaction_common_enter_reason">Masukan alasan anda</string>
+    <string name="ajukan">Ajukan</string>
 </resources>

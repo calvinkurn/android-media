@@ -350,4 +350,5 @@ Anda di sini.</string>
     <string name="deal_voucher_code_copied">Berhasil! Silakan cek voucher di</string>
     <string name="event_voucher_code_copied">Berhasil! Silakan cek e-tiket di</string>
     <string name="purchase_detail">Detail Pembelian</string>
+    <string name="tkpdtransaction_cancellation_with_time">Pembatalan tidak bisa dilakukan saat ini. Kamu bisa batalkan pesanan pada %s</string>
 </resources>

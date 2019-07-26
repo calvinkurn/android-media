@@ -72,6 +72,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -634,7 +635,14 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                     intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
                     if (this.status.status().equals("220") || this.status.status().equals("400")) {
-                        startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
+                        if (!TextUtils.isEmpty(presenter.getCancelTime())) {
+                            Toaster.Companion.showError(mainView,
+                                    getContext().getResources().getString(
+                                            R.string.tkpdtransaction_cancellation_with_time,
+                                            presenter.getCancelTime()),
+                                    Snackbar.LENGTH_LONG);
+                        } else
+                            startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
                     } else if (this.status.status().equals("11")) {
                         startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {

@@ -79,7 +79,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     protected Fragment getSimpleFragment() {
         if (getIntent() != null) {
             if (getIntent().getIntExtra(CANCEL_ORDER_FRAGMENT, 1) == 1) {
-                return RejectOrderBuyerRequest.createFragment(getIntent().getStringExtra(KEY_ORDER_ID));
+                return RejectOrderBuyerRequest.createFragment(getIntent().getStringExtra(KEY_ORDER_ID),RejectOrderBuyerRequest.NEW_CANCELLATION_FLOW);
             } else {
                 return CancelSearchFragment.createFragment(getIntent().getStringExtra(KEY_ORDER_ID));
             }
@@ -92,7 +92,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     public void rejectOrderBuyerRequest(Map<String, String> rejectParam) {
         Intent intent = new Intent();
         intent.putExtra(OrderListContants.REASON,rejectParam.get(OrderListContants.REASON));
-        intent.putExtra(OrderListContants.REASON_CODE, 1);
+        intent.putExtra(OrderListContants.REASON_CODE, rejectParam.get(OrderListContants.REASON_CODE));
         intent.putExtra(ACTION_BUTTON_URL, getIntent().getStringExtra(ACTION_BUTTON_URL));
         setResult(REJECT_BUYER_REQUEST,intent);
         finish();
