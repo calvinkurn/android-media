@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -62,9 +62,10 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.design)
@@ -80,17 +81,19 @@ dependencies {
     implementation rootProject.ext.viewDependencies.appIntro
 
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+    kapt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation rootProject.ext.miscDependencies.parcelerApi
-    annotationProcessor  rootProject.ext.miscDependencies.parceler
+    kapt  rootProject.ext.miscDependencies.parceler
 
-    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
+    kapt  rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
 
