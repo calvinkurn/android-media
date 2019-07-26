@@ -723,9 +723,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onShopItemCheckChanged(int itemPosition, boolean checked) {
-
-        // TODO: 18/6/19 make sure to de-select (only) any insurance product mapped with this shop id and product id
-
         dPresenter.setHasPerformChecklistChange();
         cartAdapter.setShopSelected(itemPosition, checked);
         cartAdapter.notifyDataSetChanged();
@@ -984,6 +981,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onCartItemShowTickerPriceDecrease(String productId) {
         cartPageAnalytics.eventViewTickerPriceDecrease(productId);
+    }
+
+    @Override
+    public void onMicroInsuranceCheckChange(boolean isChecked, CartItemHolderData data) {
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
     }
 
     @Override
@@ -1940,24 +1942,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                     for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
                         if (insuranceCartDigitalProduct.isProductLevel()) {
-                            List<CartShopHolderData> cartShopHolderDataList = cartAdapter.getAllCartShopHolderData();
-                            if (cartShopHolderDataList != null && !cartShopHolderDataList.isEmpty()) {
-                                for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
-                                    if (cartShopHolderData.getShopGroupData() != null) {
-                                        List<CartItemHolderData> cartItemHolderDataList = cartShopHolderData.getShopGroupData().getCartItemDataList();
-                                        if (cartItemHolderDataList != null && !cartItemHolderDataList.isEmpty()) {
-                                            for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
-                                                if (String.valueOf(insuranceCartShopItems.getProductId()).
-                                                        equalsIgnoreCase(cartItemHolderData.getCartItemData().getOriginData().getProductId())) {
-
-                                                    cartItemHolderData.getCartItemData().setMicroInsuranceData(insuranceCartDigitalProduct);
-                                                }
-                                            }
-                                        }
+                            List<CartItemData> cartItemDataList = cartAdapter.getAllCartItemData();
+                            if (cartItemDataList != null && !cartItemDataList.isEmpty()) {
+                                for (CartItemData cartItemData : cartItemDataList) {
+                                    if (String.valueOf(insuranceCartShopItems.getProductId()).
+                                            equalsIgnoreCase(cartItemData.getOriginData().getProductId())) {
+                                        cartItemData.setMicroInsuranceData(insuranceCartDigitalProduct);
                                     }
                                 }
+                                cartAdapter.notifyDataSetChanged();
                             }
-
                         } else {
                             cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
                         }

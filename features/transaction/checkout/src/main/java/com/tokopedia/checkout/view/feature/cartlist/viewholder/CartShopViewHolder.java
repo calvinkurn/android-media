@@ -344,6 +344,17 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                             isAllSelected = false;
                         }
                     }
+
+                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                        if (cartItemHolderData.getCartItemData().isError() && cartItemHolderData.getCartItemData().isSingleChild()) {
+                            isAllSelected = false;
+                        }
+                    }
+
+                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                        cartItemHolderData.getCartItemData().getMicroInsuranceData().setOptIn(isAllSelected);
+                    }
+
                     cartShopHolderData.setAllSelected(isAllSelected);
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                         actionListener.onShopItemCheckChanged(getAdapterPosition(), isChecked);

@@ -17,9 +17,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:visibility="gone" />
 
     <FrameLayout
@@ -33,10 +33,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_16"
             android:paddingLeft="-1dp"
+            android:paddingTop="@dimen/dp_14"
             android:paddingRight="-1dp"
-            android:paddingTop="@dimen/dp_14">
+            android:paddingBottom="@dimen/dp_16">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -56,13 +56,13 @@
                     android:id="@+id/iv_product_card"
                     android:layout_width="@dimen/dp_52"
                     android:layout_height="@dimen/dp_52"
-                    android:layout_toRightOf="@+id/cb_select_item"
+                    android:layout_margin="5dp"
                     android:layout_marginTop="@dimen/dp_4"
                     android:layout_marginEnd="@dimen/dp_20"
                     android:layout_marginRight="@dimen/dp_20"
+                    android:layout_toRightOf="@+id/cb_select_item"
                     app:cardCornerRadius="6dp"
-                    app:cardElevation="@dimen/dp_0"
-                    android:layout_margin="5dp">
+                    app:cardElevation="@dimen/dp_0">
 
                     <ImageView
                         android:id="@+id/iv_image_product"
@@ -105,20 +105,20 @@
                         android:id="@+id/tv_price_changes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/product_properties"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:background="@drawable/bg_price_changes"
                         android:paddingStart="@dimen/dp_4"
                         android:paddingLeft="@dimen/dp_4"
-                        android:paddingRight="@dimen/dp_5"
-                        android:paddingEnd="@dimen/dp_5"
                         android:paddingTop="@dimen/dp_3"
+                        android:paddingEnd="@dimen/dp_5"
+                        android:paddingRight="@dimen/dp_5"
                         android:paddingBottom="@dimen/dp_3"
-                        android:layout_marginTop="@dimen/dp_4"
                         android:textColor="@color/price_changes_color_text"
-                        android:background="@drawable/bg_price_changes"
-                        android:layout_below="@id/product_properties"
+                        android:visibility="gone"
                         app:typographyType="body_3"
                         app:typographyWeight="bold"
-                        android:visibility="gone"
-                        tools:visibility="visible"/>
+                        tools:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_product_price"
@@ -137,19 +137,19 @@
                     android:id="@+id/rl_invenage_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_invenage_text"
                     android:layout_below="@id/rl_product_info"
                     android:layout_marginTop="@dimen/dp_24"
+                    android:background="@drawable/bg_invenage_text"
                     android:visibility="gone"
                     tools:visibility="visible">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
-                        app:srcCompat="@drawable/ic_yellow_ticker"/>
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        app:srcCompat="@drawable/ic_yellow_ticker" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_invenage_text"
@@ -157,14 +157,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_16"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginEnd="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_8"
                         android:lineSpacingMultiplier="1.5"
                         android:textColor="@color/invenage_text_color"
                         app:typographyType="body_3"
-                        app:typographyWeight="reguler"/>
+                        app:typographyWeight="reguler" />
 
                 </RelativeLayout>
 
@@ -172,9 +172,9 @@
                     android:id="@+id/rl_product_action"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_invenage_text"
                     android:layout_toEndOf="@id/iv_product_card"
                     android:layout_toRightOf="@id/iv_product_card"
-                    android:layout_below="@id/rl_invenage_text"
                     android:paddingLeft="@dimen/dp_8">
 
                     <LinearLayout
@@ -194,16 +194,16 @@
                                 android:id="@+id/img_wishlist"
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
-                                android:layout_marginRight="@dimen/dp_18"
                                 android:layout_marginEnd="@dimen/dp_18"
+                                android:layout_marginRight="@dimen/dp_18"
                                 app:srcCompat="@drawable/ic_wishlist_checkout_on" />
 
                             <ImageView
                                 android:id="@+id/btn_delete_cart"
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
-                                android:layout_marginRight="@dimen/dp_18"
                                 android:layout_marginEnd="@dimen/dp_18"
+                                android:layout_marginRight="@dimen/dp_18"
                                 app:srcCompat="@drawable/ic_delete_cart"
                                 tools:ignore="ContentDescription" />
 
@@ -279,7 +279,7 @@
                         android:text="@string/label_note_for_seller"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
-                        tools:visibility="gone" />
+                        tools:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_remark"
@@ -287,9 +287,9 @@
                         android:layout_height="wrap_content"
                         android:maxLength="20"
                         android:maxLines="1"
-                        tools:text="12345123451234512345123 sdkjf skdjbfg jksdg kjsdbg jksdbg!"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
+                        tools:text="12345123451234512345123 sdkjf skdjbfg jksdg kjsdbg jksdbg!"
                         tools:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -299,7 +299,7 @@
                         android:layout_marginLeft="@dimen/dp_2"
                         android:text="@string/label_ellipsize"
                         app:typographyType="body_3"
-                        app:typographyWeight="reguler"/>
+                        app:typographyWeight="reguler" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_label_remark_option"
@@ -312,9 +312,72 @@
                         android:textColor="@color/tkpd_main_green"
                         android:textStyle="normal"
                         app:typographyType="body_3"
-                        app:typographyWeight="reguler"/>
+                        app:typographyWeight="reguler" />
 
                 </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/ll_micro_insurance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/dp_10">
+
+
+                    <CheckBox
+                        android:id="@+id/cb_select_micro_insurance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:theme="@style/TransactionCheckbox" />
+
+                    <TextView
+                        android:id="@+id/micro_insurance_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_toEndOf="@+id/cb_select_micro_insurance"
+                        android:layout_toRightOf="@+id/cb_select_micro_insurance"
+                        android:lineSpacingExtra="@dimen/sp_2"
+                        android:textColor="@color/default_dark_bg"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="Proteksi Gadget" />
+
+                    <TextView
+                        android:id="@+id/tv_micro_insurance_sub_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/micro_insurance_title"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:layout_marginEnd="@dimen/dp_12"
+                        android:layout_marginRight="@dimen/dp_12"
+                        android:layout_toStartOf="@+id/tv_micro_insurance_info"
+                        android:layout_toLeftOf="@+id/tv_micro_insurance_info"
+                        android:layout_toEndOf="@+id/cb_select_micro_insurance"
+                        android:layout_toRightOf="@+id/cb_select_micro_insurance"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="Rp 50.000 / barang" />
+
+                    <TextView
+                        android:id="@+id/tv_micro_insurance_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:textColor="#03ac0e"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="Pelajari" />
+
+                </RelativeLayout>
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_remark"
@@ -344,12 +407,12 @@ barangnya gan!" />
                     android:id="@+id/tv_error_form_remark_validation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/et_remark"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@id/et_remark"
                     android:maxLines="1"
-                    android:paddingLeft="@dimen/dp_4"
                     android:paddingStart="@dimen/dp_4"
+                    android:paddingLeft="@dimen/dp_4"
                     android:textColor="@color/text_cart_item_error_red"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="normal"
@@ -364,16 +427,16 @@ barangnya gan!" />
                     android:id="@+id/tv_note_char_counter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/et_remark"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@id/et_remark"
                     android:layout_gravity="end"
                     android:lineSpacingExtra="0sp"
                     android:visibility="gone"
-                    tools:text="60/140"
-                    tools:visibility="visible"
                     app:typographyType="body_3"
-                    app:typographyWeight="reguler"/>
+                    app:typographyWeight="reguler"
+                    tools:text="60/140"
+                    tools:visibility="visible" />
 
             </LinearLayout>
 

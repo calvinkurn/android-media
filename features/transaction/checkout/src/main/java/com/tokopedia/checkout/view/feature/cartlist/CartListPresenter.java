@@ -710,6 +710,8 @@ public class CartListPresenter implements ICartListPresenter {
                 String productId = data.getCartItemData().getOriginData().getProductId();
                 int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
                 totalItemQty += itemQty;
+
+
                 if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
                     for (CartItemHolderData dataForQty : allCartItemDataList) {
                         if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
@@ -784,6 +786,11 @@ public class CartListPresenter implements ICartListPresenter {
                             data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
                         }
                     }
+                }
+
+                if (data.getCartItemData().getMicroInsuranceData() != null &&
+                        data.getCartItemData().getMicroInsuranceData().getOptIn()) {
+                    totalPrice = totalPrice + data.getCartItemData().getMicroInsuranceData().getPricePerProduct();
                 }
             }
         }
@@ -1032,7 +1039,7 @@ public class CartListPresenter implements ICartListPresenter {
 
                     removeInsuranceProductGqlResponse = graphqlResponse.getData(RemoveInsuranceProductGqlResponse.class);
                     if (removeInsuranceProductGqlResponse.getResponse().getRemoveTransactional().getStatus()) {
-                        if(showToaster) {
+                        if (showToaster) {
                             view.showToastMessageGreen("Success in remove insurance product!");
                         }
                         view.removeInsuranceProductItem(productId);
