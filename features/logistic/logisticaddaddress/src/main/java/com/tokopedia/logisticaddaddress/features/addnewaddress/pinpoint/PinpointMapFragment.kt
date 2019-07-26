@@ -440,7 +440,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             invalid_img?.setImageResource(R.drawable.ic_invalid_location)
             invalid_button?.apply{
                 visibility = View.VISIBLE
-                setOnClickListener { goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true) }
+                setOnClickListener {
+                    AddNewAddressAnalytics.eventClickButtonUnnamedRoad()
+                    goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true)
+                }
             }
 
             invalid_ic_search_btn?.setOnClickListener {
