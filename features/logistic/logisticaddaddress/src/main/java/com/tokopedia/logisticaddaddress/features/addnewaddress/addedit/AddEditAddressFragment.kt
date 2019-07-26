@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.support.design.widget.TextInputLayout
 import android.support.v4.view.ViewCompat
 import android.text.Editable
 import android.text.TextWatcher
@@ -26,7 +27,6 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.AddressConstants.ANA_NEGATIVE
 import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
@@ -34,10 +34,10 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
@@ -52,8 +52,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_addr
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
-import kotlinx.android.synthetic.main.form_add_new_address_data_item.et_detail_address
-import kotlinx.android.synthetic.main.form_add_new_address_data_item.tv_detail_address_counter
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
 import kotlinx.android.synthetic.main.fragment_add_edit_new_address.*
@@ -464,7 +462,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = ""
-        if (et_detail_address.text.isEmpty()) {
+        if (et_detail_address.text!!.isEmpty()) {
             validated = false
             rl_detail_address_info_counter.visibility = View.GONE
             setWrapperError(et_detail_address_wrapper, getString(R.string.validate_detail_alamat))
@@ -484,31 +482,31 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = ""
-        if (et_kota_kecamatan_mismatch.text.isEmpty()) {
+        if (et_kota_kecamatan_mismatch.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_kota_kecamatan_mismatch_wrapper, getString(R.string.validate_kota_kecamatan))
             if (field.isNotEmpty()) field += ", "
             field += "kota kecamatan"
         }
-        if (et_kode_pos_mismatch.text.isEmpty()) {
+        if (et_kode_pos_mismatch.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos))
             if (field.isNotEmpty()) field += ", "
             field += "kode pos"
         }
-        if (et_kode_pos_mismatch.text.length < 5) {
+        if (et_kode_pos_mismatch.text!!.length < 5) {
             validated = false
             setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos_length))
             if (field.isNotEmpty()) field += ", "
             field += "kode pos"
         }
-        if (et_alamat_mismatch.text.isEmpty()) {
+        if (et_alamat_mismatch.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat))
             if (field.isNotEmpty()) field += ", "
             field += "alamat"
         }
-        if (et_alamat_mismatch.text.length < 5) {
+        if (et_alamat_mismatch.text!!.length < 5) {
             validated = false
             setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat_length))
             if (field.isNotEmpty()) field += ", "
@@ -527,21 +525,21 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = errorField
-        if (et_label_address.text.isEmpty()) {
+        if (et_label_address.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_label_address_wrapper, getString(R.string.validate_label_alamat))
             if (field.isNotEmpty()) field += ", "
             field += "label alamat"
 
         }
-        if (et_receiver_name.text.isEmpty()) {
+        if (et_receiver_name.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_receiver_name_wrapper, getString(R.string.validate_nama_penerima))
             if (field.isNotEmpty()) field += ", "
             field += "nama penerima"
 
         }
-        if (et_phone.text.isEmpty()) {
+        if (et_phone.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel))
             if (field.isNotEmpty()) field += ", "
@@ -559,7 +557,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         return validated
     }
 
-    private fun setWrapperError(wrapper: TkpdHintTextInputLayout, s: String?) {
+    private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
         if (s.isNullOrBlank()) {
             wrapper.error = s
             wrapper.setErrorEnabled(false)
@@ -587,7 +585,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         setWrapperError(et_phone_wrapper, null)
     }
 
-    private fun setWrapperWatcher(wrapper: TkpdHintTextInputLayout): TextWatcher {
+    private fun setWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
@@ -715,7 +713,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             btn_map.layoutParams = params
             setOnClickListener {
                 hideKeyboard()
-                if (et_kota_kecamatan_mismatch.text.isEmpty()) {
+                if (et_kota_kecamatan_mismatch.text!!.isEmpty()) {
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
@@ -999,7 +997,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         rv_label_alamat_chips.visibility = View.GONE
         et_label_address.run {
             setText(labelAlamat)
-            setSelection(et_label_address.text.length)
+            setSelection(et_label_address.text!!.length)
         }
         if (!isMismatch && !isMismatchSolved) {
             AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive()
