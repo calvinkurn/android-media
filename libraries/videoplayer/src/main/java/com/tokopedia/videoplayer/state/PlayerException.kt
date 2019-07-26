@@ -1,4 +1,4 @@
-package com.tokopedia.videoplayer.utils
+package com.tokopedia.videoplayer.state
 
 sealed class PlayerException {
     //video source not found

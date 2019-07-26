@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.Player.*
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -23,24 +23,30 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.videoplayer.R
+import com.tokopedia.videoplayer.state.*
+import com.tokopedia.videoplayer.state.Player.Companion.STATE_BUFFERING
+import com.tokopedia.videoplayer.state.Player.Companion.STATE_READY
+import com.tokopedia.videoplayer.state.RepeatMode
 import com.tokopedia.videoplayer.utils.*
-import com.tokopedia.videoplayer.utils.RepeatMode
 import kotlinx.android.synthetic.main.fragment_video_player.*
 import java.io.File
 
-class TkpdVideoPlayer: Fragment() {
+class TkpdVideoPlayer: Fragment(), ControllerListener {
 
     companion object {
         //keys
-        private const val VIEW_MODEL        = "video_model"
-        private const val VIDEO_SOURCE      = "video_uri"
-        private const val VIDEO_CALLBACK    = "video_callback"
-        private const val REPEAT_MODE       = "repeat_mode"
+        private const val VIEW_MODEL = "video_model"
+        private const val VIDEO_SOURCE = "video_uri"
+        private const val VIDEO_CALLBACK = "video_callback"
+        private const val REPEAT_MODE = "repeat_mode"
+        private const val NATIVE_CONTROLLER = "native_controller"
+        private const val PLAYER_TYPE = "player_type"
 
         //const
         private const val VIDEO_ROTATION_90 = 90f
-        private const val EXOPLAYER_AGENT   = "exoplayer-codelab"
+        private const val EXOPLAYER_AGENT = "exoplayer-codelab"
     }
 
     class Builder {
@@ -64,7 +70,17 @@ class TkpdVideoPlayer: Fragment() {
         }
 
         fun listener(callback: VideoPlayerListener) = apply {
-            bundle.putSerializable(VIDEO_CALLBACK, callback)
+            bundle.putParcelable(VIDEO_CALLBACK, callback)
+            return this
+        }
+
+        fun type(type: Int) = apply {
+            bundle.putInt(PLAYER_TYPE, type)
+            return this
+        }
+
+        fun controller(isActive: Boolean) = apply {
+            bundle.putBoolean(NATIVE_CONTROLLER, isActive)
             return this
         }
 
@@ -74,8 +90,8 @@ class TkpdVideoPlayer: Fragment() {
         }
     }
 
-    private lateinit var playerOptions: SimpleExoPlayer
-    private var callback: VideoPlayerListener ?= null
+    private var playerOptions: SimpleExoPlayer?= null
+    private var callback: VideoPlayerListener?= null
 
     private var viewModel = TkpdPlayerViewModel()
 
@@ -95,40 +111,50 @@ class TkpdVideoPlayer: Fragment() {
             arguments != null -> {
                 viewModel.videoSource = arguments!!.getString(VIDEO_SOURCE, "")
                 viewModel.repeatMode = arguments!!.getInt(REPEAT_MODE, RepeatMode.REPEAT_MODE_OFF)
+                viewModel.nativeController = arguments!!.getBoolean(NATIVE_CONTROLLER, PlayerController.ON)
+                viewModel.playerType = arguments!!.getInt(PLAYER_TYPE, PlayerType.DEFAULT)
+
+                //passing callback listener with serializable
+                callback = arguments?.getParcelable(VIDEO_CALLBACK) as VideoPlayerListener?
+
+                //native controller visibility
+                playerView?.useController = viewModel.nativeController
+                pgLoader?.showWithCondition(viewModel.nativeController)
+
             }
             else -> activity?.finish()
         }
 
-        //passing callback listener with serializable
-        callback = arguments?.getSerializable(VIDEO_CALLBACK) as VideoPlayerListener?
-
         if (viewModel.videoSource.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
             callback?.onPlayerError(PlayerException.SourceNotFound)
+        }
+    }
+
+    private fun playVideo(source: String) {
+        if (File(source).exists()) {
+            val file = Uri.fromFile(File(source))
+            initPlayer(file, VideoSourceProtocol.File)
         } else {
-            if (File(viewModel.videoSource).exists()) {
-                val file = Uri.fromFile(File(viewModel.videoSource))
-                initPlayer(file, VideoSourceProtocol.File)
-            } else {
-                val url = Uri.parse(viewModel.videoSource)
-                initPlayer(url, VideoSourceProtocol.protocol(context, viewModel.videoSource))
-            }
+            val url = Uri.parse(source)
+            initPlayer(url, VideoSourceProtocol.protocol(context, source))
         }
 
+        //player listener
         playerListener()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(VIEW_MODEL, viewModel)
-    }
-
-    private fun playerListener() = playerOptions.addListener(object : Player.EventListener {
+    private fun playerListener() = playerOptions?.addListener(object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             callback?.onPlayerStateChanged(playbackState)
             when (playbackState) {
-                STATE_BUFFERING -> pgLoader.show()
-                STATE_READY -> pgLoader.hide()
+                STATE_BUFFERING -> {
+                    pgLoader?.showWithCondition(viewModel.nativeController)
+                    dimBackground?.show()
+                }
+                STATE_READY -> {
+                    dimBackground?.hide()
+                }
             }
         }
 
@@ -147,20 +173,20 @@ class TkpdVideoPlayer: Fragment() {
             playerView.player = playerOptions
 
             //repeat mode
-            playerOptions.repeatMode = viewModel.repeatMode
+            playerOptions?.repeatMode = viewModel.repeatMode
 
             //auto play enabled
-            playerOptions.playWhenReady = true
+            playerOptions?.playWhenReady = true
 
             //fix bug: on kitkat devices
             if (SDK_INT == KITKAT) {
                 playerView.rotation = VIDEO_ROTATION_90
             }
 
-            playerOptions.prepare(
+            playerOptions?.prepare(
                     buildMediaSource(source, protocol),
                     /* reset position */
-                    true,
+                    viewModel.stateVideoPosition <= 0,
                     /* reset state */
                     false)
         } catch (e: Exception) {
@@ -196,6 +222,20 @@ class TkpdVideoPlayer: Fragment() {
         }
     }
 
+    override fun resume() {
+        playerOptions?.playWhenReady = true
+        playerOptions?.playbackState
+    }
+
+    override fun pause() {
+        playerOptions?.playWhenReady = false
+        playerOptions?.playbackState
+    }
+
+    override fun stop() {
+        playerOptions?.stop()
+    }
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is VideoPlayerListener) {
@@ -203,11 +243,40 @@ class TkpdVideoPlayer: Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        playVideo(viewModel.videoSource)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //get current position and seeking of video player
+        if (viewModel.playerType == PlayerType.DEFAULT) {
+            playerOptions?.seekTo(viewModel.stateVideoPosition)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        try {
-            playerOptions.release()
-        } catch (ignored: Exception) {}
+        playerOptions?.release()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        playerOptions?.stop()
+
+        //save current position on video player
+        viewModel.stateVideoPosition = playerOptions?.currentPosition!!
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        playerOptions?.stop()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(VIEW_MODEL, viewModel)
     }
 
 }
