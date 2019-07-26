@@ -436,7 +436,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 hotelBookingPageModel.guestName = tv_guest_input.text.toString()
             else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
             hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
-            trackingHotelUtil.hotelClickNext(hotelBookingPageModel.guestName.isEmpty())
+            trackingHotelUtil.hotelClickNext(hotelBookingPageModel.isForOtherGuest == 0)
 
             val hotelCheckoutParam = HotelCheckoutParam(
                     cartId = hotelBookingPageModel.cartId,
