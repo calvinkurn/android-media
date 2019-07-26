@@ -112,5 +112,7 @@ interface TopChatContract {
         fun initAttachmentPreview()
 
         fun clearAttachmentPreview()
+
+        fun initInvoicePreview(savedInstanceState: Bundle?)
     }
 }

@@ -146,6 +146,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         initView(view)
         loadInitialData()
         presenter.initProductPreview(savedInstanceState)
+        presenter.initInvoicePreview(savedInstanceState)
         presenter.initAttachmentPreview()
     }
 

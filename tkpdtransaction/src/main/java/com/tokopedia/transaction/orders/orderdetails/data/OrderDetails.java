@@ -202,4 +202,78 @@ public class OrderDetails {
                 + "helpLink="+helpLink
                 + "}]";
     }
+
+    public String getStatusId() {
+        return status.status();
+    }
+
+    public String getStatusInfo() {
+        return status.statusText();
+    }
+
+    public String getTotalPriceAmount() {
+        return paymentData.value();
+    }
+
+    public String getBoughtDate() {
+        String date = "";
+        for (Title ttl : title) {
+            if (ttl.label().equals("Tanggal Pembelian")) {
+                date = ttl.value();
+            }
+        }
+
+        if (!date.isEmpty()) {
+            date = stripHourFromDate(date);
+        }
+
+        return date;
+    }
+
+    private String stripHourFromDate(String date) {
+        String strippedDate = date;
+        if (strippedDate.length() >= 11) {
+            strippedDate = strippedDate.substring(0, 11);
+        }
+
+        return strippedDate;
+    }
+
+    public String getInvoiceId() {
+        String invoice = "";
+
+        if (!items.isEmpty()) {
+            invoice = String.valueOf(items.get(0).getId());
+        }
+
+        return invoice;
+    }
+
+    public String getProductImageUrl() {
+        String productImageUrl = "";
+
+        if (!items.isEmpty()) {
+            productImageUrl = items.get(0).getImageUrl();
+        }
+
+        return productImageUrl;
+    }
+
+    public String getProductName() {
+        String productName = "";
+
+        if (!items.isEmpty()) {
+            productName = items.get(0).getTitle();
+        }
+
+        return productName;
+    }
+
+    public String getInvoiceCode() {
+        return invoice.invoiceRefNum();
+    }
+
+    public String getInvoiceUrl() {
+        return invoice.invoiceUrl();
+    }
 }

@@ -22,7 +22,7 @@ class ProductPreviewViewModel(
         return attachmentPreviewFactory.type(this)
     }
 
-    fun notEnoughRequiredData(): Boolean {
+    override fun notEnoughRequiredData(): Boolean {
         return name.isEmpty() || imageUrl.isEmpty() || price.isEmpty() || id.isEmpty()
     }
 

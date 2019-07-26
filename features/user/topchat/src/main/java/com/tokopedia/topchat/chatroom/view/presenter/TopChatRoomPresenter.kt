@@ -36,6 +36,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
@@ -561,7 +562,7 @@ class TopChatRoomPresenter @Inject constructor(
         val productColorHexVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, savedInstanceState)
         val productSizeVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, savedInstanceState)
 
-        val productPreview = ProductPreviewViewModel(
+        val productPreviewViewModel = ProductPreviewViewModel(
                 productId,
                 productImageUrl,
                 productName,
@@ -572,10 +573,32 @@ class TopChatRoomPresenter @Inject constructor(
                 productUrl
         )
 
-        attachmentsPreview.add(productPreview)
+        attachmentsPreview.add(productPreviewViewModel)
 
-        if (productPreview.notEnoughRequiredData()) {
-            attachmentsPreview.remove(productPreview)
+        if (productPreviewViewModel.notEnoughRequiredData()) {
+            attachmentsPreview.remove(productPreviewViewModel)
+        }
+    }
+
+    override fun initInvoicePreview(savedInstanceState: Bundle?) {
+        val id = view.getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
+        val invoiceCode = view.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
+        val productName = view.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
+        val date = view.getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState)
+        val imageUrl = view.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState)
+        val invoiceUrl = view.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState)
+        val statusId = view.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState)
+        val status = view.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
+        val totalPriceAmount = view.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
+
+        val invoiceViewModel = InvoicePreviewViewModel(
+                id, invoiceCode, productName, date, imageUrl, invoiceUrl, statusId, status, totalPriceAmount
+        )
+
+        attachmentsPreview.add(invoiceViewModel)
+
+        if (invoiceViewModel.notEnoughRequiredData()) {
+            attachmentsPreview.remove(invoiceViewModel)
         }
     }
 
@@ -588,5 +611,4 @@ class TopChatRoomPresenter @Inject constructor(
     override fun clearAttachmentPreview() {
         attachmentsPreview.clear()
     }
-
 }
