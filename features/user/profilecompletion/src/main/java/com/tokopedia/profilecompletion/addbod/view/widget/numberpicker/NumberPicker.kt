@@ -99,11 +99,11 @@ class NumberPicker @JvmOverloads constructor(
         fadingEdgeEnabled = attributesArray.getBoolean(R.styleable.NumberPicker_np_fadingEdgeEnabled, true)
 
         textPaint = Paint()
-        textPaint!!.isAntiAlias = true
-        textPaint!!.textSize = textSize.toFloat()
-        textPaint!!.textAlign = Paint.Align.valueOf(textAlign)
-        textPaint!!.style = Paint.Style.FILL_AND_STROKE
-        textPaint!!.isFakeBoldText = true
+        textPaint?.isAntiAlias = true
+        textPaint?.textSize = textSize.toFloat()
+        textPaint?.textAlign = Paint.Align.valueOf(textAlign)
+        textPaint?.style = Paint.Style.FILL_AND_STROKE
+        textPaint?.isFakeBoldText = true
 
         attributesArray.recycle()
 
@@ -145,15 +145,17 @@ class NumberPicker @JvmOverloads constructor(
     override fun getSuggestedMinimumHeight(): Int {
         var suggested = super.getSuggestedMinimumWidth()
         if (selectorVisibleItemCount > 0) {
-            val fontMetricsInt = textPaint!!.fontMetricsInt
-            val height = fontMetricsInt.descent - fontMetricsInt.ascent
-            suggested = Math.max(suggested, height * selectorVisibleItemCount)
+            val fontMetricsInt = textPaint?.fontMetricsInt
+            if(fontMetricsInt != null){
+                val height = fontMetricsInt.descent - fontMetricsInt.ascent
+                suggested = Math.max(suggested, height * selectorVisibleItemCount)
+            }
         }
         return suggested
     }
 
     private fun computeMaximumWidth(): Int {
-        textPaint!!.textSize = textSize * 1.3f
+        textPaint?.textSize = textSize * 1.3f
         if (adapter != null) {
             return if (!adapter!!.getTextWithMaximumLength().isEmpty()) {
                 val suggestedWith = textPaint!!.measureText(adapter!!.getTextWithMaximumLength()).toInt()
@@ -259,9 +261,10 @@ class NumberPicker @JvmOverloads constructor(
         val action: Int = event.actionMasked
         when (action) {
             MotionEvent.ACTION_DOWN -> {
-                if (!overScroller!!.isFinished)
-                    overScroller!!.forceFinished(true)
-
+                overScroller?.let {
+                    if (!it.isFinished)
+                        it.forceFinished(true)
+                }
 
                 lastY = event.y
             }
@@ -335,8 +338,10 @@ class NumberPicker @JvmOverloads constructor(
                 currentFirstItemOffset += y
             else {
                 currentFirstItemOffset = initialFirstItemOffset + (gap / 2)
-                if (!overScroller!!.isFinished && !isDragging) {
-                    overScroller!!.abortAnimation()
+                overScroller?.let {
+                    if (!it.isFinished && !isDragging) {
+                        it.abortAnimation()
+                    }
                 }
             }
             return
@@ -612,10 +617,13 @@ class NumberPicker @JvmOverloads constructor(
             return
         }
 
-        if (adapter!!.getSize() != -1 && indexRangeBasedOnAdapterSize) {
-            maxIndex = adapter.getSize() - 1
-            minIndex = 0
+        adapter?.let {
+            if (adapter.getSize() != -1 && indexRangeBasedOnAdapterSize) {
+                maxIndex = adapter.getSize() - 1
+                minIndex = 0
+            }
         }
+
         invalidate()
 
         this.adapter?.picker = this

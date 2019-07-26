@@ -120,7 +120,7 @@ class AddBodFragment: BaseDaggerFragment(){
     }
 
     private fun initVar() {
-        val bod = arguments!!.getString(ApplinkConstInternalGlobal.PARAM_BOD)
+        val bod = arguments?.getString(ApplinkConstInternalGlobal.PARAM_BOD)
         if(!bod.isNullOrEmpty()){
             val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", LocaleUtils.getIDLocale())
             defaultDate.time = simpleDateFormat.parse(bod)

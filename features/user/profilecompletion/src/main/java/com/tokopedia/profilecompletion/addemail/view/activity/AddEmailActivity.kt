@@ -18,8 +18,8 @@ class AddEmailActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSet
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
+        intent.extras?.let {
+            bundle.putAll(it)
         }
         return AddEmailFragment.createInstance(bundle)
     }
