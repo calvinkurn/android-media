@@ -247,16 +247,18 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             special_notes.movementMethod = LinkMovementMethod.getInstance()
         } else special_notes.visibility = View.GONE
 
-        checkin_checkout_date.setRoomDatesFormatted(
-                propertyDetail.checkInOut[0].checkInOut.date,
-                propertyDetail.checkInOut[1].checkInOut.date,
-                propertyDetail.stayLength.content)
+        if (propertyDetail.checkInOut.size >= 2) {
+            checkin_checkout_date.setRoomDatesFormatted(
+                    propertyDetail.checkInOut[0].checkInOut.date,
+                    propertyDetail.checkInOut[1].checkInOut.date,
+                    propertyDetail.stayLength.content)
 
-        checkin_checkout_date.setRoomCheckTimes(
-                getString(R.string.hotel_order_detail_day_and_time,
-                        propertyDetail.checkInOut[0].checkInOut.day, propertyDetail.checkInOut[0].checkInOut.time),
-                getString(R.string.hotel_order_detail_day_and_time,
-                        propertyDetail.checkInOut[1].checkInOut.day, propertyDetail.checkInOut[1].checkInOut.time))
+            checkin_checkout_date.setRoomCheckTimes(
+                    getString(R.string.hotel_order_detail_day_and_time,
+                            propertyDetail.checkInOut[0].checkInOut.day, propertyDetail.checkInOut[0].checkInOut.time),
+                    getString(R.string.hotel_order_detail_day_and_time,
+                            propertyDetail.checkInOut[1].checkInOut.day, propertyDetail.checkInOut[1].checkInOut.time))
+        }
 
         see_hotel_detail_button.setOnClickListener { RouteManager.route(context, propertyDetail.applink) }
     }
