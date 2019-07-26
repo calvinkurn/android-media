@@ -55,7 +55,7 @@ public class OnboardingAnimationHelper {
 
     public static ObjectAnimator appearText(final TextView v) {
         if (v != null) {
-            return ObjectAnimator.ofFloat(v, View.ALPHA, 0, 1);
+            return ObjectAnimator.ofInt(v, "visibility", View.GONE, View.VISIBLE);
         }
         return null;
     }
