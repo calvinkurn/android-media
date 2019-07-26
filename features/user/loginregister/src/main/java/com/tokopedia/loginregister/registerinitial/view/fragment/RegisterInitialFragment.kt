@@ -79,7 +79,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         private val REQUEST_CREATE_PASSWORD = 102
         private val REQUEST_SECURITY_QUESTION = 103
         private val REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105
-        private val REQUEST_WELCOME_PAGE = 106
         private val REQUEST_ADD_NAME_REGISTER_PHONE = 107
         private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
         private val REQUEST_CHOOSE_ACCOUNT = 109
@@ -404,12 +403,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 presenter.getUserInfo(false)
-            } else if (requestCode == REQUEST_WELCOME_PAGE) {
-                if (resultCode == Activity.RESULT_OK) {
-                    goToProfileCompletionPage()
-                }
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
             } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -736,9 +729,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     private fun onSuccessRegister() {
-        registerAnalytics.trackSuccessRegister(userSession.loginMethod)
-        startActivityForResult(WelcomePageActivity.newInstance(activity),
-                REQUEST_WELCOME_PAGE)
+        activity?.let{
+            registerAnalytics.trackSuccessRegister(userSession.loginMethod)
+            val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+            startActivity(intent)
+            it.setResult(Activity.RESULT_OK)
+            it.finish()
+        }
+
+
     }
 
     override fun onGoToChangeName() {
@@ -771,16 +770,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
         }
     }
-
-    override fun onGoToPhoneVerification(): () -> Unit {
-        return {
-            activity?.let {
-                (it.applicationContext as ApplinkRouter)
-                        .goToApplinkActivity(activity, ApplinkConst.PHONE_VERIFICATION)
-            }
-        }
-    }
-
 
     override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
         if (listTickerInfo.isNotEmpty()) {

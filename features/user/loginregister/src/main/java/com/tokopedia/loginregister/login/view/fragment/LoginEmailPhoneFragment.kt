@@ -952,7 +952,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-                onSuccessLogin()
+                onGoToWelcomeNewUserPage()
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
                 analytics.eventFailedLogin(userSession.loginMethod, getString(R.string.error_login_user_cancel_activate_account))
                 dismissLoadingLogin()
@@ -994,6 +994,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
+    }
+
+    private fun onGoToWelcomeNewUserPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+        startActivity(intent)
+        onSuccessLogin()
     }
 
     private fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
