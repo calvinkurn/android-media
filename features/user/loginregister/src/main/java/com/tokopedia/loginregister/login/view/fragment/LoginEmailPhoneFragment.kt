@@ -828,13 +828,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    override fun onGoToPhoneVerification(): () -> Unit {
-        return {
-            val intent = RouteManager.getIntent(context, ApplinkConst.PHONE_VERIFICATION)
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE)
-        }
-    }
-
     override fun onGoToActivationPage(email: String): (MessageErrorException) -> Unit {
         return {
             val intent = ActivationActivity.getCallingIntent(activity,
