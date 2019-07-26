@@ -45,6 +45,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -132,6 +133,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private lateinit var source : String
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var loginLayout: LinearLayout
@@ -258,6 +261,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             mIris = IrisAnalytics.getInstance(this)
         }
 
+        source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -990,9 +994,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun onGoToWelcomeNewUserPage() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
-        startActivity(intent)
+        if(isFromAccountPage()) {
+            val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+            startActivity(intent)
+        }
         onSuccessLogin()
+    }
+
+    private fun isFromAccountPage(): Boolean {
+        return source == "account"
     }
 
     private fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
