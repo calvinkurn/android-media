@@ -20,7 +20,6 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                                val router: ShopModuleRouter,
                                private val shopPageActivity: ShopPageActivity) : FragmentStatePagerAdapter(fragmentManager) {
 
-    var isRefresh = false
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
     override fun getItem(position: Int): Fragment {
@@ -37,10 +36,6 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                 renderTabDefault(position)
             }
         }
-    }
-
-    fun setIsRefresh(isRefresh: Boolean){
-        this.isRefresh = isRefresh
     }
 
     private fun renderTabOsDefault(position: Int): Fragment {
