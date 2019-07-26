@@ -50,6 +50,7 @@ dependencies {
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.tokoCash)
     implementation project(rootProject.ext.features.searchbar)

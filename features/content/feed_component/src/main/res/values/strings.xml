@@ -30,6 +30,8 @@
 
     <string name="string_posttag_buy">Beli</string>
 
+    <string name="empty_product">Kosong</string>
+
     <!--SHARE BOTTOM SHEETS ASSETS-->
     <string name="error_failed_add_product">Anda Gagal Menambah Produk, Silakan Coba Lagi</string>
     <string name="title_share">Bagikan</string>

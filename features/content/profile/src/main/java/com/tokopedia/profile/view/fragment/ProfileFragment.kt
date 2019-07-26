@@ -38,6 +38,7 @@ import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -898,6 +899,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+        presenter.addPostTagItemToCart(postTagItem)
+    }
+
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
         val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
 
@@ -967,6 +972,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onShareItemClicked(packageName: String) {
         sendTracker(packageName)
+    }
+
+    override fun onAddToCartSuccess() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+    }
+
+    override fun onAddToCartFailed(pdpAppLink: String) {
+        onGoToLink(pdpAppLink)
     }
 
     private fun initVar(savedInstanceState: Bundle?) {

@@ -29,7 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.tokopedia.topads.sdk.view.ImpressedImageView
+            <com.tokopedia.design.image.SquareImageView
                 android:id="@+id/imageProduct"
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"

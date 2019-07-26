@@ -66,6 +66,9 @@ public class Product {
     @SerializedName("recommendation_type")
     @Expose
     private String recommendationType = "";
+    @SerializedName("labels")
+    @Expose
+    private List<Label> labels = new ArrayList<>();
     @SerializedName("badges")
     @Expose
     private List<Badge> badges = new ArrayList<>();
@@ -239,6 +242,14 @@ public class Product {
 
     public void setTopads(Boolean topads) {
         isTopads = topads;
+    }
+
+    public List<Label> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<Label> labels) {
+        this.labels = labels;
     }
 
     public List<Badge> getBadges() {
