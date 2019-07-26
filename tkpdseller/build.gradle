@@ -85,7 +85,6 @@ dependencies {
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
