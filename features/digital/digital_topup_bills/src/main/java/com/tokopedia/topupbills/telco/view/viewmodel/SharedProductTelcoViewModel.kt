@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.topupbills.telco.data.TelcoEnquiryData
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoPromo
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,6 +17,7 @@ class SharedProductTelcoViewModel @Inject constructor(val dispatcher: CoroutineD
     val productItem = MutableLiveData<TelcoProductDataCollection>()
     val showTotalPrice = MutableLiveData<Boolean>()
     val promoItem = MutableLiveData<Int>()
+    val enquiryResult = MutableLiveData<TelcoEnquiryData>()
 
     fun setProductSelected(productItem: TelcoProductDataCollection) {
         this.productItem.value = productItem
@@ -27,5 +29,9 @@ class SharedProductTelcoViewModel @Inject constructor(val dispatcher: CoroutineD
 
     fun setPromoSelected(promoId: Int) {
         this.promoItem.value = promoId
+    }
+
+    fun setEnquiryResult(telcoEnquiryData: TelcoEnquiryData) {
+        this.enquiryResult.value = telcoEnquiryData
     }
 }
