@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,30 +13,15 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/bg_error"
         android:orientation="vertical"
-        android:padding="@dimen/dp_16"
         android:visibility="visible"
         tools:ignore="UselessParent"
         tools:visbility="visible">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_error_title"
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_error"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            android:text="@string/checkout_module_message_cart_error" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_error_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_5"
-            android:text="@string/checkout_module_message_cart_error"
-            android:textColor="@color/black_54"
-            app:typographyType="small"
-            app:typographyWeight="reguler"/>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
@@ -54,23 +38,10 @@
         tools:ignore="UselessParent"
         tools:visbility="visible">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_warning_title"
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_warning"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            android:text="@string/checkout_module_message_cart_error" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_warning_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_5"
-            android:text="@string/checkout_module_message_cart_error"
-            android:textColor="@color/black_54"
-            app:typographyType="small"
-            app:typographyWeight="reguler"/>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
