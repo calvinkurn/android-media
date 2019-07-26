@@ -1,7 +1,5 @@
 package com.tokopedia.onboarding.fragment
 
-import android.animation.AnimatorSet
-import android.animation.ValueAnimator
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
@@ -18,7 +16,6 @@ import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.onboarding.OnboardingActivity
 import com.tokopedia.onboarding.R
-import com.tokopedia.onboarding.animation.OnboardingAnimationHelper
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.listener.OnboardingVideoListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl

@@ -110,19 +110,6 @@ public class OnboardingAnimationHelper {
         return null;
     }
 
-    public static ValueAnimator slideRightToLeft(final View view) {
-        if (view != null) {
-            ValueAnimator valueAnimator = ValueAnimator.ofInt((int)(view.getWidth() * 1.5),0);
-
-            valueAnimator.addUpdateListener(valueAnimator1 -> {
-                float val = (Integer) valueAnimator1.getAnimatedValue();
-                view.setTranslationX(val);
-            });
-            return valueAnimator;
-        }
-        return null;
-    }
-
     public static ObjectAnimator setVisibilityGone(final View view) {
         if (view != null) {
             ObjectAnimator anim = ObjectAnimator.ofInt(view, "visibility", View.VISIBLE, View.GONE);
