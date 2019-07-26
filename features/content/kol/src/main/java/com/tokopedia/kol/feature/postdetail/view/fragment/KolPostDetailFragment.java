@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -189,7 +188,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this
                 , this, this, this, this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
         presenter.attachView(this);
@@ -251,9 +249,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             this.dynamicPostViewModel = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
             trackImpression(dynamicPostViewModel);
         }
-
-        FeedScrollListener.onFeedScrolled(recyclerView, list);
         setFooter(postDetailViewModel);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    FeedScrollListener.onFeedScrolled(recyclerView, list);
+                }
+            }
+        });
     }
 
     private void trackImpression(DynamicPostViewModel dynamicPostViewModel) {
@@ -803,23 +808,20 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl, @NotNull PostTagItem postTagItem, int itemPosition) {
         onGoToLink(redirectUrl);
-        if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
-            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
-                if (isOwner()) {
-                    postTagAnalytics.trackClickPostTagProfileDetailSelf(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getTrackingPostModel());
-                } else {
-                    postTagAnalytics.trackClickPostTagProfileDetailOther(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
-                            dynamicPostViewModel.getTrackingPostModel());
-                }
-            }
+
+        if (isOwner()) {
+            postTagAnalytics.trackClickPostTagProfileDetailSelf(
+                    dynamicPostViewModel.getId(),
+                    postTagItem,
+                    itemPosition,
+                    dynamicPostViewModel.getTrackingPostModel());
+        } else {
+            postTagAnalytics.trackClickPostTagProfileDetailOther(
+                    dynamicPostViewModel.getId(),
+                    postTagItem,
+                    itemPosition,
+                    dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
+                    dynamicPostViewModel.getTrackingPostModel());
         }
     }
 

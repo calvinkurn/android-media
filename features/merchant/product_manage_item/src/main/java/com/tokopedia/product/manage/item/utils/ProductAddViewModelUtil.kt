@@ -110,10 +110,6 @@ fun ProductAddViewModel.isDataValid(listenerOnError: ListenerOnErrorAddProduct):
         listenerOnError.onErrorWeight()
         return false
     }
-    if (this.etalaseId?:0 <= 0) {
-        listenerOnError.onErrorEtalase()
-        return false
-    }
     if ( this.productCatalog?.catalogId?:0 <= 0 &&
             !this.productStock?.isActive!! &&
             this.productPictureList?.size?:0 <= 0) {
