@@ -895,7 +895,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
         presenter.addPostTagItemToCart(postTagItem)
     }
 
