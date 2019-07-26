@@ -816,16 +816,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         } else {
             val etAlamat = et_alamat_mismatch.text.toString()
             if (etAlamat.isNotEmpty()) address1 = "$etAlamat, "
-            detailAddress = tv_detail_alamat_mismatch.text.toString()
             if (isMismatch) {
                 address1 += "${saveAddressDataModel?.selectedDistrict}"
-                if (detailAddress.isNotEmpty()) address1 += " [Tokopedia Note: ${detailAddress}]"
                 saveAddressDataModel?.address1 = address1
                 saveAddressDataModel?.address2 = ""
 
             } else {
                 address1 += "${saveAddressDataModel?.formattedAddress}"
-                if (detailAddress.isNotEmpty()) address1 += " [Tokopedia Note: ${detailAddress}]"
                 saveAddressDataModel?.address1 = address1
                 saveAddressDataModel?.address2 = "$currentLat,$currentLong"
             }
