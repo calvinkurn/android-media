@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/ic_close_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,15 +29,17 @@
         android:textSize="@dimen/sp_16"
         app:layout_constraintStart_toEndOf="@+id/ic_close_icon"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Info title" />
+        tools:text="Info title" />-->
 
     <WebView
         android:id="@+id/bottom_sheet_webview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_13"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_default="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ic_close_icon">
+        app:layout_constraintTop_toTopOf="parent">
 
     </WebView>
 </android.support.constraint.ConstraintLayout>

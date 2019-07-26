@@ -9,10 +9,10 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.CompoundButton
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -81,15 +81,19 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 itemView.insurance_tv_info.text = insuranceCartDigitalProductViewModel.productInfo.linkName
                 itemView.insurance_tv_info.setOnClickListener {
 
-                    val infoCloseableDialog = CloseableBottomSheetDialog.createInstanceRounded(itemView.context)
+                    val infoCloseableDialog = CloseableBottomSheetDialog.createInstance(itemView.context)
 
                     val infoDialogView = (itemView.context as Activity?)?.layoutInflater?.inflate(R.layout.insurance_info_bottom_sheet, null)
                     val webView = infoDialogView!!.findViewById<WebView>(R.id.bottom_sheet_webview)
 
-                    infoDialogView.findViewById<TextView>(R.id.info_bottom_sheet_title_tv)?.text =
-                            insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle
+                    webView.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
 
-                    val closeImageView = infoDialogView.findViewById<ImageView>(R.id.ic_close_icon)
+                    webView.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
+
+                    /*infoDialogView.findViewById<TextView>(R.id.info_bottom_sheet_title_tv)?.text =
+                            insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle*/
+
+//                    val closeImageView = infoDialogView.findViewById<ImageView>(R.id.ic_close_icon)
                     infoCloseableDialog.setOnShowListener { dialog ->
                         val d = dialog as BottomSheetDialog
                         val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
@@ -97,7 +101,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                             BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
                         }
                         val behavior = BottomSheetBehavior.from(bottomSheet!!)
-                        /*behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                        behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                             override fun onStateChanged(bottomSheet: View, newState: Int) {
                                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                                     behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -105,21 +109,26 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                             }
 
                             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                        })*/
+                        })
 
-                        Handler().postDelayed({
-                            webView!!.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
-                        }, 50)
-//                        webView!!.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
+//                        webView.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
+
 
                     }
 
-                    closeImageView?.setOnClickListener {
-                        infoCloseableDialog.dismiss()
-                    }
+                    /* closeImageView?.setOnClickListener {
+                         infoCloseableDialog.dismiss()
+                     }*/
+                    infoCloseableDialog.setContentView(infoDialogView,
+                            insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle)
 
-                    infoCloseableDialog.setContentView(infoDialogView!!)
-                    infoCloseableDialog.show()
+
+                    Handler().postDelayed(Runnable {
+                        infoCloseableDialog.show()
+                    }, 1000)
+
+//                    webView!!.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
+
                 }
             }
 

@@ -631,12 +631,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         insuranceShops.categoryId = categoryId.toLongOrZero()
         insuranceShops.productTitle = productTitle
         insuranceShops.productPrice = productPrice?.toLong()!!
-
-        if (condition.equals("1", true)) {
-            insuranceShops.condition = "new"
-        } else {
-            insuranceShops.condition = "old"
-        }
+        insuranceShops.condition = condition.toLowerCase()
 
         insuranceShops.shopCategory = insurnaceShopCategory
         insuranceShopsArrayList.add(insuranceShops)
