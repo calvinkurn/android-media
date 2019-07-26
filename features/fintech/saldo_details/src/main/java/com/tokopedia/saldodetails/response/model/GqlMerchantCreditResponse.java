@@ -56,7 +56,6 @@ public class GqlMerchantCreditResponse implements Parcelable {
         this.isEligible = in.readByte() != 0;
         this.status = in.readInt();
         this.title = in.readString();
-      //  this.sideText = in.readString();
         this.mainRedirectUrl = in.readString();
         this.logoURL = in.readString();
         this.bodyDesc = in.readString();
@@ -77,7 +76,6 @@ public class GqlMerchantCreditResponse implements Parcelable {
         dest.writeByte((byte) (isEligible ? 1 : 0));
         dest.writeInt(status);
         dest.writeString(title);
-      //dest.writeString(sideText);
         dest.writeString(mainRedirectUrl);
         dest.writeString(logoURL);
         dest.writeString(bodyDesc);
