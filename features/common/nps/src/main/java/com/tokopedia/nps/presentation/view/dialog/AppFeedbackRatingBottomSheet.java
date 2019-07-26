@@ -13,26 +13,29 @@ import com.tokopedia.unifyprinciples.Typography;
 
 public class AppFeedbackRatingBottomSheet extends BottomSheets {
 
+    private FrameLayout buttonView;
     private float ratingValue;
     private String[] ratingDetails;
 
     private void setRatingBarChangedListener(RatingBar ratingBarView, Typography ratingLevelView) {
         if (ratingBarView != null && ratingLevelView != null) {
-            ratingLevelView.setText(ratingDetails[((int) ratingBarView.getRating()) - 1]);
-
-            ratingValue = ratingBarView.getRating();
-
             ratingBarView.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
                 ratingValue = rating;
                 int ratingIndex = ((int) rating) - 1;
 
                 ratingLevelView.setText(ratingDetails[ratingIndex]);
+
+                if (buttonView != null && !buttonView.isEnabled()) {
+                    buttonView.setEnabled(true);
+                }
             });
         }
     }
 
     private void setSendButtonClickListener(FrameLayout button) {
         if (button != null) {
+            button.setEnabled(false);
+
             button.setOnClickListener(v -> {
                 FragmentManager manager = getActivity().getSupportFragmentManager();
 
@@ -72,11 +75,9 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
 
         AppCompatRatingBar ratingBarView = view.findViewById(R.id.rating_bar);
         Typography ratingLevelView = view.findViewById(R.id.rating_level);
-        FrameLayout sendButtonView = view.findViewById(R.id.send_button);
+        buttonView = view.findViewById(R.id.send_button);
 
         setRatingBarChangedListener(ratingBarView, ratingLevelView);
-        setSendButtonClickListener(sendButtonView);
-
-        updateHeight();
+        setSendButtonClickListener(buttonView);
     }
 }

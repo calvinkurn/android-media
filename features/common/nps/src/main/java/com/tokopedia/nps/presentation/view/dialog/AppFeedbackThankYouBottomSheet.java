@@ -49,7 +49,5 @@ public class AppFeedbackThankYouBottomSheet extends BottomSheets {
                 ));
             }
         }
-
-        updateHeight();
     }
 }

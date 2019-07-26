@@ -2,6 +2,8 @@ package com.tokopedia.nps.presentation.view.dialog;
 
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -18,6 +20,7 @@ import javax.inject.Inject;
 
 public class AppFeedbackMessageBottomSheet extends BottomSheets implements FeedbackView {
 
+    private FrameLayout buttonView;
     private float appRating;
     private String messageDesc;
     private String messageCategory;
@@ -39,8 +42,35 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
 
     private void setSendButtonClickListener(FrameLayout button) {
         if (button != null) {
+            button.setEnabled(false);
+
             button.setOnClickListener(view -> {
                 presenter.post(String.valueOf((int) appRating), messageCategory, messageDesc);
+            });
+        }
+    }
+
+    private void handleOnTextChanged(EditTextCompat textField) {
+        if (textField != null) {
+            textField.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (editable.length() > 0) {
+                        buttonView.setEnabled(true);
+                    } else {
+                        buttonView.setEnabled(false);
+                    }
+                }
             });
         }
     }
@@ -66,14 +96,13 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
         this.presenter.setView(this);
 
         EditTextCompat messageDescView = view.findViewById(R.id.message_description);
-        FrameLayout sendButtonView = view.findViewById(R.id.send_button);
+        buttonView = view.findViewById(R.id.send_button);
 
         messageDesc = messageDescView.getText().toString();
         messageCategory = getString(R.string.message_default_category);
 
-        setSendButtonClickListener(sendButtonView);
-
-        updateHeight();
+        setSendButtonClickListener(buttonView);
+        handleOnTextChanged(messageDescView);
     }
 
     @Override

@@ -5,30 +5,30 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="@dimen/spacing_lvl4">
 
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:adjustViewBounds="true"
-        android:src="@drawable/image_message_thank_you"
-        android:layout_marginTop="16dp" />
+        android:src="@drawable/image_message_thank_you" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/thank_you_feedback_title"
-        android:textColor="@color/black_n700_96"
+        android:textColor="@color/Neutral_N700_96"
         android:gravity="center"
         app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/thank_you_feedback_message"
-        android:textColor="@color/black_n700_68"
+        android:textColor="@color/Neutral_N700_68"
         android:gravity="center"
         app:typographyType="body_3" />
 
