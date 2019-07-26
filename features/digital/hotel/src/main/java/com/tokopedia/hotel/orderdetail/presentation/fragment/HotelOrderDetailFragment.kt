@@ -131,7 +131,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         getOrderDetailData()
     }
 
-    fun getOrderDetailData() {
+    private fun getOrderDetailData() {
         if (userSessionInterface.isLoggedIn) {
             orderDetailViewModel.getOrderDetail(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
@@ -139,7 +139,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         } else RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
-    fun renderConditionalInfo(hotelOrderDetail: HotelOrderDetail) {
+    private fun renderConditionalInfo(hotelOrderDetail: HotelOrderDetail) {
 
         top_conditional_text.visibility = if (hotelOrderDetail.conditionalInfo.title.isNotBlank()) View.VISIBLE else View.GONE
         top_conditional_text.text = hotelOrderDetail.conditionalInfo.title
@@ -148,7 +148,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         bottom_conditional_text.text = Html.fromHtml(hotelOrderDetail.conditionalInfoBottom.title)
     }
 
-    fun renderCancellationInfo(hotelTransportDetail: HotelTransportDetail) {
+    private fun renderCancellationInfo(hotelTransportDetail: HotelTransportDetail) {
 
         if (hotelTransportDetail.cancellation.title.isEmpty()) {
             refund_ticker.visibility = View.GONE
@@ -170,7 +170,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
     }
 
-    fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
+    private fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
         if (orderDetail.status.textColor.isNotEmpty())
@@ -205,12 +205,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         } else evoucher_layout.visibility = View.GONE
 
     }
-
-    fun goToEvoucherPage() {
+  
+    private fun goToEvoucherPage() {
         context?.run { startActivity(HotelEVoucherActivity.getCallingIntent(this, orderId)) }
     }
 
-    fun renderHotelDetail(propertyDetail: HotelTransportDetail.PropertyDetail) {
+    private fun renderHotelDetail(propertyDetail: HotelTransportDetail.PropertyDetail) {
 
         if (propertyDetail.bookingKey.content.isNotEmpty()) {
             hideBookingCode(false)
@@ -261,27 +261,27 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         see_hotel_detail_button.setOnClickListener { RouteManager.route(context, propertyDetail.applink) }
     }
 
-    fun showCallButtonSheet(contactList: List<HotelTransportDetail.ContactInfo>) {
+    private fun showCallButtonSheet(contactList: List<HotelTransportDetail.ContactInfo>) {
         val bottomSheet = HotelContactPhoneBottomSheet()
         bottomSheet.contactList = contactList
         bottomSheet.listener = this
         activity?.let { bottomSheet.show(it.supportFragmentManager, TAG_CONTACT_INFO) }
     }
 
-    fun showRefundInfo(cancellationPolicies: List<HotelTransportDetail.Cancellation.CancellationPolicy>) {
+    private fun showRefundInfo(cancellationPolicies: List<HotelTransportDetail.Cancellation.CancellationPolicy>) {
         val bottomSheet = HotelRefundBottomSheet()
         bottomSheet.cancellationPolicies = cancellationPolicies
         activity?.let { bottomSheet.show(it.supportFragmentManager, TAG_CANCELLATION_INFO) }
     }
 
-    fun renderGuestDetail(guestDetail: TitleContent) {
+    private fun renderGuestDetail(guestDetail: TitleContent) {
         guest_detail_name_hint.text = guestDetail.title
         guest_detail_name.text = guestDetail.content
     }
 
-    fun renderPaymentDetail(payMethod: List<HotelOrderDetail.LabelValue>,
-                            pricing: List<HotelOrderDetail.PaymentData>,
-                            paymentData: List<HotelOrderDetail.PaymentData>) {
+    private fun renderPaymentDetail(payMethod: List<HotelOrderDetail.LabelValue>,
+                                    pricing: List<HotelOrderDetail.PaymentData>,
+                                    paymentData: List<HotelOrderDetail.PaymentData>) {
 
         if (payMethod.isEmpty()) {
             payment_info_recycler_view.visibility = View.GONE
