@@ -156,6 +156,7 @@
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_order_detail_contact_phone_sheet_title">Kontak Hotel</string>
     <string name="hotel_order_detail_refund_sheet_title">Ketentuan Pembatalan</string>
+    <string name="hotel_order_detail_day_and_time">%1$s, %2$s</string>
 
     <string name="hotel_detail_room_full_text">Kamar Penuh</string>
     <string name="hotel_detail_change_search_text">Ganti Pencarian</string>

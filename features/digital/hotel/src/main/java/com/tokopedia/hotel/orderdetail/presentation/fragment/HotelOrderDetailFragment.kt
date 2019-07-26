@@ -252,6 +252,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 propertyDetail.checkInOut[1].checkInOut.date,
                 propertyDetail.stayLength.content)
 
+        checkin_checkout_date.setRoomCheckTimes(
+                getString(R.string.hotel_order_detail_day_and_time,
+                        propertyDetail.checkInOut[0].checkInOut.day, propertyDetail.checkInOut[0].checkInOut.time),
+                getString(R.string.hotel_order_detail_day_and_time,
+                        propertyDetail.checkInOut[1].checkInOut.day, propertyDetail.checkInOut[1].checkInOut.time))
+
         see_hotel_detail_button.setOnClickListener { RouteManager.route(context, propertyDetail.applink) }
     }
 
