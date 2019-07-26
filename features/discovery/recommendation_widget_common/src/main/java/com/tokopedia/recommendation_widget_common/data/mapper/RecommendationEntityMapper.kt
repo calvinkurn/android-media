@@ -36,7 +36,8 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                                 recommendation,
                                 recomendationData.title ?: "",
                                 recomendationData.pageName ?: "",
-                                index + 1)
+                                index + 1,
+                                recomendationData.layoutType ?: "")
                     } ?: emptyList())
             return RecommendationWidget(
                     recommendationItemList,
@@ -57,7 +58,8 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                 data: RecomendationEntity.Recommendation,
                 title: String,
                 pageName: String,
-                position: Int): RecommendationItem {
+                position: Int,
+                layoutType: String): RecommendationItem {
             return RecommendationItem(
                     data.id,
                     data.name ?: "",
@@ -65,6 +67,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.url ?: "",
                     data.appUrl ?: "",
                     data.clickUrl ?: "",
+                        data.isWishlist ?: false,
                     data.wishlistUrl ?: "",
                     data.trackerImageUrl ?: "",
                     data.imageUrl ?: "",
@@ -76,6 +79,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.stock,
                     data.recommendationType ?: "",
                     data.isIsTopads,
+                    data.isWishlist,
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
@@ -89,7 +93,9 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     pageName,
                     data.minOrder ?: 1,
                     data.shop?.city ?: "",
-                    data.badges?.map { it.imageUrl } ?: emptyList()
+                    data.badges?.map { it.imageUrl } ?: emptyList(),
+                    layoutType
+
             )
 
         }
