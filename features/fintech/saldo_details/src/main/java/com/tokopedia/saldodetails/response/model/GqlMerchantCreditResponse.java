@@ -18,9 +18,6 @@ public class GqlMerchantCreditResponse implements Parcelable {
     @SerializedName("title")
     private String title;
 
-/*    @SerializedName("side_text")
-    private String sideText;*/
-
     @SerializedName("main_redirect_url")
     private String mainRedirectUrl;
 
@@ -169,12 +166,4 @@ public class GqlMerchantCreditResponse implements Parcelable {
     public void setBoxInfo(GqlBoxInfoResponse boxInfo) {
         this.boxInfo = boxInfo;
     }
-
-/*    public String getSideText() {
-        return sideText;
-    }
-
-    public void setSideText(String sideText) {
-        this.sideText = sideText;
-    }*/
 }
