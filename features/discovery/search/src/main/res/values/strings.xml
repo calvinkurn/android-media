@@ -39,6 +39,7 @@
     <string name="shop_status_closed">Toko Tutup Sementara</string>
     <string name="shop_status_moderated">Dalam Pengawasan</string>
     <string name="shop_status_inactive">Toko Sudah Tidak Aktif</string>
+    <string name="shop_voucher_cashback_rb">%srb</string>
 
     <string name="title_total_prods">Produk</string>
 

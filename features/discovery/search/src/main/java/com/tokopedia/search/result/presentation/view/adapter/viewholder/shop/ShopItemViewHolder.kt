@@ -171,14 +171,24 @@ class ShopItemViewHolder(
     }
 
     private fun getShopVoucherCashbackText(voucherCashback: ShopViewModel.ShopItem.ShopItemVoucher.ShopItemVoucherCashback): String {
-        val cashbackValueString = voucherCashback.cashbackValue.toString()
-
         return if (voucherCashback.isPercentage) {
-            getString(R.string.shop_voucher_cashback_percentage, cashbackValueString)
+            getShopVoucherCashbackValuePercentage(voucherCashback.cashbackValue)
         }
         else {
-            getString(R.string.shop_voucher_cashback_not_percentage, cashbackValueString)
+            getShopVoucherCashbackValueNonPercentage(voucherCashback.cashbackValue)
         }
+    }
+
+    private fun getShopVoucherCashbackValuePercentage(cashbackValue: Int): String {
+        return getString(R.string.shop_voucher_cashback_percentage, cashbackValue.toString())
+    }
+
+    private fun getShopVoucherCashbackValueNonPercentage(cashbackValue: Int): String {
+        val cashbackValueString =
+                if (cashbackValue % 1000 == 0) getString(R.string.shop_voucher_cashback_rb, (cashbackValue / 1000).toString())
+                else cashbackValue.toString()
+
+        return getString(R.string.shop_voucher_cashback_not_percentage, cashbackValueString)
     }
 
     private fun initShopStatus(shopViewItem: ShopViewModel.ShopItem) {
