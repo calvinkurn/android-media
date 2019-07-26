@@ -124,6 +124,7 @@ ext {
             mapsUtils        : "com.google.maps.android:android-maps-utils:${playServiceMapsUtil}",
             ads              : "com.google.android.gms:play-services-ads:${playServiceAds}",
             tagManagerImpl   : "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
+            tagManager       : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
             safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}"
     ]
 

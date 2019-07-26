@@ -18,9 +18,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import java.util.*
 
-/**
- * POC convert old gtm to new gtm
- */
+
 class ProductDetailTracking() {
 
     val currencyLable = "IDR"
@@ -255,9 +253,6 @@ class ProductDetailTracking() {
         )
     }
 
-    /**
-     * DONE
-     */
     fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
         val listValue = LIST_DEFAULT + pageName  +
                 (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
