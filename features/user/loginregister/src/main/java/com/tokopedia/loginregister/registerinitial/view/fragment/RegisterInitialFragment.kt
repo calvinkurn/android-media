@@ -271,6 +271,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         activity?.run {
             registerButton.visibility = View.GONE
             partialRegisterInputView.visibility = View.GONE
+            partialRegisterInputView.setButtonValidator(true)
 
             if (!GlobalConfig.isSellerApp()) {
                 optionTitle.setText(R.string.register_option_title)
