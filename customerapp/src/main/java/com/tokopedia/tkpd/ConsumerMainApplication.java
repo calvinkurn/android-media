@@ -81,6 +81,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
 
+    CharacterPerMinuteActivityLifecycleCallbacks callback;
+
     // Used to load the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -149,8 +151,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LogWrapper.init(this);
         TimberWrapper.init(this);
     }
-
-    CharacterPerMinuteActivityLifecycleCallbacks callback;
 
     @Override
     public void onTerminate() {
