@@ -105,7 +105,7 @@ public class FingerprintModelGenerator {
         String deviceLanguage = Utilities.getLanguage();
         String ssid         = Utilities.getSSID(context);
         String carrier      = Utilities.getCarrierName(context);
-        String isNakama = "No";
+        String isNakama = "False";
         if(context instanceof UserSessionInterface)
             isNakama = Utilities.isNakama((UserSessionInterface)context);
 
