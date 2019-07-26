@@ -97,7 +97,8 @@ class ProfilePresenter @Inject constructor(
     }
 
     override fun addPostTagItemToCart(postTagItem: PostTagItem) {
-        if (postTagItem.shop.isNotEmpty()) {
+        val isShopNotEmpty = postTagItem.shop.isNotEmpty()
+        if (isShopNotEmpty) {
             atcUseCase.execute(
                     AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop.first().shopId),
                     object : Subscriber<AddToCartDataModel>() {

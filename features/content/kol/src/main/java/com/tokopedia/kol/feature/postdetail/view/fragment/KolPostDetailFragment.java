@@ -857,7 +857,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onBuyClicked(@NotNull PostTagItem postTagItem) {
+    public void onPostTagItemBuyClicked(@NotNull PostTagItem postTagItem) {
         presenter.addPostTagItemToCart(postTagItem);
     }
 

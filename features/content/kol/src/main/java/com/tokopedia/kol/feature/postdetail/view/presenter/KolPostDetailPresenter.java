@@ -264,7 +264,8 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
 
     @Override
     public void addPostTagItemToCart(PostTagItem postTagItem) {
-        if (!postTagItem.getShop().isEmpty()) {
+        boolean isShopEmpty = postTagItem.getShop().isEmpty();
+        if (!isShopEmpty) {
             atcUseCase.execute(
                     AddToCartUseCase.getMinimumParams(postTagItem.getId(), postTagItem.getShop().get(0).getShopId()),
                     new Subscriber<AddToCartDataModel>() {
