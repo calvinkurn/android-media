@@ -136,7 +136,7 @@ android {
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources true
+//            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             if (allowProguard()) {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
@@ -145,37 +145,37 @@ android {
             }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-            if (allowSplit()) {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
-                    }
-                    variant.assemble.doLast {
-                        variant.outputs.each { output ->
-                            if (output.zipAlign) {
-                                archiveAPK(variant, output);
-                            }
-                        }
-                    }
-                }
-            } else {
+//            if (allowSplit()) {
+//                applicationVariants.all { variant ->
+//                    variant.outputs.each { output ->
+//                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+//                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+//                    }
+//                    variant.assemble.doLast {
+//                        variant.outputs.each { output ->
+//                            if (output.zipAlign) {
+//                                archiveAPK(variant, output);
+//                            }
+//                        }
+//                    }
+//                }
+//            } else {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         output.versionCodeOverride = (getTkpdVersionCode() * 100);
                     }
                 }
-            }
+//            }
         }
     }
 
-    splits {
-        density {
-            enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-        }
-    }
+//    splits {
+//        density {
+//            enable allowSplit()
+//            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+//            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+//        }
+//    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -226,6 +226,7 @@ android {
             dimension "client"
         }
     }
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettingsSellerapp]
 }
 
 repositories {
@@ -329,7 +330,6 @@ dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.paymentSetting)
 
@@ -368,6 +368,7 @@ dependencies {
     }
 
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
 

@@ -1436,11 +1436,10 @@ public abstract class SellerRouterApplication extends MainApplication
         return false;
     }
 
-    @Override
     public String getDeviceId(Context context) {
         return "";
     }
-
+    
     @Override
     public Intent getExpressCheckoutIntent(Activity activity,
                                            com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam atcRequestParam) {
@@ -1485,11 +1484,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(), isInvalidToken, isRequestDenied);
-    }
-
-    @Override
-    public Intent getInboxTicketCallingIntent(Context context) {
-        return new Intent(context, InboxListActivity.class);
     }
 
     @Override

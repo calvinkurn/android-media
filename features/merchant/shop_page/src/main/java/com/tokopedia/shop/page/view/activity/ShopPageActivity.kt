@@ -625,7 +625,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun openShop() {
         shopPageTracking.sendOpenShop();
-        RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
+        RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
     }
 
 

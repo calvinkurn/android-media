@@ -1,0 +1,6 @@
+ext {
+
+    dynamicFeatures = [
+            shopSettingsSellerapp           : ":dynamic-features:merchant:shop_settings_sellerapp"
+    ]
+}

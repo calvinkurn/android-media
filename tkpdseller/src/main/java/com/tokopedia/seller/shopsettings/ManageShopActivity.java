@@ -1,7 +1,9 @@
 package com.tokopedia.seller.shopsettings;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
@@ -23,4 +25,9 @@ public class ManageShopActivity extends TActivity {
         inflateView(R.layout.activity_manage_shop);
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        SplitCompat.install(this);
+    }
 }

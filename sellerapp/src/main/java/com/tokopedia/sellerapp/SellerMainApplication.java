@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.webkit.URLUtil;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -158,6 +159,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         PersistentCacheManager.init(this);
 
+        PersistentCacheManager.init(this);
+
         super.onCreate();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
@@ -166,6 +169,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GraphqlClient.init(this);
         NetworkClient.init(this);
         InstabugInitalize.init(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        SplitCompat.install(this);
     }
 
     private void setVersionCode() {

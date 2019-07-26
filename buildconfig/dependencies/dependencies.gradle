@@ -39,6 +39,7 @@ ext {
     playServiceBaseVersion = '16.0.1'
     playServiceFirebaseIidVersion = '17.0.4'
 
+    playCoreVersion = '1.6.1'
     playServiceGms = '16.0.0'
     playServiceBase = '16.1.0'
     playServiceAppIndexing = '17.1.0'
@@ -67,11 +68,19 @@ ext {
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
 
+    // Sort and categorize alphabetically by folder name
+    app = [
+        customerapp     : ":customerapp",
+        sellerapp       : ":sellerapp",
+        mitraapp        : ":kelontongapp"
+    ]
+
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '0.0.4'
     unifyComponentsVersion = '0.0.5'
     unifyCoachMarkVersion = '1.0.0'
     unifyCalendarVersion = '0.0.2'
+
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -112,6 +121,7 @@ ext {
     ]
 
     playServicesDependencies = [
+            core             : "com.google.android.play:core:${playCoreVersion}",
             plus             : "com.google.android.gms:play-services-plus:${playServiceGms}",
             base             : "com.google.android.gms:play-services-base:${playServiceBase}",
             analytics        : "com.google.android.gms:play-services-analytics:${playServiceAnalytics}",
@@ -162,6 +172,7 @@ ext {
             installRef : "com.android.installreferrer:installreferrer:1.0",
             moengage   : "com.moengage:moe-android-sdk:9.3.02",
             moengageFirebase   : "com.moengage:moe-push-firebase:3.1.00",
+            moengageMSG: "com.moengage:addon-messaging:3.2.01",
             moengageSdk         : "com.moengage:moengagesdk:3.3.02",
             moengagePushbase    : "com.moengage:pushbase:3.2.00",
             moengageInapp   : "com.moengage:inapp:3.2.02",

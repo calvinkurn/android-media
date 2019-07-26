@@ -202,6 +202,14 @@
 -keepattributes Exceptions
 # this is retrofit
 
+# Retain service method parameters.
+-keepclassmembernames,allowobfuscation interface * {
+    @retrofit2.http.* <methods>;
+}
+
+# Ignore annotation used for build tooling.
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+
 -dontwarn sun.misc.Unsafe
 
 -keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
@@ -302,6 +310,7 @@
 
 # -- Feeds --
 -keep class com.tkpdfeed.feeds.** { *; }
+-keep class com.tokopedia.feedplus.data.pojo.** { *; }
 # -- End of Feeds --
 
 # Fingerprint
@@ -320,12 +329,13 @@
     public *;
 }
 
--keep public class com.tokopedia.design.bottomnavigation.BottomNavigation { *; }
+-keep public class com.tokopedia.design.component.BottomNavigation { *; }
 -keep public class android.support.design.widget.BottomNavigationView { *; }
 -keep public class android.support.design.internal.BottomNavigationMenuView { *; }
 -keep public class android.support.design.internal.BottomNavigationPresenter { *; }
 -keep public class android.support.design.internal.BottomNavigationItemView { *; }
-
+#-keep public class com.tokopedia.design.text.SpinnerCounterInputView { *; }
+-keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
 
 -dontwarn android.net.http.**
 -dontwarn org.apache.http.impl.auth.NegotiateScheme
@@ -341,11 +351,17 @@
 #tradein
 -keep class viewmodel.** { *; }
 
+#image search
+-keep class com.tokopedia.discovery.imagesearch.domain.model.** { *; }
+
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
+-keep class kotlinx.coroutines.android.AndroidExceptionPreHandler { *; }
+-keep class kotlinx.coroutines.JobSupport { *; }
 
--dontwarn com.clevertap.android.sdk.**
--dontwarn com.segment.analytics.**
+-keep class com.tokopedia.track.** { *; }
+-keep class com.tokopedia.track.interfaces.** { *; }
+-keep class * extends com.tokopedia.track.interfaces.ContextAnalytics { *; }
 
 # Every class that extends exception
 -keep class * extends java.lang.Exception
@@ -358,9 +374,8 @@
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 
--keep class com.tokopedia.track.** { *; }
--keep class com.tokopedia.track.interfaces.** { *; }
--keep class * extends com.tokopedia.track.interfaces.ContextAnalytics { *; }
+# -- App indexing
+-dontwarn com.google.firebase.appindexing.**
 
 # -- logentries
 -dontwarn org.apache.logging.**

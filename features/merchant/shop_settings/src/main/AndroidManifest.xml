@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.shop.settings">
 
     <application android:label="@string/app_name">
@@ -15,7 +16,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_shop_setting"/>
+                    android:pathPattern="@string/path_shop_settings_info"/>
             </intent-filter>
         </activity>
 
@@ -44,7 +45,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_shop_setting_address"/>
+                    android:pathPattern="@string/path_shop_settings_address"/>
             </intent-filter>
         </activity>
 
@@ -61,7 +62,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_shop_setting_etalase"/>
+                    android:pathPattern="@string/path_shop_settings_etalase"/>
             </intent-filter>
         </activity>
 
@@ -78,7 +79,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:path="@string/path_shop_setting_note"/>
+                    android:pathPattern="@string/path_shop_settings_notes"/>
             </intent-filter>
         </activity>
 
