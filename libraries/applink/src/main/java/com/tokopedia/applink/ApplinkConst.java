@@ -243,7 +243,7 @@ public interface ApplinkConst {
 
     String CATEGORY = "tokopedia://category";
     String QRSCAN = "tokopedia://scanqr";
-    String OVOP2PTRANSFERFORM = "tokopedia://ovop2ptransfer?phone";
+    String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
 
     interface WebViewUrl {

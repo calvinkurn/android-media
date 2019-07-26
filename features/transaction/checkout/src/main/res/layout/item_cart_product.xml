@@ -126,11 +126,25 @@
             app:typographyWeight="reguler"
             tools:text="2 barang (3 kg)" />
 
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_original_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_item_count_and_weight"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toEndOf="@id/iv_product_card"
+            android:layout_toRightOf="@id/iv_product_card"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Rp500.000" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_item_count_and_weight"
+            android:layout_below="@id/tv_product_original_price"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_toEndOf="@id/iv_product_card"

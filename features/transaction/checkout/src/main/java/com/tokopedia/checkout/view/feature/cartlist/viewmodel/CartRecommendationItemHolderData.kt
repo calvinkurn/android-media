@@ -7,6 +7,5 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 
 data class CartRecommendationItemHolderData(
-        var recommendationItem: RecommendationItem,
-        var rightPosition: Boolean = false
+        var recommendationItem: RecommendationItem
 )
