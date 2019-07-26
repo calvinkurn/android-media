@@ -11,6 +11,8 @@ data class ShopHeaderViewModel(
         val totalShopCount: Int = 0
 ): Parcelable, Visitable<ShopListTypeFactory> {
 
+    var query = ""
+
     override fun type(typeFactory: ShopListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
@@ -18,11 +20,14 @@ data class ShopHeaderViewModel(
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(CpmModel::class.java.classLoader) ?: CpmModel(),
             parcel.readInt()
-    )
+    ) {
+        query = parcel.readString() ?: ""
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(cpmModel, flags)
         parcel.writeInt(totalShopCount)
+        parcel.writeString(query)
     }
 
     override fun describeContents(): Int {

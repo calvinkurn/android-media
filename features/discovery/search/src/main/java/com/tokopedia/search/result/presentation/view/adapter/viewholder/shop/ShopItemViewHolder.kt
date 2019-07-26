@@ -10,6 +10,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.utils.doIfVisible
@@ -29,12 +30,6 @@ class ShopItemViewHolder(
     companion object {
         @JvmField
         val LAYOUT = R.layout.search_result_shop_card
-
-        private const val KEY_SHOP_IS_GOLD = 1
-        private const val KEY_SHOP_STATUS_CLOSED = 2
-        private const val KEY_SHOP_STATUS_MODERATED = 3
-        private const val KEY_SHOP_STATUS_INACTIVE = 4
-        private const val SHOP_PRODUCT_ITEM_COUNT = 3
     }
 
     private val context = itemView.context
@@ -69,12 +64,20 @@ class ShopItemViewHolder(
 
     private fun initImageShopBadge(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopBadge?.let { imageViewShopBadge ->
-            when {
-                shopViewItem.isOfficial -> imageViewShopBadge.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.search_ic_official_store))
-                shopViewItem.goldShop == KEY_SHOP_IS_GOLD -> imageViewShopBadge.setImageDrawable(GMConstant.getGMDrawable(context))
-                else -> imageViewShopBadge.gone()
+            val isImageShopBadgeVisible = getIsImageShopBadgeVisible(shopViewItem)
+
+            imageViewShopBadge.shouldShowWithAction(isImageShopBadgeVisible) {
+                when {
+                    shopViewItem.isOfficial -> imageViewShopBadge.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.search_ic_official_store))
+                    shopViewItem.isGoldShop -> imageViewShopBadge.setImageDrawable(GMConstant.getGMDrawable(context))
+                }
             }
         }
+    }
+
+    private fun getIsImageShopBadgeVisible(shopViewItem: ShopViewModel.ShopItem): Boolean {
+        return shopViewItem.isOfficial
+                || shopViewItem.isGoldShop
     }
 
     private fun initShopName(shopViewItem: ShopViewModel.ShopItem) {
@@ -91,7 +94,7 @@ class ShopItemViewHolder(
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
-            ImageHandler.loadImageFitCenter(context, imageViewShopReputation, shopViewItem.reputationImageUri)
+            ImageHandler.loadImageFitCenter(imageViewShopReputation.context, imageViewShopReputation, shopViewItem.reputationImageUri)
         }
     }
 
@@ -131,9 +134,9 @@ class ShopItemViewHolder(
     private fun createShopItemProductPreviewList(
             productList: List<ShopViewModel.ShopItem.ShopItemProduct>
     ): List<ShopViewModel.ShopItem.ShopItemProduct> {
-        val productPreviewList = productList.take(SHOP_PRODUCT_ITEM_COUNT).toMutableList()
+        val productPreviewList = productList.take(SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT).toMutableList()
 
-        while(productPreviewList.size < SHOP_PRODUCT_ITEM_COUNT) {
+        while(productPreviewList.size < SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT) {
             productPreviewList += ShopViewModel.ShopItem.ShopItemProduct()
         }
 
@@ -141,7 +144,7 @@ class ShopItemViewHolder(
     }
 
     private fun createRecyclerViewShopProductItemLayoutManager(): RecyclerView.LayoutManager {
-        return GridLayoutManager(context, SHOP_PRODUCT_ITEM_COUNT, GridLayoutManager.VERTICAL, false)
+        return GridLayoutManager(context, SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT, GridLayoutManager.VERTICAL, false)
     }
 
     private fun hasItemDecoration(recyclerViewShopProductItem: RecyclerView): Boolean {
@@ -179,10 +182,10 @@ class ShopItemViewHolder(
     }
 
     private fun initShopStatus(shopViewItem: ShopViewModel.ShopItem) {
-        when(shopViewItem.status) {
-            KEY_SHOP_STATUS_CLOSED -> showShopStatus(getString(R.string.shop_status_closed))
-            KEY_SHOP_STATUS_MODERATED -> showShopStatus(getString(R.string.shop_status_moderated))
-            KEY_SHOP_STATUS_INACTIVE -> showShopStatus(getString(R.string.shop_status_inactive))
+        when {
+            shopViewItem.isClosed -> showShopStatus(getString(R.string.shop_status_closed))
+            shopViewItem.isModerated -> showShopStatus(getString(R.string.shop_status_moderated))
+            shopViewItem.isInactive -> showShopStatus(getString(R.string.shop_status_inactive))
             else -> hideShopStatus()
         }
     }
@@ -220,6 +223,7 @@ class ShopItemViewHolder(
         itemView.labelVoucherCashback?.doIfVisible {
             if(itemView.labelVoucherFreeShipping.isNullOrNotVisible) {
                 setViewMargins(it.id, ConstraintSet.LEFT, R.dimen.dp_0)
+                setViewMargins(it.id, ConstraintSet.START, R.dimen.dp_0)
             }
         }
     }

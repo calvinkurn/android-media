@@ -37,7 +37,7 @@ class ShopProductItemViewHolder(
         }
 
         itemView.imageViewShopItemProductImage?.setOnClickListener {
-            shopListener?.onProductItemClicked(shopItemProductView.applink)
+            shopListener?.onProductItemClicked(shopItemProductView)
         }
     }
 

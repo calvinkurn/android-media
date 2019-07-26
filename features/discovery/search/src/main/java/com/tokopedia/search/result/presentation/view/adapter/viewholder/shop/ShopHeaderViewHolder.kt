@@ -58,7 +58,7 @@ class ShopHeaderViewHolder(
     private fun initTextViewShopCount(shopHeaderViewModel: ShopHeaderViewModel) {
         itemView.textViewShopCount?.let { textViewShopCount ->
             textViewShopCount.shouldShowWithAction(shopHeaderViewModel.totalShopCount > 0) {
-                textViewShopCount.text = getString(R.string.shop_total_count, shopHeaderViewModel.totalShopCount.toString())
+                textViewShopCount.text = context.getString(R.string.shop_total_count, shopHeaderViewModel.query, shopHeaderViewModel.totalShopCount.toString())
                 setTextViewShopCountMargins(textViewShopCount)
             }
         }

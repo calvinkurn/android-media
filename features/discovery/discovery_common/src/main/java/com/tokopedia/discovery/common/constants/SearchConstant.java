@@ -96,6 +96,14 @@ public interface SearchConstant {
         String HEADLINE_TEMPLATE_VALUE = "3";
         String HEADLINE_ITEM_VALUE = "1";
         String ADS_SOURCE = "search";
+        int SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT = 3;
+    }
+
+    interface ShopStatus {
+        int KEY_SHOP_IS_GOLD = 1;
+        int KEY_SHOP_STATUS_CLOSED = 2;
+        int KEY_SHOP_STATUS_MODERATED = 3;
+        int KEY_SHOP_STATUS_INACTIVE = 4;
     }
 
     interface SearchCatalog {

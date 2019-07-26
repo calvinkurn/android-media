@@ -11,14 +11,12 @@ class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
 
         return ShopViewModel(
                 source = searchShopData.source,
-                totalShop = searchShopData.totalShop,
                 searchUrl = searchShopData.searchUrl,
                 paging = createPagingViewModel(searchShopData.paging),
                 tabName = searchShopData.tabName,
                 shopItemList = createShopItemViewModelList(searchShopData.shopList),
                 topSellerData = createShopItemViewModelList(searchShopData.topSellerData),
-                topOfficialSellerData = createShopItemViewModelList(searchShopData.topOfficialSellerData),
-                cpmModel = source.cpmModel
+                topOfficialSellerData = createShopItemViewModelList(searchShopData.topOfficialSellerData)
         )
     }
 

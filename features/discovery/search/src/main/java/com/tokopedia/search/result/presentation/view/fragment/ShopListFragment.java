@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
@@ -32,13 +31,14 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.ShopListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactoryImpl;
-import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
-import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT;
 
 public class ShopListFragment
         extends SearchSectionFragment
@@ -164,13 +164,6 @@ public class ShopListFragment
         };
     }
 
-    public void updateScrollListenerState(boolean hasNextPage){
-        if(getAdapter() == null) return;
-
-        gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
-        gridLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
-    }
-
     private boolean isAllowLoadMore() {
         return getUserVisibleHint()
                 && !isLoadingData
@@ -240,6 +233,63 @@ public class ShopListFragment
         stopLoadingAndHideRefreshLayout();
     }
 
+    private void handleSearchResult(List<Visitable> shopViewItemList, boolean isHasNextPage) {
+        isListEmpty = false;
+        isNextPageAvailable = isHasNextPage;
+
+        sendShopImpressionTrackingEvent(shopViewItemList);
+        adapter.removeLoading();
+        adapter.appendItems(shopViewItemList);
+
+        updateScrollListenerState(isHasNextPage);
+
+        if (isHasNextPage) {
+            adapter.addLoading();
+        }
+    }
+
+    private void sendShopImpressionTrackingEvent(List<Visitable> list) {
+        List<Object> dataLayerShopItemList = new ArrayList<>();
+        List<Object> dataLayerShopItemProductList = new ArrayList<>();
+
+        for (Visitable object : list) {
+            if (object instanceof ShopViewModel.ShopItem) {
+                ShopViewModel.ShopItem item = (ShopViewModel.ShopItem) object;
+
+                dataLayerShopItemList.add(item.getShopAsObjectDataLayer());
+                dataLayerShopItemProductList.addAll(createShopProductPreviewDataLayerObjectList(item));
+            }
+        }
+
+        searchTracking.trackImpressionSearchResultShop(dataLayerShopItemList, getQueryKey());
+        searchTracking.trackImpressionSearchResultShopProductPreview(dataLayerShopItemProductList, getQueryKey());
+    }
+
+    private List<Object> createShopProductPreviewDataLayerObjectList(ShopViewModel.ShopItem shopItem) {
+        List<Object> dataLayerShopItemProductList = new ArrayList<>();
+
+        int maxProductCount = getProductPreviewItemMaxCount(shopItem.getProductList());
+
+        for(int i = 0; i < maxProductCount; i++) {
+            ShopViewModel.ShopItem.ShopItemProduct product = shopItem.getProductList().get(i);
+            dataLayerShopItemProductList.add(product.getShopProductPreviewAsObjectDataLayerList());
+        }
+
+        return dataLayerShopItemProductList;
+    }
+
+    private int getProductPreviewItemMaxCount(List<ShopViewModel.ShopItem.ShopItemProduct> shopItemProductList) {
+        return shopItemProductList.size() > SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT
+                ? SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT : shopItemProductList.size();
+    }
+
+    public void updateScrollListenerState(boolean hasNextPage){
+        if(getAdapter() == null) return;
+
+        gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+        gridLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
+    }
+
     @Override
     public void onSearchShopSuccessEmptyResult() {
         if(adapter == null) return;
@@ -247,6 +297,16 @@ public class ShopListFragment
         handleEmptySearchResult();
 
         stopLoadingAndHideRefreshLayout();
+    }
+
+    private void handleEmptySearchResult() {
+        isNextPageAvailable = false;
+        adapter.removeLoading();
+        if (adapter.isListEmpty()) {
+            isListEmpty = true;
+            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.shop_tab_title).toLowerCase());
+            SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
+        }
     }
 
     @Override
@@ -269,29 +329,6 @@ public class ShopListFragment
     private void stopLoadingAndHideRefreshLayout() {
         isLoadingData = false;
         hideRefreshLayout();
-    }
-
-    private void handleSearchResult(List<Visitable> shopViewItemList, boolean isHasNextPage) {
-        isListEmpty = false;
-        isNextPageAvailable = isHasNextPage;
-        adapter.removeLoading();
-        adapter.appendItems(shopViewItemList);
-
-        updateScrollListenerState(isHasNextPage);
-
-        if (isHasNextPage) {
-            adapter.addLoading();
-        }
-    }
-
-    private void handleEmptySearchResult() {
-        isNextPageAvailable = false;
-        adapter.removeLoading();
-        if (adapter.isListEmpty()) {
-            isListEmpty = true;
-            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.shop_tab_title).toLowerCase());
-            SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
-        }
     }
 
     @Override
@@ -320,19 +357,34 @@ public class ShopListFragment
 
     @Override
     public void onItemClicked(@NonNull ShopViewModel.ShopItem shopItem) {
-        if(redirectionListener == null) return;
+        if (redirectionListener == null) return;
 
-        SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getName(),
-                shopItem.getPage(), shopItem.getPosition());
+        trackShopItemClick(shopItem);
 
-        redirectionListener.startActivityWithApplink(shopItem.getApplink());
+        redirectIfApplinkNotEmpty(shopItem.getApplink());
+    }
+
+    private void trackShopItemClick(@NonNull ShopViewModel.ShopItem shopItem) {
+        searchTracking.trackSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), getQueryKey());
+
+        if(shopItem.isClosed()) {
+            searchTracking.trackSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), getQueryKey());
+        }
+    }
+
+    private void redirectIfApplinkNotEmpty(@Nullable String applink) {
+        if (!TextUtils.isEmpty(applink)) {
+            redirectionListener.startActivityWithApplink(applink);
+        }
     }
 
     @Override
-    public void onProductItemClicked(@NonNull String applink) {
-        if(redirectionListener == null) return;
+    public void onProductItemClicked(@NonNull ShopViewModel.ShopItem.ShopItemProduct shopItemProduct) {
+        if (redirectionListener == null) return;
 
-        redirectionListener.startActivityWithApplink(applink);
+        searchTracking.trackSearchResultShopProductPreviewClick(shopItemProduct.getShopProductPreviewAsObjectDataLayer(), getQueryKey());
+
+        redirectIfApplinkNotEmpty(shopItemProduct.getApplink());
     }
 
     @Override

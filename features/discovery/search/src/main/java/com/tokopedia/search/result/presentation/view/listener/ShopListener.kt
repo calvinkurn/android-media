@@ -6,5 +6,5 @@ interface ShopListener {
 
     fun onItemClicked(shopItem: ShopViewModel.ShopItem)
 
-    fun onProductItemClicked(applink: String)
+    fun onProductItemClicked(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct)
 }

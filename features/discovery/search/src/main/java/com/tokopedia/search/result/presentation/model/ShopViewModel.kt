@@ -2,21 +2,21 @@ package com.tokopedia.search.result.presentation.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.*
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 data class ShopViewModel(
         val source: String = "",
-        val totalShop: Int = 0,
         val searchUrl: String = "",
         val paging: Paging = Paging(),
         val tabName: String = "",
         val shopItemList: List<ShopItem> = listOf(),
         val topSellerData: List<ShopItem> = listOf(),
-        val topOfficialSellerData: List<ShopItem> = listOf(),
-        val cpmModel: CpmModel = CpmModel()
+        val topOfficialSellerData: List<ShopItem> = listOf()
 ): Parcelable {
 
     val hasNextPage = paging.uriNext != ""
@@ -77,8 +77,21 @@ data class ShopViewModel(
 
         var position: Int = 0
 
-        fun getPage(): Int {
-            return (position - 1) / Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS) + 1
+        val isGoldShop = goldShop == KEY_SHOP_IS_GOLD
+
+        val isClosed = status == KEY_SHOP_STATUS_CLOSED
+
+        val isModerated = status == KEY_SHOP_STATUS_MODERATED
+
+        val isInactive = status == KEY_SHOP_STATUS_INACTIVE
+
+        fun getShopAsObjectDataLayer(): Any {
+            return DataLayer.mapOf(
+                    "id", id,
+                    "name", "/search result - shop",
+                    "creative", name,
+                    "position", position
+            )
         }
 
         override fun type(typeFactory: ShopListTypeFactory?): Int {
@@ -95,6 +108,32 @@ data class ShopViewModel(
                 val imageUrl: String = ""
         ) : Parcelable {
 
+            var position: Int = 0
+
+            fun getShopProductPreviewAsObjectDataLayerList(): Any {
+                return DataLayer.mapOf(
+                        "name", name,
+                        "id", id,
+                        "price", price,
+                        "brand", "",
+                        "category", "",
+                        "variant", "",
+                        "list", "/searchproduct - shop product list",
+                        "position", position
+                )
+            }
+
+            fun getShopProductPreviewAsObjectDataLayer(): Any {
+                return DataLayer.mapOf(
+                        "name", name,
+                        "id", id,
+                        "price", price,
+                        "brand", "",
+                        "category", "",
+                        "variant", "",
+                        "position", position)
+            }
+
             constructor(parcel: Parcel) : this(
                     parcel.readInt(),
                     parcel.readString() ?: "",
@@ -102,7 +141,9 @@ data class ShopViewModel(
                     parcel.readString() ?: "",
                     parcel.readInt(),
                     parcel.readString() ?: "",
-                    parcel.readString() ?: "")
+                    parcel.readString() ?: "") {
+                position = parcel.readInt()
+            }
 
             override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeInt(id)
@@ -112,6 +153,7 @@ data class ShopViewModel(
                 parcel.writeInt(price)
                 parcel.writeString(priceFormat)
                 parcel.writeString(imageUrl)
+                parcel.writeInt(position)
             }
 
             override fun describeContents(): Int {
@@ -211,7 +253,9 @@ data class ShopViewModel(
                 parcel.readString() ?: "",
                 parcel.readInt(),
                 parcel.readByte() != 0.toByte(),
-                parcel.readString() ?: "")
+                parcel.readString() ?: "") {
+            position = parcel.readInt()
+        }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeString(id)
@@ -239,6 +283,7 @@ data class ShopViewModel(
             parcel.writeInt(reputationScore)
             parcel.writeByte(if (isOfficial) 1 else 0)
             parcel.writeString(gaKey)
+            parcel.writeInt(position)
         }
 
         override fun describeContents(): Int {
@@ -258,25 +303,22 @@ data class ShopViewModel(
 
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
-            parcel.readInt(),
             parcel.readString() ?: "",
             parcel.readParcelable(Paging::class.java.classLoader) ?: Paging(),
             parcel.readString() ?: "",
             parcel.createTypedArrayList(ShopItem) ?: listOf(),
             parcel.createTypedArrayList(ShopItem) ?: listOf(),
-            parcel.createTypedArrayList(ShopItem) ?: listOf(),
-            parcel.readParcelable(CpmModel::class.java.classLoader) ?: CpmModel())
+            parcel.createTypedArrayList(ShopItem) ?: listOf()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(source)
-        parcel.writeInt(totalShop)
         parcel.writeString(searchUrl)
         parcel.writeParcelable(paging, flags)
         parcel.writeString(tabName)
         parcel.writeTypedList(shopItemList)
         parcel.writeTypedList(topSellerData)
         parcel.writeTypedList(topOfficialSellerData)
-        parcel.writeParcelable(cpmModel, flags)
     }
 
     override fun describeContents(): Int {

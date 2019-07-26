@@ -2,8 +2,10 @@ package com.tokopedia.search.result.presentation.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -415,18 +417,24 @@ public class SearchActivity extends BaseActivity
     }
 
     private void getExtrasFromIntent(Intent intent) {
-        searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
+        searchParameter = getSearchParameterFromIntent(intent);
         isForceSwipeToShop = intent.getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
         isHasCatalog = intent.getBooleanExtra(EXTRA_HAS_CATALOG, false);
         isFromApplink = intent.getBooleanExtra(EXTRA_IS_FROM_APPLINK, false);
-
-        createNewSearchParameterIfNull();
     }
 
-    private void createNewSearchParameterIfNull() {
+    private SearchParameter getSearchParameterFromIntent(Intent intent) {
+        SearchParameter searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
+
         if(searchParameter == null) {
-            searchParameter = new SearchParameter();
+            searchParameter = createSearchParameterFromUri(intent.getData());
         }
+
+        return searchParameter;
+    }
+
+    private SearchParameter createSearchParameterFromUri(@Nullable Uri uri) {
+        return (uri == null) ? new SearchParameter() : new SearchParameter(uri.toString());
     }
 
     private void loadSection() {

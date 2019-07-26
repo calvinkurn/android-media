@@ -36,6 +36,8 @@ final class ShopListPresenter
     @Inject
     Mapper<SearchShopModel, ShopViewModel> shopViewModelMapper;
     @Inject
+    Mapper<SearchShopModel, ShopHeaderViewModel> shopHeaderViewModelMapper;
+    @Inject
     UserSessionInterface userSession;
 
     private boolean isSearchShopReturnedNull = false;
@@ -91,7 +93,7 @@ final class ShopListPresenter
         return new Subscriber<SearchShopModel>() {
             @Override
             public void onNext(SearchShopModel searchShopModel) {
-                loadDataSubscriberOnNext(searchShopModel, loadShopRow);
+                loadDataSubscriberOnNext(searchShopModel, getQueryFromSearchParameter(searchParameter), loadShopRow);
             }
 
             @Override
@@ -106,12 +108,18 @@ final class ShopListPresenter
         };
     }
 
-    private void loadDataSubscriberOnNext(SearchShopModel searchShopModel, int loadShopRow) {
+    private String getQueryFromSearchParameter(Map<String, Object> searchParameter) {
+        Object query = searchParameter.get(SearchApiConst.Q);
+
+        return query != null ? query.toString() : "";
+    }
+
+    private void loadDataSubscriberOnNext(SearchShopModel searchShopModel, String query, int loadShopRow) {
         if(isViewAttached()) {
             if (searchShopModel == null) {
                 getViewToShowLoadDataFailed();
             } else {
-                getViewToShowLoadDataSuccess(searchShopModel, loadShopRow);
+                getViewToShowLoadDataSuccess(searchShopModel, query, loadShopRow);
             }
         }
     }
@@ -121,16 +129,14 @@ final class ShopListPresenter
         isSearchShopReturnedNull = true;
     }
 
-    private void getViewToShowLoadDataSuccess(SearchShopModel searchShopModel, int loadShopRow) {
+    private void getViewToShowLoadDataSuccess(SearchShopModel searchShopModel, String query, int loadShopRow) {
         isSearchShopReturnedNull = false;
 
-        ShopViewModel shopViewModel = shopViewModelMapper.convert(searchShopModel);
-
-        if(shopViewModel.getShopItemList().isEmpty()) {
+        if(searchShopModel.getAceSearchShop().getShopList().isEmpty()) {
             getViewToShowEmptyResult();
         }
         else {
-            getViewToShowSearchResultDataWithHeader(shopViewModel, loadShopRow);
+            getViewToShowSearchResultDataWithHeader(searchShopModel, query, loadShopRow);
         }
     }
 
@@ -138,13 +144,12 @@ final class ShopListPresenter
         getView().onSearchShopSuccessEmptyResult();
     }
 
-    private void getViewToShowSearchResultDataWithHeader(ShopViewModel shopViewModel, int loadShopRow) {
-        enrichPositionData(shopViewModel.getShopItemList(), loadShopRow);
+    private void getViewToShowSearchResultDataWithHeader(SearchShopModel searchShopModel, String query, int loadShopRow) {
+        ShopHeaderViewModel shopHeaderViewModel = shopHeaderViewModelMapper.convert(searchShopModel);
+        shopHeaderViewModel.setQuery(query);
 
-        ShopHeaderViewModel shopHeaderViewModel = new ShopHeaderViewModel(
-                shopViewModel.getCpmModel(),
-                shopViewModel.getTotalShop()
-        );
+        ShopViewModel shopViewModel = shopViewModelMapper.convert(searchShopModel);
+        enrichShopItemPositionData(shopViewModel.getShopItemList(), loadShopRow);
 
         List<Visitable> visitableList = createVisitableList(shopHeaderViewModel, shopViewModel.getShopItemList());
 
@@ -163,11 +168,21 @@ final class ShopListPresenter
         return visitableList;
     }
 
-    private void enrichPositionData(List<ShopViewModel.ShopItem> shopViewItemList, int startRow) {
+    private void enrichShopItemPositionData(List<ShopViewModel.ShopItem> shopViewItemList, int startRow) {
         int position = startRow;
         for (ShopViewModel.ShopItem shopItem : shopViewItemList) {
             position++;
             shopItem.setPosition(position);
+            enrichShopItemproductPositionData(shopItem.getProductList());
+        }
+    }
+
+    private void enrichShopItemproductPositionData(List<ShopViewModel.ShopItem.ShopItemProduct> shopItemProductList) {
+        int position = 0;
+
+        for (ShopViewModel.ShopItem.ShopItemProduct shopItemProduct : shopItemProductList) {
+            position++;
+            shopItemProduct.setPosition(position);
         }
     }
 
@@ -242,18 +257,18 @@ final class ShopListPresenter
     }
 
     private void getViewToShowLoadMoreDataSuccess(SearchShopModel searchShopModel, int loadShopRow) {
-        ShopViewModel shopViewModel = shopViewModelMapper.convert(searchShopModel);
-
-        if(shopViewModel.getShopItemList().isEmpty()) {
+        if(searchShopModel.getAceSearchShop().getShopList().isEmpty()) {
             getViewToShowEmptyResult();
         }
         else {
-            getViewToShowSearchResultData(shopViewModel, loadShopRow);
+            getViewToShowSearchResultData(searchShopModel, loadShopRow);
         }
     }
 
-    private void getViewToShowSearchResultData(ShopViewModel shopViewModel, int loadShopRow) {
-        enrichPositionData(shopViewModel.getShopItemList(), loadShopRow);
+    private void getViewToShowSearchResultData(SearchShopModel searchShopModel, int loadShopRow) {
+        ShopViewModel shopViewModel = shopViewModelMapper.convert(searchShopModel);
+        enrichShopItemPositionData(shopViewModel.getShopItemList(), loadShopRow);
+
         List<Visitable> visitableList = new ArrayList<>(shopViewModel.getShopItemList());
         getView().onSearchShopSuccessWithData(visitableList, shopViewModel.getHasNextPage());
     }
