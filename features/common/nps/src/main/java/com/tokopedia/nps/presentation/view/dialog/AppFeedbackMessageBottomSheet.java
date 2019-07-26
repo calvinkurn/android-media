@@ -76,6 +76,11 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
     }
 
     @Override
+    public int getBaseLayoutResourceId() {
+        return R.layout.dialog_feedback_base;
+    }
+
+    @Override
     public int getLayoutResourceId() {
         return R.layout.dialog_feedback_message;
     }

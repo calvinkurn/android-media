@@ -1,7 +1,9 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -17,6 +19,11 @@ public class AppFeedbackThankYouBottomSheet extends BottomSheets {
     public void showDialog(FragmentManager manager, float appRating, String tag) {
         super.show(manager, tag);
         this.appRating = appRating;
+    }
+
+    @Override
+    public int getBaseLayoutResourceId() {
+        return R.layout.dialog_feedback_base;
     }
 
     @Override
@@ -49,5 +56,11 @@ public class AppFeedbackThankYouBottomSheet extends BottomSheets {
                 ));
             }
         }
+    }
+
+    @Override
+    public void setupDialog(Dialog dialog, int style) {
+        super.setupDialog(dialog, style);
+        updateHeight((int) (Resources.getSystem().getDisplayMetrics().heightPixels * 0.75));
     }
 }
