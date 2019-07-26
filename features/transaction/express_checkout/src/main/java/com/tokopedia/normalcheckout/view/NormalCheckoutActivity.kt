@@ -31,7 +31,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
         private var tradeInParams: TradeInParams? = null
-        private lateinit var normalCheckoutFragment : NormalCheckoutFragment
+        private var normalCheckoutFragment : NormalCheckoutFragment? = null
 
         /**
          * shopID: mandatory
@@ -89,7 +89,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                 getString(EXTRA_SHOP_NAME),
                 getBoolean(EXTRA_OCS),
                 tradeInParams)
-            return normalCheckoutFragment
+            return normalCheckoutFragment!!
         }
         return Fragment()
     }
@@ -102,7 +102,9 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
     }
 
     override fun clickAccept() {
-        normalCheckoutFragment.goToTradeInHome()
+        normalCheckoutFragment?.run {
+            this.goToTradeInHome()
+        }
     }
 
     override fun clickDeny() {

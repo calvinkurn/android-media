@@ -27,19 +27,14 @@ import java.util.ArrayList
 
 class HomeBannerFeedViewHolder(itemView: View, private val homeFeedview: HomeFeedContract.View) : AbstractViewHolder<BannerFeedViewModel>(itemView) {
 
-    private val context: Context
+    private val context: Context by lazy { itemView.context }
 
-    private val bannerImageView: ImageView
-
-    init {
-        this.context = itemView.context
-        bannerImageView = itemView.findViewById(R.id.bannerImageView)
-    }
+    private val bannerImageView: ImageView by lazy { itemView.findViewById<ImageView>(R.id.bannerImageView) }
 
     override fun bind(element: BannerFeedViewModel) {
         bannerImageView.setOnClickListener {
             HomePageTracking.eventClickOnBannerFeed(
-                    context, element, homeFeedview.tabName
+                    context, element, homeFeedview.getTabName()
             )
             RouteManager.route(context, element.applink)
         }
@@ -56,9 +51,9 @@ class HomeBannerFeedViewHolder(itemView: View, private val homeFeedview: HomeFee
                 object : ViewHintListener{
                     override fun onViewHint() {
                         HomePageTracking.eventImpressionOnBannerFeed(
-                            homeFeedview.trackingQueue,
+                            homeFeedview.getTrackingQueue(),
                             element,
-                            homeFeedview.tabName)
+                            homeFeedview.getTabName())
                     }
 
                 })

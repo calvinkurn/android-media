@@ -231,11 +231,13 @@ open class DynamicPostViewHolder(v: View,
             } else if (caption.text.length > MAX_CHAR ||
                    hasSecondLine(caption)) {
                 itemView.caption.visibility = View.VISIBLE
-                val captionEnd = if (caption.text.length > CAPTION_END) CAPTION_END else
+                val captionEnd = if (findSubstringSecondLine(caption) < CAPTION_END)
                     findSubstringSecondLine(caption)
+                else
+                    CAPTION_END
                 val captionText = caption.text.substring(0, captionEnd)
                         .replace("\n","<br/>")
-                        .replace(NEWLINE, "<br />")
+                        .replace(NEWLINE, "<br/>")
                         .plus("... ")
                         .plus("<font color='#42b549'><b>")
                         .plus(caption.buttonName)
@@ -489,5 +491,7 @@ open class DynamicPostViewHolder(v: View,
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+
+        fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem)
     }
 }
