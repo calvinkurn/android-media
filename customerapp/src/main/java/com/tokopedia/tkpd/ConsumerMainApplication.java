@@ -18,8 +18,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
+import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -79,8 +81,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
 
-    CharacterPerMinuteActivityLifecycleCallbacks callback;
-
     // Used to load the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -91,6 +91,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public void onCreate() {
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
+
+        FirebaseApp.initializeApp(this);
+        FacebookSdk.sdkInitialize(this);
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -148,6 +151,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TimberWrapper.init(this);
     }
 
+    CharacterPerMinuteActivityLifecycleCallbacks callback;
 
     @Override
     public void onTerminate() {
