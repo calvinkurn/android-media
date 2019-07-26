@@ -12,7 +12,7 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 public class EventReviewTicketsContractor {
 
     public interface EventReviewTicketsView extends EventBaseContract.EventBaseView {
-        void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats);
+        void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats, int customText1);
 
         void setEmailID(String emailID);
 

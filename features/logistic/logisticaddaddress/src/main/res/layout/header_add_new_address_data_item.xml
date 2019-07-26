@@ -50,6 +50,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_50"
         android:contentDescription="@string/pointer"
-        android:src="@drawable/ic_green_pointer" />
+        app:srcCompat="@drawable/ic_green_pointer" />
 
 </RelativeLayout>

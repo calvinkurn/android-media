@@ -196,7 +196,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
                     it.rating = rating.toDoubleOrZero()
                 }
                 if (cashback) {
-                    it.cashback = cashbackDetail.cashbackValue.toDouble()
+                    it.cashback = cashbackDetail.cashbackPercent.toDouble()
                 }
                 it.isWholesale = wholesale
                 it.isPo = preorder
@@ -217,7 +217,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
         it.totalReview = stats.reviewCount.toString()
         it.rating = stats.rating.toDouble()
         if (cashback.cashbackPercent > 0) {
-            it.cashback = cashback.cashbackValue.toDouble()
+            it.cashback = cashback.cashbackPercent.toDouble()
         }
         it.isWholesale = flags.isWholesale
         it.isPo = flags.isPreorder
