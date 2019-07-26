@@ -92,8 +92,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
 
-        FirebaseApp.initializeApp(this);
-        FacebookSdk.sdkInitialize(this);
+        initializeSdk();
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -182,6 +181,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             NotificationManager notificationManager = (NotificationManager) getSystemService(
                     NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(mChannel);
+        }
+    }
+
+    private void initializeSdk() {
+        try {
+            FirebaseApp.initializeApp(this);
+            FacebookSdk.sdkInitialize(this);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
