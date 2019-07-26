@@ -57,7 +57,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     var searchDestinationName = ""
-    var searchProperties: List<Property> = listOf()
 
     companion object {
         private const val REQUEST_FILTER = 0x10
@@ -172,7 +171,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 searchParam,
                 data.properties)
 
-        searchProperties = data.properties
+        val searchProperties = data.properties
         bottom_action_view.visible()
         super.renderList(searchProperties, searchProperties.size > 0)
         generateSortMenu(data.displayInfo.sort)
