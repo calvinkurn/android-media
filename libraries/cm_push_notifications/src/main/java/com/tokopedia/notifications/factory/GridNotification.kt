@@ -21,10 +21,10 @@ class GridNotification internal constructor(context: Context, baseNotificationMo
 
     override fun createNotification(): Notification {
         val builder = notificationBuilder
-        val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.layout_collapsed)
+        val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
         setCollapseData(collapsedView, baseNotificationModel)
         val expandedView = RemoteViews(context.applicationContext.packageName,
-                R.layout.layout_grid_expand)
+                R.layout.cm_layout_grid_expand)
         setGridData(expandedView)
         builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)

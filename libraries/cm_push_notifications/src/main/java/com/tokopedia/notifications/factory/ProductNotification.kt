@@ -34,7 +34,7 @@ internal class ProductNotification(applicationContext: Context, baseNotification
         val currentProductInfo = baseNotificationModel.productInfoList!![baseNotificationModel.carouselIndex]
         val productImage: Bitmap? = CarouselUtilities.loadImageFromStorage(currentProductInfo.productImage)
 
-        val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.layout_collapsed)
+        val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
         setCollapseViewData(collapsedView)
 
         val expandedView = RemoteViews(context.applicationContext.packageName,

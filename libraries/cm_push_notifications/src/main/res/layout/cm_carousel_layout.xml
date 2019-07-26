@@ -52,7 +52,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/dp_5"
-            android:background="@drawable/white_circle"
+            android:background="@drawable/cm_next_btn_background"
             android:clickable="true"
             android:padding="8dp"
             android:src="@drawable/cm_ic_arrow" />
@@ -65,7 +65,7 @@
             android:layout_margin="@dimen/dp_5"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/white_circle"
+            android:background="@drawable/cm_next_btn_background"
             android:clickable="true"
             android:padding="8dp"
             android:rotation="180"

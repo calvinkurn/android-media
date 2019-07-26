@@ -49,7 +49,7 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
     }
 
     private fun getCarouselRemoteView(): RemoteViews {
-        val remoteView = RemoteViews(context.packageName, R.layout.carousel_layout)
+        val remoteView = RemoteViews(context.packageName, R.layout.cm_carousel_layout)
         val currentCarouselItem = baseNotificationModel.carouselList[baseNotificationModel.carouselIndex]
 
         if (!TextUtils.isEmpty(currentCarouselItem.text)) {

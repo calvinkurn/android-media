@@ -27,14 +27,14 @@ internal class ActionNotification internal constructor(context: Context, baseNot
 
     override fun createNotification(): Notification {
         val builder = notificationBuilder
-        val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.layout_collapsed)
+        val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
         setCollapseData(collapsedView, baseNotificationModel, true)
         collapsedView.setOnClickPendingIntent(R.id.collapseMainView, createMainPendingIntent(baseNotificationModel, requestCode))
         var expandedView = RemoteViews(context.applicationContext.packageName,
-                R.layout.layout_big_image)
+                R.layout.cm_layout_big_image)
         if (baseNotificationModel.media == null) {
             expandedView = RemoteViews(context.applicationContext.packageName,
-                    R.layout.layout_action_button)
+                    R.layout.cm_layout_action_button)
         }
 
         builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())

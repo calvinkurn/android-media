@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:tag="bigPicture">
 
-    <include layout="@layout/layout_collapsed"/>
+    <include layout="@layout/cm_layout_collapsed"/>
 
     <LinearLayout
         android:layout_marginTop="64dp"
