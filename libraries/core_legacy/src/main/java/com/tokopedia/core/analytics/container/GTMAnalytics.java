@@ -73,13 +73,6 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendGeneralEvent(String event, String category, String action, String label) {
-
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_EVENT, event);
-        bundle.putString(KEY_CATEGORY, event);
-        bundle.putString(KEY_ACTION, event);
-        bundle.putString(KEY_LABEL, event);
-
         Map<String, Object> map = new HashMap<>();
         map.put(KEY_EVENT, event);
         map.put(KEY_CATEGORY, category);
