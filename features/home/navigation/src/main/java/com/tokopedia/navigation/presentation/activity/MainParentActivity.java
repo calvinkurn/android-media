@@ -565,16 +565,13 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void onStartLoading() {
-    }
+    public void onStartLoading() { }
 
     @Override
-    public void onError(String message) {
-    }
+    public void onError(String message) { }
 
     @Override
-    public void onHideLoading() {
-    }
+    public void onHideLoading() { }
 
     @Override
     public Context getContext() {
@@ -920,11 +917,12 @@ public class MainParentActivity extends BaseActivity implements
 
 
     /**
+     *
      * Load animated icon by Lottie
      * duration anim: 2s
      * 1s = 60 frames
      * + 20 frames
-     * <p>
+     *
      * 0f - 0.7f state default - animation - default
      * 1 state selected
      */
