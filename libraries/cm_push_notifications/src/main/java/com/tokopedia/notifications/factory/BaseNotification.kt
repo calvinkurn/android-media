@@ -250,10 +250,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: IllegalArgumentException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
-        } catch (e: Throwable) {
-            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         }
-
     }
 
     internal fun getActionButtonBitmap(url: String): Bitmap {
