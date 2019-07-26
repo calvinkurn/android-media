@@ -1607,6 +1607,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onPostTagItemBuyClicked(@NotNull PostTagItem postTagItem) {
+        presenter.addPostTagItemToCart(postTagItem);
+    }
 
     @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition,
@@ -1697,6 +1701,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
             trackCardPostClick(positionInFeed, model.getTrackingPostModel());
         }
+    }
+
+    @Override
+    public void onAddToCartSuccess() {
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
+    }
+
+    @Override
+    public void onAddToCartFailed(String pdpAppLink) {
+        onGoToLink(pdpAppLink);
     }
 
     private void doShare(String body, String title) {
