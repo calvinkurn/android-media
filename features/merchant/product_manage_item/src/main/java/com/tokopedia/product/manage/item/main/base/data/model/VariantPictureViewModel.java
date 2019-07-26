@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class VariantPictureViewModel extends BasePictureViewModel implements Parcelable {
 
-    @SerializedName(value = "v_pic_id")
+    @SerializedName(value = "v_pic_id", alternate = {"id"})
     @Expose
     private long id;
 
