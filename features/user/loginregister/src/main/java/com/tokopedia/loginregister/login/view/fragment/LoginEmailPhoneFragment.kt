@@ -375,6 +375,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
         }
 
+        partialRegisterInputView.setButtonValidator(true)
         partialRegisterInputView.findViewById<TextView>(R.id.change_button).setOnClickListener {
             val email = emailPhoneEditText.text.toString()
             onChangeButtonClicked()
