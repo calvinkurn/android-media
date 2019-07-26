@@ -542,7 +542,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     }
 
-    private fun goToRegisterInitial(val source : String) {
+    private fun goToRegisterInitial(source : String) {
         if (activity != null) {
             analytics.eventClickRegisterFromLogin()
             val intent = RegisterInitialActivity.getCallingIntent(activity)
