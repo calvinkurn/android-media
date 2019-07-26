@@ -233,7 +233,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         if (!hotelRoom.additionalPropertyInfo.isDirectPayment) {
             pay_at_hotel_container.visibility = View.VISIBLE
 
-            val iconId = if (hotelRoom.additionalPropertyInfo.isCvCRequired)
+            val iconId = if (hotelRoom.creditCardInfo.isCCRequired)
                 R.drawable.ic_pay_at_hotel_cc else R.drawable.ic_pay_at_hotel_no_cc
             pay_at_hotel_icon.setBackgroundResource(iconId)
 

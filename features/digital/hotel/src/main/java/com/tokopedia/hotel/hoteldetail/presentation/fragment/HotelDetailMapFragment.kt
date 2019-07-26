@@ -104,7 +104,7 @@ class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
 
         iv_go_to_gmap.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(getString(R.string.hotel_google_map_intent_link, latitude, longitude, propertyName))
+                data = Uri.parse(getString(R.string.hotel_google_map_intent_link, latitude, longitude, latitude, longitude, propertyName))
             })
         }
     }

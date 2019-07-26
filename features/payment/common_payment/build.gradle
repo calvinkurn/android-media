@@ -25,21 +25,6 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.network)
-    implementation project(rootProject.ext.libraries.userSession)
-    implementation project(rootProject.ext.libraries.track)
-
-    implementation rootProject.ext.miscDependencies.multiDex
-
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
-
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
 
 apply from: '../../../publish_local.gradle'
