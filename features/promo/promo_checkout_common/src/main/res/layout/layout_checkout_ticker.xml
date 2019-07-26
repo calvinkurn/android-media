@@ -34,7 +34,8 @@
                 android:textStyle="bold"
                 android:textColor="@color/tkpd_main_green"
                 app:drawableLeftCompat="@drawable/ic_coupon_green_promo_checkout"
-                tools:text="Gunakan Kode Promo atau Kupon" />
+                tools:text="Gunakan Kode Promo atau Kupon"
+                android:drawableLeft="@drawable/ic_coupon_green_promo_checkout" />
 
         </FrameLayout>
     </android.support.v7.widget.CardView>
