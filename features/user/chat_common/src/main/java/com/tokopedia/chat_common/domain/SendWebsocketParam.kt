@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYP
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
+import com.tokopedia.chat_common.view.viewmodel.InvoiceViewModel
 
 /**
  * @author by nisie on 19/12/18.
@@ -53,28 +54,25 @@ object SendWebsocketParam {
     }
 
     fun generateParamSendInvoiceAttachment(messageId: String,
-//                                           product: ResultProduct,
+                                           invoice: InvoiceViewModel,
                                            startTime: String,
                                            toUid : String): JsonObject {
 
         val attributes = JsonObject()
-        attributes.addProperty("id", 329580570)
-        attributes.addProperty("code", "INV/20190618/XIX/VI/329541479")
-        attributes.addProperty("title", "Minions - Putih 36")
-        attributes.addProperty("create_time", "18 Jun 2019")
-        attributes.addProperty("image_url", "https://imagerouter.tokopedia.com/image/v1/p/471823361/product_s_thumbnail/desktop")
-        attributes.addProperty("href_url", "https://www.tokopedia.com/invoice.pl?id=329580570&pdf=Invoice-7977933-956167-20190618122120-UkNUQ1BYTFQ")
-        attributes.addProperty("status_id", 0)
-        attributes.addProperty("status", "Pesanan Dibatalkan")
-        attributes.addProperty("total_amount", "Rp 269.672")
-//        attributes.addProperty("color", "red")
+        attributes.addProperty("id", invoice.id)
+        attributes.addProperty("code", invoice.invoiceCode)
+        attributes.addProperty("title", invoice.productName)
+        attributes.addProperty("create_time", invoice.date)
+        attributes.addProperty("image_url", invoice.imageUrl)
+        attributes.addProperty("href_url", invoice.invoiceUrl)
+        attributes.addProperty("status_id", invoice.statusId)
+        attributes.addProperty("status", invoice.status)
+        attributes.addProperty("total_amount", invoice.totalPriceAmount)
 
         val payload = JsonObject()
         payload.addProperty("type_id", 1)
         payload.addProperty("type", "marketplace")
         payload.add("attributes", attributes)
-//        payload.addProperty("image_url", product.productImageThumbnail)
-//        payload.addProperty("url", product.productUrl)
 
         val data = JsonObject()
         data.addProperty("message_id", Integer.valueOf(messageId))
