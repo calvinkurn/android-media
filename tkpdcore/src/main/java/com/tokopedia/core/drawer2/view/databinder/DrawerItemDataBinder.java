@@ -12,15 +12,11 @@ import android.widget.TextView;
 
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by nisie on 1/11/17.
@@ -36,25 +32,19 @@ public class DrawerItemDataBinder extends DataBinder<DrawerItemDataBinder.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.label)
         TextView label;
-
-        @BindView(R2.id.icon)
         ImageView icon;
-
-        @BindView(R2.id.notif)
         TextView notification;
-
-        @BindView(R2.id.new_drawer_menu)
         TextView newDrawerHighlight;
-
-        @BindView(R2.id.drawer_item)
         RelativeLayout layout;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            label = (TextView) itemView.findViewById(R.id.label);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
+            notification = (TextView) itemView.findViewById(R.id.notif);
+            newDrawerHighlight = (TextView) itemView.findViewById(R.id.new_drawer_menu);
+            layout = (RelativeLayout) itemView.findViewById(R.id.drawer_item);
         }
     }
 

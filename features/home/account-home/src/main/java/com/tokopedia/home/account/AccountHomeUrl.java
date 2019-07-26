@@ -19,12 +19,15 @@ public class AccountHomeUrl {
 
         public static final String KEY_IMAGE_HOST = "image_host";
 
+        public static final String OVO_IMG = "/img/android/ovo/drawable-xxxhdpi/ovo.png";
         public static final String TOKOCASH_IMG = "/img/wallet/ic_tokocash_circle.png";
-        public static final String SALDO_IMG = "/img/wallet/ic_saldo_circle.png";
+        public static final String SALDO_IMG = "/img/android/saldo_tokopedia/drawable-xxxhdpi/saldo_tokopedia.png";
+
+        public static final String EMPTY_SELLER_IMG = "/img/android/seller_dashboard/seller_dashboard.png";
     }
 
-    public static String MORE_SELLER = BASE_SELLER_URL + "mulai-berjualan/";
     public static String GOLD_MERCHANT = BASE_SELLER_URL + "gold-merchant/";
+    public static String EDU_MORE_SELLER = BASE_SELLER_URL + "edu/mulai-berjualan/";
 
     public static class Pulsa {
 

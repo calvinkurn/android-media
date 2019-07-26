@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
 
 import java.util.ArrayList;

@@ -1,0 +1,16 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation rootProject.ext.miscDependencies.gson
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation project(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.unifyDependencies.components
+}

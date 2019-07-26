@@ -1,5 +1,7 @@
 package com.tokopedia.shop.note.domain.interactor;
 
+import android.content.Context;
+
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.usecase.RequestParams;
@@ -11,6 +13,10 @@ import rx.Observable;
  */
 
 public class DeleteShopNoteUseCase extends CacheApiDataDeleteUseCase {
+
+    public DeleteShopNoteUseCase(Context context) {
+        super(context);
+    }
 
     public Observable<Boolean> createObservable() {
         return createObservable(RequestParams.create());

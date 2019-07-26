@@ -2,11 +2,11 @@ package com.tokopedia.discovery.newdiscovery.widget;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,11 +14,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.model.Category;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
@@ -30,9 +29,11 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.BottomSheetD
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDbHelper;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
+import com.tokopedia.discovery.common.data.Filter;
 
 import java.util.List;
 import java.util.Map;
@@ -121,7 +122,10 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
             launchFilterCategoryPage(filter);
         } else {
             enrichWithInputState(filter);
-            callback.launchFilterDetailPage(filter);
+
+
+            SearchTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), filter.getTitle());
+            FilterDetailActivityRouter.launchDetailActivity(callback.getActivity(), filter, true);
         }
     }
 
@@ -130,7 +134,9 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         Category selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 
-        callback.launchFilterCategoryPage(filter, selectedCategoryRootId, categoryId);
+        SearchTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), getResources().getString(R.string.title_category));
+        FilterDetailActivityRouter.launchCategoryActivity(callback.getActivity(),
+                filter, selectedCategoryRootId, categoryId, true);
     }
 
     private void enrichWithInputState(Filter filter) {
@@ -320,7 +326,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         updateResetButtonVisibility();
         loadingView.setVisibility(View.VISIBLE);
         buttonFinish.setText("");
-        callback.onApplyFilter(filterController.getFilterParameter());
+        callback.onApplyFilter(filterController.getParameter());
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -350,7 +356,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     private void handleResultFromLocationPage() {
         Observable.create(
-                (Observable.OnSubscribe<List<Option>>) subscriber -> subscriber.onNext(FilterDbHelper.loadLocationFilterOptions()))
+                (Observable.OnSubscribe<List<Option>>) subscriber -> subscriber.onNext(FilterDbHelper.loadLocationFilterOptions(getContext())))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Option>>() {
@@ -425,8 +431,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         void onHide();
         boolean isSearchShown();
         void hideKeyboard();
-
-        void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId);
-        void launchFilterDetailPage(Filter filter);
+        AppCompatActivity getActivity();
     }
 }

@@ -98,7 +98,7 @@ class PollAdapter(private val contentPosition: Int,
                 listener?.onPollOptionClick(
                         pollViewModel.positionInFeed,
                         contentPosition,
-                        adapterPosition + 1,
+                        adapterPosition,
                         pollViewModel.pollId,
                         element.optionId,
                         pollViewModel.voted,

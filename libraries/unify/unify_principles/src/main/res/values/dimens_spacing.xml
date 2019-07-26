@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="spacing_lvl1" category="spacing">2dp</dimen>
+    <dimen name="spacing_lvl2" category="spacing">4dp</dimen>
+    <dimen name="spacing_lvl3" category="spacing">8dp</dimen>
+    <dimen name="spacing_lvl4" category="spacing">16dp</dimen>
+    <dimen name="spacing_lvl5" category="spacing">24dp</dimen>
+    <dimen name="spacing_lvl6" category="spacing">32dp</dimen>
+    <dimen name="spacing_lvl7" category="spacing">40dp</dimen>
+    <dimen name="spacing_lvl8" category="spacing">48dp</dimen>
+
+    <dimen name="layout_lvl1" category="spacing">8dp</dimen>
+    <dimen name="layout_lvl2" category="spacing">16dp</dimen>
+    <dimen name="layout_lvl3" category="spacing">24dp</dimen>
+    <dimen name="layout_lvl4" category="spacing">32dp</dimen>
+    <dimen name="layout_lvl5" category="spacing">40dp</dimen>
+    <dimen name="layout_lvl6" category="spacing">48dp</dimen>
+    <dimen name="layout_lvl7" category="spacing">64dp</dimen>
+    <dimen name="layout_lvl8" category="spacing">96dp</dimen>
+    <dimen name="layout_lvl9" category="spacing">128dp</dimen>
+</resources>

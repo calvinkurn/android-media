@@ -1,12 +1,10 @@
 package com.tokopedia.core.drawer2.data.source;
 
-import android.content.Context;
-
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.Notifications;
@@ -30,13 +28,11 @@ public class CloudAttrDataSource {
     private DrawerService drawerService;
     private LocalCacheHandler drawerCache;
 
-    private AnalyticsCacheHandler analyticsCacheHandler;
-    private long DURATION_SAVE_TO_CACHE = 60;
+    private long DURATION_SAVE_TO_CACHE = 60_000;
 
     public CloudAttrDataSource(DrawerService drawerService, LocalCacheHandler drawerCache) {
         this.drawerService = drawerService;
         this.drawerCache = drawerCache;
-        analyticsCacheHandler = new AnalyticsCacheHandler(new GlobalCacheManager());
     }
 
     public Observable<UserData> getConsumerUserAttributes(RequestParams requestParams) {
@@ -80,14 +76,10 @@ public class CloudAttrDataSource {
         return new Action1<UserData>() {
             @Override
             public void call(UserData data) {
-                if (data != null) {
-                    analyticsCacheHandler.setUserDataGraphQLCache(data);
-                }
 
                 //add wallet data in cache
                 if (data != null && data.getWallet() != null && data.getWallet().getLinked()) {
-                    GlobalCacheManager cacheHandler = new GlobalCacheManager();
-                    cacheHandler.save(KEY_TOKOCASH_BALANCE_CACHE,
+                    PersistentCacheManager.instance.put(KEY_TOKOCASH_BALANCE_CACHE,
                             CacheUtil.convertModelToString(data.getWallet(),
                                     new TypeToken<Wallet>() {
                                     }.getType()), DURATION_SAVE_TO_CACHE);

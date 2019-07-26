@@ -7,9 +7,9 @@ import com.tokopedia.common.network.data.model.CacheType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common.network.data.model.RestResponseIntermediate
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import java.lang.reflect.Type
 import javax.inject.Inject

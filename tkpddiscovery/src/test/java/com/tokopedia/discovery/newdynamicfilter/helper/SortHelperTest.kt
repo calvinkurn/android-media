@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdynamicfilter.helper
 
-import com.tokopedia.core.discovery.model.Sort
+import com.tokopedia.discovery.common.data.Sort
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import org.junit.Test
 

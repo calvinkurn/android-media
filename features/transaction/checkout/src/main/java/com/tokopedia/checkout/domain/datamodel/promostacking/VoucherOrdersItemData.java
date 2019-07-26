@@ -22,6 +22,7 @@ public class VoucherOrdersItemData implements Parcelable {
     private String variant;
     private String titleDescription;
     private MessageData messageData;
+    private boolean isAutoapply;
 
     public VoucherOrdersItemData() {
     }
@@ -41,6 +42,7 @@ public class VoucherOrdersItemData implements Parcelable {
         variant = in.readString();
         titleDescription = in.readString();
         messageData = in.readParcelable(MessageData.class.getClassLoader());
+        isAutoapply = in.readByte() != 0;
     }
 
     @Override
@@ -59,6 +61,7 @@ public class VoucherOrdersItemData implements Parcelable {
         dest.writeString(variant);
         dest.writeString(titleDescription);
         dest.writeParcelable(messageData, flags);
+        dest.writeByte((byte) (isAutoapply ? 1 : 0));
     }
 
     @Override
@@ -184,5 +187,13 @@ public class VoucherOrdersItemData implements Parcelable {
 
     public void setMessageData(MessageData messageData) {
         this.messageData = messageData;
+    }
+
+    public boolean getIsAutoapply() {
+        return isAutoapply;
+    }
+
+    public void setIsAutoapply(boolean autoapply) {
+        isAutoapply = autoapply;
     }
 }

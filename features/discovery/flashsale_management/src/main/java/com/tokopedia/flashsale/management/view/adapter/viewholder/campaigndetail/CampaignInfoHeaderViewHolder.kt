@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.animation.LinearInterpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.common.data.SellerStatus
@@ -31,13 +32,14 @@ class CampaignInfoHeaderViewHolder(view: View, private val sellerStatus: SellerS
             itemView.image_step.gone()
         } else {
             itemView.image_step.visible()
-            itemView.image_step.setImageResource(imageStepRes)
+            itemView.image_step.setImageDrawable(MethodChecker.getDrawable(itemView.image_step.context,imageStepRes))
         }
         with(itemView.tvStatus){
             text = campaign.statusInfo.label
             val (textColor, bgColor) = FlashSaleConstant.statusColorList.get(campaign.statusInfo.label.toLowerCase()) ?:
             FlashSaleConstant.defaultPairColor
             setTextDrawableColor(ContextCompat.getColor(itemView.context, textColor))
+            setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_status_dot), null, null, null)
             val bgDrawable = background.mutate() as GradientDrawable
             bgDrawable.setColor(ContextCompat.getColor(context, bgColor))
             bgDrawable.invalidateSelf()

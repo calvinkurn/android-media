@@ -24,6 +24,10 @@ project.ext {
 }
 
 dependencies {
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.inappupdate)
@@ -42,6 +46,8 @@ dependencies {
     api rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.playServicesDependencies.core
 }
 
 apply from: '../publish_local.gradle'

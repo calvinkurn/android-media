@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 
+import android.content.res.Resources;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
@@ -10,6 +11,7 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
@@ -24,6 +26,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
+import javax.inject.Named;
+
 /**
  * @author by nisie on 10/15/18.
  */
@@ -32,8 +36,14 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    LoginRegisterAnalytics provideLoginAnalytics() {
+    LoginRegisterAnalytics provideLoginRegisterAnalytics() {
         return new LoginRegisterAnalytics();
+    }
+
+    @LoginRegisterScope
+    @Provides
+    RegisterAnalytics provideRegisterAnalytics() {
+        return new RegisterAnalytics();
     }
 
     @LoginRegisterScope
@@ -44,8 +54,8 @@ public class LoginRegisterModule {
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      FingerprintInterceptor fingerprintInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(tkpdAuthInterceptor);
+        builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
 
@@ -72,5 +82,4 @@ public class LoginRegisterModule {
     LoginRegisterApi provideLoginRegisterApi(@LoginRegisterScope Retrofit retrofit) {
         return retrofit.create(LoginRegisterApi.class);
     }
-
 }

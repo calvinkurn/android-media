@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v7.widget.Toolbar
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
@@ -15,6 +16,9 @@ import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderF
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 
+/**
+ * Deeplink: SHOP_SETTINGS_NOTES
+ */
 class ShopSettingsNotesActivity : BaseSimpleActivity(),
         ShopSettingsNotesListFragment.OnShopSettingsNoteFragmentListener,
         ShopSettingsNotesReorderFragment.OnShopSettingsNotesReorderFragmentListener {
@@ -35,6 +39,24 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
             fragment?.saveReorder()
         }
         tvSave.visibility = View.GONE
+    }
+
+    override fun inflateFragment() {
+        val newFragment = newFragment ?: return
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, newFragment, tagFragment)
+                .commit()
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        setContentView(layoutRes)
+        toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)
+        if (supportActionBar != null) {
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            supportActionBar!!.setDisplayShowTitleEnabled(true)
+            supportActionBar!!.title = this.title
+        }
     }
 
     override fun getNewFragment(): Fragment {

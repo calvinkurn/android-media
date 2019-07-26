@@ -5,19 +5,17 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GridProductItemViewHolder;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GuidedSearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.ImageEmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.ListProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.RelatedSearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
@@ -28,7 +26,7 @@ import com.tokopedia.topads.sdk.base.Config;
  * Created by sachinbansal on 4/13/18.
  */
 
-public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements ProductListTypeFactory {
+public class ImageProductListTypeFactoryImpl extends BrowseSectionTypeFactoryImpl implements ProductListTypeFactory {
 
     private final ProductListener itemClickListener;
     private final Config topAdsConfig;
@@ -48,11 +46,6 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
     @Override
     public int type(EmptyModel viewModel) {
         return EmptyViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(GuidedSearchViewModel guidedSearchViewModel) {
-        return GuidedSearchViewHolder.LAYOUT;
     }
 
     @Override
@@ -93,8 +86,6 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
             viewHolder = new HeaderViewHolder(view, itemClickListener, searchQuery);
         } else if (type == ImageEmptySearchViewHolder.LAYOUT) {
             viewHolder = new ImageEmptySearchViewHolder(view, itemClickListener, topAdsConfig);
-        } else if (type == GuidedSearchViewHolder.LAYOUT) {
-            viewHolder = new GuidedSearchViewHolder(view, itemClickListener);
         } else if (type == TopAdsViewHolder.LAYOUT) {
             viewHolder = new TopAdsViewHolder(view, itemClickListener);
         } else if (type == RelatedSearchViewHolder.LAYOUT) {

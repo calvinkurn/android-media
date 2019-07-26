@@ -3,25 +3,30 @@ package com.tokopedia.gm.subscribe.membership.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.util.DateFormatUtils
 import com.tokopedia.gm.subscribe.R
+import com.tokopedia.gm.subscribe.membership.analytic.GmSubscribeMembershipTracking
 import com.tokopedia.gm.subscribe.membership.data.model.GetMembershipData
 import com.tokopedia.gm.subscribe.membership.di.GmSubscribeMembershipComponent
+import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipInfoActivity
+import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipProductActivity
 import com.tokopedia.gm.subscribe.membership.view.presenter.GmMembershipPresenterImpl
+import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity
+import kotlinx.android.synthetic.main.fragment_gm_subscribe_membership.*
 import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_auto_subscribe.*
 import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_selected_product.*
 import javax.inject.Inject
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.core.app.TkpdCoreRouter
-import com.tokopedia.gm.subscribe.membership.analytic.GmSubscribeMembershipTracking
-import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipInfoActivity
-import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipProductActivity
-import kotlinx.android.synthetic.main.fragment_gm_subscribe_membership.*
 
 
 class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
@@ -84,7 +89,12 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
 
         btnExtend.setOnClickListener {
             gmSubscribeMembershipTracking.eventClickExtend()
-            (activity!!.application as TkpdCoreRouter).goToMerchantRedirect(activity!!)
+            if (GlobalConfig.isSellerApp()) {
+                val intent = GmSubscribeHomeActivity.getCallingIntent(context)
+                startActivity(intent)
+            } else {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
+            }
         }
 
         labelExtendPacket.setOnClickListener { goToProductPage() }

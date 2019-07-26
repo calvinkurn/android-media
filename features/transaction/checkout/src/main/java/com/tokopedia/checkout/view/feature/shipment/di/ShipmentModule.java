@@ -23,6 +23,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.di.module.UtilModule;
@@ -34,7 +35,7 @@ import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
-import com.tokopedia.logisticanalytics.CodAnalytics;
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
@@ -65,11 +66,13 @@ import rx.subscriptions.CompositeSubscription;
 public class ShipmentModule {
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
+    private PromoActionListener promoActionListener;
     private ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener;
     private ShipmentContract.View view;
 
     public ShipmentModule(ShipmentFragment shipmentFragment) {
         this.shipmentAdapterActionListener = shipmentFragment;
+        this.promoActionListener = shipmentFragment;
         this.shipmentAnalyticsActionListener = shipmentFragment;
         this.view = shipmentFragment;
     }
@@ -235,7 +238,7 @@ public class ShipmentModule {
     @ShipmentScope
     ShipmentAdapter provideShipmentAdapter(ShipmentDataRequestConverter shipmentDataRequestConverter,
                                            RatesDataConverter ratesDataConverter) {
-        return new ShipmentAdapter(shipmentAdapterActionListener, shipmentDataRequestConverter, ratesDataConverter);
+        return new ShipmentAdapter(shipmentAdapterActionListener, promoActionListener, shipmentDataRequestConverter, ratesDataConverter);
     }
 
     @Provides

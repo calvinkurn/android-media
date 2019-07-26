@@ -12,13 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        app:cameraPlaySounds="true"
-        app:cameraGrid="off"
-        app:cameraFlash="off"
-        app:cameraAudio="on"
-        app:cameraHdr="off"
-        app:cameraFacing="back"
-        app:cameraGestureTap="focusWithMarker"/>
+        app:cameraPlaySounds="true"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

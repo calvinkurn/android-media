@@ -83,9 +83,9 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteViewModel, Sho
         return null
     }
 
-    override fun getRecyclerView(view: View): RecyclerView? {
-        recyclerView = super.getRecyclerView(view)
-        return recyclerView
+    override fun getRecyclerView(view: View): RecyclerView {
+        recyclerView = view.findViewById<View>(R.id.recycler_view) as RecyclerView?
+        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,7 +122,7 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteViewModel, Sho
     }
 
     fun saveReorder() {
-        showSubmitLoading(getString(R.string.title_loading))
+        showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
         val shopNoteList = ArrayList<String>()
         val sortDataList = getAdapter().data
         for (shopNoteViewModel in sortDataList) {
@@ -136,7 +136,7 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteViewModel, Sho
         hideSubmitLoading()
         ToasterNormal.make(activity!!.findViewById(android.R.id.content),
                 getString(R.string.note_success_reorder), BaseToaster.LENGTH_LONG)
-                .setAction(getString(R.string.close)) {
+                .setAction(getString(com.tokopedia.abstraction.R.string.close)) {
                     // no-op
                 }.show()
         listener!!.onSuccessReorderNotes()
@@ -147,7 +147,7 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteViewModel, Sho
         val message = ErrorHandler.getErrorMessage(context, throwable)
         ToasterError.make(activity!!.findViewById(android.R.id.content),
                 message, BaseToaster.LENGTH_LONG)
-                .setAction(getString(R.string.close)) {
+                .setAction(getString(com.tokopedia.abstraction.R.string.close)) {
                     // no-op
                 }.show()
     }

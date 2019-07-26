@@ -60,6 +60,17 @@
             android:layout_marginTop="@dimen/dp_2"
             style="@style/TextView.Micro.BlackSecondary"
             tools:text="*Min Pembelian 250Rb"/>
+
+        <TextView
+            android:id="@+id/tvVoucherDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            tools:text="Detail Promo"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <LinearLayout

@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment
 
 class PowerMerchantSubscribeActivity : BaseSimpleActivity() {
@@ -27,6 +26,14 @@ class PowerMerchantSubscribeActivity : BaseSimpleActivity() {
         @DeepLink(ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
         @JvmStatic
         fun getCallingIntentSellerHistory(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            return newInstance(context).setData(uri.build())
+                    .putExtras(extras)
+        }
+
+        @DeepLink(ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
+        @JvmStatic
+        fun getCallingIntentCustomerAppHistory(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             return newInstance(context).setData(uri.build())
                     .putExtras(extras)

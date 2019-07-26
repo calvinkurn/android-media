@@ -22,7 +22,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
 
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_detail;
-    protected static final String CASHBACK = "Cashback";
+    private static final String CASHBACK = "Cashback";
 
     public TextView productName;
     public TextView productPrice;
@@ -39,15 +39,15 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
 
     public FeedDetailViewHolder(View itemView, FeedPlusDetail.View viewListener) {
         super(itemView);
-        productName = (TextView) itemView.findViewById(R.id.product_name);
-        productPrice = (TextView) itemView.findViewById(R.id.product_price);
-        productImage = (ImageView) itemView.findViewById(R.id.product_image);
-        wishlist = (ImageView) itemView.findViewById(R.id.wishlist);
-        productRating = (RatingBar) itemView.findViewById(R.id.product_rating);
-        cashback = (TextView) itemView.findViewById(R.id.cashback);
-        wholesale = (TextView) itemView.findViewById(R.id.wholesale);
-        preorder = (TextView) itemView.findViewById(R.id.preorder);
-        freeReturn = (ImageView) itemView.findViewById(R.id.free_return);
+        productName = itemView.findViewById(R.id.product_name);
+        productPrice = itemView.findViewById(R.id.product_price);
+        productImage = itemView.findViewById(R.id.product_image);
+        wishlist = itemView.findViewById(R.id.wishlist);
+        productRating = itemView.findViewById(R.id.product_rating);
+        cashback = itemView.findViewById(R.id.cashback);
+        wholesale = itemView.findViewById(R.id.wholesale);
+        preorder = itemView.findViewById(R.id.preorder);
+        freeReturn = itemView.findViewById(R.id.free_return);
         mainView = itemView.findViewById(R.id.main_view);
         this.viewListener = viewListener;
     }
@@ -95,22 +95,14 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
         else
             preorder.setVisibility(View.GONE);
 
-        wishlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onWishlistClicked(
-                        getAdapterPosition(),
-                        feedDetailViewModel.getProductId(),
-                        feedDetailViewModel.isWishlist());
-            }
-        });
+        wishlist.setOnClickListener(v -> viewListener.onWishlistClicked(
+                getAdapterPosition(),
+                feedDetailViewModel.getProductId(),
+                feedDetailViewModel.isWishlist())
+        );
 
-        mainView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail(String.valueOf(feedDetailViewModel.getProductId
-                        ()), feedDetailViewModel.isWishlist(), getAdapterPosition());
-            }
-        });
+        mainView.setOnClickListener(v -> viewListener.onGoToProductDetail(
+                feedDetailViewModel, getAdapterPosition())
+        );
     }
 }

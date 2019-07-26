@@ -2,12 +2,11 @@ package com.tokopedia.kol.common.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.common.data.source.KolAuthInterceptor;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.common.network.KolUrl;
@@ -102,10 +101,7 @@ public class KolModule {
     @Provides
     @KolChuckQualifier
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        if (context instanceof KolRouter) {
-            return ((KolRouter) context).getChuckInterceptor();
-        }
-        throw new RuntimeException("App should implement " + KolRouter.class.getSimpleName());
+        return new ChuckInterceptor(context);
     }
 
 }

@@ -32,9 +32,7 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.data.source.EventsUrl;
-import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.view.adapter.CardPagerAdapter;
 import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
@@ -52,19 +50,13 @@ import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
-
 /**
  * Created by ashwanityagi on 02/11/17.
  */
 public class EventsHomeActivity extends EventBaseActivity
         implements
-        EventsContract.EventHomeView {
+        EventsContract.EventHomeView, View.OnClickListener {
 
-    private Unbinder unbinder;
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
 
@@ -72,33 +64,18 @@ public class EventsHomeActivity extends EventBaseActivity
 
     public EventHomePresenter eventHomePresenter;
 
-    @BindView(R2.id.event_bannerpager)
     TouchViewPager viewPager;
-    @BindView(R2.id.pager_indicator)
     CirclePageIndicator tabLayout;
-
-    @BindView(R2.id.category_view_pager)
     ViewPager categoryViewPager;
-    @BindView(R2.id.tabs)
     TabLayout tabs;
-    @BindView(R2.id.main_content)
     FrameLayout mainContent;
-
-    @BindView(R2.id.progress_bar_layout)
     View progressBarLayout;
-    @BindView(R2.id.prog_bar)
     ProgressBar progBar;
-    @BindView(R2.id.tv_addtocalendar)
     TextView addToCalendar;
-    @BindView(R2.id.promo_event)
     TextView promoEvent;
-    @BindView(R2.id.viewpager_top_events)
     ViewPager topEventsViewPager;
-    @BindView(R2.id.htab_maincontent)
     View hTabMainContent;
-    @BindView(R2.id.search_input_view)
     TextView searchView;
-    @BindView(R2.id.event_app_bar_layout)
     AppBarLayout appBarLayout;
 
 
@@ -150,7 +127,6 @@ public class EventsHomeActivity extends EventBaseActivity
         defaultSection = getIntent().getStringExtra(EXTRA_SECTION);
         if (defaultSection == null || defaultSection.length() <= 1)
             defaultSection = TOP;
-        unbinder = ButterKnife.bind(this);
         eventsAnalytics = new EventsAnalytics();
         addToCalendar.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_event_calendar_green), null,
                 null, null);
@@ -170,6 +146,27 @@ public class EventsHomeActivity extends EventBaseActivity
 
         setLightToolbarStyle();
 
+    }
+
+    @Override
+    void setupVariables() {
+        viewPager = findViewById(R.id.event_bannerpager);
+        tabLayout = findViewById(R.id.pager_indicator);
+        categoryViewPager = findViewById(R.id.category_view_pager);
+        tabs = findViewById(R.id.tabs);
+        mainContent = findViewById(R.id.main_content);
+        progressBarLayout = findViewById(R.id.progress_bar_layout);
+        progBar = findViewById(R.id.prog_bar);
+        addToCalendar = findViewById(R.id.tv_addtocalendar);
+        promoEvent = findViewById(R.id.promo_event);
+        topEventsViewPager = findViewById(R.id.viewpager_top_events);
+        hTabMainContent = findViewById(R.id.htab_maincontent);
+        searchView = findViewById(R.id.search_input_view);
+        appBarLayout = findViewById(R.id.event_app_bar_layout);
+
+        addToCalendar.setOnClickListener(this);
+        searchView.setOnClickListener(this);
+        promoEvent.setOnClickListener(this);
     }
 
     protected void setLightToolbarStyle() {
@@ -471,23 +468,19 @@ public class EventsHomeActivity extends EventBaseActivity
         eventHomePresenter.onActivityResult(requestCode);
     }
 
-    @OnClick(R2.id.tv_addtocalendar)
-    void onClickCalendar() {
-        eventHomePresenter.onClickEventCalendar();
-    }
-
-    @OnClick(R2.id.search_input_view)
-    void onClickSearch() {
-        eventHomePresenter.onOptionMenuClick(R.id.action_menu_search);
-    }
-
-    @OnClick(R2.id.promo_event)
-    void goToPromo() {
-        eventHomePresenter.onOptionMenuClick(R.id.action_promo);
-    }
-
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.tv_addtocalendar) {
+            eventHomePresenter.onClickEventCalendar();
+        } else if (v.getId() == R.id.search_input_view) {
+            eventHomePresenter.onOptionMenuClick(R.id.action_menu_search);
+        } else if (v.getId() == R.id.promo_event) {
+            eventHomePresenter.onOptionMenuClick(R.id.action_promo);
+        }
     }
 }
