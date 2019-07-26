@@ -17,9 +17,9 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationMo
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
-import com.tokopedia.logisticcart.domain.shipping.CartItemModel;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -316,6 +316,7 @@ public class ShipmentDataConverter {
         } else {
             cartItemModel.setPrice(product.getProductPrice());
         }
+        cartItemModel.setOriginalPrice(product.getProductOriginalPrice());
         cartItemModel.setQuantity(product.getProductQuantity());
         cartItemModel.setWeight(product.getProductWeight());
         cartItemModel.setWeightFmt(product.getProductWeightFmt());

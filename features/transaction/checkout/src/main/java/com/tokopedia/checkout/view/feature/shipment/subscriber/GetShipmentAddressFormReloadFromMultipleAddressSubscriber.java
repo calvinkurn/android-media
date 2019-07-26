@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 
 import java.util.List;

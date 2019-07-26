@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.util.Utils;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.unifyprinciples.Typography;

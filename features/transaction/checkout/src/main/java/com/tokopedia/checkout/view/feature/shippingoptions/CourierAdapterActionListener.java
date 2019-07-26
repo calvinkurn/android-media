@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.shippingoptions;
 
-import com.tokopedia.logisticcart.domain.shipping.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 
 /**
  * @author Irfan Khoirul on 04/05/18.

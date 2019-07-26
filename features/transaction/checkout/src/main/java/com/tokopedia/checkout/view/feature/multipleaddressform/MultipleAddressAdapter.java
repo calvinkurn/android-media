@@ -9,7 +9,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.view.feature.multipleaddressform.viewholder.MultipleAddressViewHolder;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;

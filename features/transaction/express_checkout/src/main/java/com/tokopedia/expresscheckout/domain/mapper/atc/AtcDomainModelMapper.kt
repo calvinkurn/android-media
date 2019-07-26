@@ -122,7 +122,7 @@ open class AtcDomainModelMapper @Inject constructor() : AtcDataMapper {
         val shopModel = getShopModel(groupShop)
         groupShopModel.shopModel = shopModel
 
-        val shopShipmentModels = ArrayList<com.tokopedia.logisticcart.domain.shipping.ShopShipment>()
+        val shopShipmentModels = ArrayList<com.tokopedia.logisticcart.shipping.model.ShopShipment>()
         for (shopShiment: ShopShipment in groupShop.shopShipments) {
             shopShipmentModels.add(getShopShipmentModel(shopShiment))
         }
@@ -278,15 +278,15 @@ open class AtcDomainModelMapper @Inject constructor() : AtcDataMapper {
         return shopModel
     }
 
-    private fun getShopShipmentModel(shopShiment: ShopShipment): com.tokopedia.logisticcart.domain.shipping.ShopShipment {
-        val shopShipment = com.tokopedia.logisticcart.domain.shipping.ShopShipment()
+    private fun getShopShipmentModel(shopShiment: ShopShipment): com.tokopedia.logisticcart.shipping.model.ShopShipment {
+        val shopShipment = com.tokopedia.logisticcart.shipping.model.ShopShipment()
         shopShipment.isDropshipEnabled = shopShiment.isDropshipEnabled == 1
         shopShipment.shipCode = shopShiment.shipCode
         shopShipment.shipId = shopShiment.shipId
         shopShipment.shipLogo = shopShiment.shipLogo
         shopShipment.shipName = shopShiment.shipName
 
-        val shipProds = ArrayList<com.tokopedia.logisticcart.domain.shipping.ShipProd>()
+        val shipProds = ArrayList<com.tokopedia.logisticcart.shipping.model.ShipProd>()
         for (shipProd: ShipProd in shopShiment.shipProds) {
             shipProds.add(getShipProdModel(shipProd))
         }
@@ -294,8 +294,8 @@ open class AtcDomainModelMapper @Inject constructor() : AtcDataMapper {
         return shopShipment
     }
 
-    private fun getShipProdModel(shipProd: ShipProd): com.tokopedia.logisticcart.domain.shipping.ShipProd {
-        val shipProdModel = com.tokopedia.logisticcart.domain.shipping.ShipProd()
+    private fun getShipProdModel(shipProd: ShipProd): com.tokopedia.logisticcart.shipping.model.ShipProd {
+        val shipProdModel = com.tokopedia.logisticcart.shipping.model.ShipProd()
         shipProdModel.additionalFee = shipProd.additionalFee
         shipProdModel.minimumWeight = shipProd.minimumWeight
         shipProdModel.shipGroupId = shipProd.shipGroupId

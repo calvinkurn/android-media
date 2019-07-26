@@ -13,8 +13,8 @@ import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 
 import java.util.ArrayList;
 import java.util.List;

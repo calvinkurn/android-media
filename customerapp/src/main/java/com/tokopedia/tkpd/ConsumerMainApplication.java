@@ -79,6 +79,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
 
+    CharacterPerMinuteActivityLifecycleCallbacks callback;
+
     // Used to load the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -89,12 +91,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public void onCreate() {
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
+
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
-        com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
+        com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.IS_PREINSTALL = BuildConfig.IS_PREINSTALL;
         com.tokopedia.config.GlobalConfig.PREINSTALL_NAME = BuildConfig.PREINSTALL_NAME;
         com.tokopedia.config.GlobalConfig.PREINSTALL_DESC = BuildConfig.PREINSTALL_DESC;
@@ -145,7 +148,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TimberWrapper.init(this);
     }
 
-    CharacterPerMinuteActivityLifecycleCallbacks callback;
 
     @Override
     public void onTerminate() {

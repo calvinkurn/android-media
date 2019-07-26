@@ -2,13 +2,11 @@ package com.tokopedia.checkout.view.feature.multipleaddressform;
 
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -18,11 +16,9 @@ import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingA
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
-import com.tokopedia.kotlin.util.ContainNullException;
-import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
@@ -32,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import kotlin.Unit;
 import rx.Subscriber;
 
 /**
@@ -246,13 +241,6 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
             @Override
             public void onNext(SetShippingAddressData setShippingAddressData) {
-                NullCheckerKt.isContainNull(setShippingAddressData, s -> {
-                    ContainNullException exception = new ContainNullException("Found " + s + " on " + MultipleAddressPresenter.class.getSimpleName());
-                    if (!BuildConfig.DEBUG) {
-                        Crashlytics.logException(exception);
-                    }
-                    return Unit.INSTANCE;
-                });
 
                 view.hideLoading();
                 if (setShippingAddressData.isSuccess()) {

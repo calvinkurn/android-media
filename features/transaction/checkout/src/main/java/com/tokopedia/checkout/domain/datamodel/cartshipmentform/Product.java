@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.cartshipmentform;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.logisticcart.domain.shipping.AnalyticsProductCheckoutData;
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ public class Product implements Parcelable {
     private String productName;
     private String productPriceFmt;
     private int productPrice;
+    private int productOriginalPrice;
     private int productWholesalePrice;
     private String productWholesalePriceFmt;
     private String productWeightFmt;
@@ -100,6 +101,10 @@ public class Product implements Parcelable {
 
     public void setProductPrice(int productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public void setProductOriginalPrice(int productOriginalPrice) {
+        this.productOriginalPrice = productOriginalPrice;
     }
 
     public void setProductWholesalePrice(int productWholesalePrice) {
@@ -224,6 +229,10 @@ public class Product implements Parcelable {
 
     public int getProductPrice() {
         return productPrice;
+    }
+
+    public int getProductOriginalPrice() {
+        return productOriginalPrice;
     }
 
     public int getProductWholesalePrice() {
@@ -376,6 +385,7 @@ public class Product implements Parcelable {
         dest.writeString(this.productName);
         dest.writeString(this.productPriceFmt);
         dest.writeInt(this.productPrice);
+        dest.writeInt(this.productOriginalPrice);
         dest.writeInt(this.productWholesalePrice);
         dest.writeString(this.productWholesalePriceFmt);
         dest.writeString(this.productWeightFmt);
@@ -417,6 +427,7 @@ public class Product implements Parcelable {
         this.productName = in.readString();
         this.productPriceFmt = in.readString();
         this.productPrice = in.readInt();
+        this.productOriginalPrice = in.readInt();
         this.productWholesalePrice = in.readInt();
         this.productWholesalePriceFmt = in.readString();
         this.productWeightFmt = in.readString();

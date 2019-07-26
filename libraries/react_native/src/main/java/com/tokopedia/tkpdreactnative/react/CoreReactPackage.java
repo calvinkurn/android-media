@@ -9,6 +9,7 @@ import com.tokopedia.tkpdreactnative.react.banner.ReactBannerManager2;
 import com.tokopedia.tkpdreactnative.react.image.RctImageManager;
 import com.tokopedia.tkpdreactnative.react.image.RctImageRemoteManager;
 import com.tokopedia.tkpdreactnative.react.lineargradient.LinearGradientManager;
+import com.tokopedia.tkpdreactnative.react.viewpager.ReactViewPagerManager;
 import com.tokopedia.tkpdreactnative.react.youtube.YouTubeManager;
 import com.tokopedia.tkpdreactnative.react.youtube.YouTubeModule;
 
@@ -42,7 +43,8 @@ public class CoreReactPackage implements ReactPackage {
                 new ButtonViewManager(),
                 new ReactImageManager(),
                 new RctImageManager(),
-                new RctImageRemoteManager()
+                new RctImageRemoteManager(),
+                new ReactViewPagerManager()
         );
     }
 }

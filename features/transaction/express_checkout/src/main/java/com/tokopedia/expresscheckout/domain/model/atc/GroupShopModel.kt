@@ -1,6 +1,6 @@
 package com.tokopedia.expresscheckout.domain.model.atc
 
-import com.tokopedia.logisticcart.domain.shipping.ShopShipment
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 
 /**
  * Created by Irfan Khoirul on 17/12/18.

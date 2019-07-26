@@ -95,19 +95,19 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.logisticcart.domain.shipping.CartItemModel;
-import com.tokopedia.logisticcart.domain.shipping.CodModel;
-import com.tokopedia.logisticcart.domain.shipping.CourierItemData;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
-import com.tokopedia.logisticcart.domain.shipping.ShipProd;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentDetailData;
-import com.tokopedia.logisticcart.domain.shipping.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.domain.shipping.ShopShipment;
-import com.tokopedia.logisticcart.shippingcourier.view.ShippingCourierBottomsheet;
-import com.tokopedia.logisticcart.shippingcourier.view.ShippingCourierBottomsheetListener;
-import com.tokopedia.logisticcart.shippingduration.view.ShippingDurationBottomsheet;
-import com.tokopedia.logisticcart.shippingduration.view.ShippingDurationBottomsheetListener;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipProd;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
@@ -1913,12 +1913,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onPriorityChecked(int position) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(new Runnable() {
-                @Override
-                public void run() {
-                    shipmentAdapter.updateShipmentCostModel();
-                    shipmentAdapter.updateItemAndTotalCost(position);
-                }
+            rvShipment.post(() -> {
+                shipmentAdapter.updateShipmentCostModel();
+                shipmentAdapter.updateItemAndTotalCost(position);
             });
         } else {
             shipmentAdapter.updateShipmentCostModel();
@@ -1929,13 +1926,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onInsuranceChecked(final int position) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(new Runnable() {
-                @Override
-                public void run() {
-                    shipmentAdapter.updateShipmentCostModel();
-                    shipmentAdapter.updateItemAndTotalCost(position);
-                    shipmentAdapter.updateInsuranceTncVisibility();
-                }
+            rvShipment.post(() -> {
+                shipmentAdapter.updateShipmentCostModel();
+                shipmentAdapter.updateItemAndTotalCost(position);
+                shipmentAdapter.updateInsuranceTncVisibility();
             });
         } else {
             shipmentAdapter.updateShipmentCostModel();
@@ -1947,12 +1941,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onNeedUpdateViewItem(final int position) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(new Runnable() {
-                @Override
-                public void run() {
-                    shipmentAdapter.notifyItemChanged(position);
-                }
-            });
+            rvShipment.post(() -> shipmentAdapter.notifyItemChanged(position));
         } else {
             shipmentAdapter.notifyItemChanged(position);
         }
@@ -2003,12 +1992,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onDonationChecked(boolean checked) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(new Runnable() {
-                @Override
-                public void run() {
-                    shipmentAdapter.updateDonation(checked);
-                }
-            });
+            rvShipment.post(() -> shipmentAdapter.updateDonation(checked));
         } else {
             shipmentAdapter.updateDonation(checked);
         }
@@ -2402,9 +2386,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onPurchaseProtectionChangeListener(int position) {
-        shipmentAdapter.updateShipmentCostModel();
-        shipmentAdapter.updateItemAndTotalCost(position);
-        shipmentAdapter.updateInsuranceTncVisibility();
+        if (rvShipment.isComputingLayout()) {
+            rvShipment.post(() -> {
+                shipmentAdapter.updateShipmentCostModel();
+                shipmentAdapter.updateItemAndTotalCost(position);
+                shipmentAdapter.updateInsuranceTncVisibility();
+            });
+        } else {
+            shipmentAdapter.updateShipmentCostModel();
+            shipmentAdapter.updateItemAndTotalCost(position);
+            shipmentAdapter.updateInsuranceTncVisibility();
+        }
     }
 
     @Override

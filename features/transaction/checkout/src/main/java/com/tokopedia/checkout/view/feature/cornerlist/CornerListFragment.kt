@@ -18,7 +18,7 @@ import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListCompone
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import java.util.*
 import javax.inject.Inject
 

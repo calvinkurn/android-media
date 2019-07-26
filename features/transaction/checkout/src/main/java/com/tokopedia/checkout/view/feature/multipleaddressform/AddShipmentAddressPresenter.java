@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.feature.multipleaddressform;
 
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 
 /**
  * Created by kris on 3/1/18. Tokopedia

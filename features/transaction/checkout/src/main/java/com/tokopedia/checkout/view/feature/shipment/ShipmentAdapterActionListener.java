@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentDetailData;
-import com.tokopedia.logisticcart.domain.shipping.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 

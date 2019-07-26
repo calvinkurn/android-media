@@ -10,8 +10,8 @@ import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantPresenter
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
-import com.tokopedia.logisticcart.shippingcourier.view.ShippingCourierBottomsheet
-import com.tokopedia.logisticcart.shippingduration.view.ShippingDurationBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

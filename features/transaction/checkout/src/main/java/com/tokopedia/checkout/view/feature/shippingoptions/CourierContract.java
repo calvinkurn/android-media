@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.logisticcart.domain.shipping.CourierItemData;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentDetailData;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentOptionData;
-import com.tokopedia.logisticcart.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentOptionData;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 
 import java.util.List;
 

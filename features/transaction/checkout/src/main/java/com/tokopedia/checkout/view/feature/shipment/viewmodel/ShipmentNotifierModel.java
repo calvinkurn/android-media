@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.viewmodel;
 
-import com.tokopedia.logisticcart.domain.shipping.ShipmentData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentData;
 
 /**
  * Created by fajarnuha on 06/12/18.

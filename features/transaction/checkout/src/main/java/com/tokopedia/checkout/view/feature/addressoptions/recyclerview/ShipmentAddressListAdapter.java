@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;

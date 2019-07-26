@@ -40,7 +40,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
         return mApi.getResponse(requests)
                 .doOnError(throwable -> {
                     if (!(throwable instanceof UnknownHostException) && !(throwable instanceof SocketTimeoutException)) {
-                        Timber.e(throwable, requests.toString());
+                        Timber.e(throwable, "P1%s", requests.toString());
                     }
                 })
                 .map(jsonElements -> new GraphqlResponseInternal(jsonElements, false)).doOnNext(graphqlResponseInternal -> {

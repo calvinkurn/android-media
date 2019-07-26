@@ -19,7 +19,7 @@ import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -154,19 +154,19 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                // if (isAddNewAddressEnabled()) {
+                if (isAddNewAddressEnabled()) {
                     AddNewAddressAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(this,
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
-                /*} else {
+                } else {
                     intent = AddAddressActivity
                             .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
                                     this, token);
                     startActivityForResult(intent,
                             LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
-                }*/
+                }
 
                 break;
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
@@ -211,7 +211,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
-    public void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult) {
+    public void finishAndSendResult(RecipientAddressModel selectedAddressResult) {
         Intent resultIntent;
         switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:

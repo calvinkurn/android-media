@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -12,7 +11,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
@@ -45,8 +43,6 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.NotEligiblePromoHo
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.kotlin.util.ContainNullException;
-import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
@@ -67,16 +63,16 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiMod
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.logisticcart.domain.ShippingParam;
-import com.tokopedia.logisticcart.domain.shipping.CartItemModel;
-import com.tokopedia.logisticcart.domain.shipping.CodModel;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.domain.shipping.ShipmentDetailData;
-import com.tokopedia.logisticcart.domain.shipping.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.domain.shipping.ShopShipment;
-import com.tokopedia.logisticcart.domain.usecase.GetCourierRecommendationUseCase;
-import com.tokopedia.logisticcart.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.logisticcart.shipping.model.ShippingParam;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase;
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.transaction.common.sharedata.EditAddressParam;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
@@ -118,7 +114,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import kotlin.Unit;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -369,15 +364,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private int calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange, long basisAmount) {
 
-        int buyEgoldValue = 0;
+        if (valueTOCheck == 0 || basisAmount == 0) {
+            return 0;
+        }
 
+        int buyEgoldValue = 0;
         for (int i = minRange; i <= maxRange; i++) {
             if ((valueTOCheck + i) % basisAmount == 0) {
                 buyEgoldValue = i;
                 break;
             }
         }
-
         return buyEgoldValue;
     }
 
@@ -950,13 +947,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(CheckoutData checkoutData) {
-                NullCheckerKt.isContainNull(checkoutData, s -> {
-                    ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
-                    if (!BuildConfig.DEBUG) {
-                        Crashlytics.logException(exception);
-                    }
-                    return Unit.INSTANCE;
-                });
+
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
                     getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
@@ -1662,13 +1653,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 boolean resultSuccess = false;
                                 try {
                                     JSONObject jsonObject = new JSONObject(stringResponse);
-                                    NullCheckerKt.isContainNull(jsonObject, s -> {
-                                        ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
-                                        if (!BuildConfig.DEBUG) {
-                                            Crashlytics.logException(exception);
-                                        }
-                                        return Unit.INSTANCE;
-                                    });
 
                                     resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
                                             .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
@@ -1727,13 +1711,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onNext(SetShippingAddressData setShippingAddressData) {
-                                NullCheckerKt.isContainNull(setShippingAddressData, s -> {
-                                    ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
-                                    if (!BuildConfig.DEBUG) {
-                                        Crashlytics.logException(exception);
-                                    }
-                                    return Unit.INSTANCE;
-                                });
 
                                 getView().hideLoading();
                                 if (setShippingAddressData.isSuccess()) {

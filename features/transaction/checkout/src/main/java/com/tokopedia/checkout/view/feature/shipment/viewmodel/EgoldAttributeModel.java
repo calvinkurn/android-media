@@ -3,7 +3,7 @@ package com.tokopedia.checkout.view.feature.shipment.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.logisticcart.domain.shipping.ShipmentData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentData;
 
 import java.util.ArrayList;
 

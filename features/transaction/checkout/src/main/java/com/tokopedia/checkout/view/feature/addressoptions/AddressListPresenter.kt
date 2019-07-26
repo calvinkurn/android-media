@@ -3,7 +3,8 @@ package com.tokopedia.checkout.view.feature.addressoptions
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.checkout.domain.datamodel.newaddresscorner.AddressListModel
 import com.tokopedia.checkout.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import rx.Subscriber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -13,8 +14,10 @@ const val EMPTY_STRING: String = ""
 /**
  * Created by fajarnuha on 2019-05-24.
  */
-class AddressListPresenter
-@Inject constructor(val usecase: GetAddressCornerUseCase) : AddressListContract.Presenter {
+class AddressListPresenter @Inject constructor(
+        val usecase: GetAddressCornerUseCase,
+        val analytics: CheckoutAnalyticsChangeAddress
+) : AddressListContract.Presenter {
 
     private var mView: AddressListContract.View? = null
     private var mCurrentQuery: String = ""
@@ -85,7 +88,10 @@ class AddressListPresenter
                         mCurrentPage = 1
                         if (it.listAddress.isNotEmpty()) {
                             mView?.showList(it.listAddress.toMutableList())
-                        } else mView?.showListEmpty()
+                        } else {
+                            mView?.showListEmpty()
+                            analytics.eventSearchResultNotFound(query)
+                        }
                     }
                 }
 

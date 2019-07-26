@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.logisticcart.domain.shipping.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -34,6 +35,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView mIvProductImage;
     private Typography mTvProductName;
     private Typography mTvProductPrice;
+    private Typography mTvProductOriginalPrice;
     private Typography mTvProductCountAndWeight;
     private LinearLayout mLlOptionalNoteToSellerLayout;
     private TextView mTvOptionalNoteToSeller;
@@ -60,6 +62,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mIvProductImage = itemView.findViewById(R.id.iv_product_image);
         mTvProductName = itemView.findViewById(R.id.tv_product_name);
         mTvProductPrice = itemView.findViewById(R.id.tv_product_price);
+        mTvProductOriginalPrice = itemView.findViewById(R.id.tv_product_original_price);
         mTvProductCountAndWeight = itemView.findViewById(R.id.tv_item_count_and_weight);
         mLlOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
         mTvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
@@ -94,6 +97,13 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvProductName.setText(cartItem.getName());
         mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItem.getPrice(), false));
+        if (cartItem.getOriginalPrice() > 0) {
+            mTvProductOriginalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false));
+            mTvProductOriginalPrice.setPaintFlags(mTvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            mTvProductOriginalPrice.setVisibility(View.VISIBLE);
+        } else {
+            mTvProductOriginalPrice.setVisibility(View.GONE);
+        }
         mTvProductCountAndWeight.setText(String.format(mTvProductCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItem.getQuantity()),
@@ -176,6 +186,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         int colorGreyNonActiveText = ContextCompat.getColor(mTvProductName.getContext(), R.color.grey_nonactive_text);
         mTvProductName.setTextColor(colorGreyNonActiveText);
         mTvProductPrice.setTextColor(colorGreyNonActiveText);
+        mTvProductOriginalPrice.setTextColor(colorGreyNonActiveText);
         mTvFreeReturnLabel.setTextColor(colorGreyNonActiveText);
         mTvPreOrder.setTextColor(colorGreyNonActiveText);
         mTvNoteToSellerLabel.setTextColor(colorGreyNonActiveText);
@@ -199,6 +210,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private void enableItemView() {
         mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), R.color.black_70));
         mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), R.color.orange_red));
+        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.getContext(), R.color.n_700_44));
         mTvFreeReturnLabel.setTextColor(ContextCompat.getColor(mTvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
         mTvPreOrder.setTextColor(ContextCompat.getColor(mTvPreOrder.getContext(), R.color.font_black_secondary_54));
         mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mTvNoteToSellerLabel.getContext(), R.color.black_38));

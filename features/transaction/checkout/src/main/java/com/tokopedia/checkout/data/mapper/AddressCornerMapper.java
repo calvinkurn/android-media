@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
 import com.tokopedia.checkout.domain.datamodel.addresscorner.Datum;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.logisticcart.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;
