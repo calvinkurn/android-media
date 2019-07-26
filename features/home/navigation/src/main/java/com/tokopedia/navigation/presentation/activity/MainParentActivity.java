@@ -372,10 +372,11 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         if ((position == CART_MENU || position == ACCOUNT_MENU) && !presenter.isUserLogin()) {
-            RouteManager.route(this, ApplinkConst.LOGIN);
+            String applink = String.format("%s?source=%s", ApplinkConst.LOGIN, "account");
+            RouteManager.route(this, applink);
             return false;
         }
-        
+
         if (position == OS_MENU) {
             setOsIconProgress(OS_STATE_SELECTED);
         } else {
