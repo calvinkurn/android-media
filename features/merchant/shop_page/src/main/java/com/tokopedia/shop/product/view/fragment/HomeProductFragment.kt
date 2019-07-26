@@ -133,7 +133,7 @@ class HomeProductFragment : BaseDaggerFragment() {
     }
 
     private fun optimizeWebView() {
-        if (Build.VERSION.SDK_INT >= 19) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             shopPageNestedWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         } else {
             shopPageNestedWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
@@ -142,7 +142,7 @@ class HomeProductFragment : BaseDaggerFragment() {
 
     fun promoClicked(url: String?) {
         activity?.let {
-            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopInfo!!.shopCore.shopID,
+            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopInfo?.shopCore?.shopID,
                     userSession.isLoggedIn,
                     userSession.deviceId,
                     userSession.userId)
@@ -188,11 +188,15 @@ class HomeProductFragment : BaseDaggerFragment() {
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             val uri = Uri.parse(url)
-            if (url.contains(SHOP_STATIC_URL)) {
-                view.loadUrl(url)
-            } else if (uri.scheme == ShopProductOfficialStoreUtils.TOKOPEDIA_HOST || uri.scheme!!.startsWith(ShopProductOfficialStoreUtils.HTTP)) {
-                promoClicked(url)
+
+            uri.also {
+                if (url.contains(SHOP_STATIC_URL)) {
+                    view.loadUrl(url)
+                } else if (uri.scheme == ShopProductOfficialStoreUtils.TOKOPEDIA_HOST || it.scheme.startsWith(ShopProductOfficialStoreUtils.HTTP)) {
+                    promoClicked(url)
+                }
             }
+
             return true
         }
     }

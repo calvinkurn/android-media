@@ -80,7 +80,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     var shopAttribution: String? = null
     var isShowFeed: Boolean = false
     var isOfficialStore: Boolean = false
-    var isTopContentNotNull: Boolean = false
     var createPostUrl: String = ""
     private var performanceMonitoring: PerformanceMonitoring? = null
 
@@ -395,8 +394,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         setViewState(VIEW_CONTENT)
         with(shopInfo) {
-            isOfficialStore = (goldOS.isOfficial == 1 && shopInfo.topContent.topUrl != "")
-            isTopContentNotNull = shopInfo.topContent.topUrl != ""
+            isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             shopPageViewPagerAdapter.shopId = shopCore.shopID
             shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID))
             updateUIByShopName(shopCore.name)
@@ -462,7 +460,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     private fun setupTabs() {
         titles = when {
-            isShowFeed and isOfficialStore  -> {
+            isShowFeed and isOfficialStore -> {
                 arrayOf(getString(R.string.shop_info_title_tab_home),
                         getString(R.string.shop_info_title_tab_product),
                         getString(R.string.shop_info_title_tab_feed),
@@ -491,8 +489,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         if (isOfficialStore && tabPosition == 0) {
             tabPosition = 1
-        }else if(!isTopContentNotNull){
-            tabPosition = 0
         }
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
     }

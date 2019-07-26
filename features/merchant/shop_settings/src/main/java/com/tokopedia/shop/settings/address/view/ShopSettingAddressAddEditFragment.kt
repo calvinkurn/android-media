@@ -47,8 +47,6 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
         private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID = "province_id"
         private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "province_name"
         private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "zipcodes"
-
-
         private const val PARAM_EXTRA_SHOP_ADDRESS = "shop_address"
         private const val PARAM_EXTRA_IS_ADD_NEW = "is_add_new"
         private const val PARAM_EXTRA_IS_SUCCESS = "is_success"
