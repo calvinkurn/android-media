@@ -66,6 +66,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.WithdrawRouter;
+import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
@@ -131,7 +132,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private TextView saldoWithdrawHintTV;
     private static final String IS_WITHDRAW_LOCK = "is_lock";
     private static final String MCL_LATE_COUNT = "late_count";
-
+    private static final String FIREBASE_FLAG_STATUS="is_on";
 
     private int statusWithDrawLock;
     private int mclLateCount;
@@ -142,6 +143,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private ImageView ivDismissTicker;
     private static final int MCL_STATUS_BLOCK1 = 700;
     private static final int MCL_STATUS_BLOCK3 = 999;
+    private boolean showMclBlockTickerFirebaseFlag = false;
     private ImageView ivLockButton;
 
     private boolean buttonSellerSaldoStatus = false;
@@ -242,13 +244,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bankAdapter.setList(listBank);
 
         if (getArguments() != null) {
+            showMclBlockTickerFirebaseFlag=getArguments().getBoolean(FIREBASE_FLAG_STATUS);
             buyerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
             sellerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
             statusWithDrawLock = getArguments().getInt(IS_WITHDRAW_LOCK);
             mclLateCount = getArguments().getInt(MCL_LATE_COUNT);
         }
 
-        if (statusWithDrawLock == MCL_STATUS_BLOCK1 || statusWithDrawLock == MCL_STATUS_BLOCK3) {
+        if ((statusWithDrawLock == MCL_STATUS_BLOCK1 || statusWithDrawLock == MCL_STATUS_BLOCK3) && showMclBlockTickerFirebaseFlag) {
             showTicker();
         }
 
@@ -316,21 +319,20 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.seller_saldo_less_min));
                 } else {
 
-                    if (statusWithDrawLock == MCL_STATUS_BLOCK3 || statusWithDrawLock == MCL_STATUS_BLOCK1) {
+                    if ((statusWithDrawLock == MCL_STATUS_BLOCK3 || statusWithDrawLock == MCL_STATUS_BLOCK1) && showMclBlockTickerFirebaseFlag) {
                         ivLockButton.setVisibility(View.VISIBLE);
                         withdrawButtonWrapper.setEnabled(false);
                         withdrawButtonWrapper.setClickable(false);
                         sellerSaldoWithDrawTvStatus = true;
-                        String webViewMTDashBoardUrl = getString(R.string.saldolock_info_url);
-                        SpannableString ss = new SpannableString(tvWithDrawInfo.getText());
-                        String tickerMsg = tvWithDrawInfo.getText().toString();
-                        int startIndex = tickerMsg.indexOf("di");
+                        SpannableString ss = new SpannableString(getString(R.string.saldolock_info_text));
+                        String tickerMsg = getString(R.string.saldolock_info_text);
+                        int startIndex = tickerMsg.indexOf("di sini");
                         tvWithDrawInfo.setMovementMethod(LinkMovementMethod.getInstance());
                         ss.setSpan(new ClickableSpan() {
                             @Override
                             public void onClick(@NonNull View view) {
                                 RouteManager.route(getContext(), String.format("%s?url=%s",
-                                        ApplinkConst.WEBVIEW, webViewMTDashBoardUrl));
+                                        ApplinkConst.WEBVIEW, WithdrawConstant.SALDOLOCK_INFO));
                             }
 
                             @Override
@@ -447,11 +449,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     public void showTicker() {
 
-        String webViewMTDashBoardUrl = getString(R.string.saldolock_pembayaran_url);
-        String tickerMsg = tvTickerMessage.getText().toString();
-        int startIndex = tickerMsg.indexOf('.')+1 ;
+        String tickerMsg = getString(R.string.saldolock_tickerDescription);
+        int startIndex = tickerMsg.indexOf("Bayar sekarang");
         String late=Integer.toString(mclLateCount);
-        tickerMsg = tickerMsg.replace("2", late);
+        tickerMsg  =  String.format(getResources().getString(R.string.saldolock_tickerDescription),late);
         SpannableString ss = new SpannableString(tickerMsg);
 
         tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
@@ -459,7 +460,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             @Override
             public void onClick(@NonNull View view) {
                 RouteManager.route(getContext(), String.format("%s?url=%s",
-                        ApplinkConst.WEBVIEW, webViewMTDashBoardUrl));
+                        ApplinkConst.WEBVIEW, WithdrawConstant.SALDOLOCK_PAYNOW_URL));
             }
 
             @Override
@@ -468,7 +469,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 ds.setUnderlineText(false);
                 ds.setColor(getResources().getColor(R.color.tkpd_main_green));
             }
-        }, startIndex, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, startIndex-1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tvTickerMessage.setText(ss);
         ivDismissTicker.setOnClickListener(v -> tickerLayout.setVisibility(View.GONE));

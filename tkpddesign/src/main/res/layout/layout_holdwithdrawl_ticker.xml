@@ -41,7 +41,7 @@
         android:layout_height="@dimen/dp_32"
         android:layout_marginRight="@dimen/dp_8"
         android:padding="@dimen/dp_8"
-        android:src="@drawable/ic_action_x"
+        app:srcCompat="@drawable/ic_action_x"
         android:tint="@color/black_36"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

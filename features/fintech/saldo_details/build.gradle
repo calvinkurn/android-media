@@ -31,6 +31,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.travelCalendar)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

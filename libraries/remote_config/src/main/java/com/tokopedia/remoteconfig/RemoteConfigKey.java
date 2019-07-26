@@ -135,6 +135,7 @@ public class RemoteConfigKey {
 
     //feed section
     public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
+    public static final String APP_ENABLE_SALDO_LOCK = "app_enable_saldo_lock";
 
     public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
 
