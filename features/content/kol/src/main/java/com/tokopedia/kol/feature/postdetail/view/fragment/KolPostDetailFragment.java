@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -24,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
@@ -857,6 +859,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onPostTagItemBuyClicked(@NotNull PostTagItem postTagItem) {
+        presenter.addPostTagItemToCart(postTagItem);
+    }
+
+    @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition, @NotNull String youtubeId) {
         String YOUTUBE_URL = "{youtube_url}";
         String redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId);
@@ -895,6 +902,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
         startActivityForResult(VideoDetailActivity.Companion.getInstance(getActivity(), postId), OPEN_VIDEO_DETAIL);
+    }
+
+    @Override
+    public void onAddToCartSuccess() {
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
+    }
+
+    @Override
+    public void onAddToCartFailed(String pdpAppLink) {
+        onGoToLink(pdpAppLink);
     }
 
     private void onGoToLink(String link) {
