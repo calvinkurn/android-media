@@ -45,7 +45,7 @@ import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.ceil
+import kotlin.math.roundToLong
 
 /**
  * @author by jessica on 15/04/19
@@ -238,7 +238,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onItemClicked(room: HotelRoom) {
-        trackingHotelUtil.hotelClickRoomDetails(hotelRoomListPageModel.propertyId, room.roomId, ceil(room.roomPrice.priceAmount).toString())
+        trackingHotelUtil.hotelClickRoomDetails(hotelRoomListPageModel.propertyId, room.roomId, room.roomPrice.priceAmount.roundToLong().toString())
         val objectId = System.currentTimeMillis().toString()
         context?.run {
             SaveInstanceCacheManager(this, objectId).apply {
@@ -345,7 +345,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onPhotoClickListener(room: HotelRoom) {
-        trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId, ceil(room.roomPrice.priceAmount).toString())
+        trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId, room.roomPrice.priceAmount.roundToLong().toString())
     }
 
     fun goToLoginPage() {
