@@ -34,15 +34,18 @@ import java.util.concurrent.TimeoutException
  * Created by Ashwani Tyagi on 18/10/18.
  */
 abstract class BaseNotification internal constructor(protected var context: Context, var baseNotificationModel: BaseNotificationModel) {
+
     private var cacheHandler: CMNotificationCacheHandler? = null
+    val NOTIFICATION_NUMBER = 1
 
     protected val builder: NotificationCompat.Builder
         get() {
-            val builder: NotificationCompat.Builder = if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
-                NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
-            } else {
-                NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
-            }
+            val builder: NotificationCompat.Builder =
+                    if (baseNotificationModel.channelName != null && baseNotificationModel.channelName!!.isNotEmpty()) {
+                        NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
+                    } else {
+                        NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
+                    }
 
             if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
                 builder.setSubText(baseNotificationModel.subText)
@@ -62,7 +65,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     createNotificationChannel()
                     builder.setBadgeIconType(BADGE_ICON_SMALL)
-                    builder.setNumber(1)
+                    builder.setNumber(NOTIFICATION_NUMBER)
                 } else {
                     setNotificationSound(builder)
                     setNotificationPriorityPreOreo(builder, baseNotificationModel.priorityPreOreo)
@@ -319,17 +322,14 @@ abstract class BaseNotification internal constructor(protected var context: Cont
          *
          * */
         private fun jsonToBundle(bundle: Bundle, jsonObject: JSONObject?): Bundle {
-            try {
-                val iterator = jsonObject!!.keys()
+            jsonObject?.let {
+                val iterator = it.keys()
                 while (iterator.hasNext()) {
                     val key = iterator.next() as String
-                    val value = jsonObject.getString(key)
+                    val value = it.getString(key)
                     bundle.putString(key, value)
                 }
-            } catch (e: Exception) {
-
             }
-
             return bundle
         }
 

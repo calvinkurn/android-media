@@ -31,6 +31,7 @@ object CarouselUtilities {
 
     private const val MAX_WIDTH = 720
     private const val MAX_HEIGHT = 720
+    private const val GLIDE_TIME_OUT = 30L
 
     fun downloadCarouselImages(context: Context, carouselList: List<Carousel>) {
         for (carousel in carouselList) {
@@ -66,7 +67,7 @@ object CarouselUtilities {
             Glide.with(context).load(url)
                     .asBitmap()
                     .into(MAX_WIDTH, MAX_HEIGHT)
-                    .get(30, TimeUnit.SECONDS)
+                    .get(GLIDE_TIME_OUT, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             return null
         } catch (e: ExecutionException) {
@@ -152,121 +153,3 @@ object CarouselUtilities {
         }
     }
 }
-
-
-/*
-
-
-
-    private fun getCompressedBitmap(imagePath: String): Bitmap? {
-        try {
-            var scaledBitmap: Bitmap? = null
-            val options = BitmapFactory.Options()
-            options.inJustDecodeBounds = true
-            BitmapFactory.decodeFile(imagePath, options)
-            var actualHeight = options.outHeight
-            var actualWidth = options.outWidth
-
-            var imgRatio = actualWidth.toFloat() / actualHeight.toFloat()
-            val maxRatio = MAX_WIDTH / MAX_HEIGHT
-
-            if (actualHeight > MAX_HEIGHT || actualWidth > MAX_WIDTH) {
-                when {
-                    imgRatio < maxRatio -> {
-                        imgRatio = (MAX_HEIGHT / actualHeight).toFloat()
-                        actualWidth = (imgRatio * actualWidth).toInt()
-                        actualHeight = MAX_HEIGHT as Int
-                    }
-                    imgRatio > maxRatio -> {
-                        imgRatio = (MAX_WIDTH / actualWidth).toFloat()
-                        actualHeight = (imgRatio * actualHeight).toInt()
-                        actualWidth = MAX_WIDTH as Int
-                    }
-                    else -> {
-                        actualHeight = MAX_HEIGHT as Int
-                        actualWidth = MAX_WIDTH as Int
-
-                    }
-                }
-            }
-
-            options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight)
-            options.inJustDecodeBounds = false
-            options.inDither = false
-            options.inPurgeable = true
-            options.inInputShareable = true
-            options.inTempStorage = ByteArray(16 * 1024)
-            var bmp: Bitmap
-            try {
-                bmp = BitmapFactory.decodeFile(imagePath, options)
-            } catch (exception: OutOfMemoryError) {
-                return null
-
-            }
-            try {
-                scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.RGB_565)
-            } catch (exception: OutOfMemoryError) {
-                return null
-            }
-
-
-            val ratioX = actualWidth / options.outWidth.toFloat()
-            val ratioY = actualHeight / options.outHeight.toFloat()
-            val middleX = actualWidth / 2.0f
-            val middleY = actualHeight / 2.0f
-
-            val scaleMatrix = Matrix()
-            scaleMatrix.setScale(ratioX, ratioY, middleX, middleY)
-
-            val canvas = Canvas(scaledBitmap)
-            canvas.matrix = scaleMatrix
-            canvas.drawBitmap(bmp, middleX - bmp!!.width / 2,
-                    middleY - bmp.height / 2, Paint(Paint.FILTER_BITMAP_FLAG))
-
-            bmp.recycle()
-
-            val exif = ExifInterface(imagePath)
-            val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0)
-            val matrix = Matrix()
-            matrix.postRotate(readExifOrientation(orientation))
-            return Bitmap.createBitmap(scaledBitmap, 0, 0,
-                    scaledBitmap!!.width, scaledBitmap.height, matrix, true)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: OutOfMemoryError) {
-            e.printStackTrace()
-        }
-        return null
-
-    }
-
-    private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
-        val height = options.outHeight
-        val width = options.outWidth
-        var inSampleSize = 1
-
-        if (height > reqHeight || width > reqWidth) {
-            val heightRatio = Math.round(height.toFloat() / reqHeight.toFloat())
-            val widthRatio = Math.round(width.toFloat() / reqWidth.toFloat())
-            inSampleSize = if (heightRatio < widthRatio) heightRatio else widthRatio
-        }
-        val totalPixels = (width * height).toFloat()
-        val totalReqPixelsCap = (reqWidth * reqHeight * 2).toFloat()
-
-        while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
-            inSampleSize++
-        }
-
-        return inSampleSize
-    }
-
-    internal fun readExifOrientation(exifOrientation: Int): Float {
-        return when (exifOrientation) {
-            ExifInterface.ORIENTATION_NORMAL, ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> 0F
-            ExifInterface.ORIENTATION_ROTATE_180, ExifInterface.ORIENTATION_FLIP_VERTICAL -> 180F
-            ExifInterface.ORIENTATION_ROTATE_90, ExifInterface.ORIENTATION_TRANSPOSE -> 90F
-            ExifInterface.ORIENTATION_ROTATE_270, ExifInterface.ORIENTATION_TRANSVERSE -> 270F
-            else -> 0F
-        }
-    }
-*/
