@@ -36,9 +36,9 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -130,6 +130,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private static final int NO_ELEVATION = 0;
     private static final String CART_TRACE = "mp_cart";
     private static final String CART_ALL_TRACE = "mp_cart_all";
+    private static final int NAVIGATION_PDP = 64728;
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
@@ -376,7 +377,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.Companion.getLAYOUT()) {
+                if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
                     return 1;
                 }
                 return 2;
@@ -632,7 +633,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.getCartItemData().getOriginData().getProductName());
-        navigateToActivity(getProductIntent(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
+        navigateToActivityRequest(getProductIntent(cartItemHolderData.getCartItemData().getOriginData().getProductId()), NAVIGATION_PDP);
     }
 
     private Intent getProductIntent(String productId) {
@@ -666,7 +667,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onProductClicked(@NotNull String productId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
-        startActivity(intent);
+        startActivityForResult(intent, NAVIGATION_PDP);
     }
 
     @Override
@@ -1462,7 +1463,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        navigateToActivity(getProductIntent(product.getId()));
+        navigateToActivityRequest(getProductIntent(product.getId()), NAVIGATION_PDP);
     }
 
     @Override
@@ -1483,7 +1484,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (dPresenter.getCartListData() != null && dPresenter.getCartListData().getShopGroupDataList().size() > 0) {
                 showMainContainer();
             }
-            dPresenter.processInitialGetCartData(getCartId(), true, false);
+            dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
             String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
             if (!TextUtils.isEmpty(promo)) {
                 dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
@@ -1502,6 +1503,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             case ShipmentActivity.REQUEST_CODE:
                 onResultFromRequestCodeCartShipment(resultCode, data);
                 break;
+            case NAVIGATION_PDP:
+                refreshHandler.setRefreshing(true);
+                dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
         }
     }
 
@@ -1784,7 +1788,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartPageAnalytics.eventViewPromoAutoApply();
     }
 
-    private void notifyBottomCartParent() {
+    @Override
+    public void notifyBottomCartParent() {
         if (getActivity() instanceof CartNotifyListener) {
             ((CartNotifyListener) getActivity()).onNotifyCart();
         }
@@ -2041,29 +2046,18 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void renderRecommendation(@Nullable List<RecommendationItem> recommendationItems) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
-        if (this.recommendationList != null) {
-            if (recommendationList.size() != 0) {
-                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
-            } else {
-                if (recommendationItems != null) {
-                    int previousItemCount = cartAdapter.getItemCount();
-                    for (RecommendationItem recommendationItem : recommendationItems) {
-                        boolean rightPosition = previousItemCount % 2 == 1;
-                        CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                                new CartRecommendationItemHolderData(recommendationItem, rightPosition);
-                        cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
-                    }
-                }
+
+        if (recommendationItems != null) {
+            // Render from API
+            for (RecommendationItem recommendationItem : recommendationItems) {
+                CartRecommendationItemHolderData cartRecommendationItemHolderData =
+                        new CartRecommendationItemHolderData(recommendationItem);
+                cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
             }
         } else {
-            if (recommendationItems != null) {
-                int previousItemCount = cartAdapter.getItemCount();
-                for (RecommendationItem recommendationItem : recommendationItems) {
-                    boolean rightPosition = previousItemCount % 2 == 1;
-                    CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                            new CartRecommendationItemHolderData(recommendationItem, rightPosition);
-                    cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
-                }
+            // Render from Cache
+            if (recommendationList != null && recommendationList.size() != 0) {
+                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
             }
         }
 
@@ -2075,8 +2069,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         hasLoadRecommendation = true;
-        cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
-        this.recommendationList = cartRecommendationItemHolderDataList;
+        if (cartRecommendationItemHolderDataList.size() > 0) {
+            cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
+            recommendationList = cartRecommendationItemHolderDataList;
+        }
     }
 
     @Override
@@ -2090,7 +2086,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataResponseModel addToCartDataResponseModel, Object productModel) {
+    public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel) {
         Map<String, Object> stringObjectMap = null;
         String eventCategory = "";
         String eventAction = "";

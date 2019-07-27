@@ -28,6 +28,7 @@ import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -119,7 +120,7 @@ public class DistrictRecommendationModule {
     @DistrictRecommendationScope
     KeroApi provideKeroApi(Gson gson, OkHttpClient okHttpClient) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.KERO_DOMAIN)
+                .baseUrl(TokopediaUrl.Companion.getInstance().getKERO())
                 .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(new StringResponseConverter())

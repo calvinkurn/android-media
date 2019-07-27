@@ -16,13 +16,18 @@ class StickyComponentMapper @Inject constructor() : Func1<Response<DataResponse<
         StickyComponentViewModel> {
 
     override fun call(response: Response<DataResponse<StickyComponentPojo>>): StickyComponentViewModel {
-        if ((response.body() != null) && (response.body().header == null ||
-                        (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                        (response.body().header != null && response.body().header.messages[0].isBlank()))) {
-            val pojo: StickyComponentPojo = response.body().data
-            return mapToViewModel(pojo)
+        val body = response.body()
+        if (body != null) {
+            if ((body.header == null ||
+                            (body.header != null && body.header.messages.isEmpty()) ||
+                            (body.header != null && body.header.messages[0].isBlank()))) {
+                val pojo: StickyComponentPojo = body.data
+                return mapToViewModel(pojo)
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 

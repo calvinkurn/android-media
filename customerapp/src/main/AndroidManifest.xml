@@ -21,6 +21,15 @@
     <uses-permission
         android:name="android.permission.WRITE_CONTACTS"
         tools:node="remove"/>
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false"
+        tools:replace="required" />
+
+    <permission
+        android:name="${applicationId}.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -39,6 +48,10 @@
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/Theme.Tokopedia3"
         tools:replace="name, label">
+        <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
+           android:value="false"/>
+        <meta-data android:name="com.facebook.sdk.AutoInitEnabled"
+           android:value="false"/>
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true"/>
@@ -197,6 +210,11 @@
             android:name="com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
             android:screenOrientation="portrait" />
+        <provider
+            android:name="com.facebook.internal.FacebookInitProvider"
+            android:authorities="${applicationId}.FacebookInitProvider"
+            android:exported="false"
+            tools:node="remove" />
 
         <provider
             android:name="com.facebook.FacebookContentProvider"

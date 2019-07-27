@@ -37,6 +37,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_weight="1"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             tools:itemCount="2"
             tools:listitem="@layout/kol_post_layout" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
