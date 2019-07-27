@@ -36,13 +36,12 @@ class HotelSearchFilterAdapter<E: HotelSearchFilterAdapter.HotelFilterItem>(
     override fun getItemCount(): Int = _item.size
 
     override fun onBindViewHolder(holder: HotelSearchFilterViewHolder<E>, position: Int) {
-        val item = _item[position]
-        holder.bindItem(item, item.getItemId() in selectedItems)
+        holder.bindItem(_item[position], _item[position].getItemId() in selectedItems)
         holder.itemView.setOnClickListener {
-            if (item.getItemId() in selectedItems)
-                selectedItems.remove(item.getItemId())
+            if (_item[position].getItemId() in selectedItems)
+                selectedItems.remove(_item[position].getItemId())
             else
-                selectedItems.add(item.getItemId())
+                selectedItems.add(_item[position].getItemId())
             notifyDataSetChanged()
         }
     }
