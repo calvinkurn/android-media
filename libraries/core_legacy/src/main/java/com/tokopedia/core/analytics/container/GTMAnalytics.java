@@ -2,7 +2,6 @@ package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.support.annotation.Nullable;
@@ -13,6 +12,7 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PurchaseTracking;
@@ -23,11 +23,13 @@ import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
-import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.HashMap;
@@ -35,11 +37,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
+
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class GTMAnalytics extends ContextAnalytics {
     private static final String TAG = GTMAnalytics.class.getSimpleName();
-    private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
+    private static final long EXPIRE_CONTAINER_TIME_DEFAULT = TimeUnit.MINUTES.toMillis(150); // 150 minutes (2.5 hours)
 
     private static final String KEY_EVENT = "event";
     private static final String KEY_CATEGORY = "eventCategory";
@@ -49,12 +56,14 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
     private final Iris iris;
+    private final RemoteConfig remoteConfig;
 
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
         super(context);
         iris = IrisAnalytics.Companion.getInstance(context);
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @Override
@@ -103,11 +112,14 @@ public class GTMAnalytics extends ContextAnalytics {
                     bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
 
             pResult.setResultCallback(cHolder -> {
-                ContainerHolderSingleton.setContainerHolder(cHolder);
-                if (isAllowRefreshDefault(cHolder)) {
-                    Log.i("GTM TKPD", "Refreshed Container ");
-                    cHolder.refresh();
-                }
+                cHolder.setContainerAvailableListener((containerHolder, s) -> {
+                    if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
+                        if (isAllowRefreshDefault(containerHolder)) {
+                            Log.d("GTM TKPD", "Refreshed Container ");
+                            containerHolder.refresh();
+                        }
+                    }
+                });
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
             eventError(getContext().getClass().toString(), e.toString());
@@ -132,12 +144,17 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
-        Log.i("GAv4", "UA-9801603-15: Send Event");
-
-        log(getContext(), eventName, values);
-
-        getTagManager().getDataLayer().pushEvent(eventName, values);
-        pushIris(eventName, values);
+        Observable.just(values)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(uid -> {
+                    Log.i("GAv4", "UA-9801603-15: Send Event");
+                    log(getContext(), eventName, values);
+                    getTagManager().getDataLayer().pushEvent(eventName, values);
+                    pushIris(eventName, values);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
     @Override
@@ -232,6 +249,17 @@ public class GTMAnalytics extends ContextAnalytics {
         sendScreen(screenName, customDimension);
     }
 
+    public void sendScreenAuthenticated2(String screenName, String shopID, String shopType, String pageType, String productId) {
+        if (TextUtils.isEmpty(screenName)) return;
+        Map<String, String> customDimension = new HashMap<>();
+        customDimension.put(Authenticated.KEY_SHOP_ID_SELLER, shopID);
+        customDimension.put(Authenticated.KEY_PAGE_TYPE, pageType);
+        customDimension.put(Authenticated.KEY_SHOP_TYPE, shopType);
+        customDimension.put(Authenticated.KEY_PRODUCT_ID, productId);
+        eventAuthenticate(customDimension);
+        sendScreen(screenName, customDimension);
+    }
+
     public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
         if (TextUtils.isEmpty(screenName)) return;
         Map<String, String> customDimension = new HashMap<>();
@@ -296,18 +324,90 @@ public class GTMAnalytics extends ContextAnalytics {
         return this;
     }
 
-    private void pushGeneral(Map<String, Object> values) {
-        Log.i("GAv4", "UA-9801603-15: Send General");
+    public void pushClickEECommerce(Bundle bundle){
+        // replace list
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
+        bundle.remove("list");
+        logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle, context);
+    }
 
-        log(getContext(), null, values);
-        TagManager.getInstance(getContext()).getDataLayer().push(values);
-        pushIris("", values);
+    private static final String PRODUCTVIEW = "productview";
+    private static final String PRODUCTCLICK = "productclick";
+
+    public void pushEECommerce(String keyEvent, Bundle bundle){
+        // replace list
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
+        bundle.remove("list");
+
+        switch (keyEvent.toLowerCase()){
+            case PRODUCTVIEW:
+                keyEvent = FirebaseAnalytics.Event.VIEW_ITEM;
+                break;
+            case PRODUCTCLICK:
+                keyEvent = FirebaseAnalytics.Event.SELECT_CONTENT;
+                break;
+
+        }
+        logEvent(keyEvent, bundle, context);
+    }
+
+    public void pushGeneralGtmV5(Map<String, Object> params){
+        sendGeneralEvent(params);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY)+"");
+        bundle.putString(KEY_ACTION, params.get(KEY_ACTION)+"");
+        bundle.putString(KEY_LABEL, params.get(KEY_LABEL)+"");
+
+        logEvent(params.get(KEY_EVENT)+"", bundle, context);
+    }
+
+    public void pushGeneralGtmV5(String event, String category, String action, String label){
+        sendGeneralEvent(event, category, action, label);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_CATEGORY, category);
+        bundle.putString(KEY_ACTION, action);
+        bundle.putString(KEY_LABEL, label);
+
+        logEvent(event, bundle, context);
+
+
+    }
+
+    public static void logEvent(String eventName, Bundle bundle,Context context){
+        try {
+            FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    private void pushGeneral(Map<String, Object> values) {
+        Observable.just(values)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(map -> {
+                    Log.i("GAv4", "UA-9801603-15: Send General");
+                    log(getContext(), null, values);
+                    TagManager.getInstance(getContext()).getDataLayer().push(values);
+                    pushIris("", values);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
     public void pushUserId(String userId) {
-        Map<String, Object> maps = new HashMap<>();
-        maps.put("user_id", userId);
-        getTagManager().getDataLayer().push(maps);
+        Observable.just(userId)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(uid -> {
+                    Map<String, Object> maps = new HashMap<>();
+                    maps.put("user_id", uid);
+                    getTagManager().getDataLayer().push(maps);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
     public void eventLogAnalytics(String screenName, String errorDesc) {
@@ -334,19 +434,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 "onapps", DataLayer.mapOf("LoginId", uid));
     }
 
-    public void eventTransaction(Purchase purchase) {
-        pushGeneral(DataLayer.mapOf("ecommerce", DataLayer.mapOf(
-                "purchase", purchase.getPurchase()
-        )));
-    }
-
-    public void clearTransactionDataLayer(Purchase purchase) {
-        purchase.clearPurchase();
-        pushGeneral(DataLayer.mapOf("id", null, "affiliation", null,
-                "revenue", null, "shipping", null, "products", null,
-                "currencyCode", null, "actionField", null, "ecommerce", null));
-    }
-
     public GTMAnalytics sendEvent(Map<String, Object> events) {
         pushGeneral(events);
         return this;
@@ -356,109 +443,9 @@ public class GTMAnalytics extends ContextAnalytics {
         pushEvent( name, data);
     }
 
-    public void eventNetworkError(String networkError) {
-
-    }
-
-    public void eventClickHotlistProductFeatured(Hotlist hotlist) {
-        pushGeneral(
-                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
-                        "eventCategory", AppEventTracking.Category.CATEGORY_HOTLIST,
-                        "eventAction", String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
-                        "eventLabel", String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
-                                "ecommerce", DataLayer.mapOf(
-                                        "click", DataLayer.mapOf(
-                                                "actionField", DataLayer.mapOf(
-                                                        "list", "hotlist"),
-                                                "products", hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()])
-                                        )
-                                )
-                        )
-                ));
-    }
-
-    public void impressionHotlistTracking(String hotlistName, String promoName, String promoCode) {
-        clearEventTracking();
-        pushGeneral(
-                DataLayer.mapOf(
-                        "event", "clickHotlist",
-                        "eventCategory", "hotlist page",
-                        "eventAction", "hotlist promo impression",
-                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
-                )
-        );
-    }
-
-    public void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
-        clearEventTracking();
-        pushGeneral(
-                DataLayer.mapOf(
-                        "event", "clickHotlist",
-                        "eventCategory", "hotlist page",
-                        "eventAction", "hotlist promo click salin kode",
-                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
-                )
-        );
-    }
-
-    public void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
-        clearEventTracking();
-        pushGeneral(
-                DataLayer.mapOf(
-                        "event", "clickHotlist",
-                        "eventCategory", "hotlist page",
-                        "eventAction", "hotlist promo click syarat ketentuan",
-                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
-                )
-        );
-    }
-
-    public void eventImpressionPromoList(List<Object> list, String promoName) {
-        clearEnhanceEcommerce();
-
-        pushGeneral(
-                DataLayer.mapOf(
-                        "event", "promoView",
-                        "eventCategory", "promo microsite - promo list",
-                        "eventAction", "impression on promo",
-                        "eventLabel", promoName,
-                        "ecommerce", DataLayer.mapOf(
-                                "promoView", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(
-                                                list.toArray(new Object[list.size()]
-                                                )
-                                        )
-                                )
-                        )
-                )
-        );
-    }
-
-    public void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
-        pushGeneral(trackingData);
-    }
-
-    public void eventClickPromoListItem(List<Object> list, String promoName) {
-        clearEnhanceEcommerce();
-
-        pushGeneral(
-                DataLayer.mapOf(
-                        "event", "promoView",
-                        "eventCategory", "promo microsite - promo list",
-                        "eventAction", "impression on promo",
-                        "eventLabel", promoName,
-                        "ecommerce", DataLayer.mapOf(
-                                "promoClick", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(
-                                                list.toArray(new Object[list.size()]
-                                                )
-                                        )
-                                )
-                        )
-                )
-        );
-    }
-
+    /**
+     * ada skema di gtm yang nge-cache nah ini gimana?
+     */
     public void clearEnhanceEcommerce() {
         pushGeneral(
                 DataLayer.mapOf("event", null,
@@ -483,85 +470,6 @@ public class GTMAnalytics extends ContextAnalytics {
         );
     }
 
-    public void eventPurchaseMarketplace(Purchase purchase) {
-        pushGeneral(
-                DataLayer.mapOf(
-                        AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
-                        AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
-                        AppEventTracking.EVENT_ACTION, purchase.getShopType(),
-                        AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
-                        Purchase.SHOP_ID, purchase.getShopId(),
-                        Purchase.PAYMENT_ID, purchase.getPaymentId(),
-                        Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
-                        Purchase.LOGISTIC_TYPE, purchase.getLogisticType(),
-                        Purchase.USER_ID, purchase.getUserId(),
-                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                Purchase.PURCHASE, purchase.getPurchase()
-                        )
-                )
-        );
-    }
-
-    public void eventPurchaseDigital(Purchase purchase) {
-        pushGeneral(
-                DataLayer.mapOf(
-                        AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
-                        AppEventTracking.EVENT_CATEGORY, "purchase category digital",
-                        AppEventTracking.EVENT_ACTION, "purchase action digital",
-                        AppEventTracking.EVENT_LABEL, "purchase label digital",
-                        Purchase.SHOP_ID, purchase.getShopId(),
-                        Purchase.PAYMENT_ID, purchase.getPaymentId(),
-                        Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
-                        Purchase.USER_ID, purchase.getUserId(),
-                        Purchase.PAYMENT_STATUS, purchase.getPaymentStatus(),
-                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                Purchase.PURCHASE, purchase.getPurchase()
-                        )
-                )
-        );
-    }
-
-    public void eventImpressionCategoryLifestyle(List<Object> list) {
-        clearEnhanceEcommerce();
-        pushGeneral( DataLayer.mapOf("event", "promoView",
-                        "eventCategory", "category page",
-                        "eventAction", "subcategory impression",
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf(
-                                "promoView", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()]))))
-                )
-        );
-    }
-
-    public void eventClickCategoryLifestyle(String categoryUrl, List<Object> list) {
-        clearEnhanceEcommerce();
-        pushGeneral(
-                DataLayer.mapOf("event", "promoClick",
-                        "eventCategory", "category page",
-                        "eventAction", "click subcategory",
-                        "eventLabel", categoryUrl,
-                        "ecommerce", DataLayer.mapOf(
-                                "promoClick", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()])))),
-                        "destinationURL", categoryUrl
-                )
-        );
-    }
-
-    public void eventImpressionHotlistProductFeatured(Hotlist hotlist) {
-        pushGeneral(
-                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
-                        "ecommerce", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "hotlist"),
-                                "impressions",
-                                DataLayer.listOf(
-                                        hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
-                        )
-                )
-        );
-    }
-
     private void pushIris(String eventName, Map<String, Object>values) {
         if (iris != null) {
             if (!eventName.isEmpty()) {
@@ -576,5 +484,24 @@ public class GTMAnalytics extends ContextAnalytics {
     private static class GTMBody {
         Map<String, Object> values;
         String eventName;
+    }
+
+    private Subscriber<Boolean> getDefaultSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Boolean ignored) {
+
+            }
+        };
     }
 }

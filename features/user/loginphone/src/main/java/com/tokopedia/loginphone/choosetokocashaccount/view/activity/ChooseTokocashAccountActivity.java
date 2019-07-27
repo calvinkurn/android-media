@@ -23,7 +23,7 @@ public class ChooseTokocashAccountActivity extends BaseSimpleActivity {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null)
             bundle.putAll(getIntent().getExtras());
-        return ChooseTokocashAccountFragment.createInstance(bundle);
+        return ChooseTokocashAccountFragment.Companion.createInstance(bundle);
     }
 
     @Override

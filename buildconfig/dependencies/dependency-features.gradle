@@ -11,7 +11,6 @@ ext {
     tkpdDeveloperOptions = '2.22'
     tkpdDigitalVersion = '2.22'
     tkpdDiscoveryVersion = '2.22'
-    tkpdDistrictRecommendationVersion = '2.22'
     tkpdEventsVersion = '2.22'
     tkpdExploreVersion = '2.22'
     tkpdEventVersion = '2.22'
@@ -21,6 +20,7 @@ ext {
     tkpdFlightVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
+    tkpdPowerMerchantVersion = '2.22'
     tkpdGroupchatVersion = '2.22'
     tkpdHomeVersion = '2.22'
     tkpdInboxVersion = '2.22'
@@ -34,6 +34,7 @@ ext {
     tkpdMerchantVoucherVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdNotifCenterVersion = '2.22'
+    tkpdOvoP2PTransfer = '1.00'
     tkpdPaymentVersion = '2.22'
     tkpdPaymentManagementSystem = '2.22'
     tkpdPhoneVerificationVersion = '2.22'
@@ -78,8 +79,6 @@ ext {
 
     //SCOPE LOGISTIC
     groupIdLogistic = 'com.tokopedia.logistic'
-    artifactIdDistrictRecommendation = 'district_recommendation'
-    artifactIdLogisticAnalytics = 'logisticanalytics'
     artifactIdLogisticCod = 'logisticCod'
     artifactIdLogisticData = 'logisticdata'
     artifactIdLogisticInputReceiptShipment = 'logisticinputreceiptshipment'
@@ -87,8 +86,6 @@ ext {
     artifactIdLogisticTracking = 'tracking'
     artifactIdLogisticAddAddress = 'logisticaddaddress'
     artifactIdLogisticListAddress = 'logisticlistaddress'
-    artifactIdLogisticGeoLocation = 'logisticgeolocation'
-    artifactIdLogisticCommon = 'logisticcommon'
     artifactIdLogisticInsurance = 'logisticinsurance'
     logisticGroupVersion = '2.22'
 
@@ -109,7 +106,6 @@ ext {
             digital                 : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
             digitalDeals            : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             discovery               : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
-            districtRecommendation  : "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
             explore                 : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             events                  : "com.tokopedia.events:events:${tkpdEventVersion}",
             feed                    : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
@@ -122,6 +118,7 @@ ext {
             goldMerchantCommon      : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
             goldMerchant            : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe   : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
+            powerMerchantSubscribe  : "com.tokopedia.power_merchant.subscribe:powerMerchantSubscribe:${tkpdPowerMerchantVersion}",
             groupchat               : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
             home                    : "com.tokopedia.home:home:${tkpdHomeVersion}",
             inbox                   : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
@@ -134,6 +131,7 @@ ext {
             loyalty                 : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             loyaltyCommon           : "com.tokopedia.loyalty.common:loyalti_common:${tkpdLoyaltyVersion}",
             mitraToppers            : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
+            ovop2p                  : "com.tokopedia.ovop2p:ovop2p:${tkpdOvoP2PTransfer}",
             payment                 : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             paymentSetting          : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
             paymentManagementSystem : "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
@@ -160,6 +158,7 @@ ext {
             topads                  : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
             topAdsDashboard         : "com.tokopedia.topads:top_ads_dashboard:${tkpdTopAdsSDKVersion}",
             topAdsManagement        : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
+            topAdsAutoAds        : "com.tokopedia.topads:top_ads_autoads:${tkpdTopAdsSDKVersion}",
             transaction             : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             transactioncommon       : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
             userIdentification      : "com.tokopedia.user:user:${tkpdUserIdentification}",
@@ -176,7 +175,7 @@ ext {
             nps                             : ":features:common:nps",
 
             tradeIn                     : ":features:category:tradein",
-            tradeInCommon               : ":features:category:tradein_common",
+            basemvvm               : ":features:category:basemvvm",
 
             broadcastMessage                : ":features:communication:broadcast_message",
 //            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
@@ -197,6 +196,7 @@ ext {
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",
             digitalproduct                  : ":features:digital:digitalproduct",
+            digitalTopupBills               : ":features:digital:digital_topup_bills",
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
 //            flight                          : ":features:digital:flight_no_op",
@@ -219,6 +219,7 @@ ext {
             productCard                     : ":features:discovery:productcard",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             homecredit                      : ":features:fintech:home_credit",
+            instantDebitBca                 : ":features:digital:instant_debit_bca",
             instantLoan                     : ":features:fintech:instant_loan",
 //            instantLoan                   : ":features:fintech:instant_loan_no_op",
             mitraToppers                    : ":features:fintech:mitra_toppers",
@@ -231,24 +232,19 @@ ext {
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
-            
+
             challenges                      : ":features:im:challenges",
 //            challenges                    : ":features:im:challenges_no_op",
 
             logisticdata                    : ":features:logistic:logisticdata",
-            logisticanalytics               : ":features:logistic:logisticanalytics",
             logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment",
 //            logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment_no_op",
             logisticlistaddress             : ":features:logistic:logisticlistaddress",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
-            logisticCommon                  : ":features:logistic:logisticcommon",
             tracking                        : ":features:logistic:tracking",
 //            tracking                      : ":features:logistic:tracking_no_op",
             logisticuploadawb               : ":features:logistic:logisticuploadawb",
 //            logisticuploadawb               : ":features:logistic:logisticuploadawb_no_op",
-            logisticgeolocation             : ":features:logistic:logisticgeolocation",
-//            logisticgeolocation             : ":features:logistic:logisticgeolocation_no_op",
-            logisticdistrictrecommendation  : ":features:logistic:district_recommendation",
             logisticinsurance               : ":features:logistic:logisticinsurance",
 //            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
             logisticCod                     : ":features:logistic:cod",
@@ -258,11 +254,13 @@ ext {
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             goldMerchantResource            : ":features:merchant:gold_merchant_resource",
             goldMerchantSubscribe           : ":features:merchant:gold_merchant_subscribe",
+            powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
 //            goldMerchantSubscribe           : ":features:merchant:gold_merchant_subscribe_no_op",
             productDraftDatabase            : ":features:merchant:product_draft_database",
             productDetailCommon             : ":features:merchant:product_detail_common",
             productDetailRevamp             : ":features:merchant:product_detail",
             kyc                             : ":features:kyc",
+            ovop2p                          : ":features:ovop2p",
             productManageItem               : ":features:merchant:product_manage_item",
             productManageList               : ":features:merchant:product_manage_list",
             productManageDetail             : ":features:merchant:product_detail",
@@ -307,11 +305,13 @@ ext {
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
 //            topAdsDashboard           : ":features:top_ads:top_ads_dashboard_no_op",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
+            topAdsAutoAds                : ":features:top_ads:top_ads_autoads",
             topAdsManagement                : ":features:top_ads:top_ads_management",
 //            topAdsManagement          : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging             : ":features:top_ads:top_ads_management_sourcetagging",
 
+            atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
             transactionanalytics            : ":features:transaction:transactionanalytics",
             checkout                        : ":features:transaction:checkout",
@@ -340,6 +340,7 @@ ext {
 //            notifCenter                     : ":features:user:notifcenter_no_op",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
+            profileCompletion               : ":features:user:profilecompletion",
             settingbank                     : ":features:user:settingbank",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
@@ -358,6 +359,8 @@ ext {
             transaction                     : ":tkpdtransaction",
             transactioncommon               : ":tkpdtransaction-common",
             commonTravel                    : ":features:digital:common_travel",
-            ovo                             : ":features:fintech:ovo_pay_with_qr"
+            ovo                             : ":features:fintech:ovo_pay_with_qr",
+            agerestriction                  : ":features:category:age_restriction",
+            merchantLendingWidget           : ":features:fintech:merchant_lending_widget"
     ]
 }

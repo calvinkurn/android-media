@@ -21,13 +21,16 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -35,6 +38,10 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.airbnb.lottie.LottieComposition;
+import com.airbnb.lottie.LottieCompositionFactory;
+import com.airbnb.lottie.LottieDrawable;
+import com.airbnb.lottie.LottieTask;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
@@ -47,6 +54,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -64,16 +72,14 @@ import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
-import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -86,7 +92,7 @@ import javax.inject.Inject;
  */
 public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener, CartNotifyListener, EmptyCartListener, RefreshNotificationListener {
+        MainParentView, ShowCaseListener, CartNotifyListener, RefreshNotificationListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -96,19 +102,19 @@ public class MainParentActivity extends BaseActivity implements
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
-    private static final int EXIT_DELAY_MILLIS = 2000;
-    private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
-
+    public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
+    private static final String OFFICIAL_STORE = "Official Store";
+    private static final int EXIT_DELAY_MILLIS = 2000;
+    private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
     private static final String SHORTCUT_BELI_ID = "Beli";
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
     private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
-
     @Inject
     UserSessionInterface userSession;
     @Inject
@@ -117,23 +123,25 @@ public class MainParentActivity extends BaseActivity implements
     GlobalNavAnalytics globalNavAnalytics;
     @Inject
     ApplicationUpdate appUpdate;
-
     private BottomNavigation bottomNavigation;
     private ShowCaseDialog showCaseDialog;
     private List<Fragment> fragmentList;
     private Notification notification;
     private Fragment currentFragment;
-    private Fragment cartFragment;
-    private Fragment emptyCartFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver newFeedClickedReceiver;
     private SharedPreferences cacheManager;
-    private RemoteConfig remoteConfig;
-
     private Handler handler = new Handler();
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
+
+    // animate icon OS
+    private MenuItem osMenu;
+    private LottieDrawable lottieOsDrawable;
+    private float OS_STATE_SELECTED = 1f;
+    private float OS_STATE_UNSELECTED = 0f;
+    private float OS_STATE_ANIMATED = 0.7f;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -155,19 +163,13 @@ public class MainParentActivity extends BaseActivity implements
         return intent;
     }
 
-    @DeepLink({ ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE })
+    @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE})
     public static Intent getApplinkOfficialStoreIntent(Context context, Bundle bundle) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if(remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false)) {
-            Intent intent = start(context);
-            intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
-            return intent;
-        } else {
-            return ((GlobalNavRouter) context.getApplicationContext()).getOldOfficialStore(context);
-        }
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
+        return intent;
     }
 
-    public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
     @DeepLink({ApplinkConst.HOME_RECOMMENDATION})
     public static Intent getApplinkRecommendationEvent(Context context) {
         Intent intent = start(context);
@@ -181,6 +183,17 @@ public class MainParentActivity extends BaseActivity implements
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,6 +205,12 @@ public class MainParentActivity extends BaseActivity implements
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         createView(savedInstanceState);
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+
+        initCategoryConfig();
+    }
+
+    private void initCategoryConfig() {
+        ((GlobalNavRouter) getApplicationContext()).setCategoryAbTestingConfig();
     }
 
     @Override
@@ -227,9 +246,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         try {
-           super.onRestoreInstanceState(savedInstanceState);
+            super.onRestoreInstanceState(savedInstanceState);
         } catch (Exception e) {
-           reloadPage();
+            reloadPage();
         }
     }
 
@@ -246,6 +265,7 @@ public class MainParentActivity extends BaseActivity implements
         fragmentContainer = findViewById(R.id.container);
 
         bottomNavigation.setItemIconTintList(null);
+        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
             Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
@@ -305,6 +325,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onNewIntent(intent);
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
         checkApplinkCouponCode(intent);
+        checkAgeVerificationExtra(intent);
     }
 
     private void initInjector() {
@@ -350,14 +371,16 @@ public class MainParentActivity extends BaseActivity implements
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
-        if (position == OS_MENU && !isNewOfficialStoreEnabled()) {
-            startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
+        if ((position == CART_MENU || position == ACCOUNT_MENU) && !presenter.isUserLogin()) {
+            String applink = String.format("%s?source=%s", ApplinkConst.LOGIN, "account");
+            RouteManager.route(this, applink);
             return false;
         }
 
-        if ((position == CART_MENU || position == ACCOUNT_MENU ) && !presenter.isUserLogin()) {
-            RouteManager.route(this, ApplinkConst.LOGIN);
-            return false;
+        if (position == OS_MENU) {
+            setOsIconProgress(OS_STATE_SELECTED);
+        } else {
+            setOsIconProgress(OS_STATE_UNSELECTED);
         }
 
         hideStatusBar();
@@ -368,6 +391,16 @@ public class MainParentActivity extends BaseActivity implements
             selectFragment(fragment);
         }
         return true;
+    }
+
+    private void checkAgeVerificationExtra(Intent intent) {
+        if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS)) {
+            Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+                    intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
+                    Snackbar.LENGTH_INDEFINITE,
+                    getString(R.string.general_label_ok), (v) -> {
+                    });
+        }
     }
 
     private void hideStatusBar() {
@@ -397,17 +430,6 @@ public class MainParentActivity extends BaseActivity implements
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-    }
-
-    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
     }
 
     private void selectFragment(Fragment fragment) {
@@ -514,7 +536,7 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getOfficialStoreFragment(getIntent().getExtras()));
-            cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
+            Fragment cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
             fragmentList.add(cartFragment);
             fragmentList.add(AccountHomeFragment.newInstance());
         }
@@ -543,16 +565,13 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void onStartLoading() {
-    }
+    public void onStartLoading() { }
 
     @Override
-    public void onError(String message) {
-    }
+    public void onError(String message) { }
 
     @Override
-    public void onHideLoading() {
-    }
+    public void onHideLoading() { }
 
     @Override
     public Context getContext() {
@@ -625,6 +644,9 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
+
+        playAnimOsIcon(); // show animation icon
+
         final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
         if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
                 || showCaseObjects == null) {
@@ -651,7 +673,7 @@ public class MainParentActivity extends BaseActivity implements
                         bottomNavigation.getLeft(),
                         bottomNavTopPos,
                         bottomNavigation.getRight(),
-                        bottomNavBottomPos} ));
+                        bottomNavBottomPos}));
         showcases.addAll(showCaseObjects);
 
         showCaseDialog.show(this, showCaseTag, showcases);
@@ -676,7 +698,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void checkAppUpdateRemoteConfig(){
+    private void checkAppUpdateRemoteConfig() {
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
@@ -789,34 +811,6 @@ public class MainParentActivity extends BaseActivity implements
         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
     }
 
-    @Override
-    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc, String promoCode) {
-        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
-            if (emptyCartFragment == null) {
-                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc, promoCode);
-            }
-            if (emptyCartFragment.isAdded()) return;
-            cartFragment = null;
-            fragmentList.set(CART_MENU, emptyCartFragment);
-            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
-        }
-    }
-
-    @Override
-    public void onCartNotEmpty(Bundle bundle) {
-        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
-            if (cartFragment == null) {
-                cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(bundle);
-            } else if (bundle != null) {
-                cartFragment.setArguments(bundle);
-            }
-            if (cartFragment.isAdded()) return;
-            emptyCartFragment = null;
-            fragmentList.set(CART_MENU, cartFragment);
-            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
-        }
-    }
-
     @RestrictTo(RestrictTo.Scope.TESTS)
     public MainParentPresenter getPresenter() {
         return presenter;
@@ -916,16 +910,59 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private boolean isNewOfficialStoreEnabled() {
-        if(remoteConfig == null) {
-            remoteConfig = new FirebaseRemoteConfigImpl(this);
-        }
-
-        return remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false);
-    }
-
     @Override
     public void onRefreshNotification() {
         presenter.getNotificationData();
+    }
+
+
+    /**
+     *
+     * Load animated icon by Lottie
+     * duration anim: 2s
+     * 1s = 60 frames
+     * + 20 frames
+     *
+     * 0f - 0.7f state default - animation - default
+     * 1 state selected
+     */
+    private void initOsMenu() {
+        bottomNavigation.setIconMarginTop(OS_MENU, 0);
+        bottomNavigation.setIconSizeAt(OS_MENU, 55, 55);
+
+        Menu menu = bottomNavigation.getMenu();
+        osMenu = menu.findItem(R.id.menu_os);
+
+        lottieOsDrawable = new LottieDrawable();
+        LottieTask<LottieComposition> task = LottieCompositionFactory.fromRawRes(this, R.raw.icon_os);
+        task.addListener(result -> lottieOsDrawable.setComposition(result));
+
+        osMenu.setIcon(lottieOsDrawable);
+    }
+
+    private void playAnimOsIcon() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+
+        if (osMenu == null) {
+            initOsMenu();
+        }
+
+        lottieOsDrawable.setMaxProgress(OS_STATE_ANIMATED);
+        lottieOsDrawable.setRepeatCount(1);
+        lottieOsDrawable.playAnimation();
+    }
+
+    private void setOsIconProgress(float progress) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+
+        if (osMenu == null) {
+            initOsMenu();
+        }
+        lottieOsDrawable.setMaxProgress(OS_STATE_SELECTED); // important! to reset maxProgress
+        lottieOsDrawable.setProgress(progress);
     }
 }

@@ -26,6 +26,7 @@ project.ext {
 
 dependencies {
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -58,6 +59,7 @@ dependencies {
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.atc_common)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

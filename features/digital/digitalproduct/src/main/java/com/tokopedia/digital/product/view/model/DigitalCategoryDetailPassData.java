@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 public class DigitalCategoryDetailPassData implements Parcelable {
     public static final String PARAM_CATEGORY_ID = "category_id";
+    public static final String PARAM_MENU_ID = "menu_id";
     public static final String PARAM_OPERATOR_ID = "operator_id";
     public static final String PARAM_PRODUCT_ID = "product_id";
     public static final String PARAM_CLIENT_NUMBER = "client_number";
@@ -17,6 +18,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
     private String operatorId;
     private String productId;
     private String clientNumber;
+    private String menuId;
     private boolean isFromWidget;
     private boolean isCouponApplied;
     private String url;
@@ -28,6 +30,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
     private DigitalCategoryDetailPassData(Builder builder) {
         setCategoryId(builder.categoryId);
         setOperatorId(builder.operatorId);
+        setMenuId(builder.menuId);
         setProductId(builder.productId);
         setClientNumber(builder.clientNumber);
         setFromWidget(builder.isFromWidget);
@@ -37,6 +40,14 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         setCategoryName(builder.categoryName);
         setAdditionalETollBalance(builder.additionalETollLastBalance);
         setAdditionalETollLastUpdatedDate(builder.additionalETollLastUpdatedDate);
+    }
+
+    public String getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(String menuId) {
+        this.menuId = menuId;
     }
 
     public String getCategoryId() {
@@ -137,6 +148,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         dest.writeString(this.categoryId);
         dest.writeString(this.operatorId);
         dest.writeString(this.productId);
+        dest.writeString(this.menuId);
         dest.writeString(this.clientNumber);
         dest.writeByte((byte) (isFromWidget ? 1 : 0));
         dest.writeByte((byte) (isCouponApplied ? 1 : 0));
@@ -151,6 +163,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         this.categoryId = in.readString();
         this.operatorId = in.readString();
         this.productId = in.readString();
+        this.menuId = in.readString();
         this.clientNumber = in.readString();
         this.isFromWidget = in.readByte() != 0;
         this.isCouponApplied = in.readByte() != 0;
@@ -179,6 +192,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         private String categoryId;
         private String operatorId;
         private String productId;
+        private String menuId;
         private String clientNumber;
         private boolean isFromWidget;
         private boolean isCouponApplied;
@@ -189,6 +203,11 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         private String additionalETollLastUpdatedDate;
 
         public Builder() {
+        }
+
+        public Builder menuId(String val) {
+            menuId = val;
+            return this;
         }
 
         public Builder categoryId(String val) {

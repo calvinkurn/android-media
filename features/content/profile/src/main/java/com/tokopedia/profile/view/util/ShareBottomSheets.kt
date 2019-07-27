@@ -1,5 +1,6 @@
 package com.tokopedia.profile.view.util
 
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,10 +11,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.linker.LinkerManager
@@ -25,7 +23,6 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.di.DaggerProfileComponent
-import com.tokopedia.track.TrackApp
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -89,6 +86,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private lateinit var data: LinkerData
+    private lateinit var adapter: ShareAdapter
     private var isAdding: Boolean = false
     private var isOwner = false
     private var profileId = ""
@@ -111,18 +109,18 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.bottomsheet_share
+        return R.layout.bottomsheet_feed_share
     }
 
-    protected override fun state(): BottomSheets.BottomSheetsState {
-        return BottomSheets.BottomSheetsState.FULL
+    override fun state(): BottomSheetsState {
+        return BottomSheetsState.FULL
     }
 
-    protected override fun title(): String {
+    override fun title(): String {
         return data.ogTitle ?: getString(R.string.title_share)
     }
 
-    protected override fun configView(parentView: View) {
+    override fun configView(parentView: View) {
         arguments?.let{
             data = it.getParcelable(ShareBottomSheets::class.java.getName())
             isAdding = it.getBoolean(ShareBottomSheets::class.java.getName() + KEY_ADDING, false)
@@ -143,7 +141,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
                 .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
                 .build()
                 .inject(this)
-        mRecyclerView = view.findViewById(R.id.recyclerview)
+        mRecyclerView = view.findViewById(R.id.recyclerview_bottomsheet)
         mProgressBar = view.findViewById(R.id.progressbar)
         mLayoutError = view.findViewById(R.id.layout_error)
         mTextViewError = view.findViewById(R.id.message_error)
@@ -154,6 +152,12 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
         broadcastAddProduct()
     }
 
+    override fun setupDialog(dialog: Dialog?, style: Int) {
+        super.setupDialog(dialog, style)
+        val btnClose = getDialog().findViewById<ImageView>(com.tokopedia.design.R.id.btn_close)
+        btnClose.setOnClickListener { dismiss() }
+    }
+
     private fun init() {
         val intent = getIntent("")
         activity?.let {
@@ -162,10 +166,10 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
             if (!resolvedActivities.isEmpty()) {
                 val showApplications: ArrayList<ResolveInfo> = validate(resolvedActivities)
 //                showApplications.addAll(getInstagramApps()) //for next development
-                val adapter = ShareAdapter(showApplications, it
+                adapter = ShareAdapter(showApplications, it
                         .getPackageManager())
                 mRecyclerView.adapter = adapter
-
+                adapter.notifyDataSetChanged()
                 adapter.setOnItemClickListener(this)
             } else {
                 return
@@ -361,26 +365,21 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
      * @return String media tracking
      */
     private fun constantMedia(packageName: String): String {
-        if (packageName.contains(KEY_WHATSAPP)) {
-            return KEY_WHATSAPP
-        } else if (packageName.contains(KEY_LINE)) {
-            return KEY_LINE
-        } else if (packageName.contains(KEY_TWITTER)) {
-            return KEY_TWITTER
-        } else if (packageName.contains(KEY_FACEBOOK)) {
-            return KEY_FACEBOOK
-        } else if (packageName.contains(KEY_GOOGLE)) {
-            return KEY_GOOGLE
-        } else if (packageName.contains(KEY_OTHER)) {
-            return KEY_OTHER
+        return when {
+            packageName.contains(KEY_WHATSAPP) -> KEY_WHATSAPP
+            packageName.contains(KEY_LINE) -> KEY_LINE
+            packageName.contains(KEY_TWITTER) -> KEY_TWITTER
+            packageName.contains(KEY_FACEBOOK) -> KEY_FACEBOOK
+            packageName.contains(KEY_GOOGLE) -> KEY_GOOGLE
+            packageName.contains(KEY_OTHER) -> KEY_OTHER
+            else -> ""
         }
-        return ""
     }
 
     private fun sendTracker(packageName: String) {
         if (isShareProfile)
-            profileAnalytics.eventClickShareProfileIni(isOwner, profileId, constantMedia(packageName))
+            profileAnalytics.eventClickShareProfileOpsiIni(isOwner, profileId, constantMedia(packageName))
         else
-            profileAnalytics.eventClickSharePostIni(isOwner, profileId, constantMedia(packageName))
+            profileAnalytics.eventClickSharePostOpsiIni(isOwner, profileId, constantMedia(packageName))
     }
 }

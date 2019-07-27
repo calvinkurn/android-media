@@ -27,7 +27,13 @@ public class RegisterInitialActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     protected Fragment getNewFragment() {
-        return RegisterInitialFragment.createInstance();
+        Bundle bundle = new Bundle();
+
+        if(getIntent().getExtras()!= null){
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        return RegisterInitialFragment.Companion.createInstance(bundle);
     }
 
     public static Intent getCallingIntent(Context context) {

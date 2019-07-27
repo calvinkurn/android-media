@@ -3,22 +3,21 @@ package com.tokopedia.shop.feed.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -26,7 +25,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
+import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -39,15 +38,14 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
-import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.shop.R
@@ -76,11 +74,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
-        VideoViewHolder.VideoViewListener, FeedShopContract.View {
+        VideoViewHolder.VideoViewListener,
+        FeedMultipleImageView.FeedMultipleImageViewListener,
+        FeedShopContract.View {
 
     private lateinit var createPostUrl: String
     private lateinit var shopId: String
     private var isLoading = false
+    private var isForceRefresh = false
 
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
@@ -136,10 +137,33 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         arguments?.let {
             shopId = it.getString(PARAM_SHOP_ID) ?: ""
         }
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                try {
+                    if (hasFeed()
+                            && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        recyclerView?.let {
+                            FeedScrollListener.onFeedScrolled(it, adapter.list)
+                        }
+                    }
+                } catch (e: IndexOutOfBoundsException) {
+                }
+            }
+
+        })
+    }
+
+    private fun hasFeed(): Boolean {
+        return (adapter.list != null
+                && !adapter.list.isEmpty()
+                && adapter.list.size > 1
+                && adapter.list[0] !is EmptyModel)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return FeedShopFactoryImpl(this,
+                this,
                 this,
                 this,
                 this,
@@ -194,7 +218,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
             if (isLoadingInitialData) {
-                presenter.getFeedFirstPage(shopId, false)
+                presenter.getFeedFirstPage(shopId, isForceRefresh)
             } else {
                 presenter.getFeed(shopId)
             }
@@ -209,6 +233,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
         val dataList = ArrayList<Visitable<*>>()
+        isForceRefresh = true
         isLoading = false
         if (element.isNotEmpty()) {
             if (shopId.equals(userSession.shopId) && !whitelistDomain.authors.isEmpty()) {
@@ -389,7 +414,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
         context?.let {
-            val menus = createBottomMenu(it, deletable, reportable, false, object : PostMenuListener {
+            val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
                 override fun onDeleteClicked() {
                     createDeleteDialog(positionInFeed, postId).show()
                 }
@@ -399,11 +424,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 }
 
                 override fun onEditClick() {
-
+                    goToEditPostShop(postId)
                 }
             })
             menus.show()
         }
+    }
+
+    private fun goToEditPostShop(postId: Int) {
+        context?.let { RouteManager.route(it, ApplinkConstInternalContent.SHOP_POST_EDIT, postId.toString()) }
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
@@ -444,6 +473,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 presenter.trackPostClickUrl(tracking.viewURL)
             }
         }
+    }
+
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+        presenter.addPostTagItemToCart(postTagItem)
     }
 
     override fun onActionPopup() {
@@ -505,6 +538,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     it,
                     postId))
         }
+    }
+
+    override fun onAddToCartSuccess() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+    }
+
+    override fun onAddToCartFailed(pdpAppLink: String) {
+        onGoToLink(pdpAppLink)
     }
 
     fun hideFAB() {
@@ -636,6 +677,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun setRefresh() {
+        isForceRefresh = true
     }
 
 }

@@ -49,14 +49,7 @@ public class GetFeedTabUseCase extends UseCase<List<FeedTabModel>> {
 
     private Func1<List<FeedTabModel>, List<FeedTabModel>> checkForNull() {
         return responseMap -> {
-            NullCheckerKt.isContainNull(responseMap, errorMessage -> {
-                String message = String.format("Found %s in %s", errorMessage, GetFeedTabUseCase.class.getSimpleName());
-                ContainNullException exception = new ContainNullException(message);
-                if (!BuildConfig.DEBUG) {
-                    Crashlytics.logException(exception);
-                }
-                throw exception;
-            });
+            NullCheckerKt.throwIfNull(responseMap, GetFeedTabUseCase.class);
             return responseMap;
         };
     }

@@ -15,6 +15,7 @@ buildscript {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -29,8 +30,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.libraries.unifyComponents
-    implementation rootProject.ext.libraries.unifyPrinciples
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
 
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.gallery)
@@ -53,6 +54,8 @@ dependencies {
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.discoveryCommon)
+    implementation rootProject.ext.playServicesDependencies.tagManager
 
 
     implementation rootProject.ext.miscDependencies.dagger
@@ -74,9 +77,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation rootProject.ext.miscDependencies.lottie
+
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation project(rootProject.ext.libraries.linker)
+
 
     testImplementation rootProject.ext.testDependencies.assertJ
 }

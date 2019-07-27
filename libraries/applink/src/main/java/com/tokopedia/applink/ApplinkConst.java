@@ -32,6 +32,7 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
+    String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
@@ -42,8 +43,10 @@ public interface ApplinkConst {
     String SELLER_HISTORY = "tokopedia://seller/history";
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
     String REPUTATION = "tokopedia://review";
+    String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String WEBVIEW = "tokopedia://webview";
+    String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
@@ -53,6 +56,7 @@ public interface ApplinkConst {
     String DIGITAL_CATEGORY = "tokopedia://digital/category";
     String TRAIN_HOMEPAGE = "tokopedia://kereta";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
+    String DISCOVERY_NEW_USER = "tokopedia://discovery/pengguna-baru";
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
     String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
@@ -161,6 +165,7 @@ public interface ApplinkConst {
     String CONTACT_US_NATIVE = "tokopedia://contactus";
 
     String ORDER_LIST = "tokopedia://order";
+    String ORDER_LIST_WEBVIEW = "tokopedia://order_list";
     String TOKOPOINTS = "tokopedia://tokopoints";
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 
@@ -231,14 +236,22 @@ public interface ApplinkConst {
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
-    String CATEGORY_BELANJA = "tokopedia://category_belanja/{category_name}";
+    String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
     String CATEGORY_BELANJA_DEFAULT = "tokopedia://category_belanja/";
+
+    String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
 
     String CATEGORY = "tokopedia://category";
     String QRSCAN = "tokopedia://scanqr";
+    String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
+    String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
+    }
+
+    interface CustomerApp {
+        String TOPADS_DASHBOARD = "tokopedia://topads/dashboard";
     }
 
     interface SellerApp {
@@ -249,9 +262,11 @@ public interface ApplinkConst {
         String GOLD_MERCHANT = "sellerapp://gold";
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
+        String POWER_MERCHANT_SUBSCRIBE = "sellerapp://power_merchant/subscribe";
         String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
         String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
+        String TOPADS_AUTOADS = "sellerapp://topads/autoads";
     }
 
     interface Query {

@@ -50,6 +50,8 @@ gradlew.bat
 node_modules/
 jsconfig.json
 reactnative-apps/
+yarn.lock
+package-lock.json
 
 
 # buck
@@ -58,7 +60,7 @@ reactnative-apps/
 .okbuck/
 .watchmanconfig
 buck-out/
-buckw
+buckw*
 BUCK
 .buckconfig
 .settings
@@ -69,3 +71,6 @@ BUCK
 
 file_changes.log
 coverageResults/
+
+# unify
+unifyconfig/unifyproject.config

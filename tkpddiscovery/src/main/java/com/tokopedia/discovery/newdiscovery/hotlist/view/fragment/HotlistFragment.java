@@ -125,7 +125,7 @@ public class HotlistFragment extends BrowseSectionFragment
     private static final String EXTRA_HEADER_URL = "EXTRA_HEADER_URL";
     private static final String EXTRA_DESC = "EXTRA_DESC";
     private static final String TOKO = "TOKO";
-    private static final String POWER_BADGE = "POWER BADGE";
+    private static final String POWER_BADGE = "Power Merchant";
     private static final String OFFICIAL_STORE = "OFFICIAL STORE";
     private static final String PENGIRIMAN = "Dukungan Pengiriman";
     private static final String INSTANT_COURIER = "INSTANT COURIER";
@@ -134,6 +134,8 @@ public class HotlistFragment extends BrowseSectionFragment
     private static final int REQUEST_ACTIVITY_FILTER_HOTLIST = 1202;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 1111;
     private static final String PERFORMANCE_TRACE_HOTLIST = "mp_hotlist";
+
+    private static final String KEY_OFFICIAL = "official";
 
     protected BottomNavigationListener bottomNavigationListener;
     protected RefreshHandler refreshHandler;
@@ -605,10 +607,9 @@ public class HotlistFragment extends BrowseSectionFragment
                 } else {
                     SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }
-                clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
-//                reloadData();
+                reloadData();
                 showSelectedFilters(getSelectedFilter());
             }
         }
@@ -986,6 +987,14 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     @Override
+    public void setOfficialSelected(Boolean officialSelectedFlag) {
+        super.setOfficialSelected(officialSelectedFlag);
+        if(officialSelectedFlag){
+            onQuickFilterSelected(KEY_OFFICIAL, officialSelectedFlag.toString());
+        }
+    }
+
+    @Override
     public void renderDynamicFilter(DynamicFilterModel pojo) {
         super.renderDynamicFilter(pojo);
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
@@ -1012,6 +1021,9 @@ public class HotlistFragment extends BrowseSectionFragment
                     CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
                     quickFilterItem.setName(optionList.get(i).getName());
                     quickFilterItem.setType(optionList.get(i).getKey() + "=" + optionList.get(i).getValue());
+                    if (optionList.get(i).getKey().equals(KEY_OFFICIAL) && pojo.getIsOfficialSelectedFlag()) {
+                        quickFilterItem.setSelected(true);
+                    }
                     this.quickFilterItems.add(quickFilterItem);
                 }
             }

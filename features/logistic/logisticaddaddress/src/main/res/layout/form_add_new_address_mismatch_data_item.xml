@@ -9,7 +9,9 @@
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginStart="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16">
+    android:layout_marginEnd="@dimen/dp_16"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
         <TextView
             android:id="@+id/tv_kota_kecamatan_label_mismatch"
@@ -35,7 +37,14 @@
                 android:inputType="textMultiLine"
                 android:textColor="#ae31353b"
                 android:singleLine="false"
-                android:scrollHorizontally="false"/>
+                android:focusable="false"
+                android:enabled="true"
+                android:longClickable="false"
+                android:cursorVisible="false"
+                android:scrollHorizontally="false"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"/>
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -64,8 +73,11 @@
                 android:maxLength="5"
                 android:focusableInTouchMode="true"
                 android:clickable="true"
-                android:focusable="true"
-                android:textColor="#ae31353b" />
+                android:focusable="false"
+                android:textColor="#ae31353b"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"/>
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -98,7 +110,12 @@
                 android:hint="@string/et_alamat_hint"
                 android:inputType="text"
                 android:textColor="#ae31353b"
-                android:maxLength="175"/>
+                android:maxLength="175"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -125,22 +142,12 @@
             android:layout_marginTop="@dimen/dp_24"
             android:text="@string/detail_alamat"/>
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/et_detail_alamat_mismatch_wrapper"
-            style="@style/HintTextInputLayout"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_detail_alamat_mismatch"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:hintEnabled="false">
-
-            <EditText
-                android:id="@+id/et_detail_alamat_mismatch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/et_alamat_hint"
-                android:inputType="text"
-                android:textColor="#ae31353b" />
-
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/label_grey"/>
 
     </LinearLayout>
 

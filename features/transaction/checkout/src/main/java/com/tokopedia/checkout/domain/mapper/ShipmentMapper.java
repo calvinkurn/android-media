@@ -68,6 +68,7 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
+        dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
 
         if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
             CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
@@ -231,6 +232,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     userAddressResult.setProvinceName(groupAddress.getUserAddress().getProvinceName());
                     userAddressResult.setReceiverName(groupAddress.getUserAddress().getReceiverName());
                     userAddressResult.setCornerId(groupAddress.getUserAddress().getCornerId());
+                    userAddressResult.setCorner(groupAddress.getUserAddress().isCorner());
 
                     groupAddressResult.setUserAddress(userAddressResult);
                 }
@@ -435,6 +437,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductName(product.getProductName());
                                 productResult.setProductPriceFmt(product.getProductPriceFmt());
                                 productResult.setProductPrice(product.getProductPrice());
+                                productResult.setProductOriginalPrice(product.getProductOriginalPrice());
                                 if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
                                     productResult.setProductPrice(product.getTradeInInfo().getNewDevicePrice());
                                 }
@@ -493,6 +496,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     purchaseProtectionPlanData.setProtectionSubtitle(pppDataMapping.getProtectionSubtitle());
                                     purchaseProtectionPlanData.setProtectionTitle(pppDataMapping.getProtectionTitle());
                                     purchaseProtectionPlanData.setProtectionTypeId(pppDataMapping.getProtectionTypeId());
+                                    purchaseProtectionPlanData.setProtectionCheckboxDisabled(pppDataMapping.getProtectionCheckboxDisabled());
 
                                     productResult.setPurchaseProtectionPlanData(purchaseProtectionPlanData);
                                 }

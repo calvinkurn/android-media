@@ -3,21 +3,35 @@ package com.tokopedia.sellerapp.dashboard.view.fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -35,36 +49,49 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.widget.WarningTickerView;
-import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
+import com.tokopedia.gm.common.utils.PowerMerchantTracking;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
+import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
-import com.tokopedia.seller.shopscore.view.widget.ShopScoreWidget;
 import com.tokopedia.seller.shopsettings.ManageShopActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.sellerapp.dashboard.view.preference.PowerMerchantPopUpManager;
+import com.tokopedia.sellerapp.dashboard.view.widget.ShopScorePMWidget;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
-import com.tokopedia.user_identification_common.KYCConstant;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.gm.common.constant.GMParamConstant.PM_HOME_NONACTIVE;
+import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_BS_SUCCESS;
+import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_PM_IDLE;
+import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_RM_ILLUSTRATION;
+import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.URL_GAINS_SCORE_POINT;
 
 /**
  * Created by nathan on 9/6/17.
@@ -83,15 +110,20 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Inject
     public SellerDashboardPresenter sellerDashboardPresenter;
 
+    @Inject
+    public UserSessionInterface userSession;
+
+    @Inject
+    PowerMerchantTracking powerMerchantTracking;
+
     private TickerView tickerView;
     private LoadingStateView headerShopInfoLoadingStateView;
     private LoadingStateView footerShopInfoLoadingStateView;
     private ImageView shopIconImageView;
     private TextView shopNameTextView;
-    private ImageView gmIconImageView;
-    private TextView gmStatusTextView;
 
-    private ShopScoreWidget shopScoreWidget;
+    private ShopScorePMWidget shopScoreWidget;
+    private LinearLayout headerLabelLayout;
 
     private TextView reputationPointTextView;
     private ShopReputationView shopReputationView;
@@ -103,13 +135,23 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LabelView messageLabelView;
     private LabelView discussionLabelView;
     private LabelView reviewLabelView;
+    private ImageView ivShopMembershipLogo;
+    private TextView tvShopMembershipTitle;
+    private TextView tvShopMembershipStatus;
 
     private ShopWarningTickerView shopWarningTickerView;
     private WarningTickerView verificationWarningTickerView;
 
+    private PowerMerchantPopUpManager popUpManager;
     private ProgressDialog progressDialog;
 
     private SnackbarRetry snackBarRetry;
+
+    private ShowCaseDialog showCaseDialog;
+
+    private View tickerContainer;
+    private View buttonActivatePowerMerchant;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,10 +172,22 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         headerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_header);
         footerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_footer);
 
+        ivShopMembershipLogo = view.findViewById(R.id.iv_power_merchant_logo);
+        tvShopMembershipTitle = view.findViewById(R.id.tv_shop_membership_title);
+        tvShopMembershipStatus = view.findViewById(R.id.tv_shop_status);
+
+        tickerContainer = view.findViewById(R.id.ticker_container);
+        buttonActivatePowerMerchant = view.findViewById(R.id.button_activate);
+        buttonActivatePowerMerchant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                powerMerchantTracking.eventUpgradeShopHome();
+                RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+            }
+        });
+
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
-        gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
-        gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
         View ivSettingIcon = view.findViewById(R.id.iv_setting);
         shopWarningTickerView = (ShopWarningTickerView) view.findViewById(R.id.shop_warning_ticker_view);
         verificationWarningTickerView = view.findViewById(R.id.verification_warning_ticker);
@@ -151,10 +205,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView = (LabelView) view.findViewById(R.id.label_view_message);
         discussionLabelView = (LabelView) view.findViewById(R.id.label_view_discussion);
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
-        shopScoreWidget = (ShopScoreWidget) view.findViewById(R.id.shop_score_widget);
+        shopScoreWidget = view.findViewById(R.id.shop_score_widget);
+        headerLabelLayout = view.findViewById(R.id.label_layout_header);
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+
+        popUpManager = new PowerMerchantPopUpManager(getContext());
 
         ivSettingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -306,28 +363,71 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     @Override
-    public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
+    public void onSuccessGetShopInfoAndScore(ShopModel shopModel,
+                                             GoldGetPmOsStatus goldGetPmOsStatus,
+                                             ShopScoreResult shopScoreResult) {
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-        updateShopInfo(shopModel);
+        ShopStatusModel shopStatusModel = goldGetPmOsStatus.getResult().getData();
+        updateShopInfo(shopModel, shopStatusModel);
         updateReputation(shopModel);
         updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
-        shopScoreWidget.renderView(shopScoreViewModel);
+        shopScoreWidget.setProgress(shopScoreResult.getData().getValue());
+
         swipeRefreshLayout.setRefreshing(false);
         hideSnackBarRetry();
-
-        setShopInfoToLabelFragment(shopModel.info);
+        shopPowerMerchantPopup(shopStatusModel);
     }
 
-    public void setShopInfoToLabelFragment(Info shopInfo) {
-        MitraToppersPreApproveLabelFragment mitraToppersPreApproveLabelFragment =
-                (MitraToppersPreApproveLabelFragment) getChildFragmentManager()
-                        .findFragmentById(R.id.fragment_preapprove_label);
-        if (mitraToppersPreApproveLabelFragment != null) {
-            mitraToppersPreApproveLabelFragment.setUserInfo(shopInfo.isOfficialStore(),
-                    shopInfo.isGoldMerchant());
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .shadowColorRes(R.color.shadow)
+                .titleTextColorRes(R.color.white)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .nextStringRes(R.string.showcase_btn_next)
+                .prevStringRes(R.string.showcase_btn_prev)
+                .finishStringRes(R.string.showcase_btn_finish)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
+    }
+
+    public void onReadytoShowBoarding() {
+        final String showCaseTag = DashboardFragment.class.getName() + ".score";
+        if (getContext() != null) {
+            if (ShowCasePreference.hasShown(getContext(), showCaseTag) || showCaseDialog != null) {
+                return;
+            }
+
+            showCaseDialog = createShowCase();
+
+            int shopScoreWidgetTop = shopScoreWidget.getTop();
+            int shopScoreWidgetBottom = shopScoreWidget.getBottom();
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                shopScoreWidgetBottom =
+                        shopScoreWidgetBottom - DisplayMetricUtils.getStatusBarHeight(getContext());
+                shopScoreWidgetTop =
+                        shopScoreWidgetTop - DisplayMetricUtils.getStatusBarHeight(getContext());
+            }
+            ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+            showcases.add(new ShowCaseObject(
+                    headerLabelLayout,
+                    getString(R.string.showcase_title_1_power_merchant),
+                    getString(R.string.showcase_desc_1_power_merchant)));
+            showcases.add(new ShowCaseObject(
+                    shopScoreWidget,
+                    getString(R.string.showcase_title_2_power_merchant),
+                    getString(R.string.showcase_desc_2_power_merchant)));
+            showCaseDialog.show(getActivity(), showCaseTag, showcases);
         }
     }
+
+
 
     private void updateReputation(final ShopModel shopModel) {
         reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
@@ -366,30 +466,82 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         }
     }
 
-    private void updateShopInfo(ShopModel shopModel) {
+    private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel) {
+        userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchantOrPending());
+
         Info shopModelInfo = shopModel.info;
         String shopName = shopModelInfo.getShopName();
         if (!TextUtils.isEmpty(shopName)) {
             shopName = MethodChecker.fromHtml(shopName).toString();
         }
         shopNameTextView.setText(shopName);
-        if (shopModelInfo.isOfficialStore()) {
-            gmIconImageView.setVisibility(View.VISIBLE);
-            gmIconImageView.setImageResource(R.drawable.ic_official);
-            gmStatusTextView.setText(R.string.dashboard_label_official_store);
-        } else if (shopModelInfo.isGoldMerchant()) {
-            gmIconImageView.setVisibility(View.VISIBLE);
-            gmIconImageView.setImageDrawable(GMConstant.getGMDrawable(getContext()));
-            gmStatusTextView.setText(GMConstant.getGMTitleResource(getContext()));
+        if (shopStatusModel.isRegularMerchantOrPending()) {
+            ivShopMembershipLogo.setVisibility(View.GONE);
+            tvShopMembershipTitle.setText(R.string.label_regular_merchant);
+            tvShopMembershipStatus.setVisibility(View.GONE);
+            buttonActivatePowerMerchant.setVisibility(View.VISIBLE);
+            tickerContainer.setVisibility(View.VISIBLE);
+            ((TextView)tickerContainer.findViewById(R.id.tv_ticker)).setText(
+                    MethodChecker.fromHtml(getString(R.string.regular_merchant_ticker)));
+        } else if (shopStatusModel.isOfficialStore()) {
+            ivShopMembershipLogo.setVisibility(View.VISIBLE);
+            ivShopMembershipLogo.setImageResource(R.drawable.ic_badge_shop_official);
+            tvShopMembershipTitle.setText(getString(R.string.label_official_store));
+            tvShopMembershipStatus.setVisibility(View.GONE);
+            tickerContainer.setVisibility(View.GONE);
+            buttonActivatePowerMerchant.setVisibility(View.GONE);
         } else {
-            gmIconImageView.setVisibility(View.GONE);
-            gmStatusTextView.setText(R.string.dashboard_label_regular_merchant);
+            ivShopMembershipLogo.setVisibility(View.VISIBLE);
+            ivShopMembershipLogo.setImageResource(R.drawable.ic_power_merchant);
+            tvShopMembershipTitle.setText(getString(R.string.label_power_merchant));
+            tvShopMembershipStatus.setVisibility(View.VISIBLE);
+            if (shopStatusModel.isPowerMerchantActive()) {
+                tvShopMembershipStatus.setText(getString(R.string.bracket_format, getString(R.string.active_label)) );
+            } else {
+                tvShopMembershipStatus.setText(getString(R.string.bracket_format, getString(R.string.inactive_label)));
+            }
+            buttonActivatePowerMerchant.setVisibility(View.GONE);
+            tickerContainer.setVisibility(View.VISIBLE);
+            TextView tvTicker = tickerContainer.findViewById(R.id.tv_ticker);
+            View.OnClickListener onClickListener = new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT);
+                }
+            };
+            setTextViewClickSpan(tvTicker, MethodChecker.fromHtml(getString(R.string.power_merchant_ticker_with_tip)),
+                    getString(R.string.tip_increase_score), onClickListener);
         }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
         } else {
             shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
         }
+    }
+
+    private void setTextViewClickSpan(TextView textView, CharSequence previousText, String learnMoreString, View.OnClickListener onClickListener) {
+        SpannableString spannable = new SpannableString(learnMoreString);
+        int indexStart = 0;
+        int indexEnd = indexStart + learnMoreString.length();
+
+        int color = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
+        spannable.setSpan(new ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                onClickListener.onClick(textView);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(color);
+            }
+        };
+        spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setText(new SpannableStringBuilder(previousText).append(" ").append(spannable));
     }
 
     private void updateViewShopOpen(ShopModel shopModel) {
@@ -594,21 +746,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                     verificationWarningTickerView.setVisibility(View.VISIBLE);
                 }
 
-                if (status == KYCConstant.STATUS_NOT_VERIFIED) {
-                    String tickerMessage = getString(R.string.ticker_unverified);
-                    addMessageToTickerView(tickerMessage);
-                }
-
                 checkShowTickerView();
 
             }
         };
-    }
-
-    private void addMessageToTickerView(String tickerMessage) {
-        if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage)) {
-            tickerView.addMessage(tickerMessage);
-        }
     }
 
     private void checkShowTickerView() {
@@ -616,6 +757,100 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             tickerView.setVisibility(View.GONE);
         } else {
             tickerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void shopPowerMerchantPopup(ShopStatusModel shopStatusModel) {
+        //don't show any pop up for OS
+        if (shopStatusModel.isOfficialStore()) {
+            return;
+        }
+
+        String shopId = String.valueOf(shopStatusModel.getShopId());
+        if (shopStatusModel.isPowerMerchantActive()) {
+            popUpManager.setEverPowerMerchant(
+                    shopId,
+                    true
+            );
+        }
+
+        PowerMerchantSuccessBottomSheet.BottomSheetModel model = null;
+        String redirectUrl = "";
+
+        if (shopStatusModel.isPowerMerchantInactive()
+                && !popUpManager.isRegularMerchantShown(shopId)) {
+            popUpManager.setRegularMerchantShown(shopId, true);
+            model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                    getString(R.string.pm_popup_regular_title),
+                    getString(R.string.pm_popup_regular_desc),
+                    IMG_URL_RM_ILLUSTRATION,
+                    getString(R.string.pm_popup_regular_btn), ""
+            );
+            redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
+        }
+
+        if (!shopStatusModel.isTransitionPeriod() && popUpManager.isEverPowerMerchant(shopId)) {
+            if (shopStatusModel.isPowerMerchantActive()
+                    && !popUpManager.isActivePowerMerchantShown(shopId)) {
+                popUpManager.setActivePowerMerchantShown(shopId, true);
+                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                        getString(R.string.pm_popup_active_title),
+                        getString(R.string.pm_popup_active_desc),
+                        IMG_URL_BS_SUCCESS,
+                        getString(R.string.pm_popup_active_btn),""
+                );
+                redirectUrl = "";
+
+            } else if (shopStatusModel.isPowerMerchantIdle()
+                    && !popUpManager.isIdlePowerMerchantShown(shopId)) {
+                popUpManager.setIdlePowerMerchantShown(shopId, true);
+                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                        getString(R.string.pm_popup_idle_title),
+                        getString(R.string.pm_popup_idle_desc),
+                        IMG_URL_PM_IDLE,
+                        getString(R.string.pm_popup_idle_btn),
+                        PM_HOME_NONACTIVE
+                );
+                redirectUrl = URL_GAINS_SCORE_POINT;
+
+            } else if (shopStatusModel.isPowerMerchantInactive()
+                    && !popUpManager.isRegularMerchantShown(shopId)) {
+                popUpManager.setRegularMerchantShown(shopId, true);
+                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                        getString(R.string.pm_popup_deactivated_title),
+                        getString(R.string.pm_popup_deactivated_desc),
+                        IMG_URL_PM_IDLE,
+                        getString(R.string.pm_popup_deactivated_btn),""
+                );
+                redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
+            }
+        }
+
+        if (model != null) {
+            final String finalUrl = redirectUrl;
+            PowerMerchantSuccessBottomSheet bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model);
+            bottomSheet.setListener(() -> {
+                bottomSheet.dismiss();
+                onGoToLink(finalUrl);
+
+                if (shopStatusModel.isPowerMerchantActive() && TextUtils.isEmpty(finalUrl)) {
+                    onReadytoShowBoarding();
+                }
+            });
+            bottomSheet.show(getChildFragmentManager(), "power_merchant_success");
+        }
+    }
+
+    private void onGoToLink(String link) {
+        if (getActivity() != null && !TextUtils.isEmpty(link)) {
+            if (RouteManager.isSupportApplink(getActivity(), link)) {
+                RouteManager.route(getActivity(), link);
+            } else {
+                RouteManager.route(
+                        getActivity(),
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                );
+            }
         }
     }
 
