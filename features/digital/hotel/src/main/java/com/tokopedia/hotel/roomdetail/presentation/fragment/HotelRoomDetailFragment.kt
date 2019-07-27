@@ -41,6 +41,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
 /**
  * @author by resakemal on 23/04/19
@@ -186,7 +187,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(hotelRoom.additionalPropertyInfo.propertyId,
-                            hotelRoom.roomId, hotelRoom.roomPrice.roomPrice)
+                            hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString())
                     context?.run {
                         startActivity(ImagePreviewSliderActivity.getCallingIntent(
                                 this, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position

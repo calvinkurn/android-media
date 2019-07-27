@@ -223,7 +223,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         }
         hotelHomepageModel.nightCounter = countRoomDuration()
 
-        trackRoomDates()
         renderView()
     }
 

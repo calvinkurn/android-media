@@ -17,6 +17,7 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -141,7 +142,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.getCurrentCalendar().time)
             val filename = getString(R.string.hotel_share_file_name, currentTime)
             val file = File(myDir, filename)
-            if (file.exists()) file.delete()
             try {
                 val out = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
@@ -149,6 +149,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 out.close()
                 uri = Uri.fromFile(file)
             } catch (e: Exception) {
+                Log.e("ErrorWhy", e.message)
             }
         }
         return uri
