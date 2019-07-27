@@ -36,19 +36,20 @@ class HotelSearchFilterAdapter<E: HotelSearchFilterAdapter.HotelFilterItem>(
     override fun getItemCount(): Int = _item.size
 
     override fun onBindViewHolder(holder: HotelSearchFilterViewHolder<E>, position: Int) {
-        holder.bindItem(_item[position], _item[position].getItemId() in selectedItems)
+        val item = _item[position]
+        holder.bindItem(item, selectedItems.contains(item.getItemId()))
         holder.itemView.setOnClickListener {
-            if (_item[position].getItemId() in selectedItems)
-                selectedItems.remove(_item[position].getItemId())
+            if (selectedItems.contains(item.getItemId()))
+                selectedItems.remove(item.getItemId())
             else
-                selectedItems.add(_item[position].getItemId())
+                selectedItems.add(item.getItemId())
             notifyDataSetChanged()
         }
     }
 
-    class HotelSearchFilterViewHolder<E: HotelFilterItem>(view: View)
+    class HotelSearchFilterViewHolder<T: HotelSearchFilterAdapter.HotelFilterItem>(view: View)
         : RecyclerView.ViewHolder(view){
-        fun bindItem(item: E, isSelected: Boolean) {
+        fun bindItem(item: T, isSelected: Boolean) {
             with(itemView){
                 if (item.isRateItem())
                     image.visible()
