@@ -151,7 +151,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java) ?: ParamFilter()
 
                 val gson = GsonBuilder().setPrettyPrinting().create()
-                trackingHotelUtil.hotelUserClickFilter(gson.toJson(paramFilter.toString()))
+                trackingHotelUtil.hotelUserClickFilter(gson.toJson(paramFilter))
                 searchResultviewModel.addFilter(paramFilter)
                 loadInitialData()
             }

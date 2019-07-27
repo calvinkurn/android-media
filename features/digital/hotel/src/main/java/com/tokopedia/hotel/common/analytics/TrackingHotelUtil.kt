@@ -4,9 +4,11 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.search.data.model.Property
+import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
+import kotlin.math.ceil
 
 /**
  * @author by resakemal on 13/06/19
@@ -78,7 +80,7 @@ class TrackingHotelUtil {
             map["id"] = product.id
 
             map["price"] = if (product.roomPrice.isNotEmpty())
-                product.roomPrice.first().priceAmount.toLong().toString() else "0"
+                ceil(product.roomPrice.first().priceAmount).toLong().toString() else "0"
 
             list.add(map)
         }
@@ -92,7 +94,7 @@ class TrackingHotelUtil {
         val dayDiff = HotelUtils.countCurrentDayDifference(checkInDate)
 
         val price = if (property.roomPrice.isNotEmpty())
-            property.roomPrice.first().priceAmount.toLong().toString() else "0"
+            ceil(property.roomPrice.first().priceAmount).toLong().toString() else "0"
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PRODUCT_CLICK
@@ -111,7 +113,7 @@ class TrackingHotelUtil {
         map["name"] = property.name
         map["id"] = property.id
         map["price"] = if (property.roomPrice.isNotEmpty())
-            property.roomPrice.first().priceAmount.toLong().toString() else "0"
+            ceil(property.roomPrice.first().priceAmount).toLong().toString() else "0"
         map["position"] = position
         list.add(map)
         return DataLayer.listOf(*list.toTypedArray<Any>())
@@ -172,7 +174,7 @@ class TrackingHotelUtil {
     fun hotelChooseRoom(room: HotelRoom, position: Int) {
         val hotelId = room.additionalPropertyInfo.propertyId
         val roomId = room.roomId
-        val price = room.roomPrice.priceAmount.toInt()
+        val price = ceil(room.roomPrice.priceAmount).toLong()
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = ADD_TO_CART
@@ -185,7 +187,7 @@ class TrackingHotelUtil {
                 DataLayer.mapOf(
                         "name", room.roomInfo.name,
                         "id", room.roomId,
-                        "price", room.roomPrice.priceAmount.toInt(),
+                        "price", ceil(room.roomPrice.priceAmount).toLong(),
                         "position", position
                 )
         )
@@ -212,7 +214,7 @@ class TrackingHotelUtil {
     fun hotelChooseRoomDetails(room: HotelRoom) {
         val hotelId = room.additionalPropertyInfo.propertyId
         val roomId = room.roomId
-        val price = room.roomPrice.priceAmount.toInt()
+        val price = ceil(room.roomPrice.priceAmount).toLong()
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = ADD_TO_CART
@@ -225,7 +227,7 @@ class TrackingHotelUtil {
                 DataLayer.mapOf(
                         "name", room.roomInfo.name,
                         "id", room.roomId,
-                        "price", room.roomPrice.priceAmount.toInt()
+                        "price", ceil(room.roomPrice.priceAmount).toLong()
                 )
         )
         )

@@ -41,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.ceil
 
 /**
  * @author by furqan on 22/04/19
@@ -424,7 +425,7 @@ class HotelDetailFragment : HotelBaseFragment() {
 
         if (data.isNotEmpty()) {
             roomPrice = data.first().roomPrice.roomPrice
-            roomPriceAmount = data.first().roomPrice.priceAmount.toLong().toString()
+            roomPriceAmount = ceil(data.first().roomPrice.priceAmount).toLong().toString()
             trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
 
             tv_hotel_price.text = roomPrice
