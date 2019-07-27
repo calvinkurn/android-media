@@ -47,9 +47,9 @@ class HotelSearchFilterAdapter<E: HotelSearchFilterAdapter.HotelFilterItem>(
         }
     }
 
-    class HotelSearchFilterViewHolder<T: HotelSearchFilterAdapter.HotelFilterItem>(view: View)
+    class HotelSearchFilterViewHolder<E: HotelFilterItem>(view: View)
         : RecyclerView.ViewHolder(view){
-        fun bindItem(item: T, isSelected: Boolean) {
+        fun bindItem(item: E, isSelected: Boolean) {
             with(itemView){
                 if (item.isRateItem())
                     image.visible()

@@ -30,11 +30,11 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
     lateinit var minCurrencyTextWatcher: CurrencyTextWatcher
     lateinit var maxCurrencyTextWatcher: CurrencyTextWatcher
     lateinit var manager: SaveInstanceCacheManager
-    private val starAdapter by lazy {
-        HotelSearchFilterAdapter<FilterStar>(HotelSearchFilterAdapter.MODE_MULTIPLE)
+    private val starAdapter: HotelSearchFilterAdapter<HotelSearchFilterAdapter.HotelFilterItem> by lazy {
+        HotelSearchFilterAdapter<HotelSearchFilterAdapter.HotelFilterItem>(HotelSearchFilterAdapter.MODE_MULTIPLE)
     }
-    private val propertyTypeAdapter by lazy {
-        HotelSearchFilterAdapter<Filter.FilterAccomodation>(HotelSearchFilterAdapter.MODE_MULTIPLE)
+    private val propertyTypeAdapter: HotelSearchFilterAdapter<HotelSearchFilterAdapter.HotelFilterItem> by lazy {
+        HotelSearchFilterAdapter<HotelSearchFilterAdapter.HotelFilterItem>(HotelSearchFilterAdapter.MODE_MULTIPLE)
     }
     override fun getScreenName(): String? = null
 
