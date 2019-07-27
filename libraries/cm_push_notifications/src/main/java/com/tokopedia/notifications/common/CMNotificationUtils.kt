@@ -169,7 +169,7 @@ object CMNotificationUtils {
     }
 
     fun hasActionButton(baseNotificationModel: BaseNotificationModel): Boolean {
-        return baseNotificationModel.actionButton != null && baseNotificationModel.actionButton.size > 0
+        return baseNotificationModel.actionButton.isNotEmpty()
 
     }
 
