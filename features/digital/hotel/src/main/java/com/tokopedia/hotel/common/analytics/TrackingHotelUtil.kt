@@ -119,7 +119,7 @@ class TrackingHotelUtil {
     }
 
     fun hotelUserClickFilter(filterValue: String) {
-        val filter = filterValue.replace("\\n", " ").replace("\\", "")
+        val filter = filterValue.replace("\\\n", " ")
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, USER_CLICK_FILTER,
                 "$HOTEL_LABEL - $filter")
     }
