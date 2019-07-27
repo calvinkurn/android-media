@@ -4,6 +4,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.design.component.UnifyButton
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.kol.R
 import com.tokopedia.kotlin.extensions.view.gone
@@ -13,8 +14,9 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.item_media_tag.view.*
 
 class MediaTagAdapter(private val tags: MutableList<PostTagItem> = mutableListOf(),
+                      private val checkIsMyShop: ((String) -> Boolean),
                       private val onFavoriteProduct: ((Boolean, String, Int) -> Unit)? = null,
-                      private val onProductActionClick: ((String) -> Unit)? = null)
+                      private val onProductActionClick: ((PostTagItem, Boolean) -> Unit)? = null)
     : RecyclerView.Adapter<MediaTagAdapter.MediaTagViewHolder>() {
 
     fun updateTags(_tags: List<PostTagItem>){
@@ -44,16 +46,33 @@ class MediaTagAdapter(private val tags: MutableList<PostTagItem> = mutableListOf
                 rating.shouldShowWithAction(postTagItem.rating > 0){
                     rating.rating = postTagItem.rating.toFloat()
                 }
-                favorite.setImageDrawable(ContextCompat.getDrawable(context,
-                        if (postTagItem.isWishlisted) R.drawable.ic_wishlist_checked
-                        else R.drawable.ic_wishlist_unchecked))
-                button_action.text = context.getString(R.string.string_posttag_buy)
 
-                favorite.setOnClickListener {
-                    onFavoriteProduct?.invoke(!postTagItem.isWishlisted, postTagItem.id, adapterPosition)
-                }
-                button_action.setOnClickListener {
-                    onProductActionClick?.invoke(postTagItem.id)
+                val shop = postTagItem.shop.firstOrNull()
+                val ctaBtn = postTagItem.buttonCTA.firstOrNull()
+                if (shop == null || checkIsMyShop(shop.shopId)) {
+                    button_action.text = context.getString(R.string.kol_see_product)
+                    favorite.gone()
+                    button_action.buttonType = UnifyButton.Type.MAIN
+                    button_action.setOnClickListener { onProductActionClick?.invoke(postTagItem, true) }
+                } else {
+                    favorite.setImageDrawable(ContextCompat.getDrawable(context,
+                            if (postTagItem.isWishlisted) R.drawable.ic_wishlist_checked
+                            else R.drawable.ic_wishlist_unchecked))
+                    button_action.buttonType = UnifyButton.Type.TRANSACTION
+                    if (ctaBtn == null || ctaBtn.text.isBlank()){
+                        button_action.isEnabled = false
+                        button_action.text = context.getString(R.string.empty_product)
+                    } else {
+                        button_action.isEnabled = true
+                        button_action.text = context.getString(R.string.string_posttag_buy)
+                    }
+
+                    favorite.setOnClickListener {
+                        onFavoriteProduct?.invoke(!postTagItem.isWishlisted, postTagItem.id, adapterPosition)
+                    }
+                    button_action.setOnClickListener {
+                        onProductActionClick?.invoke(postTagItem, false)
+                    }
                 }
             }
         }

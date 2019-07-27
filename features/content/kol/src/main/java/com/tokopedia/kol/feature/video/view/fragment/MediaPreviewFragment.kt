@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,12 +18,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.UnifyButton
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -51,7 +54,13 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var mediaPreviewViewModel: FeedMediaPreviewViewModel
-    private val tagsAdapter by lazy { MediaTagAdapter(mutableListOf(), this::toggleWishlist) }
+    private val tagsAdapter by lazy { MediaTagAdapter(mutableListOf(), {
+        mediaPreviewViewModel.isMyShop(it)
+    }, this::toggleWishlist){
+        postTagItem, isMyShop ->
+            if (isMyShop) onGoToLink(postTagItem.applink)
+            else checkAddToCart(postTagItem)
+    } }
     private val tagsBottomSheet: CloseableBottomSheetDialog? by lazy {
         context?.let {
             val closeBottomSheet = CloseableBottomSheetDialog.createInstance(it)
@@ -168,65 +177,97 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         action_next.showWithCondition(!forceToHide && pos < count-1 && count > 1)
     }
 
-    private fun convertToMediaItem(media: BasePostViewModel): MediaItem?{
-        return when (media) {
-            is ImagePostViewModel -> MediaItem(thumbnail = media.image, type = "image")
-            is VideoViewModel -> MediaItem(thumbnail = media.url, type = "video")
-            else -> null
+    private fun bindTags(tags: PostTag) {
+
+        when {
+            tags.totalItems > 1 -> {
+                tag_count.text = getString(R.string.kol_total_post_tag, tags.totalItems)
+                tag_count.visible()
+                tag_picture.gone()
+                val minRate = tags.items.filter { it.rating > 0 }.map { it.rating }.min() ?: 0
+
+                tag_rating.shouldShowWithAction(minRate > 0){
+                    tag_rating.rating = minRate.toFloat()
+                }
+
+                val minPrice = tags.items.map { CurrencyFormatHelper.convertRupiahToInt(it.price) }.min() ?: 0
+                tag_title.text = getString(R.string.kol_template_start_price,
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true))
+
+                button_tag_action.text = getString(R.string.kol_see_product)
+                button_tag_action.buttonType = UnifyButton.Type.MAIN
+                tagsAdapter.updateTags(tags.items)
+                button_tag_action.setOnClickListener {
+                    tagsBottomSheet?.show()
+                }
+
+                action_favorite.gone()
+                button_tag_action.visible()
+            }
+            tags.totalItems == 1 -> {
+                val tagItem = tags.items[0]
+                tag_count.gone()
+                tag_rating.shouldShowWithAction(tagItem.rating > 0){
+                    tag_rating.rating = tagItem.rating.toFloat()
+                }
+
+                tag_title.text = tagItem.price
+                val shop = tagItem.shop.firstOrNull()
+                val ctaBtn = tagItem.buttonCTA.firstOrNull()
+                if (shop == null || mediaPreviewViewModel.isMyShop(shop.shopId)){
+                    button_tag_action.text = getString(R.string.kol_see_product)
+                    action_favorite.gone()
+                    button_tag_action.buttonType = UnifyButton.Type.MAIN
+                    button_tag_action.setOnClickListener { onGoToLink(tagItem.applink) }
+                } else {
+                    button_tag_action.buttonType = UnifyButton.Type.TRANSACTION
+                    if (ctaBtn == null || ctaBtn.text.isBlank()){
+                        button_tag_action.isEnabled = false
+                        button_tag_action.text = getString(R.string.empty_product)
+                    } else {
+                        button_tag_action.isEnabled = true
+                        button_tag_action.text = getString(R.string.string_posttag_buy)
+                    }
+                    button_tag_action.setOnClickListener {
+                        checkAddToCart(tagItem)
+                    }
+                    action_favorite.visible()
+                    context?.let {
+                        action_favorite.setImageDrawable(ContextCompat.getDrawable(it,
+                                if (tags.items[0].isWishlisted) R.drawable.ic_wishlist_checked
+                                else R.drawable.ic_wishlist_unchecked))
+                    }
+                    action_favorite.setOnClickListener {
+                        val product = tags.items[0]
+                        toggleWishlist(!product.isWishlisted, product.id, 0)
+                    }
+                }
+
+                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(R.dimen.dp_8))
+                tag_picture.visible()
+                button_tag_action.visible()
+            }
+            else -> overlay_tags.gone()
         }
     }
 
-    private fun bindTags(tags: PostTag) {
+    private fun checkAddToCart(tagItem: PostTagItem) {
+        mediaPreviewViewModel.addToCart(tagItem,
+                { context?.let { RouteManager.route(context, ApplinkConstInternalMarketplace.CART) }}){
+                _ , postTagItem -> onGoToLink(postTagItem.applink)
+        }
+    }
 
-        if (tags.totalItems > 1){
-            tag_count.text = getString(R.string.kol_total_post_tag, tags.totalItems)
-            tag_count.visible()
-            tag_picture.gone()
-            val minRate = tags.items.filter { it.rating > 0 }.map { it.rating }.min() ?: 0
-
-            tag_rating.shouldShowWithAction(minRate > 0){
-                tag_rating.rating = minRate.toFloat()
+    private fun onGoToLink(link: String) {
+        if (activity != null && !TextUtils.isEmpty(link)) {
+            if (RouteManager.isSupportApplink(activity, link)) {
+                RouteManager.route(activity, link)
+            } else {
+                RouteManager.route(
+                        activity,
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                )
             }
-
-            val minPrice = tags.items.map { CurrencyFormatHelper.convertRupiahToInt(it.price) }.min() ?: 0
-            tag_title.text = getString(R.string.kol_template_start_price,
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true))
-
-            button_tag_action.text = getString(R.string.kol_see_product)
-            button_tag_action.buttonType = UnifyButton.Type.MAIN
-            tagsAdapter.updateTags(tags.items)
-            button_tag_action.setOnClickListener {
-                tagsBottomSheet?.show()
-            }
-
-            action_favorite.gone()
-            button_tag_action.visible()
-        } else if (tags.totalItems == 1){
-            tag_count.gone()
-            tag_rating.shouldShowWithAction(tags.items[0].rating > 0){
-                tag_rating.rating = tags.items[0].rating.toFloat()
-            }
-
-            tag_title.text = tags.items[0].price
-            button_tag_action.text = getString(R.string.string_posttag_buy)
-            button_tag_action.buttonType = UnifyButton.Type.TRANSACTION
-            button_tag_action.setOnClickListener {  }
-            action_favorite.visible()
-
-            context?.let {
-                action_favorite.setImageDrawable(ContextCompat.getDrawable(it,
-                        if (tags.items[0].isWishlisted) R.drawable.ic_wishlist_checked
-                        else R.drawable.ic_wishlist_unchecked))
-            }
-            action_favorite.setOnClickListener {
-                val product = tags.items[0]
-                toggleWishlist(!product.isWishlisted, product.id, 0)
-            }
-            tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(R.dimen.dp_8))
-            tag_picture.visible()
-            button_tag_action.visible()
-        } else {
-            overlay_tags.gone()
         }
     }
 

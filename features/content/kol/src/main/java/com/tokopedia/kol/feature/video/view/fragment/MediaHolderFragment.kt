@@ -2,7 +2,6 @@ package com.tokopedia.kol.feature.video.view.fragment
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
@@ -18,14 +17,14 @@ import com.google.android.exoplayer2.source.UnrecognizedInputFormatException
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kol.R
 import kotlinx.android.synthetic.main.media_player_view.*
-import com.tokopedia.videoplayer.utils.VideoSourceProtocol
+import com.tokopedia.videoplayer.state.VideoSourceProtocol
 import java.io.File
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.videoplayer.utils.RepeatMode
+import com.tokopedia.videoplayer.state.RepeatMode
 
 
 class MediaHolderFragment : BaseDaggerFragment() {

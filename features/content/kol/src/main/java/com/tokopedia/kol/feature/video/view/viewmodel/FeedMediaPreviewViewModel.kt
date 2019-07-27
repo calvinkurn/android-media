@@ -2,7 +2,10 @@ package com.tokopedia.kol.feature.video.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -27,7 +30,8 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
                                                     private val getPostDetailUseCase: GetPostDetailWishlistedUseCase,
                                                     private val likeKolPostUseCase: LikeKolPostUseCase,
                                                     private val addWishListUseCase: AddWishListUseCase,
-                                                    private val removeWishListUseCase: RemoveWishListUseCase)
+                                                    private val removeWishListUseCase: RemoveWishListUseCase,
+                                                    private val atcUseCase: AddToCartUseCase)
     : BaseViewModel(baseDispatcher){
 
     val isSessionActive: Boolean
@@ -77,9 +81,12 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
         likeKolPostUseCase.unsubscribe()
         addWishListUseCase.unsubscribe()
         removeWishListUseCase.unsubscribe()
+        atcUseCase.unsubscribe()
     }
 
     fun isMyOwnPost(authorID: String): Boolean = authorID == userSession.userId || authorID == userSession.shopId
+
+    fun isMyShop(shopId: String): Boolean = shopId == userSession.shopId
 
     fun doLikePost(isLikeAction: Boolean, onFail: (Throwable) -> Unit) {
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(postId.toInt(),
@@ -177,6 +184,26 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
                     override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
 
                     override fun onSuccessRemoveWishlist(productId: String?) {}
+
+                })
+    }
+
+    fun addToCart(tagItem: PostTagItem, success: (PostTagItem)->Unit,
+                  fail: (Throwable?, PostTagItem)->Unit) {
+        atcUseCase.execute(AddToCartUseCase.getMinimumParams(tagItem.id, tagItem.shop.first().shopId),
+                object: Subscriber<AddToCartDataModel>(){
+                    override fun onNext(t: AddToCartDataModel?) {
+                        if (t == null || t.data.success == 0)
+                            onError(Throwable())
+                        else
+                            success(tagItem)
+                    }
+
+                    override fun onCompleted() {}
+
+                    override fun onError(e: Throwable?) {
+                        fail(e, tagItem)
+                    }
 
                 })
     }

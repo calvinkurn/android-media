@@ -142,6 +142,13 @@ public class KolModule {
 
     @KolScope
     @Provides
+    @Named(KolConstant.KEY_QUERY_ATC)
+    public String getQueryATCCommon(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
+    }
+
+    @KolScope
+    @Provides
     public GetProductIsWishlistedUseCase provideGetProductIsWishlistedUseCase(@Named(KolConstant.KEY_QUERY_IS_WISHLISTED)
                                                                               String rawQuery,
                                                                               GraphqlUseCase gqlUseCase){
