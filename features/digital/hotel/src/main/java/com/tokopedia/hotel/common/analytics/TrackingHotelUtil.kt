@@ -3,7 +3,9 @@ package com.tokopedia.hotel.common.analytics
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
+import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
+import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
@@ -118,10 +120,17 @@ class TrackingHotelUtil {
         return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
-    fun hotelUserClickFilter(filterValue: String) {
-        val filter = filterValue.replace("\\\n", " ")
+    fun hotelUserClickFilter(filterValue: ParamFilter, filter: Filter) {
+        val filter = (filterValue.maxPrice == filter.price.maxPrice)
+                && (filterValue.minPrice == filter.price.minPrice)
+                && (filterValue.paymentType == 0)
+                && filterValue.propertyType.isEmpty()
+                && (filter.filterReview.minReview.toInt() == filterValue.reviewScore)
+                && filterValue.roomFacilities.isEmpty()
+                && filterValue.star.isEmpty()
+
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, USER_CLICK_FILTER,
-                "$HOTEL_LABEL - $filter")
+                "$HOTEL_LABEL - ${!filter}")
     }
 
     fun hotelUserClickSort(sortValue: String) {
