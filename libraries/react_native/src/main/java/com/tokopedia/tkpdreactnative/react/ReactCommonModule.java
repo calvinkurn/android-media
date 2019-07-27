@@ -2,7 +2,9 @@ package com.tokopedia.tkpdreactnative.react;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.provider.CalendarContract;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 
@@ -149,5 +151,22 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
         }
 
         promise.resolve(result);
+    }
+
+    // Method to add event in user local calender
+    @ReactMethod
+    public void addCampaingReminder(String title, String description, String startTime, String endTime) {
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, Long.parseLong(startTime))
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, Long.parseLong(endTime))
+                .putExtra(CalendarContract.Events.TITLE, title)
+                .putExtra(CalendarContract.Events.DESCRIPTION, description);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        PackageManager packageManager = context.getPackageManager();
+        if (intent.resolveActivity(packageManager) != null) {
+            context.startActivity(intent);
+        }
     }
 }

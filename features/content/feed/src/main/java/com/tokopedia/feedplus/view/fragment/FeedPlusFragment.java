@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -246,6 +247,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
+
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, analytics, userSession);
         adapter = new FeedPlusAdapter(typeFactory);
         adapter.setOnLoadListener(totalCount -> {
@@ -1619,6 +1621,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onPostTagItemBuyClicked(int positionInFeed, @NotNull PostTagItem postTagItem) {
+        presenter.addPostTagItemToCart(postTagItem);
+    }
 
     @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition,
@@ -1709,6 +1715,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
             trackCardPostClick(positionInFeed, model.getTrackingPostModel());
         }
+    }
+
+    @Override
+    public void onAddToCartSuccess() {
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
+    }
+
+    @Override
+    public void onAddToCartFailed(String pdpAppLink) {
+        onGoToLink(pdpAppLink);
     }
 
     private void doShare(String body, String title) {

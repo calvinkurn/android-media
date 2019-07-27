@@ -542,6 +542,12 @@ class RegisterAnalytics @Inject constructor() {
     }
 
     private fun onSuccessRegisterPhone() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_SUCCESS
+        ))
 
     }
 
