@@ -130,7 +130,7 @@ class TrackingHotelUtil {
                 && filterValue.star.isEmpty()
 
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, USER_CLICK_FILTER,
-                "$HOTEL_LABEL - ${!filter}")
+                "$HOTEL_LABEL - true")
     }
 
     fun hotelUserClickSort(sortValue: String) {
