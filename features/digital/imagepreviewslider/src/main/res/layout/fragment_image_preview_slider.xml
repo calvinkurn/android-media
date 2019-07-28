@@ -49,7 +49,7 @@
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_8"
             app:fontSize="title"
-            app:layout_constraintBottom_toTopOf="@id/image_list_container"
+            app:layout_constraintBottom_toTopOf="@+id/image_list_container"
             app:layout_constraintStart_toStartOf="parent"
             app:textViewTheme="darkPrimary"
             tools:text="1/6" />
