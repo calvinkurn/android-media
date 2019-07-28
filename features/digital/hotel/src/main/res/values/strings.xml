@@ -197,7 +197,7 @@
     <string name="hotel_share_as_image">Bagikan sebagai gambar</string>
     <string name="hotel_share_as_pdf">Bagikan sebagai PDF</string>
     <string name="hotel_share_file_name">Tokopedia_Hotel_%1$s.png</string>
-    <string name="hotel_share_folder_name">%1$s/tokopedia/screenshots</string>
+    <string name="hotel_share_folder_name">tokopedia/screenshots</string>
     <string name="hotel_share_title_email">Alamat E-mail</string>
     <string name="hotel_share_add_email">Tambah E-mail</string>
     <string name="hotel_share_empty_email_error">E-mail harus diisi</string>

@@ -213,17 +213,6 @@
                     app:textViewTheme="lightPrimary"
                     tools:text="Saya ingin kamar yang view nya pantai, dingin, dan tambahan extra bed 2 yah mas tolong." />
 
-                <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/tv_additional_notes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    app:fontSize="micro"
-                    tools:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in." />
-
             </LinearLayout>
 
             <LinearLayout
