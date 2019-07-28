@@ -583,4 +583,5 @@ project.ext.sentryCli = [
 ]
 
 apply from: "../buildconfig/reactnative/react.gradle"
+apply from: "../buildconfig/reactnative/codepush.gradle"
 apply from: "../buildconfig/reactnative/sentry.gradle"
