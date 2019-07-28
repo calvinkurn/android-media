@@ -18,7 +18,6 @@ open class CheckVoucherDigitalMapper @Inject constructor() {
                 discountAmount = data.discountAmount.toInt(),
                 cashbackWalletAmount = data.cashbackAmount.toInt(),
                 invoiceDescription = data.invoiceDescription,
-//                couponDescription = data.couponDescription,
                 gatewayId = data.gatewayId,
                 isCoupon = data.isCoupon
         )
