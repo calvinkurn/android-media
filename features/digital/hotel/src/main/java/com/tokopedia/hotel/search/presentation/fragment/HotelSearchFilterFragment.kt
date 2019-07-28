@@ -20,8 +20,7 @@ import com.tokopedia.hotel.common.presentation.widget.SpanningLinearLayoutManage
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
-import com.tokopedia.hotel.search.presentation.adapter.HotelSearchFilterAdapter
-import com.tokopedia.hotel.search.presentation.modelholder.FilterStar
+import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterAdapter
 import kotlinx.android.synthetic.main.fragment_hotel_search_filter.*
 
 class HotelSearchFilterFragment: BaseDaggerFragment() {
@@ -30,11 +29,11 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
     lateinit var minCurrencyTextWatcher: CurrencyTextWatcher
     lateinit var maxCurrencyTextWatcher: CurrencyTextWatcher
     lateinit var manager: SaveInstanceCacheManager
-    private val starAdapter: HotelSearchFilterAdapter<HotelSearchFilterAdapter.HotelFilterItem> by lazy {
-        HotelSearchFilterAdapter<HotelSearchFilterAdapter.HotelFilterItem>(HotelSearchFilterAdapter.MODE_MULTIPLE)
+    private val starAdapter: HotelSearchResultFilterAdapter by lazy {
+        HotelSearchResultFilterAdapter(HotelSearchResultFilterAdapter.MODE_MULTIPLE)
     }
-    private val propertyTypeAdapter: HotelSearchFilterAdapter<HotelSearchFilterAdapter.HotelFilterItem> by lazy {
-        HotelSearchFilterAdapter<HotelSearchFilterAdapter.HotelFilterItem>(HotelSearchFilterAdapter.MODE_MULTIPLE)
+    private val propertyTypeAdapter: HotelSearchResultFilterAdapter by lazy {
+        HotelSearchResultFilterAdapter(HotelSearchResultFilterAdapter.MODE_MULTIPLE)
     }
     override fun getScreenName(): String? = null
 
@@ -88,11 +87,13 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
     }
 
     private fun setupAccomodationType(accomodation: List<Filter.FilterAccomodation>) {
+        val filterAccomodation = accomodation.map {
+            HotelSearchResultFilterAdapter.HotelFilterItem(it.id.toString(), it.displayName, false) }
         filter_accomodation_type.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         filter_accomodation_type.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
         filter_accomodation_type.adapter = propertyTypeAdapter
-        propertyTypeAdapter.updateItems(accomodation, selectedFilter.propertyType.map { it.toString() }.toSet())
+        propertyTypeAdapter.updateItems(filterAccomodation, selectedFilter.propertyType.map { it.toString() }.toSet())
     }
 
     private fun setupPriceFilter(price: Filter.FilterPrice) {
@@ -154,7 +155,8 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
     }
 
     private fun setupStarFilter(filterStar: Filter.FilterStar) {
-        val filterStars = filterStar.stars.map { FilterStar(it.toString(), it.toString()) }
+        val filterStars
+                = filterStar.stars.map { HotelSearchResultFilterAdapter.HotelFilterItem(it.toString(), it.toString(), true) }
         filter_star.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
                 false, resources.getDimensionPixelSize(R.dimen.dp_8))
         filter_star.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),

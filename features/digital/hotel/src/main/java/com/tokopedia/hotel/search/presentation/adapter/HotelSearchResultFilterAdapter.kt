@@ -10,14 +10,13 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_hotel_search_filter.view.*
 
-class HotelSearchFilterAdapter<E: HotelSearchFilterAdapter.HotelFilterItem>(
-        private val mode: Int = MODE_SINGLE
-): RecyclerView.Adapter<HotelSearchFilterAdapter.HotelSearchFilterViewHolder<E>>() {
+class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE)
+    : RecyclerView.Adapter<HotelSearchResultFilterAdapter.HotelSearchResultFilterViewHolder>() {
 
     val selectedItems: MutableSet<String> = mutableSetOf()
-    private val _item: MutableList<E> = mutableListOf()
+    private val _item: MutableList<HotelFilterItem> = mutableListOf()
 
-    fun updateItems(items: List<E>, selected: Set<String>? = null){
+    fun updateItems(items: List<HotelFilterItem>, selected: Set<String>? = null){
         _item.clear()
         _item.addAll(items)
         selected?.let { selectedItems.clear(); selectedItems.addAll(it) }
@@ -29,34 +28,34 @@ class HotelSearchFilterAdapter<E: HotelSearchFilterAdapter.HotelFilterItem>(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelSearchFilterViewHolder<E> {
-        return HotelSearchFilterViewHolder(parent.inflateLayout(R.layout.item_hotel_search_filter))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelSearchResultFilterViewHolder {
+        return HotelSearchResultFilterViewHolder(parent.inflateLayout(R.layout.item_hotel_search_filter))
     }
 
     override fun getItemCount(): Int = _item.size
 
-    override fun onBindViewHolder(holder: HotelSearchFilterViewHolder<E>, position: Int) {
+    override fun onBindViewHolder(holder: HotelSearchResultFilterViewHolder, position: Int) {
         val item = _item[position]
-        holder.bindItem(item, selectedItems.contains(item.getItemId()))
+        holder.bindItem(item, selectedItems.contains(item.itemId))
         holder.itemView.setOnClickListener {
-            if (selectedItems.contains(item.getItemId()))
-                selectedItems.remove(item.getItemId())
+            if (selectedItems.contains(item.itemId))
+                selectedItems.remove(item.itemId)
             else
-                selectedItems.add(item.getItemId())
+                selectedItems.add(item.itemId)
             notifyDataSetChanged()
         }
     }
 
-    class HotelSearchFilterViewHolder<T: HotelSearchFilterAdapter.HotelFilterItem>(view: View)
+    inner class HotelSearchResultFilterViewHolder(view: View)
         : RecyclerView.ViewHolder(view){
-        fun bindItem(item: T, isSelected: Boolean) {
+        fun bindItem(item: HotelFilterItem, isSelected: Boolean) {
             with(itemView){
-                if (item.isRateItem())
+                if (item.isRateItem)
                     image.visible()
                 else
                     image.gone()
 
-                title.text = item.getItemTitle()
+                title.text = item.itemTitle
                 base_item_filter.isSelected = isSelected
                 if (isSelected){
                     image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_stars_active_xxl))
@@ -75,9 +74,9 @@ class HotelSearchFilterAdapter<E: HotelSearchFilterAdapter.HotelFilterItem>(
         const val MODE_MULTIPLE = 2
     }
 
-    interface HotelFilterItem {
-        fun getItemId(): String
-        fun getItemTitle(): String
-        fun isRateItem(): Boolean = false
-    }
+    data class HotelFilterItem (
+            val itemId: String = "",
+            val itemTitle: String = "",
+            val isRateItem: Boolean = false
+    )
 }
