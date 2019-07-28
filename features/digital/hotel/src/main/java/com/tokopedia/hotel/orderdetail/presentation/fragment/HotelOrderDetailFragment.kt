@@ -8,6 +8,7 @@ import android.content.Intent.ACTION_DIAL
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.text.SpannableString
@@ -25,6 +26,7 @@ import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
@@ -51,7 +53,6 @@ import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
 import kotlinx.android.synthetic.main.layout_order_detail_payment_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_transaction_detail.*
-import java.io.UnsupportedEncodingException
 import javax.inject.Inject
 
 
@@ -242,7 +243,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
         if (propertyDetail.extraInfo.content.isNotBlank()) {
             special_notes.setText(createHyperlinkText(propertyDetail.extraInfo.content,
-                    propertyDetail.extraInfo.longDesc, isUrl = false), TextView.BufferType.SPANNABLE)
+                    propertyDetail.extraInfo.longDesc, R.string.hotel_order_detail_refund_ticker), TextView.BufferType.SPANNABLE)
             special_notes.visibility = View.VISIBLE
             special_notes.movementMethod = LinkMovementMethod.getInstance()
         } else special_notes.visibility = View.GONE
@@ -350,9 +351,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         }
     }
 
-    fun createHyperlinkText(htmlText: String = "", content: String = "", isUrl: Boolean = true): SpannableString {
+    private fun createHyperlinkText(htmlText: String = "", content: String = "", @StringRes resId: Int = 0): SpannableString {
 
-        val text = Html.fromHtml(htmlText)
+        val text = if (resId == 0) TextHtmlUtils.getTextFromHtml(htmlText) else TextHtmlUtils.getTextFromHtml(getString(resId, htmlText))
         val spannableString = SpannableString(text)
         val startIndexOfLink = htmlText.toLowerCase().indexOf("<hyperlink>") + "<hyperlink>".length
         val endIndexOfLink = htmlText.toLowerCase().indexOf("</hyperlink>")
@@ -360,9 +361,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(view: View) {
                     try {
-                        if (isUrl) RouteManager.route(context, "tokopedia://webview?url=${content}")
+                        if (resId != 0) RouteManager.route(context, "tokopedia://webview?url=$content")
                         else onImportantNotesClicked(content)
-                    } catch (e: UnsupportedEncodingException) {
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 }
@@ -373,6 +374,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     ds.color = resources.getColor(R.color.green_250) // specific color for this link
                 }
             }, startIndexOfLink - "<hyperlink>".length, endIndexOfLink - "<hyperlink>".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } else if (resId != 0) {
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(p0: View) {
+                    onImportantNotesClicked(content)
+                }
+            }, text.indexOf("<font"), text.length-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         return spannableString
     }
