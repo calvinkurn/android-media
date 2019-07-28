@@ -128,9 +128,10 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             val cw = ContextWrapper(context?.applicationContext)
             val myDir = cw.getDir(getString(R.string.hotel_share_folder_name), Context.MODE_PRIVATE)
             myDir.mkdirs()
-            val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.getCurrentCalendar().time)
+            val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.getCurrentCalendar().time)
             val filename = getString(R.string.hotel_share_file_name, currentTime)
             val file = File(myDir, filename)
+            if (file.exists()) file.delete()
             try {
                 val out = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)

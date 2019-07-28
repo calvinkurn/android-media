@@ -199,6 +199,7 @@
     <string name="hotel_booking_back_dialog_yes">Lanjut pesan</string>
 
     <string name="hotel_e_voucher_phone">No. Telepon: %1$s</string>
+    <string name="hotel_e_voucher_detail_order_title">DETAIL PESANAN</string>
     <string name="hotel_share_as_image">Bagikan sebagai gambar</string>
     <string name="hotel_share_as_pdf">Bagikan sebagai PDF</string>
     <string name="hotel_share_file_name">Tokopedia_Hotel_%1$s.png</string>

@@ -142,6 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16"
                 android:background="@drawable/bg_hotel_ticket_rounded"
                 android:orientation="vertical">
 
@@ -149,7 +150,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_16"
-                    android:text="DETAIL PESANAN"
+                    android:text="@string/hotel_e_voucher_detail_order_title"
                     app:fontSize="micro"
                     app:textViewTheme="lightPrimary"
                     app:weight="medium"
