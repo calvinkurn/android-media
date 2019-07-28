@@ -22,6 +22,7 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
@@ -413,7 +414,7 @@ class TopChatViewStateImpl(
     }
 
     override fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>) {
-        attachmentPreviewContainer.visibility = View.VISIBLE
+        attachmentPreviewContainer.show()
         attachmentPreviewAdapter.updateAttachments(attachmentPreview)
     }
 

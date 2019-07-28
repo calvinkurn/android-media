@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
 
@@ -50,18 +51,18 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
             productColorVariantHex?.background = backgroundDrawable
             productColorVariantValue?.text = model.colorVariant
         } else {
-            productColorVariant?.visibility = View.GONE
+            productColorVariant?.hide()
         }
 
         if (model.hasSizeVariant()) {
             productSizeVariantValue?.text = model.sizeVariant
         } else {
-            productSizeVariant?.visibility = View.GONE
+            productSizeVariant?.hide()
         }
     }
 
     private fun hideVariantLayout() {
-        productVariantContainer?.visibility = View.GONE
+        productVariantContainer?.hide()
     }
 
     private fun getBackgroundDrawable(hexColor: String): Drawable? {
