@@ -76,7 +76,7 @@ object SendWebsocketParam {
 
         val data = JsonObject()
         data.addProperty("message_id", Integer.valueOf(messageId))
-        data.addProperty("message", "Halo")
+        data.addProperty("message", invoice.invoiceUrl)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
         data.addProperty("attachment_type", Integer.parseInt(TYPE_INVOICE_SEND))
