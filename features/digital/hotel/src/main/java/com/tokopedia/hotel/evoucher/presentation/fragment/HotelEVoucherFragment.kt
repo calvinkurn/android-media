@@ -12,13 +12,6 @@ import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.text.Html
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -101,7 +94,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val args = savedInstanceState ?: arguments?
+        val args = savedInstanceState ?: arguments
         orderId = args?.getString(EXTRA_ORDER_ID) ?: ""
         eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_hotel_order_list_detail), orderId)
@@ -145,7 +138,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 out.close()
                 uri = Uri.fromFile(file)
             } catch (e: Exception) {
-                Log.e("ErrorWhy", e.message)
             }
         }
         return uri
