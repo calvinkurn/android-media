@@ -9,12 +9,13 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
+import android.provider.MediaStore
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
@@ -31,8 +32,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
-import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 
 
@@ -125,7 +124,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     private fun saveImage(bitmap: Bitmap?): Uri? {
         var uri: Uri? = null
         if (bitmap != null) {
-            val root = Environment.getExternalStorageDirectory().toString()
+            /*val root = Environment.getExternalStorageDirectory().toString()
             val myDir = File(getString(R.string.hotel_share_folder_name, root))
             myDir.mkdirs()
             val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.getCurrentCalendar().time)
@@ -139,7 +138,11 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 out.close()
                 uri = Uri.fromFile(file)
             } catch (e: Exception) {
-            }
+            }*/
+            val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.getCurrentCalendar().time)
+            val filename = getString(R.string.hotel_share_file_name, currentTime)
+            val bitmapPath = MediaStore.Images.Media.insertImage(context?.contentResolver, bitmap, filename, null)
+            uri = Uri.parse(bitmapPath)
         }
         return uri
     }
@@ -151,6 +154,8 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.type = "image/png"
             startActivity(intent)
+        } else {
+            Toast.makeText(context, "Uri null", Toast.LENGTH_SHORT).show()
         }
     }
 
