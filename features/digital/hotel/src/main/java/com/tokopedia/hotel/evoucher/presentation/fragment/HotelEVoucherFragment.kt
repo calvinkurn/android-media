@@ -29,6 +29,8 @@ import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
@@ -124,25 +126,29 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     private fun saveImage(bitmap: Bitmap?): Uri? {
         var uri: Uri? = null
         if (bitmap != null) {
-            /*val root = Environment.getExternalStorageDirectory().toString()
-            val myDir = File(getString(R.string.hotel_share_folder_name, root))
-            myDir.mkdirs()
-            val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.getCurrentCalendar().time)
-            val filename = getString(R.string.hotel_share_file_name, currentTime)
-            val file = File(myDir, filename)
-            if (file.exists()) file.delete()
-            try {
-                val out = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-                out.flush()
-                out.close()
-                uri = Uri.fromFile(file)
-            } catch (e: Exception) {
-            }*/
-            val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.getCurrentCalendar().time)
-            val filename = getString(R.string.hotel_share_file_name, currentTime)
-            val bitmapPath = MediaStore.Images.Media.insertImage(context?.contentResolver, bitmap, filename, null)
-            uri = Uri.parse(bitmapPath)
+            val permissionChecker = PermissionCheckerHelper()
+            permissionChecker.checkPermission(this,
+                    PERMISSION_WRITE_EXTERNAL_STORAGE,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            context?.let {
+                                permissionChecker.onPermissionDenied(it, permissionText)
+                            }
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            context?.let {
+                                permissionChecker.onNeverAskAgain(it, permissionText)
+                            }
+                        }
+
+                        override fun onPermissionGranted() {
+                            val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.getCurrentCalendar().time)
+                            val filename = getString(R.string.hotel_share_file_name, currentTime)
+                            val bitmapPath = MediaStore.Images.Media.insertImage(context?.contentResolver, bitmap, filename, null)
+                            uri = Uri.parse(bitmapPath)
+                        }
+                    })
         }
         return uri
     }
