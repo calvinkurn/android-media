@@ -18,8 +18,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
+import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -92,6 +94,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
 
+        initializeSdk();
+
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
@@ -148,7 +152,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TimberWrapper.init(this);
     }
 
-
     @Override
     public void onTerminate() {
         super.onTerminate();
@@ -178,6 +181,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             NotificationManager notificationManager = (NotificationManager) getSystemService(
                     NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(mChannel);
+        }
+    }
+
+    private void initializeSdk() {
+        try {
+            FirebaseApp.initializeApp(this);
+            FacebookSdk.sdkInitialize(this);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
