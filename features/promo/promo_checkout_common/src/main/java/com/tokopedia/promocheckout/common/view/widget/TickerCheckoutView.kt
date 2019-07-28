@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.R
@@ -34,7 +35,7 @@ class TickerCheckoutView @JvmOverloads constructor(
     var actionListener : ActionListener? = null
 
     init {
-        inflate(context, getLayout(), this)
+        inflate(context, getLayout(), rootView as ViewGroup)
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TickerCheckoutView)
         try {
             state = State.fromId(styledAttributes.getInteger(R.styleable.TickerCheckoutView_state, 4))
