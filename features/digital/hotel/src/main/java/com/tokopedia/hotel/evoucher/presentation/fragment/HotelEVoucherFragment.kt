@@ -4,13 +4,12 @@ import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -50,6 +49,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     lateinit var cancellationPoliciesAdapter: HotelEVoucherCancellationPoliciesAdapter
 
     lateinit var progressDialog: ProgressDialog
+    private lateinit var shareAsPdfBottomSheets: HotelSharePdfBottomSheets
 
     override fun getScreenName(): String = ""
 
@@ -80,6 +80,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
         eVoucherViewModel.sharePdfData.observe(this, Observer {
             progressDialog.dismiss()
+            shareAsPdfBottomSheets.dismiss()
         })
     }
 
@@ -124,11 +125,10 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     private fun saveImage(bitmap: Bitmap?): Uri? {
         var uri: Uri? = null
         if (bitmap != null) {
-
-            val cw = ContextWrapper(context?.applicationContext)
-            val myDir = cw.getDir(getString(R.string.hotel_share_folder_name), Context.MODE_PRIVATE)
+            val root = Environment.getExternalStorageDirectory().toString()
+            val myDir = File(getString(R.string.hotel_share_folder_name, root))
             myDir.mkdirs()
-            val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.getCurrentCalendar().time)
+            val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.getCurrentCalendar().time)
             val filename = getString(R.string.hotel_share_file_name, currentTime)
             val file = File(myDir, filename)
             if (file.exists()) file.delete()
@@ -155,7 +155,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     }
 
     fun shareAsPdf() {
-        val shareAsPdfBottomSheets = HotelSharePdfBottomSheets()
+        shareAsPdfBottomSheets = HotelSharePdfBottomSheets()
         shareAsPdfBottomSheets.listener = this
         activity?.let {
             shareAsPdfBottomSheets.show(it.supportFragmentManager, TAG_SHARE_AS_PDF)
