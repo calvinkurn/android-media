@@ -231,7 +231,7 @@
             android:text="@string/hotel_item_list_include_pajak"
             android:textSize="@dimen/sp_10"
             app:fontSize="micro"
-            app:layout_constraintBottom_toTopOf="@id/container_pay_at_hotel"
+            app:layout_constraintBottom_toTopOf="@+id/container_pay_at_hotel"
             app:layout_constraintEnd_toEndOf="@+id/title"
             app:layout_constraintLeft_toLeftOf="@+id/title"
             app:layout_constraintRight_toRightOf="@+id/title"

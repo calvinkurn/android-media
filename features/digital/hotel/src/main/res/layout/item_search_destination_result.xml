@@ -36,8 +36,8 @@
             android:layout_marginLeft="@dimen/dp_12"
             android:ellipsize="end"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/search_destination_icon"
-            app:layout_constraintEnd_toStartOf="@id/search_destination_type" />
+            app:layout_constraintStart_toEndOf="@+id/search_destination_icon"
+            app:layout_constraintEnd_toStartOf="@+id/search_destination_type" />
 
         <TextView
             android:id="@+id/search_destination_type"
@@ -67,9 +67,9 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
             android:ellipsize="end"
-            app:layout_constraintStart_toStartOf="@id/search_destination_name"
-            app:layout_constraintEnd_toStartOf="@id/search_destination_hotel_count"
-            app:layout_constraintTop_toBottomOf="@id/search_destination_name"/>
+            app:layout_constraintStart_toStartOf="@+id/search_destination_name"
+            app:layout_constraintEnd_toStartOf="@+id/search_destination_hotel_count"
+            app:layout_constraintTop_toBottomOf="@+id/search_destination_name"/>
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/search_destination_hotel_count"
@@ -80,8 +80,8 @@
             app:textViewTheme="lightDisabled"
             android:lineSpacingExtra="@dimen/dp_6"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/search_destination_location"
-            app:layout_constraintBottom_toBottomOf="@id/search_destination_location"
+            app:layout_constraintTop_toTopOf="@+id/search_destination_location"
+            app:layout_constraintBottom_toBottomOf="@+id/search_destination_location"
             />
     </android.support.constraint.ConstraintLayout>
 

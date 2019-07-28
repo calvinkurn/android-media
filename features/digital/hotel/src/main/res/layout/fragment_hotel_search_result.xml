@@ -36,7 +36,7 @@
         app:bav_label_1="@string/travel_title_sort_search"
         app:bav_label_2="@string/label_filter"
         app:bav_2_display="true"
-        app:layout_anchor="@id/recycler_view"
+        app:layout_anchor="@+id/recycler_view"
         app:layout_anchorGravity="bottom|center_horizontal"
         app:layout_behavior="com.tokopedia.design.behavior.QuickReturnFooterBehavior" />
 

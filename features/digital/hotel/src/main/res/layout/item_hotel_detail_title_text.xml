@@ -15,7 +15,7 @@
         android:text="@string/hotel_order_detail_transaction_date"
         app:fontSize="micro"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/transaction_seperator"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_seperator"
         tools:textSize="@dimen/sp_12" />
 
     <com.tokopedia.design.component.TextViewCompat
@@ -28,8 +28,8 @@
         app:fontSize="micro"
         app:textViewTheme="lightPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/title"
-        app:layout_constraintTop_toTopOf="@id/title"
+        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintTop_toTopOf="@+id/title"
         app:weight="medium"
         tools:text="1 Sep 2017, 05:00 WIB"
         tools:textSize="@dimen/sp_12"

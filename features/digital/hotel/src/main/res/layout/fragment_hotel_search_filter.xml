@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/switch_pay_at_hotel"
+                    android:layout_toLeftOf="@+id/switch_pay_at_hotel"
                     android:text="@string/hotel_search_filter_only_show_pay_at_hotel"
                     app:fontSize="small"
                     app:textViewTheme="lightPrimary"

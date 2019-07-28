@@ -31,8 +31,8 @@
             android:id="@+id/room_full_layout"
             layout="@layout/item_hotel_room_full"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/room_image_view_pager"
-            app:layout_constraintTop_toTopOf="@id/room_image_view_pager" />
+            app:layout_constraintBottom_toBottomOf="@+id/room_image_view_pager"
+            app:layout_constraintTop_toTopOf="@+id/room_image_view_pager" />
 
         <LinearLayout
             android:id="@+id/room_description_layout"
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_12"
-            app:layout_constraintTop_toBottomOf="@id/room_image_view_pager">
+            app:layout_constraintTop_toBottomOf="@+id/room_image_view_pager">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/room_meta_info_layout"
@@ -55,9 +55,9 @@
                     android:ellipsize="end"
                     android:lines="1"
                     app:fontSize="small"
-                    app:layout_constraintEnd_toStartOf="@id/arrow_right"
+                    app:layout_constraintEnd_toStartOf="@+id/arrow_right"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/arrow_right"
+                    app:layout_constraintRight_toLeftOf="@+id/arrow_right"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:textViewTheme="lightPrimary"
@@ -69,10 +69,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp_6"
-                    app:layout_constraintBottom_toBottomOf="@id/room_name_text_view"
+                    app:layout_constraintBottom_toBottomOf="@+id/room_name_text_view"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/room_name_text_view"
+                    app:layout_constraintTop_toTopOf="+id/room_name_text_view"
                     app:srcCompat="@drawable/ic_arrow_right_grey" />
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     app:fontSize="micro"
-                    app:layout_constraintTop_toBottomOf="@id/room_name_text_view"
+                    app:layout_constraintTop_toBottomOf="@+id/room_name_text_view"
                     tools:text="Maksimum: 2 dewasa, 1 anak" />
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -90,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_3"
                     app:fontSize="micro"
-                    app:layout_constraintTop_toBottomOf="@id/max_occupancy_text_view"
+                    app:layout_constraintTop_toBottomOf="@+id/max_occupancy_text_view"
                     tools:text="27 m² • 1 super-king atau 2 single" />
             </android.support.constraint.ConstraintLayout>
 
@@ -100,7 +100,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@drawable/bg_line_separator"
-                app:layout_constraintTop_toBottomOf="@id/room_meta_info_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/room_meta_info_layout" />
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/room_info_and_facility_layout"
@@ -112,7 +112,7 @@
                 android:paddingEnd="@dimen/dp_12"
                 android:paddingRight="@dimen/dp_12"
                 android:paddingBottom="@dimen/dp_12"
-                app:layout_constraintTop_toBottomOf="@id/seperator">
+                app:layout_constraintTop_toBottomOf="@+id/seperator">
 
                 <LinearLayout
                     android:id="@+id/room_facility_recycler_view"
@@ -123,7 +123,7 @@
                     android:layout_marginRight="@dimen/dp_12"
                     android:minHeight="@dimen/dp_80"
                     android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@id/room_info_layout"
+                    app:layout_constraintEnd_toStartOf="@+id/room_info_layout"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -133,7 +133,7 @@
                     android:id="@+id/room_info_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@id/room_facility_recycler_view"
+                    app:layout_constraintBottom_toBottomOf="@+id/room_facility_recycler_view"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintRight_toRightOf="parent">
 
@@ -160,7 +160,7 @@
                         android:textColor="@color/clr_ae31353b"
                         android:textSize="@dimen/sp_10"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/room_price_text_view" />
+                        app:layout_constraintTop_toBottomOf="@+id/room_price_text_view" />
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/include_tax_text_view"
@@ -170,7 +170,7 @@
                         android:textColor="@color/clr_ae31353b"
                         android:textSize="@dimen/sp_10"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/per_room_text_view" />
+                        app:layout_constraintTop_toBottomOf="@+id/per_room_text_view" />
 
                 </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
@@ -182,7 +182,7 @@
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintTop_toBottomOf="@id/room_info_and_facility_layout">
+                app:layout_constraintTop_toBottomOf="@+id/room_info_and_facility_layout">
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/room_left_text_view"
@@ -209,7 +209,7 @@
                     app:buttonCompatType="transaction"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/room_left_text_view"
+                    app:layout_constraintTop_toBottomOf="@+id/room_left_text_view"
                     tools:gravity="center_vertical" />
 
                 <android.support.constraint.ConstraintLayout
@@ -239,7 +239,7 @@
                         android:textSize="@dimen/sp_10"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/pay_hotel_text_view" />
+                        app:layout_constraintTop_toBottomOf="@+id/pay_hotel_text_view" />
                 </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
         </LinearLayout>

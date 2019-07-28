@@ -43,7 +43,7 @@
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="@dimen/dp_16"
             android:background="@color/grey_300"
-            app:layout_constraintTop_toBottomOf="@id/transaction_status" />
+            app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/payment_fares_recycler_View"
@@ -57,7 +57,7 @@
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="@dimen/dp_16"
             android:background="@color/grey_300"
-            app:layout_constraintTop_toBottomOf="@id/transaction_status" />
+            app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/payment_summary_recycler_view"

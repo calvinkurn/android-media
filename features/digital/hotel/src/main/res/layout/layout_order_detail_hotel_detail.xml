@@ -45,7 +45,7 @@
                     android:layout_marginTop="@dimen/dp_24"
                     android:text="@string/hotel_order_detail_booking_code"
                     app:fontSize="micro"
-                    app:layout_constraintTop_toBottomOf="@id/detail_hotel_text"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_hotel_text"
                     tools:textSize="@dimen/sp_12" />
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -55,10 +55,10 @@
                     android:layout_marginStart="@dimen/dp_4"
                     android:layout_marginLeft="@dimen/dp_4"
                     app:fontSize="micro"
-                    app:layout_constraintBottom_toBottomOf="@id/booking_code_hint"
-                    app:layout_constraintLeft_toRightOf="@id/booking_code_hint"
-                    app:layout_constraintStart_toEndOf="@id/booking_code_hint"
-                    app:layout_constraintTop_toTopOf="@id/booking_code_hint"
+                    app:layout_constraintBottom_toBottomOf="@+id/booking_code_hint"
+                    app:layout_constraintLeft_toRightOf="@+id/booking_code_hint"
+                    app:layout_constraintStart_toEndOf="@+id/booking_code_hint"
+                    app:layout_constraintTop_toTopOf="@+id/booking_code_hint"
                     app:textViewTheme="lightPrimary"
                     app:weight="medium"
                     tools:text="XYZABABA110"
@@ -73,7 +73,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/grey_300"
-                app:layout_constraintTop_toBottomOf="@id/transaction_status" />
+                app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
             <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
                 android:id="@+id/checkin_checkout_date"
@@ -85,7 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:background="@color/grey_300"
-                app:layout_constraintTop_toBottomOf="@id/checkin_checkout_date" />
+                app:layout_constraintTop_toBottomOf="@+id/checkin_checkout_date" />
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -109,7 +109,7 @@
                     android:textColor="@color/tkpd_main_green"
                     app:fontSize="micro"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/hotel_name_hint"
+                    app:layout_constraintTop_toTopOf="@+id/hotel_name_hint"
                     tools:textSize="@dimen/sp_12" />
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -119,7 +119,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:textColor="@color/light_primary"
                     app:fontSize="title"
-                    app:layout_constraintTop_toBottomOf="@id/hotel_name_hint"
+                    app:layout_constraintTop_toBottomOf="@+id/hotel_name_hint"
                     app:textViewTheme="lightPrimary"
                     app:weight="medium"
                     tools:text="Avissa Suites"
@@ -132,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
                     app:fontSize="micro"
-                    app:layout_constraintTop_toBottomOf="@id/hotel_name"
+                    app:layout_constraintTop_toBottomOf="@+id/hotel_name"
                     tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Bandung, Jawa Barat, Indonesia, 40131"
                     tools:textSize="@dimen/sp_12" />
 
@@ -142,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
                     app:fontSize="small"
-                    app:layout_constraintTop_toBottomOf="@id/hotel_address"
+                    app:layout_constraintTop_toBottomOf="@+id/hotel_address"
                     app:textViewTheme="lightPrimary"
                     app:weight="medium"
                     tools:text="Kamar Deluxe Double"
@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
                     app:fontSize="micro"
-                    app:layout_constraintTop_toBottomOf="@id/room_name"
+                    app:layout_constraintTop_toBottomOf="@+id/room_name"
                     tools:text="2 Kamar • 2 Tamu"
                     tools:textSize="@dimen/sp_12" />
 
@@ -166,14 +166,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_2"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@id/room_info" />
+                    app:layout_constraintTop_toBottomOf="@+id/room_info" />
 
                 <com.tokopedia.unifycomponents.ticker.Ticker
                     android:id="@+id/refund_ticker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
-                    app:layout_constraintTop_toBottomOf="@id/room_amenities"
+                    app:layout_constraintTop_toBottomOf="@+id/room_amenities"
                     app:tickerShapeType="loose"
                     app:tickerType="announcement" />
 
@@ -182,7 +182,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
-                    app:layout_constraintTop_toBottomOf="@id/refund_ticker" />
+                    app:layout_constraintTop_toBottomOf="@+id/refund_ticker" />
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/special_notes"
@@ -190,7 +190,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
                     app:fontSize="micro"
-                    app:layout_constraintTop_toBottomOf="@id/special_request_recycler_view"
+                    app:layout_constraintTop_toBottomOf="@+id/special_request_recycler_view"
                     tools:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in. "
                     tools:textSize="@dimen/sp_12" />
 
@@ -202,7 +202,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/grey_300"
-                app:layout_constraintTop_toBottomOf="@id/transaction_status" />
+                app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/call_hotel_layout"
@@ -215,7 +215,7 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/contact_hotel"
+                    app:layout_constraintEnd_toStartOf="@+id/contact_hotel"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -232,7 +232,7 @@
                     android:textColor="@color/tkpd_main_green"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/call_icon"
+                    app:layout_constraintStart_toEndOf="@+id/call_icon"
                     app:layout_constraintTop_toTopOf="parent" />
             </android.support.constraint.ConstraintLayout>
         </LinearLayout>
@@ -274,7 +274,7 @@
                 android:layout_marginTop="@dimen/dp_24"
                 android:text="@string/hotel_order_detail_guest_name"
                 app:fontSize="small"
-                app:layout_constraintTop_toBottomOf="@id/guest_detail_hint"
+                app:layout_constraintTop_toBottomOf="@+id/guest_detail_hint"
                 app:weight="regular"
                 tools:textSize="@dimen/sp_14" />
 
@@ -288,8 +288,8 @@
                 android:gravity="end"
                 app:fontSize="small"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/guest_detail_name_hint"
-                app:layout_constraintTop_toBottomOf="@id/guest_detail_hint"
+                app:layout_constraintStart_toEndOf="@+id/guest_detail_name_hint"
+                app:layout_constraintTop_toBottomOf="@+id/guest_detail_hint"
                 app:textViewTheme="lightPrimary"
                 app:weight="medium"
                 tools:text="Stevanus Kurniawan Suharyanto"

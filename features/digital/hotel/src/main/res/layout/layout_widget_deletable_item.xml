@@ -27,8 +27,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/item_name"
-        android:layout_toEndOf="@id/item_name"
+        android:layout_toRightOf="@+id/item_name"
+        android:layout_toEndOf="@+id/item_name"
         app:srcCompat="@drawable/ic_system_action_close_grayscale_16"
         />
 

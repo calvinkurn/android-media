@@ -23,7 +23,7 @@
             android:layout_marginEnd="@dimen/dp_32"
             android:layout_marginRight="@dimen/dp_32"
             app:fontSize="small"
-            app:layout_constraintEnd_toStartOf="@id/contact_button"
+            app:layout_constraintEnd_toStartOf="@+id/contact_button"
             app:layout_constraintStart_toStartOf="parent"
             app:weight="medium"
             tools:text="+62 21 345 6788" />
@@ -47,7 +47,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:background="@color/grey_300"
-        app:layout_constraintTop_toBottomOf="@id/transaction_status" />
+        app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
 
 </LinearLayout>

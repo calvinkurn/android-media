@@ -17,8 +17,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/rating_text_view"
-            app:layout_constraintEnd_toStartOf="@id/rating_text_view"
+            app:layout_constraintRight_toLeftOf="@+id/rating_text_view"
+            app:layout_constraintEnd_toStartOf="@+id/rating_text_view"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             app:fontSize="small"
@@ -41,9 +41,9 @@
             android:paddingBottom="@dimen/dp_2"
             android:textColor="@color/blue_booking"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/review_title"
+            app:layout_constraintBottom_toBottomOf="@+id/review_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/review_title"
+            app:layout_constraintTop_toTopOf="@+id/review_title"
             tools:text="8,6" />
 
         <android.support.constraint.ConstraintLayout
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
-            app:layout_constraintTop_toBottomOf="@id/review_title">
+            app:layout_constraintTop_toBottomOf="@+id/review_title">
 
             <ImageView
                 android:id="@+id/icon_good_review"
@@ -67,9 +67,9 @@
                 android:layout_marginLeft="@dimen/dp_8"
                 app:fontSize="micro"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/icon_good_review"
-                app:layout_constraintStart_toEndOf="@id/icon_good_review"
-                app:layout_constraintTop_toTopOf="@id/icon_good_review"
+                app:layout_constraintLeft_toRightOf="@+id/icon_good_review"
+                app:layout_constraintStart_toEndOf="@+id/icon_good_review"
+                app:layout_constraintTop_toTopOf="@+id/icon_good_review"
                 android:lineSpacingExtra="@dimen/dp_2"
                 tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " />
         </android.support.constraint.ConstraintLayout>
@@ -79,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
-            app:layout_constraintTop_toBottomOf="@id/good_review_layout">
+            app:layout_constraintTop_toBottomOf="@+id/good_review_layout">
 
             <ImageView
                 android:id="@+id/icon_bad_review"
@@ -96,9 +96,9 @@
                 android:lineSpacingExtra="@dimen/dp_2"
                 app:fontSize="micro"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/icon_bad_review"
-                app:layout_constraintStart_toEndOf="@id/icon_bad_review"
-                app:layout_constraintTop_toTopOf="@id/icon_bad_review"
+                app:layout_constraintLeft_toRightOf="@+id/icon_bad_review"
+                app:layout_constraintStart_toEndOf="@+id/icon_bad_review"
+                app:layout_constraintTop_toTopOf="@+id/icon_bad_review"
                 tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " />
         </android.support.constraint.ConstraintLayout>
 
@@ -108,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             app:fontSize="micro"
-            app:layout_constraintTop_toBottomOf="@id/bad_review_layout"
+            app:layout_constraintTop_toBottomOf="@+id/bad_review_layout"
             app:weight="medium"
             tools:text="Ignatius Andrew" />
 
@@ -118,7 +118,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/light_disabled"
             app:fontSize="micro"
-            app:layout_constraintTop_toBottomOf="@id/reviewer_name"
+            app:layout_constraintTop_toBottomOf="@+id/reviewer_name"
             tools:text="Indonesia -  8 Sep 2018" />
     </android.support.constraint.ConstraintLayout>
 
