@@ -108,6 +108,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 }
                 is Fail -> {
                     showErrorState(it.throwable)
+                    loadingState.visibility = View.GONE
                 }
             }
         })
