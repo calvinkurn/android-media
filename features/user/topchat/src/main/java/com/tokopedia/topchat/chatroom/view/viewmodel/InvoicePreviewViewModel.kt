@@ -29,13 +29,13 @@ class InvoicePreviewViewModel(
         totalPriceAmount), PreviewViewModel {
 
     override fun notEnoughRequiredData(): Boolean {
-        return id == -1 ||
+        return id == INVALID_ID ||
                 invoiceCode.isEmpty() ||
                 productName.isEmpty() ||
                 date.isEmpty() ||
                 imageUrl.isEmpty() ||
                 invoiceUrl.isEmpty() ||
-                statusId == -1 ||
+                statusId == INVALID_ID ||
                 status.isEmpty() ||
                 totalPriceAmount.isEmpty()
     }
@@ -53,5 +53,9 @@ class InvoicePreviewViewModel(
                 opponentId
         )
         RxWebSocket.send(invoicePreviewParam, listInterceptor)
+    }
+
+    companion object {
+        const val INVALID_ID = -1
     }
 }
