@@ -76,7 +76,6 @@ class DeeplinkMatcher() {
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, null) to SHOP)
-            add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 2, null) to PRODUCT)
         }
     }

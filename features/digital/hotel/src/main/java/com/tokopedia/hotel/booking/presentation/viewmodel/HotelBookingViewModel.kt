@@ -56,7 +56,6 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
 
             hotelCheckoutResult.value = Success(data.response)
         }) {
-            it.printStackTrace()
             hotelCheckoutResult.value = Fail(it)
         }
     }

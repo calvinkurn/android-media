@@ -12,6 +12,13 @@ import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Html
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +34,8 @@ import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewMode
 import com.tokopedia.hotel.evoucher.presentation.widget.HotelSharePdfBottomSheets
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
@@ -92,8 +101,8 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val args = savedInstanceState ?: arguments!!
-        orderId = args.getString(EXTRA_ORDER_ID, "")
+        val args = savedInstanceState ?: arguments?
+        orderId = args?.getString(EXTRA_ORDER_ID) ?: ""
         eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_hotel_order_list_detail), orderId)
     }
@@ -129,7 +138,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.getCurrentCalendar().time)
             val filename = getString(R.string.hotel_share_file_name, currentTime)
             val file = File(myDir, filename)
-            if (file.exists()) file.delete()
             try {
                 val out = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
@@ -137,7 +145,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 out.close()
                 uri = Uri.fromFile(file)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("ErrorWhy", e.message)
             }
         }
         return uri
@@ -156,7 +164,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     fun shareAsPdf() {
         val shareAsPdfBottomSheets = HotelSharePdfBottomSheets()
         shareAsPdfBottomSheets.listener = this
-        shareAsPdfBottomSheets.show(activity!!.supportFragmentManager, TAG_SHARE_AS_PDF)
+        activity?.let {
+            shareAsPdfBottomSheets.show(it.supportFragmentManager, TAG_SHARE_AS_PDF)
+        }
     }
 
     private fun renderData(data: HotelOrderDetail) {
@@ -176,7 +186,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                     propertyDetail.stayLength.content)
 
             for (i in 1..propertyDetail.propertyInfo.starRating) {
-                container_rating_view.addView(RatingStarView(context!!))
+                context?.run {
+                    container_rating_view.addView(RatingStarView(this))
+                }
             }
 
             tv_booking_title.text = propertyDetail.bookingKey.title
@@ -193,11 +205,18 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 }
 
                 tv_room_facility.text = amenitiesString
+                if (amenitiesString.isEmpty()) tv_room_facility.hide() else tv_room_facility.show()
             }
 
-            tv_request_label.text = propertyDetail.specialRequest.title
-            tv_request_info.text = propertyDetail.specialRequest.content
+            if (propertyDetail.specialRequest.content.isEmpty()) {
+                tv_request_label.hide()
+                tv_request_info.hide()
+            } else {
+                tv_request_label.text = propertyDetail.specialRequest.title
+                tv_request_info.text = propertyDetail.specialRequest.content
+            }
 
+            if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) hotel_detail_seperator.hide()
         }
 
         var phoneString = ""

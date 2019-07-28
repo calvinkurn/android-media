@@ -32,6 +32,9 @@ public class Product {
     @SerializedName("product_price")
     @Expose
     private int productPrice;
+    @SerializedName("product_original_price")
+    @Expose
+    private int productOriginalPrice;
     @SerializedName("product_wholesale_price")
     @Expose
     private int productWholesalePrice;
@@ -159,6 +162,10 @@ public class Product {
 
     public int getProductPrice() {
         return productPrice;
+    }
+
+    public int getProductOriginalPrice() {
+        return productOriginalPrice;
     }
 
     public int getProductWholesalePrice() {

@@ -39,5 +39,5 @@ class HotelContactPhoneBottomSheet: BottomSheets(){
     }
 
 
-    override fun title(): String = "Kontak Hotel"
+    override fun title(): String = getString(R.string.hotel_order_detail_contact_phone_sheet_title)
 }

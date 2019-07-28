@@ -186,7 +186,7 @@
                     app:fontSize="micro"
                     tools:text="Termasuk Sarapan, Refund Bersyarat" />
 
-                <View
+                <View android:id="@+id/hotel_detail_seperator"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
                     android:layout_marginTop="@dimen/dp_16"

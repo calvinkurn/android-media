@@ -12,7 +12,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -32,6 +34,7 @@ import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
+import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
@@ -41,7 +44,8 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
 import javax.inject.Inject
 
-class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(), BaseEmptyViewHolder.Callback {
+class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
+        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -53,7 +57,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     var searchDestinationName = ""
-    var searchProperties: List<Property> = listOf()
 
     companion object {
         private const val REQUEST_FILTER = 0x10
@@ -147,12 +150,17 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheId) } ?: return
                 val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java) ?: ParamFilter()
 
-                trackingHotelUtil.hotelUserClickFilter(paramFilter.toString())
+                trackingHotelUtil.hotelUserClickFilter(paramFilter, searchResultviewModel.filter)
                 searchResultviewModel.addFilter(paramFilter)
                 loadInitialData()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> {
+        val baseListAdapter = HotelSearchResultAdapter(this, adapterTypeFactory)
+        return baseListAdapter
     }
 
     private fun onSuccessGetResult(data: PropertySearch) {
@@ -162,7 +170,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 searchParam,
                 data.properties)
 
-        searchProperties = data.properties
+        val searchProperties = data.properties
         bottom_action_view.visible()
         super.renderList(searchProperties, searchProperties.size > 0)
         generateSortMenu(data.displayInfo.sort)
@@ -209,12 +217,18 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun getAdapterTypeFactory(): PropertyAdapterTypeFactory = PropertyAdapterTypeFactory(this)
 
     override fun onItemClicked(t: Property) {
-        with(searchResultviewModel.searchParam) {
-            trackingHotelUtil.chooseHotel(t, checkIn, searchProperties)
+        // no op
+    }
 
-            startActivityForResult(HotelDetailActivity.getCallingIntent(context!!,
-                    checkIn, checkOut, t.id, room, guest.adult),
-                    REQUEST_CODE_DETAIL_HOTEL)
+    override fun onItemClicked(property: Property, position: Int) {
+        with(searchResultviewModel.searchParam) {
+            trackingHotelUtil.chooseHotel(property, checkIn, position)
+
+            context?.run {
+                startActivityForResult(HotelDetailActivity.getCallingIntent(this,
+                        checkIn, checkOut, property.id, room, guest.adult),
+                        REQUEST_CODE_DETAIL_HOTEL)
+            }
         }
     }
 
@@ -239,7 +253,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun onEmptyButtonClicked() {
-        if (!searchResultviewModel.isFilter) activity!!.onBackPressed()
+        if (!searchResultviewModel.isFilter) activity?.onBackPressed()
         else {
             context?.let {
                 val cacheManager = SaveInstanceCacheManager(it, true).apply {

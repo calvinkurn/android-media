@@ -28,7 +28,7 @@ data class HotelReview(
 
         @SerializedName("score")
         @Expose
-        val score: Int = 0,
+        val score: Float = 0f,
 
         @SerializedName("headline")
         @Expose

@@ -95,8 +95,8 @@ public class AuthUtil {
         private static final int[] RAW_ALIYUN_ACCESS_KEY_ID = new int[]{76, 84, 65, 73, 85, 101, 69, 87, 83, 118, 105, 97, 49, 75, 107, 87};
         private static final int[] RAW_BRANCHIO_KEY_ID = new int[]{107, 101, 121, 95, 108, 105, 118, 101, 95, 97, 98, 104, 72, 103, 73, 104, 49, 68, 81, 105, 117, 80, 120, 100, 66, 78, 103, 57, 69, 88, 101, 112, 100, 68, 117, 103, 119, 119, 107, 72, 114};
         private static final int[] RAW_INDI_API_KEY = new int[]{69, 69, 82, 73, 120, 119, 88, 70, 54, 52, 52, 99, 49, 69, 49, 84, 111, 53, 112, 117, 76, 56, 120, 78, 80, 53, 80, 118, 76, 72, 83, 118, 50, 52, 48, 80, 121, 78, 89, 102};
-        private static final int[] RAW_API_KEY_INSTANT_DEBIT_BCA = new int[]{102, 51, 51, 51, 101, 57, 101, 54, 45, 52, 100, 101, 48, 45, 52, 54, 101, 99, 45, 97, 97, 54, 102, 45, 53, 54, 56, 51, 97, 102, 100, 53, 54, 98, 99, 48};
-        private static final int[] RAW_API_SECRET_INSTANT_DEBIT_BCA = new int[]{55, 97, 50, 55, 50, 51, 54, 57, 45, 52, 99, 50, 57, 45, 52, 52, 97, 54, 45, 97, 98, 56, 52, 45, 57, 52, 98, 49, 50, 48, 50, 57, 56, 97, 51, 53};
+        private static final int[] RAW_API_KEY_INSTANT_DEBIT_BCA = new int[]{97, 99, 97, 53, 98, 52, 50, 55, 45, 99, 102, 52, 97, 45, 52, 102, 49, 52, 45, 98, 51, 101, 51, 45, 101, 54, 56, 53, 50, 101, 55, 98, 56, 101, 49, 50};
+        private static final int[] RAW_API_SECRET_INSTANT_DEBIT_BCA = new int[]{101, 102, 101, 48, 51, 98, 52, 100, 45, 101, 102, 49, 102, 45, 52, 98, 98, 98, 45, 57, 97, 99, 100, 45, 53, 53, 100, 101, 50, 48, 49, 54, 56, 102, 49, 99};
         private static final int[] RAW_INSTANT_DEBIT_BCA_MERCHANT_ID = new int[]{54, 49, 48, 49, 55};
         private static final int[] RAW_INSTANT_DEBIT_BCA_BANK_CODE = new int[] {66, 67, 65};
         private static final int[] RAW_INSTANT_DEBIT_BCA_MERCHANT_CODE = new int[] {116, 111, 107, 111, 112, 101, 100, 105, 97};

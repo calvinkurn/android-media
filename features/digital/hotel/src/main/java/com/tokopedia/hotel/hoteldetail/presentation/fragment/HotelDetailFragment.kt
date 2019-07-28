@@ -41,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.round
 
 /**
  * @author by furqan on 22/04/19
@@ -99,7 +100,7 @@ class HotelDetailFragment : HotelBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_SEARCH_PARAMETER)) {
-            hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER)!!
+            hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER) ?: HotelHomepageModel()
             isButtonEnabled = savedInstanceState.getBoolean(SAVED_ENABLE_BUTTON)
         }
 
@@ -211,7 +212,7 @@ class HotelDetailFragment : HotelBaseFragment() {
         tv_hotel_name.text = data.property.name
         hotel_property_type.text = data.property.typeName
         for (i in 1..data.property.star) {
-            hotel_rating_container.addView(RatingStarView(context!!))
+            context?.run { hotel_rating_container.addView(RatingStarView(this)) }
         }
         tv_hotel_address.text = data.property.address
 
@@ -223,8 +224,10 @@ class HotelDetailFragment : HotelBaseFragment() {
         setupMainFacilityItem(data)
 
         btn_hotel_detail_show.setOnClickListener {
-            startActivity(HotelDetailMapActivity.getCallingIntent(context!!, data.property.name,
-                    data.property.latitude, data.property.longitude, data.property.address))
+            context?.run {
+                startActivity(HotelDetailMapActivity.getCallingIntent(this, data.property.name,
+                        data.property.latitude, data.property.longitude, data.property.address))
+            }
         }
 
         if (!isButtonEnabled) {
@@ -347,7 +350,9 @@ class HotelDetailFragment : HotelBaseFragment() {
 
             tv_hotel_detail_all_reviews.setOnClickListener {
                 trackingHotelUtil.hotelClickHotelReviews(hotelId, roomPriceAmount)
-                startActivityForResult(HotelReviewActivity.getCallingIntent(context!!, hotelHomepageModel.locId), RESULT_REVIEW)
+                context?.run {
+                    startActivityForResult(HotelReviewActivity.getCallingIntent(this, hotelHomepageModel.locId), RESULT_REVIEW)
+                }
             }
         } else {
             rv_best_review.visibility = View.GONE
@@ -366,8 +371,10 @@ class HotelDetailFragment : HotelBaseFragment() {
         rv_hotel_facilities.adapter = mainFacilityAdapter
 
         tv_hotel_detail_all_facilities.setOnClickListener {
-            startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
-                    HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.FACILITY_TITLE))
+            context?.run {
+                startActivity(HotelDetailAllFacilityActivity.getCallingIntent(this, hotelName,
+                        HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.FACILITY_TITLE))
+            }
         }
     }
 
@@ -375,8 +382,10 @@ class HotelDetailFragment : HotelBaseFragment() {
         if (data.property.importantInformation.isNotEmpty()) {
             tv_hotel_important_info.text = data.property.importantInformation
             tv_hotel_important_info_more.setOnClickListener {
-                startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
-                        HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.IMPORTANT_INFO_TITLE))
+                context?.run {
+                    startActivity(HotelDetailAllFacilityActivity.getCallingIntent(this, hotelName,
+                            HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.IMPORTANT_INFO_TITLE))
+                }
             }
         } else {
             container_important_info.visibility = View.GONE
@@ -387,8 +396,10 @@ class HotelDetailFragment : HotelBaseFragment() {
         if (data.property.description.isNotEmpty()) {
             tv_hotel_description.text = data.property.description
             tv_hotel_description_more.setOnClickListener {
-                startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
-                        HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.DESCRIPTION_TITLE))
+                context?.run {
+                    startActivity(HotelDetailAllFacilityActivity.getCallingIntent(this, hotelName,
+                            HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.DESCRIPTION_TITLE))
+                }
             }
         } else {
             container_hotel_description.visibility = View.GONE
@@ -401,8 +412,10 @@ class HotelDetailFragment : HotelBaseFragment() {
         scv_hotel_date.setRightTitleText(data.property.checkoutInfo)
 
         tv_hotel_detail_all_policies.setOnClickListener {
-            startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
-                    HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.POLICY_TITLE))
+            context?.run {
+                startActivity(HotelDetailAllFacilityActivity.getCallingIntent(this, hotelName,
+                        HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.POLICY_TITLE))
+            }
         }
     }
 
@@ -412,7 +425,7 @@ class HotelDetailFragment : HotelBaseFragment() {
 
         if (data.isNotEmpty()) {
             roomPrice = data.first().roomPrice.roomPrice
-            roomPriceAmount = data.first().roomPrice.priceAmount.toLong().toString()
+            roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
             trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
 
             tv_hotel_price.text = roomPrice
@@ -424,20 +437,22 @@ class HotelDetailFragment : HotelBaseFragment() {
             } else {
                 btn_see_room.setOnClickListener {
                     trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPriceAmount)
-                    startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
-                            hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
-                            hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
+                    context?.run {
+                        startActivityForResult(HotelRoomListActivity.createInstance(this, hotelHomepageModel.locId, hotelName,
+                                hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
+                                hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
+                    }
                 }
             }
         } else {
             trackingHotelUtil.hotelViewDetails(hotelName, hotelId, false, "0", false)
             tv_hotel_price_subtitle.visibility = View.GONE
             tv_hotel_price.text = getString(R.string.hotel_detail_room_full_text)
-            tv_hotel_price.setTextColor(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.light_disabled))
+            context?.run { tv_hotel_price.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.light_disabled)) }
             btn_see_room.buttonCompatType = ButtonCompat.PRIMARY
             btn_see_room.text = getString(R.string.hotel_detail_change_search_text)
             btn_see_room.setOnClickListener {
-                activity!!.finish()
+                activity?.run { this.finish() }
             }
         }
 
@@ -448,7 +463,9 @@ class HotelDetailFragment : HotelBaseFragment() {
     }
 
     private fun openImagePreview(index: Int) {
-        startActivity(ImagePreviewSliderActivity.getCallingIntent(context!!, hotelName, imageList, thumbnailImageList, index))
+        context?.run {
+            startActivity(ImagePreviewSliderActivity.getCallingIntent(this, hotelName, imageList, thumbnailImageList, index))
+        }
     }
 
     override fun onErrorRetryClicked() {

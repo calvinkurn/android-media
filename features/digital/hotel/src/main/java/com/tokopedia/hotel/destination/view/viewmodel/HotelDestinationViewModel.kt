@@ -40,7 +40,7 @@ class HotelDestinationViewModel @Inject constructor(
     val recentSearch = MutableLiveData<Result<List<RecentSearch>>>()
     val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
     val longLat = MutableLiveData<Result<Pair<Double, Double>>>()
-    val deleteSuccess = MutableLiveData<Boolean>()
+    private val deleteSuccess = MutableLiveData<Boolean>()
 
     fun getHotelRecommendation(popularRawQuery: String, recentSearchRawQuery: String) {
 

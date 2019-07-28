@@ -30,7 +30,7 @@ class TravelContactData(var name: String = "",
     }
 
     fun isEmpty(): Boolean {
-        return name == "" && email == "" && phoneCode == 0 && phone == ""
+        return name.isBlank() && email.isBlank() && phoneCode == 0 && phone.isBlank()
     }
 
     companion object CREATOR : Parcelable.Creator<TravelContactData> {

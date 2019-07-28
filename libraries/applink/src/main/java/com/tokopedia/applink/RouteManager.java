@@ -116,14 +116,13 @@ public class RouteManager {
             return;
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             intent = buildInternalImplicitIntent(context, mappedDeeplink);
-            if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
-                context.startActivity(intent);
-            } else {
+            if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
                 intent = new Intent();
                 intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
                 intent.setData(Uri.parse(uriString));
                 context.startActivity(intent);
             }
+            context.startActivity(intent);
             return;
         } else {
             intent = buildInternalExplicitIntent(context, mappedDeeplink);

@@ -239,6 +239,9 @@ android {
         vectorDrawables.useSupportLibrary = vectorDrawable
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         resConfigs "en", "id"
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
     }
 
     dexOptions {
@@ -319,6 +322,7 @@ dependencies {
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.homeRecommendation)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -584,4 +588,3 @@ project.ext.sentryCli = [
 
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/sentry.gradle"
-apply plugin: 'com.google.gms.google-services'

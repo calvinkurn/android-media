@@ -28,6 +28,7 @@ public class ButtonCompat extends AppCompatButton {
     public final static int WHITE_TRANSPARENT = 5;
     public final static int GHOST = 6;
     public final static int WHITE = 7;
+    public final static int PRIMARY_DISABLED = 8;
 
     public final static int BIG = 4;
     public final static int MEDIUM = 5;
@@ -146,6 +147,11 @@ public class ButtonCompat extends AppCompatButton {
         switch (mType) {
             case PRIMARY:
                 initDraw(R.color.white, R.drawable.bg_button_green);
+                super.setEnabled(true);
+                break;
+            case PRIMARY_DISABLED:
+                initDraw(R.color.grey_500, R.drawable.bg_button_green);
+                super.setEnabled(false);
                 break;
             case SECONDARY:
                 initDraw(R.color.grey_500, R.drawable.bg_button_white_border);

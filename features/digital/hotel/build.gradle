@@ -41,7 +41,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.applink)
@@ -60,11 +59,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icon
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
-    implementation rootProject.ext.miscDependencies.multiDex
-
-    implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.miscDependencies.chips
 
     implementation rootProject.ext.miscDependencies.dagger
@@ -79,9 +73,6 @@ dependencies {
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.playServicesDependencies.analytics

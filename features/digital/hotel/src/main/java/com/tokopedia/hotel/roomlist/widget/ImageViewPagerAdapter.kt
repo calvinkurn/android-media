@@ -5,9 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.hotel.R
+import com.tokopedia.kotlin.extensions.view.loadImage
 
 /**
  * @author by jessica on 16/04/19
@@ -24,18 +23,7 @@ class ImageViewPagerAdapter(val images: MutableList<String>, val clickListener: 
         if (images.get(position) != null && images.get(position).length > 0) {
             if (clickListener != null) holder.bannerImage.setOnClickListener{ clickListener.onImageClicked(position) }
         }
-        try {
-            Glide.with(holder.itemView.context)
-                    .load(images.get(position))
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
-                    .error(com.tokopedia.design.R.drawable.ic_loading_image)
-                    .centerCrop()
-                    .into(holder.bannerImage)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        holder.bannerImage.loadImage(images.get(position), R.drawable.ic_loading_image)
     }
 
     fun addImages(list: List<String>) {

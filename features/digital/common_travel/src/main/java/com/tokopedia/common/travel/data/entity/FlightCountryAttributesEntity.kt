@@ -7,10 +7,10 @@ class FlightCountryAttributesEntity(
 
         @SerializedName("name")
         @Expose
-        var name: String,
+        var name: String = "",
         @SerializedName("phone_code")
         @Expose
         var phoneCode: Long = 0,
         @SerializedName("cities")
         @Expose
-        private val cities: List<String>? = null)
+        private val cities: List<String>? = listOf())
