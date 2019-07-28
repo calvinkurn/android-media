@@ -97,7 +97,7 @@
                         android:layout_width="@dimen/dp_20"
                         android:layout_height="@dimen/dp_20"
                         android:adjustViewBounds="true"
-                        tools:src="@drawable/ic_coupon_grey_promo_checkout" />
+                        />
 
                     <TextView
                         android:id="@+id/titleCoupon"
