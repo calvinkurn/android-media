@@ -73,9 +73,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    kapt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
     implementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.location
@@ -87,11 +84,6 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.maps
-
-    // Room components
-    implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
-    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 apply from: '../../../publish_local.gradle'
