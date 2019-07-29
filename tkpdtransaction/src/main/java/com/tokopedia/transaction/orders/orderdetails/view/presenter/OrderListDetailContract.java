@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -104,6 +105,8 @@ public interface OrderListDetailContract {
         List<ActionButton> getActionList();
 
         void onBuyAgain(Resources resources);
+
+        void assignInvoiceDataTo(Intent intent);
     }
 
     interface ActionInterface {

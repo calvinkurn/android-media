@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rl_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:gravity="end">
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/dp_90">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_chat_bubble"
@@ -15,9 +13,10 @@
         android:layout_marginTop="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_6"
+        android:background="@drawable/attach_product_right_bubble"
         android:minWidth="@dimen/chat_width"
         android:padding="@dimen/dp_12"
-        tools:background="@drawable/attach_product_right_bubble">
+        android:paddingBottom="@dimen/dp_12">
 
         <ImageView
             android:id="@+id/iv_thumbnail"
@@ -54,6 +53,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_2"
+            android:gravity="start"
             android:maxLines="1"
             android:textSize="@dimen/sp_12"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
@@ -79,4 +79,13 @@
             tools:text="Rp 25.500" />
     </android.support.constraint.ConstraintLayout>
 
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        app:srcCompat="@drawable/ic_close_border_24" />
+
+</FrameLayout>
