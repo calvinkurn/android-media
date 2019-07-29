@@ -94,7 +94,6 @@ class ShopItemViewHolder(
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
-//            ImageHandler.loadImageFitCenter(imageViewShopReputation.context, imageViewShopReputation, shopViewItem.reputationImageUri)
             ImageHandler.loadImageThumbs(context, imageViewShopReputation, shopViewItem.reputationImageUri)
         }
     }

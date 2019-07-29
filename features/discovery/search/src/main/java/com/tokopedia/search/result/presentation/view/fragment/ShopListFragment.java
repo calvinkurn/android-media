@@ -228,24 +228,9 @@ public class ShopListFragment
             performanceMonitoring = null;
         }
 
+        sendShopImpressionTrackingEvent(shopItemList);
         handleSearchResult(shopItemList, isHasNextPage);
-
         stopLoadingAndHideRefreshLayout();
-    }
-
-    private void handleSearchResult(List<Visitable> shopViewItemList, boolean isHasNextPage) {
-        isListEmpty = false;
-        isNextPageAvailable = isHasNextPage;
-
-        sendShopImpressionTrackingEvent(shopViewItemList);
-        adapter.removeLoading();
-        adapter.appendItems(shopViewItemList);
-
-        updateScrollListenerState(isHasNextPage);
-
-        if (isHasNextPage) {
-            adapter.addLoading();
-        }
     }
 
     private void sendShopImpressionTrackingEvent(List<Visitable> list) {
@@ -281,6 +266,19 @@ public class ShopListFragment
     private int getProductPreviewItemMaxCount(List<ShopViewModel.ShopItem.ShopItemProduct> shopItemProductList) {
         return shopItemProductList.size() > SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT
                 ? SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT : shopItemProductList.size();
+    }
+
+    private void handleSearchResult(List<Visitable> shopItemList, boolean isHasNextPage) {
+        isListEmpty = false;
+        isNextPageAvailable = isHasNextPage;
+        adapter.removeLoading();
+        adapter.appendItems(shopItemList);
+
+        updateScrollListenerState(isHasNextPage);
+
+        if (isHasNextPage) {
+            adapter.addLoading();
+        }
     }
 
     public void updateScrollListenerState(boolean hasNextPage){
@@ -367,9 +365,15 @@ public class ShopListFragment
     private void trackShopItemClick(@NonNull ShopViewModel.ShopItem shopItem) {
         searchTracking.trackSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), getQueryKey());
 
-        if(shopItem.isClosed()) {
+        if(isShopNotActive(shopItem)) {
             searchTracking.trackSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), getQueryKey());
         }
+    }
+
+    private boolean isShopNotActive(@NonNull ShopViewModel.ShopItem shopItem) {
+        return shopItem.isClosed()
+                || shopItem.isModerated()
+                || shopItem.isInactive();
     }
 
     private void redirectIfApplinkNotEmpty(@Nullable String applink) {
