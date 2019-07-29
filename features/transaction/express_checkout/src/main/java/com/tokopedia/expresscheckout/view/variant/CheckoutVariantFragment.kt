@@ -51,7 +51,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorPr
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.payment.activity.TopPayActivity
-import com.tokopedia.payment.model.PaymentPassData
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener

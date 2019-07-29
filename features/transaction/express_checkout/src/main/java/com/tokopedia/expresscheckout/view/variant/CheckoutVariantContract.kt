@@ -8,7 +8,7 @@ import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.payment.model.PaymentPassData
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest

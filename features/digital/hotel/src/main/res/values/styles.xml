@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.White.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="TitlePageWhiteIndicator.Hotel">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ErrorTextAppearance">
+        <item name="android:textColor">@color/pink_property</item>
+    </style>
+
+    <style name="HelperTextAppearance">
+        <item name="android:textColor">@color/light_secondary</item>
+    </style>
+</resources>

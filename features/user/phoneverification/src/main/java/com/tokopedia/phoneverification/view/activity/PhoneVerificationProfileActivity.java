@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.R;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
@@ -16,8 +18,8 @@ import com.tokopedia.phoneverification.view.fragment.PhoneVerificationProfileFra
 
 /**
  * Created by nisie on 2/23/17.
+ *  * For navigate: use {@link ApplinkConstInternalGlobal.SETTING_PROFILE_PHONE_VERIFICATION}
  */
-
 public class PhoneVerificationProfileActivity extends BaseSimpleActivity {
 
     private static final int RESULT_CODE_MANAGE_PROFILE = 123;
@@ -85,7 +87,7 @@ public class PhoneVerificationProfileActivity extends BaseSimpleActivity {
     }
 
     private void goToManageProfile() {
-        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getProfileSettingIntent(this);
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalGlobal.SETTING_PROFILE);
         startActivityForResult(intent, RESULT_CODE_MANAGE_PROFILE);
     }
 
