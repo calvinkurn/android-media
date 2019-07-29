@@ -123,18 +123,14 @@ class PartialButtonActionView private constructor(private val view: View,
     private fun resetTopChatParams() {
         with(view){
             btn_topchat.layoutParams = btnTopChatOriginalLayoutParams
-            btn_topchat.requestLayout()
         }
     }
 
     private fun changeButtonTopChatParamsForApplyCredit() {
         with(view){
             val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
-            topChatParams.leftToRight = 0
-            topChatParams.startToEnd = -1
-            topChatParams.startToStart = 0
-            topChatParams.rightToLeft = btn_apply_credit.id
-            topChatParams.endToStart = btn_apply_credit.id
+            topChatParams.goneLeftMargin = 0
+            topChatParams.goneStartMargin = 0
             btn_topchat.layoutParams = topChatParams
         }
 
