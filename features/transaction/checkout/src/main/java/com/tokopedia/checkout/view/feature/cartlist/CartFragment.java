@@ -531,7 +531,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
 
                 ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = cartAdapter.getUnselectedMicroInsuranceProduct();
-                if (!insuranceCartShopsArrayList.isEmpty()) {
+                if (!insuranceCartDigitalProductArrayList.isEmpty()) {
                     deleteMicroInsurance(insuranceCartDigitalProductArrayList, false);
                 }
 
@@ -1412,8 +1412,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void renderDetailInfoSubTotal(String qty, String subtotalPrice,
-                                         boolean selectAllCartItem) {
+    public void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllCartItem) {
         if (dPresenter.getCartListData() != null) {
             dPresenter.getCartListData().setAllSelected(selectAllCartItem);
         }
@@ -1962,6 +1961,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                                 for (CartItemData cartItemData : cartItemDataList) {
                                     if (String.valueOf(insuranceCartShopItems.getProductId()).
                                             equalsIgnoreCase(cartItemData.getOriginData().getProductId())) {
+                                        insuranceCartDigitalProduct.setShopId(cartItemData.getOriginData().getShopId());
+                                        insuranceCartDigitalProduct.setProductId(cartItemData.getOriginData().getProductId());
                                         cartItemData.setMicroInsuranceData(insuranceCartDigitalProduct);
                                     }
                                 }

@@ -44,6 +44,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 
 import java.util.ArrayList;
@@ -498,12 +499,22 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             for (Long productId : productIdList) {
                 for (Object item : cartDataList) {
                     if (item instanceof InsuranceCartShops) {
-                        if (((InsuranceCartShops) item).getShopItemsList().get(0).getProductId() == productId) {
-                            cartDataList.remove(item);
-                            notifyDataSetChanged();
+                        for (InsuranceCartShopItems insuranceCartShopItems : ((InsuranceCartShops) item).getShopItemsList()) {
+                            if (insuranceCartShopItems.getProductId() == productId) {
+                                cartDataList.remove(item);
+                            }
+                        }
+                    } else if (item instanceof CartShopHolderData) {
+                        for (CartItemHolderData cartItemHolderData : ((CartShopHolderData) item).getShopGroupData().getCartItemDataList()) {
+                            if (cartItemHolderData.getCartItemData() != null) {
+                                if (cartItemHolderData.getCartItemData().getOriginData().getProductId().equalsIgnoreCase(String.valueOf(productId))) {
+                                    cartItemHolderData.getCartItemData().setMicroInsuranceData(null);
+                                }
+                            }
                         }
                     }
                 }
+                notifyDataSetChanged();
             }
 
         } catch (Exception e) {
@@ -584,8 +595,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 if (cartItemData.getMicroInsuranceData() != null &&
                         !cartItemData.getMicroInsuranceData().getOptIn()) {
                     InsuranceCartDigitalProduct insuranceCartDigitalProduct = cartItemData.getMicroInsuranceData();
-                    insuranceCartDigitalProduct.setShopId(cartItemData.getOriginData().getShopId());
-                    insuranceCartDigitalProduct.setProductId(cartItemData.getOriginData().getProductId());
                     insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct);
                 }
             }

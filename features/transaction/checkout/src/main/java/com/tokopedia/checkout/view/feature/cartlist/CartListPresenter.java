@@ -398,7 +398,7 @@ public class CartListPresenter implements ICartListPresenter {
 
 
             removeInsuranceProductUsecase.setRequestParams(removeInsuranceDataArrayList, "cart", String.valueOf(Build.VERSION.SDK_INT), cartIdList);
-            removeInsuranceProductUsecase.execute(getSubscriberRemoveInsuranceProduct(productIdArrayList, showToaster));
+            removeInsuranceProductUsecase.execute(getSubscriberRemoveMicroInsuranceProduct(productIdArrayList, showToaster));
         }
     }
 
@@ -1052,6 +1052,39 @@ public class CartListPresenter implements ICartListPresenter {
                 } else {
                     view.renderInsuranceCartData(null, true);
                 }
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<GraphqlResponse> getSubscriberRemoveMicroInsuranceProduct(List<Long> productId, boolean showToaster) {
+        return new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.hideProgressLoading();
+                view.showToastMessageRed("Failed to remove insurance product!");
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                RemoveInsuranceProductGqlResponse removeInsuranceProductGqlResponse;
+                if (graphqlResponse != null &&
+                        graphqlResponse.getData(RemoveInsuranceProductGqlResponse.class) != null) {
+
+                    removeInsuranceProductGqlResponse = graphqlResponse.getData(RemoveInsuranceProductGqlResponse.class);
+                    if (removeInsuranceProductGqlResponse.getResponse().getRemoveTransactional().getStatus()) {
+                        view.removeInsuranceProductItem(productId);
+                    } /*else {
+                        view.showToastMessageRed(
+                                removeInsuranceProductGqlResponse.getResponse().getRemoveTransactional().getErrorMessage());
+                    }*/
+                }
+                view.hideProgressLoading();
             }
         };
     }

@@ -68,7 +68,6 @@ import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.transactiondata.insurance.entity.request.*
 import com.tokopedia.transactiondata.insurance.entity.response.AddInsuranceProductToCartGqlResponse
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -964,7 +963,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         val addInsuranceResponse = graphqlResponse.getData<AddInsuranceProductToCartGqlResponse>(AddInsuranceProductToCartGqlResponse::class.java)
 
 
-                        if (addInsuranceResponse.addToCartTransactional.addCart.status.equals("ok", true)) {
+                        if (addInsuranceResponse.addToCartTransactional.addCart.successData.success == 1) {
                             normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
                                     selectedProductInfo?.basic?.price.toString(),
                                     quantity,

@@ -39,5 +39,8 @@ data class AddInsuranceProductCartSuccessData(
         var message: ArrayList<String>,
 
         @SerializedName("cart_id")
-        var cartId: Long
+        var cartId: Long,
+
+        @SerializedName("success")
+        var success: Int
 )
