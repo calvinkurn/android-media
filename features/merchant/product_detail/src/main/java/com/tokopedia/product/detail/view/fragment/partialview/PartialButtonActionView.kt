@@ -46,7 +46,7 @@ class PartialButtonActionView private constructor(private val view: View,
 
     init {
         with(view) {
-            btnTopChatOriginalLayoutParams = ViewGroup.LayoutParams(btn_topchat.layoutParams)
+            btnTopChatOriginalLayoutParams = ConstraintLayout.LayoutParams(btn_topchat.layoutParams)
             pb_buy_now.indeterminateDrawable
                 .setColorFilter(ContextCompat.getColor(context, R.color.orange_red), PorterDuff.Mode.SRC_IN)
             pb_add_to_cart.indeterminateDrawable
