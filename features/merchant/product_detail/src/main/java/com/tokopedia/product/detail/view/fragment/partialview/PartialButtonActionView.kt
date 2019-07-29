@@ -7,6 +7,7 @@ import android.support.constraint.ConstraintLayout.LayoutParams.PARENT_ID
 import android.support.constraint.ConstraintLayout.LayoutParams.UNSET
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.kotlin.extensions.view.gone
@@ -38,6 +39,7 @@ class PartialButtonActionView private constructor(private val view: View,
     var isSpecialPrize: Boolean = false
     var isLeasing: Boolean = false
     var preOrder: PreOrder? = PreOrder()
+    var btnTopChatOriginalLayoutParams: ViewGroup.LayoutParams
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
@@ -45,6 +47,7 @@ class PartialButtonActionView private constructor(private val view: View,
 
     init {
         with(view) {
+            btnTopChatOriginalLayoutParams = btn_topchat.layoutParams
             pb_buy_now.indeterminateDrawable
                 .setColorFilter(ContextCompat.getColor(context, R.color.orange_red), PorterDuff.Mode.SRC_IN)
             pb_add_to_cart.indeterminateDrawable
@@ -119,12 +122,7 @@ class PartialButtonActionView private constructor(private val view: View,
 
     private fun resetTopChatParams() {
         with(view){
-            val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
-            topChatParams.leftToRight = btn_byme.id
-            topChatParams.startToEnd = btn_byme.id
-            topChatParams.startToStart = UNSET
-            topChatParams.rightToLeft = btn_buy_now.id
-            topChatParams.endToStart = btn_buy_now.id
+            btn_topchat.layoutParams = btnTopChatOriginalLayoutParams
             btn_topchat.requestLayout()
         }
     }
@@ -132,12 +130,12 @@ class PartialButtonActionView private constructor(private val view: View,
     private fun changeButtonTopChatParamsForApplyCredit() {
         with(view){
             val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
-            topChatParams.leftToRight = PARENT_ID
-            topChatParams.startToEnd = UNSET
-            topChatParams.startToStart = PARENT_ID
+            topChatParams.leftToRight = 0
+            topChatParams.startToEnd = -1
+            topChatParams.startToStart = 0
             topChatParams.rightToLeft = btn_apply_credit.id
             topChatParams.endToStart = btn_apply_credit.id
-            btn_topchat.requestLayout()
+            btn_topchat.layoutParams = topChatParams
         }
 
     }
