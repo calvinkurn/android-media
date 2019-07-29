@@ -266,6 +266,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
                 if (!isChecked) {
                     cbSelectMicroInsurance.setChecked(isChecked);
+                    cbSelectMicroInsurance.setClickable(false);
+                    cbSelectMicroInsurance.setEnabled(false);
+                } else {
+                    cbSelectMicroInsurance.setEnabled(true);
+                    cbSelectMicroInsurance.setClickable(true);
                 }
             }
         });
