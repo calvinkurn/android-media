@@ -78,7 +78,8 @@ public class OrderDetails {
     @Expose
     private String helpLink;
 
-
+    static final String ATTRIBUTE_BOUGHT_DATE = "Tanggal Pembelian";
+    static final String ATTRIBUTE_ID = "id";
 
     public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper, ShopInfo shopInfo,String helpLink) {
         this.status = status;
@@ -220,7 +221,7 @@ public class OrderDetails {
     public String getBoughtDate() {
         String date = "";
         for (Title ttl : title) {
-            if (ttl.label().equals("Tanggal Pembelian")) {
+            if (ttl.label().equals(ATTRIBUTE_BOUGHT_DATE)) {
                 date = ttl.value();
             }
         }
@@ -245,7 +246,7 @@ public class OrderDetails {
         String invoiceUrl = getInvoiceUrl();
         Uri invoiceUri = Uri.parse(invoiceUrl);
 
-        return invoiceUri.getQueryParameter("id");
+        return invoiceUri.getQueryParameter(ATTRIBUTE_ID);
     }
 
     public String getProductImageUrl() {
