@@ -68,6 +68,6 @@
         android:layout_gravity="start|top"
         android:background="?selectableItemBackgroundBorderless"
         android:contentDescription="@string/navigate_up"
-        android:src="@drawable/ic_arrow_back" />
+        app:srcCompat="@drawable/ic_arrow_back" />
 
 </RelativeLayout>

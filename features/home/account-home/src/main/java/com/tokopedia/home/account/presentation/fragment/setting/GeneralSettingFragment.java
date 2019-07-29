@@ -49,9 +49,9 @@ import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.url.TokopediaUrl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -211,7 +211,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 break;
             case SettingConstant.SETTING_TEMPLATE_ID:
                 if (getActivity() != null) {
-                    String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, TkpdBaseURL.MOBILE_DOMAIN + PATH_CHECKOUT_TEMPLATE);
+                    String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, TokopediaUrl.Companion.getInstance().getMOBILEWEB() + PATH_CHECKOUT_TEMPLATE);
                     RouteManager.route(getActivity(), applink);
                 }
                 break;

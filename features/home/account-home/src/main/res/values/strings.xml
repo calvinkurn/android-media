@@ -41,6 +41,7 @@
     <string name="title_saldo_setting">Saldo</string>
     <string name="title_bank_account_setting">Akun Bank</string>
     <string name="title_credit_card_setting">Kartu Kredit</string>
+    <string name="title_debit_instant_setting">Debit Instan</string>
     <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
@@ -128,6 +129,7 @@
     <string name="title_menu_deals">Deals</string>
     <string name="title_menu_train">Kereta</string>
     <string name="title_menu_flight">Pesawat</string>
+    <string name="title_menu_hotel">Hotel</string>
     <string name="title_menu_reksadana">Reksa Dana</string>
     <string name="title_menu_event">Event</string>
     <string name="title_menu_gold">Emas</string>

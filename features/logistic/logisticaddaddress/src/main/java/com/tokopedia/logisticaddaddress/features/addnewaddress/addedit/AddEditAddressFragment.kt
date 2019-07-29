@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.TextInputLayout
 import android.support.v4.view.ViewCompat
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,7 +27,6 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.AddressConstants.ANA_NEGATIVE
 import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
@@ -35,15 +34,14 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.add_address.AddAddressDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
@@ -54,8 +52,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_addr
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
-import kotlinx.android.synthetic.main.form_add_new_address_data_item.et_detail_address
-import kotlinx.android.synthetic.main.form_add_new_address_data_item.tv_detail_address_counter
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
 import kotlinx.android.synthetic.main.fragment_add_edit_new_address.*
@@ -82,7 +78,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var labelRumah: String? = "Rumah"
     private var isMismatch: Boolean = false
     private var isMismatchSolved: Boolean = false
-    private var districtId: Int? = 0
+    private var isUnnamedRoad: Boolean = false
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
@@ -94,6 +90,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
     private var labelAlamatList: Array<String> = emptyArray()
+    private var isLatitudeNotEmpty: Boolean? = false
+    private var isLongitudeNotEmpty: Boolean? = false
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
@@ -117,6 +115,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
                     putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
+                    putBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD, extra.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD))
                 }
             }
         }
@@ -128,9 +127,19 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)!!
             saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
             token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
-            currentLat = saveAddressDataModel?.latitude?.toDouble()
-            currentLong = saveAddressDataModel?.longitude?.toDouble()
+
+            isLatitudeNotEmpty = saveAddressDataModel?.latitude?.isNotEmpty()
+            isLatitudeNotEmpty?.let {
+                if (it) currentLat = saveAddressDataModel?.latitude?.toDouble()
+            }
+
+            isLongitudeNotEmpty = saveAddressDataModel?.longitude?.isNotEmpty()
+            isLongitudeNotEmpty?.let {
+                if (it) currentLong = saveAddressDataModel?.longitude?.toDouble()
+            }
+
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)!!
+            isUnnamedRoad = arguments?.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD) ?: false
         }
     }
 
@@ -176,19 +185,25 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
         et_phone.setText(userSession.phoneNumber)
-        if (isMismatch && !isMismatchSolved) et_detail_address.isFocusable = false
+
+        if (!isMismatch && !isMismatchSolved) {
+            et_detail_address.clearFocus()
+            AddNewAddressUtils.hideKeyboard(et_detail_address, context)
+        }
+        et_label_address.clearFocus()
+        et_receiver_name.clearFocus()
+        et_phone.clearFocus()
     }
 
     private fun setViewListener() {
         btn_save_address.setOnClickListener {
-            val errorField = "Field = "
             resetErrorFormDefault()
             if (!isMismatch && !isMismatchSolved) {
                 resetErrorForm()
-                if (validateForm(errorField)) doSaveAddress()
+                if (validateForm()) doSaveAddress()
             } else {
                 resetErrorFormMismatch()
-                if (validateFormMismatch(errorField)) doSaveAddress()
+                if (validateFormMismatch()) doSaveAddress()
             }
         }
 
@@ -443,51 +458,66 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
     }
 
-    private fun validateForm(errorField: String): Boolean {
+    private fun validateForm(): Boolean {
         var validated = true
 
-        var field = errorField
-        if (et_detail_address.text.isEmpty()) {
+        var field = ""
+        if (et_detail_address.text!!.isEmpty()) {
             validated = false
+            rl_detail_address_info_counter.visibility = View.GONE
             setWrapperError(et_detail_address_wrapper, getString(R.string.validate_detail_alamat))
-            if (!isErrorFieldEmpty(field)) field += ", "
+            if (field.isNotEmpty()) field += ", "
             field += "detail alamat"
         }
 
-        if (!validateFormDefault(errorField)) validated = false
+        if (!validated) {
+            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field)
+        }
+
+        if (!validateFormDefault(field)) validated = false
         return validated
     }
 
-    private fun validateFormMismatch(errorField: String): Boolean {
+    private fun validateFormMismatch(): Boolean {
         var validated = true
 
-        var field = errorField
-        if (et_kota_kecamatan_mismatch.text.isEmpty()) {
+        var field = ""
+        if (et_kota_kecamatan_mismatch.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_kota_kecamatan_mismatch_wrapper, getString(R.string.validate_kota_kecamatan))
-            if (!isErrorFieldEmpty(field)) field += ", "
+            if (field.isNotEmpty()) field += ", "
             field += "kota kecamatan"
         }
-        if (et_kode_pos_mismatch.text.isEmpty()) {
+        if (et_kode_pos_mismatch.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos))
-            if (!isErrorFieldEmpty(field)) field += ", "
+            if (field.isNotEmpty()) field += ", "
             field += "kode pos"
         }
-        if (et_kode_pos_mismatch.text.length < 5) {
+        if (et_kode_pos_mismatch.text!!.length < 5) {
             validated = false
             setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos_length))
-            if (!isErrorFieldEmpty(field)) field += ", "
+            if (field.isNotEmpty()) field += ", "
             field += "kode pos"
         }
-        if (et_alamat_mismatch.text.isEmpty()) {
+        if (et_alamat_mismatch.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat))
-            if (!isErrorFieldEmpty(field)) field += ", "
+            if (field.isNotEmpty()) field += ", "
+            field += "alamat"
+        }
+        if (et_alamat_mismatch.text!!.length < 5) {
+            validated = false
+            setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat_length))
+            if (field.isNotEmpty()) field += ", "
             field += "alamat"
         }
 
-        if (!validateFormDefault(errorField)) validated = false
+        if (!validated) {
+            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field)
+        }
+
+        if (!validateFormDefault(field)) validated = false
         return validated
     }
 
@@ -495,41 +525,39 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = errorField
-        if (et_label_address.text.isEmpty()) {
+        if (et_label_address.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_label_address_wrapper, getString(R.string.validate_label_alamat))
-            if (!isErrorFieldEmpty(field)) field += ", "
+            if (field.isNotEmpty()) field += ", "
             field += "label alamat"
 
         }
-        if (et_receiver_name.text.isEmpty()) {
+        if (et_receiver_name.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_receiver_name_wrapper, getString(R.string.validate_nama_penerima))
-            if (!isErrorFieldEmpty(field)) field += ", "
+            if (field.isNotEmpty()) field += ", "
             field += "nama penerima"
 
         }
-        if (et_phone.text.isEmpty()) {
+        if (et_phone.text!!.isEmpty()) {
             validated = false
             setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel))
-            if (!isErrorFieldEmpty(field)) field += ", "
+            if (field.isNotEmpty()) field += ", "
             field += "no ponsel"
         }
 
         if (!validated) {
-            if (isMismatch) AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field)
-            else AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field)
+            if (isMismatch) {
+                AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field)
+            }
+            else {
+                AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field)
+            }
         }
         return validated
     }
 
-    private fun isErrorFieldEmpty(errorField: String): Boolean {
-        var isEmpty = true
-        if (!errorField.equals("Field = ", true)) isEmpty = false
-        return isEmpty
-    }
-
-    private fun setWrapperError(wrapper: TkpdHintTextInputLayout, s: String?) {
+    private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
         if (s.isNullOrBlank()) {
             wrapper.error = s
             wrapper.setErrorEnabled(false)
@@ -541,7 +569,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun resetErrorForm() {
-        setWrapperError(et_label_address_wrapper, null)
+        setWrapperError(et_detail_address_wrapper, null)
+        rl_detail_address_info_counter.visibility = View.VISIBLE
     }
 
     private fun resetErrorFormMismatch() {
@@ -556,7 +585,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         setWrapperError(et_phone_wrapper, null)
     }
 
-    private fun setWrapperWatcher(wrapper: TkpdHintTextInputLayout): TextWatcher {
+    private fun setWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
@@ -666,7 +695,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             setOnClickListener {
                 hideKeyboard()
                 saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
-                goToPinpointActivity(currentLat, currentLong, false, token, false, districtId,
+                goToPinpointActivity(currentLat, currentLong, false, token, false,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
                 AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive()
             }
@@ -684,11 +713,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             btn_map.layoutParams = params
             setOnClickListener {
                 hideKeyboard()
-                if (et_kota_kecamatan_mismatch.text.isEmpty()) {
+                if (et_kota_kecamatan_mismatch.text!!.isEmpty()) {
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
-                    goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
+                    goToPinpointActivity(currentLat, currentLong, false, token, true,
                             isMismatchSolved, isMismatch, saveAddressDataModel)
                     AddNewAddressAnalytics.eventClickButtonPilihLokasiIni()
                 }
@@ -708,7 +737,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             setOnClickListener {
                 hideKeyboard()
                 saveAddressDataModel?.editDetailAddress = tv_detail_alamat_mismatch.text.toString()
-                goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
+                goToPinpointActivity(currentLat, currentLong, false, token, true,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
             }
         }
@@ -722,6 +751,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private fun setMismatchForm() {
         ll_detail_alamat.visibility = View.GONE
         et_alamat_mismatch.clearFocus()
+
+        if (isUnnamedRoad) {
+            et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
+            et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
+        }
     }
 
     private fun setMismatchSolvedForm() {
@@ -766,21 +800,28 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun setSaveAddressModel() {
-        var detailAddress = ""
+        var address1 = ""
+        val detailAddress: String
         if (!isMismatch && !isMismatchSolved) {
             detailAddress = et_detail_address.text.toString()
 
-            saveAddressDataModel?.address1 = "${saveAddressDataModel?.title} ${detailAddress}, ${saveAddressDataModel?.formattedAddress}"
+            address1 = "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress}"
+            if (detailAddress.isNotEmpty()) address1 += " [Tokopedia Note: ${detailAddress}]"
+
+            saveAddressDataModel?.address1 = address1
             saveAddressDataModel?.address2 = "$currentLat,$currentLong"
 
         } else {
-            detailAddress = tv_detail_alamat_mismatch.text.toString()
+            val etAlamat = et_alamat_mismatch.text.toString()
+            if (etAlamat.isNotEmpty()) address1 = "$etAlamat, "
             if (isMismatch) {
-                saveAddressDataModel?.address1 = "${detailAddress} ${saveAddressDataModel?.selectedDistrict}"
+                address1 += "${saveAddressDataModel?.selectedDistrict}"
+                saveAddressDataModel?.address1 = address1
                 saveAddressDataModel?.address2 = ""
 
             } else {
-                saveAddressDataModel?.address1 = "${saveAddressDataModel?.title} ${detailAddress}, ${saveAddressDataModel?.formattedAddress}"
+                address1 += "${saveAddressDataModel?.formattedAddress}"
+                saveAddressDataModel?.address1 = address1
                 saveAddressDataModel?.address2 = "$currentLat,$currentLong"
             }
         }
@@ -790,8 +831,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         saveAddressDataModel?.phone = et_phone.text.toString()
     }
 
-    override fun onSuccessAddAddress(addAddressDataUiModel: AddAddressDataUiModel, saveAddressDataModel: SaveAddressDataModel) {
-        finishActivity(saveAddressDataModel)
+    override fun onSuccessAddAddress(saveAddressDataModel: SaveAddressDataModel) {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
+            })
+            finish()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -869,15 +915,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun onConnectionFailed(p0: ConnectionResult) {
     }
 
-    private fun finishActivity(saveAddressDataModel: SaveAddressDataModel) {
-        activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
-            })
-            finish()
-        }
-    }
-
     override fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
         val provinceName = districtRecommendationItemUiModel.provinceName
         val cityName = districtRecommendationItemUiModel.cityName
@@ -893,7 +930,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         saveAddressDataModel?.longitude = ""
         saveAddressDataModel?.zipCodes = districtRecommendationItemUiModel.zipCodes
         autoCompletePresenter.getAutocomplete(districtName)
-        this.districtId = districtRecommendationItemUiModel.districtId
     }
 
     override fun hideListPointOfInterest() {
@@ -918,10 +954,16 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun showFailedDialog() {
     }
 
-    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean) {
+    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean) {
     }
 
     override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
+    }
+
+    override fun showOutOfReachDialog() {
+    }
+
+    override fun showUndetectedDialog() {
     }
 
     private fun hideKeyboard() {
@@ -955,7 +997,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         rv_label_alamat_chips.visibility = View.GONE
         et_label_address.run {
             setText(labelAlamat)
-            setSelection(et_label_address.text.length)
+            setSelection(et_label_address.text!!.length)
         }
         if (!isMismatch && !isMismatchSolved) {
             AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive()
@@ -964,11 +1006,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
     }
 
-    private fun goToPinpointActivity(lat: Double?, long: Double?, isShowAutocomplete: Boolean, token: Token?, isPolygon: Boolean, districtId: Int?,
+    private fun goToPinpointActivity(lat: Double?, long: Double?, isShowAutocomplete: Boolean, token: Token?, isPolygon: Boolean,
                                      isMismatchSolved: Boolean, isMismatch: Boolean, saveAddressDataModel: SaveAddressDataModel?) {
         startActivityForResult(context?.let {
             PinpointMapActivity.newInstance(it, lat, long, isShowAutocomplete, token, isPolygon,
-                    districtId, isMismatchSolved, isMismatch, saveAddressDataModel, true)
+                    isMismatchSolved, isMismatch, saveAddressDataModel, true)
         }, FINISH_PINPOINT_FLAG)
     }
 
@@ -1012,7 +1054,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                println("## count = $count, s.length = ${s.toString().length}")
+                rl_detail_address_info_counter.visibility = View.VISIBLE
                 if (s.isNotEmpty()) {
                     val countCharLeft: Int
                     var info = ""

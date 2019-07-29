@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
@@ -22,6 +22,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder
@@ -49,8 +50,9 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val pollOptionListener: PollAdapter.PollOptionListener,
                              private val gridItemListener: GridPostAdapter.GridItemListener,
                              private val videoViewListener: VideoViewHolder.VideoViewListener,
+                             private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                              private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
-                             private val onOtherProfilePostItemClick: ((applink: String, authorId:String) -> Unit),
+                             private val onOtherProfilePostItemClick: ((applink: String, position: Int, datum: FeedPostRelated.Datum) -> Unit),
                              private val userSession : UserSessionInterface)
 
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
@@ -148,6 +150,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                         pollOptionListener,
                         gridItemListener,
                         videoViewListener,
+                        feedMultipleImageViewListener,
                         userSession) as AbstractViewHolder< Visitable<*>>
             FeedRecommendationViewHolder.LAYOUT ->
                 FeedRecommendationViewHolder(parent, recommendationCardListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>

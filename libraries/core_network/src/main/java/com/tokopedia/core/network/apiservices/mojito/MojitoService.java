@@ -1,7 +1,7 @@
 package com.tokopedia.core.network.apiservices.mojito;
 
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.BaseService;
 
 import retrofit2.Retrofit;
@@ -19,7 +19,7 @@ public class MojitoService extends BaseService<MojitoApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.MOJITO_DOMAIN;
+        return TokopediaUrl.Companion.getInstance().getMOJITO();
     }
 
     @Override

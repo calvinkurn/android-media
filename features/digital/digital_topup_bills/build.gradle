@@ -38,22 +38,20 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 
-    implementation rootProject.ext.miscDependencies.multiDex
-
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.playServicesDependencies.analytics
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation project(rootProject.ext.libraries.track)
 

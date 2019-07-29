@@ -18,6 +18,6 @@ interface ApiInterface {
     fun sendSingleEvent(@Body data: RequestBody) : Deferred<Response<String>>
 
     @POST(MULTI_EVENT)
-    fun sendMultiEvent(@Body data: RequestBody) : Call<String>
+    fun sendMultiEvent(@Body data: RequestBody) : Deferred<Response<String>>
 
 }

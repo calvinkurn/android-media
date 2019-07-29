@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.gms.location.LocationRequest
@@ -21,11 +22,19 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
+import android.widget.EditText
+import kotlin.math.abs
+
 
 /**
  * Created by fwidjaja on 2019-06-22.
  */
 object AddNewAddressUtils {
+
+    @JvmField
+    val MONAS_LAT: Double = -6.175794
+    @JvmField
+    val MONAS_LONG: Double = 106.826457
 
     @JvmStatic
     fun generateLatLng(latitude: Double?, longitude: Double?): LatLng {
@@ -94,5 +103,26 @@ object AddNewAddressUtils {
             isGpsOn = isLocationEnabled(it) && isGpsOn
         }
         return isGpsOn
+    }
+
+    @JvmStatic
+    fun hideKeyboard(et: EditText, context: Context?) {
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
+        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(et.windowToken, 0)
+    }
+
+    @JvmStatic
+    fun showKeyboard(context: Context?) {
+        val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    }
+
+    fun hasDefaultCoordinate(lat: Double, long: Double, exact: Boolean = false): Boolean {
+        val threshold = 0.00001
+        val diffLat = lat - MONAS_LAT
+        val diffLong = long - MONAS_LONG
+
+        return if (exact) (diffLat == 0.0 && diffLong == 0.0)
+        else (abs(diffLat) < threshold && abs(diffLong) < threshold)
     }
 }

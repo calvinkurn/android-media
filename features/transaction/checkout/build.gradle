@@ -42,6 +42,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
 
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.transactioncommon)
@@ -49,6 +50,7 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactionanalytics)

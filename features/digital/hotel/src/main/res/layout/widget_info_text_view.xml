@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/info_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/info_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/sp_6"
+        app:fontSize="title"
+        app:textViewTheme="lightPrimary"
+        app:weight="medium"
+        tools:text="Sarapan" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/info_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_6"
+        app:fontSize="micro"
+        app:textViewTheme="lightSecondary"
+        tools:text="Tidak tersedia paket makanan untuk harga ini di kamar ini." />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/info_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/hotel_read_more_title"
+        android:textColor="@color/green_500"
+        android:visibility="gone"
+        app:fontSize="micro" />
+</LinearLayout>

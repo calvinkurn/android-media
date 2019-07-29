@@ -314,7 +314,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
             viewModel.urlImageList.addAll(feedContentForm.media.media.map { MediaModel(it.mediaUrl, it.type) })
-            media_attachment.bind(viewModel.urlImageList.map { MediaItem(it.path, it.type) })
+            media_attachment.bind(viewModel.urlImageList.map { MediaItem(thumbnail = it.path, type = it.type) })
         }
 
         if (feedContentForm.relatedItems.isNotEmpty()) {
@@ -680,13 +680,22 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
 
     private fun updateHeader(authors: List<Author>) {
-        if (activity is CreatePostActivityListener && authors.isNotEmpty()) {
-            (activity as CreatePostActivityListener).updateHeader(HeaderViewModel(
-                    authors.first().name,
-                    authors.first().thumbnail,
-                    authors.first().badge
+        if (activity is CreatePostActivityListener ) {
+            if(viewModel.isEditState){
+                (activity as CreatePostActivityListener).updateHeader(HeaderViewModel(
+                        getString(R.string.af_title_edit_post),
+                        "",
+                        ""
 
-            ))
+                ))
+            } else if (authors.isNotEmpty()) {
+                (activity as CreatePostActivityListener).updateHeader(HeaderViewModel(
+                        authors.first().name,
+                        authors.first().thumbnail,
+                        authors.first().badge
+
+                ))
+            }
         }
     }
 

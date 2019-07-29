@@ -87,6 +87,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -186,6 +187,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private List<CartWishlistItemHolderData> wishLists;
     private List<CartRecentViewItemHolderData> recentViewList;
     private List<CartRecommendationItemHolderData> recommendationList;
+    private boolean hasTriedToLoadWishList;
+    private boolean hasTriedToLoadRecentViewList;
+    private boolean hasTriedToLoadRecommendation;
 
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
@@ -204,8 +208,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
         userSession = new UserSession(getActivity());
-        cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
-        cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
 
         if (getActivity() != null) {
             saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
@@ -222,6 +224,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             recommendationList = saveInstanceCacheManager.get(CartRecommendationItemHolderData.class.getSimpleName(),
                     (new TypeToken<ArrayList<CartRecommendationItemHolderData>>() {
                     }).getType(), null);
+        } else {
+            cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
+            cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
         }
 
         dPresenter.attachView(this);
@@ -373,7 +378,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.Companion.getLAYOUT()) {
+                if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
                     return 1;
                 }
                 return 2;
@@ -1136,7 +1141,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void stopAllCartPerformanceTrace() {
-        if (cartAllPerformanceMonitoring != null && !isTraceCartAllStopped && wishLists != null && recentViewList != null && recommendationList != null) {
+        if (cartAllPerformanceMonitoring != null && !isTraceCartAllStopped && hasTriedToLoadRecentViewList && hasTriedToLoadWishList && hasTriedToLoadRecommendation) {
             cartAllPerformanceMonitoring.stopTrace();
             isTraceCartAllStopped = true;
         }
@@ -1548,6 +1553,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     }
                 }
 
+                for (CartItemData cartItemData : cartAdapter.getAllCartItemData()) {
+                    if (promoStackingData != null && promoStackingData.getTrackingDetailUiModels().size() > 0) {
+                        for (TrackingDetailUiModel trackingDetailUiModel : promoStackingData.getTrackingDetailUiModels()) {
+                            if (String.valueOf(trackingDetailUiModel.getProductId()).equalsIgnoreCase(cartItemData.getOriginData().getProductId())) {
+                                cartItemData.getOriginData().setPromoCodes(trackingDetailUiModel.getPromoCodesTracking());
+                                cartItemData.getOriginData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
+                            }
+                        }
+                    }
+                }
 
                 if (promoStackingData != null) {
                     cartAdapter.updateItemPromoStackVoucher(promoStackingData);
@@ -1875,6 +1890,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                         break;
                     }
                 }
+                if (responseGetPromoStackUiModel.getData().getTrackingDetailUiModel().size() > 0) {
+                    for (TrackingDetailUiModel trackingDetailUiModel : responseGetPromoStackUiModel.getData().getTrackingDetailUiModel()) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                            if (String.valueOf(trackingDetailUiModel.getProductId()).equalsIgnoreCase(cartItemHolderData.getCartItemData().getOriginData().getProductId())) {
+                                cartItemHolderData.getCartItemData().getOriginData().setPromoCodes(trackingDetailUiModel.getPromoCodesTracking());
+                                cartItemHolderData.getCartItemData().getOriginData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
+                            }
+                        }
+                    }
+                }
+
             }
         }
 
@@ -1990,7 +2016,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
         cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData);
         this.recentViewList = cartRecentViewItemHolderDataList;
-        stopAllCartPerformanceTrace();
     }
 
     @Override
@@ -2038,35 +2063,23 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecentViewHolderData.setWishList(cartWishlistItemHolderDataList);
         cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartRecentViewHolderData);
         this.wishLists = cartWishlistItemHolderDataList;
-        stopAllCartPerformanceTrace();
     }
 
     @Override
     public void renderRecommendation(@Nullable List<RecommendationItem> recommendationItems) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
-        if (this.recommendationList != null) {
-            if (recommendationList.size() != 0) {
-                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
-            } else {
-                if (recommendationItems != null) {
-                    int previousItemCount = cartAdapter.getItemCount();
-                    for (RecommendationItem recommendationItem : recommendationItems) {
-                        boolean rightPosition = previousItemCount % 2 == 1;
-                        CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                                new CartRecommendationItemHolderData(recommendationItem, rightPosition);
-                        cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
-                    }
-                }
+
+        if (recommendationItems != null) {
+            // Render from API
+            for (RecommendationItem recommendationItem : recommendationItems) {
+                CartRecommendationItemHolderData cartRecommendationItemHolderData =
+                        new CartRecommendationItemHolderData(recommendationItem);
+                cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
             }
         } else {
-            if (recommendationItems != null) {
-                int previousItemCount = cartAdapter.getItemCount();
-                for (RecommendationItem recommendationItem : recommendationItems) {
-                    boolean rightPosition = previousItemCount % 2 == 1;
-                    CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                            new CartRecommendationItemHolderData(recommendationItem, rightPosition);
-                    cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
-                }
+            // Render from Cache
+            if (recommendationList != null && recommendationList.size() != 0) {
+                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
             }
         }
 
@@ -2078,9 +2091,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         hasLoadRecommendation = true;
-        cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
-        this.recommendationList = cartRecommendationItemHolderDataList;
-        stopAllCartPerformanceTrace();
+        if (cartRecommendationItemHolderDataList.size() > 0) {
+            cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
+            recommendationList = cartRecommendationItemHolderDataList;
+        }
     }
 
     @Override
@@ -2119,5 +2133,20 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (stringObjectMap != null) {
             checkoutAnalyticsCourierSelection.sendEnhancedECommerceAddToCart(stringObjectMap, eventCategory, eventAction, eventLabel);
         }
+    }
+
+    @Override
+    public void setHasTriedToLoadRecentView() {
+        hasTriedToLoadRecentViewList = true;
+    }
+
+    @Override
+    public void setHasTriedToLoadWishList() {
+        hasTriedToLoadWishList = true;
+    }
+
+    @Override
+    public void setHasTriedToLoadRecommendation() {
+        hasTriedToLoadRecommendation = true;
     }
 }

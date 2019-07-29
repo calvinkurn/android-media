@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_district_recommendation_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -11,7 +12,7 @@
         android:layout_height="19dp"
         android:layout_marginEnd="@dimen/dp_18"
         android:layout_marginRight="@dimen/dp_18"
-        android:src="@drawable/ic_green_pointer"
+        app:srcCompat="@drawable/ic_green_pointer"
         android:tint="@color/ic_grey_color"
         android:contentDescription="@string/pointer"
         android:layout_alignParentTop="true"

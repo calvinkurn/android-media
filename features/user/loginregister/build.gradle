@@ -20,6 +20,7 @@ dependencies {
     //google login
     implementation rootProject.ext.playServicesDependencies.auth
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.abstraction)
@@ -34,6 +35,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.cmnotification)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.unifyDependencies.components
 
     api (rootProject.ext.serviceDependencies.crashlytics) {

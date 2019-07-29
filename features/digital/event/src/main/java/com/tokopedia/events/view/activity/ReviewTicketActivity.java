@@ -88,6 +88,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     public static final int PAYMENT_REQUEST_CODE = 65000;
     public static final int PAYMENT_SUCCESS = 5;
+    public static final int PROMO_CODE_CHECK = 4096;
     private ImageTextViewHolder timeHolder;
     private ImageTextViewHolder addressHolder;
     private EventsAnalytics eventsAnalytics;
@@ -186,9 +187,16 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     }
 
     @Override
-    public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats) {
+    public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats, int customText1) {
         gotoPromoTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
                 (this, R.drawable.promo_code), null, null , null);
+
+        int result = customText1&4096;
+        if (result == 0) {
+            gotoPromo.setVisibility(View.VISIBLE);
+        } else {
+            gotoPromo.setVisibility(View.GONE   );
+        }
         toolbar.setTitle(packageViewModel.getTitle());
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();

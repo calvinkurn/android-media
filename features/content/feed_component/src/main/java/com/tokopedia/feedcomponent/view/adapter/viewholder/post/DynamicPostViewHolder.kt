@@ -2,16 +2,19 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
 import android.os.Handler
 import android.support.annotation.LayoutRes
-import android.support.v7.widget.GridLayoutManager
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.RecyclerView
+import android.text.SpannableString
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
@@ -19,9 +22,12 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeader
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
+import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagAdapter
+import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
+import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactoryImpl
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
@@ -29,12 +35,18 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
+import java.net.URLEncoder
 
 /**
  * @author by milhamj on 28/11/18.
@@ -47,11 +59,12 @@ open class DynamicPostViewHolder(v: View,
                                  private val pollOptionListener: PollAdapter.PollOptionListener,
                                  private val gridItemListener: GridPostAdapter.GridItemListener,
                                  private val videoViewListener: VideoViewHolder.VideoViewListener,
+                                 private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                                  private val userSession: UserSessionInterface)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     lateinit var captionTv: TextView
-    val snapHelper: PagerSnapHelper = PagerSnapHelper()
+    lateinit var adapter: PostPagerAdapter
 
     companion object {
         @LayoutRes
@@ -61,6 +74,7 @@ open class DynamicPostViewHolder(v: View,
         const val PAYLOAD_COMMENT = 14
         const val PAYLOAD_FOLLOW = 15
         const val PAYLOAD_ANIMATE_FOOTER = 16
+        const val PAYLOAD_PLAY_VIDEO = 17
 
         const val MAX_CHAR = 140
         const val CAPTION_END = 90
@@ -72,6 +86,10 @@ open class DynamicPostViewHolder(v: View,
         const val SOURCE_PROFILE = "profile"
         const val SOURCE_SHOP = "shop"
         const val SOURCE_DETAIL = "detail"
+
+
+        const val POSTTAG_PRODUCT = "product"
+        const val POSTTAG_BUTTONCTA = "buttoncta"
     }
 
     init {
@@ -87,8 +105,8 @@ open class DynamicPostViewHolder(v: View,
         bindTitle(element.title, element.template.cardpost.title)
         bindHeader(element.id, element.header, element.template.cardpost.header)
         bindCaption(element.caption, element.template.cardpost.body)
-        bindContentList(element.id, element.contentList, element.template.cardpost.body)
-        bindPostTag(element.postTag, element.template.cardpost.body, element.feedType)
+        bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
+        bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType)
         bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
     }
 
@@ -103,6 +121,7 @@ open class DynamicPostViewHolder(v: View,
             PAYLOAD_COMMENT -> bindComment(element.footer.comment)
             PAYLOAD_FOLLOW -> bindFollow(element.header.followCta)
             PAYLOAD_ANIMATE_FOOTER -> animateFooter()
+            PAYLOAD_PLAY_VIDEO -> bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
             else -> bind(element)
         }
     }
@@ -213,34 +232,52 @@ open class DynamicPostViewHolder(v: View,
     }
 
     open fun bindCaption(caption: Caption, template: TemplateBody) {
+        val tagConverter = TagConverter()
         itemView.caption.shouldShowWithAction(template.caption) {
             if (caption.text.isEmpty()) {
                 itemView.caption.visibility = View.GONE
             } else if (caption.text.length > MAX_CHAR ||
                    hasSecondLine(caption)) {
                 itemView.caption.visibility = View.VISIBLE
-                val captionEnd = if (caption.text.length > CAPTION_END) CAPTION_END else
+                val captionEnd = if (findSubstringSecondLine(caption) < CAPTION_END)
                     findSubstringSecondLine(caption)
+                else
+                    CAPTION_END
                 val captionText = caption.text.substring(0, captionEnd)
                         .replace("\n","<br/>")
-                        .replace(NEWLINE, "<br />")
+                        .replace(NEWLINE, "<br/>")
                         .plus("... ")
                         .plus("<font color='#42b549'><b>")
                         .plus(caption.buttonName)
                         .plus("</b></font>")
 
-                itemView.caption.text = MethodChecker.fromHtml(captionText)
+                itemView.caption.text = tagConverter.convertToLinkifyHashtag(
+                        SpannableString(MethodChecker.fromHtml(captionText)), colorLinkHashtag,
+                        this::gotoHashtagLandingPahge)
                 itemView.caption.setOnClickListener {
                     if (!TextUtils.isEmpty(caption.appLink)) {
                         listener.onCaptionClick(adapterPosition, caption.appLink)
                     } else {
-                        itemView.caption.text = caption.text
+                        itemView.caption.text = tagConverter.convertToLinkifyHashtag(SpannableString(caption.text),
+                                colorLinkHashtag, this::gotoHashtagLandingPahge)
                     }
                 }
+                itemView.caption.movementMethod = LinkMovementMethod.getInstance()
             } else {
-                itemView.caption.text = caption.text.replace(NEWLINE, " ")
+                itemView.caption.text = tagConverter
+                        .convertToLinkifyHashtag(SpannableString(caption.text.replace(NEWLINE, " ")),
+                                colorLinkHashtag, this::gotoHashtagLandingPahge)
+                itemView.caption.movementMethod = LinkMovementMethod.getInstance()
             }
         }
+    }
+
+    private val colorLinkHashtag: Int
+        get() = ContextCompat.getColor(itemView.context, R.color.tkpd_main_green)
+
+    private fun gotoHashtagLandingPahge(hashtag: String){
+        val encodeHashtag = URLEncoder.encode(hashtag)
+        RouteManager.route(itemView.context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
     }
 
     private fun hasSecondLine(caption: Caption): Boolean {
@@ -256,12 +293,19 @@ open class DynamicPostViewHolder(v: View,
 
     private fun bindContentList(postId: Int,
                                 contentList: MutableList<BasePostViewModel>,
-                                template: TemplateBody) {
-        itemView.contentLayout.shouldShowWithAction(template.media) {
+                                template: TemplateBody,
+                                feedType: String) {
+        itemView.contentLayout.shouldShowWithAction(template.media && contentList.size !=0) {
             contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
-            val adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener, videoViewListener)
+            adapter = PostPagerAdapter(imagePostListener,
+                    youtubePostListener,
+                    pollOptionListener,
+                    gridItemListener,
+                    videoViewListener,
+                    feedMultipleImageViewListener,
+                    feedType)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count
@@ -371,7 +415,7 @@ open class DynamicPostViewHolder(v: View,
                 else comment.fmt
     }
 
-    private fun bindPostTag(postTag: PostTag, template: TemplateBody, feedType: String) {
+    private fun bindPostTag(postId: Int, postTag: PostTag, template: TemplateBody, feedType: String) {
         itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
             if (postTag.text.isNotEmpty()) {
                 itemView.cardTitlePostTag.text = postTag.text
@@ -382,18 +426,12 @@ open class DynamicPostViewHolder(v: View,
             if (postTag.totalItems > 0) {
                 itemView.rvPosttag.show()
                 itemView.rvPosttag.setHasFixedSize(true)
-                if (itemView.rvPosttag.onFlingListener != null) {
-                    itemView.rvPosttag.onFlingListener = null
-                }
                 val layoutManager: RecyclerView.LayoutManager = when (feedType) {
                     SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
-                    else -> feedType.let{
-                        snapHelper.attachToRecyclerView(itemView.rvPosttag)
-                        LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-                    }
+                    else -> LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 }
                 itemView.rvPosttag.layoutManager = layoutManager
-                itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition,feedType)
+                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId, adapterPosition), PostTagTypeFactoryImpl(listener))
                 (itemView.rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
             } else {
                 itemView.rvPosttag.hide()
@@ -407,6 +445,53 @@ open class DynamicPostViewHolder(v: View,
 
     private fun isPostTagAvailable(postTag: PostTag): Boolean {
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
+    }
+
+    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: Int, positionInFeed: Int): MutableList<BasePostTagViewModel> {
+        val needToRezise = postTagItemList.size > 1
+        val itemList: MutableList<BasePostTagViewModel> = ArrayList()
+        for (postTagItem in postTagItemList) {
+            when (postTagItem.type) {
+                POSTTAG_PRODUCT -> {
+                    val item = ProductPostTagViewModel(
+                            postTagItem.id,
+                            postTagItem.text,
+                            postTagItem.price,
+                            postTagItem.type,
+                            postTagItem.applink,
+                            postTagItem.weblink,
+                            postTagItem.thumbnail,
+                            postTagItem.percentage,
+                            postTagItem.isSelected,
+                            postTagItem.position,
+                            postTagItem.isWishlisted,
+                            postTagItem.tags,
+                            postTagItem,
+                            postTagItem.rating,
+                            needToRezise
+                    )
+                    item.feedType = feedType
+                    item.postId = postId
+                    item.positionInFeed = positionInFeed
+                    itemList.add(item)
+                }
+                POSTTAG_BUTTONCTA -> {
+                    val item = CtaPostTagViewModel(
+                            postTagItem.id,
+                            postTagItem.text,
+                            postTagItem.type,
+                            postTagItem.applink,
+                            postTagItem.weblink,
+                            postTagItem.position,
+                            postTagItem)
+                    item.feedType = feedType
+                    item.postId = postId
+                    item.positionInFeed = positionInFeed
+                    itemList.add(item)
+                }
+            }
+        }
+        return itemList
     }
 
     interface DynamicPostListener {
@@ -429,5 +514,7 @@ open class DynamicPostViewHolder(v: View,
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+
+        fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem)
     }
 }

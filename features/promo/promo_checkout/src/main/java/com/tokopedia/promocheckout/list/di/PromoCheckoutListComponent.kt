@@ -11,4 +11,5 @@ import dagger.Component
 interface PromoCheckoutListComponent{
     fun inject(basePromoCheckoutListFragment: BasePromoCheckoutListFragment)
     fun inject(promoCheckoutListMarketplaceFragment: PromoCheckoutListMarketplaceFragment)
+    fun inject(promoCheckoutListDigitalFragment: PromoCheckoutListDigitalFragment)
 }

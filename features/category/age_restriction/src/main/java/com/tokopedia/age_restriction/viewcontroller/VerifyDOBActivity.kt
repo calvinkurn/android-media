@@ -1,8 +1,11 @@
 package com.tokopedia.age_restriction.viewcontroller
 
 import android.arch.lifecycle.Observer
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.View
 import com.tokopedia.age_restriction.R
 import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
@@ -82,6 +85,9 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             }
         } else {
             group.visibility = View.VISIBLE
+            changeButtonColor(R.color.grey_300)
+            tv_update_dob.isClickable = false
+            tv_update_dob.isFocusable = false
         }
     }
 
@@ -126,6 +132,12 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
         return R.layout.layout_activity_dob
     }
 
+    private fun changeButtonColor(id : Int) {
+        val shapeDrawable = tv_update_dob.background as GradientDrawable
+        shapeDrawable.setColor(ContextCompat.getColor(this, id))
+        tv_update_dob.background = shapeDrawable
+    }
+
     private var clickListenerCalender = View.OnClickListener {
 
         showProgressBar()
@@ -140,11 +152,14 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
                     .build()
             travelCalenderSheet?.setListener(object : TravelCalendarBottomSheet.ActionListener {
                 override fun onClickDate(dateSelected: Date) {
-                    ed_edit_dob.text = SimpleDateFormat("dd MMMM YYYY", Locale("in", "ID")).format(dateSelected)
+                    ed_edit_dob.text = SimpleDateFormat("dd MMMM yyyy", Locale("in", "ID")).format(dateSelected)
                     selectedDate = dateSelected
                     hideProgressBar()
                     ed_edit_dob.isClickable = true
                     iv_arrow_down.isClickable = true
+                    changeButtonColor(R.color.green_nob)
+                    tv_update_dob.isClickable = true
+                    tv_update_dob.isFocusable = true
                 }
             })
             travelCalenderSheet?.setDismissListener {

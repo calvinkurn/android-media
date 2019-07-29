@@ -10,6 +10,7 @@
 /feature/discovery/home/                @tokopedia/minion-dave
 /feature/discovery/recentview/          @tokopedia/minion-dave
 /feature/discovery/wishlist_common/     @tokopedia/minion-dave
+/feature/discovery/productcard/         @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
 /tkpdseller/        @tokopedia/minion-stuart
@@ -47,6 +48,7 @@
 
 /features/digital/flight/               @tokopedia/minion-mark
 /features/digital/train/               @tokopedia/minion-mark
+/features/digital/hotel/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/digital/digital_browse/         @tokopedia/minion-mark
 /features/digital/digitalproduct        @tokopedia/minion-mark
@@ -146,6 +148,7 @@
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda
 /libraries/linker                       @tokopedia/minion-yoda
+/libraries/cmnotification               @tokopedia/minion-yoda
 
 /libraries/pagination                   @tokopedia/minion-solo
 /libraries/common_network/              @tokopedia/minion-solo

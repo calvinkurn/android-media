@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.imagePreview)
+    implementation project(rootProject.ext.libraries.linker)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.unifyDependencies.principles
@@ -45,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.shippingRecommendation)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.productDetailCommon)
 
     implementation rootProject.ext.miscDependencies.chips

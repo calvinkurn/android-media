@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/dp_4"
     app:flexWrap="wrap">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_cashback"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -20,29 +20,31 @@
         android:paddingTop="@dimen/dp_4"
         android:paddingRight="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_4"
-        android:textColor="@color/cashback_text_color"
+        android:textColor="@color/text_black"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
         tools:ignore="SmallSp"
         tools:text="Cashback 5%" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_pre_order"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
         android:background="@drawable/bg_pre_order"
-        android:fontFamily="sans-serif"
         android:gravity="center"
         android:paddingLeft="@dimen/dp_8"
         android:paddingTop="@dimen/dp_4"
         android:paddingRight="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_4"
         android:text="@string/label_po"
-        android:textColor="@color/black_38"
+        android:textColor="@color/text_black"
         android:textSize="@dimen/sp_10"
-        android:textStyle="normal"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
         tools:ignore="SmallSp" />
 
     <ImageView
@@ -54,9 +56,8 @@
         app:srcCompat="@drawable/ic_free_return"
         tools:ignore="ContentDescription" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_free_return_label"
-        style="@style/TextSmallNormal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -64,26 +65,29 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/label_free_return"
-        android:textColor="@color/font_black_secondary_54"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
         android:visibility="gone" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_cod"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@drawable/bg_pre_order"
-        android:fontFamily="sans-serif"
         android:gravity="center"
         android:paddingLeft="@dimen/dp_8"
         android:paddingTop="@dimen/dp_4"
         android:paddingRight="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_4"
         android:text="@string/label_cod"
-        android:textColor="@color/black_38"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
-        android:visibility="gone"
         tools:ignore="SmallSp"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:visibility="gone"/>
 
 </com.google.android.flexbox.FlexboxLayout>

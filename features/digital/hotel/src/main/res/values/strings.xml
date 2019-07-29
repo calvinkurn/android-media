@@ -1,0 +1,224 @@
+<resources>
+    <string name="hotel_app_name">Hotel</string>
+    <string name="hotel_e_voucher">E-voucher</string>
+
+    <string name="hotel_bottom_menu_transaction_list">Daftar Transaksi</string>
+    <string name="hotel_bottom_menu_promo">Promo</string>
+    <string name="hotel_bottom_menu_help">Bantuan</string>
+    <string name="hotel_bottom_menu_action_text">Tutup</string>
+    <string name="hotel_show_all_text">Lihat Semua</string>
+
+    <string name="hotel_show_map_text">Lihat Peta</string>
+    <string name="hotel_address_title">Alamat</string>
+    <string name="hotel_facility_title">Fasilitas</string>
+    <string name="hotel_policy_title">Kebijakan</string>
+
+    <string name="hotel_google_map_intent_link">geo:%1$f,%2$f?z=20&amp;q=%3$f,%4$f(%3$s)</string>
+
+    <string name="hotel_bottomsheet_sort_title">Urutkan Berdasarkan</string>
+    <string name="hotel_filter_reset">Reset</string>
+    <string name="hotel_search_filter_star_title">Bintang</string>
+    <string name="hotel_search_filter_range_price_title">Kisaran harga per kamar, per malam</string>
+    <string name="hotel_search_filter_price_max_label">Harga maksimum</string>
+    <string name="hotel_search_filter_price_min_label">Harga minimum</string>
+    <string name="hotel_search_filter_rating_title">Rating</string>
+    <string name="hotel_search_filter_accomodation_type_title">Tipe akomodasi</string>
+    <string name="hotel_search_filter_preference_title">Preference</string>
+    <string name="template_search_subtitle">%1$s - %2$s, %3$d Kamar, %4$d Tamu</string>
+    <string name="hotel_item_list_include_pajak">Termasuk pajak • /kamar/malam</string>
+    <string name="hotel_search_filter_feature_title">Fitur Unggulan</string>
+    <string name="hotel_search_filter_only_show_pay_at_hotel">Hanya tampilkan Bayar di Hotel</string>
+    <string name="hotel_search_empty_title">Akomodasi yang kamu cari nggak ketemu</string>
+    <string name="hotel_search_empty_subtitle">Tenang, mungkin kamu cuma perlu ubah detail pencarian di awal</string>
+    <string name="hotel_search_empty_button">Ganti Pencarian</string>
+    <string name="hotel_search_filter_empty_subtitle">Coba ubah Filter dan cari sekali lagi, yuk!</string>
+    <string name="hotel_search_filter_empty_button">Ubah Filter</string>
+    <string name="hotel_search_filter_max_string_format_with_plus">Rp%s+</string>
+    <string name="hotel_search_filter_max_string_format">Rp%s</string>
+
+    <string name="hotel_check_in_calendar_title">Check-in</string>
+    <string name="hotel_check_out_calendar_title">Check-out</string>
+
+    <string name="hotel_progress_dialog_title">Sedang diproses...</string>
+
+    <string name="hotel_homepage_destination">Tujuan</string>
+    <string name="hotel_homepage_destination_hint">Kota, area, atau hotel</string>
+    <string name="hotel_homepage_guest_info">Kamar dan Tamu</string>
+    <string name="hotel_homepage_check_in">Check-in</string>
+    <string name="hotel_homepage_check_out">Check-out</string>
+    <string name="hotel_homepage_button_search">Cari</string>
+    <string name="hotel_homepage_promo_title">Promo</string>
+    <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %d kamar, %d tamu</string>
+    <string name="hotel_bottom_sheets_room_guest_title">Kamar dan Tamu</string>
+    <string name="hotel_bottom_sheets_room_count_title">Kamar</string>
+    <string name="hotel_bottom_sheets_adult_count_title">Tamu</string>
+    <string name="hotel_button_save">Simpan</string>
+    <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu dewasa.</string>
+    <string name="hotel_homepage_near_by_destination">Hotel dekat lokasimu</string>
+
+    <string name="hotel_calendar_error_max_range">Maks. 30 malam. Coba ubah tanggal cek-in atau check-out</string>
+
+    <string name="hotel_destination_edittext_hint">Cari kota, area, atau hotel</string>
+    <string name="hotel_destination_nearest_location">Lihat hotel dekat lokasimu</string>
+    <string name="hotel_destination_recent_search_title">Terakhir dicari</string>
+    <string name="hotel_destination_recent_search_delete_all">Hapus Semua</string>
+    <string name="hotel_destination_popular_search_title">Tujuan populer</string>
+    <string name="hotel_destination_popular_search_hotel_count">%1$s+ hotel</string>
+    <string name="hotel_destination_need_permission">Akses lokasi dibutuhkan untuk melihat hotel dekat lokasimu. Perbolehkan?</string>
+    <string name="hotel_destination_empty_view_holder_title">Nggak ada hasil yang cocok</string>
+    <string name="hotel_destination_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
+    <string name="hotel_destination_toolbar_title">Tujuan</string>
+    <string name="hotel_important_info_title">Informasi Penting</string>
+    <string name="hotel_read_more_title">Baca Selengkapnya</string>
+    <string name="hotel_description_title">Deskripsi</string>
+    <string name="hotel_destination_error_get_location">Gagal memuat lokasi Anda. Silahkan coba lagi.</string>
+
+    <string name="hotel_room_list_check_in_check_out_date">%1$s - %2$s</string>
+    <string name="hotel_room_list_filter_pay_in_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_list_filter_free_breakfast">Sarapan Gratis</string>
+    <string name="hotel_room_list_filter_free_cancelable">Pembatalan Gratis</string>
+    <string name="hotel_room_not_found_title_after_filter">Kamar yang kamu cari nggak ketemu</string>
+    <string name="hotel_room_not_found_subtitle_after_filter">Coba ubah Filter dan cari sekali lagi, yuk!</string>
+    <string name="hotel_room_not_found_button_text">Reset Filter</string>
+    <string name="hotel_room_not_found_title">Nggak ada kamar yang cocok sama pencarianmu</string>
+    <string name="hotel_room_not_found_subtitle">Tenang, mungkin kamu cuma perlu ubah detail pencarian di awal</string>
+    <string name="hotel_room_room_left_text">Sisa %1$s Kamar!</string>
+    <string name="hotel_room_full_text_view">Sudah Penuh</string>
+    <string name="hotel_room_list_free_breakfast">Sarapan Gratis</string>
+    <string name="hotel_room_list_breakfast_not_included">Tanpa Sarapan</string>
+    <string name="hotel_room_list_refundable_with_condition">Refund Bersyarat</string>
+    <string name="hotel_room_list_not_refundable">Non-refundable</string>
+    <string name="hotel_room_list_per_room_per_night">/kamar/malam</string>
+    <string name="hotel_room_list_include_tax">Termasuk pajak</string>
+    <string name="hotel_room_list_choose_room_button">Pilih Kamar</string>
+    <string name="hotel_room_list_pay_in_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_list_room_description">%1$s m² • %2$s</string>
+    <string name="hotel_room_list_without_credit_card">Tanpa Jaminan Kartu Kredit</string>
+
+
+    <string name="hotel_detail_more_image_counter">+%1$d</string>
+    <string name="hotel_detail_check_from_to">%1$s - %2$s</string>
+    <string name="hotel_detail_check_start_from">Mulai %1$s</string>
+    <string name="hotel_detail_check_to">Sampai %1$s</string>
+    <string name="hotel_detail_map_marker_title">%1$s</string>
+    <string name="hotel_detail_map_marker_snippet">%1$s</string>
+    <string name="hotel_detail_show_room_text">Lihat Kamar</string>
+    <string name="hotel_detail_room_price_from">Harga /kamar/malam dari</string>
+    <string name="hotel_detail_based_on_review_number">Berdasarkan %1$s ulasan</string>
+    <string name="hotel_detail_no_rating">Belum ada rating</string>
+    <string name="hotel_detail_no_rating_review">Belum ada rating dan ulasan</string>
+
+    <string name="hotel_review_title">Ulasan</string>
+    <string name="hotel_review_indonesia_not_found_title">Belum ada ulasan dari Indonesia</string>
+    <string name="hotel_review_indonesia_not_found_subtitle">Kamu bisa jadi yang pertama ngasih ulasan kalau nginep di sini. Pesan kamarnya, yuk!</string>
+    <string name="hotel_review_filter_review_not_found_title">Belum ada ulasan untuk akomodasi ini</string>
+    <string name="hotel_review_filter_review_not_found_subtitle">Coba cek lagi di lain waktu, ya!</string>
+    <string name="hotel_review_total_review">%1$s Ulasan</string>
+    <string name="hotel_review_filter_first_rank">Memuaskan (Rating 7+)</string>
+    <string name="hotel_review_filter_second_rank">Baik (Rating 5&#8211;7)</string>
+    <string name="hotel_review_filter_third_rank">Kurang (Rating 1&#8211;5)</string>
+    <string name="hotel_review_country_date">%1$s • %2$s</string>
+
+    <string name="hotel_room_detail_header_occupancy">Maksimum: %1$s</string>
+    <string name="hotel_room_detail_header_room_size">%1$d m² • %2$s</string>
+    <string name="hotel_room_detail_header_breakfast">Sarapan Gratis</string>
+    <string name="hotel_room_detail_header_refund">Refund Bersyarat</string>
+    <string name="hotel_room_detail_pay_at_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_detail_pay_at_hotel_desc">\nKartu kredit diperlukan untuk verifikasi, biaya pemesanan akan ditagihkan saat tiba di hotel.</string>
+    <string name="hotel_room_detail_cancellation">Pembatalan</string>
+    <string name="hotel_room_detail_upfront_payment">Pembayaran di muka</string>
+    <string name="hotel_room_detail_upfront_payment_desc">Kartu kredit Anda akan terpotong sejumlah biaya pada waktu yang telah ditentukan.</string>
+    <string name="hotel_room_detail_tax">Pajak</string>
+    <string name="hotel_room_detail_tax_desc">Termasuk pajak 10% dan biaya layanan 10%</string>
+    <string name="hotel_room_detail_deposit">Deposit</string>
+    <string name="hotel_room_detail_deposit_desc">Kamar ini menerapkan sistem deposit yang harus dibayar saat check-in.</string>
+    <string name="hotel_room_detail_facilities">Fasilitas kamar</string>
+    <string name="hotel_room_detail_facility_item">• %1$s</string>
+    <string name="hotel_room_detail_description">Deskripsi</string>
+    <string name="hotel_room_detail_breakfast">Makanan</string>
+    <string name="hotel_room_detail_extra_bed">Extra bed</string>
+    <string name="hotel_room_detail_price_info">Harga /kamar/malam</string>
+
+    <string name="hotel_order_detail_status">Status</string>
+    <string name="hotel_order_detail_transaction_date">Tanggal Transaksi</string>
+    <string name="hotel_order_detail_product_category">Kategori Produk</string>
+    <string name="hotel_order_detail_see_invoice_text">LIHAT</string>
+    <string name="hotel_order_detail_see_evoucher_text">Lihat E-voucher</string>
+    <string name="hotel_order_detail_hotel_detail">Detail Hotel</string>
+    <string name="hotel_order_detail_booking_code">Kode Booking: </string>
+    <string name="hotel_order_detail_hotel_name">Nama Hotel</string>
+    <string name="hotel_order_detail_see_hotel_detail">Lihat Detail Hotel</string>
+    <string name="hotel_order_detail_special_request">Permintaan Khusus</string>
+    <string name="hotel_order_detail_contact_hotel">Kontak Hotel</string>
+    <string name="hotel_order_detail_guest_detail">Detail Tamu</string>
+    <string name="hotel_order_detail_guest_name">Nama Tamu</string>
+    <string name="hotel_order_detail_payment_method">Metode Pembayaran</string>
+    <string name="hotel_order_detail_title">Detail Pesanan</string>
+    <string name="hotel_order_detail_contact_phone_sheet_title">Kontak Hotel</string>
+    <string name="hotel_order_detail_refund_sheet_title">Ketentuan Pembatalan</string>
+    <string name="hotel_order_detail_day_and_time">%1$s, %2$s</string>
+    <string name="hotel_order_detail_refund_ticker"><![CDATA[%1$s <font color="#42B549">Pelajari lebih lanjut</font>]]></string>
+    <string name="hotel_order_detail_additional_info"><![CDATA[%1$s <font color="#42B549">Baca selengkapnya</font>]]></string>
+
+    <string name="hotel_detail_room_full_text">Kamar Penuh</string>
+    <string name="hotel_detail_change_search_text">Ganti Pencarian</string>
+    <string name="hotel_detail_coming_soon_text">Segera Hadir</string>
+
+    <string name="hotel_booking_activity_title">Pemesanan</string>
+    <string name="hotel_booking_title">Pembayaran</string>
+    <string name="hotel_room_night_count">%1$d Malam</string>
+    <string name="hotel_booking_pay_at_hotel_label">\u0020Bayar di Hotel (Perlu Jaminan Kartu Kredit)</string>
+    <string name="hotel_booking_room_general_info">%1$d Kamar • %2$d Tamu</string>
+    <string name="hotel_booking_free_breakfast">Sarapan Gratis</string>
+    <string name="hotel_booking_cancellation_policy_more_info">Pelajari lebih lanjut</string>
+    <string name="hotel_booking_cancellation_policy_title">Ketentuan Pembatalan</string>
+    <string name="hotel_booking_add_request_label">Tambahkan Permintaan Khusus</string>
+    <string name="hotel_booking_request_form_title">Permintaan Khusus*</string>
+    <string name="hotel_booking_request_form_hint">Isi permintaan khusus di sini</string>
+    <string name="hotel_booking_request_form_notice">*Pemenuhan permintaan khusus tergantung kebijakan hotel.</string>
+    <string name="hotel_booking_request_char_count">%1$d/%2$d</string>
+    <string name="hotel_booking_request_char_count_error">Maksimum %1$d karakter</string>
+    <string name="hotel_booking_contact_detail_title">Detail Kontak</string>
+    <string name="hotel_booking_contact_detail_info">E-voucher dan informasi mengenai pemesanan akan dikirim ke kontak ini.</string>
+    <string name="hotel_booking_contact_detail_phone_number">+%1$d %2$s</string>
+    <string name="hotel_booking_contact_self">Pesan untuk diri sendiri</string>
+    <string name="hotel_booking_contact_guest">Pesan untuk orang lain</string>
+    <string name="hotel_booking_guest_form_title">Nama Lengkap</string>
+    <string name="hotel_booking_guest_form_hint">Ketik nama tamu yang akan menginap</string>
+    <string name="hotel_booking_guest_form_notice">Nama harus sesuai dengan kartu identitas (KTP/SIM/Paspor)</string>
+    <string name="hotel_booking_invoice_title">Ringkasan Harga</string>
+    <string name="hotel_booking_tax_label">Pajak</string>
+    <string name="hotel_booking_tax_included">Sudah termasuk</string>
+    <string name="hotel_booking_invoice_estimate_pay_at_hotel">Bayar di Hotel</string>
+    <string name="hotel_booking_invoice_estimate_pay_now">Total tagihan</string>
+    <string name="hotel_booking_invoice_foreign_currency_label">Sebagai referensi, estimasi harga dalam rupiah sebesar %1$s</string>
+    <string name="hotel_booking_important_notes">Dengan melanjutkan pemesanan, kamu sudah memahami informasi penting dari akomodasi ini.</string>
+    <string name="hotel_booking_button">Lanjutkan</string>
+    <string name="hotel_booking_back_dialog_title">Yakin batal pesan?</string>
+    <string name="hotel_booking_back_dialog_desc">Kamar bisa penuh dan tidak tersedia di waktu lain. Lanjut pesan untuk tetap menginap di kamar ini.</string>
+    <string name="hotel_booking_back_dialog_no">Batalkan</string>
+    <string name="hotel_booking_back_dialog_yes">Lanjut pesan</string>
+
+    <string name="hotel_e_voucher_phone">No. Telepon: %1$s</string>
+    <string name="hotel_e_voucher_detail_order_title">DETAIL PESANAN</string>
+    <string name="hotel_share_as_image">Bagikan sebagai gambar</string>
+    <string name="hotel_share_as_pdf">Bagikan sebagai PDF</string>
+    <string name="hotel_share_file_name">Tokopedia_Hotel_%1$s.png</string>
+    <string name="hotel_share_folder_name">%1$s/tokopedia/screenshots</string>
+    <string name="hotel_share_title_email">Alamat E-mail</string>
+    <string name="hotel_share_add_email">Tambah E-mail</string>
+    <string name="hotel_share_empty_email_error">E-mail harus diisi</string>
+    <string name="hotel_share_format_email_error">Format e-mail salah</string>
+    
+    <string name="hotel_error_no_internet_connection_title">Nggak ada koneksi Internet</string>
+    <string name="hotel_error_no_internet_connection_subtitle">"Kamu bisa pindah tempat atau cek paket data / jaringan Wi-Fi."</string>
+    <string name="hotel_error_server_error_title">Ada gangguan di rumah Toped</string>
+    <string name="hotel_error_server_error_subtitle">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+    <string name="hotel_e_voucher_powered_by">Powered by:</string>
+    <string name="hotel_e_voucher_local_time">* Mengikuti waktu setempat.</string>
+    <string name="hotel_e_voucher_cancellation_policy_title">KETENTUAN PEMBATALAN</string>
+    <string name="hotel_recommendation_gps_dialog_title">Aktifkan GPS</string>
+    <string name="hotel_recommendation_gps_dialog_desc">Aktifkan GPS untuk menggunakan lokasi.</string>
+    <string name="hotel_recommendation_gps_dialog_ok">Aktifkan</string>
+    <string name="hotel_recommendation_gps_dialog_cancel">Batal</string>
+</resources>

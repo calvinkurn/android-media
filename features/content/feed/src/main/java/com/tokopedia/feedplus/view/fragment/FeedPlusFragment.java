@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,6 +48,8 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
+import com.tokopedia.feedcomponent.util.FeedScrollListener;
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -72,6 +75,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecomme
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity;
@@ -101,8 +105,10 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
 import com.tokopedia.kolcommon.data.pojo.Author;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -148,7 +154,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
-        VideoViewHolder.VideoViewListener {
+        VideoViewHolder.VideoViewListener,
+        FeedMultipleImageView.FeedMultipleImageViewListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -242,6 +249,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
+
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, analytics, userSession);
         adapter = new FeedPlusAdapter(typeFactory);
         adapter.setOnLoadListener(totalCount -> {
@@ -368,6 +376,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             onRefresh();
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @SuppressWarnings("unchecked")
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -392,6 +401,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER);
                             }
                         }
+                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist());
                     }
                 } catch (IndexOutOfBoundsException e) {
                     Log.d(FeedPlusFragment.TAG, e.toString());
@@ -1549,7 +1559,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
         if (getActivity() != null) {
-            doShare(String.format("%s %s", description, url), title);
+            new ShareBottomSheets().show(getActivity().getSupportFragmentManager(),
+                    ShareBottomSheets.Companion.constructShareData("", imageUrl, url, description, title),
+                    packageName -> {
+
+                    });
         }
 
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE);
@@ -1571,6 +1585,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     model.getId(),
                     postTagItem,
                     itemPosition,
+                    model.getHeader().getFollowCta().getAuthorType(),
                     model.getTrackingPostModel()
             );
         }
@@ -1589,6 +1604,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onMediaGridClick(int positionInFeed, int contentPosition, @NotNull String redirectLink, boolean isSingleItem) {
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(positionInFeed, model.getTrackingPostModel());
+
+            if (!isSingleItem && getActivity() != null){
+                startActivity(MediaPreviewActivity.createIntent(getActivity(), String.valueOf(model.getId()), contentPosition));
+            }
+        }
+    }
+
+    @Override
     public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList, boolean isClick) {
         for (TrackingViewModel track : trackList) {
             if (isClick) {
@@ -1599,6 +1627,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onPostTagItemBuyClicked(int positionInFeed, @NotNull PostTagItem postTagItem) {
+        presenter.addPostTagItemToCart(postTagItem);
+    }
 
     @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition,
@@ -1691,6 +1723,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onAddToCartSuccess() {
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
+    }
+
+    @Override
+    public void onAddToCartFailed(String pdpAppLink) {
+        onGoToLink(pdpAppLink);
+    }
+
     private void doShare(String body, String title) {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
@@ -1750,15 +1792,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     );
                 }
 
-                if (postViewModel.getPostTag().getTotalItems() != 0
-                        && postViewModel.getPostTag().getItems().size() != 0) {
-                    for (int j = 0; j< postViewModel.getPostTag().getTotalItems(); j++) {
-                        postTagAnalytics.trackViewPostTagFeed(
-                                postViewModel.getId(),
-                                postViewModel.getPostTag().getItems().get(j),
-                                j,
-                                trackingPostModel);
-                    }
+                if (postViewModel.getPostTag().getItems().size() != 0) {
+                    postTagAnalytics.trackViewPostTagFeed(
+                            postViewModel.getId(),
+                            postViewModel.getPostTag().getItems(),
+                            postViewModel.getHeader().getFollowCta().getAuthorType(),
+                            trackingPostModel);
                 }
                 onAffiliateTrackClicked(postViewModel.getTracking(), false);
 

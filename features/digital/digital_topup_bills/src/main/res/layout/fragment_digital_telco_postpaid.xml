@@ -9,12 +9,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants"
+        android:focusableInTouchMode="true"
+        android:focusable="true">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/digital_bg_pdp" />
+            app:srcCompat="@drawable/digital_bg_pdp" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_view"
