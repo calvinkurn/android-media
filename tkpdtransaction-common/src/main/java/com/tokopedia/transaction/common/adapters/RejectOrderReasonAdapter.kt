@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.common.adapters
 
+import android.os.Build
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -59,6 +60,10 @@ class RejectOrderReasonAdapter(var reasons: List<String>?) : RecyclerView.Adapte
             }
 
             reasonRadioButton.isChecked = isSelected
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                reasonRadioButton.setButtonDrawable(R.drawable.selector_radiobutton_big)
+            }
 
             reasonRadioButton.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
