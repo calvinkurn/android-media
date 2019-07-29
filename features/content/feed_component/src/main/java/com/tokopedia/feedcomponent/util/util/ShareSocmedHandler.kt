@@ -1,43 +1,22 @@
-package com.tokopedia.profile.view.util
+package com.tokopedia.feedcomponent.util.util
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Bundle
 import android.os.Environment
 import android.os.Parcelable
 import android.util.Log
 import android.widget.Toast
-import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.abstraction.constant.TkpdCache
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareData
-import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.profile.R
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.user.session.UserSession
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import rx.Observable
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Func1
-import rx.schedulers.Schedulers
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
-import java.util.concurrent.ExecutionException
 
 /**
  * @author by yfsx on 17/05/19.

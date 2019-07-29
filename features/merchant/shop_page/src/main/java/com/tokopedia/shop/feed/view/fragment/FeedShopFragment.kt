@@ -26,6 +26,7 @@ import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -454,7 +455,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
         activity?.let {
-            doShare(url, String.format("%s %s", description, "%s"), title)
+            ShareBottomSheets().show(activity!!.supportFragmentManager,
+                    ShareBottomSheets.constructShareData("", iamgeUrl, url, description, title),
+                    object : ShareBottomSheets.OnShareItemClickListener {
+                        override fun onShareItemClicked(packageName: String) {
+
+                        }
+                    })
         }
     }
 

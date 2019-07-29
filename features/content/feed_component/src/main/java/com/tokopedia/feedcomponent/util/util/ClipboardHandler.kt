@@ -1,13 +1,12 @@
-package com.tokopedia.profile.view.util
+package com.tokopedia.feedcomponent.util.util
 
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.TextView
-import com.tokopedia.profile.R
+import com.tokopedia.feedcomponent.R
 
 /**
  * @author by yfsx on 17/05/19.

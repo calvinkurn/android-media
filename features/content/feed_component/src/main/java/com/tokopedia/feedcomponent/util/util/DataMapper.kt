@@ -1,4 +1,4 @@
-package com.tokopedia.profile.view.util
+package com.tokopedia.feedcomponent.util.util
 
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData

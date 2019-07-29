@@ -49,6 +49,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.util.FeedScrollListener;
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -107,6 +108,7 @@ import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
 import com.tokopedia.kolcommon.data.pojo.Author;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -1557,7 +1559,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
         if (getActivity() != null) {
-            doShare(String.format("%s %s", description, url), title);
+            new ShareBottomSheets().show(getActivity().getSupportFragmentManager(),
+                    ShareBottomSheets.Companion.constructShareData("", imageUrl, url, description, title),
+                    packageName -> {
+
+                    });
         }
 
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE);
