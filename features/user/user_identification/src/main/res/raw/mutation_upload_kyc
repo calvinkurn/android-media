@@ -1,5 +1,5 @@
 mutation kycUpload($kycType: Int, $picObjKYC: String) {
-  kycUpload(picObjKYC: $picObjKYC, kycType: $kycType) {
+  kycUploadV3(picObjKYC: $picObjKYC, kycType: $kycType) {
     isSuccess
     error
   }
