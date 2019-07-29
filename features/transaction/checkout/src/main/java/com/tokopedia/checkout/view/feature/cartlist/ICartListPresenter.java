@@ -12,6 +12,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopsData;
 import com.tokopedia.transactiondata.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -85,7 +86,9 @@ public interface ICartListPresenter {
 
     void getInsuranceTechCart();
 
-    void processDeleteCartInsurance(InsuranceCartShops insuranceCartShops, boolean showToaster);
+    void processDeleteCartInsurance(ArrayList<InsuranceCartShops> insuranceCartShops, boolean showToaster);
+
+    void processDeleteCartMicroInsurance(ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList, boolean showToaster);
 
     void updateInsuranceProductData(InsuranceCartShops insuranceCartShops, ArrayList<UpdateInsuranceProductApplicationDetails> list);
 

@@ -527,10 +527,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (message == null || message.equals("")) {
                 ArrayList<InsuranceCartShops> insuranceCartShopsArrayList = cartAdapter.isInsuranceCartProductUnSelected();
                 if (!insuranceCartShopsArrayList.isEmpty()) {
-                    for (InsuranceCartShops insuranceCartShops : insuranceCartShopsArrayList) {
-                        deleteInsurance(insuranceCartShops, false);
-                    }
+                    deleteMacroInsurance(insuranceCartShopsArrayList, false);
                 }
+
+                ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = cartAdapter.getUnselectedMicroInsuranceProduct();
+                if (!insuranceCartShopsArrayList.isEmpty()) {
+                    deleteMicroInsurance(insuranceCartDigitalProductArrayList, false);
+                }
+
+
                 dPresenter.processToUpdateCartData(getSelectedCartDataList(), cartAdapter.getSelectedCartShopHolderData());
             } else {
                 showToastMessageRed(message);
@@ -606,20 +611,19 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         final com.tokopedia.design.component.Dialog dialog;
 
-        boolean insurancePresent = !cartAdapter.getInsuranceCartShops().isEmpty();
+        boolean macroInsurancePresent = !cartAdapter.getInsuranceCartShops().isEmpty();
         boolean removeAllItem = allCartItemDataList.size() == cartItemDatas.size();
-        boolean removeInsurance = insurancePresent && removeAllItem;
+        boolean removeMacroInsurance = macroInsurancePresent && removeAllItem;
 
-        if (removeInsurance) {
+        if (removeMacroInsurance) {
             dialog = getInsuranceDialogDeleteConfirmation();
         } else {
             dialog = getDialogDeleteConfirmation(1);
         }
 
-
         dialog.setOnOkClickListener(view -> {
             if (cartItemDatas.size() > 0) {
-                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true, removeInsurance);
+                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true, removeMacroInsurance);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -630,7 +634,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         });
         dialog.setOnCancelClickListener(view -> {
             if (cartItemDatas.size() > 0) {
-                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false, removeInsurance);
+                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false, removeMacroInsurance);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -1932,7 +1936,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void removeInsuranceProductItem(long productId) {
+    public void removeInsuranceProductItem(List<Long> productId) {
         if (cartAdapter != null) {
             cartAdapter.removeInsuranceDataItem(productId);
         }
@@ -1942,9 +1946,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse, boolean isRecommendation) {
 
         /*
-        * render insurance cart data on ui, both micro and macro, if is_product_level == true,
-        * then insurance product is of type micro insurance and should be tagged at product level,
-        * for micro insurance product add insurance data in shopGroup list*/
+         * render insurance cart data on ui, both micro and macro, if is_product_level == true,
+         * then insurance product is of type micro insurance and should be tagged at product level,
+         * for micro insurance product add insurance data in shopGroup list*/
 
 
         if (insuranceCartResponse != null &&
@@ -2116,8 +2120,19 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void deleteInsurance(@NotNull InsuranceCartShops insuranceCartShops, boolean showConfirmationDialog) {
+    public void updateInsuranceProductData(InsuranceCartShops insuranceCartShops, ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
+        dPresenter.updateInsuranceProductData(insuranceCartShops, updateInsuranceProductApplicationDetailsArrayList);
+    }
 
+
+    @Override
+    public void deleteMicroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartShops, boolean showConfirmationDialog) {
+        dPresenter.processDeleteCartMicroInsurance(insuranceCartShops, showConfirmationDialog);
+    }
+
+
+    @Override
+    public void deleteMacroInsurance(@NotNull ArrayList<InsuranceCartShops> insuranceCartShops, boolean showConfirmationDialog) {
         if (showConfirmationDialog) {
             View view = getLayoutInflater().inflate(R.layout.remove_insurance_product, null, false);
             AlertDialog alertDialog = new AlertDialog.Builder(getContext())
@@ -2142,13 +2157,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         } else {
             dPresenter.processDeleteCartInsurance(insuranceCartShops, showConfirmationDialog);
         }
-
-
-    }
-
-    @Override
-    public void updateInsuranceProductData(InsuranceCartShops insuranceCartShops, ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
-        dPresenter.updateInsuranceProductData(insuranceCartShops, updateInsuranceProductApplicationDetailsArrayList);
     }
 
     @Override

@@ -304,7 +304,14 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
         cbSelectInsurance.setChecked(true);
 
-        ivDeleteInsurance.setOnClickListener(v -> insuranceItemActionlistener.deleteInsurance(insuranceCartShops, true));
+        ivDeleteInsurance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<InsuranceCartShops> insuranceCartShopsArrayList = new ArrayList<>();
+                insuranceCartShopsArrayList.add(insuranceCartShops);
+                insuranceItemActionlistener.deleteMacroInsurance(insuranceCartShopsArrayList, true);
+            }
+        });
     }
 
     private void onDateViewClicked(TextView view) {

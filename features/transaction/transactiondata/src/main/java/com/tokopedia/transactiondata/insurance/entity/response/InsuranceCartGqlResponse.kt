@@ -68,7 +68,10 @@ data class InsuranceCartDigitalProduct(
         var productInfo: InsuranceCartProductInfo,
 
         @SerializedName("application_details")
-        var applicationDetails: ArrayList<InsuranceProductApplicationDetails>
+        var applicationDetails: ArrayList<InsuranceProductApplicationDetails>,
+
+        var shopId: String = "",
+        var productId: String
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -86,7 +89,10 @@ data class InsuranceCartDigitalProduct(
             parcel.readParcelable<InsuranceCartProductInfo>(InsuranceCartProductInfo::class.java.classLoader)!!,
             arrayListOf<InsuranceProductApplicationDetails>().apply {
                 parcel.readList(this, InsuranceProductApplicationDetails::class.java.classLoader)
-            }
+
+            },
+            parcel.readString() ?: "",
+            parcel.readString() ?: ""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -101,6 +107,8 @@ data class InsuranceCartDigitalProduct(
         parcel.writeByte(if (isSellerMoney) 1 else 0)
         parcel.writeByte(if (isApplicationNeeded) 1 else 0)
         parcel.writeByte(if (isNew) 1 else 0)
+        parcel.writeString(shopId)
+        parcel.writeString(productId)
     }
 
     override fun describeContents(): Int {

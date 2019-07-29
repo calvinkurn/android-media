@@ -46,7 +46,6 @@ import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
-import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
@@ -87,6 +86,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -336,27 +336,70 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processDeleteCartInsurance(InsuranceCartShops insuranceCartShops, boolean showToaster) {
+    public void processDeleteCartInsurance(ArrayList<InsuranceCartShops> insuranceCartShopsArrayList, boolean showToaster) {
 
-        if (insuranceCartShops == null) return;
+        if (insuranceCartShopsArrayList != null &&
+                !insuranceCartShopsArrayList.isEmpty()) {
+            view.showProgressLoading();
+            ArrayList<String> cartIdList = new ArrayList<>();
+            ArrayList<RemoveInsuranceData> removeInsuranceDataArrayList = new ArrayList<>();
+            List<Long> productIdArrayList = new ArrayList<>();
+            for (InsuranceCartShops insuranceCartShops : insuranceCartShopsArrayList) {
+                Long shopid = insuranceCartShops.getShopId();
 
-        view.showProgressLoading();
-        ArrayList<String> cartIdList = new ArrayList<>();
-        ArrayList<RemoveInsuranceData> removeInsuranceDataArrayList = new ArrayList<>();
+                long productId = 0;
+                for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
+                    productId = insuranceCartShopItems.getProductId();
+                    Long cartId = insuranceCartShopItems.getDigitalProductList().get(0).getCartItemId();
+                    cartIdList.add(String.valueOf(cartId));
+                    RemoveInsuranceData removeInsuranceData = new RemoveInsuranceData(cartId, shopid, productId);
+                    removeInsuranceDataArrayList.add(removeInsuranceData);
+                    productIdArrayList.add(productId);
+                }
+            }
 
-        Long shopid = insuranceCartShops.getShopId();
 
-        long productId = 0;
-        for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
-            productId = insuranceCartShopItems.getProductId();
-            Long cartId = insuranceCartShopItems.getDigitalProductList().get(0).getCartItemId();
-            cartIdList.add(String.valueOf(cartId));
-            RemoveInsuranceData removeInsuranceData = new RemoveInsuranceData(cartId, shopid, productId);
-            removeInsuranceDataArrayList.add(removeInsuranceData);
+            removeInsuranceProductUsecase.setRequestParams(removeInsuranceDataArrayList, "cart", String.valueOf(Build.VERSION.SDK_INT), cartIdList);
+            removeInsuranceProductUsecase.execute(getSubscriberRemoveInsuranceProduct(productIdArrayList, showToaster));
         }
+    }
 
-        removeInsuranceProductUsecase.setRequestParams(removeInsuranceDataArrayList, "cart", String.valueOf(Build.VERSION.SDK_INT), cartIdList);
-        removeInsuranceProductUsecase.execute(getSubscriberRemoveInsuranceProduct(productId, showToaster));
+
+    @Override
+    public void processDeleteCartMicroInsurance(ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList, boolean showToaster) {
+        if (insuranceCartDigitalProductArrayList != null &&
+                !insuranceCartDigitalProductArrayList.isEmpty()) {
+
+            view.showProgressLoading();
+            ArrayList<String> cartIdList = new ArrayList<>();
+            ArrayList<RemoveInsuranceData> removeInsuranceDataArrayList = new ArrayList<>();
+            List<Long> productIdArrayList = new ArrayList<>();
+            for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartDigitalProductArrayList) {
+                long shopid;
+                long productId;
+                try {
+                    shopid = Long.parseLong(insuranceCartDigitalProduct.getShopId());
+                } catch (Exception e) {
+                    shopid = 0;
+                }
+
+                try {
+                    productId = Long.parseLong(insuranceCartDigitalProduct.getProductId());
+                } catch (Exception e) {
+                    productId = 0;
+                }
+
+                Long cartId = insuranceCartDigitalProduct.getCartItemId();
+                cartIdList.add(String.valueOf(cartId));
+                RemoveInsuranceData removeInsuranceData = new RemoveInsuranceData(cartId, shopid, productId);
+                removeInsuranceDataArrayList.add(removeInsuranceData);
+                productIdArrayList.add(productId);
+            }
+
+
+            removeInsuranceProductUsecase.setRequestParams(removeInsuranceDataArrayList, "cart", String.valueOf(Build.VERSION.SDK_INT), cartIdList);
+            removeInsuranceProductUsecase.execute(getSubscriberRemoveInsuranceProduct(productIdArrayList, showToaster));
+        }
     }
 
     @Override
@@ -431,7 +474,7 @@ public class CartListPresenter implements ICartListPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(getSubscriberDeleteAndRefreshCart(toBeDeletedCartIds, removeAllItem, removeInsurance)));
+                .subscribe(getSubscriberDeleteAndRefreshCart(toBeDeletedCartIds, removedCartItems, removeAllItem, removeInsurance)));
     }
 
     @Override
@@ -1014,7 +1057,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<GraphqlResponse> getSubscriberRemoveInsuranceProduct(long productId, boolean showToaster) {
+    private Subscriber<GraphqlResponse> getSubscriberRemoveInsuranceProduct(List<Long> productId, boolean showToaster) {
         return new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -1071,7 +1114,9 @@ public class CartListPresenter implements ICartListPresenter {
                     updateInsuranceDataGqlResponse = graphqlResponse.getData(UpdateInsuranceDataGqlResponse.class);
                     if (updateInsuranceDataGqlResponse.getData().getUpdateCart().getStatus().equalsIgnoreCase("ok")) {
                         view.showToastMessageGreen("insurance data updated");
-                        view.removeInsuranceProductItem(productId);
+                        ArrayList<Long> productIdList = new ArrayList<>();
+                        productIdList.add(productId);
+                        view.removeInsuranceProductItem(productIdList);
                         getInsuranceTechCart();
                     } else {
                         view.showToastMessageRed(
@@ -1084,7 +1129,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(List<Integer> toBeDeletedCartIds,
+    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(List<Integer> toBeDeletedCartIds, List<CartItemData> removedCartItems,
                                                                                        boolean removeAllItems, boolean removeInsurance) {
         return new Subscriber<DeleteAndRefreshCartListData>() {
             @Override
@@ -1111,16 +1156,29 @@ public class CartListPresenter implements ICartListPresenter {
                     view.hideProgressLoading();
                     view.renderLoadGetCartDataFinish();
 
-                    if (removeInsurance) {
-                        processDeleteCartInsurance(view.getInsuranceCartShopData(), false);
-                    }
-
                     if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()) {
+
+                        if (removeInsurance) {
+                            ArrayList<InsuranceCartShops> insuranceCartShopsArrayList = new ArrayList<>();
+                            insuranceCartShopsArrayList.add(view.getInsuranceCartShopData());
+                            processDeleteCartInsurance(insuranceCartShopsArrayList, false);
+                        }
+
                         if (removeAllItems) {
                             processInitialGetCartData(view.getCartId(), false, false);
                         } else {
                             view.onDeleteCartDataSuccess(toBeDeletedCartIds);
                         }
+
+                        ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
+                        for (CartItemData cartItemData : removedCartItems) {
+
+                            if (cartItemData.getMicroInsuranceData() != null) {
+                                insuranceCartDigitalProductArrayList.add(cartItemData.getMicroInsuranceData());
+                            }
+
+                        }
+                        processDeleteCartMicroInsurance(insuranceCartDigitalProductArrayList, false);
                     } else {
                         view.showToastMessageRed(
                                 deleteAndRefreshCartListData.getDeleteCartData().getMessage()

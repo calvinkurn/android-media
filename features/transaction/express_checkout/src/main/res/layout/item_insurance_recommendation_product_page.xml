@@ -75,30 +75,38 @@
 
             <TextView
                 android:id="@+id/insurance_tv_subtitle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
+                android:ellipsize="end"
                 android:lineSpacingExtra="@dimen/sp_6"
+                android:maxLines="1"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone"
                 app:layout_constraintBaseline_toBaselineOf="@+id/insurance_tv_price"
+                app:layout_constraintEnd_toStartOf="@+id/insurance_tv_info"
                 app:layout_constraintStart_toEndOf="@+id/insurance_tv_price"
-                tools:text="Insurance subtitle"
+                app:layout_constraintWidth_default="wrap"
+                app:layout_constraintWidth_max="140dp"
+                tools:text="Insurance subtitle saddscdsd"
                 tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/insurance_tv_info"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:lineSpacingExtra="6sp"
+                android:maxLines="1"
                 android:textColor="#03ac0e"
                 android:textSize="@dimen/sp_12"
                 android:visibility="visible"
                 app:layout_constraintBaseline_toBaselineOf="@+id/insurance_tv_price"
+                app:layout_constraintEnd_toStartOf="@+id/insurance_checkbox"
                 app:layout_constraintStart_toEndOf="@+id/insurance_tv_subtitle"
+                app:layout_constraintWidth_default="spread"
                 tools:text="Info" />
 
 

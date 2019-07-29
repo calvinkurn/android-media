@@ -305,6 +305,69 @@
 
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:id="@+id/ll_micro_insurance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/dp_10">
+
+
+                    <CheckBox
+                        android:id="@+id/cb_select_micro_insurance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:theme="@style/TransactionCheckbox" />
+
+                    <TextView
+                        android:id="@+id/micro_insurance_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_toEndOf="@+id/cb_select_micro_insurance"
+                        android:layout_toRightOf="@+id/cb_select_micro_insurance"
+                        android:lineSpacingExtra="@dimen/sp_2"
+                        android:textColor="@color/default_dark_bg"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="Proteksi Gadget" />
+
+                    <TextView
+                        android:id="@+id/tv_micro_insurance_sub_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/micro_insurance_title"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:layout_marginEnd="@dimen/dp_12"
+                        android:layout_marginRight="@dimen/dp_12"
+                        android:layout_toStartOf="@+id/tv_micro_insurance_info"
+                        android:layout_toLeftOf="@+id/tv_micro_insurance_info"
+                        android:layout_toEndOf="@+id/cb_select_micro_insurance"
+                        android:layout_toRightOf="@+id/cb_select_micro_insurance"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="Rp 50.000 / barang" />
+
+                    <TextView
+                        android:id="@+id/tv_micro_insurance_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:textColor="#03ac0e"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="Pelajari" />
+
+                </RelativeLayout>
+
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_remark"
                     android:layout_width="match_parent"
