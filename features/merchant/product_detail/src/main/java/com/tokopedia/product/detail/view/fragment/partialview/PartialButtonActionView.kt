@@ -77,7 +77,6 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun showNewCheckoutButton(preOrder: PreOrder?) {
-        resetTopChatLayoutParams()
         with(view) {
             btn_buy.visibility = View.GONE
             btn_promote_topads.visibility = View.GONE
@@ -102,6 +101,7 @@ class PartialButtonActionView private constructor(private val view: View,
                 changeButtonTopChatLayoutParamsForApplyCredit()
             }else{
                 btn_apply_credit.visibility  = View.GONE
+                resetTopChatLayoutParams()
             }
 
             btn_buy_now.setOnClickListener {
@@ -126,8 +126,6 @@ class PartialButtonActionView private constructor(private val view: View,
     private fun changeButtonTopChatLayoutParamsForApplyCredit() {
         with(view){
             val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
-            topChatParams.goneLeftMargin = PARENT_ID
-            topChatParams.goneStartMargin = PARENT_ID
             topChatParams.startToEnd = UNSET
             topChatParams.startToStart = PARENT_ID
             topChatParams.rightToLeft = btn_apply_credit.id
