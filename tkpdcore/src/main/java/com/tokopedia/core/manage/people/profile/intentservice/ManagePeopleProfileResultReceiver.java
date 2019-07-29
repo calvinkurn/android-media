@@ -7,6 +7,7 @@ import android.os.ResultReceiver;
 /**
  * Created by stevenfredian on 4/29/16.
  */
+@Deprecated
 public class ManagePeopleProfileResultReceiver extends ResultReceiver{
 
     private Receiver mReceiver;
