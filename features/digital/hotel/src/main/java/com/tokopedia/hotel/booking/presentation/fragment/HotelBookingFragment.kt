@@ -219,20 +219,13 @@ class HotelBookingFragment : HotelBaseFragment() {
             if (cancellationPolicy.title.isEmpty()) { // Hide cancellation info ticker
                 cancellation_policy_ticker.visibility = View.GONE
             } else {
-                var cancellationDesc: CharSequence = cancellationPolicy.content
-                if (cancellationPolicy.isClickable) {
-                    val moreInfoString = getString(R.string.hotel_booking_cancellation_policy_more_info)
-                    val spannableString = SpannableString("$cancellationDesc $moreInfoString")
-                    context?.run {
-                        spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.green_200)),
-                                spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-                    cancellationDesc = spannableString
-
-                    cancellation_policy_ticker.setOnClickListener { onCancellationPolicyClicked(property) }
-                }
                 cancellation_policy_ticker.tickerTitle = cancellationPolicy.title
-                cancellation_policy_ticker.setTextDescription(cancellationDesc)
+                if (cancellationPolicy.isClickable) {
+                    cancellation_policy_ticker.setHtmlDescription(getString(R.string.hotel_booking_cancellation_ticker, cancellationPolicy.content))
+                    cancellation_policy_ticker.setOnClickListener { onCancellationPolicyClicked(property) }
+                } else {
+                    cancellation_policy_ticker.setTextDescription(cancellationPolicy.content)
+                }
             }
         }
     }
