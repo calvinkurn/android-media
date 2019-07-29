@@ -73,7 +73,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when(item?.itemId){
             android.R.id.home -> {
-                RecommendationPageTracking.eventUserClickBack()
+                RecommendationPageTracking.eventUserClickBack(intent?.data?.getQueryParameter(REF) ?: "")
                 RouteManager.route(this, ApplinkConst.HOME)
                 this.finish()
                 true
