@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dp_16">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_policy_icon"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_hotel_location" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_policy_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart= "@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_weight="1"
+            android:lineSpacingExtra="@dimen/dp_2"
+            app:fontSize="title"
+            app:textViewTheme="lightPrimary"
+            app:weight="medium"
+            tools:text="Fasilitas Umum" />
+
+    </LinearLayout>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/tv_policy_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_4"
+        android:lineSpacingExtra="@dimen/dp_4"
+        app:fontSize="small"
+        tools:text="Fasilitas Umum" />
+
+</LinearLayout>

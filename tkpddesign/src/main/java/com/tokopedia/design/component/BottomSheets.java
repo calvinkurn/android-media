@@ -121,6 +121,9 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         View layoutTitle = parentView.findViewById(R.id.layout_title);
         layoutTitle.setOnClickListener(v -> onCloseButtonClick());
 
+        View closeButton = parentView.findViewById(R.id.btn_close);
+        closeButton.setOnClickListener(view -> BottomSheets.this.dismiss());
+
         FrameLayout frameParent = parentView.findViewById(R.id.bottomsheet_container);
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);
         initView(subView);

@@ -282,5 +282,5 @@ ext {
        components: "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
        coach_mark: "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
        calendar: "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar"
-    ]   
+    ]
 }
