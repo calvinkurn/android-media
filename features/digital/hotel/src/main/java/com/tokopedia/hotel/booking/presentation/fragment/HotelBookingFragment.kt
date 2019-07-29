@@ -162,7 +162,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupRoomInfo(hotelCart.property, hotelCart.cart)
         setupRoomRequestForm(hotelCart.cart)
         setupContactDetail(hotelCart.cart)
-        setupPayNowPromoTicker(hotelCart.property)
+//        setupPayNowPromoTicker(hotelCart.property)
         setupInvoiceSummary(hotelCart.cart, hotelCart.property)
         setupImportantNotes(hotelCart.property)
 
