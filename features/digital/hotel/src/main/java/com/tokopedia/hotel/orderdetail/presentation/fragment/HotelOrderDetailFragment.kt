@@ -157,7 +157,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         } else {
             refund_ticker.visibility = View.VISIBLE
             refund_ticker.tickerTitle = hotelTransportDetail.cancellation.title
-            refund_ticker.setHtmlDescription(getString(R.string.hotel_order_detail_refund_ticker, hotelTransportDetail.cancellation.content))
+            if (hotelTransportDetail.cancellation.isClickable)
+                refund_ticker.setHtmlDescription(getString(R.string.hotel_order_detail_refund_ticker, hotelTransportDetail.cancellation.content))
+            else refund_ticker.setHtmlDescription(hotelTransportDetail.cancellation.content)
             refund_ticker.closeButtonVisibility = View.GONE
 
             refund_ticker.setOnClickListener {
@@ -364,9 +366,10 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
         val text = if (resId == 0) TextHtmlUtils.getTextFromHtml(htmlText) else TextHtmlUtils.getTextFromHtml(getString(resId, htmlText))
         val spannableString = SpannableString(text)
-        val startIndexOfLink = htmlText.toLowerCase().indexOf("<hyperlink>") + "<hyperlink>".length
+        val hyperlinkIndex = htmlText.toLowerCase().indexOf("<hyperlink>")
+        val startIndexOfLink = hyperlinkIndex + "<hyperlink>".length
         val endIndexOfLink = htmlText.toLowerCase().indexOf("</hyperlink>")
-        if (startIndexOfLink >= 0) {
+        if (hyperlinkIndex >= 0) {
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(view: View) {
                     try {

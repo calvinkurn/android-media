@@ -198,6 +198,7 @@
     <string name="hotel_booking_back_dialog_desc">Kamar bisa penuh dan tidak tersedia di waktu lain. Lanjut pesan untuk tetap menginap di kamar ini.</string>
     <string name="hotel_booking_back_dialog_no">Batalkan</string>
     <string name="hotel_booking_back_dialog_yes">Lanjut pesan</string>
+    <string name="hotel_booking_cancellation_ticker"><![CDATA[%1$s <font color="#42B549">Pelajari lebih lanjut</font>]]></string>
 
     <string name="hotel_e_voucher_phone">No. Telepon: %1$s</string>
     <string name="hotel_e_voucher_detail_order_title">DETAIL PESANAN</string>
