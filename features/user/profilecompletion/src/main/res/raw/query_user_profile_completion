@@ -1,0 +1,10 @@
+query userProfileCompletion(){
+  userProfileCompletion {
+    fullName,
+    birthDay,
+    gender,
+    email,
+  	msisdn,
+    isMsisdnVerified
+  }
+}

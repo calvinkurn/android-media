@@ -6,20 +6,23 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
 
-
+/**
+ * For navigate: use {@link ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER}
+ * Please give param ApplinkConstInternalGlobal.PARAM_EMAIL
+ * and ApplinkConstInternalGlobal.PARAM_MSISDN
+ */
 public class ChangePhoneNumberWarningActivity extends BaseSimpleActivity {
-    public static final String PARAM_EMAIL = "email";
-    public static final String PARAM_PHONE_NUMBER = "phone_number";
 
     private String email;
     private String phoneNumber;
 
     public static Intent newInstance(Context context, String email, String phoneNumber) {
         Intent intent = new Intent(context, ChangePhoneNumberWarningActivity.class);
-        intent.putExtra(PARAM_EMAIL, email);
-        intent.putExtra(PARAM_PHONE_NUMBER, phoneNumber);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
         return intent;
     }
 
@@ -30,8 +33,8 @@ public class ChangePhoneNumberWarningActivity extends BaseSimpleActivity {
     }
 
     private void setupBundlePass(Bundle extras) {
-        email = extras.getString(PARAM_EMAIL);
-        phoneNumber = extras.getString(PARAM_PHONE_NUMBER);
+        email = extras.getString(ApplinkConstInternalGlobal.PARAM_EMAIL);
+        phoneNumber = extras.getString(ApplinkConstInternalGlobal.PARAM_MSISDN);
     }
 
     @Override

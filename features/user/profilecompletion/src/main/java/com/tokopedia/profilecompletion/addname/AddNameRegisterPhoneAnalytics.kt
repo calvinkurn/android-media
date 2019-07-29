@@ -8,7 +8,7 @@ import javax.inject.Inject
  * @author by nisie on 30/04/19.
  * https://docs.google.com/spreadsheets/d/1CBXovkdWu7NMkxrHIOJihMyfuRWNZvxgJd36KxLS25I/edit#gid=2108301255
  */
-class ProfileCompletionAnalytics @Inject constructor() {
+class AddNameRegisterPhoneAnalytics @Inject constructor() {
 
     companion object {
 
