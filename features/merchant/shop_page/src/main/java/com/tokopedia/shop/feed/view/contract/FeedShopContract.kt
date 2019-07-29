@@ -3,6 +3,7 @@ package com.tokopedia.shop.feed.view.contract
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
@@ -34,6 +35,10 @@ interface FeedShopContract {
         fun onWhitelistClicked(element: WhitelistViewModel)
 
         fun onEmptyFeedButtonClicked()
+
+        fun onAddToCartSuccess()
+
+        fun onAddToCartFailed(pdpAppLink: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -56,5 +61,7 @@ interface FeedShopContract {
         fun trackPostClick(uniqueTrackingId: String, redirectLink: String)
 
         fun trackPostClickUrl(url:String)
+
+        fun addPostTagItemToCart(postTagItem: PostTagItem)
     }
 }

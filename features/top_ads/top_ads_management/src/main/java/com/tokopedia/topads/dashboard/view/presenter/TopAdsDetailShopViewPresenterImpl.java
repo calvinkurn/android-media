@@ -49,6 +49,7 @@ public class TopAdsDetailShopViewPresenterImpl extends TopAdsDetailProductViewPr
         });
     }
 
+
     @Override
     public void unSubscribe() {
         if (shopAdInteractor != null) {

@@ -10,6 +10,13 @@ public class RecommendationProduct {
     @SerializedName("product")
     @Expose
     private List<Product> product = null;
+    @SerializedName("banner")
+    @Expose
+    private List<Banner> banners = null;
+    @SerializedName("position")
+    @Expose
+    private List<LayoutType> layoutTypes = null;
+
     @SerializedName("has_next_page")
     @Expose
     private Boolean hasNextPage;
@@ -30,4 +37,19 @@ public class RecommendationProduct {
         this.hasNextPage = hasNextPage;
     }
 
+    public List<Banner> getBanners() {
+        return banners;
+    }
+
+    public void setBanners(List<Banner> banners) {
+        this.banners = banners;
+    }
+
+    public List<LayoutType> getLayoutTypes() {
+        return layoutTypes;
+    }
+
+    public void setLayoutTypes(List<LayoutType> layoutTypes) {
+        this.layoutTypes = layoutTypes;
+    }
 }

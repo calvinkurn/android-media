@@ -16,6 +16,15 @@ public class PaymentData {
     public String orderId = "";
     public String marketType = "";
     public String itemPrice = "";
+    public boolean newBuyer;
+
+    public boolean isNewBuyer() {
+        return newBuyer;
+    }
+
+    public void setNewBuyer(boolean newBuyer) {
+        this.newBuyer = newBuyer;
+    }
 
     public String getPaymentId() {
         return paymentId;

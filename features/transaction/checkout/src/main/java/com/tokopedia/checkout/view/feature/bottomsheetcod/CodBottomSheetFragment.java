@@ -12,9 +12,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.checkout.R;
-import com.tokopedia.logisticanalytics.CodAnalytics;
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 
 import org.xml.sax.XMLReader;
 

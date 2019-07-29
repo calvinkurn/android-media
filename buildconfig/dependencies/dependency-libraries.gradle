@@ -18,6 +18,7 @@ ext {
     tkpdYoutubeUtilVersion = '2.22'
     tkpdBaseAdapterlVersion = '2.22'
     tkpdGraphViewVersion = '2.22'
+    tkpdUrlVersion = '2.22'
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
@@ -42,7 +43,6 @@ ext {
             baseListSeller    : ":libraries:base_list_seller",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             cacheApi          : ":libraries:cache_api",
-            cameraView        : ":libraries:camera_view",
             cameraview        : ":libraries:cameraview",
             cmnotification    :":libraries:cm_push_notifications",
             commonNetwork     : ":libraries:common_network",
@@ -58,6 +58,7 @@ ext {
             kotlinExtensions  : ":libraries:kotlin_extensions",
             linker            : ":libraries:linker",
             locationmanager   : ":libraries:locationmanager",
+            logger            : ":libraries:logger",
             network           : ":libraries:network",
             omsApi            : ":libraries:oms",
             pagination        : ":libraries:pagination",
@@ -79,7 +80,6 @@ ext {
             core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
-            sharecontent      : ":libraries:sharecontent",
             track             : ":libraries:track",
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
@@ -87,9 +87,6 @@ ext {
             cpm              : ":libraries:cpm",
             banner            : ":libraries:unify:unify_compositions:banner",
             collapsingTabLayout: ":libraries:collapsing_tab_layout",
-            unifyIcon         : ":libraries:unify:unify_icon",
-            unifyPrinciples   : ":libraries:unify:unify_principles",
-            unifyComponents   : ":libraries:unify:unify_components",
-            coachMark         : ":libraries:unify:unify_compositions:coach_mark"
+            url: ":libraries:url"
     ]
 }

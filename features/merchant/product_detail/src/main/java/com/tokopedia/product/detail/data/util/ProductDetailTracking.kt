@@ -1,18 +1,27 @@
 package com.tokopedia.product.detail.data.util
 
 import android.net.Uri
+import android.os.Bundle
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
 import java.util.*
 
+
 class ProductDetailTracking() {
+
+    val currencyLable = "IDR"
 
     fun sendScreen(shopID: String, shopType: String, productId: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
@@ -21,11 +30,27 @@ class ProductDetailTracking() {
     }
 
     fun eventTalkClicked() {
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK,
+                ProductTrackingConstant.ProductTalk.TALK)
+    }
+
+    fun eventShippingClicked() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-            ProductTrackingConstant.Category.PDP,
-            ProductTrackingConstant.Action.CLICK,
-            ProductTrackingConstant.ProductTalk.TALK)
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_SHIPPING,
+                "")
+    }
+
+    fun eventShippingRateEstimationClicked() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_SHIPPING_RATE_ESTIMATION,
+                "")
     }
 
     fun eventClickBuy(productId: String, isVariant: Boolean) {
@@ -43,7 +68,7 @@ class ProductDetailTracking() {
     private fun eventClickBuyOrAddToCart(productId: String, isVariant: Boolean,
                                          action: String) {
         if (productId.isEmpty()) return
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             action,
@@ -55,28 +80,28 @@ class ProductDetailTracking() {
     }
 
     fun eventReviewClicked() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
             ProductTrackingConstant.ProductReview.REVIEW)
     }
 
     fun eventReportLogin() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.Report.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
             ProductTrackingConstant.Report.EVENT_LABEL)
     }
 
     fun eventReportNoLogin() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.Report.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
             ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
     }
 
     fun eventCartMenuClicked(variant: String?) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT,
             variant ?: "")
@@ -168,7 +193,7 @@ class ProductDetailTracking() {
         if (productId.isNullOrEmpty()) {
             return
         }
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "click - cek keranjang",
@@ -176,7 +201,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickVariant(eventLabel: String) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "click - variants",
@@ -184,7 +209,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherSeeDetail(id: Int) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
                 ProductTrackingConstant.MerchantVoucher.DETAIL).joinToString(" - "),
@@ -192,52 +217,98 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherSeeAll(id: Int) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
                 ProductTrackingConstant.MerchantVoucher.SEE_ALL).joinToString(" - "),
             id.toString())
     }
 
-    fun eventRecommendationClick(product: Product, position: Int, recommendationType: String, isTopAds: Boolean) {
-        var listValue = LIST_DEFAULT.plus(recommendationType)
-        if (isTopAds) listValue = "$listValue - product topads"
+    // e commerce, custom dimension, general
+    fun eventRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle:String) {
+        val listValue = LIST_DEFAULT + pageName +
+                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
+                LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
-        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
+        // send it here
+        TrackApp.getInstance().gtm.pushEECommerce(ProductTrackingConstant.Action.PRODUCT_CLICK, Bundle().apply {
+            putBundle("items", Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_NAME, product.name)
+                putString(FirebaseAnalytics.Param.ITEM_ID, product.productId.toString())
+                putDouble(FirebaseAnalytics.Param.PRICE, removeCurrencyPrice(product.price).toDouble())
+                putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
+                putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
+            })
+            putString(LIST, listValue)
+            putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
+            putString(KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK +
+                    (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""))
+            putString(KEY_LABEL, pageTitle)
+        })
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
                         KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK,
-                        KEY_LABEL, "",
-                        KEY_ECOMMERCE, DataLayer.mapOf(ProductTrackingConstant.Action.CLICK,
+                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK +
+                        (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
+                        KEY_LABEL, pageTitle,
+                        KEY_ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
+                        ProductTrackingConstant.Action.CLICK,
                         DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, listValue),
                                 PRODUCTS, DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
-                                        ID, product.id, PRICE, product.priceFormat,
+                                        ID, product.productId.toString(), PRICE, removeCurrencyPrice(product.price),
                                         BRAND, DEFAULT_VALUE,
-                                        CATEGORY, product.category.id,
                                         VARIANT, DEFAULT_VALUE,
+                                        CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                         PROMO_POSITION, position + 1)
                         ))
                 ))
         )
     }
 
-    fun eventRecommendationImpression(position: Int, product: Product, recommendationType: String, isTopAds: Boolean) {
-        var listValue = LIST_DEFAULT.plus(recommendationType)
-        if (isTopAds) listValue = "$listValue - product topads"
+    fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
+        val listValue = LIST_DEFAULT + pageName  +
+                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
+                LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
-        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
+        TrackApp.getInstance().gtm.pushEECommerce("productView", Bundle().apply {
+            putBundle("items", Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_NAME, product.name)
+                putString(FirebaseAnalytics.Param.ITEM_ID, product.productId.toString())
+                putDouble(FirebaseAnalytics.Param.PRICE, removeCurrencyPrice(product.price).toDouble())
+                putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
+                putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
+            })
+            putString(LIST, listValue)
+            putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
+            putString(KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
+                    (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""))
+            putString(KEY_LABEL, pageTitle)
+        })
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, "productView",
                         KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION,
-                        KEY_LABEL, "",
-                        KEY_ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR", "impression",
-                        DataLayer.listOf(
+                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
+                        (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
+                        KEY_LABEL, pageTitle,
+
+                        KEY_ECOMMERCE, DataLayer.mapOf(
+
+                        CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
+
+                        "impression", DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
-                                        ID, product.id, PRICE, product.priceFormat,
+                                        ID, product.productId.toString(),
+                                        PRICE, removeCurrencyPrice(product.price),
                                         BRAND, DEFAULT_VALUE,
                                         VARIANT, DEFAULT_VALUE,
-                                        CATEGORY, product.category.id,
+                                        CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                         PROMO_POSITION, position + 1,
                                         LIST, listValue)
                         ))
@@ -246,7 +317,7 @@ class ProductDetailTracking() {
 
     fun eventClickWishlistOnAffiliate(userId: String,
                                       productId: String) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             mutableMapOf<String, Any>(KEY_EVENT to ProductTrackingConstant.Affiliate.CLICK_AFFILIATE,
                 KEY_CATEGORY to ProductTrackingConstant.Affiliate.CATEGORY,
                 KEY_ACTION to ProductTrackingConstant.Affiliate.ACTION_CLICK_WISHLIST,
@@ -267,11 +338,11 @@ class ProductDetailTracking() {
                 KEY_LABEL to productId)
         }
         params.put(KEY_USER_ID, userId)
-        TrackApp.getInstance().gtm.sendGeneralEvent(params)
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(params)
     }
 
     fun eventSendMessage() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
             ProductTrackingConstant.Message.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
@@ -280,7 +351,7 @@ class ProductDetailTracking() {
     }
 
     fun eventSendChat() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PRODUCT_PAGE.toLowerCase(),
             ProductTrackingConstant.Action.CLICK,
@@ -290,7 +361,7 @@ class ProductDetailTracking() {
 
     fun eventPDPAddToWishlist(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "add wishlist",
@@ -299,7 +370,7 @@ class ProductDetailTracking() {
 
     fun eventPDPAddToWishlistNonLogin(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "add wishlist - non logged in",
@@ -308,7 +379,7 @@ class ProductDetailTracking() {
 
     fun eventPDPRemoveToWishlist(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "remove wishlist",
@@ -316,7 +387,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickReviewOnSeeAllImage(productId: Int) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.ImageReview.ACTION_SEE_ALL,
@@ -325,7 +396,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickReviewOnBuyersImage(productId: Int, reviewId: String?) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.ImageReview.ACTION_SEE_ITEM,
@@ -378,12 +449,13 @@ class ProductDetailTracking() {
                 "true non diagnostic"
             else
                 "false"
+
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(DataLayer.mapOf(
             "event", "viewProduct",
             "eventCategory", "product page",
             "eventAction", "view product page",
             "eventLabel", getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.basic?.name,
-            "ecommerce", DataLayer.mapOf(
+                "ecommerce", DataLayer.mapOf(
             "currencyCode", "IDR",
             "detail", DataLayer.mapOf(
             "products", DataLayer.listOf(
@@ -413,6 +485,39 @@ class ProductDetailTracking() {
             "shopType", getEnhanceShopType(shopInfo?.goldOS)
         ))
     }
+
+
+    ///////////////////////////////////////////////////////////////
+    //BRANCH START
+    //////////////////////////////////////////////////////////////
+
+    fun eventBranchItemView(productInfo: ProductInfo?, userId: String?){
+        if(productInfo != null) {
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ITEM_VIEW, createLinkerData(productInfo, userId)))
+        }
+    }
+
+    fun eventBranchAddToWishlist(productInfo: ProductInfo?, userId: String?){
+        if(productInfo != null) {
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_WHISHLIST, createLinkerData(productInfo, userId)))
+        }
+    }
+
+    private fun createLinkerData(productInfo: ProductInfo, userId: String?): LinkerData{
+        var linkerData = LinkerData()
+        linkerData.id = productInfo.basic.id.toString()
+        linkerData.price = productInfo.basic.price.toInt().toString()
+        linkerData.description = productInfo.basic.description
+        linkerData.shopId = productInfo.basic.shopID.toString()
+        linkerData.catLvl1 = productInfo.category.name
+        linkerData.userId = userId ?: ""
+        linkerData.currency = currencyLable
+        return linkerData
+    }
+
+    ///////////////////////////////////////////////////////////////
+    //BRANCH END
+    //////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////
     // APPSFYLER START
@@ -509,7 +614,7 @@ class ProductDetailTracking() {
     }
 
     fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
+        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(event,
                 category,
                 action,
                 label)
@@ -545,7 +650,10 @@ class ProductDetailTracking() {
         private const val DEFAULT_VALUE = "none / other"
         private const val VARIANT = "variant"
         private const val CATEGORY = "category"
-        private const val LIST_DEFAULT = "/product - rekomendasi untuk anda - "
+        private const val LIST_DEFAULT = "/product - "
+        private const val LIST_RECOMMENDATION = " - rekomendasi untuk anda - "
+        private const val CURRENCY_CODE = "currencyCode"
+        private const val CURRENCY_DEFAULT_VALUE = "IDR"
     }
 
     private fun getFormattedPrice(price: Int): String {
@@ -555,6 +663,14 @@ class ProductDetailTracking() {
     private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
         true -> "tokopedia"
         else -> "regular"
+    }
+
+    private fun removeCurrencyPrice(priceFormatted: String): String{
+        return try {
+            priceFormatted.replace("[^\\d]".toRegex(), "")
+        } catch (t: Throwable){
+            "0"
+        }
     }
 
 }

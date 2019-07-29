@@ -21,6 +21,18 @@ public class AnalyticsProductCheckoutData implements Parcelable {
     private String productCategoryId;
     private String productListName;
     private String productAttribution;
+    private String warehouseId;
+    private String productWeight;
+    private String promoCode;
+    private String promoDetails;
+    private String buyerAddressId;
+    private String shippingDuration;
+    private String courier;
+    private String shippingPrice;
+    private String codFlag;
+    private String tokopediaCornerFlag;
+    private String isFulfillment;
+    private boolean isDiscountedPrice;
 
     public void setProductId(String productId) {
         this.productId = productId;
@@ -126,51 +138,171 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         this.productAttribution = productAttribution;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getWarehouseId() {
+        return warehouseId;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.productId);
-        dest.writeString(this.productName);
-        dest.writeString(this.productPrice);
-        dest.writeString(this.productBrand);
-        dest.writeString(this.productCategory);
-        dest.writeString(this.productVariant);
-        dest.writeInt(this.productQuantity);
-        dest.writeString(this.productShopId);
-        dest.writeString(this.productShopType);
-        dest.writeString(this.productShopName);
-        dest.writeString(this.productCategoryId);
-        dest.writeString(this.productListName);
-        dest.writeString(this.productAttribution);
+    public void setWarehouseId(String warehouseId) {
+        this.warehouseId = warehouseId;
+    }
+
+    public String getProductWeight() {
+        return productWeight;
+    }
+
+    public void setProductWeight(String productWeight) {
+        this.productWeight = productWeight;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
+    public String getPromoDetails() {
+        return promoDetails;
+    }
+
+    public void setPromoDetails(String promoDetails) {
+        this.promoDetails = promoDetails;
+    }
+
+    public String getBuyerAddressId() {
+        return buyerAddressId;
+    }
+
+    public void setBuyerAddressId(String buyerAddressId) {
+        this.buyerAddressId = buyerAddressId;
+    }
+
+    public String getShippingDuration() {
+        return shippingDuration;
+    }
+
+    public void setShippingDuration(String shippingDuration) {
+        this.shippingDuration = shippingDuration;
+    }
+
+    public String getCourier() {
+        return courier;
+    }
+
+    public void setCourier(String courier) {
+        this.courier = courier;
+    }
+
+    public String getShippingPrice() {
+        return shippingPrice;
+    }
+
+    public void setShippingPrice(String shippingPrice) {
+        this.shippingPrice = shippingPrice;
+    }
+
+    public String getCodFlag() {
+        return codFlag;
+    }
+
+    public void setCodFlag(String codFlag) {
+        this.codFlag = codFlag;
+    }
+
+    public String getTokopediaCornerFlag() {
+        return tokopediaCornerFlag;
+    }
+
+    public void setTokopediaCornerFlag(String tokopediaCornerFlag) {
+        this.tokopediaCornerFlag = tokopediaCornerFlag;
+    }
+
+    public String getIsFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setIsFulfillment(String isFulfillment) {
+        this.isFulfillment = isFulfillment;
+    }
+
+    public boolean isDiscountedPrice() {
+        return isDiscountedPrice;
+    }
+
+    public void setDiscountedPrice(boolean discountedPrice) {
+        isDiscountedPrice = discountedPrice;
     }
 
     public AnalyticsProductCheckoutData() {
     }
 
     protected AnalyticsProductCheckoutData(Parcel in) {
-        this.productId = in.readString();
-        this.productName = in.readString();
-        this.productPrice = in.readString();
-        this.productBrand = in.readString();
-        this.productCategory = in.readString();
-        this.productVariant = in.readString();
-        this.productQuantity = in.readInt();
-        this.productShopId = in.readString();
-        this.productShopType = in.readString();
-        this.productShopName = in.readString();
-        this.productCategoryId = in.readString();
-        this.productListName = in.readString();
-        this.productAttribution = in.readString();
+        productId = in.readString();
+        productName = in.readString();
+        productPrice = in.readString();
+        productBrand = in.readString();
+        productCategory = in.readString();
+        productVariant = in.readString();
+        productQuantity = in.readInt();
+        productShopId = in.readString();
+        productShopType = in.readString();
+        productShopName = in.readString();
+        productCategoryId = in.readString();
+        productListName = in.readString();
+        productAttribution = in.readString();
+        warehouseId = in.readString();
+        productWeight = in.readString();
+        promoCode = in.readString();
+        promoDetails = in.readString();
+        buyerAddressId = in.readString();
+        shippingDuration = in.readString();
+        courier = in.readString();
+        shippingPrice = in.readString();
+        codFlag = in.readString();
+        tokopediaCornerFlag = in.readString();
+        isFulfillment = in.readString();
+        isDiscountedPrice = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<AnalyticsProductCheckoutData> CREATOR = new Parcelable.Creator<AnalyticsProductCheckoutData>() {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(productId);
+        dest.writeString(productName);
+        dest.writeString(productPrice);
+        dest.writeString(productBrand);
+        dest.writeString(productCategory);
+        dest.writeString(productVariant);
+        dest.writeInt(productQuantity);
+        dest.writeString(productShopId);
+        dest.writeString(productShopType);
+        dest.writeString(productShopName);
+        dest.writeString(productCategoryId);
+        dest.writeString(productListName);
+        dest.writeString(productAttribution);
+        dest.writeString(warehouseId);
+        dest.writeString(productWeight);
+        dest.writeString(promoCode);
+        dest.writeString(promoDetails);
+        dest.writeString(buyerAddressId);
+        dest.writeString(shippingDuration);
+        dest.writeString(courier);
+        dest.writeString(shippingPrice);
+        dest.writeString(codFlag);
+        dest.writeString(tokopediaCornerFlag);
+        dest.writeString(isFulfillment);
+        dest.writeByte((byte) (isDiscountedPrice ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<AnalyticsProductCheckoutData> CREATOR = new Creator<AnalyticsProductCheckoutData>() {
         @Override
-        public AnalyticsProductCheckoutData createFromParcel(Parcel source) {
-            return new AnalyticsProductCheckoutData(source);
+        public AnalyticsProductCheckoutData createFromParcel(Parcel in) {
+            return new AnalyticsProductCheckoutData(in);
         }
 
         @Override
@@ -178,6 +310,5 @@ public class AnalyticsProductCheckoutData implements Parcelable {
             return new AnalyticsProductCheckoutData[size];
         }
     };
-
 
 }

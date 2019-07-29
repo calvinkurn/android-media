@@ -25,12 +25,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.shopCommon)
 
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)

@@ -1,6 +1,6 @@
 package com.tokopedia.tkpdreactnative.react;
 
-import javax.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.AbstractDraweeControllerBuilder;

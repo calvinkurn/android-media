@@ -169,7 +169,7 @@
             android:layout_height="@dimen/dp_18"
             android:layout_marginRight="@dimen/dp_10"
             android:gravity="center"
-            android:src="@drawable/ic_new_checkout_cart"
+            app:srcCompat="@drawable/ic_new_checkout_cart"
             android:visibility="gone"
             tools:visibility="visible"/>
 

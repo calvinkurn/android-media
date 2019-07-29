@@ -3,6 +3,7 @@ package com.tokopedia.applink
 import android.content.Context
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 /**
@@ -22,7 +23,7 @@ object DeeplinkMapper {
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
         if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
             return getRegisteredNavigationFromHttp(context, deeplink)
-        } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA, true)) {
+        } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true)) {
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
             return getRegisteredNavigationFromSellerapp(deeplink)
@@ -57,6 +58,7 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
         return when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
+            ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             else -> ""
         }
     }
@@ -71,6 +73,7 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromSellerapp(deeplink: String): String {
         return when (deeplink) {
             ApplinkConst.SellerApp.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
+            ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             else -> ""
         }
     }

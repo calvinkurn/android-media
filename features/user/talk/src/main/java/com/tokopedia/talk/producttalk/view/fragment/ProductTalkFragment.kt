@@ -238,7 +238,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         list_thread.layoutManager = linearLayoutManager
         list_thread.adapter = adapter
         list_thread.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val index = linearLayoutManager.findLastVisibleItemPosition()
                 if (index != -1 && adapter.checkCanLoadMore(index)) {
@@ -303,6 +303,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
         productUrl = productTalkViewModel.productUrl
         shopName = productTalkViewModel.shopName
         shopAvatar = productTalkViewModel.shopAvatar
+
+        activity?.run{
+            invalidateOptionsMenu()
+        }
     }
 
     override fun onSuccessGetTalks(productTalkViewModel: ProductTalkViewModel) {

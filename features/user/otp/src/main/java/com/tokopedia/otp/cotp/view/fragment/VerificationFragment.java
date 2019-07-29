@@ -62,7 +62,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     protected static final String ARGS_DATA = "ARGS_DATA";
     protected static final String ARGS_PASS_DATA = "pass_data";
 
-    private static final int COUNTDOWN_LENGTH = 90;
+    private static final int COUNTDOWN_LENGTH = 30;
     private static final int INTERVAL = 1000;
     protected static final int MAX_OTP_LENGTH = 6;
 
@@ -254,6 +254,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setOnClickListener(v -> {
             if (analytics != null && viewModel != null) {
                 analytics.eventClickVerifyButton(viewModel.getOtpType());
+                if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+                    analytics.eventClickVerificationButton();
+                }
             }
             verifyOtp();
         });
@@ -321,20 +324,31 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onSuccessGetOTP(String message) {
+        if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+            analytics.trackSuccessClickResendPhoneOtpButton();
+        }
         NetworkErrorHelper.showSnackbar(getActivity(), message);
         startTimer();
     }
 
     @Override
     public void onSuccessVerifyOTP(String uuid, String msisdn) {
+
         removeErrorOtp();
         resetCountDown();
 
         if (getActivity() != null) {
+
+            if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+                analytics.eventSuccessClickVerificationButton();
+            }
+
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
             bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
             bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, msisdn);
+            String otpCode =  inputOtp.getText().toString().trim();
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, otpCode);
             intent.putExtras(bundle);
             getActivity().setResult(Activity.RESULT_OK, intent);
             getActivity().finish();
@@ -359,6 +373,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onErrorGetOTP(String errorMessage) {
+        if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+            analytics.trackFailedClickResendPhoneOtpButton(errorMessage);
+        }
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         setFinishedCountdownText();
     }
@@ -382,6 +399,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onErrorVerifyOtpCode(String errorMessage) {
         if (errorMessage.contains(VERIFICATION_CODE)) {
+
+            if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+                analytics.eventFailedClickVerificationButton(errorMessage);
+            }
+
             inputOtp.setError(true);
             inputOtp.setFocusableInTouchMode(true);
             inputOtp.post(new Runnable() {
@@ -478,6 +500,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public void onClick(View v) {
                 if (analytics != null && viewModel != null) {
                     analytics.eventClickResendOtp(viewModel.getOtpType());
+                    if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+                        analytics.eventClickResendPhoneOtpButton();
+                    }
                 }
                 inputOtp.setText("");
                 removeErrorOtp();

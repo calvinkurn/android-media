@@ -1,0 +1,10 @@
+query {
+    wallet {
+        balance
+        rawBalance
+        cash_balance
+        raw_cash_balance
+        point_balance
+        raw_point_balance
+    }
+}

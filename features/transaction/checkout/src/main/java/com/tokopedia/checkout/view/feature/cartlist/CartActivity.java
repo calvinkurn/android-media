@@ -10,14 +10,12 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
-import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
-import com.tokopedia.navigation_common.listener.EmptyCartListener;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity implements EmptyCartListener {
+public class CartActivity extends BaseCheckoutActivity {
 
     public static final String EXTRA_CART_ID = "cart_id";
 
@@ -96,33 +94,8 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CART_ID, cartId);
-        cartFragment = CartFragment.newInstance(bundle, "");
-        ((CartFragment) cartFragment).setEmptyCartListener(this);
+        cartFragment = CartFragment.newInstance(bundle,"");
         return cartFragment;
     }
 
-    @Override
-    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc, String promoCode) {
-        if (emptyCartFragment == null) {
-            emptyCartFragment = EmptyCartFragment.newInstance(autoApplyMessage, "", state, titleDesc, promoCode);
-        }
-        if (emptyCartFragment.isAdded()) return;
-        cartFragment = null;
-        getSupportFragmentManager().beginTransaction()
-                .replace(com.tokopedia.abstraction.R.id.parent_view, emptyCartFragment, getTagFragment())
-                .commit();
-    }
-
-    @Override
-    public void onCartNotEmpty(Bundle bundle) {
-        if (cartFragment == null) {
-            bundle.putString(EXTRA_CART_ID, cartId);
-            cartFragment = CartFragment.newInstance(bundle, "");
-        }
-        if (cartFragment.isAdded()) return;
-        emptyCartFragment = null;
-        getSupportFragmentManager().beginTransaction()
-                .replace(com.tokopedia.abstraction.R.id.parent_view, cartFragment, getTagFragment())
-                .commit();
-    }
 }

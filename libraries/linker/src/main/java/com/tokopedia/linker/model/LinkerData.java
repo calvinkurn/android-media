@@ -46,7 +46,20 @@ public class LinkerData implements Parcelable {
     private String ogImageUrl;
     private String desktopUrl;
     private String deepLink;
+    private String shopId;
+    private String currency;
+    private String catLvl1;
+    private String userId;
+    private String quantity;
+    private String custmMsg;
 
+    public String getCustmMsg() {
+        return custmMsg;
+    }
+
+    public void setCustmMsg(String custmMsg) {
+        this.custmMsg = custmMsg;
+    }
 
     public LinkerData() {
     }
@@ -70,6 +83,11 @@ public class LinkerData implements Parcelable {
         ogImageUrl = in.readString();
         desktopUrl = in.readString();
         deepLink = in.readString();
+        shopId = in.readString();
+        currency = in.readString();
+        catLvl1 = in.readString();
+        userId = in.readString();
+        quantity = in.readString();
     }
 
     @Override
@@ -92,6 +110,11 @@ public class LinkerData implements Parcelable {
         dest.writeString(ogImageUrl);
         dest.writeString(desktopUrl);
         dest.writeString(deepLink);
+        dest.writeString(shopId);
+        dest.writeString(currency);
+        dest.writeString(catLvl1);
+        dest.writeString(userId);
+        dest.writeString(quantity);
     }
 
     @Override
@@ -311,6 +334,47 @@ public class LinkerData implements Parcelable {
         this.deepLink = deepLink;
     }
 
+    public String getShopId(){
+        return shopId;
+    }
+
+    public void setShopId(String shopId){
+        this.shopId = shopId;
+    }
+
+    public String getCurrency(){
+        return currency;
+    }
+
+    public void setCurrency(String currency){
+        this.currency = currency;
+    }
+
+    public String getCatLvl1(){
+        return catLvl1;
+    }
+
+    public void setCatLvl1(String catLvl1){
+        this.catLvl1 = catLvl1;
+    }
+
+    public String getUserId(){
+        return userId;
+    }
+
+    public void setUserId(String userId){
+        this.userId = userId;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+
     public static class Builder {
         private String name;
         private String price;
@@ -330,6 +394,12 @@ public class LinkerData implements Parcelable {
         private String ogImageUrl;
         private String desktopUrl;
         private String deepLink;
+        private String shopId;
+        private String currency;
+        private String catLvl1;
+        private String userId;
+        private String quantity;
+        private String custmMsg;
 
         private Builder() {
         }
@@ -427,6 +497,36 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setShopId(String shopId){
+            this.shopId = shopId;
+            return this;
+        }
+
+        public Builder setCurrency(String currency){
+            this.currency = currency;
+            return this;
+        }
+
+        public Builder setCatLvl1(String catLvl1){
+            this.catLvl1 = catLvl1;
+            return this;
+        }
+
+        public Builder setUserId(String userId){
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder setQuantity(String quantity){
+            this.quantity = quantity;
+            return this;
+        }
+
+        public Builder setCustMsg(String custmMsg){
+            this.custmMsg = custmMsg;
+            return this;
+        }
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -447,9 +547,15 @@ public class LinkerData implements Parcelable {
             linkerData.setOgUrl(ogUrl);
             linkerData.setOgTitle(ogTitle);
             linkerData.setOgDescription(ogDescription);
+            linkerData.setCustmMsg(custmMsg);
             linkerData.setOgImageUrl(ogImageUrl);
             linkerData.setDesktopUrl(desktopUrl);
             linkerData.setDeepLink(deepLink);
+            linkerData.setShopId(shopId);
+            linkerData.setCurrency(currency);
+            linkerData.setCatLvl1(catLvl1);
+            linkerData.setUserId(userId);
+            linkerData.setQuantity(quantity);
             return linkerData;
         }
 

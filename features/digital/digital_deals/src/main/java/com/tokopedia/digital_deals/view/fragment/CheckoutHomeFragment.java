@@ -33,6 +33,7 @@ import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,11 +41,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-;
 
 public class CheckoutHomeFragment extends BaseDaggerFragment implements CheckoutDealContractor.View, View.OnClickListener {
 
 
+    private static final String SCREEN_NAME = "/digital/deals/checkout";
     private ConstraintLayout clPromoApplied;
     private ConstraintLayout baseMainContent;
     private ConstraintLayout clPromoAmount;
@@ -129,7 +130,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         progressParLayout = view.findViewById(R.id.progress_bar_layout);
         ivRemovePromo = view.findViewById(R.id.iv_remove_promo);
         clPromoAmount = view.findViewById(R.id.cl_promo);
-        Drawable img = getResources().getDrawable(R.drawable.ic_promo_code);
+        Drawable img = MethodChecker.getDrawable(getActivity(),R.drawable.ic_promo_code);
         tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
     }
@@ -155,8 +156,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     public void renderFromDetails(DealsDetailsResponse dealDetails, PackageViewModel packageViewModel) {
-
-
+        dealsAnalytics.sendScreenNameEvent(getScreenName());
         if (dealDetails == null)
             return;
 
@@ -269,7 +269,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override
@@ -283,10 +283,11 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         if (v.getId() == R.id.ll_select_payment_method) {
             mPresenter.getPaymentLink();
             if (dealDetails.getBrand() != null) {
-                dealsAnalytics.sendEcommercePayment(dealDetails.getId(), quantity, dealDetails.getSalesPrice(),
+                dealsAnalytics.sendEcommercePayment(dealDetails.getCategoryId(), dealDetails.getId(), quantity, dealDetails.getSalesPrice(),
                         dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied);
             }
         } else if (v.getId() == R.id.tv_promocode) {
+            dealsAnalytics.sendPromoCodeClickEvent(dealDetails);
             mPresenter.clickGoToPromo();
         } else if (v.getId() == R.id.tv_no_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getOutlets(), 0);

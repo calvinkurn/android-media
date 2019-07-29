@@ -35,6 +35,18 @@ public class ProductDataCheckoutRequest implements Parcelable {
     private String productListName;
     private String productAttribution;
     private long cartId;
+    private String warehouseId;
+    private String productWeight;
+    private String promoCode;
+    private String promoDetails;
+    private String buyerAddressId;
+    private String shippingDuration;
+    private String courier;
+    private String shippingPrice;
+    private String codFlag;
+    private String tokopediaCornerFlag;
+    private String isFulfillment;
+    private boolean isDiscountedPrice;
 
     public ProductDataCheckoutRequest() {
     }
@@ -56,6 +68,18 @@ public class ProductDataCheckoutRequest implements Parcelable {
         productAttribution = builder.productAttribution;
         cartId = builder.cartId;
         productNotes = builder.productNotes;
+        warehouseId = builder.warehouseId;
+        productWeight = builder.productWeight;
+        promoCode = builder.promoCode;
+        promoDetails = builder.promoDetails;
+        buyerAddressId = builder.buyerAddressId;
+        shippingDuration = builder.shippingDuration;
+        courier = builder.courier;
+        shippingPrice = builder.shippingPrice;
+        codFlag = builder.codFlag;
+        tokopediaCornerFlag = builder.tokopediaCornerFlag;
+        isFulfillment = builder.isFulfillment;
+        isDiscountedPrice = builder.isDiscountedPrice;
     }
 
     protected ProductDataCheckoutRequest(Parcel in) {
@@ -75,6 +99,18 @@ public class ProductDataCheckoutRequest implements Parcelable {
         productListName = in.readString();
         productAttribution = in.readString();
         cartId = in.readLong();
+        warehouseId = in.readString();
+        productWeight = in.readString();
+        promoCode = in.readString();
+        promoDetails = in.readString();
+        buyerAddressId = in.readString();
+        shippingDuration = in.readString();
+        courier = in.readString();
+        shippingPrice = in.readString();
+        codFlag = in.readString();
+        tokopediaCornerFlag = in.readString();
+        isFulfillment = in.readString();
+        isDiscountedPrice = in.readByte() != 0;
     }
 
     @Override
@@ -95,6 +131,18 @@ public class ProductDataCheckoutRequest implements Parcelable {
         dest.writeString(productListName);
         dest.writeString(productAttribution);
         dest.writeLong(cartId);
+        dest.writeString(warehouseId);
+        dest.writeString(productWeight);
+        dest.writeString(promoCode);
+        dest.writeString(promoDetails);
+        dest.writeString(buyerAddressId);
+        dest.writeString(shippingDuration);
+        dest.writeString(courier);
+        dest.writeString(shippingPrice);
+        dest.writeString(codFlag);
+        dest.writeString(tokopediaCornerFlag);
+        dest.writeString(isFulfillment);
+        dest.writeByte((byte) (isDiscountedPrice ? 1 : 0));
     }
 
     @Override
@@ -174,6 +222,82 @@ public class ProductDataCheckoutRequest implements Parcelable {
         return cartId;
     }
 
+    public String getWarehouseId() {
+        return warehouseId;
+    }
+
+    public String getProductWeight() {
+        return productWeight;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public String getPromoDetails() {
+        return promoDetails;
+    }
+
+    public String getBuyerAddressId() {
+        return buyerAddressId;
+    }
+
+    public String getShippingDuration() {
+        return shippingDuration;
+    }
+
+    public String getCourier() {
+        return courier;
+    }
+
+    public String getShippingPrice() {
+        return shippingPrice;
+    }
+
+    public String getCodFlag() {
+        return codFlag;
+    }
+
+    public String getTokopediaCornerFlag() {
+        return tokopediaCornerFlag;
+    }
+
+    public String getIsFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
+    public void setPromoDetails(String promoDetails) {
+        this.promoDetails = promoDetails;
+    }
+
+    public void setBuyerAddressId(String buyerAddressId) {
+        this.buyerAddressId = buyerAddressId;
+    }
+
+    public void setShippingDuration(String shippingDuration) {
+        this.shippingDuration = shippingDuration;
+    }
+
+    public void setCourier(String courier) {
+        this.courier = courier;
+    }
+
+    public void setShippingPrice(String shippingPrice) {
+        this.shippingPrice = shippingPrice;
+    }
+
+    public void setTokopediaCornerFlag(String tokopediaCornerFlag) {
+        this.tokopediaCornerFlag = tokopediaCornerFlag;
+    }
+
+    public boolean isDiscountedPrice() {
+        return isDiscountedPrice;
+    }
+
     public static final class Builder {
         private int productId;
         private boolean isPurchaseProtection;
@@ -191,6 +315,18 @@ public class ProductDataCheckoutRequest implements Parcelable {
         private String productAttribution;
         private long cartId;
         private String productNotes;
+        private String warehouseId;
+        private String productWeight;
+        private String promoCode;
+        private String promoDetails;
+        private String buyerAddressId;
+        private String shippingDuration;
+        private String courier;
+        private String shippingPrice;
+        private String codFlag;
+        private String tokopediaCornerFlag;
+        private String isFulfillment;
+        private boolean isDiscountedPrice;
 
         public Builder() {
         }
@@ -272,6 +408,66 @@ public class ProductDataCheckoutRequest implements Parcelable {
 
         public Builder productNotes(String val) {
             productNotes = val;
+            return this;
+        }
+
+        public Builder warehouseId(String val) {
+            warehouseId = val;
+            return this;
+        }
+
+        public Builder productWeight(String val) {
+            productWeight = val;
+            return this;
+        }
+
+        public Builder promoCode(String val) {
+            promoCode = val;
+            return this;
+        }
+
+        public Builder promoDetails(String val) {
+            promoDetails = val;
+            return this;
+        }
+
+        public Builder buyerAddressId(String val) {
+            buyerAddressId = val;
+            return this;
+        }
+
+        public Builder shippingDuration(String val) {
+            shippingDuration = val;
+            return this;
+        }
+
+        public Builder courier(String val) {
+            courier = val;
+            return this;
+        }
+
+        public Builder shippingPrice(String val) {
+            shippingPrice = val;
+            return this;
+        }
+
+        public Builder codFlag(String val) {
+            codFlag = val;
+            return this;
+        }
+
+        public Builder tokopediaCornerFlag(String val) {
+            tokopediaCornerFlag = val;
+            return this;
+        }
+
+        public Builder isFulfillment(String val) {
+            isFulfillment = val;
+            return this;
+        }
+
+        public Builder setDiscountedPrice(boolean val) {
+            isDiscountedPrice = val;
             return this;
         }
 

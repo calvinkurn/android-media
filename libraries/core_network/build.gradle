@@ -16,6 +16,7 @@ dependencies {
 
     implementation fileTree(include: '*.jar', dir: 'libs')
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.cacheApi)
@@ -24,7 +25,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
 
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.networkDependencies.volley
     implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.testDependencies.androidAnnotation
 

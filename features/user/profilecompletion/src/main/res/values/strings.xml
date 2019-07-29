@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">profilecompletion</string>
+
+    <!--ADD CHANGE NAME-->
+    <string name="title_add_name">Masukkan \nNama Lengkap Anda</string>
+    <string name="title_name_full">Nama Lengkap</string>
+    <string name="title_add_name_empty"> </string>
+    <string name="title_change_name">Ubah Nama Lengkap</string>
+    <string name="title_complete_name">Nama Lengkap</string>
+    <string name="email_name_top">Masukkan nama lengkap Anda dengan benar.\nNama lengkap hanya dapat diubah satu kali.</string>
+    <string name="button_name_finish">Selesai</string>
+    <string name="button_name_continue">Ubah Nama Lengkap</string>
+    <string name="name_confirmation">Apakah nama lengkap Anda sudah benar?</string>
+    <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
+    <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
+    <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 128 karakter</string>
+    <string name="name_confirmation_yes">Ya, benar</string>
+    <string name="name_confirmation_no">Tidak</string>
+    <string name="error_minimal_name">Minimum 3 karakter</string>
+    <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \n<a href="https://m.tokopedia.com/terms.pl">Syarat dan Ketentuan</a> serta <a href="https://m.tokopedia.com/privacy.pl">Kebijakan Privasi</a>.</string>
+    <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui  </string>
+    <string name="link_term_condition">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="link_privacy_policy">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="privacy_pl">https://m.tokopedia.com/privacy.pl?device=android&amp;flag_app=1</string>
+    <string name="term_pl">https://m.tokopedia.com/terms.pl?device=android&amp;flag_app=1</string>
+    <string name="bottom_info_terms_and_privacy">Dengan mendaftar, saya menyetujui \n &lt;font
+        color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt; serta &lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
+
+    <!-- PROFILE COMPLETION -->
+    <string name="title_profile_completion">Lengkapi Profil</string>
+
+    <!-- SETTING PROFILE -->
+    <string name="title_setting_profile">Data Diri</string>
+    <string name="add_setting_profile">Tambah</string>
+    <string name="change_setting_profile">Ubah</string>
+    <string name="subtitle_name_setting_profile">Nama</string>
+    <string name="subtitle_bod_setting_profile">Tanggal Lahir</string>
+    <string name="subtitle_gender_setting_profile">Jenis Kelamin</string>
+    <string name="subtitle_email_setting_profile">Email</string>
+    <string name="subtitle_phone_setting_profile">Nomor Ponsel</string>
+    <string name="hint_bod_setting_profile">Pilih Tanggal</string>
+    <string name="hint_gender_setting_profile">Pilih Jenis Kelamin</string>
+    <string name="hint_email_setting_profile">Masukkan Email</string>
+    <string name="hint_phone_setting_profile">Masukkan Nomor Ponsel</string>
+    <string name="message_email_setting_profile">Jaga akun kamu tetap aman dengan menambahkan email</string>
+    <string name="message_phone_setting_profile">Jaga akun kamu tetap aman dengan menambahkan nomor ponsel</string>
+
+    <!-- CHANGE GENDER -->
+    <string name="title_change_gender">Tambah Jenis Kelamin</string>
+    <string name="choose_gender">Pilih Jenis Kelamin</string>
+    <string name="can_only_choose_one_gender">Jenis kelamin hanya dapat diatur sekali</string>
+    <string name="button_save">Simpan</string>
+
+    <string name="gender_title_prof_comp">Jenis Kelamin Kamu</string>
+    <string name="profile_completion_man">Pria</string>
+    <string name="profile_completion_woman">Wanita</string>
+    <string name="profile_completion_date">Tanggal</string>
+    <string name="profile_completion_month">Bulan</string>
+    <string name="profile_completion_year">Tahun</string>
+    <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
+    <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
+    <string name="see_your_profile">Lihat Profil Anda</string>
+    <string name="success_add_gender">Jenis kelamin berhasil diubah</string>
+
+    <!-- ADD EMAIL -->
+    <string name="title_add_email">Tambah Email</string>
+    <string name="warning_add_email">Pastikan email Anda aktif untuk keamanan dan kemudahan transaksi</string>
+    <string name="title_email">Email</string>
+    <string name="we_will_send_email_verification_code">Kami akan mengirimkan kode verifikasi melalui email</string>
+    <string name="error_field_required">Harus diisi</string>
+    <string name="wrong_email_format">Format email salah</string>
+    <string name="success_add_email">Email berhasil ditambah</string>
+
+    <!-- ADD PHONE -->
+    <string name="title_add_phone">Tambah Nomor Ponsel</string>
+    <string name="warning_add_phone">Jaga akun dan transaksi Anda tetap aman dengan menambahkan nomor ponsel</string>
+    <string name="title_phone">Nomor Ponsel</string>
+    <string name="sample_phone">Contoh: 08xxxxxxxxxx</string>
+    <string name="wrong_phone_format">Format nomor ponsel salah</string>
+    <string name="tokocash_after_activation">Setelah terverifikasi, TokoCash akan aktif dan bisa digunakan sebagai salah satu metode pembayaran Anda.</string>
+    <string name="phone_number_already_exist">Akun lain telah menggunakan nomor ponsel ini</string>
+    <string name="success_add_phone">Nomor telepon berhasil ditambah</string>
+
+    <!-- CHANGE PHONE -->
+    <string name="success_change_phone_number">Nomor telepon berhasil diubah</string>
+
+    <!-- CHANGE EMAIL -->
+    <string name="cannot_change_email">Untuk saat ini, kamu hanya bisa mengubah email akun Tokopedia dari komputer</string>
+    <string name="title_change_email_dialog">Pengubahan email</string>
+
+    <!-- UPLOAD AVATAR -->
+    <string name="failed_to_get_picture">Gagal mengambil gambar. Mohon coba kembali</string>
+    <string name="failed_to_upload_picture">Gagal mengunggah gambar. Mohon coba kembali</string>
+    <string name="success_change_profile_picture">Foto profil berhasil diubah</string>
+    <string name="ticker_phone_verification">Jaga akun kamu tetap aman dengan &lt;font color=\'#42b549\'&gt;&lt;a href=\'tokopedia-android-internal://global/setting-profile-phone-verification\'&gt;Verifikasi Nomor Ponsel&lt;/a&gt;&lt;/font&gt;.</string>
+    <string name="error_oversize_avatar_image">Ukuran gambar maksimal 2Mb</string>
+
+
+    <!-- ADD BOD -->
+    <string name="title_add_bod">Tambah Tanggal Lahir</string>
+    <string name="page_description">Kamu hanya dapat mengatur tanggal lahirmu satu kali. Pastikan tanggal lahir sudah benar</string>
+    <string name="success_add_bod">Tanggal lahir berhasil ditambah</string>
+    <string name="success_change_bod">Tanggal lahir berhasil diubah</string>
+    <string name="failed_add_bod">Tanggal lahir gagal ditambah</string>
+    <string name="failed_change_bod">Tanggal lahir gagal diubah</string>
+</resources>

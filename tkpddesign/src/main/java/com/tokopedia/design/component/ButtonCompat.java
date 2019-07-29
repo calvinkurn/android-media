@@ -8,7 +8,6 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 
@@ -27,7 +26,9 @@ public class ButtonCompat extends AppCompatButton {
     public final static int TRANSACTION = 3;
     public final static int DISABLE = 4;
     public final static int WHITE_TRANSPARENT = 5;
-    public final static int WHITE = 6;
+    public final static int GHOST = 6;
+    public final static int WHITE = 7;
+    public final static int PRIMARY_DISABLED = 8;
 
     public final static int BIG = 4;
     public final static int MEDIUM = 5;
@@ -146,6 +147,11 @@ public class ButtonCompat extends AppCompatButton {
         switch (mType) {
             case PRIMARY:
                 initDraw(R.color.white, R.drawable.bg_button_green);
+                super.setEnabled(true);
+                break;
+            case PRIMARY_DISABLED:
+                initDraw(R.color.grey_500, R.drawable.bg_button_green);
+                super.setEnabled(false);
                 break;
             case SECONDARY:
                 initDraw(R.color.grey_500, R.drawable.bg_button_white_border);
@@ -155,6 +161,8 @@ public class ButtonCompat extends AppCompatButton {
                 break;
             case WHITE_TRANSPARENT:
                 initDraw(R.color.white, R.drawable.bg_button_white_transparent);
+            case GHOST:
+                initDraw(R.color.bg_button_green_border_outline, R.drawable.bg_button_green_border);
                 break;
             case WHITE:
                 initDraw(R.color.grey_button_compat, R.drawable.bg_button_white);

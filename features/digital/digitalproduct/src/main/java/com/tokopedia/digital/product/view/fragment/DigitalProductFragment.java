@@ -45,6 +45,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -89,6 +90,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
@@ -255,6 +257,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         renderViewShadow();
         setupArguments(getArguments());
+        presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId));
 
         if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
@@ -423,6 +426,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber) {
+        digitalAnalytics.eventDigitalCategoryScreenLaunch(categoryData);
+
         this.categoryDataState = categoryData;
         this.historyClientNumberState = historyClientNumber;
         actionListener.updateTitleToolbar(categoryData.getName());
@@ -877,8 +882,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 break;
             case REQUEST_CODE_CART_DIGITAL:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    if (data.hasExtra(DigitalRouter.Companion.getEXTRA_MESSAGE())) {
-                        String message = data.getStringExtra(DigitalRouter.Companion.getEXTRA_MESSAGE());
+                    if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
+                        String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
                         if (!TextUtils.isEmpty(message)) {
                             showToastMessage(message);
                         }
@@ -963,7 +968,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         if (item.getItemId() == R.id.action_menu_product_list_digital) {
             navigateToActivity(
                     digitalModuleRouter.getWebviewActivityWithIntent(
-                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                            getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
                                     + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST
                     )
             );
@@ -971,7 +976,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
             navigateToActivity(
                     digitalModuleRouter.getWebviewActivityWithIntent(
-                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                            getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
                                     + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
                     )
             );
@@ -982,7 +987,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             }
             if (GlobalConfig.isSellerApp()) {
                 navigateToActivity(
-                        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
                                 + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
                 );
             } else {

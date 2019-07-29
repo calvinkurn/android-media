@@ -3,7 +3,9 @@ package com.tokopedia.core.webview.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -30,6 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
@@ -48,6 +51,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.net.URLDecoder;
 
 import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
 
 /**
  * Use webview fragment from libraries/webview
@@ -65,6 +69,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private static final String QUERY_PARAM_PLUS = "plus";
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
+    private static final String PARAM_EXTERNAL = "tokopedia_external=true";
+
     private static final int LOGIN_GPLUS = 123453;
     private static final int REQUEST_CODE_LOGIN = 123321;
     private static boolean isAlreadyFirstRedirect;
@@ -81,6 +87,12 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private static final int EXIT_DELAY_MILLIS = 2000;
     private boolean allowOverride = false;
 
+
+    private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
+    private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
+    private String mJsHciCallbackFuncName;
+    public static final int HCI_CAMERA_REQUEST_CODE = 978;
+    private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private boolean pageLoaded = false;
 
     public FragmentGeneralWebView() {
@@ -121,6 +133,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             url = savedInstanceState.getString(EXTRA_URL);
             needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
+            allowOverride = savedInstanceState.getBoolean(EXTRA_OVERRIDE_URL, true);
         }
     }
 
@@ -423,6 +436,23 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+            String imagePath = data.getStringExtra(HCI_KTP_IMAGE_PATH);
+            String base64 = encodeToBase64(imagePath);
+            if (imagePath != null) {
+                StringBuilder jsCallbackBuilder = new StringBuilder();
+                jsCallbackBuilder.append("javascript:")
+                        .append(mJsHciCallbackFuncName)
+                        .append("('")
+                        .append(imagePath)
+                        .append("'")
+                        .append(", ")
+                        .append("'")
+                        .append(base64)
+                        .append("')");
+                WebViewGeneral.loadUrl(jsCallbackBuilder.toString());
+            }
+        }
         if (Build.VERSION.SDK_INT >= 21) {
             Uri[] results = null;
             //Check if response is positive
@@ -508,7 +538,26 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
-            if (getActivity() != null
+
+            if (url.contains(HCI_CAMERA_KTP)) {
+                mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
+                startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
+                return true;
+            } else if (url.contains(HCI_CAMERA_SELFIE)) {
+                mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
+                startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE), HCI_CAMERA_REQUEST_CODE);
+                return true;
+            } else if (getActivity() != null
+                    && url.contains(PARAM_EXTERNAL)) {
+                try {
+                    Intent destination = new Intent(Intent.ACTION_VIEW);
+                    destination.setData(Uri.parse(url));
+                    startActivity(destination);
+                    return true;
+                } catch (ActivityNotFoundException e) {
+                    return false;
+                }
+            } else if (getActivity() != null
                     && url.equalsIgnoreCase(PARAM_WEBVIEW_BACK)
                     && !getActivity().isTaskRoot()) {
                 getActivity().finish();
@@ -547,10 +596,13 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                             .showAndCheckApplinkUnsupported();
                 }
             } else {
-                String applink = DeeplinkMapper.getRegisteredNavigation(getContext(), url);
-                if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(getActivity(), applink)) {
-                    RouteManager.route(getActivity(), applink);
-                    return true;
+                Activity activity = getActivity();
+                if (activity != null) {
+                    String applink = DeeplinkMapper.getRegisteredNavigation(activity, url);
+                    if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(activity, applink)) {
+                        RouteManager.route(getActivity(), applink);
+                        return true;
+                    }
                 }
             }
             return overrideUrl(url);
@@ -585,6 +637,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         outState.putString(EXTRA_URL, url);
         outState.putBoolean(EXTRA_NEED_LOGIN, needLogin);
         outState.putBoolean(EXTRA_SHOW_TOOLBAR, showToolbar);
+        outState.putBoolean(EXTRA_OVERRIDE_URL, allowOverride);
+
     }
 
     @Override
@@ -594,6 +648,12 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             url = savedInstanceState.getString(EXTRA_URL);
             needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
+            allowOverride = savedInstanceState.getBoolean(EXTRA_OVERRIDE_URL, true);
+
         }
+    }
+
+    public void reloadPage() {
+        WebViewGeneral.reload();
     }
 }

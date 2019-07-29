@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -40,18 +41,18 @@
         android:text="@string/label_seller"
         android:visibility="gone" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_fulfill_district"
-        style="@style/TextSmallMediumBlack38"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_shop_name"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_2"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
         tools:text="Tangerang Selatan" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_name"
-        style="@style/TextMidMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_trade_in_label"
@@ -61,7 +62,8 @@
         android:layout_toEndOf="@+id/tv_text_sent_by"
         android:layout_toRightOf="@+id/tv_text_sent_by"
         android:lineSpacingExtra="5sp"
-        android:textStyle="bold"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         tools:text="Toko Adidas" />
 
     <ImageView
@@ -87,6 +89,6 @@
         android:layout_toEndOf="@+id/img_shop_badge"
         android:layout_toRightOf="@+id/img_shop_badge"
         android:scaleType="center"
-        android:src="@drawable/ic_logistic_logistic_fulfillment_normal_16" />
+        app:srcCompat="@drawable/ic_logistic_logistic_fulfillment_normal_16" />
 
 </RelativeLayout>

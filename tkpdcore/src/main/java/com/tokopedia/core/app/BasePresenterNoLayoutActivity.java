@@ -7,8 +7,6 @@ import android.view.WindowManager;
 
 import com.tokopedia.core2.R;
 
-import butterknife.ButterKnife;
-
 /**
  * @author by alifa on 5/5/17.
  */

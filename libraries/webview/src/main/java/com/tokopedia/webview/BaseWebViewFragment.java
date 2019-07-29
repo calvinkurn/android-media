@@ -19,9 +19,12 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 
 import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
 
 
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
@@ -32,7 +35,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
-
+    private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
+    private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
+    private String mJsHciCallbackFuncName;
+    public static final int HCI_CAMERA_REQUEST_CODE = 978;
+    private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     /**
      * return the url to load in the webview
      * You can use URLGenerator.java to use generate the seamless URL.
@@ -139,6 +146,23 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+            String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
+            String base64 = encodeToBase64(imagePath);
+            if (imagePath != null) {
+                StringBuilder jsCallbackBuilder = new StringBuilder();
+                jsCallbackBuilder.append("javascript:")
+                        .append(mJsHciCallbackFuncName)
+                        .append("('")
+                        .append(imagePath)
+                        .append("'")
+                        .append(", ")
+                        .append("'")
+                        .append(base64)
+                        .append("')");
+                webView.loadUrl(jsCallbackBuilder.toString());
+            }
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Uri[] results = null;
             //Check if response is positive
@@ -193,6 +217,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         // currently only to handle "tokopedia://", "sellerapp://" linking
         if (!URLUtil.isNetworkUrl(url) && RouteManager.isSupportApplink(getActivity(), url)) {
             RouteManager.route(getActivity(), url);
+            return true;
+        } else if (url.contains(HCI_CAMERA_KTP)) {
+            mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
+            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
+            return true;
+        } else if (url.contains(HCI_CAMERA_SELFIE)) {
+            mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
+            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE), HCI_CAMERA_REQUEST_CODE);
             return true;
         }
         return false;

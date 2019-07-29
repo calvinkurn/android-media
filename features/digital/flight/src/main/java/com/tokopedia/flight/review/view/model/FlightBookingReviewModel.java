@@ -9,7 +9,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
@@ -36,7 +36,7 @@ public class FlightBookingReviewModel implements Parcelable {
     private String dateFinishTime;
     private String totalPrice;
     private int totalPriceNumeric;
-    private FlightBookingPhoneCodeViewModel phoneCodeViewModel;
+    private CountryPhoneCode phoneCode;
     private String contactName;
     private String contactEmail;
     private String contactPhone;
@@ -77,7 +77,7 @@ public class FlightBookingReviewModel implements Parcelable {
         setTotalPriceNumeric(flightBookingParamViewModel.getTotalPriceNumeric());
         setDateFinishTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT, flightBookingParamViewModel.getOrderDueTimestamp()));
         setDetailPassengersData(flightBookingParamViewModel.getPassengerViewModels());
-        setPhoneCodeViewModel(flightBookingParamViewModel.getPhoneCodeViewModel());
+        setPhoneCode(flightBookingParamViewModel.getPhoneCode());
         setContactName(flightBookingParamViewModel.getContactName());
         setContactEmail(flightBookingParamViewModel.getContactEmail());
         setContactPhone(flightBookingParamViewModel.getContactPhone());
@@ -104,7 +104,7 @@ public class FlightBookingReviewModel implements Parcelable {
         dateFinishTime = in.readString();
         totalPrice = in.readString();
         totalPriceNumeric = in.readInt();
-        phoneCodeViewModel = in.readParcelable(FlightBookingPhoneCodeViewModel.class.getClassLoader());
+        phoneCode = in.readParcelable(CountryPhoneCode.class.getClassLoader());
         contactName = in.readString();
         contactEmail = in.readString();
         contactPhone = in.readString();
@@ -132,7 +132,7 @@ public class FlightBookingReviewModel implements Parcelable {
         dest.writeString(dateFinishTime);
         dest.writeString(totalPrice);
         dest.writeInt(totalPriceNumeric);
-        dest.writeParcelable(phoneCodeViewModel, flags);
+        dest.writeParcelable(phoneCode, flags);
         dest.writeString(contactName);
         dest.writeString(contactEmail);
         dest.writeString(contactPhone);
@@ -174,12 +174,12 @@ public class FlightBookingReviewModel implements Parcelable {
         return insuranceIds;
     }
 
-    public FlightBookingPhoneCodeViewModel getPhoneCodeViewModel() {
-        return phoneCodeViewModel;
+    public CountryPhoneCode getPhoneCode() {
+        return phoneCode;
     }
 
-    public void setPhoneCodeViewModel(FlightBookingPhoneCodeViewModel phoneCodeViewModel) {
-        this.phoneCodeViewModel = phoneCodeViewModel;
+    public void setPhoneCode(CountryPhoneCode phoneCode) {
+        this.phoneCode = phoneCode;
     }
 
     public String getContactName() {

@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.data;
 
+import android.net.Uri;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
@@ -72,9 +74,14 @@ public class OrderDetails {
     @Expose
     private ShopInfo shopInfo;
 
+    @SerializedName("helpLink")
+    @Expose
+    private String helpLink;
 
+    static final String ATTRIBUTE_BOUGHT_DATE = "Tanggal Pembelian";
+    static final String ATTRIBUTE_ID = "id";
 
-    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper, ShopInfo shopInfo) {
+    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper, ShopInfo shopInfo,String helpLink) {
         this.status = status;
         this.conditionalInfo = conditionalInfo;
         this.title = title;
@@ -92,6 +99,7 @@ public class OrderDetails {
         this.driverDetails = driverDetails;
         this.dropShipper = dropShipper;
         this.shopInfo = shopInfo;
+        this.helpLink = helpLink;
     }
 
     public Status status() {
@@ -170,6 +178,10 @@ public class OrderDetails {
         this.flags = flags;
     }
 
+    public String getHelpLink() {
+        return helpLink;
+    }
+
     @Override
     public String toString() {
         return "[OrderDetails:{"
@@ -189,7 +201,79 @@ public class OrderDetails {
                 + "items="+items + ","
                 + "driverDetails="+driverDetails +","
                 + "dropShipper="+dropShipper + ","
-                + "shopInfo="+shopInfo
+                + "shopInfo="+shopInfo + ","
+                + "helpLink="+helpLink
                 + "}]";
+    }
+
+    public String getStatusId() {
+        return status.status();
+    }
+
+    public String getStatusInfo() {
+        return status.statusText();
+    }
+
+    public String getTotalPriceAmount() {
+        return paymentData.value();
+    }
+
+    public String getBoughtDate() {
+        String date = "";
+        for (Title ttl : title) {
+            if (ttl.label().equals(ATTRIBUTE_BOUGHT_DATE)) {
+                date = ttl.value();
+            }
+        }
+
+        if (!date.isEmpty()) {
+            date = stripHourFromDate(date);
+        }
+
+        return date;
+    }
+
+    private String stripHourFromDate(String date) {
+        String strippedDate = date;
+        if (strippedDate.length() >= 11) {
+            strippedDate = strippedDate.substring(0, 11);
+        }
+
+        return strippedDate;
+    }
+
+    public String getInvoiceId() {
+        String invoiceUrl = getInvoiceUrl();
+        Uri invoiceUri = Uri.parse(invoiceUrl);
+
+        return invoiceUri.getQueryParameter(ATTRIBUTE_ID);
+    }
+
+    public String getProductImageUrl() {
+        String productImageUrl = "";
+
+        if (!items.isEmpty()) {
+            productImageUrl = items.get(0).getImageUrl();
+        }
+
+        return productImageUrl;
+    }
+
+    public String getProductName() {
+        String productName = "";
+
+        if (!items.isEmpty()) {
+            productName = items.get(0).getTitle();
+        }
+
+        return productName;
+    }
+
+    public String getInvoiceCode() {
+        return invoice.invoiceRefNum();
+    }
+
+    public String getInvoiceUrl() {
+        return invoice.invoiceUrl();
     }
 }

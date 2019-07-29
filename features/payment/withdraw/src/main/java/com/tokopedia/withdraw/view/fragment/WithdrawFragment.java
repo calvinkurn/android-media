@@ -34,6 +34,9 @@ import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
@@ -75,7 +78,9 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.functions.Func1;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToString;
 
@@ -118,6 +123,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private TextView saldoValueTV;
     private TextView saldoWithdrawHintTV;
 
+    private CompositeSubscription subscription;
 
     @Override
     protected String getScreenName() {
@@ -330,8 +336,12 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         Observable<Boolean> allField = nominalMapper.map(isValidNominal -> isValidNominal && isBankSelected());
 
-        allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButton));
-        allField.subscribe(aBoolean -> canProceed((TextView) withdrawButton, aBoolean));
+        Subscription enableSubscription = allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButton), Throwable::printStackTrace);
+        Subscription proceedSubscription = allField.subscribe(aBoolean -> canProceed((TextView) withdrawButton, aBoolean), Throwable::printStackTrace);
+
+        subscription = new CompositeSubscription();
+        subscription.add(enableSubscription);
+        subscription.add(proceedSubscription);
 
         snackBarError = ToasterError.make(getActivity().findViewById(android.R.id.content),
                 "", BaseToaster.LENGTH_LONG)
@@ -515,6 +525,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @Override
     public void onDestroy() {
         presenter.detachView();
+        if(subscription!=null) {
+            subscription.unsubscribe();
+        }
         super.onDestroy();
     }
 
@@ -548,8 +561,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 .setMessage(getActivity().getString(R.string.alert_not_verified_yet_body))
                 .setPositiveButton(getActivity().getString(R.string.alert_not_verified_yet_positive), (dialog, which) -> {
                     if (getActivity() != null) {
-                        Intent intent = ((WithdrawRouter) getActivity().getApplicationContext())
-                                .getProfileSettingIntent(getActivity());
+                        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE);
                         startActivity(intent);
                         getActivity().finish();
                     }

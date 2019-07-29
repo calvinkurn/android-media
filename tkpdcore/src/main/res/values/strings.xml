@@ -1325,7 +1325,6 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="message_time_deposit_return">"sedang kami review. Jika review melebihi 3x24 jam, silakan hubungi Customer Service kami untuk penjelasan lebih lanjut. Terima kasih."</string>
     <string name="message_changer_courrier_warning">Biaya pergantian kurir sepenuhnya ditanggung oleh Penjual</string>
     <string name="title_shop_phone_verification">Anda dapat membuka toko setelah melakukan verifikasi nomor HP</string>
-    <string name="title_activity_developer_options">DeveloperOptions</string>
 
     <string name="title_reputation_smile">Puas</string>
     <string name="title_reputation_netral">Netral</string>
@@ -1581,7 +1580,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_choose_google_map_location">Mohon pilih lokasi Pickup</string>
     <string name="error_fill_street_address">Mohon isi Alamat Jalan Anda</string>
     <string name="toggle_rpx_next_day_i_drop">RPX Next Day Package dan IDrop tidak dapat dipilih bersamaan</string>
-    <string name="title_delivery_location">Lokasi Pickup (Opsional)</string>
+    <string name="title_delivery_location">Lokasi Pickup</string>
     <string name="title_delivery_location_pickup">Lokasi Pengiriman (Opsional)</string>
     <string name="title_delivery_location_cart">Lokasi Pengiriman</string>
     <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
@@ -2218,4 +2217,7 @@ di Tokopedia Sekarang!</string>
     <string name="label_tokocard">TokoCard</string>
     <string name="react_native_developer_mode">React Native Developer Mode</string>
 
+    <!-- String related WebView-->
+    <string name="error_message_url_invalid">Url tidak valid</string>
+    <string name="error_message_url_invalid_crashlytics">Invalid webview url - </string>
 </resources>

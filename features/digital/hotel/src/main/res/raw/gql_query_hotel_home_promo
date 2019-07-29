@@ -1,0 +1,11 @@
+query getBanner {
+ travelBanner(languageID: 0, countryID: "ID", deviceID: 4, instanceID: 4) {
+   id
+   attributes {
+     description
+     linkURL
+     imageURL
+     promoCode
+   }
+ }
+}

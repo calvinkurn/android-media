@@ -1,13 +1,13 @@
 package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
-
+import android.content.res.Resources;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
-import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.sessioncommon.data.GetProfileApi;
 import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.TokenApi;
@@ -27,7 +27,7 @@ import retrofit2.Retrofit;
  */
 @LoginRegisterScope
 @SessionCommonScope
-@Component(modules = {LoginRegisterModule.class, SessionModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {LoginRegisterModule.class, SessionModule.class}, dependencies = {BaseAppComponent.class})
 public interface LoginRegisterComponent {
 
     @ApplicationContext
@@ -65,5 +65,7 @@ public interface LoginRegisterComponent {
     LoginRegisterAnalytics provideLoginRegisterAnalytics();
 
     RegisterAnalytics provideRegisterAnalytics();
+
+    Resources provideResources();
 
 }

@@ -29,8 +29,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.url)
 
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.libraries.analytics)
@@ -52,6 +54,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.libraries.permissionchecker)
+
+    implementation project(rootProject.ext.features.promoCheckoutCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

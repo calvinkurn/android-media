@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.hansel.preprocessor.module'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -46,5 +45,5 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7
 
-    implementation project(rootProject.ext.libraries.unifyPrinciples)
+    implementation rootProject.ext.unifyDependencies.principles
 }

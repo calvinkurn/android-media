@@ -10,12 +10,14 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.LabelGroup;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -66,7 +68,7 @@ final class ProductListPresenter
 
         component.inject(this);
 
-        enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,false);
+        enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,true);
         changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
     }
 
@@ -111,6 +113,7 @@ final class ProductListPresenter
                 addWishlist(productItem.getProductID(), getView().getUserId());
             }
         } else {
+            getView().sendTrackingWishlistNonLogin(productItem.getProductID(), !productItem.isWishlisted());
             getView().launchLoginActivity(productItem.getProductID());
         }
     }
@@ -377,6 +380,11 @@ final class ProductListPresenter
                     item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
+                    item.setIsShopOfficialStore(topAds.getShop().isShop_is_official());
+                    item.setShopName(topAds.getShop().getName());
+                    item.setOriginalPrice(topAds.getProduct().getCampaign().getOriginalPrice());
+                    item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
+                    item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     list.add(i, item);
                     j++;
                 }
@@ -387,7 +395,7 @@ final class ProductListPresenter
         return list;
     }
 
-    private static int convertCountReviewFormatToInt(String countReviewFormat) {
+    private int convertCountReviewFormatToInt(String countReviewFormat) {
         String countReviewString = countReviewFormat.replaceAll("[^\\d]", "");
 
         try {
@@ -399,12 +407,26 @@ final class ProductListPresenter
         }
     }
 
-    private static List<BadgeItemViewModel> mapBadges(List<Badge> badges) {
+    private List<BadgeItemViewModel> mapBadges(List<Badge> badges) {
         List<BadgeItemViewModel> items = new ArrayList<>();
         for (Badge b:badges) {
             items.add(new BadgeItemViewModel(b.getImageUrl(), b.getTitle(), b.isShow()));
         }
         return items;
+    }
+
+    private List<LabelGroupViewModel> mapLabelGroupList(List<LabelGroup> labelGroupList) {
+        List<LabelGroupViewModel> labelGroupViewModelList = new ArrayList<>();
+
+        for(LabelGroup labelGroup : labelGroupList) {
+            labelGroupViewModelList.add(
+                    new LabelGroupViewModel(
+                            labelGroup.getPosition(), labelGroup.getType(), labelGroup.getTitle()
+                    )
+            );
+        }
+
+        return labelGroupViewModelList;
     }
 
     private void loadMoreDataSubscriberOnCompleteIfViewAttached() {
@@ -524,6 +546,9 @@ final class ProductListPresenter
 
         HeaderViewModel headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
+        if (!productViewModel.isQuerySafe()) {
+            getView().showAdultRestriction();
+        }
         if (productViewModel.getGuidedSearchViewModel() != null) {
             headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
             getView().sendImpressionGuidedSearch();
@@ -552,6 +577,7 @@ final class ProductListPresenter
         getView().setProductList(list);
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
         getView().addLoading();
+
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
     }
@@ -586,9 +612,10 @@ final class ProductListPresenter
     @Override
     public void detachView() {
         super.detachView();
-        searchProductFirstPageUseCase.unsubscribe();
-        searchProductLoadMoreUseCase.unsubscribe();
-        addWishlistActionUseCase.unsubscribe();
-        removeWishlistActionUseCase.unsubscribe();
+        if(searchProductFirstPageUseCase != null) searchProductFirstPageUseCase.unsubscribe();
+        if(searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
+        if(productWishlistUrlUseCase != null) productWishlistUrlUseCase.unsubscribe();
+        if(addWishlistActionUseCase != null) addWishlistActionUseCase.unsubscribe();
+        if(removeWishlistActionUseCase != null) removeWishlistActionUseCase.unsubscribe();
     }
 }

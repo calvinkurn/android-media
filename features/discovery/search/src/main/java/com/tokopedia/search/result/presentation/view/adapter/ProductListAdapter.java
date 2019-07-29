@@ -1,6 +1,8 @@
 package com.tokopedia.search.result.presentation.view.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory;
@@ -29,21 +32,19 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     private static final int ADAPTER_POSITION_HEADER = 0;
     private List<Visitable> list = new ArrayList<>();
-    private EmptySearchViewModel emptySearchModel;
     private ProductListTypeFactory typeFactory;
     private int startFrom;
     private int totalData;
-    private Context context;
     private LoadingMoreModel loadingMoreModel;
     private TopAdsSwitcher topAdsSwitcher;
 
-    public ProductListAdapter(Context context, OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
+    public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
-        this.context = context;
         this.typeFactory = typeFactory;
         loadingMoreModel = new LoadingMoreModel();
     }
 
+    @NonNull
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -65,7 +66,22 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        setFullSpanForStaggeredGrid(holder, holder.getItemViewType());
+
         holder.bind(list.get(position));
+    }
+
+    private void setFullSpanForStaggeredGrid(AbstractViewHolder holder, int viewType) {
+        if(holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams layoutParams =
+                    (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+
+            layoutParams.setFullSpan(isStaggeredGridFullSpan(viewType));
+        }
+    }
+
+    private boolean isStaggeredGridFullSpan(int viewType) {
+        return viewType != SmallGridProductItemViewHolder.LAYOUT;
     }
 
     @Override
@@ -102,8 +118,8 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         return list.size();
     }
 
-    public void clear() {
-        this.list.clear();
+    public void clearDataBeforeSet() {
+        super.clearData();
     }
 
     public void appendItems(List<Visitable> list) {
@@ -243,9 +259,11 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     public void removeLoading() {
         int loadingModelPosition = this.list.indexOf(loadingMoreModel);
 
-        this.list.remove(loadingMoreModel);
+        if(loadingModelPosition != -1) {
+            this.list.remove(loadingMoreModel);
 
-        notifyItemRemoved(loadingModelPosition);
-        notifyItemRangeChanged(loadingModelPosition, 1);
+            notifyItemRemoved(loadingModelPosition);
+            notifyItemRangeChanged(loadingModelPosition, 1);
+        }
     }
 }

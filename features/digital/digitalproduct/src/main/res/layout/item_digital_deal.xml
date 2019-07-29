@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -80,7 +81,7 @@
         android:paddingStart="@dimen/dp_5"
         android:paddingLeft="@dimen/dp_5"
         android:paddingBottom="@dimen/dp_10"
-        android:src="@drawable/ic_close"
+        app:srcCompat="@drawable/ic_close"
         android:visibility="gone" />
 
     <android.support.v7.widget.AppCompatImageView
@@ -89,7 +90,7 @@
         android:layout_height="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_4"
         android:layout_weight="0.2"
-        android:src="@drawable/ic_check"
+        app:srcCompat="@drawable/ic_check"
         android:visibility="gone"
         tools:visibility="visible" />
 

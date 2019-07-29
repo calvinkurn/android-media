@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="UnifyButton">
+        <attr name="buttonVariant" format="enum">
+            <enum name="filled" value="1"/>
+            <enum name="ghost" value="2"/>
+            <enum name="text" value="3"/>
+        </attr>
+        <attr name="btnSize" format="enum">
+            <enum name="large" value="1"/>
+            <enum name="medium" value="2"/>
+            <enum name="small" value="3"/>
+            <enum name="micro" value="4"/>
+        </attr>
+        <attr name="buttonType" format="enum">
+            <enum name="main" value="1"/>
+            <enum name="transaction" value="2"/>
+        </attr>
+        <attr name="invers" format="boolean"/>
+    </declare-styleable>
+</resources>

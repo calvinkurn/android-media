@@ -5,6 +5,7 @@ package com.tokopedia.logisticaddaddress;
  */
 public class AddressConstants {
 
+    public static final String SCREEN_ADD_ADDRESS_FORM = "Add Address Form";
 
     public static final String SCREEN_MANAGE_ADDRESS = "People Edit Address";
 
@@ -35,4 +36,23 @@ public class AddressConstants {
 
     public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT = 21;
     public static final int INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT = 22;
+
+    public static final String EXTRA_LAT = "EXTRA_LAT";
+    public static final String EXTRA_LONG = "EXTRA_LONG";
+    public static final String EXTRA_SHOW_AUTOCOMPLETE = "EXTRA_SHOW_AUTOCOMPLETE";
+    public static final String EXTRA_REQUEST_LOCATION = "EXTRA_REQUEST_LOCATION";
+    public static final String EXTRA_IS_MISMATCH = "EXTRA_IS_MISMATCH";
+    public static final String EXTRA_IS_MISMATCH_SOLVED = "EXTRA_IS_ORIGIN_MISMATCH_SOLVED";
+    public static final String EXTRA_IS_POLYGON = "EXTRA_IS_POLYGON";
+    public static final String EXTRA_DISTRICT_ID = "EXTRA_DISTRICT_ID";
+    public static final String EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL";
+    public static final String EXTRA_IS_CHANGES_REQUESTED = "EXTRA_IS_CHANGES_REQUESTED";
+    public static final String EXTRA_IS_UNNAMED_ROAD = "EXTRA_UNNAMED_ROAD";
+    public static final Double MONAS_LAT = -6.175794;
+    public static final Double MONAS_LONG = 106.826457;
+    public static final String ANA_POSITIVE = "positive";
+    public static final String ANA_NEGATIVE = "negative";
+
+    public static final int GPS_REQUEST = 108;
+    public static final String SCREEN_NAME_USER_NEW = "/user/address/create";
 }

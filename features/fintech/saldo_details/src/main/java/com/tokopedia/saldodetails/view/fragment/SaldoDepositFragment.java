@@ -25,6 +25,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.inject.Inject;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -229,7 +232,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
         merchantDetailLL = view.findViewById(R.id.merchant_details_ll);
         merchantStatusLL = view.findViewById(R.id.merchant_status_ll);
-        saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
+        saldoDepositExpandIV.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_arrow_up_grey));
 
         if (expandLayout) {
             saldoTypeLL.setVisibility(View.VISIBLE);
@@ -355,8 +358,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
                 .setTitle(getActivity().getString(R.string.sp_alert_not_verified_yet_title))
                 .setMessage(getActivity().getString(R.string.sp_alert_not_verified_yet_body))
                 .setPositiveButton(getActivity().getString(R.string.sp_alert_not_verified_yet_positive), (dialog, which) -> {
-                    Intent intent = ((SaldoDetailsRouter) getActivity().getApplicationContext())
-                            .getProfileSettingIntent(getActivity());
+                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE);
                     startActivity(intent);
                     dialog.dismiss();
                 })

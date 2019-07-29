@@ -30,6 +30,7 @@ public class RemoteConfigKey {
     public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message_new";
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
+    public static final String APP_HIDE_SAMPAI_VIEW = "android_customer_hide_sampai_view";
 
     public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
     public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
@@ -89,22 +90,53 @@ public class RemoteConfigKey {
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 
-    public static final String NONB1_TTL = "nonb_1_ttl";
-    public static final String NONB1_DESC = "nonb_1_dsc";
-    public static final String NONB2_TTL = "nonb_2_ttl";
-    public static final String NONB2_DESC = "nonb_2_dsc";
-    public static final String NONB3_TTL = "nonb_3_ttl";
-    public static final String NONB3_DESC = "nonb_3_dsc";
-    public static final String NONB4_TTL = "nonb_4_ttl";
-    public static final String NONB4_DESC = "nonb_4_dsc";
-    public static final String NONB5_TTL = "nonb_5_ttl";
-    public static final String NONB5_DESC = "nonb_5_dsc";
+    public static final String NONB1_TTL = "app_nonb_1_ttl";
+    public static final String NONB1_DESC = "app_nonb_1_dsc";
+    public static final String NONB2_TTL = "app_nonb_2_ttl";
+    public static final String NONB2_DESC = "app_nonb_2_dsc";
+    public static final String NONB3_TTL = "app_nonb_3_ttl";
+    public static final String NONB3_DESC = "app_nonb_3_dsc";
+    public static final String NONB4_TTL = "app_nonb_4_ttl";
+    public static final String NONB4_DESC = "app_nonb_4_dsc";
+    public static final String NONB5_TTL = "app_nonb_5_ttl";
+    public static final String NONB5_DESC = "app_nonb_5_dsc";
     public static final String OVO_ENABLE_FLAG = "app_enable_ovo_pay_by_qr";
     public static final String OVO_QR_MIN_AMOUNT = "app_ovo_min_balance";
     public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
+    public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
     public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
 
     public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
 
+    public static final String HOME_GEOLOCATION_COMPONENT_TITLE = "android_customer_home_geolocation_component_title";
+    public static final String HOME_GEOLOCATION_COMPONENT_DESCRIPTION = "android_customer_home_geolocation_component_description";
+    public static final String SHOW_HOME_GEOLOCATION_COMPONENT = "android_customer_show_home_geolocation_component";
+
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
+
+    //   switch for New category belanja page
+    public static final String APP_CATEGORY_BROWSE_V1 = "app_category_browse_v1";
+
+     //   switch for New category belanja page A/B testing
+    public static final String APP_CATEGORY_BROWSE_ENABLE_AB = "app_category_browse_enable_ab";
+
+    public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
+    public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
+
+    public static final String REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP = "app_show_search_bar_pdp";
+
+    public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
+    public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
+    public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
+
+    public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
+
+    public static final String ANDROID_PM_F1_ENABLED = "android_power_merchant_f1_enabled";
+
+    //feed section
+    public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
+
+    public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
+
+    public static final String PLAY_PIP = "android_customer_enable_play_pip";
 }

@@ -318,6 +318,14 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
         );
     }
 
+    public void eventSearchResultNotFound(String query) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.SEARCH_NOT_FOUND,
+                query
+        );
+    }
 
     //PHASE 2
 
@@ -365,5 +373,4 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
                 EventLabel.NOT_SUCCESS
         );
     }
-
 }
