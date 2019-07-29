@@ -7,7 +7,7 @@ import org.junit.Assert.*
 class AddNewAddressUtilsTest {
 
     @Test
-    fun whenGivenExactReturnTrue() {
+    fun givenExactValue_whenExecuted_thenReturnTrue() {
         // Default Monas
         val tLat = -6.175794
         val tLong = 106.826457
@@ -18,7 +18,7 @@ class AddNewAddressUtilsTest {
     }
 
     @Test
-    fun whenGivenSlightMissReturnTrue() {
+    fun givenSlightlyMiss_whenExecuted_thenReturnTrue() {
         val tLat = -6.1757931839
         val tLong = 106.8264570490
 
@@ -28,7 +28,7 @@ class AddNewAddressUtilsTest {
     }
 
     @Test
-    fun whenGivenValueFromMapIdleReturnTrue() {
+    fun givenValueFromMapIdle_whenExecuted_thenReturnTrue() {
         val tLat = -6.175793971019989
         val tLong = 106.82645704597235
 
@@ -38,7 +38,7 @@ class AddNewAddressUtilsTest {
     }
 
     @Test
-    fun whenGivenSlightDragReturnFalse() {
+    fun givenSlightlyDrag_whenExecuted_thenReturnFalse() {
         val tLat = -6.175644639000966
         val tLong = 106.82704713195562
 
