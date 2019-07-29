@@ -66,6 +66,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private lateinit var trackingQueue: TrackingQueue
 
+    private lateinit var ref: String
+
     private lateinit var productDataModel: ProductInfoDataModel
 
     private lateinit var productView: View
@@ -82,8 +84,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     companion object{
-        fun newInstance(dataModel: ProductInfoDataModel) = ProductInfoFragment().apply {
+        fun newInstance(dataModel: ProductInfoDataModel, ref: String) = ProductInfoFragment().apply {
             this.productDataModel = dataModel
+            this.ref = ref
         }
 
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -135,7 +138,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onProductImpression(){
         product_image.addOnImpressionListener(recommendationItem, object: ViewHintListener{
             override fun onViewHint() {
-                RecommendationPageTracking.eventImpressionPrimaryProduct(recommendationItem, "0")
+                RecommendationPageTracking.eventImpressionPrimaryProduct(recommendationItem, "0", ref)
                 if(productDataModel.productDetailData.isTopads){
                     onImpressionTopAds(recommendationItem)
                 }else {
@@ -151,7 +154,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private fun onClickProductCard(){
         product_card.setOnClickListener {
-            RecommendationPageTracking.eventClickPrimaryProduct(recommendationItem, "0")
+            RecommendationPageTracking.eventClickPrimaryProduct(recommendationItem, "0", ref)
             if (productDataModel.productDetailData.isTopads) {
                 onClickTopAds(recommendationItem)
             } else {
@@ -172,13 +175,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 addToCart(
                         success = { result ->
                             recommendationItem.cartId = result[CART_ID] as Int
-                            RecommendationPageTracking.eventUserClickAddToCart(recommendationItem)
+                            RecommendationPageTracking.eventUserClickAddToCart(recommendationItem, ref)
                             pb_add_to_cart.hide()
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else{
                                 showToastSuccessWithAction(result[MESSAGE].toString(), getString(R.string.recom_see_cart)){
-                                    RecommendationPageTracking.eventUserClickSeeToCart()
+                                    RecommendationPageTracking.eventUserClickSeeToCart(ref)
                                     goToCart()
                                 }
                             }
@@ -190,7 +193,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 )
             } else {
                 context?.let {
-                    RecommendationPageTracking.eventUserAddToCartNonLogin()
+                    RecommendationPageTracking.eventUserAddToCartNonLogin(ref)
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN)
                 }
@@ -208,7 +211,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else if(result.containsKey(CART_ID) && result[CART_ID].toString().isNotEmpty()){
-                                RecommendationPageTracking.eventUserClickBuy(recommendationItem)
+                                RecommendationPageTracking.eventUserClickBuy(recommendationItem, ref)
                                 goToCart()
                             }
                         },
@@ -218,7 +221,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                         }
                 )
             } else {
-                RecommendationPageTracking.eventUserClickBuyNonLogin()
+                RecommendationPageTracking.eventUserClickBuyNonLogin(ref)
                 context?.let {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN)
@@ -230,7 +233,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onClickWishlist(){
         fab_detail.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
-                RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(!it.isActivated)
+                RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(!it.isActivated, ref)
                 if (it.isActivated) {
                     productDataModel.productDetailData.id.let {
                         primaryProductViewModel.removeWishList(it.toString(),
@@ -246,7 +249,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     }
                 }
             } else {
-                RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
+                RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin(ref)
                 RouteManager.route(activity, ApplinkConst.LOGIN)
             }
         }
@@ -415,33 +418,33 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private fun onImpressionOrganic(item: RecommendationItem) {
         if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForLoginUser(trackingQueue, item, item.position.toString())
+            RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForLoginUser(trackingQueue, item, item.position.toString(), ref)
         } else {
-            RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString())
+            RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString(), ref)
         }
     }
 
     private fun onImpressionTopAds(item: RecommendationItem) {
         if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForLoginUser(trackingQueue, item, item.position.toString())
+            RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForLoginUser(trackingQueue, item, item.position.toString(), ref)
         } else {
-            RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString())
+            RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString(), ref)
         }
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
         if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForLoginUser(item, item.position.toString())
+            RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForLoginUser(item, item.position.toString(), ref)
         }else{
-            RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForNonLoginUser(item, item.position.toString())
+            RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForNonLoginUser(item, item.position.toString(), ref)
         }
     }
 
     private fun onClickOrganic(item: RecommendationItem) {
         if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventClickOnOrganicProductRecommendationForLoginUser(item, item.position.toString())
+            RecommendationPageTracking.eventClickOnOrganicProductRecommendationForLoginUser(item, item.position.toString(), ref)
         }else{
-            RecommendationPageTracking.eventClickOnOrganicProductRecommendationForNonLoginUser(item, item.position.toString())
+            RecommendationPageTracking.eventClickOnOrganicProductRecommendationForNonLoginUser(item, item.position.toString(), ref)
         }
     }
 

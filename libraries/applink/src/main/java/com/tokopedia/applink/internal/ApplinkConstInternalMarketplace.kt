@@ -63,7 +63,7 @@ object ApplinkConstInternalMarketplace {
     val DEFAULT_HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi"
 
     @JvmField
-    val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?source={source}"
+    val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
 
     // ImageReviewGalleryActivity
     @JvmField

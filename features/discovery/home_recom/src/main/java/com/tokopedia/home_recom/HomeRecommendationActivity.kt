@@ -19,10 +19,9 @@ import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
-    private lateinit var productId: String
     companion object{
         const val PRODUCT_ID = "PRODUCT_ID"
-        private const val DEEP_LINK_URI = "deep_link_uri"
+        private const val REF = "ref"
 
         @JvmStatic
         fun newInstance(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
@@ -42,7 +41,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         @JvmStatic
         @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE)
         fun getDefaultCallingIntent(context: Context, extras: Bundle): Intent{
-            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "")
+            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
+            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "", uri.getQueryParameter(REF) ?: "")
         }
 
         @JvmStatic
@@ -51,15 +51,16 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
             return RouteManager.getIntent(context,
                     ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
-                    uri.lastPathSegment) ?: Intent()
+                    uri.lastPathSegment,
+                    uri.getQueryParameter(REF) ?: "") ?: Intent()
         }
     }
 
     override fun getNewFragment(): Fragment {
-        return if(intent.data != null && intent.data.pathSegments.size > 1 ){
-            RecommendationFragment.newInstance(intent.data.lastPathSegment ?: "")
-        } else if (intent.hasExtra(PRODUCT_ID)) {
-            RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID))
+        return if(intent.data != null && intent?.data?.pathSegments?.size ?: 0 > 1 ){
+            RecommendationFragment.newInstance(intent?.data?.lastPathSegment ?: "", intent?.data?.getQueryParameter(REF) ?: "")
+        } else if (intent.hasExtra(PRODUCT_ID) && intent.hasExtra(REF)) {
+            RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID), intent.getStringExtra(REF))
         } else {
             RecommendationFragment.newInstance()
         }

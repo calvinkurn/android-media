@@ -47,6 +47,7 @@ import javax.inject.Inject
  * @property viewModelFactory the factory for ViewModel provide by Dagger.
  * @property trackingQueue the queue util for handle tracking.
  * @property productId the productId of ProductDetail.
+ * @property ref the ref code for know source page.
  * @property lastClickLayoutType for handling last click product layout type.
  * @property lastParentPosition for handling last click product and get know parent position for nested recyclerView.
  * @property viewModelProvider the viewModelProvider by Dagger
@@ -69,6 +70,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var productId: String
+    private lateinit var ref: String
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
@@ -86,8 +88,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
-        fun newInstance(productId: String = "") = RecommendationFragment().apply {
+        fun newInstance(productId: String = "", source: String = "") = RecommendationFragment().apply {
             this.productId = productId
+            this.ref = source
         }
     }
 
@@ -208,14 +211,14 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         if(recommendationWidgetViewModel.isLoggedIn()){
             if(isAddWishlist){
                 recommendationWidgetViewModel.addWishlist(item, callback)
-                RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item))
+                RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item), ref)
             } else {
                 recommendationWidgetViewModel.removeWishlist(item, callback)
-                RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item))
+                RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item), ref)
             }
         }else{
             RouteManager.route(context, ApplinkConst.LOGIN)
-            RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item))
+            RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item), ref)
         }
     }
 
@@ -226,9 +229,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
      */
     override fun onProductImpression(item: RecommendationItem) {
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString())
+            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
         } else {
-            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString())
+            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
         }
     }
 
@@ -291,7 +294,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
      */
     private fun displayProductInfo(dataModel: ProductInfoDataModel){
         childFragmentManager.beginTransaction()
-                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(dataModel))
+                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(dataModel, ref))
                 .commit()
     }
 
@@ -330,9 +333,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
      */
     private fun eventTrackerClickListener(item: RecommendationItem){
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString())
+            RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString(), ref)
         }else{
-            RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString())
+            RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString(), ref)
         }
     }
 
@@ -367,7 +370,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
      */
     private fun shareProduct(productDetailData: ProductDetailData){
         context?.let{ context ->
-            RecommendationPageTracking.eventClickIconShare()
+            RecommendationPageTracking.eventClickIconShare(ref)
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult) {

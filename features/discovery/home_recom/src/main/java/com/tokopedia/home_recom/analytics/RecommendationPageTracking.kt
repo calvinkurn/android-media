@@ -212,13 +212,14 @@ class RecommendationPageTracking {
         fun eventImpressionOnOrganicProductRecommendationForLoginUser(
                 trackingQueue: TrackingQueue,
                 recommendationItem: RecommendationItem,
-                position: String) {
+                position: String,
+                ref: String) {
 
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
                     EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
                     EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
@@ -240,13 +241,14 @@ class RecommendationPageTracking {
         fun eventImpressionOnTopAdsProductRecommendationForLoginUser(
                 trackingQueue: TrackingQueue,
                 recommendationItem: RecommendationItem,
-                position: String) {
+                position: String,
+                ref: String) {
 
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
                     EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
                     EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
@@ -267,14 +269,15 @@ class RecommendationPageTracking {
         // 4
         fun eventClickOnOrganicProductRecommendationForLoginUser(
                 recommendationItem: RecommendationItem,
-                position: String) {
+                position: String,
+                ref: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_CLICK,
                     EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_CLICK,
@@ -293,14 +296,15 @@ class RecommendationPageTracking {
         // 4
         fun eventClickOnTopAdsProductRecommendationForLoginUser(
                 recommendationItem: RecommendationItem,
-                position: String) {
+                position: String,
+                ref: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_CLICK,
                     EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_CLICK,
@@ -321,13 +325,14 @@ class RecommendationPageTracking {
         fun eventImpressionOnOrganicProductRecommendationForNonLoginUser(
                 trackingQueue: TrackingQueue,
                 recommendationItem: RecommendationItem,
-                position: String) {
+                position: String,
+                ref: String) {
 
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
                     EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
                     EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
@@ -349,13 +354,14 @@ class RecommendationPageTracking {
         fun eventImpressionOnTopAdsProductRecommendationForNonLoginUser(
                 trackingQueue: TrackingQueue,
                 recommendationItem: RecommendationItem,
-                position: String) {
+                position: String,
+                ref: String) {
 
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
                     EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
                     EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
@@ -376,14 +382,15 @@ class RecommendationPageTracking {
         // 6
         fun eventClickOnOrganicProductRecommendationForNonLoginUser(
                 recommendationItem: RecommendationItem,
-                position: String) {
+                position: String,
+                ref: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_CLICK,
                     EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_CLICK,
@@ -403,14 +410,15 @@ class RecommendationPageTracking {
         // 6
         fun eventClickOnTopAdsProductRecommendationForNonLoginUser(
                 recommendationItem: RecommendationItem,
-                position: String) {
+                position: String,
+                ref: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_CLICK,
                     EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_CLICK,
@@ -427,57 +435,15 @@ class RecommendationPageTracking {
             tracker.sendEnhanceEcommerceEvent(data)
         }
 
-        // 7
-        fun eventAddWishlistOnProductRecommendationLogin() {
-
-            val tracker = getTracker()
-            val data = DataLayer.mapOf(
-                    EVENT, EVENT_CLICK_PDP,
-                    EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
-                    EVENT_ACTION, EVENT_ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY
-            )
-
-            tracker.sendGeneralEvent(data)
-        }
-
-        // 8
-        fun eventRemoveWishlistOnProductRecommendationLogin() {
-
-            val tracker = getTracker()
-            val data = DataLayer.mapOf(
-                    EVENT, EVENT_CLICK_PDP,
-                    EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
-                    EVENT_ACTION, EVENT_ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY
-            )
-
-            tracker.sendGeneralEvent(data)
-        }
-
-        // 9
-        fun eventAddWishlistOnProductRecommendationNonLogin() {
-
-            val tracker = getTracker()
-            val data = DataLayer.mapOf(
-                    EVENT, EVENT_CLICK_PDP,
-                    EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
-                    EVENT_ACTION, EVENT_ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY
-            )
-
-            tracker.sendGeneralEvent(data)
-        }
-
         // 10
-        fun eventClickIconShare() {
+        fun eventClickIconShare(ref: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_ICON_SHARE,
-                    EVENT_LABEL, VALUE_EMPTY
+                    EVENT_LABEL, ref
             )
 
             tracker.sendGeneralEvent(data)
@@ -486,14 +452,15 @@ class RecommendationPageTracking {
         // 11
         fun eventClickPrimaryProduct(
                 recommendationItem: RecommendationItem,
-                position: String) {
+                position: String,
+                ref: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_CLICK,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRIMARY_PRODUCT,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                         ECOMMERCE_CLICK, convertPrimaryProductToDataClickObject(
                             recommendationItem,
@@ -509,14 +476,15 @@ class RecommendationPageTracking {
         // 12
         fun eventImpressionPrimaryProduct(
                 recommendationItem: RecommendationItem,
-                position: String) {
+                position: String,
+                ref: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRIMARY_PRODUCT,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                         ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                             convertPrimaryProductToDataImpressionObject(
@@ -533,40 +501,42 @@ class RecommendationPageTracking {
 
         // No 13 Done
         fun eventUserClickProductToWishlistForUserLogin(
-                isAdded: Boolean
+                isAdded: Boolean,
+                ref: String
         ){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, String.format(EVENT_ACTION_CLICK_PRIMARY_PRODUCT_LOGIN, if(isAdded) "add" else "remove"),
-                    EVENT_LABEL, VALUE_EMPTY
+                    EVENT_LABEL, ref
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
 
         // No 14 Done
-        fun eventUserClickProductToWishlistForNonLogin(){
+        fun eventUserClickProductToWishlistForNonLogin(ref: String){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRIMARY_PRODUCT_NON_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY
+                    EVENT_LABEL, ref
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
 
         // No 15 Done
         fun eventUserClickAddToCart(
-                recommendationItem: RecommendationItem
+                recommendationItem: RecommendationItem,
+                ref: String
         ){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_ADD_TO_CART,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_ADD_TO_CART,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                         ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                         ECOMMERCE_ADD, convertProductToDataClickAddToCart(recommendationItem, VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION)
@@ -576,13 +546,13 @@ class RecommendationPageTracking {
         }
 
         // No 16 Done
-        fun eventUserAddToCartNonLogin(){
+        fun eventUserAddToCartNonLogin(ref: String){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_ADD_TO_CART_NON_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY
+                    EVENT_LABEL, ref
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -592,7 +562,8 @@ class RecommendationPageTracking {
         fun eventUserClickOnHeaderNameProduct(
                 headerName: String,
                 recommendationItem: RecommendationItem,
-                position: String
+                position: String,
+                ref: String
         ){
 
             val tracker = getTracker()
@@ -618,7 +589,8 @@ class RecommendationPageTracking {
         fun eventUserClickOnHeaderNameProductNonLogin(
                 headerName: String,
                 recommendationItem: RecommendationItem,
-                position: String
+                position: String,
+                ref: String
         ){
 
             val tracker = getTracker()
@@ -645,7 +617,8 @@ class RecommendationPageTracking {
                 trackingQueue: TrackingQueue,
                 headerName: String,
                 recommendationItem: RecommendationItem,
-                position: String
+                position: String,
+                ref: String
         ){
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
@@ -674,13 +647,14 @@ class RecommendationPageTracking {
                 trackingQueue: TrackingQueue,
                 headerName: String,
                 recommendationItem: RecommendationItem,
-                position: String
+                position: String,
+                ref: String
         ){
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, String.format(EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN, headerName),
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
@@ -696,39 +670,40 @@ class RecommendationPageTracking {
         }
 
         // No 21 Done
-        fun eventUserClickBack(){
+        fun eventUserClickBack(ref: String){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_BACK,
-                    EVENT_LABEL, VALUE_EMPTY
+                    EVENT_LABEL, ref
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
 
         // No 22 Done
-        fun eventUserClickSeeToCart(){
+        fun eventUserClickSeeToCart(ref: String){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_SEE_CART,
-                    EVENT_LABEL, VALUE_EMPTY
+                    EVENT_LABEL, ref
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
 
         // No 47 Done
         fun eventUserClickBuy(
-                recommendationItem: RecommendationItem
+                recommendationItem: RecommendationItem,
+                ref: String
         ){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_ADD_TO_CART,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_BUY,
-                    EVENT_LABEL, VALUE_EMPTY,
+                    EVENT_LABEL, ref,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_ADD, convertProductToDataClickAddToCart(recommendationItem, VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION)
@@ -738,13 +713,13 @@ class RecommendationPageTracking {
         }
 
         // No 48 Done
-        fun eventUserClickBuyNonLogin(){
+        fun eventUserClickBuyNonLogin(ref: String){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_BUY_NON_LOGIN,
-                    EVENT_LABEL, VALUE_EMPTY
+                    EVENT_LABEL, ref
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -752,7 +727,8 @@ class RecommendationPageTracking {
         // No 53 Done
         fun eventUserClickRecommendationWishlistForLogin(
                 isAdded: Boolean,
-                headerName: String
+                headerName: String,
+                ref: String
         ){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
@@ -765,7 +741,9 @@ class RecommendationPageTracking {
         }
 
         // No 54 Done
-        fun eventUserClickRecommendationWishlistForNonLogin(headerName: String){
+        fun eventUserClickRecommendationWishlistForNonLogin(
+                headerName: String,
+                ref: String){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
