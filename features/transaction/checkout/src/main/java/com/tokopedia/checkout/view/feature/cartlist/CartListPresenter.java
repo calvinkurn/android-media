@@ -666,8 +666,6 @@ public class CartListPresenter implements ICartListPresenter {
         int totalItemQty = 0;
         int errorProductCount = 0;
 
-        // TODO: 18/6/19 add insurance product price
-
         // Collect all Cart Item, if has no error and selected
         List<CartItemHolderData> allCartItemDataList = new ArrayList<>();
         for (CartShopHolderData cartShopHolderData : dataList) {
@@ -814,8 +812,6 @@ public class CartListPresenter implements ICartListPresenter {
                     insuranceCartShops.getShopItemsList() != null &&
                     insuranceCartShops.getShopItemsList().get(0) != null &&
                     insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0) != null) {
-
-//                InsuranceCartDigitalProduct insuranceCartDigitalProduct = insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0);
 
                 for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                     for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
@@ -1065,7 +1061,6 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 view.hideProgressLoading();
                 view.showToastMessageRed("Failed to update application details!");
-                // TODO: 27/6/19 error case handling
             }
 
             @Override

@@ -8,7 +8,4 @@ interface InsuranceItemActionListener : ActionListener {
     fun deleteInsurance(insuranceCartShops: InsuranceCartShops, showconfirmationDialog: Boolean)
     fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops, updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>)
     fun onInsuranceSelectStateChanges()
-
-    // TODO: 19/6/19 add methods according to insurance items usecase ex: opening bottom sheet for application details
-
 }

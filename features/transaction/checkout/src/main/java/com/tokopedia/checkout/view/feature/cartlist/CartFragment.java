@@ -1930,10 +1930,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse, boolean isRecommendation) {
 
-        // TODO: 18/6/19 render insurance cart data on ui, both micro and macro, if is_product_level == true,
-        // then insurance product is of type micro insurance and shoudl be tagged at product level
-
-        // TODO: 19/6/19 for micro insurance product add insurance data in shopGroup list
+        /*
+        * render insurance cart data on ui, both micro and macro, if is_product_level == true,
+        * then insurance product is of type micro insurance and should be tagged at product level,
+        * for micro insurance product add insurance data in shopGroup list*/
 
 
         if (insuranceCartResponse != null &&

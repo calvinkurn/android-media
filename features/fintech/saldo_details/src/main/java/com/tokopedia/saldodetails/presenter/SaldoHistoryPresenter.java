@@ -142,13 +142,10 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     public void onEndDateClicked(SaldoDatePickerUtil datePicker) {
         String date = dateFormatter(getView().getEndDate());
         datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date));
-        datePicker.DatePickerCalendar(new SaldoDatePickerUtil.onDateSelectedListener() {
-            @Override
-            public void onDateSelected(int year, int month, int day) {
-                String selectedDate = SaldoHistoryPresenter.this.getDate(year, month, day);
-                SaldoHistoryPresenter.this.getView().setEndDate(selectedDate);
-                new android.os.Handler().postDelayed(SaldoHistoryPresenter.this::onSearchClicked, SEARCH_DELAY);
-            }
+        datePicker.DatePickerCalendar((year, month, day) -> {
+            String selectedDate = SaldoHistoryPresenter.this.getDate(year, month, day);
+            SaldoHistoryPresenter.this.getView().setEndDate(selectedDate);
+            new android.os.Handler().postDelayed(SaldoHistoryPresenter.this::onSearchClicked, SEARCH_DELAY);
         });
     }
 
