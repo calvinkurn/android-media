@@ -104,6 +104,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
 import com.tokopedia.kolcommon.data.pojo.Author;
 import com.tokopedia.profile.view.activity.ProfileActivity;
@@ -1593,6 +1594,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
             DynamicPostViewModel model
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
             trackCardPostClick(positionInFeed, model.getTrackingPostModel());
+        }
+    }
+
+    @Override
+    public void onMediaGridClick(int positionInFeed, int contentPosition, @NotNull String redirectLink, boolean isSingleItem) {
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(positionInFeed, model.getTrackingPostModel());
+
+            if (!isSingleItem && getActivity() != null){
+                startActivity(MediaPreviewActivity.createIntent(getActivity(), String.valueOf(model.getId()), contentPosition));
+            }
         }
     }
 

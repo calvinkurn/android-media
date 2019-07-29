@@ -47,6 +47,7 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -488,6 +489,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
+    }
+
+    override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
+                                  redirectLink: String, isSingleItem: Boolean) {
+        val model = adapter.data[positionInFeed] as? DynamicPostViewModel
+        if (!isSingleItem && model != null){
+            activity?.let { startActivity(MediaPreviewActivity.createIntent(it,
+                    model.id.toString(), contentPosition))}
+        }
     }
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {

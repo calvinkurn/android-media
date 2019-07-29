@@ -70,6 +70,7 @@ import com.tokopedia.kol.feature.postdetail.view.analytics.KolPostDetailAnalytic
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -841,7 +842,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onImageClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
         onGoToLink(redirectLink);
+    }
 
+    @Override
+    public void onMediaGridClick(int positionInFeed, int contentPosition,
+                                 @NotNull String redirectLink, boolean isSingleItem) {
+        if (!isSingleItem && getActivity() != null){
+            startActivity(MediaPreviewActivity.createIntent(getActivity(), postId.toString(), contentPosition));
+        }
     }
 
     @Override

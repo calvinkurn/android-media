@@ -47,6 +47,7 @@ import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -938,6 +939,24 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
+                                  redirectLink: String, isSingleItem: Boolean) {
+        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+            val model = adapter.list[positionInFeed] as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.IMAGE,
+                    redirectLink
+            )
+            if (!isSingleItem){
+                activity?.let { startActivity(MediaPreviewActivity.createIntent(it,
+                        model.id.toString(), contentPosition))}
+            }
+        }
+    }
+
     override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
             if (isClick) {
@@ -1005,13 +1024,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onVideoPlayerClicked(
-            positionInFeed: Int,
-            contentPosition: Int,
-            postId: String) {
+        positionInFeed: Int,
+        contentPosition: Int,
+        postId: String) {
         startActivity(VideoDetailActivity.getInstance(
-                activity!!,
-                postId))
-
+            activity!!,
+            postId))
     }
 
     override fun onEmptyComponentClicked() {
