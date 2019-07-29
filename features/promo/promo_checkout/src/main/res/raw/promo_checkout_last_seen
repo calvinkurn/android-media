@@ -1,0 +1,8 @@
+query rechargePromoBanner($categoryIDs: [Int]!){
+  rechargePromoBanner(categoryIDs: $categoryIDs) {
+    id
+    title
+    subtitle
+    promo_code
+  }
+}

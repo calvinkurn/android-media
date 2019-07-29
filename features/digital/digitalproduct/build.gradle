@@ -54,6 +54,8 @@ dependencies {
     implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.libraries.permissionchecker)
 
+    implementation project(rootProject.ext.features.promoCheckoutCommon)
+
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.guava
