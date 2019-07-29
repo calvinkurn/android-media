@@ -16,6 +16,7 @@ class HashtagLandingPageActivity : BaseSimpleActivity(), HasComponent<ExploreCom
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        this.intent = intent
         inflateFragment()
     }
 
