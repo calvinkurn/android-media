@@ -30,12 +30,11 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
-import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
-import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.expresscheckout.view.variant.CheckoutVariantItemDecorator
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
-import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantActionListener
+import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantItemDecorator
+import com.tokopedia.purchase_platform.express_checkout.view.variant.adapter.CheckoutVariantAdapter
+import com.tokopedia.purchase_platform.express_checkout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerConstants
@@ -58,6 +57,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,10 +65,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import com.tokopedia.tradein.model.TradeInParams
-import rx.Observable
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
 import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import javax.inject.Inject

@@ -142,6 +142,7 @@ include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:checkout"
 include "features:transaction:transactioninvoice"
+include "features:transaction:purchase_platform"
 
 include "features:user:attachproduct"
 include "features:user:bankdb"

@@ -1,6 +1,6 @@
 package com.tokopedia.normalcheckout.view
 
-import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.*
 import rx.subscriptions.CompositeSubscription
 
 /**

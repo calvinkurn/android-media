@@ -315,6 +315,7 @@ ext {
             transactionanalytics            : ":features:transaction:transactionanalytics",
             checkout                        : ":features:transaction:checkout",
             transactionInvoice              : ":features:transaction:transactioninvoice",
+            purchase_platform               : ":features:transaction:purchase_platform",
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             expressCheckout                 : ":features:transaction:express_checkout",

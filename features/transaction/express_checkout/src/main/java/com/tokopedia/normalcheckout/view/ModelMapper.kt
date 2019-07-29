@@ -1,11 +1,10 @@
 package com.tokopedia.normalcheckout.view
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
-import com.tokopedia.expresscheckout.view.variant.viewmodel.*
-import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
-import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
-import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
+import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.*
+import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.product.detail.common.data.model.product.Picture
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef.ACTIVE
@@ -15,6 +14,7 @@ import com.tokopedia.product.detail.common.data.model.variant.Option
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.purchase_platform.express_checkout.data.constant.MAX_QUANTITY
 import kotlin.math.roundToInt
 
 object ModelMapper {

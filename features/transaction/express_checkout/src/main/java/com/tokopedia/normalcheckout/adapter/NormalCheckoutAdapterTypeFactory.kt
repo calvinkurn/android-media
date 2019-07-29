@@ -1,15 +1,9 @@
 package com.tokopedia.normalcheckout.adapter
 
-import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
-import com.tokopedia.expresscheckout.view.variant.viewholder.*
-import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantActionListener
+import com.tokopedia.purchase_platform.express_checkout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 
 class NormalCheckoutAdapterTypeFactory(listener: CheckoutVariantActionListener) : CheckoutVariantAdapterTypeFactory(listener) {
     //we do not want the shimmering layout
