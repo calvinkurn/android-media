@@ -57,7 +57,6 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
         return when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
-            ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             else -> ""
         }
     }
