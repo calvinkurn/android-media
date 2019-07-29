@@ -146,6 +146,7 @@
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda
 /libraries/linker                       @tokopedia/minion-yoda
+/libraries/cmnotification               @tokopedia/minion-yoda
 
 /libraries/pagination                   @tokopedia/minion-solo
 /libraries/common_network/              @tokopedia/minion-solo

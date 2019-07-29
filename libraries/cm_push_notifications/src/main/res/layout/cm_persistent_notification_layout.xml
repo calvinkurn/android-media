@@ -138,10 +138,11 @@
             android:textSize="@dimen/sp_10" />
     </LinearLayout>
 
+    <!--Don't convert these image to Vector: Strictly Prohibited-->
     <ImageView
         android:id="@+id/image_icon5"
         android:layout_width="@dimen/dp_36"
         android:layout_height="@dimen/dp_36"
         android:padding="@dimen/dp_11"
-        android:src="@drawable/ic_persist_close" />
+        android:src="@drawable/cm_ic_close_black" />
 </LinearLayout>
