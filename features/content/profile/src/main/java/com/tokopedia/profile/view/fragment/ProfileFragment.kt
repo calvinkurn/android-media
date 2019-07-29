@@ -206,7 +206,56 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         presenter.attachView(this)
         initVar(savedInstanceState)
         super.onViewCreated(view, savedInstanceState)
+        layoutManager = recyclerView.layoutManager as GridLayoutManager
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy < 0) { // going up
+                    if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
+                        showFooterOthers()
+                    }
+                } else if (dy > 0) { // going down
+                    if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
+                }
+            }
 
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                try {
+                    if (hasFeed()
+                            && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        recyclerView?.let {
+                            FeedScrollListener.onFeedScrolled(it, adapter.list)
+                        }
+                    }
+                } catch (e: IndexOutOfBoundsException) {
+                }
+            }
+        })
+        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            val spacing = context!!.resources.getDimensionPixelOffset(R.dimen.dp_16)
+            val halfSpacing = spacing / 2
+            val spanCount = 2
+            override fun getItemOffsets(outRect: Rect, view: View,
+                                        parent: RecyclerView, state: RecyclerView.State) {
+                // if in feed mode, will have no item decoration
+                if (hasFeed()) return
+                val position = parent.getChildAdapterPosition(view)
+                val viewType = adapter.getItemViewType(position)
+                val inGrid = viewType == OtherRelatedProfileViewHolder.LAYOUT
+                if (inGrid) {
+                    val column = position % spanCount
+                    if (column == 0) {
+                        outRect.left = spacing
+                        outRect.right = halfSpacing
+                    } else {
+                        outRect.left = halfSpacing
+                        outRect.right = spacing
+                    }
+                    outRect.bottom = spacing
+                }
+            }
+        })
     }
 
     override fun onStart() {
@@ -334,9 +383,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getUserSession(): UserSession = UserSession(context)
 
-    fun onOtherProfilePostItemClick(applink: String, authorId: String) {
+    fun onOtherProfilePostItemClick(applink: String, position: Int, datum: FeedPostRelated.Datum) {
         RouteManager.route(context, applink)
-        profileAnalytics.eventClickOtherPost(userId.toString(), authorId)
+        profileAnalytics.eventClickOtherPost(userId.toString(), position, datum, userSession.userId, userSession.name)
     }
 
     override fun onSuccessGetProfileFirstPage(element: DynamicFeedProfileViewModel, isFromLogin: Boolean) {
@@ -464,12 +513,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (feedPostRelated != null && feedPostRelated.meta.totalItems > 0) {
             visitables.add(TitleViewModel())
             feedPostRelated.data
-                    .filter { it.content.body.media[0].thumbnail.isNotEmpty() }
-                    .forEach {
-                        //this will be changed later by DA, because efficiency
-                        //profileAnalytics.eventImpressionOtherPost(userId.toString(), it.content.tracking.authorID)
-                        visitables.add(OtherRelatedProfileViewModel(it))
-                    }
+                .filter { it.content.body.media[0].thumbnail.isNotEmpty() }
+                .also {
+                    profileAnalytics.eventImpressionOtherPost(userId.toString(), it, userSession.userId, userSession.name)
+                }
+                .forEachIndexed { index, datum ->
+                    visitables.add(OtherRelatedProfileViewModel(datum, index))
+                }
         }
         renderList(visitables, false)
     }
@@ -1013,57 +1063,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         remoteConfig = FirebaseRemoteConfigImpl(context)
 
         isOwner = userId.toString() == userSession.userId
-
-        layoutManager = recyclerView.layoutManager as GridLayoutManager
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy < 0) { // going up
-                    if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
-                        showFooterOthers()
-                    }
-                } else if (dy > 0) { // going down
-                    if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
-                }
-            }
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                try {
-                    if (hasFeed()
-                            && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        recyclerView?.let {
-                            FeedScrollListener.onFeedScrolled(it, adapter.list)
-                        }
-                    }
-                } catch (e: IndexOutOfBoundsException) {
-                }
-            }
-        })
-        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            val spacing = context!!.resources.getDimensionPixelOffset(R.dimen.dp_16)
-            val halfSpacing = spacing / 2
-            val spanCount = 2
-            override fun getItemOffsets(outRect: Rect, view: View,
-                                        parent: RecyclerView, state: RecyclerView.State) {
-                // if in feed mode, will have no item decoration
-                if (hasFeed()) return
-                val position = parent.getChildAdapterPosition(view)
-                val viewType = adapter.getItemViewType(position)
-                val inGrid = viewType == OtherRelatedProfileViewHolder.LAYOUT
-                if (inGrid) {
-                    val column = position % spanCount
-                    if (column == 0) {
-                        outRect.left = spacing
-                        outRect.right = halfSpacing
-                    } else {
-                        outRect.left = halfSpacing
-                        outRect.right = spacing
-                    }
-                    outRect.bottom = spacing
-                }
-            }
-        })
     }
 
     private fun hasFeed(): Boolean {
