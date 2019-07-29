@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.PorterDuff
-import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintLayout.LayoutParams.PARENT_ID
 import android.support.constraint.ConstraintLayout.LayoutParams.UNSET
@@ -99,13 +98,10 @@ class PartialButtonActionView private constructor(private val view: View,
                 btn_apply_credit.visibility  = View.VISIBLE
                 btn_add_to_cart.visibility = View.GONE
                 btn_buy_now.visibility = View.GONE
-                changeButtonTopChatParamsForApplyCredit()
-                Handler().postDelayed({
-                    resetTopChatParams()
-                },5000)
+                changeButtonTopChatLayoutParamsForApplyCredit()
             }else{
                 btn_apply_credit.visibility  = View.GONE
-                resetTopChatParams()
+                resetTopChatLayoutParams()
             }
 
             btn_buy_now.setOnClickListener {
@@ -121,18 +117,18 @@ class PartialButtonActionView private constructor(private val view: View,
         }
     }
 
-    private fun resetTopChatParams() {
+    private fun resetTopChatLayoutParams() {
         with(view){
             btn_topchat.layoutParams = btnTopChatOriginalLayoutParams
         }
     }
 
-    private fun changeButtonTopChatParamsForApplyCredit() {
+    private fun changeButtonTopChatLayoutParamsForApplyCredit() {
         with(view){
             val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
             topChatParams.goneLeftMargin = PARENT_ID
             topChatParams.goneStartMargin = PARENT_ID
-            topChatParams.startToEnd = -1
+            topChatParams.startToEnd = UNSET
             topChatParams.startToStart = PARENT_ID
             topChatParams.rightToLeft = btn_apply_credit.id
             topChatParams.endToStart = btn_apply_credit.id

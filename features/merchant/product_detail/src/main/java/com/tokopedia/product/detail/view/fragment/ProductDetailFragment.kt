@@ -459,7 +459,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
         appbar.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0)})
-        refreshLayout?.setOnRefreshListener { loadProductData(true) }
+        refreshLayout?.setOnRefreshListener {
+            actionButtonView.isLeasing = false
+            loadProductData(true)
+        }
 
         if (isAffiliate) {
             actionButtonView.gone()
