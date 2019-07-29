@@ -502,6 +502,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         for (InsuranceCartShopItems insuranceCartShopItems : ((InsuranceCartShops) item).getShopItemsList()) {
                             if (insuranceCartShopItems.getProductId() == productId) {
                                 cartDataList.remove(item);
+                                notifyDataSetChanged();
                             }
                         }
                     } else if (item instanceof CartShopHolderData) {
@@ -509,12 +510,13 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             if (cartItemHolderData.getCartItemData() != null) {
                                 if (cartItemHolderData.getCartItemData().getOriginData().getProductId().equalsIgnoreCase(String.valueOf(productId))) {
                                     cartItemHolderData.getCartItemData().setMicroInsuranceData(null);
+                                    notifyDataSetChanged();
                                 }
                             }
                         }
                     }
                 }
-                notifyDataSetChanged();
+
             }
 
         } catch (Exception e) {
@@ -567,20 +569,27 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return insuranceCartShopsList;
     }
 
-    public ArrayList<InsuranceCartShops> isInsuranceCartProductUnSelected() {
+    public ArrayList<InsuranceCartDigitalProduct> isInsuranceCartProductUnSelected() {
 
-        ArrayList<InsuranceCartShops> insuranceCartShopsList = new ArrayList<>();
+        ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
         for (InsuranceCartShops insuranceCartShops : insuranceCartList) {
 
             if (insuranceCartShops != null &&
-                    insuranceCartShops.getShopItemsList().get(0) != null &&
-                    insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0) != null &&
-                    !insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).getOptIn()) {
-
-                insuranceCartShopsList.add(insuranceCartShops);
+                    !insuranceCartShops.getShopItemsList().isEmpty()) {
+                for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
+                    if (insuranceCartShopItems.getDigitalProductList() != null &&
+                            !insuranceCartShopItems.getDigitalProductList().isEmpty()) {
+                        for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+                            if (!insuranceCartDigitalProduct.getOptIn()) {
+                                insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct);
+                            }
+                        }
+                    }
+                }
             }
+
         }
-        return insuranceCartShopsList;
+        return insuranceCartDigitalProductArrayList;
     }
 
     public ArrayList<InsuranceCartDigitalProduct> getUnselectedMicroInsuranceProduct() {

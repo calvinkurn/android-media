@@ -525,14 +525,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
         return view -> {
             if (message == null || message.equals("")) {
-                ArrayList<InsuranceCartShops> insuranceCartShopsArrayList = cartAdapter.isInsuranceCartProductUnSelected();
-                if (!insuranceCartShopsArrayList.isEmpty()) {
-                    deleteMacroInsurance(insuranceCartShopsArrayList, false);
-                }
+                ArrayList<InsuranceCartDigitalProduct> insuranceCartShopsArrayList = cartAdapter.isInsuranceCartProductUnSelected();
 
                 ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = cartAdapter.getUnselectedMicroInsuranceProduct();
-                if (!insuranceCartDigitalProductArrayList.isEmpty()) {
-                    deleteMicroInsurance(insuranceCartDigitalProductArrayList, false);
+                insuranceCartShopsArrayList.addAll(insuranceCartDigitalProductArrayList);
+
+                if (!insuranceCartShopsArrayList.isEmpty()) {
+                    deleteMicroInsurance(insuranceCartShopsArrayList, false);
                 }
 
 
@@ -1926,9 +1925,26 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public InsuranceCartShops getInsuranceCartShopData() {
+    public ArrayList<InsuranceCartDigitalProduct> getInsuranceCartShopData() {
         try {
-            return cartAdapter.getInsuranceCartShops().get(0);
+
+            ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
+            for (InsuranceCartShops insuranceCartShops : cartAdapter.getInsuranceCartShops()) {
+                if (insuranceCartShops != null &&
+                        !insuranceCartShops.getShopItemsList().isEmpty()) {
+                    for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
+                        if (insuranceCartShopItems.getDigitalProductList() != null &&
+                                !insuranceCartShopItems.getDigitalProductList().isEmpty()) {
+                            for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+                                insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct);
+                            }
+                        }
+                    }
+                }
+
+            }
+            return insuranceCartDigitalProductArrayList;
+
         } catch (Exception e) {
             return null;
         }
@@ -1955,25 +1971,28 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
                 for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                     for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
-                        if (insuranceCartDigitalProduct.isProductLevel()) {
-                            List<CartItemData> cartItemDataList = cartAdapter.getAllCartItemData();
-                            if (cartItemDataList != null && !cartItemDataList.isEmpty()) {
-                                for (CartItemData cartItemData : cartItemDataList) {
-                                    if (String.valueOf(insuranceCartShopItems.getProductId()).
-                                            equalsIgnoreCase(cartItemData.getOriginData().getProductId())) {
-                                        insuranceCartDigitalProduct.setShopId(cartItemData.getOriginData().getShopId());
-                                        insuranceCartDigitalProduct.setProductId(cartItemData.getOriginData().getProductId());
+                        List<CartItemData> cartItemDataList = cartAdapter.getAllCartItemData();
+                        if (cartItemDataList != null && !cartItemDataList.isEmpty()) {
+                            for (CartItemData cartItemData : cartItemDataList) {
+                                if (String.valueOf(insuranceCartShopItems.getProductId()).
+                                        equalsIgnoreCase(cartItemData.getOriginData().getProductId())) {
+                                    insuranceCartDigitalProduct.setShopId(cartItemData.getOriginData().getShopId());
+                                    insuranceCartDigitalProduct.setProductId(cartItemData.getOriginData().getProductId());
+
+                                    if (insuranceCartDigitalProduct.isProductLevel()) {
                                         cartItemData.setMicroInsuranceData(insuranceCartDigitalProduct);
+                                    } else {
+                                        cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
                                     }
+
                                 }
-                                cartAdapter.notifyDataSetChanged();
+
                             }
-                        } else {
-                            cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
                         }
                     }
                 }
             }
+            cartAdapter.notifyDataSetChanged();
         }
 
     }
@@ -2133,7 +2152,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
 
     @Override
-    public void deleteMacroInsurance(@NotNull ArrayList<InsuranceCartShops> insuranceCartShops, boolean showConfirmationDialog) {
+    public void deleteMacroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList, boolean showConfirmationDialog) {
         if (showConfirmationDialog) {
             View view = getLayoutInflater().inflate(R.layout.remove_insurance_product, null, false);
             AlertDialog alertDialog = new AlertDialog.Builder(getContext())
@@ -2144,7 +2163,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             view.findViewById(R.id.button_positive).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dPresenter.processDeleteCartInsurance(insuranceCartShops, showConfirmationDialog);
+                    dPresenter.processDeleteCartInsurance(insuranceCartDigitalProductArrayList, showConfirmationDialog);
                     alertDialog.dismiss();
                 }
             });
@@ -2156,7 +2175,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
             });
         } else {
-            dPresenter.processDeleteCartInsurance(insuranceCartShops, showConfirmationDialog);
+            dPresenter.processDeleteCartInsurance(insuranceCartDigitalProductArrayList, showConfirmationDialog);
         }
     }
 

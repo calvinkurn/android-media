@@ -86,7 +86,6 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -336,7 +335,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processDeleteCartInsurance(ArrayList<InsuranceCartShops> insuranceCartShopsArrayList, boolean showToaster) {
+    public void processDeleteCartInsurance(ArrayList<InsuranceCartDigitalProduct> insuranceCartShopsArrayList, boolean showToaster) {
 
         if (insuranceCartShopsArrayList != null &&
                 !insuranceCartShopsArrayList.isEmpty()) {
@@ -344,18 +343,25 @@ public class CartListPresenter implements ICartListPresenter {
             ArrayList<String> cartIdList = new ArrayList<>();
             ArrayList<RemoveInsuranceData> removeInsuranceDataArrayList = new ArrayList<>();
             List<Long> productIdArrayList = new ArrayList<>();
-            for (InsuranceCartShops insuranceCartShops : insuranceCartShopsArrayList) {
-                Long shopid = insuranceCartShops.getShopId();
-
-                long productId = 0;
-                for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
-                    productId = insuranceCartShopItems.getProductId();
-                    Long cartId = insuranceCartShopItems.getDigitalProductList().get(0).getCartItemId();
-                    cartIdList.add(String.valueOf(cartId));
-                    RemoveInsuranceData removeInsuranceData = new RemoveInsuranceData(cartId, shopid, productId);
-                    removeInsuranceDataArrayList.add(removeInsuranceData);
-                    productIdArrayList.add(productId);
+            for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopsArrayList) {
+                long shopid;
+                long productId;
+                try {
+                    shopid = Long.parseLong(insuranceCartDigitalProduct.getShopId());
+                } catch (Exception e) {
+                    shopid = 0;
                 }
+
+                try {
+                    productId = Long.parseLong(insuranceCartDigitalProduct.getProductId());
+                } catch (Exception e) {
+                    productId = 0;
+                }
+                Long cartId = insuranceCartDigitalProduct.getCartItemId();
+                cartIdList.add(String.valueOf(cartId));
+                RemoveInsuranceData removeInsuranceData = new RemoveInsuranceData(cartId, shopid, productId);
+                removeInsuranceDataArrayList.add(removeInsuranceData);
+                productIdArrayList.add(productId);
             }
 
 
@@ -831,7 +837,7 @@ public class CartListPresenter implements ICartListPresenter {
 
                 if (data.getCartItemData().getMicroInsuranceData() != null &&
                         data.getCartItemData().getMicroInsuranceData().getOptIn()) {
-                    totalPrice = totalPrice + data.getCartItemData().getMicroInsuranceData().getPricePerProduct();
+                    totalPrice = totalPrice + (data.getCartItemData().getUpdatedData().getQuantity() * data.getCartItemData().getMicroInsuranceData().getPricePerProduct());
                 }
             }
         }
@@ -1192,9 +1198,7 @@ public class CartListPresenter implements ICartListPresenter {
                     if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()) {
 
                         if (removeInsurance) {
-                            ArrayList<InsuranceCartShops> insuranceCartShopsArrayList = new ArrayList<>();
-                            insuranceCartShopsArrayList.add(view.getInsuranceCartShopData());
-                            processDeleteCartInsurance(insuranceCartShopsArrayList, false);
+                            processDeleteCartInsurance(view.getInsuranceCartShopData(), false);
                         }
 
                         if (removeAllItems) {
