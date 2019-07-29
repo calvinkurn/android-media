@@ -39,7 +39,6 @@ class PartialButtonActionView private constructor(private val view: View,
     var isSpecialPrize: Boolean = false
     var isLeasing: Boolean = false
     var preOrder: PreOrder? = PreOrder()
-    var btnTopChatOriginalLayoutParams: ViewGroup.LayoutParams
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
@@ -47,7 +46,6 @@ class PartialButtonActionView private constructor(private val view: View,
 
     init {
         with(view) {
-            btnTopChatOriginalLayoutParams = btn_topchat.layoutParams
             pb_buy_now.indeterminateDrawable
                 .setColorFilter(ContextCompat.getColor(context, R.color.orange_red), PorterDuff.Mode.SRC_IN)
             pb_add_to_cart.indeterminateDrawable
@@ -99,12 +97,6 @@ class PartialButtonActionView private constructor(private val view: View,
                 btn_apply_credit.visibility  = View.VISIBLE
                 btn_add_to_cart.visibility = View.GONE
                 btn_buy_now.visibility = View.GONE
-                changeButtonTopChatParamsForApplyCredit()
-                Handler().postDelayed({
-                    resetTopChatParams()
-                },5000)
-            }else{
-                resetTopChatParams()
             }
 
             btn_buy_now.setOnClickListener {
@@ -118,22 +110,6 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
             btn_apply_credit.setOnClickListener(this@PartialButtonActionView)
         }
-    }
-
-    private fun resetTopChatParams() {
-        with(view){
-            btn_topchat.layoutParams = btnTopChatOriginalLayoutParams
-        }
-    }
-
-    private fun changeButtonTopChatParamsForApplyCredit() {
-        with(view){
-            val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
-            topChatParams.goneLeftMargin = 0
-            topChatParams.goneStartMargin = 0
-            btn_topchat.layoutParams = topChatParams
-        }
-
     }
 
     private fun showShopManageButton() {
