@@ -310,7 +310,6 @@ dependencies {
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.hotel)
-    implementation project(rootProject.ext.features.imagePreviewSlider)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transaction)
