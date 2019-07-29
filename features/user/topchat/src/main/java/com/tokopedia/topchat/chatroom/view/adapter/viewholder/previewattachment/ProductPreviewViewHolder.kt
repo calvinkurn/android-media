@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
 
@@ -54,10 +55,9 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
             productColorVariant?.hide()
         }
 
-        if (model.hasSizeVariant()) {
+        val productHasSizeVariant = model.hasSizeVariant()
+        productSizeVariant?.shouldShowWithAction(productHasSizeVariant) {
             productSizeVariantValue?.text = model.sizeVariant
-        } else {
-            productSizeVariant?.hide()
         }
     }
 
