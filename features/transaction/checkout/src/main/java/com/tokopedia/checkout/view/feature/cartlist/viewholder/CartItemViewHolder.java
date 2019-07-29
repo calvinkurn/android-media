@@ -263,6 +263,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                         viewHolderListener.onNeedToRefreshAllShop();
                     }
                 }
+
+                if (!isChecked) {
+                    cbSelectMicroInsurance.setChecked(isChecked);
+                }
             }
         });
     }
