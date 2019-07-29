@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_green_e_voucher"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_16">
+
+            <com.tokopedia.hotel.common.presentation.widget.TicketView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tv_anchor1="@+id/ticket_head"
+                app:tv_circleRadius="@dimen/dp_8">
+
+                <LinearLayout
+                    android:id="@+id/ticket_head"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_hotel_ticket_top"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dp_16">
+
+                    <LinearLayout
+                        android:id="@+id/container_rating_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_property_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:gravity="center"
+                        app:fontSize="titleBig"
+                        app:textViewTheme="lightPrimary"
+                        app:weight="medium"
+                        tools:text="Avissa Suites" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_property_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:gravity="center"
+                        app:fontSize="micro"
+                        tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat." />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_property_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:gravity="center"
+                        app:fontSize="micro"
+                        tools:text="No. Telepon: 0231 204464" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ticket_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ticket_head"
+                    android:background="@drawable/bg_hotel_ticket_bottom"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/dp_16">
+
+                    <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
+                        android:id="@+id/rdv_checkin_checkout_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        android:background="@drawable/bg_hotel_ticket_divider"
+                        android:layerType="software" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_guest_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        app:fontSize="micro"
+                        tools:text="Nama Tamu" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_guest_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        app:fontSize="small"
+                        app:textViewTheme="lightPrimary"
+                        app:weight="medium"
+                        tools:text="Muhammad Furqan" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_booking_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        app:fontSize="micro"
+                        tools:text="Kode Booking" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_booking_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        app:fontSize="small"
+                        app:textViewTheme="lightPrimary"
+                        app:weight="medium"
+                        tools:text="XYZABABA110" />
+
+                </LinearLayout>
+
+            </com.tokopedia.hotel.common.presentation.widget.TicketView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16"
+                android:background="@drawable/bg_hotel_ticket_rounded"
+                android:orientation="vertical">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    android:text="@string/hotel_e_voucher_detail_order_title"
+                    app:fontSize="micro"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"
+                    tools:text="DETAIL PESANAN" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_room_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    app:fontSize="small"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"
+                    tools:text="Kamar Deluxe Double" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_room_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    app:fontSize="micro"
+                    tools:text="2 Kamar • 2 Tamu" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_room_facility"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    app:fontSize="micro"
+                    tools:text="Termasuk Sarapan, Refund Bersyarat" />
+
+                <View android:id="@+id/hotel_detail_seperator"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:background="@drawable/bg_hotel_ticket_divider"
+                    android:layerType="software" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_request_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    app:fontSize="micro"
+                    tools:text="Permintaan Khusus" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_request_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    app:fontSize="small"
+                    app:textViewTheme="lightPrimary"
+                    tools:text="Saya ingin kamar yang view nya pantai, dingin, dan tambahan extra bed 2 yah mas tolong." />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@drawable/bg_hotel_ticket_rounded"
+                android:orientation="vertical">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    android:text="@string/hotel_e_voucher_cancellation_policy_title"
+                    app:fontSize="micro"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    android:id="@+id/rv_cancellation_policies">
+
+                </android.support.v7.widget.RecyclerView>
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    android:text="@string/hotel_e_voucher_local_time"
+                    android:textSize="@dimen/sp_10" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_16">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/hotel_e_voucher_powered_by"
+                app:fontSize="micro" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_hotel_booking_com_logo"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardElevation="@dimen/dp_2"
+    android:layout_marginTop="@dimen/dp_2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_25"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_25">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/payment_info_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Informasi Pembayaran"
+            app:fontSize="small"
+            app:textViewTheme="lightPrimary"
+            app:weight="medium"
+            tools:textColor="@color/light_primary"
+            tools:textSize="@dimen/sp_14"
+            tools:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/payment_info_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24" />
+
+        <View
+            android:id="@+id/payment_seperator_1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/grey_300"
+            app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/payment_fares_recycler_View"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16" />
+
+        <View
+            android:id="@+id/payment_seperator_2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/grey_300"
+            app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/payment_summary_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/bottom_conditional_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            app:fontSize="micro"
+            tools:text="Kartu Kredit Anda tidak akan terpotong biaya apapun dikarenakan transaksi gagal."
+            tools:textSize="@dimen/sp_12" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -13,7 +13,6 @@ public class NpsConstant {
     }
 
     public class Analytic {
-
         public static final String IMPRESSION_APP_RATING = "impressionAppRating";
         public static final String CLICK_APP_RATING = "clickAppRating";
         public static final String CANCEL_APP_RATING = "cancelAppRating";
@@ -22,5 +21,12 @@ public class NpsConstant {
         public static final String IMPRESSION = "Impression";
 
         public static final String CLICK = "Click";
+    }
+
+    public class Feedback {
+        public static final int GOOD_RATING_THRESHOLD = 3;
+        public static final String PACKAGE_CONSUMER_APP = "com.tokopedia.tkpd";
+        public static final String APPLINK_PLAYSTORE = "market://details?id=";
+        public static final String URL_PLAYSTORE = "https://play.google.com/store/apps/details?id=";
     }
 }

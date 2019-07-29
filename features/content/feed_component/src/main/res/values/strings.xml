@@ -30,5 +30,18 @@
 
     <string name="string_posttag_buy">Beli</string>
 
+    <string name="empty_product">Kosong</string>
+
+    <!--SHARE BOTTOM SHEETS ASSETS-->
+    <string name="error_failed_add_product">Anda Gagal Menambah Produk, Silakan Coba Lagi</string>
+    <string name="title_share">Bagikan</string>
+    <string name="title_share_en">Share</string>
+    <string name="copy">Salin Link</string>
+    <string name="other">Lainnya</string>
+    <string name="title_youtube">Youtube</string>
+    <string name="menu_copy">Salin</string>
+    <string name="msg_copy">Teks berhasil disalin.</string>
+    <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
+
 
 </resources>

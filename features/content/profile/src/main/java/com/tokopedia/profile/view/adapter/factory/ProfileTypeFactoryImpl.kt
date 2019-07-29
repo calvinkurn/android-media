@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
@@ -52,7 +52,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val videoViewListener: VideoViewHolder.VideoViewListener,
                              private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                              private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
-                             private val onOtherProfilePostItemClick: ((applink: String, authorId:String) -> Unit),
+                             private val onOtherProfilePostItemClick: ((applink: String, position: Int, datum: FeedPostRelated.Datum) -> Unit),
                              private val userSession : UserSessionInterface)
 
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {

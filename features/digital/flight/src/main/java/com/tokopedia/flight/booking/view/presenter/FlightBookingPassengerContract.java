@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 
 import java.util.Date;
 import java.util.List;
@@ -184,8 +184,8 @@ public interface FlightBookingPassengerContract {
 
         void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxxDate);
 
-        void onNationalityChanged(FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel);
+        void onNationalityChanged(CountryPhoneCode flightPassportNationalityViewModel);
 
-        void onIssuerCountryChanged(FlightBookingPhoneCodeViewModel flightPassportIssuerCountry);
+        void onIssuerCountryChanged(CountryPhoneCode flightPassportIssuerCountry);
     }
 }

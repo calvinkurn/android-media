@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -30,7 +33,8 @@ class FeedShopPresenter @Inject constructor(
         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
         private val likeKolPostUseCase: LikeKolPostUseCase,
         private val deletePostUseCase: DeletePostUseCase,
-        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase
+        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
+        private val atcUseCase: AddToCartUseCase
 ):
         BaseDaggerPresenter<FeedShopContract.View>(),
         FeedShopContract.Presenter {
@@ -305,6 +309,34 @@ class FeedShopPresenter @Inject constructor(
                     }
                 }
         )
+    }
+
+    override fun addPostTagItemToCart(postTagItem: PostTagItem) {
+        if (postTagItem.shop.isNotEmpty()) {
+            atcUseCase.execute(
+                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop.first().shopId),
+                    object : Subscriber<AddToCartDataModel>() {
+                        override fun onNext(model: AddToCartDataModel?) {
+                            if (model?.data?.success != 1) {
+                                view.onAddToCartFailed(postTagItem.applink)
+                            } else {
+                                view.onAddToCartSuccess()
+                            }
+                        }
+
+                        override fun onCompleted() {
+
+                        }
+
+                        override fun onError(e: Throwable?) {
+                            if (GlobalConfig.isAllowDebuggingTools()) e?.printStackTrace()
+                            view.onAddToCartFailed(postTagItem.applink)
+                        }
+                    }
+            )
+        } else {
+            view.onAddToCartFailed(postTagItem.applink)
+        }
     }
 
     private fun getUserId(): String {

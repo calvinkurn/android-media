@@ -289,6 +289,7 @@ dependencies {
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)

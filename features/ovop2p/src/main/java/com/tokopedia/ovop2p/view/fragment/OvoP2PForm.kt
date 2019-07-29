@@ -484,7 +484,10 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Constants.Keys.RESULT_CODE_CONTACTS_SELECTION) {
             this.rcvrName = data!!.getStringExtra(Constants.Keys.USER_NAME)
-            this.rcvrPhnNo = OvoP2pUtil.extractNumbersFromString(data.getStringExtra(Constants.Keys.USER_NUMBER))
+            var phoneNo = OvoP2pUtil.extractNumbersFromString(data.getStringExtra(Constants.Keys.USER_NUMBER))
+            if(phoneNo.length <= Constants.Thresholds.PHONE_NO_LENGTH) {
+                this.rcvrPhnNo = phoneNo
+            }
             setSearchQueryListener()
             setSearchViewQuery()
         }
@@ -497,7 +500,13 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun setSearchViewQuery() {
-        val searchViewStr = "$rcvrPhnNo - $rcvrName"
+        var searchViewStr = ""
+        searchViewStr = if(!TextUtils.isEmpty(rcvrName)) {
+            "$rcvrPhnNo - $rcvrName"
+        }
+        else{
+            rcvrPhnNo
+        }
         searchView.setQuery(searchViewStr, false)
     }
 

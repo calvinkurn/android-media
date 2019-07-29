@@ -65,8 +65,6 @@ interface RegisterInitialContract {
 
         fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit
 
-        fun onGoToPhoneVerification(): () -> Unit
-
         fun onGoToChangeName()
 
         fun onGoToForbiddenPage()

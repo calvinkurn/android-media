@@ -13,6 +13,9 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity
+import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.FlightModuleRouter
@@ -20,10 +23,8 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity
-import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.adapter.*
-import com.tokopedia.flight.booking.view.fragment.FLightBookingPhoneCodeFragment
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.booking.widget.FlightInsuranceView
@@ -143,9 +144,9 @@ class FlightBookingFragment : BaseDaggerFragment(),
                 val passengerViewModel = data!!.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
                 flightBookingPresenter.onPassengerResultReceived(passengerViewModel)
             }
-            REQUEST_CODEP_PHONE_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val phoneCodeViewModel = data!!.getParcelableExtra<FlightBookingPhoneCodeViewModel>(FLightBookingPhoneCodeFragment.EXTRA_SELECTED_PHONE_CODE)
-                flightBookingPresenter.onPhoneCodeResultReceived(phoneCodeViewModel)
+            REQUEST_CODE_PHONE_CODE -> if (resultCode == Activity.RESULT_OK) {
+                val phoneCode = data!!.getParcelableExtra<CountryPhoneCode>(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
+                flightBookingPresenter.onPhoneCodeResultReceived(phoneCode)
             }
             REQUEST_CODE_NEW_PRICE_DIALOG -> if (resultCode != Activity.RESULT_OK) {
                 FlightFlowUtil.actionSetResultAndClose(activity!!,
@@ -544,8 +545,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     private fun initView() {
         et_phone_country_code.setOnClickListener {
-            startActivityForResult(FlightBookingPhoneCodeActivity.getCallingIntent(activity),
-                    REQUEST_CODEP_PHONE_CODE)
+            startActivityForResult(PhoneCodePickerActivity.getCallingIntent(activity),
+                    REQUEST_CODE_PHONE_CODE)
         }
 
         button_submit.setOnClickListener {
@@ -595,7 +596,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         private val KEY_PARAM_EXPIRED_DATE = "KEY_PARAM_EXPIRED_DATE"
 
         private val REQUEST_CODE_PASSENGER = 1
-        private val REQUEST_CODEP_PHONE_CODE = 2
+        private val REQUEST_CODE_PHONE_CODE = 2
         private val REQUEST_CODE_NEW_PRICE_DIALOG = 3
         private val REQUEST_CODE_REVIEW = 4
         private val REQUEST_CODE_OTP = 5
