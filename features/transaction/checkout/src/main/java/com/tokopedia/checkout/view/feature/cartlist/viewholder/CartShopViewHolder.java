@@ -5,7 +5,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
@@ -15,7 +14,6 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
@@ -184,7 +182,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     tickerPromoStackingCheckoutView.enableView();
                     if (disabledItem > 0) {
                         if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
-                            cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getIsAutoapply()) {
+                                cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getIsAutoapply()) {
                             actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
                             tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
                             tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
@@ -324,7 +322,10 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     }
 
                     for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                        cartItemHolderData.getCartItemData().getMicroInsuranceData().setOptIn(isAllSelected);
+                        if (cartItemHolderData.getCartItemData() != null &&
+                                cartItemHolderData.getCartItemData().getMicroInsuranceData() != null) {
+                            cartItemHolderData.getCartItemData().getMicroInsuranceData().setOptIn(isAllSelected);
+                        }
                     }
 
                     cartShopHolderData.setAllSelected(isAllSelected);
