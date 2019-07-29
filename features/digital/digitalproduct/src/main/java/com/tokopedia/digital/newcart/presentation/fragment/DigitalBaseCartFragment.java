@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -12,8 +13,9 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
@@ -28,7 +30,6 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -39,12 +40,16 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetail
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.promocheckout.common.data.ConstantKt;
+import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel;
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +57,7 @@ import java.util.Map;
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
         InputPriceHolderView.ActionListener,
-        VoucherCartHachikoView.ActionListener,
+        TickerCheckoutView.ActionListener,
         DigitalCartCheckoutHolderView.ActionListener {
     protected static final String ARG_PASS_DATA = "ARG_PASS_DATA";
     protected static final String ARG_CART_INFO = "ARG_CART_INFO";
@@ -72,9 +77,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
     private SaveInstanceCacheManager saveInstanceCacheManager;
     private DigitalAnalytics digitalAnalytics;
-    private String voucherName;
+    protected PromoData promoData = new PromoData();
 
     private static final String EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER";
+    private static final String EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA";
 
     protected P presenter;
 
@@ -84,6 +90,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         digitalAnalytics = new DigitalAnalytics();
+        if (savedInstanceState != null) {
+            promoData = savedInstanceState.getParcelable(EXTRA_STATE_PROMO_DATA);
+        }
     }
 
     @Override
@@ -99,6 +108,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(EXTRA_STATE_PROMO_DATA, promoData);
         super.onSaveInstanceState(outState);
         saveInstanceCacheManager.onSave(outState);
         saveInstanceCacheManager.put(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER, checkoutDataParameterBuilder);
@@ -112,41 +122,39 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void renderHachikoCart() {
-        checkoutHolderView.setVoucherActionListener(this);
-        checkoutHolderView.showHachikoCart();
+    public void renderPromoTicker() {
+        checkoutHolderView.setPromoTickerActionListener(this);
+        checkoutHolderView.showPromoTicker();
     }
 
     @Override
-    public void renderHachikoPromoAndCouponLabel() {
-        checkoutHolderView.setHachikoPromoAndCouponLabel();
+    public void hidePromoTicker() {
+        checkoutHolderView.hidePromoTicker();
     }
 
     @Override
-    public void renderHachikoPromoLabelOnly() {
-        checkoutHolderView.setHachikoPromoLabelOnly();
+    public void resetPromoTicker() {
+        checkoutHolderView.resetPromoTicker();
     }
 
     @Override
-    public void hideHachikoCart() {
-        checkoutHolderView.hideHachikoCart();
+    public void renderPromo() {
+        checkoutHolderView.setPromoTickerActionListener(this);
+        checkoutHolderView.setPromoInfo(promoData.getTitle(), promoData.getDescription(), promoData.getState());
     }
 
     @Override
-    public void renderHachikoCoupon(String title, String message, String voucherCode) {
-        checkoutHolderView.setVoucherActionListener(this);
-        checkoutHolderView.setHachikoCoupon(title, message, voucherCode);
+    public void onAutoApplyPromo(String couponTitle, String couponMessage, String couponCode, int isCoupon) {
+        promoData.setTitle(couponTitle);
+        promoData.setDescription(couponMessage);
+        promoData.setPromoCode(couponCode);
+        promoData.setTypePromo(isCoupon);
+        promoData.setState(TickerCheckoutView.State.ACTIVE);
     }
 
     @Override
     public void enableVoucherDiscount(long discountAmountPlain) {
         checkoutHolderView.enableVoucherDiscount(discountAmountPlain);
-    }
-
-    @Override
-    public void renderHachikoVoucher(String voucherCode, String message) {
-        checkoutHolderView.setVoucherActionListener(this);
-        checkoutHolderView.setVoucher(voucherCode, message);
     }
 
     @Override
@@ -161,7 +169,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public CheckoutDataParameter.Builder getCheckoutDataParameter() {
-        checkoutDataParameterBuilder.voucherCode(checkoutHolderView.getVoucherCode());
+        checkoutDataParameterBuilder.voucherCode(promoData.getPromoCode());
         return checkoutDataParameterBuilder;
     }
 
@@ -207,58 +215,55 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void onClickUseVoucher() {
-        presenter.onUseVoucherButtonClicked();
+    public void onClickUsePromo() {
         digitalAnalytics.eventclickUseVoucher(cartDigitalInfoData.getAttributes().getCategoryName());
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
+        intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+        intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
+        startActivityForResult(intent, ConstantKt.getREQUST_CODE_LIST_PROMO());
     }
 
-    @Override
-    public void disableVoucherDiscount() {
-        presenter.onClearVoucher();
-    }
-
-    @Override
-    public void trackingSuccessVoucher(String title, String voucherName) {
-        this.voucherName = voucherName;
-    }
-
-    @Override
-    public void trackingCancelledVoucher() {
-        digitalAnalytics.eventclickCancelApplyCoupon(cartDigitalInfoData.getAttributes().getCategoryName(), voucherName);
-    }
-
-
-    @Override
-    public void navigateToCouponActiveAndSelected(String categoryId) {
-        Intent intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(
-                cartDigitalInfoData.getAttributes().getCategoryName(),
-                getActivity(), IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, categoryId
+    private PromoDigitalModel getPromoDigitalModel() {
+        return new PromoDigitalModel(
+                Integer.parseInt(cartPassData.getCategoryId()),
+                getProductId(),
+                cartPassData.getClientNumber(),
+                cartDigitalInfoData.getAttributes().getPricePlain()
         );
-        navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+    }
+
+    @Override
+    public void onDisablePromoDiscount() {
+        digitalAnalytics.eventclickCancelApplyCoupon(cartDigitalInfoData.getAttributes().getCategoryName(), promoData.getPromoCode());
+        promoData.setPromoCode("");
+    }
+
+    @Override
+    public void onClickDetailPromo() {
+        Intent intent;
+        String promoCode = promoData.getPromoCode();
+        if (!promoCode.isEmpty()) {
+            int requestCode;
+            if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
+                intent.putExtra("EXTRA_PROMO_CODE", promoCode);
+                intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+                requestCode = ConstantKt.getREQUST_CODE_LIST_PROMO();
+            } else {
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);
+                intent.putExtra("EXTRA_IS_USE", true);
+                intent.putExtra("EXTRA_KUPON_CODE", promoCode);
+                requestCode = ConstantKt.getREQUEST_CODE_PROMO_DETAIL();
+            }
+            intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
+            startActivityForResult(intent, requestCode);
+        } else {
+            showToastMessage(getString(R.string.promo_none_applied));
+        }
     }
 
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
-    }
-
-
-    @Override
-    public void navigateToCouponActive(String categoryId) {
-        Intent intent = LoyaltyActivity.newInstanceCouponActive(
-                cartDigitalInfoData.getAttributes().getCategoryName(),
-                getActivity(), IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, categoryId
-        );
-        navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-    }
-
-    @Override
-    public void navigateToCouponNotActive(String categoryId) {
-        Intent intent = LoyaltyActivity.newInstanceCouponNotActive(
-                cartDigitalInfoData.getAttributes().getCategoryName(),
-                getActivity(), IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING,
-                categoryId
-        );
-        navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
     @Override
@@ -274,47 +279,44 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
-                Bundle bundle = data.getExtras();
-                if (bundle != null) {
-                    String voucherCode = bundle.getString(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
-                    String voucherMessage = bundle.getString(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
-                    long voucherDiscountAmount = bundle.getLong(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
-
-                    presenter.onReceiveVoucherCode(voucherCode, voucherMessage, voucherDiscountAmount, 0);
-                }
-            } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
-                Bundle bundle = data.getExtras();
-                if (bundle != null) {
-                    String couponTitle = bundle.getString(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, "");
-                    String couponMessage = bundle.getString(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "");
-                    String couponCode = bundle.getString(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
-                    long couponDiscountAmount = bundle.getLong(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
-
-                    presenter.onReceiveCoupon(couponTitle, couponMessage, couponCode, couponDiscountAmount, 1);
+        if ((requestCode == ConstantKt.getREQUST_CODE_LIST_PROMO() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
+            if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
+                promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
+                // Check between apply promo code or cancel promo from promo detail
+                switch (promoData.getState()) {
+                    case EMPTY: {
+                        promoData.setPromoCode("");
+                        resetPromoTicker();
+                        break;
+                    }
+                    case FAILED: {
+                        promoData.setPromoCode("");
+                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        break;
+                    }
+                    case ACTIVE: {
+                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        break;
+                    }
+                    default: { }
                 }
             }
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    if (getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
-                        ((DigitalModuleRouter) getActivity().getApplicationContext()).
-                                showAdvancedAppRatingDialog(getActivity(), dialog -> {
-                                    getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
-                                    closeView();
-                                });
+                    if (getActivity() != null && getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
+
+                        ((DigitalModuleRouter) getActivity().getApplicationContext())
+                                .showAppFeedbackRatingDialog(
+                                        manager,
+                                        () -> {
+                                            getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
+                                            closeView();
+                                        }
+                                );
                     }
-
                     presenter.onPaymentSuccess(cartPassData.getCategoryId());
-
                     break;
                 case TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(

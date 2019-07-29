@@ -347,6 +347,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             Bundle bundle = new Bundle();
             bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
             bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, msisdn);
+            String otpCode =  inputOtp.getText().toString().trim();
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, otpCode);
             intent.putExtras(bundle);
             getActivity().setResult(Activity.RESULT_OK, intent);
             getActivity().finish();

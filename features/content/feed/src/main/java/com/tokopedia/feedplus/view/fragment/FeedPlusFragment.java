@@ -1608,7 +1608,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPostTagItemBuyClicked(@NotNull PostTagItem postTagItem) {
+    public void onPostTagItemBuyClicked(int positionInFeed, @NotNull PostTagItem postTagItem) {
         presenter.addPostTagItemToCart(postTagItem);
     }
 
