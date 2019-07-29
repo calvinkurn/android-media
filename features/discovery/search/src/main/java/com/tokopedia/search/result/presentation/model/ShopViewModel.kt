@@ -115,9 +115,9 @@ data class ShopViewModel(
                         "name", name,
                         "id", id,
                         "price", price,
-                        "brand", "",
-                        "category", "",
-                        "variant", "",
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "variant", "none / other",
                         "list", "/searchproduct - shop product list",
                         "position", position
                 )
@@ -128,10 +128,11 @@ data class ShopViewModel(
                         "name", name,
                         "id", id,
                         "price", price,
-                        "brand", "",
-                        "category", "",
-                        "variant", "",
-                        "position", position)
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "variant", "none / other",
+                        "position", position
+                )
             }
 
             constructor(parcel: Parcel) : this(
