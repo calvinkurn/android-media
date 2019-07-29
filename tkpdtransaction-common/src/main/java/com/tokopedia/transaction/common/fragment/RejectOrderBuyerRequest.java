@@ -85,7 +85,7 @@ public class RejectOrderBuyerRequest extends Fragment implements RejectOrderReas
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        if (getArguments().getInt(NEW_CANCELLATION_FLOW_ARGUMENT, OLD_CANCELLATION_FLOW) == NEW_CANCELLATION_FLOW) {
+        if (isNewFlow()) {
             View view = inflater.inflate(R.layout.order_reject_buyer_request_new, container, false);
             RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
             otherReasonField = view.findViewById(R.id.other_reason_field);
@@ -119,6 +119,10 @@ public class RejectOrderBuyerRequest extends Fragment implements RejectOrderReas
         }
     }
 
+    private boolean isNewFlow() {
+        return getArguments() != null && getArguments().getInt(NEW_CANCELLATION_FLOW_ARGUMENT, OLD_CANCELLATION_FLOW) == NEW_CANCELLATION_FLOW;
+    }
+
     private View.OnClickListener onConfirmCancelOrderButton(
             final EditText notesField,
             final TextInputLayout notesTextInputLayout) {
@@ -147,7 +151,7 @@ public class RejectOrderBuyerRequest extends Fragment implements RejectOrderReas
     public void onChecked(int position, String reason, int reasonCode) {
         adapter.markChecked(position);
         this.reason = reason;
-        this.reasonCode = reasonCode+"";
+        this.reasonCode = String.valueOf(reasonCode);
         setButtonCancelSearch(true);
         if(getString(R.string.title_other_reason).equals(reason)){
             otherReasonField.setVisibility(View.VISIBLE);
@@ -162,21 +166,25 @@ public class RejectOrderBuyerRequest extends Fragment implements RejectOrderReas
     ) {
         return view -> {
             if (otherReasonField.getVisibility() == View.GONE && reason!=null) {
-                HashMap<String, String> rejectParam = new HashMap<>();
-                rejectParam.put(ORDER_ID, getArguments().getString(ORDER_ID_ARGUMENT));
-                rejectParam.put(REASON, reason);
-                rejectParam.put(R_CODE, reasonCode);
-                listener.rejectOrderBuyerRequest(rejectParam);
+                if (getArguments() != null) {
+                    HashMap<String, String> rejectParam = new HashMap<>();
+                    rejectParam.put(ORDER_ID, getArguments().getString(ORDER_ID_ARGUMENT));
+                    rejectParam.put(REASON, reason);
+                    rejectParam.put(R_CODE, reasonCode);
+                    listener.rejectOrderBuyerRequest(rejectParam);
+                }
             } else if (otherReasonField.getVisibility() == View.VISIBLE) {
                 if (otherReasonField.getText().toString().isEmpty()) {
                     otherReasonField.setError(getActivity()
                             .getString(R.string.error_note_empty));
                 } else {
-                    HashMap<String, String> rejectParam = new HashMap<>();
-                    rejectParam.put(ORDER_ID, getArguments().getString(ORDER_ID_ARGUMENT));
-                    rejectParam.put(REASON, otherReasonField.getText().toString());
-                    rejectParam.put(R_CODE, reasonCode);
-                    listener.rejectOrderBuyerRequest(rejectParam);
+                    if (getArguments() != null) {
+                        HashMap<String, String> rejectParam = new HashMap<>();
+                        rejectParam.put(ORDER_ID, getArguments().getString(ORDER_ID_ARGUMENT));
+                        rejectParam.put(REASON, otherReasonField.getText().toString());
+                        rejectParam.put(R_CODE, reasonCode);
+                        listener.rejectOrderBuyerRequest(rejectParam);
+                    }
                 }
             } else {
                 setButtonCancelSearch(false);

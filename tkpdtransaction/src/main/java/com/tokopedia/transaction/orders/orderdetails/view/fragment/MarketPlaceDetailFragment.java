@@ -635,7 +635,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                     intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
                     if (this.status.status().equals("220") || this.status.status().equals("400")) {
-                        if (!TextUtils.isEmpty(presenter.getCancelTime())) {
+                        if (presenter.shouldShowTimeForCancellation()) {
                             Toaster.Companion.showError(mainView,
                                     getContext().getResources().getString(
                                             R.string.tkpdtransaction_cancellation_with_time,

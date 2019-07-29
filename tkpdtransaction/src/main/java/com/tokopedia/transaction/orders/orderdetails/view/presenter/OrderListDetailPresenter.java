@@ -543,10 +543,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     public String getCancelTime() {
-        if (requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
-                && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime())) {
-            return requestCancelInfo.getRequestCancelMinTime();
-        }
-        return null;
+        return requestCancelInfo.getRequestCancelMinTime();
+    }
+
+    public boolean shouldShowTimeForCancellation(){
+        return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
+                && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
 }
