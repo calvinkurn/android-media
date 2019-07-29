@@ -36,7 +36,7 @@ object ProductDetailConstant {
     const val URL_VALUE_PROPOSITION_ORI ="https://www.tokopedia.com/help/article/a-1938"
     const val URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS ="https://www.tokopedia.com/help/article/a-1939"
     const val URL_VALUE_PROPOSITION_GUARANTEE = "https://www.tokopedia.com/help/article/a-1940"
-    const val URL_APPLY_CREDIT = "https://www.tokopedia.com/kredit-motor?productID=%s"
+    const val URL_APPLY_CREDIT = "https://www.tokopedia.com/kredit-motor/kalkulator?productID=%s"
 
 
 }

@@ -9,4 +9,4 @@ annotation class ProductAction {}
 const val ATC_ONLY = 0
 const val ATC_AND_BUY = 1 // or preorder
 const val TRADEIN_BUY = 2
-const val URL_APPLY_CREDIT = "https://www.tokopedia.com/kredit-motor?productID=%s"
+const val URL_APPLY_CREDIT = "https://www.tokopedia.com/kredit-motor/kalkulator?productID=%s"
