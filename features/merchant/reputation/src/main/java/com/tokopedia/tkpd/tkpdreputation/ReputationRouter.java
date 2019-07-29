@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.design.component.BottomSheets;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +30,7 @@ public interface ReputationRouter {
 
     Intent getTopProfileIntent(Context context, String reviewUserId);
 
-    void showAdvancedAppRatingDialog(Activity activity,
-                                     DialogInterface.OnDismissListener dismissListener);
+    void showAppFeedbackRatingDialog(FragmentManager fragmentManager, BottomSheets.BottomSheetDismissListener listener);
 
     void showSimpleAppRatingDialog(Activity activity);
 }

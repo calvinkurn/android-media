@@ -216,6 +216,9 @@ public class EventsItemDomain {
     @SerializedName("forms")
     @Expose
     private Object forms;
+    @SerializedName("custom_text_1")
+    @Expose
+    private int customText1;
 
     public int getId() {
         return id;
@@ -767,5 +770,13 @@ public class EventsItemDomain {
 
     public void setLiked(boolean liked) {
         isLiked = liked;
+    }
+
+    public int getCustomText1() {
+        return customText1;
+    }
+
+    public void setCustomText1(int customText1) {
+        this.customText1 = customText1;
     }
 }

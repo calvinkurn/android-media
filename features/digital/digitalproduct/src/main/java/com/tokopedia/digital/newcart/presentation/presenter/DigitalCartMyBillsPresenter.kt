@@ -6,6 +6,7 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase
 import com.tokopedia.digital.common.router.DigitalModuleRouter
 import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType
 import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache
@@ -22,7 +23,8 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                                                       val userSession: UserSession?,
                                                       digitalCheckoutUseCase: DigitalCheckoutUseCase?,
                                                       digitalInstantCheckoutUseCase: DigitalInstantCheckoutUseCase?,
-                                                      digitalPostPaidLocalCache: DigitalPostPaidLocalCache?) :
+                                                      digitalPostPaidLocalCache: DigitalPostPaidLocalCache?,
+                                                      rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase?) :
         DigitalBaseCartPresenter<DigitalCartMyBillsContract.View>(digitalAddToCartUseCase,
                 digitalAnalytics,
                 digitalModuleRouter,
@@ -30,7 +32,8 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase,
-                digitalPostPaidLocalCache), DigitalCartMyBillsContract.Presenter {
+                digitalPostPaidLocalCache,
+                rechargePushEventRecommendationUseCase), DigitalCartMyBillsContract.Presenter {
     override fun onSubcriptionCheckedListener(checked: Boolean) {
 
         if (checked) {

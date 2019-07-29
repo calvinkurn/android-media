@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -63,6 +64,8 @@ import com.tokopedia.cod.view.CodActivity;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -102,7 +105,6 @@ import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
-import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -252,8 +254,6 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
-import com.tokopedia.nps.NpsRouter;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
@@ -263,7 +263,7 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.view.PaymentQRSummaryActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.setting.PaymentSettingInternalRouter;
 import com.tokopedia.payment.setting.util.PaymentSettingRouter;
@@ -399,7 +399,6 @@ import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
-import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -485,7 +484,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsWebViewRouter,
         ChangePasswordRouter,
         TrainRouter,
-        WithdrawRouter,
         EventModuleRouter,
         ChallengesModuleRouter,
         MitraToppersRouter,
@@ -500,7 +498,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MerchantVoucherModuleRouter,
         LinkerRouter,
         TopAdsDashboardRouter,
-        NpsRouter,
         DigitalRouter,
         TopAdsRouter,
         CMRouter,
@@ -2671,11 +2668,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getProfileSettingIntent(Context context) {
-        return ManagePeopleProfileActivity.createIntent(context);
-    }
-
-    @Override
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
     }
@@ -2857,12 +2849,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return TradeInUtils.getDeviceId(context);
     }
 
-    /**
-     * App Rating - Nps
-     */
     @Override
-    public void showAdvancedAppRatingDialog(Activity activity, DialogInterface.OnDismissListener dismissListener) {
-        AdvancedAppRatingDialog.show(activity, dismissListener);
+    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, BottomSheets.BottomSheetDismissListener dismissListener) {
+        if (fragmentManager != null) {
+            AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+            rating.setDialogDismissListener(dismissListener);
+            rating.show(fragmentManager, "AppFeedbackRatingBottomSheet");
+        }
     }
 
     @Override

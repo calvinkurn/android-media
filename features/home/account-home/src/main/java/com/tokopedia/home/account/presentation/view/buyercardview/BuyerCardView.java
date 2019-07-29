@@ -31,7 +31,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private TextView textCouponAmount;
     private ProgressBar progressBar;
     private View byMeButton;
-    private View nameHolder;
     private View tokopointHolder;
     private View couponHolder;
     private BuyerCardPresenter buyerCardPresenter;
@@ -62,7 +61,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         textCouponAmount = view.findViewById(R.id.text_voucher_amount);
         progressBar = view.findViewById(R.id.circular_progress_bar);
         byMeButton = view.findViewById(R.id.by_me_button);
-        nameHolder = view.findViewById(R.id.holder_title);
         tokopointHolder = view.findViewById(R.id.holder_tokopoint);
         couponHolder = view.findViewById(R.id.holder_coupon);
         buyerCardPresenter = new BuyerCardPresenter();
@@ -139,11 +137,13 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     }
 
     public void setOnClickProfile(View.OnClickListener listener) {
-        nameHolder.setOnClickListener(listener);
+        textUsername.setOnClickListener(listener);
+        imageProfileCompleted.setOnClickListener(listener);
     }
 
     public void setOnClickProfileCompletion(View.OnClickListener listener) {
         textProfileCompletion.setOnClickListener(listener);
+        imageProfileProgress.setOnClickListener(listener);
     }
 
     public void setOnClickTokoPoint(View.OnClickListener listener) {

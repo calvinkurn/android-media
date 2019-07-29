@@ -61,8 +61,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private final CartItemAdapter.ActionListener actionListener;
     private ViewHolderListener viewHolderListener;
 
-    // private LinearLayout llWarningAndError;
-    private Ticker tickerWarningAndError;
+    private LinearLayout llWarningAndError;
     private FrameLayout flCartItemContainer;
     private CheckBox cbSelectItem;
     private ImageView ivProductImage;
@@ -80,12 +79,12 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView btnDelete;
     private TextView tvErrorFormValidation;
     private TextView tvErrorFormRemarkValidation;
-    /*private LinearLayout layoutError;
-    private TextView tvErrorTitle;
-    private TextView tvErrorDescription;
+
+    private LinearLayout layoutError;
+    private Ticker tickerError;
     private LinearLayout layoutWarning;
-    private TextView tvWarningTitle;
-    private TextView tvWarningDescription;*/
+    private Ticker tickerWarning;
+
     private TextView tvNoteCharCounter;
     private FlexboxLayout productProperties;
     private TextView tvRemark;
@@ -115,8 +114,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.actionListener = actionListener;
         this.context = itemView.getContext();
 
-        // this.llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
-        this.tickerWarningAndError = itemView.findViewById(R.id.ticker_cart);
+        this.llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
         this.flCartItemContainer = itemView.findViewById(R.id.fl_cart_item_container);
         this.cbSelectItem = itemView.findViewById(R.id.cb_select_item);
         this.tvErrorFormValidation = itemView.findViewById(R.id.tv_error_form_validation);
@@ -134,12 +132,12 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option);
         this.etRemark = itemView.findViewById(R.id.et_remark);
         this.btnDelete = itemView.findViewById(R.id.btn_delete_cart);
-        /*this.layoutError = itemView.findViewById(R.id.layout_error);
-        this.tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
-        this.tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
+
+        this.layoutError = itemView.findViewById(R.id.layout_error);
+        this.tickerError = itemView.findViewById(R.id.ticker_error);
         this.layoutWarning = itemView.findViewById(R.id.layout_warning);
-        this.tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
-        this.tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);*/
+        this.tickerWarning = itemView.findViewById(R.id.ticker_warning);
+
         this.tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
         this.productProperties = itemView.findViewById(R.id.product_properties);
         this.tvRemark = itemView.findViewById(R.id.tv_remark);
@@ -293,11 +291,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if ((!TextUtils.isEmpty(data.getCartItemData().getErrorMessageTitle()) ||
                 !TextUtils.isEmpty(data.getCartItemData().getWarningMessageTitle())) &&
                 (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
-            // llWarningAndError.setVisibility(View.VISIBLE);
-            tickerWarningAndError.setVisibility(View.VISIBLE);
+            llWarningAndError.setVisibility(View.VISIBLE);
         } else {
-            // llWarningAndError.setVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.GONE);
+            llWarningAndError.setVisibility(View.GONE);
         }
     }
 
@@ -309,8 +305,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart);
         }
-        // llWarningAndError.setVisibility(View.GONE);
-        tickerWarningAndError.setVisibility(View.GONE);
+        llWarningAndError.setVisibility(View.GONE);
     }
 
     private void renderProductInfo(CartItemHolderData data, int parentPosition) {
@@ -667,32 +662,21 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
             String errorDescription = data.getCartItemData().getErrorMessageDescription();
             if (!TextUtils.isEmpty(errorDescription)) {
-                tickerWarningAndError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
-                tickerWarningAndError.setTextDescription(errorDescription);
+                tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
+                tickerError.setTextDescription(errorDescription);
             } else {
-                tickerWarningAndError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                tickerError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
             }
-            tickerWarningAndError.setTickerType(Ticker.TYPE_ERROR);
-            tickerWarningAndError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerWarningAndError.setCloseButtonVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.VISIBLE);
-
-            /*tvErrorTitle.setText(data.getCartItemData().getErrorMessageTitle());
-            String errorDescription = data.getCartItemData().getErrorMessageDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
-                tvErrorDescription.setText(errorDescription);
-                tvErrorDescription.setVisibility(View.VISIBLE);
-            } else {
-                tvErrorDescription.setVisibility(View.GONE);
-            }
-            layoutError.setVisibility(View.VISIBLE);*/
+            tickerError.setTickerType(Ticker.TYPE_ERROR);
+            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerError.setCloseButtonVisibility(View.GONE);
+            tickerError.setVisibility(View.VISIBLE);
+            layoutError.setVisibility(View.VISIBLE);
 
         } else {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart);
-
-            // layoutError.setVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.GONE);
+            layoutError.setVisibility(View.GONE);
         }
     }
 
@@ -700,33 +684,20 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if (data.getCartItemData().isWarning()) {
             String warningDescription = data.getCartItemData().getWarningMessageDescription();
             if (!TextUtils.isEmpty(warningDescription)) {
-                tickerWarningAndError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
-                tickerWarningAndError.setTextDescription(warningDescription);
+                tickerWarning.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
+                tickerWarning.setTextDescription(warningDescription);
             } else {
-                tickerWarningAndError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                tickerWarning.setTextDescription(data.getCartItemData().getErrorMessageTitle());
             }
-            tickerWarningAndError.setTickerType(Ticker.TYPE_WARNING);
-            tickerWarningAndError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerWarningAndError.setCloseButtonVisibility(View.GONE);
-            tickerWarningAndError.setVisibility(View.VISIBLE);
-        } else {
-            tickerWarningAndError.setVisibility(View.GONE);
-        }
-
-
-        /*if (data.getCartItemData().isWarning()) {
-            tvWarningTitle.setText(data.getCartItemData().getWarningMessageTitle());
-            String warningDescription = data.getCartItemData().getWarningMessageDescription();
-            if (!TextUtils.isEmpty(warningDescription)) {
-                tvWarningDescription.setText(warningDescription);
-                tvWarningDescription.setVisibility(View.VISIBLE);
-            } else {
-                tvWarningDescription.setVisibility(View.GONE);
-            }
+            tickerWarning.setTickerType(Ticker.TYPE_WARNING);
+            tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerWarning.setCloseButtonVisibility(View.GONE);
+            tickerWarning.setVisibility(View.VISIBLE);
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
+            tickerWarning.setVisibility(View.GONE);
             layoutWarning.setVisibility(View.GONE);
-        }*/
+        }
     }
 
     private void checkQtyMustDisabled(CartItemHolderData cartItemHolderData, int qty) {

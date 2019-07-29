@@ -29,6 +29,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
@@ -56,7 +57,6 @@ import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
-import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child

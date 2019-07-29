@@ -491,28 +491,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         checkForShipmentForm();
     }
 
-    public void addCartRecommendationData(CartSectionHeaderHolderData cartSectionHeaderHolderData,
-                                          List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList) {
-        int recommendationIndex = 0;
-        for (Object item : cartDataList) {
-            if (item instanceof CartEmptyHolderData ||
-                    item instanceof CartShopHolderData ||
-                    item instanceof CartRecentViewHolderData ||
-                    item instanceof CartWishlistHolderData ||
-                    item instanceof CartRecommendationItemHolderData ||
-                    item instanceof InsuranceCartShops) {
-                recommendationIndex = cartDataList.indexOf(item);
-            }
-        }
-
-        if (cartSectionHeaderHolderData != null) {
-            cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData);
-        }
-
-        cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList);
-        notifyDataSetChanged();
-    }
-
     public void removeInsuranceDataItem(long productId) {
         try {
             for (Object item : cartDataList) {
@@ -646,6 +624,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
                     item instanceof CartShopHolderData ||
+                    item instanceof ShipmentSellerCashbackModel ||
                     item instanceof InsuranceCartShops) {
                 recentViewIndex = cartDataList.indexOf(item);
             }
@@ -661,8 +640,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
                     item instanceof CartShopHolderData ||
+                    item instanceof ShipmentSellerCashbackModel ||
                     item instanceof CartRecentViewHolderData ||
                     item instanceof InsuranceCartShops) {
+
                 wishlistIndex = cartDataList.indexOf(item);
             }
         }
@@ -670,6 +651,30 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         cartDataList.add(++wishlistIndex, cartWishlistHolderData);
         notifyDataSetChanged();
     }
+
+    public void addCartRecommendationData(CartSectionHeaderHolderData cartSectionHeaderHolderData,
+                                          List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList) {
+        int recommendationIndex = 0;
+        for (Object item : cartDataList) {
+            if (item instanceof CartEmptyHolderData ||
+                    item instanceof CartShopHolderData ||
+                    item instanceof ShipmentSellerCashbackModel ||
+                    item instanceof CartRecentViewHolderData ||
+                    item instanceof CartWishlistHolderData ||
+                    item instanceof CartRecommendationItemHolderData ||
+                    item instanceof InsuranceCartShops) {
+                recommendationIndex = cartDataList.indexOf(item);
+            }
+        }
+
+        if (cartSectionHeaderHolderData != null) {
+            cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData);
+        }
+
+        cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList);
+        notifyDataSetChanged();
+    }
+
 
     public void removeCartEmptyData() {
         cartDataList.remove(cartEmptyHolderData);
@@ -729,14 +734,28 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void updateShipmentSellerCashback(double cashback) {
         if (cashback > 0) {
             if (shipmentSellerCashbackModel == null || cartDataList.indexOf(shipmentSellerCashbackModel) == -1) {
+                int index = 0;
+                for (Object item : cartDataList) {
+                    if (item instanceof CartShopHolderData) {
+                        index = cartDataList.indexOf(item);
+                    }
+                }
                 shipmentSellerCashbackModel = new ShipmentSellerCashbackModel();
-                cartDataList.add(shipmentSellerCashbackModel);
+                shipmentSellerCashbackModel.setVisible(true);
+                shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false));
+                cartDataList.add(++index, shipmentSellerCashbackModel);
+                notifyItemInserted(index);
+            } else {
+                shipmentSellerCashbackModel.setVisible(true);
+                shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false));
+                int index = cartDataList.indexOf(shipmentSellerCashbackModel);
+                notifyItemChanged(index);
             }
-            shipmentSellerCashbackModel.setVisible(true);
-            shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false));
         } else {
             if (shipmentSellerCashbackModel != null) {
+                int index = cartDataList.indexOf(shipmentSellerCashbackModel);
                 cartDataList.remove(shipmentSellerCashbackModel);
+                notifyItemRemoved(index);
             }
         }
 

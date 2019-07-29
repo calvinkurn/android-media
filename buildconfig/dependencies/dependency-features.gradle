@@ -23,6 +23,8 @@ ext {
     tkpdPowerMerchantVersion = '2.22'
     tkpdGroupchatVersion = '2.22'
     tkpdHomeVersion = '2.22'
+    tkpdHotelVersion = '2.22'
+    tkpdImagePreviewSliderVersion = '2.22'
     tkpdInboxVersion = '2.22'
     tkpdInterestPickVersion = '2.22'
     tkpdKolCommonVersion = '2.22'
@@ -121,6 +123,8 @@ ext {
             powerMerchantSubscribe  : "com.tokopedia.power_merchant.subscribe:powerMerchantSubscribe:${tkpdPowerMerchantVersion}",
             groupchat               : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
             home                    : "com.tokopedia.home:home:${tkpdHomeVersion}",
+            hotel                   : "com.tokopedia.hotel:hotel:${tkpdHotelVersion}",
+            imagePreviewSlider      : "com.tokopedia.imagepreviewslider:imagepreviewslider:${tkpdImagePreviewSliderVersion}",
             inbox                   : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             kol                     : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             kolCommon               : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
@@ -165,7 +169,8 @@ ext {
             userIdentificationCommon: "com.tokopedia.user:user:${tkpdUserIdentificationCommon}",
             vote                    : "com.tokopedia.user:user:${tkpdVoteVersion}",
             wishListCommon          : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
-            commonTravel            : "com.tokopedia.common.travel:${tkpdTravelVersion}"
+            commonTravel            : "com.tokopedia.common.travel:${tkpdTravelVersion}",
+            commonPayment            : "com.tokopedia.common.payment:${tkpdPaymentVersion}"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -202,11 +207,13 @@ ext {
 //            flight                          : ":features:digital:flight_no_op",
             train                           : ":features:digital:train",
 //            train                         : ":features:digital:train_no_op",
+            hotel                           : ":features:digital:hotel",
+            imagePreviewSlider              : ":features:digital:imagepreviewslider",
 
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
             flashsaleManagement             : ":features:discovery:flashsale_management",
-//            flashsaleManagement             : ":features:discovery:flashsale_management_no_op",
+//            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
             homeRecommendation              : ":features:discovery:home_recom",
@@ -358,6 +365,7 @@ ext {
             transaction                     : ":tkpdtransaction",
             transactioncommon               : ":tkpdtransaction-common",
             commonTravel                    : ":features:digital:common_travel",
+            commonPayment                   : ":features:payment:common_payment",
             ovo                             : ":features:fintech:ovo_pay_with_qr",
             agerestriction                  : ":features:category:age_restriction",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget"

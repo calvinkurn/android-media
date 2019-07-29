@@ -251,8 +251,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 view.onSuccessGetUserInfo(),
                 view.onErrorGetUserInfo(),
-                view.onGoToCreatePassword(),
-                view.onGoToPhoneVerification()))
+                view.onGoToCreatePassword()))
     }
 
     override fun getTickerInfo(){

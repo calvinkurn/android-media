@@ -122,11 +122,11 @@
     <string name="checkout_module_message_cart_error_action">Hapus produk yang berkendala</string>
     <string name="checkout_module_label_biaya_asuransi">Biaya Asuransi</string>
     <string name="checkout_module_keranjang_belanja_kosong">Keranjang Belanja Kosong</string>
-    <string name="checkout_module_keranjang_belanja_kosong_new">Belum ada Daftar Transaksi</string>
+    <string name="checkout_module_keranjang_belanja_kosong_new">Wah, keranjang belanjamu kosong</string>
     <string name="checkout_module_label_trade_in">Tukar Tambah</string>
     <string name="checkout_module_buat_impian_anda_jadi_kenyataan_sekarang">Buat impian Anda jadi kenyataan sekarang!</string>
     <string name="checkout_module_untuk_saat_ini_anda_tidak_ada_keranjang_belanja">Untuk saat ini Anda tidak ada keranjang belanja</string>
-    <string name="checkout_module_belanja_sekarang">Belanja Sekarang</string>
+    <string name="checkout_module_mulai_belanja">Mulai Belanja</string>
     <string name="checkout_module_tambahkan_dari_wishlist">Tambahkan dari Wishlist</string>
     <string name="checkout_module_label_free_returns">Free Returns</string>
     <string name="checkout_module_label_po">PO</string>
@@ -226,7 +226,7 @@
     <string name="label_shipment_address">Alamat Pengiriman</string>
     <string name="label_ellipsize">...</string>
     <string name="checkout_empty_cart_sub_message">Wujudkan Impian di Wishlist Kamu</string>
-    <string name="checkout_empty_cart_sub_message_new">Mulai belanja dan cek daftar transaksi Anda di sini.</string>
+    <string name="checkout_empty_cart_sub_message_new">Daripada dianggurin, mending isi dengan barang-barang impianmu. Yuk, cek sekarang!</string>
     <string name="checkout_empty_cart_label_recommendation">Rekomendasi</string>
     <string name="label_empty_cart_wishlist">Wishlist</string>
     <string name="label_empty_cart_see_all">Lihat Semua</string>

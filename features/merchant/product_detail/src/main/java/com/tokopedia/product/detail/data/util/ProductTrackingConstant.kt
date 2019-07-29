@@ -15,6 +15,9 @@ object ProductTrackingConstant {
         const val TOPADS_CLICK = "click - product recommendation"
         const val TOPADS_IMPRESSION = "impression - product recommendation"
         const val CLICK_BY_ME = "click - by.me"
+        const val CLICK_SHIPPING = "click - shipping"
+        const val CLICK_SHIPPING_RATE_ESTIMATION = "click - shipping rate estimation"
+
     }
 
     object Report {

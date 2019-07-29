@@ -19,7 +19,7 @@
         android:layout_height="@dimen/search_new_filter_icon_height"
         app:srcCompat="@drawable/ic_new"
         android:scaleType="fitXY"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="3dp"
         android:visibility="gone"/>
 
     <ImageView
