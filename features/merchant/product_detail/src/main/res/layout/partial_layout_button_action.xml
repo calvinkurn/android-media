@@ -206,9 +206,9 @@
         app:buttonCompatType="transaction"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/btn_buy_now"
+        app:layout_constraintLeft_toRightOf="@+id/btn_topchat"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_buy_now"
+        app:layout_constraintStart_toEndOf="@+id/btn_topchat"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 

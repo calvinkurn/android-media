@@ -1,6 +1,10 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.PorterDuff
+import android.os.Handler
+import android.support.constraint.ConstraintLayout
+import android.support.constraint.ConstraintLayout.LayoutParams.PARENT_ID
+import android.support.constraint.ConstraintLayout.LayoutParams.UNSET
 import android.support.v4.content.ContextCompat
 import android.view.View
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -92,6 +96,12 @@ class PartialButtonActionView private constructor(private val view: View,
                 btn_apply_credit.visibility  = View.VISIBLE
                 btn_add_to_cart.visibility = View.GONE
                 btn_buy_now.visibility = View.GONE
+                changeButtonTopChatParamsForApplyCredit()
+                Handler().postDelayed({
+                    resetTopChatParams()
+                },5000)
+            }else{
+                resetTopChatParams()
             }
 
             btn_buy_now.setOnClickListener {
@@ -105,6 +115,31 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
             btn_apply_credit.setOnClickListener(this@PartialButtonActionView)
         }
+    }
+
+    private fun resetTopChatParams() {
+        with(view){
+            val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
+            topChatParams.leftToRight = btn_byme.id
+            topChatParams.startToEnd = btn_byme.id
+            topChatParams.startToStart = UNSET
+            topChatParams.rightToLeft = btn_buy_now.id
+            topChatParams.endToStart = btn_buy_now.id
+            btn_topchat.requestLayout()
+        }
+    }
+
+    private fun changeButtonTopChatParamsForApplyCredit() {
+        with(view){
+            val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
+            topChatParams.leftToRight = PARENT_ID
+            topChatParams.startToEnd = UNSET
+            topChatParams.startToStart = PARENT_ID
+            topChatParams.rightToLeft = btn_apply_credit.id
+            topChatParams.endToStart = btn_apply_credit.id
+            btn_topchat.requestLayout()
+        }
+
     }
 
     private fun showShopManageButton() {
