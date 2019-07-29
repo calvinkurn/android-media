@@ -1500,11 +1500,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             userInputVariant = productId
         }
         actionButtonView.isLeasing = isLeasing
-        if(!abc){
-            abc = true
-        }else{
-            actionButtonView.isLeasing = false
-        }
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)
                         || shopInfo?.allowManage == true),
@@ -1512,7 +1507,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         actionButtonView.visibility = !isAffiliate
         activity?.invalidateOptionsMenu()
     }
-    var abc = false
 
     private fun onErrorGetProductVariantInfo() {
         //variant error, do not show variant, but still can buy the product

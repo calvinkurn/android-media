@@ -38,7 +38,6 @@ class PartialButtonActionView private constructor(private val view: View,
     var isSpecialPrize: Boolean = false
     var isLeasing: Boolean = false
     var preOrder: PreOrder? = PreOrder()
-    var btnTopChatOriginalLayoutParams: ViewGroup.LayoutParams
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
@@ -46,7 +45,6 @@ class PartialButtonActionView private constructor(private val view: View,
 
     init {
         with(view) {
-            btnTopChatOriginalLayoutParams = ConstraintLayout.LayoutParams(btn_topchat.layoutParams)
             pb_buy_now.indeterminateDrawable
                 .setColorFilter(ContextCompat.getColor(context, R.color.orange_red), PorterDuff.Mode.SRC_IN)
             pb_add_to_cart.indeterminateDrawable
