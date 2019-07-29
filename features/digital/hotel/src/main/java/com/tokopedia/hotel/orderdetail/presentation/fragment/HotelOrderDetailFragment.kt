@@ -157,7 +157,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         } else {
             refund_ticker.visibility = View.VISIBLE
             refund_ticker.tickerTitle = hotelTransportDetail.cancellation.title
-            refund_ticker.setHtmlDescription(hotelTransportDetail.cancellation.content)
+            refund_ticker.setHtmlDescription(getString(R.string.hotel_order_detail_refund_ticker, hotelTransportDetail.cancellation.content))
             refund_ticker.closeButtonVisibility = View.GONE
 
             refund_ticker.setOnClickListener {
@@ -244,7 +244,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
         if (propertyDetail.extraInfo.content.isNotBlank()) {
             special_notes.setText(createHyperlinkText(propertyDetail.extraInfo.content,
-                    propertyDetail.extraInfo.longDesc, R.string.hotel_order_detail_refund_ticker), TextView.BufferType.SPANNABLE)
+                    propertyDetail.extraInfo.longDesc, R.string.hotel_order_detail_additional_info), TextView.BufferType.SPANNABLE)
             special_notes.visibility = View.VISIBLE
             special_notes.movementMethod = LinkMovementMethod.getInstance()
         } else special_notes.visibility = View.GONE
@@ -370,7 +370,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(view: View) {
                     try {
-                        if (resId != 0) RouteManager.route(context, "tokopedia://webview?url=$content")
+                        if (resId == 0) RouteManager.route(context, "tokopedia://webview?url=$content")
                         else onImportantNotesClicked(content)
                     } catch (e: Exception) {
                     }
