@@ -2,8 +2,9 @@ package com.tokopedia.purchase_platform.express_checkout.view.variant.subscriber
 
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
+import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantContract
-import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
 import rx.Subscriber
 

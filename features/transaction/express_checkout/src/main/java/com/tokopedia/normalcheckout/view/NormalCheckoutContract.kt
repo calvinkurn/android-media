@@ -3,8 +3,8 @@ package com.tokopedia.normalcheckout.view
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.FragmentViewModel
-import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
 import java.util.*
 

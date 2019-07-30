@@ -222,25 +222,26 @@ public class RatesDataConverter {
         shipmentItemData.setType(WordUtils.capitalize(attribute.getServiceName()));
         shipmentItemData.setMultiplePriceRange(attribute.getServiceRangePrice());
         shipmentItemData.setDeliveryTimeRange(attribute.getServiceEtd());
-        shipmentItemData.setCourierItemData(getCourierItemDataList(attribute.getProducts(), shipmentItemData));
+        shipmentItemData.setCourierItemData(getCourierItemDataList(attribute, shipmentItemData));
         return shipmentItemData;
     }
 
-    private List<CourierItemData> getCourierItemDataList(List<com.tokopedia.logisticdata.data.entity.rates.Product> products,
+    private List<CourierItemData> getCourierItemDataList(Attribute attribute,
                                                          ShipmentItemData shipmentItemData) {
         List<CourierItemData> courierItemDataList = new ArrayList<>();
-        for (com.tokopedia.logisticdata.data.entity.rates.Product product : products) {
-            courierItemDataList.add(getCourierItemData(product, shipmentItemData));
+        for (com.tokopedia.logisticdata.data.entity.rates.Product product : attribute.getProducts()) {
+            courierItemDataList.add(getCourierItemData(attribute.getServiceId(), product, shipmentItemData));
         }
         return courierItemDataList;
     }
 
-    private CourierItemData getCourierItemData(com.tokopedia.logisticdata.data.entity.rates.Product product,
+    private CourierItemData getCourierItemData(int serviceId, com.tokopedia.logisticdata.data.entity.rates.Product product,
                                                ShipmentItemData shipmentItemData) {
         CourierItemData courierItemData = new CourierItemData();
         courierItemData.setUsePinPoint(product.getIsShowMap() == 1);
         courierItemData.setName(product.getShipperName());
         courierItemData.setShipperId(product.getShipperId());
+        courierItemData.setServiceId(serviceId);
         courierItemData.setShipperProductId(product.getShipperProductId());
         courierItemData.setInsuranceUsedInfo(product.getInsuranceUsedInfo());
         courierItemData.setInsurancePrice(product.getInsurancePrice());

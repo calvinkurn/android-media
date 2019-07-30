@@ -56,7 +56,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var currentLong: Double? = 0.0
     private var bottomSheetBehavior: BottomSheetBehavior<CoordinatorLayout>? = null
     val handler = Handler()
-    private var unnamedRoad: String = "Unnamed Road"
+    private var UNNAMED_ROAD: String = "Unnamed Road"
     private var isShowingAutocomplete: Boolean? = null
     private var isRequestingLocation: Boolean? = null
     private var isGetDistrict = false
@@ -127,10 +127,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             isShowingAutocomplete = arguments?.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE)
             isRequestingLocation = arguments?.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION)
             isPolygon = arguments?.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
-            districtId = arguments?.getInt(AddressConstants.EXTRA_DISTRICT_ID)
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
             isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)
             saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+            districtId = saveAddressDataModel?.districtId
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             isChangesRequested = arguments?.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED)
         }
@@ -145,7 +145,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
-        presenter.autofill("$currentLat,$currentLong")
+        presenter.autofill(currentLat ?: 0.0, currentLong ?: 0.0)
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -178,7 +178,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
         }
 
-        et_detail_address?.run  {
+        et_detail_address?.run {
             setOnClickListener {
                 getdistrict_container?.findViewById<ButtonCompat>(R.id.btn_choose_location)?.requestFocusFromTouch()
                 getdistrict_container?.findViewById<EditText>(R.id.et_detail_address)?.requestFocusFromTouch()
@@ -256,11 +256,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private fun onMapIdleListener() {
         if (!isGetDistrict) {
             val target: LatLng? = this.googleMap?.cameraPosition?.target
-            val latTarget = target?.latitude
-            val longTarget = target?.longitude
+            val latTarget = target?.latitude ?: 0.0
+            val longTarget = target?.longitude ?: 0.0
 
             presenter.clearCacheAutofill()
-            presenter.autofill("$latTarget,$longTarget")
+            presenter.autofill(latTarget, longTarget)
         } else {
             whole_loading_container?.visibility = View.GONE
             invalid_container?.visibility = View.GONE
@@ -299,10 +299,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
+        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == MONAS_LAT && currentLong == MONAS_LONG) {
+            presenter.requestLocation(requireActivity())
+        }
         if (AddNewAddressUtils.isGpsEnabled(context)) {
-            if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == MONAS_LAT && currentLong == MONAS_LONG) {
-                presenter.requestLocation(requireActivity())
-            }
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
             ic_current_location.setImageResource(R.drawable.ic_gps_disable)
@@ -398,15 +398,53 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
+    override fun showOutOfReachDialog() {
+        whole_loading_container?.visibility = View.GONE
+        getdistrict_container?.visibility = View.GONE
+        invalid_container?.visibility = View.VISIBLE
+
+        invalid_title?.text = getString(R.string.out_of_indonesia_title)
+        invalid_desc?.text = getString(R.string.out_of_indonesia_desc)
+        invalid_img?.setImageResource(R.drawable.tokopedia_out_of_indonesia)
+        invalid_button?.visibility = View.GONE
+
+        invalid_ic_search_btn?.setOnClickListener {
+            currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+        }
+    }
+
+    override fun showUndetectedDialog() {
+        whole_loading_container?.visibility = View.GONE
+        getdistrict_container?.visibility = View.GONE
+        invalid_container?.visibility = View.VISIBLE
+
+        invalid_title?.text = getString(R.string.undetected_title)
+        invalid_desc?.text = getString(R.string.undetected_desc)
+        invalid_img?.setImageResource(R.drawable.tokopedia_konslet)
+        invalid_button?.visibility = View.GONE
+
+        invalid_ic_search_btn?.setOnClickListener {
+            currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+        }
+    }
+
     private fun updateGetDistrictBottomSheet(saveAddressDataModel: SaveAddressDataModel) {
         this.saveAddressDataModel = saveAddressDataModel
-        if (saveAddressDataModel.title.equals(unnamedRoad, true)) {
+        if (saveAddressDataModel.title.equals(UNNAMED_ROAD, true)) {
             whole_loading_container?.visibility = View.GONE
             getdistrict_container?.visibility = View.GONE
             invalid_container?.visibility = View.VISIBLE
 
             invalid_title?.text = getString(R.string.invalid_title)
-            invalid_desc?.text = saveAddressDataModel.formattedAddress
+            invalid_desc?.text = getString(R.string.invalid_desc)
+            invalid_img?.setImageResource(R.drawable.ic_invalid_location)
+            invalid_button?.apply{
+                visibility = View.VISIBLE
+                setOnClickListener {
+                    AddNewAddressAnalytics.eventClickButtonUnnamedRoad()
+                    goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true)
+                }
+            }
 
             invalid_ic_search_btn?.setOnClickListener {
                 currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
@@ -433,14 +471,16 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 text = saveAddressDataModel.title
                 setOnClickListener {
                     AddNewAddressAnalytics.eventClickFieldCariLokasi()
-                    showAutoCompleteBottomSheet(saveAddressDataModel.title) }
+                    showAutoCompleteBottomSheet(saveAddressDataModel.title)
+                }
             }
 
             tv_address_getdistrict?.apply {
                 text = saveAddressDataModel.formattedAddress
                 setOnClickListener {
                     AddNewAddressAnalytics.eventClickFieldCariLokasi()
-                    showAutoCompleteBottomSheet(saveAddressDataModel.title) }
+                    showAutoCompleteBottomSheet(saveAddressDataModel.title)
+                }
             }
 
             btn_choose_location?.setOnClickListener {
@@ -456,6 +496,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
+
     private fun showAutoCompleteBottomSheet(searchStr: String) {
         currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, searchStr) } }
     }
@@ -468,7 +509,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }
         }
 
-        presenter.loadAddEdit( isMismatchSolved, isChangesRequested)
+        presenter.loadAddEdit(isMismatchSolved, isChangesRequested)
     }
 
     override fun showFailedDialog() {
@@ -478,21 +519,23 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
             tkpdDialog.dismiss()
-            goToAddEditActivity(isMismatch = true, isMismatchSolved = false)
+            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false)
         }
         tkpdDialog.show()
         AddNewAddressAnalytics.eventViewFailedPinPointNotification()
     }
 
-    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean) {
+    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean) {
+        val saveModel = if (isUnnamedRoad) presenter.getUnnamedRoadModelFormat() else presenter.getSaveAddressDataModel()
         Intent(context, AddEditAddressActivity::class.java).apply {
             if (isMismatch && !isMismatchSolved) {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             }
             putExtra(AddressConstants.EXTRA_IS_MISMATCH, isMismatch)
-            putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, presenter.getSaveAddressDataModel())
+            putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, saveModel)
             putExtra(AddressConstants.KERO_TOKEN, token)
             putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
+            putExtra(AddressConstants.EXTRA_IS_UNNAMED_ROAD, isUnnamedRoad)
             startActivityForResult(this, FINISH_FLAG)
         }
     }
@@ -600,7 +643,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                     when (countCharLeft) {
                         60 -> {
                             tv_detail_address_counter.text = "0/60"
-                        } else -> {
+                        }
+                        else -> {
                             tv_detail_address_counter.text = "$countCharLeft/60"
                         }
                     }

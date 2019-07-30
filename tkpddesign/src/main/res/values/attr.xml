@@ -256,8 +256,9 @@
             <enum name="transaction" value="3" />
             <enum name="disable" value="4" />
             <enum name="white_transparent" value="5" />
-            <enum name="white" value="6" />
-            <enum name="primary_disabled" value="7" />
+            <enum name="ghost" value="6" />
+            <enum name="white" value="7" />
+            <enum name="primary_disabled" value="8" />
 
         </attr>
         <attr name="buttonCompatSize" format="enum">

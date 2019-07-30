@@ -129,7 +129,7 @@ public interface ApplinkConst {
     String GIFT_CARDS_ORDER = "tokopedia://giftcards/order";
     String INSURANCE_ORDER = "tokopedia://insurance/order";
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
-
+    String HOTEL_ORDER = "tokopedia://hotel/order";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
@@ -300,6 +300,7 @@ public interface ApplinkConst {
         String AVATAR = "avatar";
         String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
+
         String PRODUCT_PREVIEW_ID = "product_preview_id";
         String PRODUCT_PREVIEW_IMAGE_URL = "product_preview_image_url";
         String PRODUCT_PREVIEW_NAME = "product_preview_name";
@@ -308,6 +309,16 @@ public interface ApplinkConst {
         String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
         String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
         String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
+
+        String INVOICE_ID = "invoice_id";
+        String INVOICE_CODE = "invoice_code";
+        String INVOICE_TITLE = "invoice_title";
+        String INVOICE_DATE = "invoice_date";
+        String INVOICE_IMAGE_URL = "invoice_image";
+        String INVOICE_URL = "invoice_url";
+        String INVOICE_STATUS_ID = "invoice_status_id";
+        String INVOICE_STATUS = "invoice_status";
+        String INVOICE_TOTAL_AMOUNT = "invoice_total_amount";
     }
 
     interface Play {
