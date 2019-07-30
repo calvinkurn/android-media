@@ -771,14 +771,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void showFeedFab(WhitelistViewModel whitelistViewModel) {
+        analytics.trackClickCreatePost(userSession.getUserId());
+
         fabFeed.show();
         isFabExpanded = false;
-        if (!whitelistViewModel.getWhitelist().getAuthors().isEmpty() &&
-                whitelistViewModel.getWhitelist().getAuthors().size() != 1) {
-            fabFeed.setOnClickListener(fabClickListener(whitelistViewModel));
-        } else {
+        if (whitelistViewModel.getWhitelist().getAuthors().size() == 1) {
             Author author = whitelistViewModel.getWhitelist().getAuthors().get(0);
             fabFeed.setOnClickListener(v -> onGoToLink(author.getLink()));
+            analytics.trackClickCreatePostAs(author.getLink(),
+                    userSession.getUserId(),
+                    userSession.getShopId());
+        } else if (whitelistViewModel.getWhitelist().getAuthors().size() > 1) {
+            fabFeed.setOnClickListener(fabClickListener(whitelistViewModel));
         }
     }
 
@@ -794,10 +798,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         fabShop.show();
                         fabTextShop.setVisibility(View.VISIBLE);
                         fabShop.setOnClickListener(v1 -> onGoToLink(author.getLink()));
+
+                        analytics.trackClickCreatePostAs(author.getLink(),
+                                userSession.getUserId(),
+                                userSession.getShopId());
                     } else {
                         fabByme.show();
                         fabTextByme.setVisibility(View.VISIBLE);
                         fabByme.setOnClickListener(v12 -> goToCreateAffiliate(author.getLink()));
+
+                        analytics.trackClickCreatePostAs(author.getLink(),
+                                userSession.getUserId(),
+                                userSession.getShopId());
                     }
                 }
                 greyBackground.setOnClickListener(v3 -> {
@@ -1272,7 +1284,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
             RecyclerView entryPointRecyclerView = view.findViewById(R.id.entry_point_list);
             EntryPointAdapter adapter = new EntryPointAdapter(getActivity(),
                     element.getWhitelist().getAuthors(), applink -> {
-                        analytics.trackClickCreatePostAs(applink, userSession.getUserId(),
+                        analytics.trackClickCreatePostAs(applink,
+                                userSession.getUserId(),
                                 userSession.getShopId());
                         startActivityForResult(
                                 RouteManager.getIntent(getContext(), applink),
@@ -1281,7 +1294,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         createPostBottomSheet.dismiss();
                     });
             entryPointRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                    LinearLayoutManager.VERTICAL, false));
+                    LinearLayoutManager.VERTICAL,
+                    false));
             entryPointRecyclerView.setAdapter(adapter);
         }
         return view;
