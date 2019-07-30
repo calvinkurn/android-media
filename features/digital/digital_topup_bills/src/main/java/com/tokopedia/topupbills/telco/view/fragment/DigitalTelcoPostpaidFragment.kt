@@ -39,9 +39,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var buyWidget: DigitalTelcoBuyWidget
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var layoutProgressBar: RelativeLayout
-    private lateinit var operatorSelected: TelcoCustomDataCollection
-    private lateinit var selectedTelcoRecommendation: TelcoRecommendation
 
+    private lateinit var operatorSelected: TelcoCustomDataCollection
     private lateinit var operatorName: String
     private val favNumberList = mutableListOf<TelcoFavNumber>()
     private var operatorData: TelcoCustomComponentData =
@@ -310,8 +309,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
         postpaidClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
 
-        topupAnalytics.clickEnhanceCommerceRecentTransaction(selectedTelcoRecommendation,
-                operatorName, selectedTelcoRecommendation.position)
+        if (::operatorName.isInitialized) {
+            topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation,
+                    operatorName, telcoRecommendation.position)
+        }
     }
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
