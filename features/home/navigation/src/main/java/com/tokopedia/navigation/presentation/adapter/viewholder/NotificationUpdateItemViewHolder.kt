@@ -64,7 +64,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
 
         type.text = element.sectionTitle
 
-        convertTypeUser(element.label)
+        convertTypeUser(element)
 
         container.setOnClickListener {
             listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
@@ -73,10 +73,11 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
         }
     }
 
-    private fun convertTypeUser(labelIndex: Int) {
+    private fun convertTypeUser(element: NotificationUpdateItemViewModel) {
         label.visibility = View.GONE
+        val labelIndex = element.label
 
-        if (labelIndex == BUYER_TYPE) {
+        if (labelIndex == BUYER_TYPE && element.hasShop) {
             getStringResource(R.string.buyer_label)?.apply {
                 label.text = this
                 label.setTextColor(getColorResource(R.color.Neutral_N200))
