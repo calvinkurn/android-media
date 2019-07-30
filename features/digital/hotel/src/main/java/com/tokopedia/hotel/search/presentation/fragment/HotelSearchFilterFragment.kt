@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.intdef.CurrencyEnum
-import com.tokopedia.design.list.decoration.SpaceItemDecoration
+import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.SpanningLinearLayoutManager
