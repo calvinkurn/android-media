@@ -20,7 +20,7 @@ class HashtagLandingPageActivity : BaseSimpleActivity(), HasComponent<ExploreCom
     override fun getNewFragment(): Fragment {
         val uri = intent.data
         val hashtag = if (uri != null && uri.scheme == DeeplinkConstant.SCHEME_INTERNAL){
-             uri.lastPathSegment?.let { URLDecoder.decode(it) } ?: ""
+             uri.lastPathSegment?.let { decode(it) } ?: ""
         } else {
             intent.extras?.getString(HashtagLandingPageFragment.ARG_HASHTAG) ?: ""
         }
@@ -36,13 +36,16 @@ class HashtagLandingPageActivity : BaseSimpleActivity(), HasComponent<ExploreCom
         @JvmStatic
         fun createIntent(context: Context, hastag: String) = Intent(context, HashtagLandingPageActivity::class.java)
                 .putExtra(HashtagLandingPageFragment.ARG_HASHTAG, hastag)
+
+        private fun decode(param: String) = URLDecoder.decode(param, "UTF-8")
     }
 
     object DeeplinkIntent {
         @DeepLink(ApplinkConst.FEED_HASHTAG)
         @JvmStatic
         fun createIntent(context: Context, extras: Bundle): Intent {
-            return createIntent(context, extras.getString(EXTRA_PARAM_HASHTAG, ""))
+            val paramHashtag = extras.getString(EXTRA_PARAM_HASHTAG, "")
+            return createIntent(context, decode(paramHashtag))
         }
     }
 }
