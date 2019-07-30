@@ -1,8 +1,14 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder
 
+import android.support.v4.content.ContextCompat
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.view.View
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Caption
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
+import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -15,6 +21,8 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kol.R
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 /**
@@ -43,11 +51,18 @@ class KolPostDetailViewHolder(private val kolView: View,
     }
 
     override fun bindCaption(caption: Caption, template: TemplateBody) {
+        val tagConverter = TagConverter()
         captionTv.shouldShowWithAction(template.caption) {
             if (caption.text.isEmpty()) {
                 captionTv.visibility = View.GONE
             } else {
-                captionTv.text = caption.text.replace(NEWLINE, " ")
+                captionTv.text = tagConverter.convertToLinkifyHashtag(
+                        SpannableString(caption.text.replace(NEWLINE, " ")),
+                        ContextCompat.getColor(captionTv.context, R.color.tkpd_main_green)){
+                    val encodeHashtag = URLEncoder.encode(it)
+                    RouteManager.route(itemView.context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
+                }
+                captionTv.movementMethod = LinkMovementMethod.getInstance()
             }
         }
 

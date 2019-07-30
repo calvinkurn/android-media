@@ -42,6 +42,7 @@ import rx.schedulers.Schedulers;
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+@Deprecated
 public class ManagePeopleProfileIntentService extends IntentService {
 
     public final static String EXTRA_TYPE = "EXTRA_TYPE";
