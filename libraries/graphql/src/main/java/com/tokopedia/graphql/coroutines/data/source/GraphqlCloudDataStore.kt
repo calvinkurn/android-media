@@ -26,7 +26,7 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
                 result = api.getResponseDeferred(requests).await()
             } catch (e: Throwable) {
                 if (e !is UnknownHostException && e!is SocketTimeoutException) {
-                    Timber.e(e, requests.toString())
+                    Timber.e(e, "P1$requests")
                 }
                 throw e
             }

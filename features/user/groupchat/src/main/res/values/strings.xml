@@ -120,4 +120,16 @@
     <string name="no_connection_play">Oops! Sepertinya ada masalah dengan koneksi internet kamu.</string>
     <string name="try_connection_play">Coba cek dulu ya!</string>
 
+    <string name="menu_info">Info</string>
+    <string name="menu_video_quality">Kualitas Video (%s)</string>
+    <string name="menu_hide_video">Sembunyikan Video</string>
+    <string name="menu_show_video">Tampilkan Video</string>
+
+
+    <string name="video_quality_480">480p</string>
+    <string name="video_quality_720">720p</string>
+
+    <string name="buffer_text_long">Hiks, lagi ada gangguan. Coba ulangi beberapa saat lagi ya. Coba Lagi</string>
+    <string name="buffer_text_retry">Coba Lagi</string>
+
 </resources>
