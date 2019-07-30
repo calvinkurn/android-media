@@ -239,9 +239,21 @@ abstract class ProductCardView: BaseCustomView {
     protected open fun setImageTopAdsConstraint() {
         imageTopAds?.doIfVisible { imageTopAds ->
             textViewShopLocation?.doIfVisible { textViewShopLocation ->
-                if(isTextLocationIsAtBottomOfCard()) {
-                    setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
-                }
+                configureImageTopAdsConstraintBasedOnTextLocation(imageTopAds, textViewShopLocation)
+            }
+        }
+    }
+
+    protected open fun configureImageTopAdsConstraintBasedOnTextLocation(imageTopAds: View, textViewShopLocation: View) {
+        if(isTextLocationIsAtBottomOfCard()) {
+            setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
+            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, R.dimen.dp_4)
+        }
+        else {
+            clearViewConstraint(imageTopAds.id, ConstraintSet.TOP)
+
+            imageProduct?.doIfVisible { constraintLayoutProductCard ->
+                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, constraintLayoutProductCard.id, ConstraintSet.END, R.dimen.dp_8)
             }
         }
     }
@@ -458,6 +470,12 @@ abstract class ProductCardView: BaseCustomView {
         constraintLayoutProductCard.applyConstraintSet { constraintSet ->
             val marginPixel = getDimensionPixelSize(marginDp)
             constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
+        }
+    }
+
+    protected open fun clearViewConstraint(@IdRes layoutId: Int, side: Int) {
+        constraintLayoutProductCard.applyConstraintSet { constraintSet ->
+            constraintSet.clear(layoutId, side)
         }
     }
 }
