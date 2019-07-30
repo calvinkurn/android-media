@@ -5,6 +5,7 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.TextView
 
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
@@ -21,9 +22,13 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
     : BaseChatViewHolder<ChatActionSelectionBubbleViewModel>(itemView), ChatActionBubbleAdapter.OnChatActionSelectedListener {
     private val adapter: ChatActionBubbleAdapter
     private var model: ChatActionSelectionBubbleViewModel? = null
+    private var chatActionListSelection:RecyclerView
+    private var mTime:TextView
+
 
     init {
-        val chatActionListSelection = itemView.findViewById<RecyclerView>(R.id.chat_action_bubble_selection)
+        chatActionListSelection = itemView.findViewById<RecyclerView>(R.id.chat_action_bubble_selection)
+        mTime = itemView.findViewById(R.id.hour)
         ViewCompat.setNestedScrollingEnabled(chatActionListSelection, false)
         adapter = ChatActionBubbleAdapter(this)
         chatActionListSelection.layoutManager = LinearLayoutManager(itemView.context,
@@ -34,12 +39,16 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
 
     override fun bind(viewModel: ChatActionSelectionBubbleViewModel) {
         super.bind(viewModel)
+        chatActionListSelection.visibility = View.VISIBLE
+        hour.visibility = View.VISIBLE
         model = viewModel
         adapter.setDataList(viewModel.chatActionList)
     }
 
     override fun onChatActionSelected(selected: ChatActionBubbleViewModel) {
         viewListener.onChatActionBalloonSelected(selected, model!!)
+        chatActionListSelection.visibility = View.GONE
+        hour.visibility = View.GONE
     }
 
     override fun onViewRecycled() {

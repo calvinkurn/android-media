@@ -24,6 +24,7 @@ class ChatBotProvideRatingActivity: BaseProvideRatingActivity() {
         val OTHER_REASON_TITLE = "otherReasonTitle"
         val CAPTION_LIST = "captionList"
         val QUESTION_LIST = "questionList"
+        val IS_SHOW_OTHER_REASON = "is_show_other_reason"
 
         fun getInstance(context: Context, clickEmoji: Int, mCsatResponse: WebSocketCsatResponse): Intent {
             var webSocketCsatattribute = mCsatResponse.attachment?.attributes
@@ -50,6 +51,7 @@ class ChatBotProvideRatingActivity: BaseProvideRatingActivity() {
                 questionList.add(point?.description!!)
             }
 
+            intent.putExtra(IS_SHOW_OTHER_REASON,webSocketCsatattribute.showOtherReason)
             intent.putExtra(CSAT_TITLE,webSocketCsatattribute.title)
             intent.putExtra(OTHER_REASON_TITLE,webSocketCsatattribute.reasonTitle)
             intent.putStringArrayListExtra(CAPTION_LIST,captionList)

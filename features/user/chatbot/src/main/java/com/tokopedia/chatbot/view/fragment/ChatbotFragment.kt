@@ -26,6 +26,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
@@ -239,8 +240,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
+
+            val list = it.listChat.filter {
+               !(it is FallbackAttachmentViewModel && it.message.equals(""))
+            }
+
             updateViewData(it)
-            renderList(it.listChat, it.canLoadMore)
+            renderList(list , it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it)
             checkShowLoading(it.canLoadMore)
             presenter.sendReadEvent(messageId)
@@ -249,7 +255,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
         return {
-            renderList(it.listChat, it.canLoadMore)
+            val list = it.listChat.filter {
+                !(it is FallbackAttachmentViewModel && it.message.equals(""))
+            }
+            renderList(list, it.canLoadMore)
             checkShowLoading(it.canLoadMore)
         }
     }

@@ -226,7 +226,8 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                view.onReceiveMessageEvent(mapToVisitable(pojo))
+                if (!pojo.attachment?.fallbackAttachment?.message.equals(""))
+                    view.onReceiveMessageEvent(mapToVisitable(pojo))
             }
         }
     }

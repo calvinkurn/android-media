@@ -18,7 +18,7 @@ class QuickReplyAdapter(private var quickReplyListViewModel: QuickReplyListViewM
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): Holder {
         return Holder(LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.item_quick_reply, viewGroup, false))
+                .inflate(R.layout.chatbot_item_quick_reply, viewGroup, false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
