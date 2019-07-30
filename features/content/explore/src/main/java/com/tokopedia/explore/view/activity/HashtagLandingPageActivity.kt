@@ -13,6 +13,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.explore.di.DaggerExploreComponent
 import com.tokopedia.explore.di.ExploreComponent
 import com.tokopedia.explore.view.fragment.HashtagLandingPageFragment
+import java.lang.IllegalArgumentException
 import java.net.URLDecoder
 
 class HashtagLandingPageActivity : BaseSimpleActivity(), HasComponent<ExploreComponent> {
@@ -37,7 +38,14 @@ class HashtagLandingPageActivity : BaseSimpleActivity(), HasComponent<ExploreCom
         fun createIntent(context: Context, hastag: String) = Intent(context, HashtagLandingPageActivity::class.java)
                 .putExtra(HashtagLandingPageFragment.ARG_HASHTAG, hastag)
 
-        private fun decode(param: String) = URLDecoder.decode(param, "UTF-8")
+        private fun decode(param: String): String {
+            return try {
+                URLDecoder.decode(param, "UTF-8")
+            } catch (e: IllegalArgumentException) {
+                param
+            }
+        }
+
     }
 
     object DeeplinkIntent {
@@ -45,7 +53,8 @@ class HashtagLandingPageActivity : BaseSimpleActivity(), HasComponent<ExploreCom
         @JvmStatic
         fun createIntent(context: Context, extras: Bundle): Intent {
             val paramHashtag = extras.getString(EXTRA_PARAM_HASHTAG, "")
-            return createIntent(context, decode(paramHashtag))
+            //need to decode twice for hashtag, ex: %2523SayangAnak -> %23SayangAnak -> #SayangAnak
+            return createIntent(context, decode(decode(paramHashtag)))
         }
     }
 }
