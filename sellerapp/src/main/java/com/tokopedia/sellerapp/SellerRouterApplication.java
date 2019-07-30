@@ -702,14 +702,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToGMSubscribe(@NonNull Activity activity) {
-//        Intent intent = GMSubscribeInternalRouter.getGMSubscribeHomeIntent(activity);
-//        activity.startActivity(intent);
     }
-
-//    @Override
-//    public Intent getGMHomeIntent(Context context) {
-//        return GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
-//    }
 
     @Override
     public String getFlavor() {
