@@ -4,8 +4,7 @@
 
     <item
         android:id="@+id/action_share"
-        android:icon="@drawable/ic_share_white"
-        android:iconTint="@color/grey_share_menu"
+        android:icon="@drawable/ic_share_fill_grey"
         android:orderInCategory="100"
         android:title=""
         app:showAsAction="always" />
