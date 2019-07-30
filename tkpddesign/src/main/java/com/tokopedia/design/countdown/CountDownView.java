@@ -46,6 +46,7 @@ public class CountDownView extends FrameLayout {
 
     private Handler refreshCounterHandler;
     private TimerRunnable runnableRefreshCounter;
+    private int adapterPosition = -1;
 
     public CountDownView(@NonNull Context context) {
         super(context);
@@ -98,6 +99,10 @@ public class CountDownView extends FrameLayout {
         displayTime();
     }
 
+    public void setAdapterPosition(int adapterPosition) {
+        this.adapterPosition = adapterPosition;
+    }
+
     public void setup(final long serverTimeOffset, final Date expiredTime,
                       final CountDownListener listener) {
         Date serverTime = new Date(System.currentTimeMillis());
@@ -147,7 +152,7 @@ public class CountDownView extends FrameLayout {
         clearCountDownView();
         setTime(0, 0, 0);
         if (listener != null) {
-            listener.onCountDownFinished();
+            listener.onCountDownFinished(adapterPosition);
         }
     }
 
