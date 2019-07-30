@@ -706,11 +706,11 @@ public abstract class SellerRouterApplication extends MainApplication
         activity.startActivity(intent);
     }
 
-//    @Override
-//    public void goToGMSubscribe(@NonNull Activity activity) {
+    @Override
+    public void goToGMSubscribe(@NonNull Activity activity) {
 //        Intent intent = GMSubscribeInternalRouter.getGMSubscribeHomeIntent(activity);
 //        activity.startActivity(intent);
-//    }
+    }
 
 //    @Override
 //    public Intent getGMHomeIntent(Context context) {
