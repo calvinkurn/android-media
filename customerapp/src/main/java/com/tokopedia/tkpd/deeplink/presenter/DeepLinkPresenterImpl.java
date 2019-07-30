@@ -551,7 +551,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String source = uriData.getQueryParameter("source");
         Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
                 linkSegment.size() > 1 ? linkSegment.get(1) : "",
-                source);
+                source == null ? "" : source);
         context.startActivity(intent);
         context.finish();
     }

@@ -94,4 +94,10 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    override fun onBackPressed() {
+        RecommendationPageTracking.eventUserClickBack(intent?.data?.getQueryParameter(REF) ?: "")
+        RouteManager.route(this, ApplinkConst.HOME)
+        this.finish()
+    }
 }
