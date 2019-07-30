@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -11,19 +12,10 @@
         android:layout_height="@dimen/dp_1"
         android:background="@drawable/bg_line_separator" />
 
-    <com.tokopedia.design.voucher.VoucherCartHachikoView
-        android:id="@+id/voucher_cart_holder_view"
+    <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+        android:id="@+id/promo_ticker_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_minus6"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_4" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bg_line_separator" />
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/container_checkout"

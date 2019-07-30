@@ -8,17 +8,10 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <!--<include
+    <include
         android:id="@+id/layout_warning_and_error"
         layout="@layout/layout_item_warning_and_error"
-        tools:visibility="visible" />-->
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_shipment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        android:visibility="gone" />
+        tools:visibility="visible" />
 
     <include
         layout="@layout/item_shipment_seller_info"

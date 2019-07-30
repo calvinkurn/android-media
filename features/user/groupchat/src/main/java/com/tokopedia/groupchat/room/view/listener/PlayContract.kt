@@ -10,6 +10,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -43,6 +44,8 @@ interface PlayContract {
         fun onToolbarEnabled(b: Boolean)
         fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
         fun onStickyComponentReceived(it: StickyComponentViewModel)
+        fun onVideoStreamUpdated(it: VideoStreamViewModel)
+        fun hasVideoVertical(): Boolean
     }
 
     interface Presenter: CustomerPresenter<View> {
@@ -68,5 +71,11 @@ interface PlayContract {
 
         fun getStickyComponents(channelId: String?, onSuccessGetStickyComponent:
         (StickyComponentViewModel) -> Unit, onErrorGetStickyComponent: (String) -> Unit)
+
+        fun getVideoStream(
+                channelId: String?,
+                onSuccessGetVideoStream: (VideoStreamViewModel) -> Unit,
+                onErrorGetVideoStream: (Throwable) -> Unit
+        )
     }
 }

@@ -47,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.atc_common)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

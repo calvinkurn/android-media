@@ -42,12 +42,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var operatorSelected: TelcoCustomDataCollection
     private lateinit var selectedTelcoRecommendation: TelcoRecommendation
 
+    private lateinit var operatorName: String
     private val favNumberList = mutableListOf<TelcoFavNumber>()
     private var operatorData: TelcoCustomComponentData =
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
     private val categoryId = TelcoCategoryType.CATEGORY_PASCABAYAR
 
-    private lateinit var inputNumberActionType: InputNumberActionType
+    private var inputNumberActionType = InputNumberActionType.MANUAL
     private lateinit var sharedModel: SharedProductTelcoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,10 +87,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         getInputFilterDataCollections()
-        handleFocusClientNumber()
         renderClientNumber()
+        handleFocusClientNumber()
         getCatalogMenuDetail()
-        getDataFromBundle()
+        getDataFromBundle(savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -97,6 +98,27 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         sharedModel.promoItem.observe(this, Observer {
             it?.run {
                 promoListWidget.notifyPromoItemChanges(this)
+            }
+        })
+        sharedModel.enquiryResult.observe(this, Observer {
+            it?.run {
+                if (::operatorSelected.isInitialized) {
+                    checkoutPassData = DigitalCheckoutPassData.Builder()
+                            .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                            .categoryId(categoryId.toString())
+                            .clientNumber(postpaidClientNumberWidget.getInputNumber())
+                            .instantCheckout("0")
+                            .isPromo("0")
+                            .operatorId(operatorSelected.operator.id)
+                            .productId(operatorSelected.operator.attributes.defaultProductId.toString())
+                            .utmCampaign(categoryId.toString())
+                            .utmContent(GlobalConfig.VERSION_NAME)
+                            .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
+                            .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                            .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                            .voucherCodeCopied("")
+                            .build()
+                }
             }
         })
     }
@@ -115,14 +137,26 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
     }
 
-    fun getDataFromBundle() {
-        arguments?.run {
-            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as DigitalTelcoExtraParam
-            postpaidClientNumberWidget.setInputNumber(digitalTelcoExtraParam.clientNumber)
+    private fun getDataFromBundle(savedInstanceState: Bundle?) {
+        var clientNumber = ""
+        if (savedInstanceState == null) {
+            arguments?.run {
+                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as DigitalTelcoExtraParam
+                clientNumber = digitalTelcoExtraParam.clientNumber
+            }
+        } else {
+            clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER)
         }
+        postpaidClientNumberWidget.setInputNumber(clientNumber)
     }
 
-    fun renderClientNumber() {
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString(CACHE_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
+    }
+
+    private fun renderClientNumber() {
         postpaidClientNumberWidget.resetClientNumberPostpaid()
         postpaidClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
             override fun onNavigateToContact() {
@@ -154,7 +188,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 postpaidClientNumberWidget.clearFocusAutoComplete()
                 startActivityForResult(activity?.let {
                     DigitalSearchNumberActivity.newInstance(it,
-                            ClientNumberType.TYPE_INPUT_TEL, "", favNumberList)
+                            ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
                 },
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
@@ -185,10 +219,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     fun renderProductFromCustomData() {
         try {
             if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
-                operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
+                operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.single {
                     postpaidClientNumberWidget.getInputNumber().startsWith(it.value)
-                }.single()
-                val operatorName = operatorSelected.operator.attributes.name
+                }
+                operatorName = operatorSelected.operator.attributes.name
                 when (inputNumberActionType) {
                     InputNumberActionType.MANUAL -> {
                         topupAnalytics.eventInputNumberManual(categoryId, operatorName)
@@ -201,12 +235,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     }
                     InputNumberActionType.CONTACT_HOMEPAGE -> {
                         topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-                    }
-                    InputNumberActionType.LATEST_TRANSACTION -> {
-                        if (::selectedTelcoRecommendation.isInitialized) {
-                            topupAnalytics.clickEnhanceCommerceRecentTransaction(selectedTelcoRecommendation,
-                                    operatorName, selectedTelcoRecommendation.position)
-                        }
                     }
                 }
 
@@ -239,6 +267,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     fun onSuccessEnquiry(telcoEnquiryData: TelcoEnquiryData) {
+        sharedModel.setEnquiryResult(telcoEnquiryData)
         postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
         recentNumbersWidget.visibility = View.GONE
         promoListWidget.visibility = View.GONE
@@ -280,7 +309,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
         inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
         postpaidClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
-        this.selectedTelcoRecommendation = telcoRecommendation
+
+        topupAnalytics.clickEnhanceCommerceRecentTransaction(selectedTelcoRecommendation,
+                operatorName, selectedTelcoRecommendation.position)
     }
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
@@ -301,24 +332,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onResume() {
         super.onResume()
         postpaidClientNumberWidget.clearFocusAutoComplete()
-
-        if (::operatorSelected.isInitialized) {
-            checkoutPassData = DigitalCheckoutPassData.Builder()
-                    .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                    .categoryId(categoryId.toString())
-                    .clientNumber(postpaidClientNumberWidget.getInputNumber())
-                    .instantCheckout("0")
-                    .isPromo("0")
-                    .operatorId(operatorSelected.operator.id)
-                    .productId(operatorSelected.operator.attributes.defaultProductId.toString())
-                    .utmCampaign(categoryId.toString())
-                    .utmContent(GlobalConfig.VERSION_NAME)
-                    .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
-                    .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                    .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                    .voucherCodeCopied("")
-                    .build()
-        }
     }
 
     override fun onBackPressed() {
@@ -327,6 +340,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     companion object {
 
+        private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"
         const val KEY_CLIENT_NUMBER = "clientNumber"
         const val KEY_PRODUCT_ID = "productId"
