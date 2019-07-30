@@ -33,6 +33,7 @@ ext {
             usecase               : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
             videoplayer           : "com.tokopedia.videoplayer:videoplayer:${tkpdVideoplayerVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
+
     ]
 
     // Sort and categorize alphabetically by folder name
