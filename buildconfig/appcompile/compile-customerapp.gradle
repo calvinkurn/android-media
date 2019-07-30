@@ -45,6 +45,7 @@ include "features:discovery:recentview"
 include "features:discovery:wishlist_common"
 include "features:discovery:search"
 
+include "features:fintech:mitra_toppers"
 include "features:fintech:home_credit"
 include "features:fintech:reksa_dana"
 include "features:digital:instant_debit_bca"
