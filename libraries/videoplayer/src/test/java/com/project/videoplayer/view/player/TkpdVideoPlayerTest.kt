@@ -1,7 +1,10 @@
 package com.project.videoplayer.view.player
 
 import com.google.android.exoplayer2.Player
-import com.tokopedia.videoplayer.utils.PlayerException
+import com.tokopedia.videoplayer.state.PlayerController
+import com.tokopedia.videoplayer.state.PlayerException
+import com.tokopedia.videoplayer.state.PlayerType
+import com.tokopedia.videoplayer.state.RepeatMode
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
 import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 import org.junit.Assert.assertEquals
@@ -12,6 +15,9 @@ class TkpdVideoPlayerTest {
     @Test fun test_VideoPlayer() {
         TkpdVideoPlayer.Builder()
                 .videoSource("https://www.w3schools.com/html/mov_bbb.mp4")
+                .type(PlayerType.DEFAULT)
+                .repeatMode(RepeatMode.REPEAT_MODE_OFF)
+                .controller(PlayerController.ON)
                 .listener(object : VideoPlayerListener {
                     override fun onPlayerStateChanged(playbackState: Int) {
                         when (playbackState) {

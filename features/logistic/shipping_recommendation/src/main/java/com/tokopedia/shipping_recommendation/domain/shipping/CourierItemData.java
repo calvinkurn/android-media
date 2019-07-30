@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class CourierItemData implements Parcelable, ShipmentOptionData {
     private int shipperId;
     private int shipperProductId;
+    private int serviceId;
     private String name;
     private String serviceName;
     private String deliverySchedule;
@@ -64,6 +65,14 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
 
     public void setShipperProductId(int shipperProductId) {
         this.shipperProductId = shipperProductId;
+    }
+
+    public int getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(int serviceId) {
+        this.serviceId = serviceId;
     }
 
     public String getName() {
@@ -359,6 +368,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.shipperId);
         dest.writeInt(this.shipperProductId);
+        dest.writeInt(this.serviceId);
         dest.writeString(this.name);
         dest.writeString(this.serviceName);
         dest.writeString(this.deliverySchedule);
@@ -399,6 +409,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     protected CourierItemData(Parcel in) {
         this.shipperId = in.readInt();
         this.shipperProductId = in.readInt();
+        this.serviceId = in.readInt();
         this.name = in.readString();
         this.serviceName = in.readString();
         this.deliverySchedule = in.readString();

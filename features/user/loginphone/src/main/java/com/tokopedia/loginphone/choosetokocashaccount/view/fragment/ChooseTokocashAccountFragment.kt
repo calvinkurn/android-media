@@ -316,14 +316,6 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
         }
     }
 
-    //Impossible Flow
-    override fun onGoToPhoneVerification(): () -> Unit {
-        return {
-            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
-            logUnknownError(Throwable("Login Phone Number Login Token go to phone verification"))
-        }
-    }
-
     override fun showLoadingProgress() {
         mainView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/dp_20">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/country_name"
+        style="@style/TextView.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_5"
+        app:textViewTheme="lightPrimary"
+        app:weight="medium"
+        tools:text="Indonesia" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/country_phone_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:textViewTheme="lightPrimary"
+        app:weight="medium"
+        tools:text="(+62)" />
+</LinearLayout>

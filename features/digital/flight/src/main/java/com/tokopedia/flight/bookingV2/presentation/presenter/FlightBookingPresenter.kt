@@ -1,6 +1,8 @@
 package com.tokopedia.flight.bookingV2.presentation.presenter
 
 import android.util.Patterns
+import com.tokopedia.common.travel.domain.GetPhoneCodeUseCase
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
@@ -8,7 +10,6 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewMod
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
-import com.tokopedia.flight.booking.domain.FlightBookingGetPhoneCodeUseCase
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity
@@ -44,7 +45,7 @@ import javax.inject.Inject
  * @author by furqan on 04/03/19
  */
 class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: FlightAddToCartV11UseCase,
-                                                 private val flightBookingGetPhoneCodeUseCase: FlightBookingGetPhoneCodeUseCase,
+                                                 private val getPhoneCodeUseCase: GetPhoneCodeUseCase,
                                                  val flightAnalytics: FlightAnalytics,
                                                  val userSession: UserSessionInterface,
                                                  val flightSearchJourneyByIdUseCase: FlightSearchJourneyByIdUseCase,
@@ -170,9 +171,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         }
     }
 
-    override fun onPhoneCodeResultReceived(phoneCodeViewModel: FlightBookingPhoneCodeViewModel) {
-        view.getCurrentBookingParamViewModel().phoneCodeViewModel = phoneCodeViewModel
-        view.renderPhoneCodeView(String.format("+%s", phoneCodeViewModel.countryPhoneCode))
+    override fun onPhoneCodeResultReceived(phoneCode: CountryPhoneCode) {
+        view.getCurrentBookingParamViewModel().phoneCode = phoneCode
+        view.renderPhoneCodeView(String.format("+%s", phoneCode.countryPhoneCode))
     }
 
     override fun onPassengerResultReceived(passengerViewModel: FlightBookingPassengerViewModel) {
@@ -312,8 +313,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 view.getCurrentBookingParamViewModel().orderDueTimestamp = FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT)
                 view.renderFinishTimeCountDown(expiredDate)
             }
-            view.getCurrentBookingParamViewModel().phoneCodeViewModel = flightBookingCartData.defaultPhoneCode
-            view.renderPhoneCodeView(String.format("+%s", view.getCurrentBookingParamViewModel().phoneCodeViewModel.countryPhoneCode))
+            view.getCurrentBookingParamViewModel().phoneCode = flightBookingCartData.defaultPhoneCode
+            view.renderPhoneCodeView(String.format("+%s", view.getCurrentBookingParamViewModel().phoneCode.countryPhoneCode))
 
             val oldTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.departureTrip, flightBookingCartData.returnTrip)
             var resultTotalPrice = oldTotalPrice
@@ -396,7 +397,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             compositeSubscription.unsubscribe()
         }
         flightAddToCartUseCase.unsubscribe()
-        flightBookingGetPhoneCodeUseCase.unsubscribe()
+        getPhoneCodeUseCase.unsubscribe()
         flightSearchJourneyByIdUseCase.unsubscribe()
         detachView()
     }
@@ -513,8 +514,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                 }
                             })
                             .zipWith(getDefaultPhoneDataObservable(),
-                                    object : Func2<AddToCartEntity, FlightBookingPhoneCodeViewModel, AddToCartEntity> {
-                                        override fun call(t1: AddToCartEntity, t2: FlightBookingPhoneCodeViewModel?): AddToCartEntity {
+                                    object : Func2<AddToCartEntity, CountryPhoneCode, AddToCartEntity> {
+                                        override fun call(t1: AddToCartEntity, t2: CountryPhoneCode?): AddToCartEntity {
                                             view.setCartId(t1.id)
                                             view.getCurrentCartPassData().id = t1.id
                                             view.getCurrentCartPassData().defaultPhoneCode = t2
@@ -599,8 +600,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 }
             }
 
-    private fun getDefaultPhoneDataObservable(): Observable<FlightBookingPhoneCodeViewModel> =
-            flightBookingGetPhoneCodeUseCase.createObservable(flightBookingGetPhoneCodeUseCase.createRequest("Indonesia"))
+    private fun getDefaultPhoneDataObservable(): Observable<CountryPhoneCode> =
+            getPhoneCodeUseCase.createObservable(getPhoneCodeUseCase.createRequest("Indonesia"))
                     .flatMap {
                         Observable.from(it)
                     }

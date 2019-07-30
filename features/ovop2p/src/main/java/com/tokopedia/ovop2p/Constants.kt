@@ -11,7 +11,7 @@ class Constants {
         val RESULT_CODE_CONTACTS_SELECTION = 100
         val RESULT_CODE_QR_SCAN = 102
         val CODE_QR_SCANNER_ACTIVITY: Int = 101
-        val QR_RESPONSE = "QR_RESPONSE"
+        val QR_RESPONSE = "scanResult"
         val USER_NAME = "userName"
         val USER_NUMBER = "userNum"
         val NON_OVO_SUCS = "Non ovo sucs"
@@ -44,5 +44,6 @@ class Constants {
 
     object Thresholds{
         val MIN_TRANSFER_LIMIT = 10000
+        val PHONE_NO_LENGTH = 16
     }
 }

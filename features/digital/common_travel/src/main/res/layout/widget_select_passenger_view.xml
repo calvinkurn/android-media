@@ -5,6 +5,7 @@
     style="@style/TravelWidgetSelectPassengerView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
     android:orientation="horizontal">
 
     <android.support.v7.widget.AppCompatImageView
@@ -20,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatTextView

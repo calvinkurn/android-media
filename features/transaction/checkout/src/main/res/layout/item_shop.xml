@@ -9,16 +9,9 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <!--<include
+    <include
         android:id="@+id/ll_warning_and_error"
-        layout="@layout/layout_item_warning_and_error" />-->
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_shop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        android:visibility="gone" />
+        layout="@layout/layout_item_warning_and_error" />
 
     <FrameLayout
         android:id="@+id/fl_shop_item_container"

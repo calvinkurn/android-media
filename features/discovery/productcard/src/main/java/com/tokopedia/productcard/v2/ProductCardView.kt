@@ -341,6 +341,10 @@ abstract class ProductCardView: BaseCustomView {
         labelDiscount?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
+    open fun setSlashedPriceInvisible(isInvisible: Boolean) {
+        textViewSlashedPrice?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
     open fun setLabelDiscountText(discount: Int) {
         val discountText = Integer.toString(discount) + "%"
         labelDiscount?.text = discountText
@@ -389,6 +393,10 @@ abstract class ProductCardView: BaseCustomView {
         linearLayoutImageRating?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
+    open fun setImageRatingInvisible(isInvisible: Boolean) {
+        linearLayoutImageRating?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
     open fun setRating(rating: Int) {
         imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
         imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
@@ -405,6 +413,14 @@ abstract class ProductCardView: BaseCustomView {
 
     open fun setReviewCountVisible(isVisible: Boolean) {
         textViewReviewCount?.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    open fun setReviewCountInvisible(isInvisible: Boolean) {
+        textViewReviewCount?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
+    open fun setLinesProductTitle(lines: Int){
+        textViewProductName?.setLines(lines)
     }
 
     open fun setReviewCount(reviewCount: Int) {
@@ -441,6 +457,10 @@ abstract class ProductCardView: BaseCustomView {
 
     open fun setImageTopAdsVisible(isVisible: Boolean) {
         imageTopAds?.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    open fun setLabelDiscountInvisible(isInvisible: Boolean){
+        labelDiscount?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
     }
 
     protected open fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {
