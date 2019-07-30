@@ -90,18 +90,29 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     //#3
     fun trackClickOnNext(inputText: String) {
 
-        val method = when {
-            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> "email"
-            Patterns.PHONE.matcher(inputText).matches() -> "phone number"
-            else ->  "unknown"
+        val hashMap : Map<String,Any>
+
+        when {
+            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "email"),
+                    "click"
+            )
+            Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    "enter login phone number",
+                    "click"
+            )
+            else -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "unknown"),
+                    "click"
+            )
         }
 
-        val hashMap = TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                String.format( "click on button selanjutnya - %s", method),
-                "click"
-        )
         hashMap["user_id"] = userSession.userId
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
 
@@ -110,18 +121,29 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     //#3
     fun trackClickOnNextFail(inputText: String, errorMessage: String) {
 
-        val method = when {
-            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> "email"
-            Patterns.PHONE.matcher(inputText).matches() -> "phone number"
-            else ->  "unknown"
+        val hashMap : Map<String,Any>
+
+        when {
+            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "email"),
+                    String.format("failed - %s", errorMessage)
+            )
+            Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    "enter login phone number",
+                    String.format("failed - %s", errorMessage)
+            )
+            else -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "unknown"),
+                    String.format("failed - %s", errorMessage)
+            )
         }
 
-        val hashMap = TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                String.format( "click on button selanjutnya - %s", method),
-                String.format("failed - %s", errorMessage)
-        )
         hashMap["user_id"] = userSession.userId
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
     }
@@ -129,18 +151,28 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     //#3
     fun trackClickOnNextSuccess(inputText: String) {
 
-        val method = when {
-            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> "email"
-            Patterns.PHONE.matcher(inputText).matches() -> "phone number"
-            else ->  "unknown"
-        }
+        val hashMap : Map<String,Any>
 
-        val hashMap = TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                String.format( "click on button selanjutnya - %s", method),
-                "success"
-        )
+        when {
+            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "email"),
+                    "success"
+            )
+            Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    "enter login phone number",
+                    "success"
+            )
+            else -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "unknown"),
+                    "success"
+            )
+        }
         hashMap["user_id"] = userSession.userId
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
     }
