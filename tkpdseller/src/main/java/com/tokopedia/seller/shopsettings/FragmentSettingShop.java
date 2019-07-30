@@ -142,7 +142,7 @@ public class FragmentSettingShop extends TkpdFragment {
         String moduleName = getString(R.string.module_feature_shop_settings_sellerapp);
         if(splitInstallManager.getInstalledModules().contains(moduleName)) {
             if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(new Exception("Installing module shop_settings_sellerapp"));
+                Crashlytics.logException(new Exception("Open module shop_settings_sellerapp"));
             }
             goToPage(deeplink);
             return;
@@ -155,6 +155,9 @@ public class FragmentSettingShop extends TkpdFragment {
             SplitInstallRequest splitInstallRequest = SplitInstallRequest.newBuilder().addModule(moduleName).build();
             splitInstallManager.startInstall(splitInstallRequest);
             Toast.makeText(getActivity(), "Installing", Toast.LENGTH_LONG).show();
+            if (!BuildConfig.DEBUG) {
+                Crashlytics.logException(new Exception("Installing module shop_settings_sellerapp"));
+            }
             tooltip.dismiss();
         });
         tooltip.show();
