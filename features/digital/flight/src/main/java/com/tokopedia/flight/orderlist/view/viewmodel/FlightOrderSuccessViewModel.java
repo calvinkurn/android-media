@@ -19,6 +19,7 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
     private int status;
     protected List<FlightOrderJourney> orderJourney;
     private List<CancellationEntity> cancellations;
+    protected String contactUsUrl;
 
     public FlightOrderSuccessViewModel() {
     }
@@ -83,4 +84,8 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
     public void setCancellations(List<CancellationEntity> cancellationEntityList) {
         this.cancellations = cancellationEntityList;
     }
+
+    public void setContactUsUrl(String contactUsUrl) { setContactUsUrl(contactUsUrl); }
+
+    public String getContactUsUrl() { return getContactUsUrl(); }
 }
