@@ -1,40 +1,25 @@
 package com.tokopedia.expresscheckout.view.variant.viewholder
 
 import android.app.Activity
-import android.graphics.Bitmap
-import android.net.http.SslError
-import android.os.Handler
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.webkit.WebSettings
-import android.webkit.WebView
+import android.widget.CompoundButton
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.date.util.SaldoDatePickerUtil
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceApplicationValueViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceProductApplicationDetailsViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceRecommendationViewModel
-import com.tokopedia.transactiondata.utils.*
+import com.tokopedia.transaction.insurance.utils.*
 import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page.view.*
 import java.util.*
-import android.webkit.SslErrorHandler
-import android.webkit.WebResourceResponse
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceError
-import android.webkit.WebViewClient
-import android.widget.*
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 
 
 class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceRecommendationViewModel>(view) {
@@ -89,45 +74,10 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 itemView.insurance_tv_info.text = insuranceCartDigitalProductViewModel.productInfo.linkName
                 itemView.insurance_tv_info.setOnClickListener {
 
-                    val infoCloseableDialog = CloseableBottomSheetDialog.createInstanceRounded(itemView.context)
-                    val infoDialogView = (itemView.context as Activity?)?.layoutInflater?.inflate(R.layout.insurance_info_bottom_sheet, null)
-                    val webView = infoDialogView!!.findViewById<WebView>(R.id.bottom_sheet_webview)
+                    openBottomSheetWebView(itemView.context,
+                            insuranceCartDigitalProductViewModel.productInfo.appLinkUrl,
+                            insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle)
 
-                    webView.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-                    webView.settings.javaScriptEnabled = true
-                    webView.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
-
-                    val tvTitle = infoDialogView.findViewById<TextView>(R.id.info_bottom_sheet_title_tv)
-                    tvTitle.text = insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle
-
-                    val closeImageView = infoDialogView.findViewById<ImageView>(R.id.ic_close_icon)
-                    closeImageView.setOnClickListener {
-                        infoCloseableDialog.dismiss()
-                    }
-
-                    val progressBar = infoDialogView.findViewById<ProgressBar>(R.id.progbar)
-
-                    webView.webViewClient = object : WebViewClient() {
-
-                        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                            super.onPageStarted(view, url, favicon)
-                            progressBar.show()
-                        }
-                        override fun onPageFinished(view: WebView, url: String) {
-                            progressBar.hide()
-                        }
-                    }
-
-                    infoCloseableDialog.setOnShowListener { dialog ->
-                        val d = dialog as BottomSheetDialog
-                        val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
-                        if (bottomSheet != null) {
-                            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-                        }
-                    }
-
-                    infoCloseableDialog.setCustomContentView(infoDialogView, "", true)
-                    infoCloseableDialog.show()
                 }
             }
 
