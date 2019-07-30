@@ -35,7 +35,6 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
         menu?.clear()
         if (shouldShowOptionMenu()) {
             menuInflater.inflate(R.menu.hotel_share_menu, menu)
-            updateOptionMenuColorWhite(menu)
         }
         return true
     }
