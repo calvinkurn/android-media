@@ -18,11 +18,27 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_PHONE = "phone"
     @JvmField
+    val PARAM_BOD = "bod"
+    @JvmField
     val PARAM_CIPF_USER_ID = "userId"
     @JvmField
     val PARAM_CIPF_OLD_PHONE = "oldPhone"
     @JvmField
     val PARAM_EMAIL = "email"
+    @JvmField
+    val PARAM_SOURCE = "source"
+
+    //VerificationActivity Param
+    @JvmField
+    val PARAM_CAN_USE_OTHER_METHOD = "can_use_other_method"
+    @JvmField
+    val PARAM_IS_SHOW_CHOOSE_METHOD = "is_show_choose_method"
+    @JvmField
+    val PARAM_OTP_TYPE = "otp_type"
+    @JvmField
+    val PARAM_REQUEST_OTP_MODE = "request_otp_mode"
+    @JvmField
+    val PARAM_OTP_CODE = "otp_code"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -52,9 +68,55 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val FORGOT_PASSWORD = "$INTERNAL_GLOBAL/forgot-password"
 
+    // ProfileCompletionActivity
+    // tokopedia-android-internal://global/profile-completion
+    @JvmField
+    val PROFILE_COMPLETION = "$INTERNAL_GLOBAL/profile-completion"
+
+    // SettingProfileActivity
+    // tokopedia-android-internal://global/setting-profile
+    @JvmField
+    val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
+
+    // ChangeGenderActivity
+    // tokopedia-android-internal://global/change-gender
+    @JvmField
+    val CHANGE_GENDER = "$INTERNAL_GLOBAL/change-gender"
+
+    // AddEmailActivity
+    // tokopedia-android-internal://global/add-email
+    @JvmField
+    val ADD_EMAIL = "$INTERNAL_GLOBAL/add-email"
+
+    // AddEmailActivity
+    // tokopedia-android-internal://global/add-phone
+    @JvmField
+    val ADD_PHONE = "$INTERNAL_GLOBAL/add-phone"
+
+    // AddBodActivity
+    // tokopedia-android-internal://global/add-bod
+    @JvmField
+    val ADD_BOD = "$INTERNAL_GLOBAL/add-bod"
+
+    // VerificationActivity
+    // tokopedia-android-internal://global/cotp
+    @JvmField
+    val COTP = "$INTERNAL_GLOBAL/cotp"
+
+    // ChangePhoneNumberWarningActivity
+    // tokopedia-android-internal://global/change-phone-number
+    @JvmField
+    val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
+
     // WebViewActivity (Web View in library)
     // Solution for sellerapp that does not have AppLinkWebsiteActivity
     // Activity can have title by putting "title=.."
     @JvmField
     val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
+
+    // PhoneVerificationProfileActivity
+    // tokopedia-android-internal://global/setting-profile-phone-verification
+    @JvmField
+    val SETTING_PROFILE_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-profile-phone-verification"
+
 }

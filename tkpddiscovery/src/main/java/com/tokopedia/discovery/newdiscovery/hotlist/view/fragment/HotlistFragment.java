@@ -125,7 +125,7 @@ public class HotlistFragment extends BrowseSectionFragment
     private static final String EXTRA_HEADER_URL = "EXTRA_HEADER_URL";
     private static final String EXTRA_DESC = "EXTRA_DESC";
     private static final String TOKO = "TOKO";
-    private static final String POWER_BADGE = "POWER BADGE";
+    private static final String POWER_BADGE = "Power Merchant";
     private static final String OFFICIAL_STORE = "OFFICIAL STORE";
     private static final String PENGIRIMAN = "Dukungan Pengiriman";
     private static final String INSTANT_COURIER = "INSTANT COURIER";
@@ -607,10 +607,9 @@ public class HotlistFragment extends BrowseSectionFragment
                 } else {
                     SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }
-                clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
-//                reloadData();
+                reloadData();
                 showSelectedFilters(getSelectedFilter());
             }
         }

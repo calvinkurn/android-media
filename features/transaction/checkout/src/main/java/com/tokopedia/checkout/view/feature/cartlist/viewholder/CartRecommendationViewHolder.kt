@@ -19,6 +19,7 @@ class CartRecommendationViewHolder(val view: View, val actionListener: ActionLis
     val padding2 = itemView.resources.getDimension(R.dimen.dp_2).toInt()
 
     companion object {
+        @JvmStatic
         val LAYOUT = R.layout.item_cart_recommendation
     }
 

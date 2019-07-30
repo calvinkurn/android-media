@@ -59,6 +59,7 @@
     <string name="msg_ussd_sim_number_change">Silakan masukkan nomor <b>%1$s</b> Anda dalam perangkat ini:</string>
     <string name="promo_category">Promo %1$s</string>
     <string name="other_promo">lainnya</string>
+    <string name="promo_none_applied">Tidak ada promo yang sedang dipakai</string>
 
     <string name="title_header_menu_digital_categories_transaction_list_digital_module">Transaksi Saya</string>
     <string name="title_header_menu_digital_categories_favorite_number_digital_module">Nomor Favorit</string>

@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class Utils {
     private static Utils singleInstance;
+    public static String LOYALTY_DEFAULT_TAB = "coupon";
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
