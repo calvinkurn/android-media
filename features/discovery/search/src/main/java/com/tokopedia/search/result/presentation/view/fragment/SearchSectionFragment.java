@@ -226,23 +226,23 @@ public abstract class SearchSectionFragment
 
         switch (getAdapter().getCurrentLayoutType()) {
             case GRID_1:
-                setSpanCount(2);
-                gridLayoutManager.setSpanCount(spanCount);
-                staggeredGridLayoutManager.setSpanCount(spanCount);
-                getAdapter().changeDoubleGridView();
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
-                break;
-            case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 staggeredGridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
                 SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
-            case GRID_3:
+            case GRID_2:
                 setSpanCount(1);
                 getAdapter().changeListView();
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
+                break;
+            case GRID_3:
+                setSpanCount(2);
+                gridLayoutManager.setSpanCount(spanCount);
+                staggeredGridLayoutManager.setSpanCount(spanCount);
+                getAdapter().changeDoubleGridView();
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
         }
         refreshMenuItemGridIcon();
