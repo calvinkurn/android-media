@@ -16,8 +16,7 @@ import com.tokopedia.graphql.data.source.cache.GraphqlCacheDataStore;
 import com.tokopedia.graphql.data.source.cloud.GraphqlCloudDataStore;
 import com.tokopedia.graphql.domain.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.kotlin.util.ContainNullException;
-import com.tokopedia.kotlin.util.NullCheckerKt;
+import com.tokopedia.graphql.util.NullCheckerKt;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
