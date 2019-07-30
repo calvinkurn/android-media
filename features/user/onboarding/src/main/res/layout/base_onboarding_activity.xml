@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             xmlns:tools="http://schemas.android.com/tools"
-                                             android:layout_width="match_parent"
-                                             android:layout_height="match_parent"
-                                             android:clipToPadding="false"
-                                             android:orientation="vertical">
-
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager_onboarding"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/indicator_container"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -27,7 +28,7 @@
         android:layout_marginTop="@dimen/dp_12"
         android:gravity="center"
         android:text="@string/skip"
-        android:textColor="@color/white"
+        android:textColor="@color/green_500"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         app:layout_constraintRight_toRightOf="parent"
@@ -53,7 +54,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/btnLogin"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_48"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
@@ -64,8 +65,9 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/dp_16"
         android:textAllCaps="false"
+        android:textColor="@color/green_500"
+        android:background="@drawable/bg_button_green_border"
         app:buttonCompatSize="big"
-        app:buttonCompatType="white_transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -82,14 +84,13 @@
         android:text="@string/register"
         android:textAllCaps="false"
         app:buttonCompatSize="big"
-        app:buttonCompatType="white"
+        app:buttonCompatType="primary"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_32"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/btnLogin"
-        app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintRight_toRightOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
