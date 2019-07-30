@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.list.adapter.TouchImageAdapter
-import com.tokopedia.design.list.decoration.SpaceItemDecoration
+import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.R
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.imagepreviewslider.presentation.adapter.ImagePreviewSliderAdapter
