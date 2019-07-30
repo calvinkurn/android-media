@@ -234,6 +234,8 @@ public abstract class SearchSectionFragment
                 break;
             case GRID_2:
                 setSpanCount(1);
+                gridLayoutManager.setSpanCount(spanCount);
+                staggeredGridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeListView();
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
                 break;
