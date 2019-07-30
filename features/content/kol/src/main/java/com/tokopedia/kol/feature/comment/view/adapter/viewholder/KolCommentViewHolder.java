@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
@@ -48,9 +49,16 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(element.getUrl())) {
                     viewListener.onGoToProfile(element.getUrl());
+                } else {
+                    viewListener.onGoToProfile(constructProfileApplink(element.getUserId()));
                 }
             }
         });
+
+        badge.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(element.getUserBadges())) {
+            ImageHandler.loadImageCircle2(badge.getContext(), badge, element.getUserBadges());
+        }
 
         if (element.isOfficial()) {
             badge.setVisibility(View.VISIBLE);
@@ -73,5 +81,9 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
 
     private String getCommentText(KolCommentViewModel element) {
         return "<b>" + element.getName() + "</b>" + " " + element.getReview();
+    }
+
+    private String constructProfileApplink(String userId) {
+        return ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId);
     }
 }

@@ -111,7 +111,8 @@ class GetPostDetailUseCase @Inject constructor(
                 comment.comment,
                 generateTime(comment.createTime),
                 comment.isKol,
-                comment.isCommentOwner
+                comment.isCommentOwner,
+                comment.getUserBadges()
         )
     }
 
