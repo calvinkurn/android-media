@@ -32,6 +32,8 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
+    String DEFAULT_RECOMMENDATION_PAGE_WITH_REF = "tokopedia://rekomendasi/?ref={ref}";
+    String RECOMMENDATION_PAGE_WITH_REF = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
     String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi/?ref={ref}";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";

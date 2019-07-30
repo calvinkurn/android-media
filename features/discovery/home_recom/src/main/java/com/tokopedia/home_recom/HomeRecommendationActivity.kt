@@ -42,12 +42,25 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE)
         fun getDefaultCallingIntent(context: Context, extras: Bundle): Intent{
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "", uri.getQueryParameter(REF) ?: "")
+            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "", "")
         }
 
         @JvmStatic
         @DeepLink(ApplinkConst.RECOMMENDATION_PAGE)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
+            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, uri.lastPathSegment, "") ?: Intent()
+        }
+        @JvmStatic
+        @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE_WITH_REF)
+        fun getDefaultCallingIntentWithRef(context: Context, extras: Bundle): Intent{
+            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
+            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "", uri.getQueryParameter(REF) ?: "")
+        }
+
+        @JvmStatic
+        @DeepLink(ApplinkConst.RECOMMENDATION_PAGE_WITH_REF)
+        fun getCallingIntentWithRef(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
             return RouteManager.getIntent(context,
                     ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
