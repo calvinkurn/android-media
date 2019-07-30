@@ -67,9 +67,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
-import com.tokopedia.tradein.model.TradeInParams
-import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
-import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import javax.inject.Inject
 
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
