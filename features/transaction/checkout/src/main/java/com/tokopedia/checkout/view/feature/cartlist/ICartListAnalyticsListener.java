@@ -85,4 +85,6 @@ public interface ICartListAnalyticsListener {
 
     void sendAnalyticsOnViewPromoManualApply(String type);
 
+    void sendAnalyticsOnGoToShipmentFailed(String errorMessage);
+
 }

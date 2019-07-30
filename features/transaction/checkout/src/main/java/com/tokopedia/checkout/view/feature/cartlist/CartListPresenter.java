@@ -790,7 +790,7 @@ public class CartListPresenter implements ICartListPresenter {
                     if (!(e instanceof CartResponseErrorException)) {
                         errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
                     }
-                    view.showToastMessageRed(errorMessage);
+                    view.renderErrorToShipmentForm(errorMessage);
                     processInitialGetCartData(view.getCartId(), cartListData == null, false);
                 }
             }

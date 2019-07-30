@@ -725,4 +725,14 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 productId
         );
     }
+
+    public void eventViewErrorWhenCheckout(String errorMessage) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_ERROR_ON_CHECKOUT,
+                EventLabel.NOT_SUCCESS + " - " + errorMessage
+        );
+    }
+
 }
