@@ -80,7 +80,6 @@ import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_APPLY_CREDIT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
