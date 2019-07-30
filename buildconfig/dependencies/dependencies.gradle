@@ -124,6 +124,7 @@ ext {
             mapsUtils        : "com.google.maps.android:android-maps-utils:${playServiceMapsUtil}",
             ads              : "com.google.android.gms:play-services-ads:${playServiceAds}",
             tagManagerImpl   : "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
+            tagManager       : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
             safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}"
     ]
 
@@ -281,5 +282,5 @@ ext {
        components: "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
        coach_mark: "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
        calendar: "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar"
-    ]   
+    ]
 }

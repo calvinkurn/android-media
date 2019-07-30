@@ -8,6 +8,8 @@ fun String?.toIntOrZero(): Int {
     return this?.toIntOrNull() ?: 0
 }
 
+fun String?.toLongOrString() = this?.toLongOrNull() ?: this
+
 fun String?.toLongOrZero(): Long {
     return this?.toLongOrNull() ?: 0
 }

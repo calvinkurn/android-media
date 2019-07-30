@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_3"
+    app:cardPreventCornerOverlap="false">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image"
+            android:layout_width="112dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@color/light_blue_300" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/deals_tag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:background="@drawable/bg_hotel_deals_tag"
+            android:lineSpacingExtra="@dimen/sp_4"
+            android:padding="@dimen/dp_8"
+            android:visibility="gone"
+            app:fontSize="micro"
+            app:layout_constraintBottom_toBottomOf="@+id/image"
+            app:layout_constraintEnd_toEndOf="@+id/image"
+            app:layout_constraintLeft_toLeftOf="@+id/image"
+            app:layout_constraintRight_toRightOf="@+id/image"
+            app:layout_constraintStart_toStartOf="@+id/image"
+            app:textViewTheme="darkPrimary"
+            app:weight="medium"
+            tools:text="Deals of Year End"
+            tools:visibility="visible" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:ellipsize="end"
+            android:singleLine="true"
+            app:fontSize="small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textViewTheme="lightPrimary"
+            app:weight="medium"
+            tools:text="Comfy Room in Karet" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:background="@drawable/bg_hotel_round_corner_grey"
+            android:lineSpacingExtra="@dimen/sp_4"
+            android:paddingStart="@dimen/dp_6"
+            android:paddingLeft="@dimen/dp_6"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_6"
+            android:paddingBottom="@dimen/dp_4"
+            android:textColor="@color/Neutral_N200"
+            android:textSize="@dimen/sp_10"
+            app:fontSize="micro"
+            app:layout_constraintLeft_toLeftOf="@+id/title"
+            app:layout_constraintStart_toStartOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            app:weight="medium"
+            tools:text="Hotel" />
+
+
+        <RatingBar
+            android:id="@+id/rating_star"
+            style="@style/RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/type"
+            app:layout_constraintStart_toEndOf="@+id/type"
+            app:layout_constraintTop_toTopOf="@+id/type" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:drawablePadding="@dimen/dp_4"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            app:drawableLeftCompat="@drawable/ic_location_fill"
+            app:fontSize="micro"
+            app:layout_constraintEnd_toEndOf="@+id/title"
+            app:layout_constraintLeft_toLeftOf="@+id/title"
+            app:layout_constraintRight_toRightOf="@+id/title"
+            app:layout_constraintStart_toStartOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@+id/type"
+            app:textViewTheme="lightSecondary"
+            tools:text="Kuningan" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/rating_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:background="@drawable/bg_hotel_rating_radius"
+            android:ellipsize="end"
+            android:paddingLeft="@dimen/dp_6"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingRight="@dimen/dp_6"
+            android:paddingBottom="@dimen/dp_2"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            app:fontSize="micro"
+            app:layout_constraintLeft_toLeftOf="@+id/title"
+            app:layout_constraintStart_toStartOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@+id/location"
+            app:weight="medium"
+            tools:text="8,6" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/blue_booking"
+            app:fontSize="micro"
+            app:layout_constraintBaseline_toBaselineOf="@+id/rating_counter"
+            app:layout_constraintEnd_toEndOf="@+id/location"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/rating_counter"
+            tools:text="Mengesankan" />
+
+        <LinearLayout
+            android:id="@+id/container_price_origin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/title"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintLeft_toLeftOf="@+id/title"
+            app:layout_constraintRight_toRightOf="@+id/title"
+            app:layout_constraintStart_toStartOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@+id/rate">
+
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/pink_property"
+                android:visibility="gone"
+                app:fontSize="micro"
+                tools:text="Sisa 2 kamar"
+                tools:visibility="visible" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/price_origin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_4"
+
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:visibility="gone"
+                app:fontSize="micro"
+                app:textViewTheme="lightSecondary"
+                tools:text="Rp20.800.0000"
+                tools:visibility="gone" />
+
+        </LinearLayout>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            app:fontSize="small"
+            app:layout_constraintEnd_toEndOf="@+id/title"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintLeft_toLeftOf="@+id/title"
+            app:layout_constraintRight_toRightOf="@+id/title"
+            app:layout_constraintStart_toStartOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@+id/container_price_origin"
+            app:layout_goneMarginTop="@dimen/dp_16"
+            app:textViewTheme="lightPrimary"
+            app:weight="medium"
+            tools:text="Rp10.800.0000" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/include_tax"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="end"
+            android:text="@string/hotel_item_list_include_pajak"
+            android:textSize="@dimen/sp_10"
+            app:fontSize="micro"
+            app:layout_constraintBottom_toTopOf="@+id/container_pay_at_hotel"
+            app:layout_constraintEnd_toEndOf="@+id/title"
+            app:layout_constraintLeft_toLeftOf="@+id/title"
+            app:layout_constraintRight_toRightOf="@+id/title"
+            app:layout_constraintStart_toStartOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@+id/price"
+            app:layout_goneMarginBottom="@dimen/dp_8"
+            app:textViewTheme="lightSecondary" />
+
+        <LinearLayout
+            android:id="@+id/container_pay_at_hotel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/bg_hotel_list_pay_at_hotel"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_4"
+            android:paddingRight="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_4"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include_tax"
+            tools:visibility="gone">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
+                app:srcCompat="@drawable/ic_hotel" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_12"
+                android:gravity="end"
+                android:text="@string/hotel_room_list_pay_in_hotel"
+                android:textSize="@dimen/sp_10"
+                app:fontSize="micro"
+                app:weight="medium">
+
+            </com.tokopedia.design.component.TextViewCompat>
+        </LinearLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

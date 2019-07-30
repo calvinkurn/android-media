@@ -2,19 +2,15 @@ package com.tokopedia.shop.page.view
 
 import android.arch.lifecycle.MutableLiveData
 import android.text.TextUtils
-import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kolcommon.data.pojo.Whitelist
 import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
@@ -45,7 +41,7 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
         get() = userSessionInterface.isLoggedIn
 
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
-    val whiteListResp =  MutableLiveData<Pair<Boolean, String>>()
+    val whiteListResp =  MutableLiveData<Result<Pair<Boolean, String>>>()
     val shopBadgeResp = MutableLiveData<Pair<Boolean, ShopBadge>>()
     val shopModerateResp = MutableLiveData<Result<ShopModerateRequestData>>()
 
@@ -70,18 +66,26 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
         getWhitelistUseCase.execute(
                 GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_SHOP, shopId),
                 object : Subscriber<GraphqlResponse>() {
-                    override fun onCompleted() {}
+                    override fun onCompleted() {
 
-                    override fun onError(e: Throwable?) {}
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        whiteListResp.value = Fail(RuntimeException())
+                    }
 
                     override fun onNext(graphqlResponse: GraphqlResponse?) {
-
                         graphqlResponse?.let {
                             val error = it.getError(WhitelistQuery::class.java)
                             if (error == null || error.isEmpty()){
                                 val whitelist = it.getData<WhitelistQuery>(WhitelistQuery::class.java)?.whitelist ?: return
-                                if (TextUtils.isEmpty(whitelist.error))
-                                    whiteListResp.value = whitelist.isWhitelist to whitelist.url
+                                if (TextUtils.isEmpty(whitelist.error)) {
+                                    whiteListResp.value = Success(whitelist.isWhitelist to whitelist.url)
+                                } else {
+                                    whiteListResp.value = Fail(RuntimeException())
+                                }
+                            } else {
+                                whiteListResp.value = Fail(RuntimeException())
                             }
                         }
                     }

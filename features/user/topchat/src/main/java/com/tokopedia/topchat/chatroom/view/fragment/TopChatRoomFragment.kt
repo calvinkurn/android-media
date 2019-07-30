@@ -55,7 +55,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatCha
 import com.tokopedia.topchat.chatroom.view.customview.*
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
@@ -98,7 +98,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
-    private var productPreview: ProductPreview? = null
     var indexFromInbox = -1
     var isMoveItemInboxToTop = false
 
@@ -146,7 +145,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
         initView(view)
         loadInitialData()
-        initProductPreview(savedInstanceState)
+        presenter.initProductPreview(savedInstanceState)
+        presenter.initInvoicePreview(savedInstanceState)
+        presenter.initAttachmentPreview()
     }
 
     override fun loadInitialData() {
@@ -162,29 +163,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onError(),
                     onSuccessGetMessageId())
         }
-    }
-
-    private fun initProductPreview(savedInstanceState: Bundle?) {
-        val productId = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, arguments, savedInstanceState)
-        val productImageUrl = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, arguments, savedInstanceState)
-        val productName = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, arguments, savedInstanceState)
-        val productPrice = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, arguments, savedInstanceState)
-        val productUrl = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, arguments, savedInstanceState)
-        val productColorVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, arguments, savedInstanceState)
-        val productColorHexVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, arguments, savedInstanceState)
-        val productSizeVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, arguments, savedInstanceState)
-        productPreview = ProductPreview(productId, productImageUrl, productName, productPrice,
-                productColorVariant, productColorHexVariant, productSizeVariant, productUrl)
-
-        productPreview?.let {
-            if (it.noProductPreview()) {
-                onEmptyProductPreview()
-            } else {
-                (viewState as? TopChatViewState)?.focusOnReply()
-            }
-        }
-
-        initProductPreviewLayoutIfExist()
     }
 
     private fun onUnblockChatClicked(): () -> Unit {
@@ -389,22 +367,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun initProductPreviewLayoutIfExist() {
-        if (hasProductPreview()) return
-        productPreview?.let {
-            (viewState as? TopChatViewState)?.showProductPreview(it)
-        }
-    }
-
-    private fun hasProductPreview(): Boolean {
-        if (productPreview == null) return false
-        return view == null || productPreview!!.noProductPreview()
-    }
-
-    override fun onEmptyProductPreview() {
-        productPreview = null
-    }
-
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
 
         activity?.let {
@@ -504,14 +466,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onSendClicked(message: String, generateStartTime: String) {
-        presenter.sendMessage(
-                messageId, message, generateStartTime, "",
-                onSendingMessage(message, generateStartTime), productPreview
+        presenter.sendAttachmentsAndMessage(
+                messageId,
+                message,
+                generateStartTime,
+                "",
+                onSendingMessage(message, generateStartTime)
         )
-    }
-
-    override fun clearProductPreview() {
-        (viewState as? TopChatViewState)?.clearProductPreview()
     }
 
     override fun addTemplateString(message: String?) {
@@ -870,5 +831,25 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickInvoiceThumbnail(url: String, id: String) {
         val encodedUrl = URLEncoder.encode(url, "UTF-8")
         onGoToWebView(encodedUrl, id)
+    }
+
+    override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
+        return getParamString(key, arguments, savedInstanceState)
+    }
+
+    override fun focusOnReply() {
+        getViewState().focusOnReply()
+    }
+
+    override fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>) {
+        getViewState().showAttachmentPreview(attachmentPreview)
+    }
+
+    override fun onEmptyProductPreview() {
+        presenter.clearAttachmentPreview()
+    }
+
+    override fun notifyAttachmentsSent() {
+        getViewState().clearAttachmentPreview()
     }
 }

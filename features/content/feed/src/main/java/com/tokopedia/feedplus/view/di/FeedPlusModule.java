@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
 import com.tokopedia.feedplus.FeedModuleRouter;
+import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.FeedAuthInterceptor;
 import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
@@ -183,5 +185,10 @@ public class FeedPlusModule {
         return retrofit.create(TopAdsApi.class);
     }
 
-
+    @Provides
+    @FeedPlusScope
+    @Named("atcMutation")
+    String provideAddToCartMutation(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
+    }
 }

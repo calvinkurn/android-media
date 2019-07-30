@@ -51,6 +51,7 @@
 
 /features/digital/flight/               @tokopedia/minion-mark
 /features/digital/train/               @tokopedia/minion-mark
+/features/digital/hotel/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/digital/digital_browse/         @tokopedia/minion-mark
 /features/digital/digitalproduct        @tokopedia/minion-mark
@@ -149,6 +150,7 @@
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda
 /libraries/linker                       @tokopedia/minion-yoda
+/libraries/cmnotification               @tokopedia/minion-yoda
 
 /libraries/pagination                   @tokopedia/minion-solo
 /libraries/common_network/              @tokopedia/minion-solo
