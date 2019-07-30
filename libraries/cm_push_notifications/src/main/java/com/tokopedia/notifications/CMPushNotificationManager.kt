@@ -57,18 +57,20 @@ class CMPushNotificationManager : CoroutineScope {
      *
      * @param token
      */
-    fun refreshFCMTokenFromForeground(token: String, isForce: Boolean) {
+    fun refreshFCMTokenFromForeground(token: String?, isForce: Boolean?) {
         try {
-            if (isForegroundTokenUpdateEnabled) {
+            if (::applicationContext.isInitialized && token != null && isForegroundTokenUpdateEnabled
+                    && isForce != null) {
                 CommonUtils.dumper("token: $token")
                 if (TextUtils.isEmpty(token)) {
                     return
                 }
                 cmUserHandler?.cancelRunnable()
                 cmUserHandler = CMUserHandler(applicationContext)
-                cmUserHandler!!.updateToken(token, remoteDelaySeconds, isForce)
+                cmUserHandler?.updateToken(token, remoteDelaySeconds, isForce)
             }
-        }catch (e: Exception){}
+        } catch (e: Exception) {
+        }
     }
 
     /**
@@ -76,19 +78,20 @@ class CMPushNotificationManager : CoroutineScope {
      *
      * @param token
      */
-    fun refreshTokenFromBackground(token: String, force: Boolean) {
+    fun refreshTokenFromBackground(token: String?, isForce: Boolean?) {
         try {
-            if (isBackgroundTokenUpdateEnabled) {
+            if (::applicationContext.isInitialized && token != null && isBackgroundTokenUpdateEnabled
+                    && isForce != null) {
                 CommonUtils.dumper("token: $token")
                 if (TextUtils.isEmpty(token)) {
                     return
                 }
-                if (cmUserHandler != null)
-                    cmUserHandler!!.cancelRunnable()
+                cmUserHandler?.cancelRunnable()
                 cmUserHandler = CMUserHandler(applicationContext)
-                cmUserHandler?.updateToken(token, remoteDelaySeconds, force)
+                cmUserHandler?.updateToken(token, remoteDelaySeconds, isForce)
             }
-        }catch (e: Exception){}
+        } catch (e: Exception) {
+        }
     }
 
     /**
