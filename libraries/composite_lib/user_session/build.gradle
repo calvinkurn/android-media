@@ -1,0 +1,11 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+project.ext {
+    artifactId = 'user_session'
+    groupId = 'com.tokopedia.user.session'
+    versionName = "1"
+    artifactName = "user_session-release"
+}
+
+apply from: '../publish_local.gradle'

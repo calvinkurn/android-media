@@ -16,3 +16,6 @@ buildCache {
 }
 include ":cache_manager"
 include ":use_case"
+include ":url"
+include ":user_session"
+include ":global_config"

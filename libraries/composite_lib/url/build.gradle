@@ -1,0 +1,18 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+
+project.ext {
+    artifactId = 'url'
+    groupId = 'com.tokopedia.url'
+    versionName = "1"
+    artifactName = "url-release"
+}
+
+
+
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+}
+
+apply from: '../publish_local.gradle'
