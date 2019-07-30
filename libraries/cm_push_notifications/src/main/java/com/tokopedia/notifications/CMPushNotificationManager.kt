@@ -59,15 +59,19 @@ class CMPushNotificationManager : CoroutineScope {
      */
     fun refreshFCMTokenFromForeground(token: String?, isForce: Boolean?) {
         try {
-            if (::applicationContext.isInitialized && token != null && isForegroundTokenUpdateEnabled
-                    && isForce != null) {
+
+            if (::applicationContext.isInitialized && token != null && isForegroundTokenUpdateEnabled) {
                 CommonUtils.dumper("token: $token")
                 if (TextUtils.isEmpty(token)) {
                     return
                 }
                 cmUserHandler?.cancelRunnable()
                 cmUserHandler = CMUserHandler(applicationContext)
-                cmUserHandler?.updateToken(token, remoteDelaySeconds, isForce)
+                if(isForce ==null){
+                    cmUserHandler?.updateToken(token, remoteDelaySeconds, false)
+                }else{
+                    cmUserHandler?.updateToken(token, remoteDelaySeconds, isForce)
+                }
             }
         } catch (e: Exception) {
         }
@@ -80,15 +84,18 @@ class CMPushNotificationManager : CoroutineScope {
      */
     fun refreshTokenFromBackground(token: String?, isForce: Boolean?) {
         try {
-            if (::applicationContext.isInitialized && token != null && isBackgroundTokenUpdateEnabled
-                    && isForce != null) {
+            if (::applicationContext.isInitialized && token != null && isBackgroundTokenUpdateEnabled) {
                 CommonUtils.dumper("token: $token")
                 if (TextUtils.isEmpty(token)) {
                     return
                 }
                 cmUserHandler?.cancelRunnable()
                 cmUserHandler = CMUserHandler(applicationContext)
-                cmUserHandler?.updateToken(token, remoteDelaySeconds, isForce)
+                if(isForce ==null){
+                    cmUserHandler?.updateToken(token, remoteDelaySeconds, false)
+                }else{
+                    cmUserHandler?.updateToken(token, remoteDelaySeconds, isForce)
+                }
             }
         } catch (e: Exception) {
         }
