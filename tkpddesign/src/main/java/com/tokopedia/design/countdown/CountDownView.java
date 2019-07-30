@@ -297,6 +297,6 @@ public class CountDownView extends FrameLayout {
     }
 
     public interface CountDownListener {
-        void onCountDownFinished();
+        void onCountDownFinished(int adapterPosition);
     }
 }

@@ -739,9 +739,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onCountDownFinished() {
-        if (presenter != null) {
-            presenter.updateHomeData();
+    public void onCountDownFinished(int adapterPosition) {
+        if (adapter != null) {
+            adapter.removeViewModelInPosition(adapterPosition);
         }
     }
 

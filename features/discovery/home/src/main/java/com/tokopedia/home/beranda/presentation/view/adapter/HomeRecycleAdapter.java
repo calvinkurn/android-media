@@ -117,6 +117,11 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         notifyItemRemoved(removedPosition);
     }
 
+    public void removeViewModelInPosition(int adapterPosition) {
+        this.visitables.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+    }
+
     public void setHomeHeaderViewModel(HeaderViewModel homeHeaderViewModel) {
         int changedPosition = setHomeHeader(homeHeaderViewModel);
         if (changedPosition != POSITION_UNDEFINED) {
