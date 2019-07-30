@@ -66,8 +66,8 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
             }
         });
 
-        badge.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(element.getUserBadges())) {
+            badge.setVisibility(View.VISIBLE);
             ImageHandler.loadImageCircle2(badge.getContext(), badge, element.getUserBadges());
         }
 
