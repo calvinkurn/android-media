@@ -60,7 +60,7 @@
     <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
-    <string name="success_add_gender">Jenis kelamin berhasil diubah</string>
+    <string name="success_add_gender">Jenis kelamin berhasil ditambah</string>
 
     <!-- ADD EMAIL -->
     <string name="title_add_email">Tambah Email</string>
@@ -97,7 +97,7 @@
 
 
     <!-- ADD BOD -->
-    <string name="title_add_bod">Tambah Tanggal Lahir</string>
+    <string name="title_add_bod">Ubah Tanggal Lahir</string>
     <string name="page_description">Kamu hanya dapat mengatur tanggal lahirmu satu kali. Pastikan tanggal lahir sudah benar</string>
     <string name="success_add_bod">Tanggal lahir berhasil ditambah</string>
     <string name="success_change_bod">Tanggal lahir berhasil diubah</string>
