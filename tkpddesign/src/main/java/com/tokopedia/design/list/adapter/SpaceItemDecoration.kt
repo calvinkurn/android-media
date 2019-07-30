@@ -1,4 +1,4 @@
-package com.tokopedia.design.list.decoration
+package com.tokopedia.design.list.adapter
 
 import android.graphics.Rect
 import android.support.v7.widget.LinearLayoutManager
