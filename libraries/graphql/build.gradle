@@ -44,8 +44,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.network)
-//    implementation project(rootProject.ext.libraries.kotlinExtensions)
-
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
@@ -57,7 +55,6 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    implementation project(rootProject.ext.libraries.cpm)
 }
 
 apply from: '../../publish_local.gradle'

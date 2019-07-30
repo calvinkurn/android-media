@@ -28,8 +28,7 @@ public class GraphqlClient {
             UserSession userSession = new UserSession(context.getApplicationContext());
             sRetrofit = CommonNetwork.createRetrofit(context.getApplicationContext(),
                     GraphqlUrl.BASE_URL, (NetworkRouter) context.getApplicationContext(),
-                    userSession,
-                    (com.tokopedia.cpm.CharacterPerMinuteInterface) context.getApplicationContext());
+                    userSession);
             sFingerprintManager = new FingerprintManager(userSession);
 
             sGraphqlDatabase = GraphqlDatabase.getInstance(context);

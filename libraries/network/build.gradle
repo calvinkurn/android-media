@@ -20,21 +20,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.libraries.url)
-    implementation rootProject.ext.supportLibDependencies.supportV4
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
 
-    implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.networkDependencies.converterGson
-    implementation rootProject.ext.networkDependencies.retrofit
-    implementation rootProject.ext.networkDependencies.adapterRxJava
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
-
-    implementation project(rootProject.ext.libraries.cpm)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.userSession)
-
-    implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
