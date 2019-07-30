@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
@@ -13,7 +14,12 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.analytics.FROM_CART
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
@@ -34,11 +40,15 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
     val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(ArrayList(), this) }
+    @Inject
+    lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
+    lateinit var progressDialog: ProgressDialog
 
     abstract var serviceId : String
     open var categoryId : Int = 0
     open var isCouponActive : Boolean = true
     open var promoCode : String = ""
+    var pageTracking: Int = 1
 
     override fun getAdapterTypeFactory(): PromoCheckoutListAdapterFactory {
         return PromoCheckoutListAdapterFactory(this)
@@ -56,6 +66,22 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
+    }
+
+    override fun showProgressLoading() {
+        progressDialog.show()
+    }
+
+    override fun hideProgressLoading() {
+        progressDialog.hide()
+    }
+
+    override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickCoupon(promoCheckoutListModel?.code ?: "")
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
+        }
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -105,6 +131,23 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
 
+    override fun onErrorCheckPromoCode(e: Throwable) {
+        if (e is CheckPromoCodeException || e is MessageErrorException) {
+            textInputLayoutCoupon.error = e.message
+        } else {
+            NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
+        }
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed()
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeFailed()
+        }
+    }
+
+    override fun onErrorEmptyPromoCode() {
+        textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
+    }
+
     override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>) {
         promoLastSeenAdapter.listData.clear()
         promoLastSeenAdapter.listData.addAll(data)
@@ -125,7 +168,19 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     override fun onImpressionCoupon(promoCheckoutListModel: PromoCheckoutListModel?) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartImpressionCoupon(promoCheckoutListModel?.code ?: "")
+        } else {
+            trackingPromoCheckoutUtil.checkoutImpressionCoupon(promoCheckoutListModel?.code ?: "")
+        }
+    }
 
+    protected fun trackSuccessCheckPromoCode(data: DataUiModel) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(data.codes[0])
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes[0])
+        }
     }
 
     override fun initInjector() {

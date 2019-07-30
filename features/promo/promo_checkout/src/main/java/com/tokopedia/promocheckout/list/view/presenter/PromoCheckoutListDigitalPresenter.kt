@@ -46,7 +46,7 @@ class PromoCheckoutListDigitalPresenter(private val graphqlUseCase: GraphqlUseCa
         })
     }
 
-    override fun checkPromoStackingCode(promoCode: String, promoDigitalModel: PromoDigitalModel) {
+    override fun checkPromoCode(promoCode: String, promoDigitalModel: PromoDigitalModel) {
         view.showProgressLoading()
 
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), object : Subscriber<GraphqlResponse>() {
@@ -54,7 +54,7 @@ class PromoCheckoutListDigitalPresenter(private val graphqlUseCase: GraphqlUseCa
                 view.hideProgressLoading()
                 val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
                 if (checkVoucherData.voucherData.success) {
-                    view.onSuccessCheckPromoStackingCode(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))
+                    view.onSuccessCheckPromoCode(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))
                 } else {
                     view.onErrorCheckPromoCode(MessageErrorException(checkVoucherData.voucherData.message.text))
                 }

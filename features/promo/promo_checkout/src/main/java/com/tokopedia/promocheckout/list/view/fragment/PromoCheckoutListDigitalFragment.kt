@@ -38,12 +38,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     @Inject
     lateinit var promoCheckoutListDigitalPresenter: PromoCheckoutListDigitalPresenter
 
-    @Inject
-    lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
-
-    lateinit var progressDialog: ProgressDialog
     lateinit var promoDigitalModel: PromoDigitalModel
-    var pageTracking: Int = 1
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
 
@@ -65,17 +60,13 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickCoupon(promoCheckoutListModel?.code ?: "")
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
-        }
+        super.onItemClicked(promoCheckoutListModel)
         startActivityForResult(PromoCheckoutDetailDigitalActivity.newInstance(
                 activity, promoCheckoutListModel?.code ?: "", false, promoDigitalModel, pageTracking), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        if (promoCode.isNotEmpty()) promoCheckoutListDigitalPresenter.checkPromoStackingCode(promoCode, promoDigitalModel)
+        if (promoCode.isNotEmpty()) promoCheckoutListDigitalPresenter.checkPromoCode(promoCode, promoDigitalModel)
     }
 
     override fun showProgressLoading() {
@@ -86,50 +77,14 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
         progressDialog.hide()
     }
 
-    override fun onErrorCheckPromoCode(e: Throwable) {
-        if (e is CheckPromoCodeException || e is MessageErrorException) {
-            textInputLayoutCoupon.error = e.message
-        } else {
-            NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
-        }
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed()
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeFailed()
-        }
-    }
-
-    override fun onErrorEmptyPromoCode() {
-        textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
-    }
-
-    override fun onSuccessCheckPromoStackingCode(data: DataUiModel) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(data.codes[0])
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes[0])
-        }
+    override fun onSuccessCheckPromoCode(data: DataUiModel) {
+        trackSuccessCheckPromoCode(data)
         val intent = Intent()
         val promoData = PromoData(data.isCoupon, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-    }
-
-    override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
-        val intent = Intent()
-        intent.putExtra(EXTRA_CLASHING_DATA, clasingInfoDetailUiModel)
-        activity?.setResult(RESULT_CLASHING, intent)
-        activity?.finish()
-    }
-
-    override fun onImpressionCoupon(promoCheckoutListModel: PromoCheckoutListModel?) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartImpressionCoupon(promoCheckoutListModel?.code ?: "")
-        } else {
-            trackingPromoCheckoutUtil.checkoutImpressionCoupon(promoCheckoutListModel?.code ?: "")
-        }
     }
 
     override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {

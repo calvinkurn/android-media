@@ -9,8 +9,12 @@ import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeen
 interface PromoCheckoutListContract {
 
     interface View : BaseListViewListener<PromoCheckoutListModel>{
+        fun showProgressLoading()
+        fun hideProgressLoading()
         fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>)
         fun showGetListLastSeenError(e: Throwable)
+        fun onErrorCheckPromoCode(e: Throwable)
+        fun onErrorEmptyPromoCode()
     }
 
     interface Presenter : CustomerPresenter<View>{

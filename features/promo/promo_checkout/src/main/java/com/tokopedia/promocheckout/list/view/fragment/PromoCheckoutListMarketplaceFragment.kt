@@ -33,12 +33,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     @Inject
     lateinit var promoCheckoutListMarketplacePresenter: PromoCheckoutListMarketplacePresenter
 
-    @Inject
-    lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
-
     private var isOneClickShipment: Boolean = false
-    lateinit var progressDialog: ProgressDialog
-    var pageTracking: Int = 1
     private var promo: Promo? = null
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
@@ -61,11 +56,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickCoupon(promoCheckoutListModel?.code ?: "")
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
-        }
+        super.onItemClicked(promoCheckoutListModel)
         startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
                 activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
     }
@@ -74,37 +65,8 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         promoCheckoutListMarketplacePresenter.checkPromoStackingCode(promoCode, isOneClickShipment, promo)
     }
 
-    override fun showProgressLoading() {
-        progressDialog.show()
-    }
-
-    override fun hideProgressLoading() {
-        progressDialog.hide()
-    }
-
-    override fun onErrorCheckPromoCode(e: Throwable) {
-        if (e is CheckPromoCodeException || e is MessageErrorException) {
-            textInputLayoutCoupon.error = e.message
-        } else {
-            NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
-        }
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed()
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeFailed()
-        }
-    }
-
-    override fun onErrorEmptyPromoCode() {
-        textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
-    }
-
     override fun onSuccessCheckPromoStackingCode(data: DataUiModel) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(data.codes[0])
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes[0])
-        }
+        trackSuccessCheckPromoCode(data)
         val intent = Intent()
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
         val promoStackingData = PromoStackingData(
@@ -127,14 +89,6 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         intent.putExtra(EXTRA_CLASHING_DATA, clasingInfoDetailUiModel)
         activity?.setResult(RESULT_CLASHING, intent)
         activity?.finish()
-    }
-
-    override fun onImpressionCoupon(promoCheckoutListModel: PromoCheckoutListModel?) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartImpressionCoupon(promoCheckoutListModel?.code ?: "")
-        } else {
-            trackingPromoCheckoutUtil.checkoutImpressionCoupon(promoCheckoutListModel?.code ?: "")
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

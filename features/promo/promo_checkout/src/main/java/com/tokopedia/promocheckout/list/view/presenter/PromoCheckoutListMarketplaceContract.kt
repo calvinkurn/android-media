@@ -8,12 +8,8 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 interface PromoCheckoutListMarketplaceContract {
 
     interface View : PromoCheckoutListContract.View{
-        fun showProgressLoading()
-        fun hideProgressLoading()
-        fun onErrorCheckPromoCode(e: Throwable)
         fun onSuccessCheckPromoStackingCode(data: DataUiModel)
         fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel)
-        fun onErrorEmptyPromoCode()
     }
 
     interface Presenter : CustomerPresenter<View>{
