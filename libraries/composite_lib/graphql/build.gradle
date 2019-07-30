@@ -31,19 +31,19 @@ android {
 project.ext {
     artifactId = 'graphql'
     groupId = 'com.tokopedia.graphql'
-    versionName = "${tkpdGraphqlVersion}"
-    artifactName = "graphql-release"
+    versionName = "1"
+    artifactName = "graphql"
 }
 
 
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation "com.tokopedia.usecase:usecase:2.23"
     implementation rootProject.ext.miscDependencies.gson
-    implementation project(rootProject.ext.libraries.url)
-    implementation project(rootProject.ext.libraries.userSession)
-    implementation project(rootProject.ext.libraries.config)
-    implementation project(rootProject.ext.libraries.network)
+    implementation "com.tokopedia.url:url:1"
+    implementation "com.tokopedia.user.session:user_session:1"
+    implementation "com.tokopedia.config:global_config:1"
+    implementation "com.tokopedia.network:network:1"
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
@@ -51,6 +51,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation "com.jakewharton.timber:timber:4.7.1"
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../publish_local.gradle'

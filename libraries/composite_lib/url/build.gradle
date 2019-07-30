@@ -6,10 +6,8 @@ project.ext {
     artifactId = 'url'
     groupId = 'com.tokopedia.url'
     versionName = "1"
-    artifactName = "url-release"
+    artifactName = "url"
 }
-
-
 
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
