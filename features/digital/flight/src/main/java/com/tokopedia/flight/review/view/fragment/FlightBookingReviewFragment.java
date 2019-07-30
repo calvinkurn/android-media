@@ -239,7 +239,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                 flightBookingReviewModel.getId(),
                 flightBookingReviewModel.getDetailPassengersData(),
                 flightBookingReviewModel.getContactName(),
-                flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(),
+                flightBookingReviewModel.getPhoneCode().getCountryId(),
                 flightBookingReviewModel.getContactEmail(),
                 flightBookingReviewModel.getContactPhone(),
                 flightBookingReviewModel.getInsuranceIds()

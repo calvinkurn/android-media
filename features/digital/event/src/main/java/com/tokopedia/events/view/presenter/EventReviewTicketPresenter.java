@@ -42,7 +42,7 @@ import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartRespons
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
-import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -207,7 +207,7 @@ public class EventReviewTicketPresenter
                 tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(getView().getActivity(),
                         Utils.Constants.EVENTS,
                         Utils.Constants.EVENTS,
-                        "");
+                        com.tokopedia.oms.view.utils.Utils.LOYALTY_DEFAULT_TAB);
         loyaltyIntent.putExtra(Utils.Constants.CHECKOUTDATA, requestBody.toString());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID,
                 checkoutData.getDigitalProductID());
@@ -475,7 +475,7 @@ public class EventReviewTicketPresenter
                 @Override
                 public void onNext(CheckoutResponse checkoutResponse) {
 
-                    PaymentPassData paymentPassData = new com.tokopedia.payment.model.PaymentPassData();
+                    PaymentPassData paymentPassData = new com.tokopedia.common.payment.model.PaymentPassData();
                     paymentPassData.setQueryString(checkoutResponse.getQueryString());
                     paymentPassData.setRedirectUrl(checkoutResponse.getRedirectUrl());
                     paymentPassData.setCallbackSuccessUrl(checkoutResponse.getCallbackUrlSuccess());
@@ -600,7 +600,7 @@ public class EventReviewTicketPresenter
         String jsonResponse = intent.getStringExtra(EXTRA_VERIFY_RESPONSE);
         if (!StringUtils.isBlank(jsonResponse))
             this.verifiedSeatResponse = (JsonObject) new JsonParser().parse(jsonResponse);
-        mView.renderFromPackageVM(checkoutData, selectedSeatViewModel);
+        mView.renderFromPackageVM(checkoutData, selectedSeatViewModel, this.eventsDetailsViewModel.getCustomText1());
         getAndInitForms();
     }
 }

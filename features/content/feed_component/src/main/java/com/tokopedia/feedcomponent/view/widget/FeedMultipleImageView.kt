@@ -111,7 +111,8 @@ class FeedMultipleImageView @JvmOverloads constructor(
                 itemView.setOnClickListener {
                     val media = itemList[adapterPosition]
                     fileListener?.onClickItem(media, adapterPosition)
-                    feedMultipleImageViewListener?.onImageClick(media.positionInFeed, adapterPosition, media.applink)
+                    feedMultipleImageViewListener?.onMediaGridClick(media.positionInFeed, adapterPosition,
+                            media.applink, itemCount == 1)
                     if (media.tracking.isNotEmpty()) {
                         feedMultipleImageViewListener?.onAffiliateTrackClicked(mapTrackingData(media.tracking), true)
                     }
@@ -175,7 +176,8 @@ class FeedMultipleImageView @JvmOverloads constructor(
     }
 
     interface FeedMultipleImageViewListener{
-        fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
+        fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
+                             redirectLink: String, isSingleItem: Boolean)
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
     }

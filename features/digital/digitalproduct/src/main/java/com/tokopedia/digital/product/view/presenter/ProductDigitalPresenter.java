@@ -22,6 +22,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.common.data.entity.response.RechargePushEventRecommendationResponseEntity;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.view.ViewFactory;
@@ -42,6 +43,7 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
@@ -682,7 +684,22 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         return passData;
     }
 
-    public void trackRechargePushEventRecommendation(int categoryId, String actionType) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, actionType), null);
+    public void trackRechargePushEventRecommendation(int categoryId) {
+        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, "VISIT"), new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                RechargePushEventRecommendationResponseEntity response = graphqlResponse.getData(RechargePushEventRecommendationResponseEntity.class);
+            }
+        });
     }
 }

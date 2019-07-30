@@ -3,9 +3,7 @@ package com.tokopedia.notifications.factory
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
 import android.view.View
@@ -14,7 +12,7 @@ import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
-import com.tokopedia.notifications.receiver.CMBroadcastReceiver
+import com.tokopedia.notifications.model.Grid
 
 /**
  * @author lalit.singh
@@ -23,10 +21,10 @@ class GridNotification internal constructor(context: Context, baseNotificationMo
 
     override fun createNotification(): Notification {
         val builder = notificationBuilder
-        val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.layout_collapsed)
+        val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
         setCollapseData(collapsedView, baseNotificationModel)
         val expandedView = RemoteViews(context.applicationContext.packageName,
-                R.layout.layout_grid_expand)
+                R.layout.cm_layout_grid_expand)
         setGridData(expandedView)
         builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
@@ -43,42 +41,37 @@ class GridNotification internal constructor(context: Context, baseNotificationMo
         var bitmap: Bitmap?
         if (count >= 1) {
             bitmap = getBitmap(gridList[0].img)
-            if (bitmap != null) {
-                remoteViews.setImageViewBitmap(R.id.iv_gridOne, bitmap)
-            }
+            remoteViews.setImageViewBitmap(R.id.iv_gridOne, bitmap)
             gridList[0].appLink?.let {
                 remoteViews.setOnClickPendingIntent(R.id.iv_gridOne,
-                        getPendingIntent(requestCode, it))
+                        getGridPendingIntent(gridList[0]))
             }
         }
 
         if (count >= 2) {
             bitmap = getBitmap(gridList[1].img)
-            if (bitmap != null) {
-                remoteViews.setImageViewBitmap(R.id.iv_gridTwo, bitmap)
-            }
+            remoteViews.setImageViewBitmap(R.id.iv_gridTwo, bitmap)
             gridList[1].appLink?.let {
                 remoteViews.setOnClickPendingIntent(R.id.iv_gridTwo,
-                        getPendingIntent(requestCode, it))
+                        getGridPendingIntent(gridList[1]))
+
             }
         }
         if (count >= 4) {
             bitmap = getBitmap(gridList[2].img)
-            if (bitmap != null) {
-                remoteViews.setImageViewBitmap(R.id.iv_gridThree, bitmap)
-            }
+            remoteViews.setImageViewBitmap(R.id.iv_gridThree, bitmap)
             gridList[2].appLink?.let {
                 remoteViews.setOnClickPendingIntent(R.id.iv_gridThree,
-                        getPendingIntent(requestCode, it))
+                        getGridPendingIntent(gridList[2]))
+
             }
 
             bitmap = getBitmap(gridList[3].img)
-            if (bitmap != null) {
-                remoteViews.setImageViewBitmap(R.id.iv_gridFour, bitmap)
-            }
+            remoteViews.setImageViewBitmap(R.id.iv_gridFour, bitmap)
             gridList[3].appLink?.let {
                 remoteViews.setOnClickPendingIntent(R.id.iv_gridFour,
-                        getPendingIntent(requestCode, it))
+                        getGridPendingIntent(gridList[3]))
+
             }
         } else {
             remoteViews.setViewVisibility(R.id.ll_bottomGridParent, View.GONE)
@@ -86,22 +79,19 @@ class GridNotification internal constructor(context: Context, baseNotificationMo
 
         if (count == 6) {
             bitmap = getBitmap(gridList[4].img)
-            if (bitmap != null) {
-                remoteViews.setImageViewBitmap(R.id.iv_gridFive, bitmap)
-            }
+            remoteViews.setImageViewBitmap(R.id.iv_gridFive, bitmap)
 
             gridList[4].appLink?.let {
                 remoteViews.setOnClickPendingIntent(R.id.iv_gridFive,
-                        getPendingIntent(requestCode, it))
+                        getGridPendingIntent(gridList[4]))
+
             }
 
             bitmap = getBitmap(gridList[5].img)
-            if (bitmap != null) {
-                remoteViews.setImageViewBitmap(R.id.iv_gridSix, bitmap)
-            }
+            remoteViews.setImageViewBitmap(R.id.iv_gridSix, bitmap)
             gridList[5].appLink?.let {
                 remoteViews.setOnClickPendingIntent(R.id.iv_gridSix,
-                        getPendingIntent(requestCode, it))
+                        getGridPendingIntent(gridList[5]))
             }
         } else {
             remoteViews.setViewVisibility(R.id.iv_gridFive, View.GONE)
@@ -121,24 +111,22 @@ class GridNotification internal constructor(context: Context, baseNotificationMo
         remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
         remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
         baseNotificationModel.appLink?.let {
-            remoteView.setOnClickPendingIntent(R.id.collapseMainView, getPendingIntent(requestCode,
-                    it))
+            remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
         }
     }
 
+    private fun getCollapsedPendingIntent(): PendingIntent {
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        intent.action = CMConstant.ReceiverAction.ACTION_GRID_MAIN_CLICK
+        return getPendingIntent(context, intent, requestCode)
+    }
 
-    private fun getPendingIntent(requestCode: Int, appLink: String): PendingIntent {
-        val intent = Intent(context, CMBroadcastReceiver::class.java)
+
+    private fun getGridPendingIntent(grid: Grid): PendingIntent {
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_GRID_CLICK
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
-        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, appLink)
-        return PendingIntent.getBroadcast(
-                context,
-                requestCode,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        intent.putExtra(CMConstant.ReceiverExtraData.EXTRA_GRID_DATA, grid)
+        return getPendingIntent(context, intent, requestCode)
     }
 
 }

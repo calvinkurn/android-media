@@ -10,7 +10,6 @@
     <color name="checkout_module_color_background">#f3f4f5</color>
     <color name="grey_shadow">#20ededed</color>
     <color name="button_change_courier">#42b549</color>
-    <color name="button_change_courier_disabled">#7031353b</color>
     <color name="price_changes_color_text">#FA591D</color>
     <color name="price_changes_color_bg">#fff1b3</color>
     <color name="invenage_text_color">#f531353b</color>
@@ -20,5 +19,6 @@
     <color name="text_black">#f531353b</color>
     <color name="title_black">#e131353b</color>
     <color name="subtext_black">#ae31353b</color>
+    <color name="n_700_44">#7031353b</color>
 </resources>
 

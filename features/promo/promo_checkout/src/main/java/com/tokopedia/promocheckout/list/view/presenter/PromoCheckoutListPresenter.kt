@@ -58,7 +58,7 @@ class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : Bas
 
     override fun getListLastSeen(resources: Resources) {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_list), DataPromoCheckoutList::class.java, null, false)
+                R.raw.promo_checkout_last_seen), PromoCheckoutLastSeenModel.Response::class.java, null, false)
         getListCouponUseCase.clearRequest()
         getListCouponUseCase.addRequest(graphqlRequest)
         getListCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -73,8 +73,8 @@ class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : Bas
             }
 
             override fun onNext(objects: GraphqlResponse) {
-                val dataDetailCheckoutPromo = objects.getData<DataPromoCheckoutList>(DataPromoCheckoutList::class.java)
-                view.renderListLastSeen(ArrayList<PromoCheckoutLastSeenModel>())
+                val dataDetailCheckoutPromo = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
+                view.renderListLastSeen(dataDetailCheckoutPromo.promoModels)
             }
         })
     }
@@ -86,6 +86,7 @@ class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : Bas
 
     companion object {
         private val INPUT_GQL = "input"
+        private val MENU_ID = "menuID"
         private val SERVICE_ID = "serviceID"
         private val CATEGORY_ID = "categoryID"
         private val CATEGORY_ID_COUPON = "categoryIDCoupon"

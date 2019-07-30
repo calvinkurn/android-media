@@ -27,7 +27,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
-import com.tokopedia.profilecompletion.addname.ProfileCompletionAnalytics
+import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
@@ -56,7 +56,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     lateinit var presenter: AddNamePresenter
 
     @Inject
-    lateinit var analytics: ProfileCompletionAnalytics
+    lateinit var analytics: AddNameRegisterPhoneAnalytics
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -140,7 +140,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         })
 
         btnContinue.setOnClickListener { onContinueClick() }
-        btnContinue.setOnEditorActionListener(TextView.OnEditorActionListener { v, id, event ->
+        btnContinue.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == R.id.btn_continue || id == EditorInfo.IME_NULL) {
                 onContinueClick()
                 return@OnEditorActionListener true
@@ -153,6 +153,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         KeyboardHandler.DropKeyboard(activity, view)
         phoneNumber?.let{
             registerPhoneAndName(etName.text.toString(), it)
+            analytics.trackClickFinishAddNameButton()
         }
     }
 
@@ -166,10 +167,12 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         context?.let{
             if (name.length < MIN_NAME) {
                 showValidationError(it.getResources().getString(R.string.error_name_too_short))
+                analytics.trackErrorFinishAddNameButton(it.getResources().getString(R.string.error_name_too_short))
                 return false
             }
             if (name.length > MAX_NAME) {
                 showValidationError(it.getResources().getString(R.string.error_name_too_long))
+                analytics.trackErrorFinishAddNameButton(it.getResources().getString(R.string.error_name_too_long))
                 return false
             }
             hideValidationError()
@@ -252,6 +255,8 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         userSession.clearToken()
         dismissLoading()
         showValidationError(ErrorHandler.getErrorMessage(context, throwable))
+        analytics.trackErrorFinishAddNameButton(ErrorHandler.getErrorMessage(context, throwable))
+
     }
 
     override fun onSuccessRegister(registerInfo: RegisterInfo) {

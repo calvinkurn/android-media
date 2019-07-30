@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/dp_72"
+    android:layout_height="@dimen/dp_72"
+    android:layout_marginLeft="@dimen/dp_8"
+    android:layout_marginRight="@dimen/dp_8"
+    android:background="@drawable/bg_button_white_enabled_border"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_8">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iv_main_facility_icon"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_gravity="center_horizontal"
+        tools:src="@drawable/status_no_result" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/tv_main_facility_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/sp_10"
+        app:fontSize="micro"
+        tools:text="Wi-Fi Hotel Kencang"
+        android:maxLines="2"
+        android:ellipsize="end"/>
+
+</LinearLayout>

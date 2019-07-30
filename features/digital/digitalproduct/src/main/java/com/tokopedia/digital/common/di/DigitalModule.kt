@@ -4,9 +4,7 @@ package com.tokopedia.digital.common.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
-import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase
 import com.tokopedia.digital.common.router.DigitalModuleRouter
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -22,10 +20,5 @@ class DigitalModule {
     fun provideDigitalModuleRouter(@ApplicationContext context: Context): DigitalModuleRouter {
         val router : DigitalModuleRouter = context as DigitalModuleRouter
         return router
-    }
-
-    @Provides
-    fun provideRechargePushEventRecommendationUseCase(@ApplicationContext context: Context): RechargePushEventRecommendationUseCase {
-        return RechargePushEventRecommendationUseCase(GraphqlUseCase(), context)
     }
 }

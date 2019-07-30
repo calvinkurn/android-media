@@ -67,4 +67,6 @@ public interface AccountItemListener {
 
     void onShopStatusInfoButtonClicked();
 
+    void onPowerMerchantSettingClicked();
+
 }

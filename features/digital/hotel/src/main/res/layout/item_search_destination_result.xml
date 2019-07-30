@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_popular_search_item"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16">
+        <ImageView
+            android:id="@+id/search_destination_icon"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            tools:src="@drawable/ic_icon_location_grey"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/search_destination_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Jakarta"
+            app:fontSize="small"
+            android:textColor="@color/clr_f531353b"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:ellipsize="end"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/search_destination_icon"
+            app:layout_constraintEnd_toStartOf="@+id/search_destination_type" />
+
+        <TextView
+            android:id="@+id/search_destination_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Kota"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingLeft="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_6"
+            android:paddingBottom="@dimen/dp_2"
+            android:textColor="#9e9fa3"
+            android:textSize="@dimen/sp_10"
+            android:background="@drawable/bg_search_destination_tag"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/search_destination_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Indonesia"
+            app:fontSize="micro"
+            app:textViewTheme="lightDisabled"
+            android:lineSpacingExtra="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="@+id/search_destination_name"
+            app:layout_constraintEnd_toStartOf="@+id/search_destination_hotel_count"
+            app:layout_constraintTop_toBottomOf="@+id/search_destination_name"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/search_destination_hotel_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="2000+ hotel"
+            app:fontSize="micro"
+            app:textViewTheme="lightDisabled"
+            android:lineSpacingExtra="@dimen/dp_6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/search_destination_location"
+            app:layout_constraintBottom_toBottomOf="@+id/search_destination_location"
+            />
+    </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/bg_line_separator"
+        android:layout_marginLeft="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</LinearLayout>

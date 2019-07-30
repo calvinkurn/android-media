@@ -39,7 +39,7 @@ public class ValidateUserDataUseCase {
 
         variables.put(PHONE, phone);
         variables.put(EMAIL, email);
-        variables.put(USER_ID, Integer.parseInt(userId));
+        variables.put(USER_ID, Integer.parseInt(!userId.equals("")? userId : "0"));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_validate_user_data),
