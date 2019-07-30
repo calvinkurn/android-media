@@ -125,8 +125,8 @@ public class UserIdentificationUploadImagePresenter extends
                                                                                  GraphqlResponse graphqlResponse) {
                                                         UploadIdentificationPojo pojo =
                                                                 graphqlResponse.getData(UploadIdentificationPojo.class);
-                                                        imageUploadModel.setError(pojo.getKycUpload().getError());
-                                                        imageUploadModel.setIsSuccess(pojo.getKycUpload().getIsSuccess());
+                                                        imageUploadModel.setError(pojo != null ? pojo.getKycUpload().getError() : null);
+                                                        imageUploadModel.setIsSuccess(pojo != null ? pojo.getKycUpload().getIsSuccess() : 0);
                                                         return imageUploadModel;
                                                     }
                                                 });
