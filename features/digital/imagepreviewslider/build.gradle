@@ -1,0 +1,35 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+project.ext {
+    artifactId = 'imagepreviewslider'
+    groupId = 'com.tokopedia.imagepreviewslider'
+    versionName = "2.22"
+    artifactName ="tkpdimagepreviewslider-release"
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.debugToolsDependencies.stetho
+    implementation rootProject.ext.playServicesDependencies.analytics
+
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+}
+
+apply from: '../../../publish_local.gradle'

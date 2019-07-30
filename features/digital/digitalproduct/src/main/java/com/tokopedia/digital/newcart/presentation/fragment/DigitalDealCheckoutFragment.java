@@ -242,7 +242,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         containerLayout.setLayoutParams(
                 layoutParams
         );
-        if (selectedDeals.size() == 0 && checkoutHolderView.getVoucherCode().length() == 0) {
+        if (selectedDeals.size() == 0 && !promoData.getPromoCode().isEmpty()) {
             containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             targetHeight = containerLayout.getMeasuredHeight();
             containerLayout.getLayoutParams().height = currentHeight;
@@ -480,8 +480,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     @Override
-    public void disableVoucherDiscount() {
-        super.disableVoucherDiscount();
+    public void disableVoucherCheckoutDiscount() {
+        super.disableVoucherCheckoutDiscount();
         if (!isCartDetailViewVisible()) {
             containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -490,22 +490,12 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     @Override
-    public void renderHachikoCoupon(String title, String message, String voucherCode) {
-        super.renderHachikoCoupon(title, message, voucherCode);
+    public void renderPromo() {
+        super.renderPromo();
         if (!isCartDetailViewVisible()) {
             containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
-    }
-
-    @Override
-    public void renderHachikoVoucher(String voucherCode, String message) {
-        super.renderHachikoVoucher(voucherCode, message);
-        if (!isCartDetailViewVisible()) {
-            containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        }
-
     }
 
 

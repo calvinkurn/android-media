@@ -67,7 +67,6 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.url ?: "",
                     data.appUrl ?: "",
                     data.clickUrl ?: "",
-                        data.isWishlist ?: false,
                     data.wishlistUrl ?: "",
                     data.trackerImageUrl ?: "",
                     data.imageUrl ?: "",

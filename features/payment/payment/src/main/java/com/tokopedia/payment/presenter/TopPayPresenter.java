@@ -6,7 +6,7 @@ import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase;
 import com.tokopedia.payment.fingerprint.domain.PaymentFingerprintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SavePublicKeyUseCase;
-import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.user.session.UserSessionInterface;
 

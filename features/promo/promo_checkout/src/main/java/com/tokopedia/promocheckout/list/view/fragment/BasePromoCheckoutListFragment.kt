@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
@@ -106,7 +105,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
 
-    override fun renderListLastSeen(data: MutableList<PromoCheckoutLastSeenModel>) {
+    override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>) {
         promoLastSeenAdapter.listData.clear()
         promoLastSeenAdapter.listData.addAll(data)
         promoLastSeenAdapter.notifyDataSetChanged()
@@ -114,7 +113,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     private fun populateLastSeen() {
-        if (promoLastSeenAdapter.listData.size <= 0) {
+        if (promoLastSeenAdapter.listData.isEmpty()) {
             containerLastSeen.visibility = View.GONE
         } else {
             containerLastSeen.visibility = View.VISIBLE
@@ -146,9 +145,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         if(isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }
-        /* hold cos api not ready yet
-        promoCheckoutListPresenter.getListLastSeen(resources)
-        */
     }
 
 }

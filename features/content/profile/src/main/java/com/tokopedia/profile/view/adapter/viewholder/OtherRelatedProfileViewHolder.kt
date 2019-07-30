@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
@@ -11,8 +12,10 @@ import com.tokopedia.profile.R
 import com.tokopedia.profile.view.viewmodel.OtherRelatedProfileViewModel
 import kotlinx.android.synthetic.main.item_other_profile_post.view.*
 
-class OtherRelatedProfileViewHolder(val v: View,
-                                    val onOtherProfilePostItemClick: ((applink: String, authorId: String) -> Unit)) : AbstractViewHolder<OtherRelatedProfileViewModel>(v) {
+class OtherRelatedProfileViewHolder(
+        v: View,
+        private val onOtherProfilePostItemClick: ((applink: String, position: Int, datum: FeedPostRelated.Datum) -> Unit)
+) : AbstractViewHolder<OtherRelatedProfileViewModel>(v) {
 
     companion object {
         @LayoutRes
@@ -40,7 +43,7 @@ class OtherRelatedProfileViewHolder(val v: View,
             setOnClickListener {
                 val applink = content.body.media[0].applink
                 if (applink.isNotEmpty()) {
-                    onOtherProfilePostItemClick.invoke(applink, content.tracking.authorID)
+                    onOtherProfilePostItemClick.invoke(applink, element.position, element.feedPostRelatedDatum)
                 }
             }
         }

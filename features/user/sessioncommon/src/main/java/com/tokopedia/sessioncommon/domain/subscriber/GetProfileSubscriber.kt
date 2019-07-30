@@ -13,7 +13,6 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                            val onSuccessGetProfile: (pojo: ProfilePojo) -> Unit,
                            val onErrorGetProfile: (e: Throwable) -> Unit,
                            val onGoToCreatePassword: (fullName : String, userId : String) -> Unit,
-                           val onGoToPhoneVerification : () -> Unit,
                            private val canGoToCreatePassword : Boolean = true) :
         Subscriber<GraphqlResponse>() {
 
@@ -26,7 +25,6 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
             saveProfileData(pojo)
             when{
                 shouldGoToCreatePassword(pojo, canGoToCreatePassword) -> onGoToCreatePassword(pojo.profileInfo.fullName, pojo.profileInfo.userId)
-                shouldGoToPhoneVerification(pojo) -> onGoToPhoneVerification()
                 else -> onSuccessGetProfile(pojo)
             }
         } else if (errors.isNotEmpty()){
@@ -34,13 +32,6 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         } else {
             onErrorGetProfile(Throwable())
         }
-    }
-
-    private fun shouldGoToPhoneVerification(pojo: ProfilePojo?): Boolean {
-        pojo?.run{
-            return !profileInfo.isPhoneVerified
-        }
-        return false
     }
 
     private fun shouldGoToCreatePassword(pojo: ProfilePojo?, canGoToCreatePassword: Boolean): Boolean {

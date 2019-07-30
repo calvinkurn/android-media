@@ -9,7 +9,7 @@ import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeen
 interface PromoCheckoutListContract {
 
     interface View : BaseListViewListener<PromoCheckoutListModel>{
-        fun renderListLastSeen(arrayList: MutableList<PromoCheckoutLastSeenModel>)
+        fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>)
         fun showGetListLastSeenError(e: Throwable)
     }
 

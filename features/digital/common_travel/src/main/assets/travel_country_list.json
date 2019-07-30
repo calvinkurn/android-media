@@ -1,0 +1,1964 @@
+{
+  "data": [
+    {
+      "attributes": {
+        "phone_code": 375,
+        "cities": [],
+        "name": "Andorra"
+      },
+      "id": "AD"
+    },
+    {
+      "attributes": {
+        "phone_code": 971,
+        "cities": [],
+        "name": "United Arab Emirates"
+      },
+      "id": "AE"
+    },
+    {
+      "attributes": {
+        "phone_code": 93,
+        "cities": [],
+        "name": "Afghanistan"
+      },
+      "id": "AF"
+    },
+    {
+      "attributes": {
+        "phone_code": 1268,
+        "cities": [],
+        "name": "Antigua and Barbuda"
+      },
+      "id": "AG"
+    },
+    {
+      "attributes": {
+        "phone_code": 1264,
+        "cities": [],
+        "name": "Anguilla"
+      },
+      "id": "AI"
+    },
+    {
+      "attributes": {
+        "phone_code": 355,
+        "cities": [],
+        "name": "Albania"
+      },
+      "id": "AL"
+    },
+    {
+      "attributes": {
+        "phone_code": 374,
+        "cities": [],
+        "name": "Armenia"
+      },
+      "id": "AM"
+    },
+    {
+      "attributes": {
+        "phone_code": 599,
+        "cities": [],
+        "name": "Netherlands Antilles"
+      },
+      "id": "AN"
+    },
+    {
+      "attributes": {
+        "phone_code": 244,
+        "cities": [],
+        "name": "Angola"
+      },
+      "id": "AO"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Antarctica"
+      },
+      "id": "AQ"
+    },
+    {
+      "attributes": {
+        "phone_code": 54,
+        "cities": [],
+        "name": "Argentina"
+      },
+      "id": "AR"
+    },
+    {
+      "attributes": {
+        "phone_code": 1684,
+        "cities": [],
+        "name": "American Samoa"
+      },
+      "id": "AS"
+    },
+    {
+      "attributes": {
+        "phone_code": 43,
+        "cities": [],
+        "name": "Austria"
+      },
+      "id": "AT"
+    },
+    {
+      "attributes": {
+        "phone_code": 61,
+        "cities": [],
+        "name": "Australia"
+      },
+      "id": "AU"
+    },
+    {
+      "attributes": {
+        "phone_code": 297,
+        "cities": [],
+        "name": "Aruba"
+      },
+      "id": "AW"
+    },
+    {
+      "attributes": {
+        "phone_code": 994,
+        "cities": [],
+        "name": "Azerbaijan"
+      },
+      "id": "AZ"
+    },
+    {
+      "attributes": {
+        "phone_code": 387,
+        "cities": [],
+        "name": "Bosnia and Herzegovina"
+      },
+      "id": "BA"
+    },
+    {
+      "attributes": {
+        "phone_code": 1246,
+        "cities": [],
+        "name": "Barbados"
+      },
+      "id": "BB"
+    },
+    {
+      "attributes": {
+        "phone_code": 880,
+        "cities": [],
+        "name": "Bangladesh"
+      },
+      "id": "BD"
+    },
+    {
+      "attributes": {
+        "phone_code": 32,
+        "cities": [],
+        "name": "Belgium"
+      },
+      "id": "BE"
+    },
+    {
+      "attributes": {
+        "phone_code": 226,
+        "cities": [],
+        "name": "Burkina Faso"
+      },
+      "id": "BF"
+    },
+    {
+      "attributes": {
+        "phone_code": 359,
+        "cities": [],
+        "name": "Bulgaria"
+      },
+      "id": "BG"
+    },
+    {
+      "attributes": {
+        "phone_code": 973,
+        "cities": [],
+        "name": "Bahrain"
+      },
+      "id": "BH"
+    },
+    {
+      "attributes": {
+        "phone_code": 257,
+        "cities": [],
+        "name": "Burundi"
+      },
+      "id": "BI"
+    },
+    {
+      "attributes": {
+        "phone_code": 229,
+        "cities": [],
+        "name": "Benin"
+      },
+      "id": "BJ"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Saint Barthelemy"
+      },
+      "id": "BL"
+    },
+    {
+      "attributes": {
+        "phone_code": 1441,
+        "cities": [],
+        "name": "Bermuda"
+      },
+      "id": "BM"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Brunei"
+      },
+      "id": "BN"
+    },
+    {
+      "attributes": {
+        "phone_code": 591,
+        "cities": [],
+        "name": "Bolivia"
+      },
+      "id": "BO"
+    },
+    {
+      "attributes": {
+        "phone_code": 599,
+        "cities": [],
+        "name": "Caribbean Netherlands"
+      },
+      "id": "BQ"
+    },
+    {
+      "attributes": {
+        "phone_code": 55,
+        "cities": [],
+        "name": "Brazil"
+      },
+      "id": "BR"
+    },
+    {
+      "attributes": {
+        "phone_code": 1242,
+        "cities": [],
+        "name": "Bahamas"
+      },
+      "id": "BS"
+    },
+    {
+      "attributes": {
+        "phone_code": 975,
+        "cities": [],
+        "name": "Bhutan"
+      },
+      "id": "BT"
+    },
+    {
+      "attributes": {
+        "phone_code": 267,
+        "cities": [],
+        "name": "Botswana"
+      },
+      "id": "BW"
+    },
+    {
+      "attributes": {
+        "phone_code": 375,
+        "cities": [],
+        "name": "Belarus"
+      },
+      "id": "BY"
+    },
+    {
+      "attributes": {
+        "phone_code": 501,
+        "cities": [],
+        "name": "Belize"
+      },
+      "id": "BZ"
+    },
+    {
+      "attributes": {
+        "phone_code": 1,
+        "cities": [],
+        "name": "Canada"
+      },
+      "id": "CA"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Cocos Islands"
+      },
+      "id": "CC"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Democratic Republic of the Congo"
+      },
+      "id": "CD"
+    },
+    {
+      "attributes": {
+        "phone_code": 236,
+        "cities": [],
+        "name": "Central African Republic"
+      },
+      "id": "CF"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Republic of the Congo"
+      },
+      "id": "CG"
+    },
+    {
+      "attributes": {
+        "phone_code": 41,
+        "cities": [],
+        "name": "Switzerland"
+      },
+      "id": "CH"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Ivory Coast"
+      },
+      "id": "CI"
+    },
+    {
+      "attributes": {
+        "phone_code": 682,
+        "cities": [],
+        "name": "Cook Islands"
+      },
+      "id": "CK"
+    },
+    {
+      "attributes": {
+        "phone_code": 56,
+        "cities": [],
+        "name": "Chile"
+      },
+      "id": "CL"
+    },
+    {
+      "attributes": {
+        "phone_code": 237,
+        "cities": [],
+        "name": "Cameroon"
+      },
+      "id": "CM"
+    },
+    {
+      "attributes": {
+        "phone_code": 86,
+        "cities": [],
+        "name": "China"
+      },
+      "id": "CN"
+    },
+    {
+      "attributes": {
+        "phone_code": 57,
+        "cities": [],
+        "name": "Colombia"
+      },
+      "id": "CO"
+    },
+    {
+      "attributes": {
+        "phone_code": 506,
+        "cities": [],
+        "name": "Costa Rica"
+      },
+      "id": "CR"
+    },
+    {
+      "attributes": {
+        "phone_code": 53,
+        "cities": [],
+        "name": "Cuba"
+      },
+      "id": "CU"
+    },
+    {
+      "attributes": {
+        "phone_code": 238,
+        "cities": [],
+        "name": "Cape Verde"
+      },
+      "id": "CV"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Curacao"
+      },
+      "id": "CW"
+    },
+    {
+      "attributes": {
+        "phone_code": 61,
+        "cities": [],
+        "name": "Christmas Island"
+      },
+      "id": "CX"
+    },
+    {
+      "attributes": {
+        "phone_code": 357,
+        "cities": [],
+        "name": "Cyprus"
+      },
+      "id": "CY"
+    },
+    {
+      "attributes": {
+        "phone_code": 420,
+        "cities": [],
+        "name": "Czech Republic"
+      },
+      "id": "CZ"
+    },
+    {
+      "attributes": {
+        "phone_code": 49,
+        "cities": [],
+        "name": "Germany"
+      },
+      "id": "DE"
+    },
+    {
+      "attributes": {
+        "phone_code": 253,
+        "cities": [],
+        "name": "Djibouti"
+      },
+      "id": "DJ"
+    },
+    {
+      "attributes": {
+        "phone_code": 45,
+        "cities": [],
+        "name": "Denmark"
+      },
+      "id": "DK"
+    },
+    {
+      "attributes": {
+        "phone_code": 1767,
+        "cities": [],
+        "name": "Dominica"
+      },
+      "id": "DM"
+    },
+    {
+      "attributes": {
+        "phone_code": 1,
+        "cities": [],
+        "name": "Dominican Republic"
+      },
+      "id": "DO"
+    },
+    {
+      "attributes": {
+        "phone_code": 213,
+        "cities": [],
+        "name": "Algeria"
+      },
+      "id": "DZ"
+    },
+    {
+      "attributes": {
+        "phone_code": 593,
+        "cities": [],
+        "name": "Ecuador"
+      },
+      "id": "EC"
+    },
+    {
+      "attributes": {
+        "phone_code": 372,
+        "cities": [],
+        "name": "Estonia"
+      },
+      "id": "EE"
+    },
+    {
+      "attributes": {
+        "phone_code": 20,
+        "cities": [],
+        "name": "Egypt"
+      },
+      "id": "EG"
+    },
+    {
+      "attributes": {
+        "phone_code": 212,
+        "cities": [],
+        "name": "Western Sahara"
+      },
+      "id": "EH"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Eritrea"
+      },
+      "id": "ER"
+    },
+    {
+      "attributes": {
+        "phone_code": 34,
+        "cities": [],
+        "name": "Spain"
+      },
+      "id": "ES"
+    },
+    {
+      "attributes": {
+        "phone_code": 251,
+        "cities": [],
+        "name": "Ethiopia"
+      },
+      "id": "ET"
+    },
+    {
+      "attributes": {
+        "phone_code": 358,
+        "cities": [],
+        "name": "Finland"
+      },
+      "id": "FI"
+    },
+    {
+      "attributes": {
+        "phone_code": 679,
+        "cities": [],
+        "name": "Fiji"
+      },
+      "id": "FJ"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Falkland Islands"
+      },
+      "id": "FK"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Micronesia"
+      },
+      "id": "FM"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Faroe Islands"
+      },
+      "id": "FO"
+    },
+    {
+      "attributes": {
+        "phone_code": 33,
+        "cities": [],
+        "name": "France"
+      },
+      "id": "FR"
+    },
+    {
+      "attributes": {
+        "phone_code": 241,
+        "cities": [],
+        "name": "Gabon"
+      },
+      "id": "GA"
+    },
+    {
+      "attributes": {
+        "phone_code": 44,
+        "cities": [],
+        "name": "United Kingdom"
+      },
+      "id": "GB"
+    },
+    {
+      "attributes": {
+        "phone_code": 1473,
+        "cities": [],
+        "name": "Grenada"
+      },
+      "id": "GD"
+    },
+    {
+      "attributes": {
+        "phone_code": 995,
+        "cities": [],
+        "name": "Georgia"
+      },
+      "id": "GE"
+    },
+    {
+      "attributes": {
+        "phone_code": 594,
+        "cities": [],
+        "name": "French Guiana"
+      },
+      "id": "GF"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Guernsey"
+      },
+      "id": "GG"
+    },
+    {
+      "attributes": {
+        "phone_code": 233,
+        "cities": [],
+        "name": "Ghana"
+      },
+      "id": "GH"
+    },
+    {
+      "attributes": {
+        "phone_code": 350,
+        "cities": [],
+        "name": "Gibraltar"
+      },
+      "id": "GI"
+    },
+    {
+      "attributes": {
+        "phone_code": 299,
+        "cities": [],
+        "name": "Greenland"
+      },
+      "id": "GL"
+    },
+    {
+      "attributes": {
+        "phone_code": 220,
+        "cities": [],
+        "name": "Gambia"
+      },
+      "id": "GM"
+    },
+    {
+      "attributes": {
+        "phone_code": 224,
+        "cities": [],
+        "name": "Guinea"
+      },
+      "id": "GN"
+    },
+    {
+      "attributes": {
+        "phone_code": 590,
+        "cities": [],
+        "name": "Guadeloupe"
+      },
+      "id": "GP"
+    },
+    {
+      "attributes": {
+        "phone_code": 240,
+        "cities": [],
+        "name": "Equatorial Guinea"
+      },
+      "id": "GQ"
+    },
+    {
+      "attributes": {
+        "phone_code": 30,
+        "cities": [],
+        "name": "Greece"
+      },
+      "id": "GR"
+    },
+    {
+      "attributes": {
+        "phone_code": 502,
+        "cities": [],
+        "name": "Guatemala"
+      },
+      "id": "GT"
+    },
+    {
+      "attributes": {
+        "phone_code": 1671,
+        "cities": [],
+        "name": "Guam"
+      },
+      "id": "GU"
+    },
+    {
+      "attributes": {
+        "phone_code": 245,
+        "cities": [],
+        "name": "Guinea-Bissau"
+      },
+      "id": "GW"
+    },
+    {
+      "attributes": {
+        "phone_code": 592,
+        "cities": [],
+        "name": "Guyana"
+      },
+      "id": "GY"
+    },
+    {
+      "attributes": {
+        "phone_code": 852,
+        "cities": [],
+        "name": "Hong Kong"
+      },
+      "id": "HK"
+    },
+    {
+      "attributes": {
+        "phone_code": 504,
+        "cities": [],
+        "name": "Honduras"
+      },
+      "id": "HN"
+    },
+    {
+      "attributes": {
+        "phone_code": 385,
+        "cities": [],
+        "name": "Croatia"
+      },
+      "id": "HR"
+    },
+    {
+      "attributes": {
+        "phone_code": 509,
+        "cities": [],
+        "name": "Haiti"
+      },
+      "id": "HT"
+    },
+    {
+      "attributes": {
+        "phone_code": 36,
+        "cities": [],
+        "name": "Hungary"
+      },
+      "id": "HU"
+    },
+    {
+      "attributes": {
+        "phone_code": 62,
+        "cities": [],
+        "name": "Indonesia"
+      },
+      "id": "ID"
+    },
+    {
+      "attributes": {
+        "phone_code": 353,
+        "cities": [],
+        "name": "Ireland"
+      },
+      "id": "IE"
+    },
+    {
+      "attributes": {
+        "phone_code": 972,
+        "cities": [],
+        "name": "Israel"
+      },
+      "id": "IL"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Isle of Man"
+      },
+      "id": "IM"
+    },
+    {
+      "attributes": {
+        "phone_code": 91,
+        "cities": [],
+        "name": "India"
+      },
+      "id": "IN"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "British Indian Ocean Territory"
+      },
+      "id": "IO"
+    },
+    {
+      "attributes": {
+        "phone_code": 964,
+        "cities": [],
+        "name": "Iraq"
+      },
+      "id": "IQ"
+    },
+    {
+      "attributes": {
+        "phone_code": 98,
+        "cities": [],
+        "name": "Iran"
+      },
+      "id": "IR"
+    },
+    {
+      "attributes": {
+        "phone_code": 354,
+        "cities": [],
+        "name": "Iceland"
+      },
+      "id": "IS"
+    },
+    {
+      "attributes": {
+        "phone_code": 39,
+        "cities": [],
+        "name": "Italy"
+      },
+      "id": "IT"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Jersey"
+      },
+      "id": "JE"
+    },
+    {
+      "attributes": {
+        "phone_code": 1876,
+        "cities": [],
+        "name": "Jamaica"
+      },
+      "id": "JM"
+    },
+    {
+      "attributes": {
+        "phone_code": 962,
+        "cities": [],
+        "name": "Jordan"
+      },
+      "id": "JO"
+    },
+    {
+      "attributes": {
+        "phone_code": 81,
+        "cities": [],
+        "name": "Japan"
+      },
+      "id": "JP"
+    },
+    {
+      "attributes": {
+        "phone_code": 254,
+        "cities": [],
+        "name": "Kenya"
+      },
+      "id": "KE"
+    },
+    {
+      "attributes": {
+        "phone_code": 996,
+        "cities": [],
+        "name": "Kyrgyzstan"
+      },
+      "id": "KG"
+    },
+    {
+      "attributes": {
+        "phone_code": 855,
+        "cities": [],
+        "name": "Cambodia"
+      },
+      "id": "KH"
+    },
+    {
+      "attributes": {
+        "phone_code": 686,
+        "cities": [],
+        "name": "Kiribati"
+      },
+      "id": "KI"
+    },
+    {
+      "attributes": {
+        "phone_code": 269,
+        "cities": [],
+        "name": "Comoros"
+      },
+      "id": "KM"
+    },
+    {
+      "attributes": {
+        "phone_code": 1869,
+        "cities": [],
+        "name": "Saint Kitts and Nevis"
+      },
+      "id": "KN"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "North Korea"
+      },
+      "id": "KP"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "South Korea"
+      },
+      "id": "KR"
+    },
+    {
+      "attributes": {
+        "phone_code": 965,
+        "cities": [],
+        "name": "Kuwait"
+      },
+      "id": "KW"
+    },
+    {
+      "attributes": {
+        "phone_code": 1345,
+        "cities": [],
+        "name": "Cayman Islands"
+      },
+      "id": "KY"
+    },
+    {
+      "attributes": {
+        "phone_code": 7,
+        "cities": [],
+        "name": "Kazakhstan"
+      },
+      "id": "KZ"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Laos"
+      },
+      "id": "LA"
+    },
+    {
+      "attributes": {
+        "phone_code": 961,
+        "cities": [],
+        "name": "Lebanon"
+      },
+      "id": "LB"
+    },
+    {
+      "attributes": {
+        "phone_code": 1758,
+        "cities": [],
+        "name": "Saint Lucia"
+      },
+      "id": "LC"
+    },
+    {
+      "attributes": {
+        "phone_code": 423,
+        "cities": [],
+        "name": "Liechtenstein"
+      },
+      "id": "LI"
+    },
+    {
+      "attributes": {
+        "phone_code": 94,
+        "cities": [],
+        "name": "Sri Lanka"
+      },
+      "id": "LK"
+    },
+    {
+      "attributes": {
+        "phone_code": 231,
+        "cities": [],
+        "name": "Liberia"
+      },
+      "id": "LR"
+    },
+    {
+      "attributes": {
+        "phone_code": 266,
+        "cities": [],
+        "name": "Lesotho"
+      },
+      "id": "LS"
+    },
+    {
+      "attributes": {
+        "phone_code": 370,
+        "cities": [],
+        "name": "Lithuania"
+      },
+      "id": "LT"
+    },
+    {
+      "attributes": {
+        "phone_code": 352,
+        "cities": [],
+        "name": "Luxembourg"
+      },
+      "id": "LU"
+    },
+    {
+      "attributes": {
+        "phone_code": 371,
+        "cities": [],
+        "name": "Latvia"
+      },
+      "id": "LV"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Libya"
+      },
+      "id": "LY"
+    },
+    {
+      "attributes": {
+        "phone_code": 212,
+        "cities": [],
+        "name": "Morocco"
+      },
+      "id": "MA"
+    },
+    {
+      "attributes": {
+        "phone_code": 377,
+        "cities": [],
+        "name": "Monaco"
+      },
+      "id": "MC"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Moldova"
+      },
+      "id": "MD"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Montenegro"
+      },
+      "id": "ME"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Saint Martin"
+      },
+      "id": "MF"
+    },
+    {
+      "attributes": {
+        "phone_code": 261,
+        "cities": [],
+        "name": "Madagascar"
+      },
+      "id": "MG"
+    },
+    {
+      "attributes": {
+        "phone_code": 692,
+        "cities": [],
+        "name": "Marshall Islands"
+      },
+      "id": "MH"
+    },
+    {
+      "attributes": {
+        "phone_code": 389,
+        "cities": [],
+        "name": "Macedonia"
+      },
+      "id": "MK"
+    },
+    {
+      "attributes": {
+        "phone_code": 223,
+        "cities": [],
+        "name": "Mali"
+      },
+      "id": "ML"
+    },
+    {
+      "attributes": {
+        "phone_code": 95,
+        "cities": [],
+        "name": "Myanmar"
+      },
+      "id": "MM"
+    },
+    {
+      "attributes": {
+        "phone_code": 976,
+        "cities": [],
+        "name": "Mongolia"
+      },
+      "id": "MN"
+    },
+    {
+      "attributes": {
+        "phone_code": 853,
+        "cities": [],
+        "name": "Macau"
+      },
+      "id": "MO"
+    },
+    {
+      "attributes": {
+        "phone_code": 1670,
+        "cities": [],
+        "name": "Northern Mariana Islands"
+      },
+      "id": "MP"
+    },
+    {
+      "attributes": {
+        "phone_code": 596,
+        "cities": [],
+        "name": "Martinique"
+      },
+      "id": "MQ"
+    },
+    {
+      "attributes": {
+        "phone_code": 222,
+        "cities": [],
+        "name": "Mauritania"
+      },
+      "id": "MR"
+    },
+    {
+      "attributes": {
+        "phone_code": 1664,
+        "cities": [],
+        "name": "Montserrat"
+      },
+      "id": "MS"
+    },
+    {
+      "attributes": {
+        "phone_code": 356,
+        "cities": [],
+        "name": "Malta"
+      },
+      "id": "MT"
+    },
+    {
+      "attributes": {
+        "phone_code": 230,
+        "cities": [],
+        "name": "Mauritius"
+      },
+      "id": "MU"
+    },
+    {
+      "attributes": {
+        "phone_code": 960,
+        "cities": [],
+        "name": "Maldives"
+      },
+      "id": "MV"
+    },
+    {
+      "attributes": {
+        "phone_code": 265,
+        "cities": [],
+        "name": "Malawi"
+      },
+      "id": "MW"
+    },
+    {
+      "attributes": {
+        "phone_code": 52,
+        "cities": [],
+        "name": "Mexico"
+      },
+      "id": "MX"
+    },
+    {
+      "attributes": {
+        "phone_code": 60,
+        "cities": [],
+        "name": "Malaysia"
+      },
+      "id": "MY"
+    },
+    {
+      "attributes": {
+        "phone_code": 258,
+        "cities": [],
+        "name": "Mozambique"
+      },
+      "id": "MZ"
+    },
+    {
+      "attributes": {
+        "phone_code": 264,
+        "cities": [],
+        "name": "Namibia"
+      },
+      "id": "NA"
+    },
+    {
+      "attributes": {
+        "phone_code": 687,
+        "cities": [],
+        "name": "New Caledonia"
+      },
+      "id": "NC"
+    },
+    {
+      "attributes": {
+        "phone_code": 227,
+        "cities": [],
+        "name": "Niger"
+      },
+      "id": "NE"
+    },
+    {
+      "attributes": {
+        "phone_code": 2532,
+        "cities": [],
+        "name": "Norfolk Island"
+      },
+      "id": "NF"
+    },
+    {
+      "attributes": {
+        "phone_code": 234,
+        "cities": [],
+        "name": "Nigeria"
+      },
+      "id": "NG"
+    },
+    {
+      "attributes": {
+        "phone_code": 505,
+        "cities": [],
+        "name": "Nicaragua"
+      },
+      "id": "NI"
+    },
+    {
+      "attributes": {
+        "phone_code": 31,
+        "cities": [],
+        "name": "Netherlands"
+      },
+      "id": "NL"
+    },
+    {
+      "attributes": {
+        "phone_code": 47,
+        "cities": [],
+        "name": "Norway"
+      },
+      "id": "NO"
+    },
+    {
+      "attributes": {
+        "phone_code": 977,
+        "cities": [],
+        "name": "Nepal"
+      },
+      "id": "NP"
+    },
+    {
+      "attributes": {
+        "phone_code": 674,
+        "cities": [],
+        "name": "Nauru"
+      },
+      "id": "NR"
+    },
+    {
+      "attributes": {
+        "phone_code": 683,
+        "cities": [],
+        "name": "Niue"
+      },
+      "id": "NU"
+    },
+    {
+      "attributes": {
+        "phone_code": 64,
+        "cities": [],
+        "name": "New Zealand"
+      },
+      "id": "NZ"
+    },
+    {
+      "attributes": {
+        "phone_code": 968,
+        "cities": [],
+        "name": "Oman"
+      },
+      "id": "OM"
+    },
+    {
+      "attributes": {
+        "phone_code": 507,
+        "cities": [],
+        "name": "Panama"
+      },
+      "id": "PA"
+    },
+    {
+      "attributes": {
+        "phone_code": 51,
+        "cities": [],
+        "name": "Peru"
+      },
+      "id": "PE"
+    },
+    {
+      "attributes": {
+        "phone_code": 689,
+        "cities": [],
+        "name": "French Polynesia"
+      },
+      "id": "PF"
+    },
+    {
+      "attributes": {
+        "phone_code": 675,
+        "cities": [],
+        "name": "Papua New Guinea"
+      },
+      "id": "PG"
+    },
+    {
+      "attributes": {
+        "phone_code": 63,
+        "cities": [],
+        "name": "Philippines"
+      },
+      "id": "PH"
+    },
+    {
+      "attributes": {
+        "phone_code": 92,
+        "cities": [],
+        "name": "Pakistan"
+      },
+      "id": "PK"
+    },
+    {
+      "attributes": {
+        "phone_code": 48,
+        "cities": [],
+        "name": "Poland"
+      },
+      "id": "PL"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Saint Pierre and Miquelon"
+      },
+      "id": "PM"
+    },
+    {
+      "attributes": {
+        "phone_code": 64,
+        "cities": [],
+        "name": "Pitcairn"
+      },
+      "id": "PN"
+    },
+    {
+      "attributes": {
+        "phone_code": 1,
+        "cities": [],
+        "name": "Puerto Rico"
+      },
+      "id": "PR"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Palestine"
+      },
+      "id": "PS"
+    },
+    {
+      "attributes": {
+        "phone_code": 351,
+        "cities": [],
+        "name": "Portugal"
+      },
+      "id": "PT"
+    },
+    {
+      "attributes": {
+        "phone_code": 680,
+        "cities": [],
+        "name": "Palau"
+      },
+      "id": "PW"
+    },
+    {
+      "attributes": {
+        "phone_code": 595,
+        "cities": [],
+        "name": "Paraguay"
+      },
+      "id": "PY"
+    },
+    {
+      "attributes": {
+        "phone_code": 974,
+        "cities": [],
+        "name": "Qatar"
+      },
+      "id": "QA"
+    },
+    {
+      "attributes": {
+        "phone_code": 262,
+        "cities": [],
+        "name": "Reunion"
+      },
+      "id": "RE"
+    },
+    {
+      "attributes": {
+        "phone_code": 40,
+        "cities": [],
+        "name": "Romania"
+      },
+      "id": "RO"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Serbia"
+      },
+      "id": "RS"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Russia"
+      },
+      "id": "RU"
+    },
+    {
+      "attributes": {
+        "phone_code": 250,
+        "cities": [],
+        "name": "Rwanda"
+      },
+      "id": "RW"
+    },
+    {
+      "attributes": {
+        "phone_code": 966,
+        "cities": [],
+        "name": "Saudi Arabia"
+      },
+      "id": "SA"
+    },
+    {
+      "attributes": {
+        "phone_code": 677,
+        "cities": [],
+        "name": "Solomon Islands"
+      },
+      "id": "SB"
+    },
+    {
+      "attributes": {
+        "phone_code": 248,
+        "cities": [],
+        "name": "Seychelles"
+      },
+      "id": "SC"
+    },
+    {
+      "attributes": {
+        "phone_code": 249,
+        "cities": [],
+        "name": "Sudan"
+      },
+      "id": "SD"
+    },
+    {
+      "attributes": {
+        "phone_code": 46,
+        "cities": [],
+        "name": "Sweden"
+      },
+      "id": "SE"
+    },
+    {
+      "attributes": {
+        "phone_code": 65,
+        "cities": [],
+        "name": "Singapore"
+      },
+      "id": "SG"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Saint Helena"
+      },
+      "id": "SH"
+    },
+    {
+      "attributes": {
+        "phone_code": 386,
+        "cities": [],
+        "name": "Slovenia"
+      },
+      "id": "SI"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Svalbard and Jan Mayen"
+      },
+      "id": "SJ"
+    },
+    {
+      "attributes": {
+        "phone_code": 421,
+        "cities": [],
+        "name": "Slovakia"
+      },
+      "id": "SK"
+    },
+    {
+      "attributes": {
+        "phone_code": 232,
+        "cities": [],
+        "name": "Sierra Leone"
+      },
+      "id": "SL"
+    },
+    {
+      "attributes": {
+        "phone_code": 378,
+        "cities": [],
+        "name": "San Marino"
+      },
+      "id": "SM"
+    },
+    {
+      "attributes": {
+        "phone_code": 221,
+        "cities": [],
+        "name": "Senegal"
+      },
+      "id": "SN"
+    },
+    {
+      "attributes": {
+        "phone_code": 252,
+        "cities": [],
+        "name": "Somalia"
+      },
+      "id": "SO"
+    },
+    {
+      "attributes": {
+        "phone_code": 597,
+        "cities": [],
+        "name": "Suriname"
+      },
+      "id": "SR"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "South Sudan"
+      },
+      "id": "SS"
+    },
+    {
+      "attributes": {
+        "phone_code": 239,
+        "cities": [],
+        "name": "Sao Tome and Principe"
+      },
+      "id": "ST"
+    },
+    {
+      "attributes": {
+        "phone_code": 503,
+        "cities": [],
+        "name": "El Salvador"
+      },
+      "id": "SV"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Sint Maarten"
+      },
+      "id": "SX"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Syria"
+      },
+      "id": "SY"
+    },
+    {
+      "attributes": {
+        "phone_code": 268,
+        "cities": [],
+        "name": "Swaziland"
+      },
+      "id": "SZ"
+    },
+    {
+      "attributes": {
+        "phone_code": 1649,
+        "cities": [],
+        "name": "Turks and Caicos Islands"
+      },
+      "id": "TC"
+    },
+    {
+      "attributes": {
+        "phone_code": 235,
+        "cities": [],
+        "name": "Chad"
+      },
+      "id": "TD"
+    },
+    {
+      "attributes": {
+        "phone_code": 228,
+        "cities": [],
+        "name": "Togo"
+      },
+      "id": "TG"
+    },
+    {
+      "attributes": {
+        "phone_code": 66,
+        "cities": [],
+        "name": "Thailand"
+      },
+      "id": "TH"
+    },
+    {
+      "attributes": {
+        "phone_code": 992,
+        "cities": [],
+        "name": "Tajikistan"
+      },
+      "id": "TJ"
+    },
+    {
+      "attributes": {
+        "phone_code": 690,
+        "cities": [],
+        "name": "Tokelau"
+      },
+      "id": "TK"
+    },
+    {
+      "attributes": {
+        "phone_code": 670,
+        "cities": [],
+        "name": "East Timor"
+      },
+      "id": "TL"
+    },
+    {
+      "attributes": {
+        "phone_code": 993,
+        "cities": [],
+        "name": "Turkmenistan"
+      },
+      "id": "TM"
+    },
+    {
+      "attributes": {
+        "phone_code": 216,
+        "cities": [],
+        "name": "Tunisia"
+      },
+      "id": "TN"
+    },
+    {
+      "attributes": {
+        "phone_code": 676,
+        "cities": [],
+        "name": "Tonga"
+      },
+      "id": "TO"
+    },
+    {
+      "attributes": {
+        "phone_code": 90,
+        "cities": [],
+        "name": "Turkey"
+      },
+      "id": "TR"
+    },
+    {
+      "attributes": {
+        "phone_code": 1868,
+        "cities": [],
+        "name": "Trinidad and Tobago"
+      },
+      "id": "TT"
+    },
+    {
+      "attributes": {
+        "phone_code": 688,
+        "cities": [],
+        "name": "Tuvalu"
+      },
+      "id": "TV"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Taiwan"
+      },
+      "id": "TW"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Tanzania"
+      },
+      "id": "TZ"
+    },
+    {
+      "attributes": {
+        "phone_code": 380,
+        "cities": [],
+        "name": "Ukraine"
+      },
+      "id": "UA"
+    },
+    {
+      "attributes": {
+        "phone_code": 256,
+        "cities": [],
+        "name": "Uganda"
+      },
+      "id": "UG"
+    },
+    {
+      "attributes": {
+        "phone_code": 1,
+        "cities": [],
+        "name": "United States"
+      },
+      "id": "US"
+    },
+    {
+      "attributes": {
+        "phone_code": 598,
+        "cities": [],
+        "name": "Uruguay"
+      },
+      "id": "UY"
+    },
+    {
+      "attributes": {
+        "phone_code": 998,
+        "cities": [],
+        "name": "Uzbekistan"
+      },
+      "id": "UZ"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Vatican"
+      },
+      "id": "VA"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Saint Vincent and the Grenadines"
+      },
+      "id": "VC"
+    },
+    {
+      "attributes": {
+        "phone_code": 58,
+        "cities": [],
+        "name": "Venezuela"
+      },
+      "id": "VE"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "British Virgin Islands"
+      },
+      "id": "VG"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "U.S. Virgin Islands"
+      },
+      "id": "VI"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Vietnam"
+      },
+      "id": "VN"
+    },
+    {
+      "attributes": {
+        "phone_code": 678,
+        "cities": [],
+        "name": "Vanuatu"
+      },
+      "id": "VU"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Wallis and Futuna"
+      },
+      "id": "WF"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Samoa"
+      },
+      "id": "WS"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Kosovo"
+      },
+      "id": "XK"
+    },
+    {
+      "attributes": {
+        "phone_code": 967,
+        "cities": [],
+        "name": "Yemen"
+      },
+      "id": "YE"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Mayotte"
+      },
+      "id": "YT"
+    },
+    {
+      "attributes": {
+        "phone_code": 27,
+        "cities": [],
+        "name": "South Africa"
+      },
+      "id": "ZA"
+    },
+    {
+      "attributes": {
+        "phone_code": 260,
+        "cities": [],
+        "name": "Zambia"
+      },
+      "id": "ZM"
+    },
+    {
+      "attributes": {
+        "phone_code": 0,
+        "cities": [],
+        "name": "Zimbabwe"
+      },
+      "id": "ZW"
+    }
+  ]
+}

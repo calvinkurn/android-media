@@ -36,6 +36,7 @@
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
+    <string name="shop_info_title_tab_home">Home</string>
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>

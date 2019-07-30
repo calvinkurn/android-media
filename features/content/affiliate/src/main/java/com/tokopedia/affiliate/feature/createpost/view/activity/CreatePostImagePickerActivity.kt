@@ -6,7 +6,6 @@ import android.os.Bundle
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaModel
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -17,8 +16,6 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
