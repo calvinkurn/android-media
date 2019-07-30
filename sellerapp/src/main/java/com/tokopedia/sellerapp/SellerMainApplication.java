@@ -300,6 +300,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
-    
-
 }
