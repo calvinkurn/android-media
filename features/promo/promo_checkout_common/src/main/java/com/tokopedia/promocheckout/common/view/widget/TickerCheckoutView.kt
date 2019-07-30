@@ -1,6 +1,5 @@
 package com.tokopedia.promocheckout.common.view.widget
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.os.Parcel
@@ -14,7 +13,7 @@ import com.tokopedia.promocheckout.common.R
 import kotlinx.android.synthetic.main.layout_checkout_ticker.view.*
 
 class TickerCheckoutView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+        context: Context, val attrs: AttributeSet? = null, val defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     var state: State = State.EMPTY
@@ -35,17 +34,15 @@ class TickerCheckoutView @JvmOverloads constructor(
     var actionListener : ActionListener? = null
 
     init {
-        val inflater = (context as Activity).layoutInflater
-        inflater.inflate(getLayout(), this)
-        attrs?.let{
-            val styledAttributes = context.obtainStyledAttributes(it, R.styleable.TickerCheckoutView)
-            try {
-                state = State.fromId(styledAttributes.getInteger(R.styleable.TickerCheckoutView_state, 4))
-                title = styledAttributes.getString(R.styleable.TickerCheckoutView_title) ?: ""
-                desc = styledAttributes.getString(R.styleable.TickerCheckoutView_desc) ?: ""
-            } finally {
-                styledAttributes.recycle()
-            }
+        inflate(context, getLayout(), this)
+        val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TickerCheckoutView)
+        try {
+            state = State.fromId(styledAttributes.getInteger(R.styleable.TickerCheckoutView_state, 4))
+            title = styledAttributes.getString(R.styleable.TickerCheckoutView_title) ?: ""
+            desc = styledAttributes.getString(R.styleable.TickerCheckoutView_desc) ?: ""
+
+        } finally {
+            styledAttributes.recycle()
         }
     }
 

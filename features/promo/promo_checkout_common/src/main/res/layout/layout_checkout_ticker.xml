@@ -33,7 +33,6 @@
                 android:text="@string/use_promo_code_or_coupon"
                 android:textStyle="bold"
                 android:textColor="@color/tkpd_main_green"
-                app:drawableLeftCompat="@drawable/ic_coupon_green_promo_checkout"
                 tools:text="Gunakan Kode Promo atau Kupon"
                 android:drawableLeft="@drawable/ic_coupon_green_promo_checkout" />
 
