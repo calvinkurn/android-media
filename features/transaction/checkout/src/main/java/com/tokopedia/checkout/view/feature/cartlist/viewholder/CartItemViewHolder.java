@@ -148,7 +148,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.tvPriceChanges = itemView.findViewById(R.id.tv_price_changes);
         this.tvInvenageText = itemView.findViewById(R.id.tv_invenage_text);
         this.rlInvenageText = itemView.findViewById(R.id.rl_invenage_text);
-        this.rlMicroInsurance = itemView.findViewById(R.id.ll_micro_insurance);
+        this.rlMicroInsurance = itemView.findViewById(R.id.rl_micro_insurance);
         this.cbSelectMicroInsurance = itemView.findViewById(R.id.cb_select_micro_insurance);
         this.tvMicroInsuranceTitle = itemView.findViewById(R.id.micro_insurance_title);
         this.tvMicroInsuranceSubTitle = itemView.findViewById(R.id.tv_micro_insurance_sub_title);
@@ -265,10 +265,13 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 }
 
                 if (!isChecked) {
+                    data.getCartItemData().getMicroInsuranceData().setOptIn(isChecked);
                     cbSelectMicroInsurance.setChecked(isChecked);
-                    cbSelectMicroInsurance.setClickable(false);
+                    cbSelectMicroInsurance.setVisibility(View.GONE);
                     cbSelectMicroInsurance.setEnabled(false);
+                    cbSelectMicroInsurance.setClickable(false);
                 } else {
+                    cbSelectMicroInsurance.setVisibility(View.VISIBLE);
                     cbSelectMicroInsurance.setEnabled(true);
                     cbSelectMicroInsurance.setClickable(true);
                 }
@@ -434,7 +437,13 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 }
             });
 
-            cbSelectMicroInsurance.setChecked(data.getCartItemData().getMicroInsuranceData().getOptIn());
+            if (cbSelectItem.isChecked()) {
+                cbSelectMicroInsurance.setChecked(data.getCartItemData().getMicroInsuranceData().getOptIn());
+            } else {
+                cbSelectMicroInsurance.setChecked(false);
+                cbSelectMicroInsurance.setEnabled(false);
+            }
+
 
         } else {
 
