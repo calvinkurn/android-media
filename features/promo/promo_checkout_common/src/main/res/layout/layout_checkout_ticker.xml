@@ -22,19 +22,20 @@
             android:background="@color/white"
             android:padding="16dp">
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/textview_voucher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:drawablePadding="@dimen/dp_8"
-                android:drawableStart="@drawable/ic_coupon_green_promo_checkout"
-                android:gravity="center"
-                android:text="@string/use_promo_code_or_coupon"
-                android:textStyle="bold"
-                android:textColor="@color/tkpd_main_green"
-                tools:text="Gunakan Kode Promo atau Kupon"
-                android:drawableLeft="@drawable/ic_coupon_green_promo_checkout" />
+            <!--<com.tokopedia.design.component.TextViewCompat-->
+                <!--android:id="@+id/textview_voucher"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="start"-->
+                <!--android:drawablePadding="@dimen/dp_8"-->
+                <!--android:drawableStart="@drawable/ic_coupon_green_promo_checkout"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/use_promo_code_or_coupon"-->
+                <!--android:textStyle="bold"-->
+                <!--android:textColor="@color/tkpd_main_green"-->
+                <!--app:drawableLeftCompat="@drawable/ic_coupon_green_promo_checkout"-->
+                <!--tools:text="Gunakan Kode Promo atau Kupon"-->
+                <!--android:drawableLeft="@drawable/ic_coupon_green_promo_checkout" />-->
 
         </FrameLayout>
     </android.support.v7.widget.CardView>
