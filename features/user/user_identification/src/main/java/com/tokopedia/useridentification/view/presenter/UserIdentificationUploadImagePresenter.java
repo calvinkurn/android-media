@@ -50,8 +50,9 @@ public class UserIdentificationUploadImagePresenter extends
     private static final String RESOLUTION_300 = "300";
     private static final String PARAM_ID = "id";
     private static final String PARAM_WEB_SERVICE = "web_service";
+    private static final String PARAM_USER_ID = "userId"; //override for imageuploader
     private static final String PARAM_RESOLUTION = "param_resolution";
-    private static final String DEFAULT_UPLOAD_PATH = "/upload/attachment";
+    private static final String DEFAULT_UPLOAD_PATH = "/kyc/upload";
     private static final String DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg";
     private CompositeSubscription compositeSubscription;
 
@@ -94,8 +95,8 @@ public class UserIdentificationUploadImagePresenter extends
                                                                          imageUploadModel,
                                                                  ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
                                         imageUploadModel.setPicObjKyc(uploadDomainModel
-                                                .getDataResultImageUpload().getData()
-                                                .getPicObj());
+                                                .getDataResultImageUpload()
+                                                .getPictureObj());
                                         return imageUploadModel;
                                     }
                                 });
@@ -201,11 +202,13 @@ public class UserIdentificationUploadImagePresenter extends
         Map<String, RequestBody> maps = new HashMap<String, RequestBody>();
         RequestBody webService = RequestBody.create(MediaType.parse("text/plain"), "1");
         RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), RESOLUTION_300);
+        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), userSession.getUserId());
         RequestBody id = RequestBody.create(MediaType.parse("text/plain"), userSession.getUserId
                 () + UUID.randomUUID() + System.currentTimeMillis());
         maps.put(PARAM_WEB_SERVICE, webService);
         maps.put(PARAM_ID, id);
         maps.put(PARAM_RESOLUTION, resolution);
+        maps.put(PARAM_USER_ID, userId);
         return uploadImageUseCase.createRequestParam(cameraLoc, DEFAULT_UPLOAD_PATH,
                 DEFAULT_UPLOAD_TYPE, maps);
     }
