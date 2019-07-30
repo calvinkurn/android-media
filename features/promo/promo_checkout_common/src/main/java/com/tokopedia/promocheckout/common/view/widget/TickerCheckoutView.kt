@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.view.widget
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.os.Parcel
@@ -34,7 +35,8 @@ class TickerCheckoutView @JvmOverloads constructor(
     var actionListener : ActionListener? = null
 
     init {
-        View.inflate(context, getLayout(), this)
+        val inflater = (context as Activity).layoutInflater
+        inflater.inflate(getLayout(), this)
         attrs?.let{
             val styledAttributes = context.obtainStyledAttributes(it, R.styleable.TickerCheckoutView)
             try {
