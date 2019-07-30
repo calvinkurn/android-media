@@ -4,13 +4,13 @@
     <path android:fillType="evenOdd"
         android:pathData="M14.1211,14.082m-9.5,0a9.5,9.5 0,1 1,19 0a9.5,9.5 0,1 1,-19 0"
         android:strokeColor="#00000000" android:strokeWidth="1">
-        <!--<aapt:attr name="android:fillColor">-->
-            <!--<gradient android:endX="14.1211" android:endY="30.812065"-->
-                <!--android:startX="14.1211" android:startY="4.396495" android:type="linear">-->
-                <!--<item android:color="#FF42B549" android:offset="0"/>-->
-                <!--<item android:color="#FF87D58B" android:offset="1"/>-->
-            <!--</gradient>-->
-        <!--</aapt:attr>-->
+        <aapt:attr name="android:fillColor">
+            <gradient android:endX="14.1211" android:endY="30.812065"
+                android:startX="14.1211" android:startY="4.396495" android:type="linear">
+                <item android:color="#FF42B549" android:offset="0"/>
+                <item android:color="#FF87D58B" android:offset="1"/>
+            </gradient>
+        </aapt:attr>
     </path>
     <path android:fillColor="#00000000" android:fillType="evenOdd"
         android:pathData="M14.1211,14.082m-12.5,0a12.5,12.5 0,1 1,25 0a12.5,12.5 0,1 1,-25 0"
