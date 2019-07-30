@@ -21,7 +21,7 @@ import com.tokopedia.core.manage.people.profile.model.PeopleProfilePass;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileImpl;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfilePresenter;
 
-@DeepLink(ApplinkConst.SETTING_PROFILE)
+@Deprecated
 public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeopleProfilePresenter>
         implements ManagePeopleProfileView, ManagePeopleProfileResultReceiver.Receiver {
 

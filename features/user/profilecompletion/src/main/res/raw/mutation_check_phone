@@ -1,0 +1,7 @@
+mutation check_msisdn($phone: String!) {
+  checkMsisdn(phone: $phone) {
+   isExist
+    errors
+    event_code
+  }
+}

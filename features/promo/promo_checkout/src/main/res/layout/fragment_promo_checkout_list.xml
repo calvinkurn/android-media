@@ -78,12 +78,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <TextView
                     style="@style/TextView.Micro.BlackSecondary"
-                    android:layout_margin="@dimen/dp_16"
-                    android:text="@string/promo_title_last_seen" />
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:text="@string/promo_title_category" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerViewLastSeenPromo"
@@ -91,17 +95,14 @@
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
                     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_promo_last_seen" />
             </LinearLayout>
 
             <TextView
                 style="@style/TextView.Micro.BlackSecondary"
-                android:paddingBottom="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:text="@string/promo_label_my_coupon" />
 
         </LinearLayout>

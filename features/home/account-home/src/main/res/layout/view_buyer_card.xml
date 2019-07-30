@@ -18,8 +18,6 @@
             android:id="@+id/image_profile_completed"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
-            android:clickable="false"
-            android:focusable="false"
             android:minWidth="@dimen/dp_50"
             android:minHeight="@dimen/dp_50"
             android:visibility="gone"
@@ -30,8 +28,6 @@
             android:id="@+id/image_profile_progress"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
-            android:clickable="false"
-            android:focusable="false"
             android:padding="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -43,8 +39,6 @@
             style="@style/ProgressBar.Tokopedia"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
-            android:clickable="false"
-            android:focusable="false"
             android:max="100"
             android:progress="0"
             android:progressDrawable="@drawable/circular_progress_bar"
@@ -76,8 +70,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
-            android:clickable="false"
-            android:focusable="false"
             android:maxLines="1"
             app:fontSize="title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -91,27 +83,12 @@
             android:id="@+id/text_profile_completion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false"
             android:visibility="visible"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="@+id/text_username"
             app:layout_constraintTop_toBottomOf="@+id/text_username"
             app:textViewTheme="lightSecondary"
             tools:text="Kelengkapan Profile 75%" />
-
-        <View
-            android:id="@+id/holder_title"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toTopOf="@+id/by_me_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
 
         <TextView
             android:id="@+id/by_me_button"

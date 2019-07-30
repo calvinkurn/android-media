@@ -173,7 +173,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                 url
               }
             }
-						postTag {
+            postTag {
               id
               type
               appLink
@@ -212,6 +212,14 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                     hex
                     opacity
                   }
+                }
+                buttonCTA {
+                  text
+                  textDisabled
+                  isDisabled
+                }
+                shop {
+                    shopID
                 }
               }
               isVoted

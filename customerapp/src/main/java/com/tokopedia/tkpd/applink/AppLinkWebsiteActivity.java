@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,6 +38,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     private static final String KEY_APP_LINK_QUERY_URL = "url";
     private static final String KEY_APP_LINK_QUERY_TITLEBAR = "titlebar";
     private static final String KEY_APP_LINK_QUERY_NEED_LOGIN = "need_login";
+    private static final String KEY_APP_LINK_QUERY_ALLOW_OVERRIDE = "allow_override";
+
 
 
     private FragmentGeneralWebView fragmentGeneralWebView;
@@ -44,6 +47,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     private String url;
     private boolean showToolbar;
     private boolean needLogin;
+    private boolean allowOverride;
+
 
     private static final String WEB_URL = TokopediaUrl.Companion.getInstance().getWEB();
 
@@ -51,21 +56,19 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         return new Intent(context, AppLinkWebsiteActivity.class)
                 .putExtra(EXTRA_URL, url)
                 .putExtra(EXTRA_TITLEBAR, true)
-                .putExtra(EXTRA_NEED_LOGIN, false);
+                .putExtra(EXTRA_NEED_LOGIN, false)
+                .putExtra(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE, true);
 
-    }
-
-    public static Intent refreshIntent(Context context, boolean refreshPage) {
-        return new Intent(context, AppLinkWebsiteActivity.class)
-                .putExtra(EXTRA_REFRESH_FLAG, refreshPage);
     }
 
     public static Intent newInstance(Context context, String url, boolean showToolbar,
-                                     boolean needLogin) {
+                                     boolean needLogin, boolean allowOverride) {
+
         return new Intent(context, AppLinkWebsiteActivity.class)
                 .putExtra(EXTRA_URL, url)
                 .putExtra(EXTRA_TITLEBAR, showToolbar)
-                .putExtra(EXTRA_NEED_LOGIN, needLogin);
+                .putExtra(EXTRA_NEED_LOGIN, needLogin)
+                .putExtra(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE, allowOverride);
     }
 
     @SuppressWarnings("unused")
@@ -76,6 +79,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         );
         boolean showToolbar;
         boolean needLogin;
+        boolean allowOverride;
+
         try {
             showToolbar = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_TITLEBAR,
                     "true"));
@@ -90,10 +95,18 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
             needLogin = false;
         }
 
+        try {
+            allowOverride = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE,
+                    "true"));
+        } catch (ParseException e) {
+            allowOverride = true;
+        }
+
         if (TextUtils.isEmpty(webUrl)) {
             webUrl = WEB_URL;
         }
-        return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin);
+
+        return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin, allowOverride);
     }
 
     @SuppressWarnings("unused")
@@ -128,8 +141,27 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     protected void setupBundlePass(Bundle extras) {
         url = extras.getString(EXTRA_URL);
-        showToolbar = extras.getBoolean(EXTRA_TITLEBAR, true);
-        needLogin = extras.getBoolean(EXTRA_NEED_LOGIN, false);
+
+        try {
+            showToolbar = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_TITLEBAR,
+                    "true"));
+        } catch (ParseException e) {
+            showToolbar = true;
+        }
+
+        try {
+            needLogin = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_NEED_LOGIN,
+                    "false"));
+        } catch (ParseException e) {
+            needLogin = false;
+        }
+
+        try {
+            allowOverride = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE,
+                    "true"));
+        } catch (ParseException e) {
+            allowOverride = true;
+        }
     }
 
     @Override
@@ -147,7 +179,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         Fragment fragment = getFragmentManager().findFragmentById(com.tokopedia.digital.R.id.container);
         if (fragment == null || !(fragment instanceof FragmentGeneralWebView)) {
             fragmentGeneralWebView = FragmentGeneralWebView.createInstance(getEncodedUrl(url),
-                    true, showToolbar, needLogin);
+                    allowOverride, showToolbar, needLogin);
             getFragmentManager().beginTransaction().replace(com.tokopedia.digital.R.id.container,
                     fragmentGeneralWebView).commit();
         }

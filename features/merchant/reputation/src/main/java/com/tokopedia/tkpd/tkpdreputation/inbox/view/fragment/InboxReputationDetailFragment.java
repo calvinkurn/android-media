@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -380,10 +381,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSendSmiley(int score) {
         if (GlobalConfig.isSellerApp() && score == PUAS_SCORE) {
-            if(getActivity() != null &&
-                    getActivity().getApplicationContext() instanceof  ReputationRouter) {
+            if(getActivity() != null && getActivity().getApplicationContext() instanceof  ReputationRouter) {
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+
                 ((ReputationRouter)getActivity().getApplicationContext())
-                        .showAdvancedAppRatingDialog(getActivity(), null);
+                        .showAppFeedbackRatingDialog(manager, null);
             }
         }
         refreshPage();
