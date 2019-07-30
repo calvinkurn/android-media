@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_2"
     android:padding="@dimen/dp_4"
-    android:background="@color/white"
     app:cardCornerRadius="@dimen/dp_4"
     app:cardElevation="@dimen/dp_4">
 
@@ -14,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="@color/white"
         android:padding="@dimen/dp_16">
 
         <TextView
