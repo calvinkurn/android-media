@@ -99,6 +99,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 apply from: '../../../publish_local.gradle'
