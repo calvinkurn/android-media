@@ -241,6 +241,7 @@ abstract class ProductCardView: BaseCustomView {
             textViewShopLocation?.doIfVisible { textViewShopLocation ->
                 if(isTextLocationIsAtBottomOfCard()) {
                     setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
+                    setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, R.dimen.dp_4)
                 }
             }
         }
