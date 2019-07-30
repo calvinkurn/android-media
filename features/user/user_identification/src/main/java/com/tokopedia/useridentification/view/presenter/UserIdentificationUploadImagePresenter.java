@@ -1,9 +1,6 @@
 package com.tokopedia.useridentification.view.presenter;
 
-import android.graphics.Bitmap;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
