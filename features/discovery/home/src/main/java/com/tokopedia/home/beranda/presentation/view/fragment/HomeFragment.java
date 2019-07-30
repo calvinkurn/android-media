@@ -25,7 +25,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -741,7 +740,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCountDownFinished(int adapterPosition) {
-        if (adapter != null && adapterPosition != -1) {
+        if (adapter != null) {
             adapter.removeViewModelInPosition(adapterPosition);
         }
     }
