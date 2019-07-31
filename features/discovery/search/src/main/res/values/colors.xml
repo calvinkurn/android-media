@@ -9,4 +9,5 @@
 
     <color name="color_item_preview_border">#e0e0e0</color>
     <color name="black_54">#8a000000</color>
+    <color name="search_empty_state_selected_filter_text_color">#03ac0e</color>
 </resources>

@@ -274,31 +274,26 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         if (globalNavViewModel != null) {
             getItemList().add(globalNavViewModel);
         }
-        getItemList().add(mapEmptySearch(context, query, isFilterActive, sectionTitle,
+        getItemList().add(mapEmptySearch(context, query, isFilterActive,
                 globalNavViewModel == null));
         notifyDataSetChanged();
     }
 
     private EmptySearchViewModel mapEmptySearch(Context context, String query,
-                                                boolean isFilterActive, String sectionTitle,
+                                                boolean isFilterActive,
                                                 boolean isTopAdsAllowed) {
         EmptySearchViewModel emptySearchViewModel = new EmptySearchViewModel();
-        emptySearchViewModel.setImageRes(R.drawable.ic_empty_search);
+        emptySearchViewModel.setImageRes(R.drawable.ic_empty_search_product);
         emptySearchViewModel.setTopAdsAllowed(isTopAdsAllowed);
         if (isFilterActive) {
-            emptySearchViewModel.setTitle(getEmptySearchTitle(context, sectionTitle));
-            emptySearchViewModel.setContent(String.format(context.getString(R.string.msg_empty_search_with_filter_2), query));
+            emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));
+            emptySearchViewModel.setContent(context.getString(R.string.msg_empty_search_product_content_with_filter));
         } else {
-            emptySearchViewModel.setTitle(getEmptySearchTitle(context, sectionTitle));
-            emptySearchViewModel.setContent(String.format(context.getString(R.string.empty_search_content_template), query));
-            emptySearchViewModel.setButtonText(context.getString(R.string.empty_search_button_text));
+            emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));
+            emptySearchViewModel.setContent(context.getString(R.string.msg_empty_search_product_content));
+            emptySearchViewModel.setButtonText(context.getString(R.string.msg_empty_search_product_button));
         }
         return emptySearchViewModel;
-    }
-
-    private String getEmptySearchTitle(Context context, String sectionTitle) {
-        String templateText = context.getString(R.string.msg_empty_search_with_filter_1);
-        return String.format(templateText, sectionTitle);
     }
 
     public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {

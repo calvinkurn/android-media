@@ -56,10 +56,10 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     private TextView emptyTitleTextView;
     private TextView emptyContentTextView;
     private Button emptyButtonItemButton;
-    private final EmptyStateListener emptyStateListener;
+    protected final EmptyStateListener emptyStateListener;
     private final BannerAdsListener bannerAdsListener;
     private TopAdsBannerView topAdsBannerView;
-    private RecyclerView selectedFilterRecyclerView;
+    protected RecyclerView selectedFilterRecyclerView;
     private SelectedFilterAdapter selectedFilterAdapter;
     private EmptySearchViewModel boundedEmptySearchModel;
 
@@ -87,7 +87,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         initSelectedFilterRecyclerView();
     }
 
-    private void initSelectedFilterRecyclerView() {
+    protected void initSelectedFilterRecyclerView() {
         selectedFilterAdapter = new SelectedFilterAdapter(emptyStateListener);
         selectedFilterRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         selectedFilterRecyclerView.setAdapter(selectedFilterAdapter);
@@ -209,14 +209,14 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         List<Option> selectedFilterFromEmptyStateListener = emptyStateListener.getSelectedFilterAsOptionList();
 
         if(selectedFilterFromEmptyStateListener != null && !selectedFilterFromEmptyStateListener.isEmpty()) {
+            selectedFilterRecyclerView.setVisibility(View.VISIBLE);
             populateSelectedFilterToRecylerView(selectedFilterFromEmptyStateListener);
         } else {
             selectedFilterRecyclerView.setVisibility(View.GONE);
         }
     }
 
-    private void populateSelectedFilterToRecylerView(List<Option> selectedFilterOptionList) {
-        selectedFilterRecyclerView.setVisibility(View.VISIBLE);
+    protected void populateSelectedFilterToRecylerView(List<Option> selectedFilterOptionList) {
         selectedFilterAdapter.setOptionList(selectedFilterOptionList);
     }
 
