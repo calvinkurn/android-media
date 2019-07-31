@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ubah Data Asuransi"
+        android:text="@string/text_ubah_data_asuransi"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -26,9 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/bg_round_corner_solid_green"
-        android:text="Simpan Data"
+        android:text="@string/text_btn_validate"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="12sp" />
+        android:textSize="@dimen/sp_12" />
 
 </LinearLayout>

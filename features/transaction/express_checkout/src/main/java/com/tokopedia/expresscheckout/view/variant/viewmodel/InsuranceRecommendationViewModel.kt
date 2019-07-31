@@ -7,15 +7,9 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 
 data class InsuranceRecommendationViewModel(
 
-//        var insuretechGetTransactionalProducts: InsuranceCartResponseViewModel,
         var cartShopsList: ArrayList<InsuranceCartShopsViewModel>
 
-
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
-
-    /*constructor(parcel: Parcel? = null) : this(
-            parcel?.readParcelable<InsuranceCartResponseViewModel>(InsuranceCartResponseViewModel::class.java.classLoader)!!
-    )*/
 
     constructor(parcel: Parcel? = null) : this(
             arrayListOf<InsuranceCartShopsViewModel>().apply {

@@ -11,8 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:letterSpacing="0.01"
-        android:lineSpacingExtra="2sp"
-        android:text="Hapus Produk Asuransi"
+        android:lineSpacingExtra="@dimen/sp_2"
+        android:text="@string/text_heading_produk_asuransi"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_18" />
 
@@ -23,7 +23,7 @@
         android:layout_below="@+id/tv_heading"
         android:layout_marginTop="@dimen/dp_18"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:text="Kamu akan menghapus asuransi demam berdarah. Apa kamu yakin?"
+        android:text="@string/text_desc_asuransi"
         android:textColor="@color/font_black_secondary_54"
         android:textSize="@dimen/sp_12" />
 
@@ -38,7 +38,7 @@
         android:gravity="center_horizontal"
         android:paddingStart="@dimen/dp_6"
         android:paddingLeft="@dimen/dp_6"
-        android:text="Ya, Hapus Produk"
+        android:text="@string/text_button_positive"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/sp_12" />
 
@@ -52,7 +52,7 @@
         android:layout_toStartOf="@+id/button_positive"
         android:layout_toLeftOf="@+id/button_positive"
         android:gravity="center_horizontal"
-        android:text="Kembali"
+        android:text="@string/text_button_negative"
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_12" />
 
