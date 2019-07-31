@@ -6,10 +6,13 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.CheckVoucherDigitalUseCase
+import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListFlightPresenter
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import dagger.Module
@@ -32,8 +35,8 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideCheckVoucherDigitalUseCase(@ApplicationContext context: Context): CheckVoucherDigitalUseCase {
-        return CheckVoucherDigitalUseCase(context, GraphqlUseCase())
+    fun provideCheckVoucherDigitalUseCase(@ApplicationContext context: Context): DigitalCheckVoucherUseCase {
+        return DigitalCheckVoucherUseCase(context, GraphqlUseCase())
     }
 
     @PromoCheckoutListScope
@@ -44,8 +47,14 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideDigitalPresenter(checkVoucherDigitalUseCase: CheckVoucherDigitalUseCase, checkVoucherDigitalMapper: CheckVoucherDigitalMapper) : PromoCheckoutListDigitalPresenter {
-        return PromoCheckoutListDigitalPresenter(checkVoucherDigitalUseCase, checkVoucherDigitalMapper)
+    fun provideDigitalPresenter(digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase, checkVoucherDigitalMapper: CheckVoucherDigitalMapper) : PromoCheckoutListDigitalPresenter {
+        return PromoCheckoutListDigitalPresenter(digitalCheckVoucherUseCase, checkVoucherDigitalMapper)
+    }
+
+    @PromoCheckoutListScope
+    @Provides
+    fun provideFlightPresenter(flightCheckVoucherUseCase: FlightCheckVoucherUseCase, flightCancelVoucherUseCase: FlightCancelVoucherUseCase) : PromoCheckoutListFlightPresenter {
+        return PromoCheckoutListFlightPresenter(flightCheckVoucherUseCase, flightCancelVoucherUseCase)
     }
 
     @PromoCheckoutListScope

@@ -1,7 +1,6 @@
-package com.tokopedia.promocheckout.common.domain
+package com.tokopedia.promocheckout.common.domain.digital
 
 import android.content.Context
-import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -12,7 +11,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
-class CheckVoucherDigitalUseCase(private val context: Context, private val graphqlUseCase: GraphqlUseCase) {
+class DigitalCheckVoucherUseCase(private val context: Context, private val graphqlUseCase: GraphqlUseCase) {
 
     val INPUT_CODE = "code"
     val PRODUCT_ID = "product_id"

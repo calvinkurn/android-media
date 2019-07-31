@@ -72,9 +72,7 @@ public interface FlightBookingReviewContract {
 
         void updateFinalTotal(AttributesVoucher attributesVoucher, FlightBookingReviewModel currentBookingReviewModel);
 
-        void renderCouponInfoData();
-
-        void renderVoucherInfoData();
+        void renderPromo();
 
         void renderTickerView(TravelTickerViewModel travelTickerViewModel);
 
