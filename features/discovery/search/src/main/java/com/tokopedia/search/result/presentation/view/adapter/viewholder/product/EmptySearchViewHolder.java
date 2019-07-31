@@ -231,6 +231,10 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         int firstQuotePos = text.indexOf(quoteSymbol);
         int lastQuotePos = text.lastIndexOf(quoteSymbol);
 
+        if (firstQuotePos < 0) {
+            return text;
+        }
+
         SpannableStringBuilder str = new SpannableStringBuilder(text);
         str.setSpan(new StyleSpan(Typeface.BOLD), firstQuotePos, lastQuotePos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return str;
