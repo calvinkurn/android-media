@@ -216,60 +216,16 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void onItemClicked(String applink, String webUrl) {
         dropKeyBoard();
-
-        Intent intent = getIntentForItemClicked(applink, webUrl);
-
-        startActivityFromAutoComplete(intent);
+        startActivityFromAutoComplete(applink);
     }
 
-    private Intent getIntentForItemClicked(String applink, String webUrl) {
-        if(getActivity() == null || getActivity().getApplicationContext() == null) return null;
+    private void startActivityFromAutoComplete(String applink) {
+        if(getActivity() == null) return;
 
-        Intent intent;
-
-        if(isActivityAnApplinkRouter()) {
-            intent = createIntentForApplinkIfSupported(applink, webUrl);
-        }
-        else {
-            intent = createIntentForWebView(webUrl);
-        }
-
-        return intent;
-    }
-
-    private boolean isActivityAnApplinkRouter() {
-        return getActivity() != null && getActivity().getApplicationContext() instanceof ApplinkRouter;
-    }
-
-    private Intent createIntentForApplinkIfSupported(String applink, String webUrl) {
-        Intent intent;
-
-        ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
-
-        if (router.isSupportApplink(applink)) {
-            intent = RouteManager.getIntent(getActivity(), applink);
-        } else {
-            intent = createIntentForWebView(webUrl);
-        }
-
-        return intent;
-    }
-
-    private Intent createIntentForWebView(String webUrl) {
-        if (!TextUtils.isEmpty(webUrl)) {
-            Intent intent = new Intent(getActivity(), BannerWebView.class);
-            intent.putExtra("url", webUrl);
-        }
-
-        return null;
-    }
-
-    private void startActivityFromAutoComplete(Intent intent) {
-        if(intent == null || getActivity() == null) return;
-
-        getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, intent);
+        getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY);
         getActivity().finish();
-        startActivity(intent);
+
+        RouteManager.route(getActivity(), applink);
     }
 
     @Override
