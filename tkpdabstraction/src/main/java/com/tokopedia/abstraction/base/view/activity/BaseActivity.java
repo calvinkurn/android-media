@@ -198,6 +198,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void setLogCrash() {
-        Crashlytics.log(this.getClass().getCanonicalName());
+        if(!GlobalConfig.DEBUG) {
+            Crashlytics.log(this.getClass().getCanonicalName());
+        }
     }
 }
