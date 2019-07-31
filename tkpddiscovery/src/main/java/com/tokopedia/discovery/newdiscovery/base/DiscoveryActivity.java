@@ -21,13 +21,12 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchImagePickerActivity;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
+import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
@@ -38,10 +37,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -350,25 +346,25 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     private void moveToSearchPage() {
-        Intent searchActivityIntent = createIntentToSearchActivity();
+        Intent searchActivityIntent = createIntentToSearchResult();
 
         setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, searchActivityIntent);
         startActivity(searchActivityIntent);
         finish();
     }
 
-    private Intent createIntentToSearchActivity() {
-        String searchApplink =
-                UriUtil.buildUriAppendParam(
-                        ApplinkConstInternalDiscovery.SEARCH_RESULT,
-                        searchParameter.getSearchParameterHashMap()
-                );
-
-        Intent intent = RouteManager.getIntent(this, searchApplink);
+    private Intent createIntentToSearchResult() {
+        Intent intent = RouteManager.getIntent(this, createSearchResultApplink());
 
         intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
 
         return intent;
+    }
+
+    private String createSearchResultApplink() {
+        return ApplinkConstInternalDiscovery.SEARCH_RESULT
+                + "?"
+                + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
     }
 
     public void deleteAllRecentSearch() {
