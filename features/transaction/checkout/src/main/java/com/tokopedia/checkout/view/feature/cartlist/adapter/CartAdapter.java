@@ -503,17 +503,24 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             if (insuranceCartShopItems.getProductId() == productId) {
                                 cartDataList.remove(item);
                                 notifyDataSetChanged();
+                                break;
                             }
                         }
                     } else if (item instanceof CartShopHolderData) {
-                        for (CartItemHolderData cartItemHolderData : ((CartShopHolderData) item).getShopGroupData().getCartItemDataList()) {
-                            if (cartItemHolderData.getCartItemData() != null) {
-                                if (cartItemHolderData.getCartItemData().getOriginData().getProductId().equalsIgnoreCase(String.valueOf(productId))) {
-                                    cartItemHolderData.getCartItemData().setMicroInsuranceData(null);
-                                    notifyDataSetChanged();
+                        if (((CartShopHolderData) item).getShopGroupData() != null &&
+                                ((CartShopHolderData) item).getShopGroupData().getCartItemDataList() != null) {
+                            for (CartItemHolderData cartItemHolderData : ((CartShopHolderData) item).getShopGroupData().getCartItemDataList()) {
+                                if (cartItemHolderData.getCartItemData() != null &&
+                                        cartItemHolderData.getCartItemData().getOriginData() != null) {
+                                    if (String.valueOf(productId).equalsIgnoreCase(cartItemHolderData.getCartItemData().getOriginData().getProductId())) {
+                                        cartItemHolderData.getCartItemData().setMicroInsuranceData(null);
+                                        notifyDataSetChanged();
+                                        break;
+                                    }
                                 }
                             }
                         }
+
                     }
                 }
 

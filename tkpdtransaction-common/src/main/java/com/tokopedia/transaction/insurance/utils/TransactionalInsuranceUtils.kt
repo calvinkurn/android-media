@@ -1,12 +1,26 @@
-package com.tokopedia.transactiondata.utils
+package com.tokopedia.transaction.insurance.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetDialog
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.AppCompatDrawableManager
 import android.text.TextUtils
+import android.view.View
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.transaction.common.R
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -101,6 +115,50 @@ fun getDateStringInUIFormat(value: String): String {
     return SimpleDateFormat(DATE_FORMAT_VIEW).format(date)
 }
 
+fun openBottomSheetWebView(context: Context, appLinkUrl: String, title: String) {
+    val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
+
+
+    val infoDialogView = (context as Activity).layoutInflater.inflate(R.layout.insurance_info_bottom_sheet, null)
+
+    val webView = infoDialogView.findViewById<WebView>(R.id.bottom_sheet_webview)
+
+    webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK)
+    webView.getSettings().setJavaScriptEnabled(true)
+    webView.loadUrl(appLinkUrl)
+
+    val tvTitle = infoDialogView.findViewById<TextView>(R.id.info_bottom_sheet_title_tv)
+    tvTitle.setText(title)
+
+    val closeImageView = infoDialogView.findViewById<ImageView>(R.id.ic_close_icon)
+
+    closeImageView.setOnClickListener{ closeableBottomSheetDialog.dismiss() }
+
+    val progressBar = infoDialogView.findViewById<ProgressBar>(R.id.progbar)
+
+    webView.webViewClient = object : WebViewClient() {
+        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            super.onPageStarted(view, url, favicon)
+            progressBar.visibility = View.VISIBLE
+        }
+
+        override fun onPageFinished(view: WebView?, url: String?) {
+            progressBar.visibility = View.GONE
+        }
+    }
+
+
+    closeableBottomSheetDialog.setOnShowListener { dialog ->
+        val d = dialog as BottomSheetDialog
+        val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+        if (bottomSheet != null) {
+            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
+    closeableBottomSheetDialog.setCustomContentView(infoDialogView, "", true)
+    closeableBottomSheetDialog.show()
+}
 
 fun validatePattern(value: CharSequence?, regExPattern: String): Boolean {
     if (value == null) {

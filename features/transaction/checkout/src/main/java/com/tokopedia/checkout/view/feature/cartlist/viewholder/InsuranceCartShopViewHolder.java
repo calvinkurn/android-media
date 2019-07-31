@@ -28,24 +28,26 @@ import com.tokopedia.transactiondata.insurance.entity.response.InsuranceProductA
 
 import java.util.ArrayList;
 
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MAX_DATE;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MAX_LENGTH;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MIN_DATE;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MIN_LENGTH;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_PATTERN;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.dateFormatter;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getDate;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getDateInServerFormat;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getDateStringInUIFormat;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getDay;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getStartMonth;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.getStartYear;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.updateEditTextBackground;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.validateMaxDate;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.validateMaxLength;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.validateMinDate;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.validateMinLength;
-import static com.tokopedia.transactiondata.utils.TransactionalInsuranceUtilsKt.validatePattern;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MAX_DATE;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MAX_LENGTH;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MIN_DATE;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MIN_LENGTH;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_PATTERN;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.dateFormatter;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.getDate;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.getDateInServerFormat;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.getDateStringInUIFormat;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.getDay;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.getStartMonth;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.getStartYear;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.openBottomSheetWebView;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.updateEditTextBackground;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.validateMaxDate;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.validateMaxLength;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.validateMinDate;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.validateMinLength;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.validatePattern;
+
 
 public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
@@ -131,10 +133,10 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
             tvInsuranceInfo.setVisibility(View.VISIBLE);
             tvInsuranceInfo.setText(insuranceCartDigitalProduct.getProductInfo().getLinkName());
             tvInsuranceInfo.setOnClickListener(v -> {
-                // TODO: 19/6/19 open bottom sheet with url
-                CloseableBottomSheetDialog dealsCategoryBottomSheet =
-                        CloseableBottomSheetDialog.createInstanceRounded(tvInsuranceInfo.getContext());
 
+                openBottomSheetWebView(tvInsuranceInfo.getContext(),
+                        insuranceCartDigitalProduct.getProductInfo().getAppLinkUrl(),
+                        insuranceCartDigitalProduct.getProductInfo().getDetailInfoTitle());
             });
         }
 
@@ -322,7 +324,8 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    private boolean validateView(TextView valueView, InsuranceProductApplicationDetails insuranceProductApplicationDetails) {
+    private boolean validateView(TextView valueView, InsuranceProductApplicationDetails
+            insuranceProductApplicationDetails) {
         errorMessage = "";
 
         for (InsuranceApplicationValidation insuranceApplicationValidation : insuranceProductApplicationDetails.getValidationsList()) {
