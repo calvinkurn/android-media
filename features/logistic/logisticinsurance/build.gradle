@@ -24,11 +24,11 @@ project.ext {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.network)
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.abstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

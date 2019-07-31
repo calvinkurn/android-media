@@ -8,12 +8,12 @@ ext {
     tkpdCommonNetworkVersion = '2.22'
     tkpdDesignVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
-    tkpdCacheManagerVersion = '2.22'
+    tkpdCacheManagerVersion = '2.24'
     tkpdOmsVersion = '2.22'
     tkpdPaginationVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdTrackingOptimizerVersion = '2.22'
-    tkpdUseCaseVersion = '2.23'
+    tkpdUseCaseVersion = '2.24'
     tkpdVideoplayerVersion = '2.22'
     tkpdYoutubeUtilVersion = '2.22'
     tkpdBaseAdapterlVersion = '2.22'
@@ -33,7 +33,11 @@ ext {
             usecase               : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
             videoplayer           : "com.tokopedia.videoplayer:videoplayer:${tkpdVideoplayerVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
-
+            globalconfig          : "com.tokopedia.config:global_config:1",
+            graphql               : "com.tokopedia.graphql:graphql:1",
+            network               : "com.tokopedia.network:network:1",
+            url                   : "com.tokopedia.url:url:1",
+            usersession           : "com.tokopedia.user.session:user_session:1"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -50,8 +54,6 @@ ext {
             coreNetwork       : ":libraries:core_network",
             datePickerRange   : ":libraries:date_picker_range",
             fingerprint       : ":libraries:fingerprint",
-            config            : ":libraries:global_config",
-            graphql           : ":libraries:graphql",
             imagePicker       : ":libraries:image_picker",
             imagePreview      : ":libraries:image_preview",
             imageuploader     : ":libraries:imageuploader",
@@ -60,7 +62,6 @@ ext {
             linker            : ":libraries:linker",
             locationmanager   : ":libraries:locationmanager",
             logger            : ":libraries:logger",
-            network           : ":libraries:network",
             omsApi            : ":libraries:oms",
             pagination        : ":libraries:pagination",
             permissionchecker : ":libraries:permissionchecker",
@@ -69,7 +70,6 @@ ext {
             remoteConfig      : ":libraries:remote_config",
             travelCalendar    : ":libraries:travel_calendar",
             trackingOptimizer : ":libraries:tracking_optimizer",
-            userSession       : ":libraries:user_session",
             videoRecorder     : ":libraries:video_recorder",
             videoUploader     : ":libraries:videouploader",
             webview           : ":libraries:webview",
@@ -88,6 +88,5 @@ ext {
             cpm              : ":libraries:cpm",
             banner            : ":libraries:unify:unify_compositions:banner",
             collapsingTabLayout: ":libraries:collapsing_tab_layout",
-            url: ":libraries:url"
     ]
 }
