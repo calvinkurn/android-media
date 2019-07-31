@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,10 +18,10 @@
         android:paddingEnd="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:textColor="@color/clr_f531353b"
-        android:textSize="@dimen/sp_18"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3"
         tools:text="Produk Asuransi" />
 
     <android.support.v7.widget.CardView
@@ -43,11 +43,11 @@
                 android:id="@+id/insurance_image_icon"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
-                app:srcCompat="@drawable/ic_modal_toko"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/insurance_tv_title" />
+                app:layout_constraintTop_toTopOf="@+id/insurance_tv_title"
+                app:srcCompat="@drawable/ic_modal_toko" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/insurance_tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -55,25 +55,25 @@
                 android:layout_marginLeft="@dimen/dp_24"
                 android:lineSpacingExtra="@dimen/sp_4"
                 android:textColor="@color/clr_f531353b"
-                android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/insurance_image_icon"
                 app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_5"
                 tools:text="Asuransi Demam Berdarah" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/insurance_tv_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_4"
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:textColor="@color/clr_fa591d"
-                android:textSize="@dimen/sp_14"
                 app:layout_constraintStart_toStartOf="@+id/insurance_tv_title"
                 app:layout_constraintTop_toBottomOf="@+id/insurance_tv_title"
+                app:typographyType="body_2"
                 tools:text="Rp 45.000" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/insurance_tv_subtitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -82,33 +82,32 @@
                 android:ellipsize="end"
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:maxLines="1"
-                android:textSize="@dimen/sp_12"
                 android:visibility="gone"
                 app:layout_constraintBaseline_toBaselineOf="@+id/insurance_tv_price"
                 app:layout_constraintEnd_toStartOf="@+id/insurance_tv_info"
                 app:layout_constraintStart_toEndOf="@+id/insurance_tv_price"
                 app:layout_constraintWidth_default="wrap"
                 app:layout_constraintWidth_max="140dp"
+                app:typographyType="heading_6"
                 tools:text="Insurance subtitle saddscdsd"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/insurance_tv_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
-                android:lineSpacingExtra="6sp"
+                android:lineSpacingExtra="@dimen/sp_6"
                 android:maxLines="1"
                 android:textColor="@color/bg_button_green_border_outline"
-                android:textSize="@dimen/sp_12"
                 android:visibility="visible"
                 app:layout_constraintBaseline_toBaselineOf="@+id/insurance_tv_price"
                 app:layout_constraintEnd_toStartOf="@+id/insurance_checkbox"
                 app:layout_constraintStart_toEndOf="@+id/insurance_tv_subtitle"
                 app:layout_constraintWidth_default="spread"
+                app:typographyType="body_3"
                 tools:text="Info" />
-
 
             <CheckBox
                 android:id="@+id/insurance_checkbox"
@@ -119,16 +118,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/insurance_tv_title" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_insurance_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"
-                android:lineSpacingExtra="5sp"
+                android:lineSpacingExtra="@dimen/sp_5"
                 android:textColor="@color/clr_7031353b"
-                android:textSize="@dimen/sp_12"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/insurance_tv_price"
+                app:typographyType="body_3"
                 tools:text="Polisayaran berhasil"
                 tools:visibility="visible" />
 
@@ -148,16 +147,16 @@
                     android:background="@color/grey_300" />
             </LinearLayout>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_info_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_18"
                 android:lineSpacingExtra="5sp"
                 android:textColor="@color/clr_7031353b"
-                android:textSize="@dimen/sp_12"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/application_detail_ll"
+                app:typographyType="body_3"
                 tools:text="Polis akan dikirim ke email / no. ponsel / TopChat setelah pembayaran berhasil" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
