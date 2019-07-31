@@ -34,8 +34,8 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initPresenter();
-        setupVariables();
         mPresenter.attachView(this);
+        setupVariables();
     }
 
     abstract void setupVariables();
