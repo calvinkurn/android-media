@@ -135,7 +135,6 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
-    private CashShield cashShield;
 
     // animate icon OS
     private MenuItem osMenu;
