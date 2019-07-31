@@ -74,7 +74,7 @@ import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShop
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse;
 import com.tokopedia.transactiondata.insurance.entity.response.RemoveInsuranceProductGqlResponse;
 import com.tokopedia.transactiondata.insurance.entity.response.UpdateInsuranceDataGqlResponse;
-import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.checkout.domain.insurance.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceRecommendationUsecase;
 import com.tokopedia.transactiondata.insurance.usecase.RemoveInsuranceProductUsecase;
 import com.tokopedia.transactiondata.insurance.usecase.UpdateInsuranceProductDataUsecase;
@@ -1005,6 +1005,9 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+
+                if (view == null) return;
+
                 InsuranceCartGqlResponse insuranceCartGqlResponse = null;
                 if (graphqlResponse != null &&
                         graphqlResponse.getData(InsuranceCartGqlResponse.class) != null) {

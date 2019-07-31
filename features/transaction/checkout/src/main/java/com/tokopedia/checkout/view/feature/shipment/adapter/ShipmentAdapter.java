@@ -17,6 +17,8 @@ import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.InsuranceItemActionListener;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.InsuranceCartShopViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
@@ -32,7 +34,6 @@ import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentNotifierV
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceTncModel;
@@ -58,12 +59,17 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -77,8 +83,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
+    private final InsuranceItemActionListener insuranceItemActionlistener;
     private PromoActionListener promoActionListener;
-
+    private ArrayList<InsuranceCartShops> insuranceCartList = new ArrayList<>();
     private List<Object> shipmentDataList;
 
     private PromoStackingData promoGlobalStackData;
@@ -107,11 +114,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
                            PromoActionListener promoActionListener,
                            ShipmentDataRequestConverter shipmentDataRequestConverter,
-                           RatesDataConverter ratesDataConverter) {
+                           RatesDataConverter ratesDataConverter,
+                           InsuranceItemActionListener insuranceItemActionlistener) {
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
         this.promoActionListener = promoActionListener;
         this.shipmentDataRequestConverter = shipmentDataRequestConverter;
         this.ratesDataConverter = ratesDataConverter;
+        this.insuranceItemActionlistener = insuranceItemActionlistener;
         this.shipmentDataList = new ArrayList<>();
         this.showCaseObjectList = new ArrayList<>();
     }
@@ -150,6 +159,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return ShipmentEmasViewHolder.ITEM_VIEW_EMAS;
         } else if (item instanceof ShipmentButtonPaymentModel) {
             return ShipmentButtonPaymentViewHolder.Companion.getITEM_VIEW_PAYMENT_BUTTON();
+        } else if (item instanceof InsuranceCartShops) {
+            return InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP;
         }
 
         return super.getItemViewType(position);
@@ -181,6 +192,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentEmasViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
             return new ShipmentButtonPaymentViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
+            return new InsuranceCartShopViewHolder(view, insuranceItemActionlistener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -216,6 +229,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentEmasViewHolder) holder).bindViewHolder(egoldAttributeModel);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
             ((ShipmentButtonPaymentViewHolder) holder).bindViewHolder((ShipmentButtonPaymentModel) data);
+        } else if (getItemViewType(position) == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
+            final InsuranceCartShopViewHolder insuranceCartShopViewHolder = (InsuranceCartShopViewHolder) holder;
+            final InsuranceCartShops insuranceCartShops = (InsuranceCartShops) shipmentDataList.get(position);
+            insuranceCartShopViewHolder.bindData(insuranceCartShops, position, PAGE_TYPE_CHECKOUT);
         }
     }
 
@@ -819,7 +836,33 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentCostModel.setDonation(0);
             }
         }
+
+        long macroInsurancePrice = 0;
+        String macroInsurancLabel = "";
+        if (insuranceCartList != null && !insuranceCartList.isEmpty()) {
+            for (InsuranceCartShops insuranceCartShops : insuranceCartList) {
+                if (insuranceCartShops != null &&
+                        insuranceCartShops.getShopItemsList() != null &&
+                        insuranceCartShops.getShopItemsList().get(0) != null &&
+                        insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0) != null) {
+
+                    for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
+                        for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+                            if (!insuranceCartDigitalProduct.isProductLevel()) {
+                                totalItem += 1;
+                                macroInsurancLabel = insuranceCartDigitalProduct.getProductInfo().getTitle();
+                                macroInsurancePrice += insuranceCartDigitalProduct.getPricePerProduct();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        totalPrice += macroInsurancePrice;
         totalPrice += shipmentCostModel.getDonation();
+        shipmentCostModel.setMacroInsurancePrice(macroInsurancePrice);
+        shipmentCostModel.setMacroInsurancePriceLabel(macroInsurancLabel);
         shipmentCostModel.setTotalPrice(totalPrice);
 
         if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
@@ -1133,6 +1176,30 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public PromoStackingData getPromoGlobalStackData() {
         return promoGlobalStackData;
+    }
+
+    public void addInsuranceDataList(InsuranceCartShops insuranceCartShops) {
+
+        insuranceCartList.clear();
+        insuranceCartList.add(insuranceCartShops);
+
+        int insuranceIndex = 0;
+
+        for (Object item : shipmentDataList) {
+            if (item instanceof ShipmentNotifierModel ||
+                    item instanceof PromoStackingData ||
+                    item instanceof CartPromoSuggestion ||
+                    item instanceof ShipmentCartItemModel ||
+                    item instanceof ShipmentSellerCashbackModel) {
+                insuranceIndex = shipmentDataList.indexOf(item);
+            }
+        }
+
+        if (insuranceCartShops != null) {
+            shipmentDataList.add(++insuranceIndex, insuranceCartShops);
+        }
+
+        notifyDataSetChanged();
     }
 
     public static class RequestData {

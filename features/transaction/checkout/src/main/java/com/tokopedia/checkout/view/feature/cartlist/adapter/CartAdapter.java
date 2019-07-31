@@ -55,6 +55,8 @@ import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CART;
+
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -238,7 +240,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (getItemViewType(position) == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
             final InsuranceCartShopViewHolder insuranceCartShopViewHolder = (InsuranceCartShopViewHolder) holder;
             final InsuranceCartShops insuranceCartShops = (InsuranceCartShops) cartDataList.get(position);
-            insuranceCartShopViewHolder.bindData(insuranceCartShops, position);
+            insuranceCartShopViewHolder.bindData(insuranceCartShops, position, PAGE_TYPE_CART);
         }
     }
 

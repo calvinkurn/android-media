@@ -35,6 +35,7 @@ import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,8 @@ public interface ShipmentContract {
         void renderErrorPage(String message);
 
         void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp);
+
+        void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse);
 
         void renderCheckShipmentPrepareCheckoutSuccess();
 
@@ -367,6 +370,8 @@ public interface ShipmentContract {
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels);
 
         boolean isIneligbilePromoDialogEnabled();
+
+        void getInsuranceTechCartOnCheckout();
     }
 
 }

@@ -47,6 +47,7 @@ import com.tokopedia.checkout.view.feature.bottomsheetcod.CodBottomSheetFragment
 import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.ClashBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.TotalBenefitBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
+import com.tokopedia.checkout.view.feature.cartlist.InsuranceItemActionListener;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
@@ -62,6 +63,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationMo
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.feature.webview.CheckoutWebViewActivity;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -74,7 +76,6 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
@@ -121,6 +122,11 @@ import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
+import com.tokopedia.transactiondata.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -142,7 +148,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener, CourierBottomsheet.ActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
         MerchantVoucherListBottomSheetFragment.ActionListener, ClashBottomSheetFragment.ActionListener,
-        PromoNotEligibleActionListener {
+        PromoNotEligibleActionListener, InsuranceItemActionListener {
 
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
@@ -594,6 +600,53 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 });
 
+    }
+
+    @Override
+    public void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse) {
+        if (shipmentAdapter != null) {
+            if (insuranceCartResponse != null &&
+                    !insuranceCartResponse.getCartShopsList().isEmpty()) {
+                for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
+                    for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
+                        for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+
+
+                            if (insuranceCartDigitalProduct.isProductLevel()) {
+
+                                /*List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
+
+                                if (shipmentCartItemModelList != null && !shipmentCartItemModelList.isEmpty()) {
+
+                                    for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+
+                                        if (shipmentCartItemModel.getCartItemModels() != null && !shipmentCartItemModel.getCartItemModels().isEmpty()) {
+
+                                            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+
+                                                if (cartItemModel.getProductId() == insuranceCartShopItems.getProductId()) {
+
+//                                                    cartItemModel.setMicroInsuranceData(insuranceCartDigitalProduct);
+                                                }
+
+
+                                            }
+
+                                        }
+
+                                    }
+                                }*/
+
+                            } else {
+                                shipmentAdapter.addInsuranceDataList(insuranceCartShops);
+                            }
+
+                        }
+                    }
+                }
+                shipmentAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     @Override
@@ -2719,5 +2772,25 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         doCheckout(checkoutType);
+    }
+
+    @Override
+    public void deleteMacroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductList, boolean showconfirmationDialog) {
+
+    }
+
+    @Override
+    public void deleteMicroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductList, boolean showconfirmationDialog) {
+
+    }
+
+    @Override
+    public void updateInsuranceProductData(@NotNull InsuranceCartShops insuranceCartShops, @NotNull ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
+
+    }
+
+    @Override
+    public void onInsuranceSelectStateChanges() {
+
     }
 }

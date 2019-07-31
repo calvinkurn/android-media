@@ -17,6 +17,7 @@ import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingA
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
+import com.tokopedia.checkout.domain.insurance.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
@@ -100,6 +101,7 @@ import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentSt
 import com.tokopedia.transactiondata.entity.response.cod.CodResponse;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartGqlResponse;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -146,6 +148,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
     private final IVoucherCouponMapper voucherCouponMapper;
+    private final GetInsuranceCartUseCase getInsuranceCartUseCase;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
@@ -201,7 +204,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              UserSessionInterface userSessionInterface,
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CodAnalytics codAnalytics,
-                             CheckoutAnalyticsCourierSelection checkoutAnalytics) {
+                             CheckoutAnalyticsCourierSelection checkoutAnalytics,
+                             GetInsuranceCartUseCase getInsuranceCartUseCase) {
         this.checkPromoStackingCodeFinalUseCase = checkPromoStackingCodeFinalUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
@@ -225,6 +229,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.userSessionInterface = userSessionInterface;
         this.mTrackerCod = codAnalytics;
         this.mTrackerShipment = checkoutAnalytics;
+        this.getInsuranceCartUseCase = getInsuranceCartUseCase;
     }
 
     @Override
@@ -503,6 +508,52 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return isIneligbilePromoDialogEnabled;
     }
 
+
+    @Override
+    public void getInsuranceTechCartOnCheckout() {
+        getInsuranceCartUseCase.execute(getSubscriberInsuranceCart());
+    }
+
+    private Subscriber<GraphqlResponse> getSubscriberInsuranceCart() {
+        return new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (getView() != null) {
+                    getView().renderInsuranceCartData(null);
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+
+                if (getView() == null) return;
+
+                InsuranceCartGqlResponse insuranceCartGqlResponse = null;
+                if (graphqlResponse != null &&
+                        graphqlResponse.getData(InsuranceCartGqlResponse.class) != null) {
+                    insuranceCartGqlResponse =
+                            graphqlResponse.getData(InsuranceCartGqlResponse.class);
+                } else {
+                    /*
+                      Do Nothing if insureTech cart service fails
+                     */
+                    getView().showToastError("Cart Fail");
+                }
+
+                if (insuranceCartGqlResponse != null) {
+                    getView().renderInsuranceCartData(insuranceCartGqlResponse.getData());
+                } else {
+                    getView().renderInsuranceCartData(null);
+                }
+            }
+        };
+    }
+
     @Override
     public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                                boolean isTradeIn, boolean isSkipUpdateOnboardingState,
@@ -548,6 +599,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
+
+        getInsuranceTechCartOnCheckout();
+
         RecipientAddressModel newAddress = getView().getShipmentDataConverter()
                 .getRecipientAddressModel(cartShipmentAddressFormData);
         if (!cartShipmentAddressFormData.isMultiple()) {
