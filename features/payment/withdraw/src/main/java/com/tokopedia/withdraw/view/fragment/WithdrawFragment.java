@@ -326,7 +326,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         sellerSaldoWithDrawTvStatus = true;
                         SpannableString ss = new SpannableString(getString(R.string.saldolock_info_text));
                         String tickerMsg = getString(R.string.saldolock_info_text);
-                        int startIndex = tickerMsg.indexOf("di sini");
+                        int startIndex = tickerMsg.indexOf("hubungi kami");
                         tvWithDrawInfo.setMovementMethod(LinkMovementMethod.getInstance());
                         ss.setSpan(new ClickableSpan() {
                             @Override
@@ -450,7 +450,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     public void showTicker() {
 
         String tickerMsg = getString(R.string.saldolock_tickerDescription);
-        int startIndex = tickerMsg.indexOf("Bayar sekarang");
+        int startIndex = tickerMsg.indexOf("Bayar Sekarang");
         String late=Integer.toString(mclLateCount);
         tickerMsg  =  String.format(getResources().getString(R.string.saldolock_tickerDescription),late);
         SpannableString ss = new SpannableString(tickerMsg);
