@@ -24,7 +24,7 @@
         <!--</activity>-->
 
         <activity
-            android:name="com.tokopedia.purchase_platform.atc_variant.view.NormalCheckoutActivity"
+            android:name="com.tokopedia.purchase_platform.normalcheckout.view.NormalCheckoutActivity"
             android:label="@string/activity_title_checkout_variant"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"/>
