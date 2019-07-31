@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationCityUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextPopularLocationsUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetSearchLocationUseCase;
 import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.Page;
@@ -39,6 +40,7 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
     private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
     private GetLocationCityUseCase getLocationCityUseCase;
     private GetNextPopularLocationsUseCase getNextPopularLocationsUseCase;
+    private GetSearchLocationUseCase getSearchLocationUseCase;
     private List<Location> mTopLocations;
     private List<Location> mAllLocations;
     private Page page;
@@ -47,33 +49,24 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
     private RequestParams nextUrlParams = RequestParams.create();
 
     @Inject
-    public DealsLocationPresenter(GetLocationListRequestUseCase getLocationListRequestUseCase, GetLocationCityUseCase getLocationCityUseCase, GetNextPopularLocationsUseCase getNextPopularLocationsUseCase) {
+    public DealsLocationPresenter(GetLocationListRequestUseCase getLocationListRequestUseCase, GetLocationCityUseCase getLocationCityUseCase, GetNextPopularLocationsUseCase getNextPopularLocationsUseCase, GetSearchLocationUseCase getSearchLocationUseCase) {
         this.getSearchLocationListRequestUseCase = getLocationListRequestUseCase;
         this.getLocationCityUseCase = getLocationCityUseCase;
         this.getNextPopularLocationsUseCase = getNextPopularLocationsUseCase;
+        this.getSearchLocationUseCase = getSearchLocationUseCase;
     }
 
     @Override
     public void attachView(DealsLocationContract.View view) {
         super.attachView(view);
-        getLocations();
+//        getLocations();
         getCities();
     }
 
     @Override
     public void getLocationListBySearch(String searchText) {
-        List<Location> locationList = new ArrayList<>();
-        if (mAllLocations != null) {
-            for (Location location : mAllLocations)
-                if (location.getName().trim().toLowerCase().contains(searchText.trim().toLowerCase()))
-                    locationList.add(location);
-        }
-        getView().renderPopularCities(locationList, searchText);
-    }
-
-    public void getLocations() {
-        getSearchLocationListRequestUseCase.setRequestParams(getView().getParams());
-        getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        getSearchLocationUseCase.setRequestParams(getView().getParams());
+        getSearchLocationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
@@ -86,7 +79,7 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        getLocations();
+//                        getLocations();
                     }
                 });
             }
@@ -99,13 +92,48 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                 DataResponse dataResponse = restResponse.getData();
                 LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
                 mTopLocations = locationResponse.getLocations();
-                mAllLocations = locationResponse.getLocations();
-                getView().renderPopularLocations(mTopLocations);
+//                getView().renderPopularLocations(mTopLocations);
                 page = locationResponse.getPage();
                 getNextPageUrl();
             }
         });
     }
+
+//    public void getLocations() {
+//        getSearchLocationListRequestUseCase.setRequestParams(getView().getParams());
+//        getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+//            @Override
+//            public void onCompleted() {
+//                CommonUtils.dumper("enter onCompleted");
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                CommonUtils.dumper("enter error");
+//                e.printStackTrace();
+//                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+//                    @Override
+//                    public void onRetryClicked() {
+////                        getLocations();
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+//                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+//                }.getType();
+//                RestResponse restResponse = typeRestResponseMap.get(token);
+//                DataResponse dataResponse = restResponse.getData();
+//                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+//                mTopLocations = locationResponse.getLocations();
+//                mAllLocations = locationResponse.getLocations();
+////                getView().renderPopularLocations(mTopLocations);
+//                page = locationResponse.getPage();
+//                getNextPageUrl();
+//            }
+//        });
+//    }
 
     public void getCities() {
         getLocationCityUseCase.setRequestParams(getView().getParams());
@@ -146,6 +174,8 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
     public void onDestroy() {
         getSearchLocationListRequestUseCase.unsubscribe();
         getLocationCityUseCase.unsubscribe();
+        getNextPopularLocationsUseCase.unsubscribe();
+        getSearchLocationUseCase.unsubscribe();
     }
 
     @Override
@@ -191,28 +221,28 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                 LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
                 mTopLocations = locationResponse.getLocations();
                 mAllLocations = locationResponse.getLocations();
-                getView().removeFooter();
-                getView().renderPopularLocations(mTopLocations);
+//                getView().removeFooter();
+//                getView().renderPopularLocations(mTopLocations);
                 page = locationResponse.getPage();
             }
         });
 
     }
 
-    public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
-        int visibleItemCount = layoutManager.findLastVisibleItemPosition();
-        int totalItemCount = layoutManager.getItemCount();
-        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-        if (!isLoading && !isLastPage) {
-            if ((visibleItemCount + firstVisibleItemPosition + 1) >= totalItemCount
-                    && firstVisibleItemPosition >= 0) {
-                isLoading = true;
-                loadMore();
-            }
-        } else {
-            getView().addFooter();
-        }
-    }
+//    public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
+//        int visibleItemCount = layoutManager.findLastVisibleItemPosition();
+//        int totalItemCount = layoutManager.getItemCount();
+//        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+//        if (!isLoading && !isLastPage) {
+//            if ((visibleItemCount + firstVisibleItemPosition + 1) >= totalItemCount
+//                    && firstVisibleItemPosition >= 0) {
+//                isLoading = true;
+//                loadMore();
+//            }
+//        } else {
+//            getView().addFooter();
+//        }
+//    }
 
     private void getNextPageUrl() {
         if (page != null) {

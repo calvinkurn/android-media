@@ -19,15 +19,9 @@ public class DealsLocationContract {
 
         void renderPopularCities(List<Location> locationList, String... searchText);
 
-        void renderPopularLocations(List<Location> locationList, String... searchText);
-
         LinearLayoutManager getLayoutManager();
 
         RequestParams getParams();
-
-        void addFooter();
-
-        void removeFooter();
 
         android.view.View getRootView();
 

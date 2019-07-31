@@ -38,7 +38,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsContract.View, SearchInputView.Listener{
+public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsContract.View, SearchInputView.Listener, SearchInputView.FocusChangeListener{
 
     private static final boolean IS_SHORT_LAYOUT = true;
     private static final String ARG_PARAM_EXTRA_DEALS_DATA = "ARG_PARAM_EXTRA_DEALS_DATA";
@@ -302,6 +302,11 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
                 onLocationUpdated();
             }
         }
+
+    }
+
+    @Override
+    public void onFocusChanged(boolean hasFocus) {
 
     }
 

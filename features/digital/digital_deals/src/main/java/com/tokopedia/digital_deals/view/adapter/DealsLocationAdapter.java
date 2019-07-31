@@ -31,12 +31,12 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
     private Context context;
     private List<Location> locations;
-    private ActionListener actionListener;
+    private SelectCityListener actionListener;
     private boolean isPopular;
     DealsAnalytics dealsAnalytics;
     private String selectedLocation;
 
-    public DealsLocationAdapter(List<Location> locations, ActionListener actionListener, String selectedLocation) {
+    public DealsLocationAdapter(List<Location> locations, SelectCityListener actionListener, String selectedLocation) {
         this.locations = new ArrayList<>();
         this.locations = locations;
         this.actionListener = actionListener;
@@ -121,12 +121,12 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
             }
             Location location = Utils.getSingletonInstance().getLocation(context);
             Utils.getSingletonInstance().updateLocation(context, locations.get(getIndex()));
-            actionListener.onLocationItemSelected(location != null);
+            actionListener.onCityItemSelected(location != null);
         }
     }
 
-    public interface ActionListener {
-        void onLocationItemSelected(boolean locationUpdated);
+    public interface SelectCityListener {
+        void onCityItemSelected(boolean locationUpdated);
     }
 
 }

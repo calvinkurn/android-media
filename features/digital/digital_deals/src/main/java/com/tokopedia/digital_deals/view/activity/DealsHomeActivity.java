@@ -13,6 +13,7 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
+import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.fragment.TrendingDealsFragment;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
@@ -20,7 +21,7 @@ import com.tokopedia.digital_deals.view.utils.TrendingDealsCallBacks;
 
 import java.util.List;
 
-public class DealsHomeActivity extends DealsBaseActivity implements TrendingDealsCallBacks, DealsHomeFragment.OpenTrendingDeals {
+public class DealsHomeActivity extends DealsBaseActivity implements TrendingDealsCallBacks, DealsHomeFragment.OpenTrendingDeals, SelectLocationBottomSheet.SelectedLocationListener {
 
 
     public static final int REQUEST_CODE_DEALSLOCATIONACTIVITY = 101;
@@ -29,6 +30,7 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     public final static int REQUEST_CODE_LOGIN=104;
 
     List<ProductItem> trendingDeals;
+    private boolean isLocationUpdated;
     private String title;
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS})
@@ -57,7 +59,7 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     @Override
     protected Fragment getNewFragment() {
         toolbar.setVisibility(View.GONE);
-        return DealsHomeFragment.createInstance();
+        return DealsHomeFragment.createInstance(isLocationUpdated);
     }
 
     @Override
@@ -79,5 +81,10 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
         transaction.add(R.id.parent_view, TrendingDealsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onLocationItemUpdated(boolean isLocationUpdated) {
+        this.isLocationUpdated = isLocationUpdated;
     }
 }

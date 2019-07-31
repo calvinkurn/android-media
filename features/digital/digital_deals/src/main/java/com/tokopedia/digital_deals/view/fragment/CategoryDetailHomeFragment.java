@@ -68,9 +68,11 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
+public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, PopupMenu.OnMenuItemClickListener{
 
     private final boolean IS_SHORT_LAYOUT = true;
+    private static final String LOCATION_UPDATE = "isLocationUpdated";
+    private static final String CATEGORY_FRAGMENT = "CategoryDetailHomeFragment";
     private final String SCREEN_NAME = "/digital/deals/category";
     private RecyclerView recyclerViewDeals;
     private RecyclerView recyclerViewBrands;
@@ -104,6 +106,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     List<ProductItem> categoryItems = new ArrayList<>();
     private AppBarLayout appBarLayout;
     private UserSession userSession;
+    private boolean isLocationUpdated;
 
     private Menu mMenu;
 
@@ -113,8 +116,9 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         mPresenter.attachView(this);
     }
 
-    public static Fragment createInstance(Bundle bundle) {
+    public static Fragment createInstance(Bundle bundle, boolean isLocationUpdated) {
         Fragment fragment = new CategoryDetailHomeFragment();
+        bundle.putBoolean(LOCATION_UPDATE, isLocationUpdated);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -123,9 +127,12 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.categoriesModel = getArguments().getParcelable(CategoryDetailActivity.CATEGORIES_DATA);
-        this.categoryList = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_LIST);
-        this.categoryItems = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_CATEGOTRY_LIST);
+        if (getArguments() != null) {
+            isLocationUpdated = getArguments().getBoolean(LOCATION_UPDATE);
+            this.categoriesModel = getArguments().getParcelable(CategoryDetailActivity.CATEGORIES_DATA);
+            this.categoryList = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_LIST);
+            this.categoryItems = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_CATEGOTRY_LIST);
+        }
         userSession = new UserSession(getActivity());
     }
 
@@ -224,7 +231,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void onStart() {
         super.onStart();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location != null) {
+        if (isLocationUpdated && location != null) {
             toolbarTitle.setText(location.getName());
             popularLocation.setText(String.format(getActivity().getResources().getString(R.string.popular_deals_in_location), this.categoriesModel.getTitle(), location.getName()));
             mPresenter.getBrandsList(true);
@@ -503,30 +510,9 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
-    public void onLocationItemSelected(boolean locationUpdated) {
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (locationUpdated && location != null) {
-            mPresenter.getBrandsList(true);
-            mPresenter.getCategoryDetails(true);
-            toolbarTitle.setText(location.getName());
-        }
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
-        }
-    }
-
-    @Override
-    public void closeBottomsheet() {
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
-        }
-    }
-
-    @Override
     public void startLocationFragment(List<Location> locations) {
-        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), false, locations, this, toolbarTitle.getText().toString(), this), "", false);
-        selectLocationFragment.show();
+        Fragment fragment = SelectLocationBottomSheet.createInstance(toolbarTitle.getText().toString());
+        getChildFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(CATEGORY_FRAGMENT).commit();
     }
 
     @Override

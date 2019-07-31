@@ -87,10 +87,12 @@ import javax.inject.Inject;
 import static android.app.Activity.RESULT_OK;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
-public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
+public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, CloseableBottomSheetDialog.OnCancelListener, PopupMenu.OnMenuItemClickListener {
 
     private final long SHOW_CASE_DELAY = 400;
     private final String SCREEN_NAME = "/digital/deals/homepage";
+    private static final String HOME_FRAGMENT = "DealsHomeFragment";
+    private static final String LOCATION_UPDATE = "isLocationUpdated";
 
     private Menu mMenu;
     @Inject
@@ -133,8 +135,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private boolean isFirstTime = false;
     private TextView promoheading;
 
-    public static Fragment createInstance() {
+    public static Fragment createInstance(boolean isLocationUpdated) {
         Fragment fragment = new DealsHomeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(LOCATION_UPDATE, isLocationUpdated);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -142,6 +147,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            isLocationUpdated = getArguments().getBoolean(LOCATION_UPDATE);
+        }
     }
 
     @Override
@@ -160,9 +168,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void onStart() {
         super.onStart();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location != null && !tvLocationName.getText().equals(location.getName())) {
+        if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
         }
         mPresenter.sendScreenNameEvent(getScreenName());
     }
@@ -174,6 +183,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (location != null) {
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
         } else {
             mPresenter.getLocations(true);
         }
@@ -567,7 +577,14 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        requestParams.putInt(DealsHomePresenter.TAG, location.getId());
+        requestParams.putInt(Utils.LOCATION_ID_PARAM, location.getId());
+        requestParams.putString(Utils.LOCATION_NAME_PARAM, location.getName());
+        if (!TextUtils.isEmpty(location.getCoordinates())) {
+            requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        }
+        if (!TextUtils.isEmpty(location.getLocType())) {
+            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType());
+        }
         return requestParams;
     }
 
@@ -681,37 +698,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void onLocationItemSelected(boolean locationUpdated) {
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location == null) {
-            if (getActivity() != null)
-                getActivity().finish();
-        } else {
-            if (locationUpdated) {
-                isLocationUpdated = locationUpdated;
-                selectLocationFragment.setCanceledOnTouchOutside(true);
-                Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
-                mPresenter.getDealsList(true);
-                tvLocationName.setText(location.getName());
-            }
-            if (selectLocationFragment != null) {
-                selectLocationFragment.dismiss();
-            }
-        }
-    }
-
-    @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
-//        Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
-        this.isFirstTime = isForFirstime;
-        if (isForFirstime) {
-            mPresenter.getDealsList(false);
-        }
-        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this, tvLocationName.getText().toString(), this), "", false);
-        selectLocationFragment.show();
-        if (isForFirstime) {
-            selectLocationFragment.setCanceledOnTouchOutside(false);
-        }
+        Fragment fragment = SelectLocationBottomSheet.createInstance(tvLocationName.getText().toString());
+        getChildFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(HOME_FRAGMENT).commit();
     }
 
     @Override
@@ -761,12 +750,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         selectLocationFragment.dismiss();
     }
 
-    @Override
-    public void closeBottomsheet() {
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
-        }
-    }
 
     public interface OpenTrendingDeals {
         void replaceFragment(List<ProductItem> trendingDeals, int flag, String title);

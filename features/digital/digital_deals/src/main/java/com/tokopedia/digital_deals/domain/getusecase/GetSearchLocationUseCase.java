@@ -14,21 +14,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class GetLocationCityUseCase extends RestRequestUseCase {
+public class GetSearchLocationUseCase extends RestRequestUseCase {
+
     private RequestParams params;
 
     @Inject
-    public GetLocationCityUseCase(){ }
+    public GetSearchLocationUseCase(){}
 
     public void setRequestParams(RequestParams params) {
         this.params = params;
     }
-
     @Override
     protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        String url = "https://booking-staging.tokopedia.com/v1/api/location/deal";
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LOCATIONS;
         //Request 1
         Type token = new TypeToken<DataResponse<LocationResponse>>() {
         }.getType();

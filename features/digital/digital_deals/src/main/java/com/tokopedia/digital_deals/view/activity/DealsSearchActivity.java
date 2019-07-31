@@ -53,10 +53,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class DealsSearchActivity extends DealsBaseActivity implements
-        DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
+        DealsSearchContract.View, SearchInputView.Listener, SearchInputView.FocusChangeListener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, SelectLocationBottomSheet.SelectedLocationListener {
 
     private final boolean IS_SHORT_LAYOUT = true;
     public static final String EXTRA_LIST = "list";
+    private static final String SEARCH_PAGE = "DealsSearchActivity";
     public static final String SCREEN_NAME = "/digital/deals/search";
 
     private CoordinatorLayout mainContent;
@@ -86,8 +87,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private String searchText;
     private int adapterPosition = -1;
     private boolean forceRefresh;
-    CloseableBottomSheetDialog selectLocationFragment;
     private AppBarLayout appBarToolbar;
+    private boolean isLocationUpdated;
 
     @Override
     public int getLayoutRes() {
@@ -100,6 +101,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         initInjector();
         setUpVariables();
         searchInputView.setListener(this);
+        searchInputView.setFocusChangeListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         categoryList = getIntent().getParcelableArrayListExtra(EXTRA_LIST);
         categoryId = getIntent().getStringExtra("cat_id");
@@ -111,8 +113,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     protected void onStart() {
         super.onStart();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
+        if (isLocationUpdated && location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
+            Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
         dealsAnalytics.sendScreenNameEvent(SCREEN_NAME);
@@ -145,7 +148,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         rvDeals.setLayoutManager(layoutManager);
         dealsCategoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.SEARCH_PAGE, this, !IS_SHORT_LAYOUT);
         rvDeals.setAdapter(dealsCategoryAdapter);
-        searchInputView.getSearchTextView().requestFocus();
+//        searchInputView.getSearchTextView().requestFocus();
         appBarBrands.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -207,9 +210,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstTime) {
-        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(DealsSearchActivity.this, isForFirstTime, locationList, this, tvCityName.getText().toString(), this), "", false);
-        selectLocationFragment.show();
+        Fragment fragment = SelectLocationBottomSheet.createInstance(tvCityName.getText().toString());
+        getSupportFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(SEARCH_PAGE).commit();
     }
 
     @Override
@@ -500,26 +502,11 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
-    public void onLocationItemSelected(boolean locationUpdated) {
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location == null) {
-            finish();
-        } else {
-            tvCityName.setText(location.getName());
-            if (selectLocationFragment != null) {
-                selectLocationFragment.dismiss();
-            }
-            if (locationUpdated) {
-                Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
-            }
-            mPresenter.getDealsListBySearch(searchInputView.getSearchText());
-        }
+    public void onLocationItemUpdated(boolean isLocationUpdated) {
+        this.isLocationUpdated = isLocationUpdated;
     }
 
     @Override
-    public void closeBottomsheet() {
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
-        }
+    public void onFocusChanged(boolean hasFocus) {
     }
 }

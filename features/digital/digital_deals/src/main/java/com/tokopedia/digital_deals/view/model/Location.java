@@ -5,8 +5,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.library.baseadapter.BaseItem;
 
-public class Location implements Parcelable {
+public class Location extends BaseItem implements Parcelable {
 
 
     @SerializedName("id")
@@ -51,6 +52,9 @@ public class Location implements Parcelable {
     @SerializedName("location_type")
     @Expose
     private String locType;
+    @SerializedName("coordinates")
+    @Expose
+    private String coordinates;
 
 
     public final static Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
@@ -84,6 +88,7 @@ public class Location implements Parcelable {
         this.imageApp = in.readString();
         this.address = in.readString();
         this.locType = in.readString();
+        this.coordinates = in.readString();
     }
 
     public Location() {
@@ -201,6 +206,14 @@ public class Location implements Parcelable {
         this.locType = locType;
     }
 
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeInt(id);
@@ -217,6 +230,7 @@ public class Location implements Parcelable {
         dest.writeString(imageApp);
         dest.writeString(address);
         dest.writeString(locType);
+        dest.writeString(coordinates);
     }
 
     public int describeContents() {
