@@ -1129,7 +1129,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
                 if (cartListData.getShopGroupDataList() != null && !cartListData.getShopGroupDataList().isEmpty()) {
                     dPresenter.getInsuranceTechCart();
-//                    dPresenter.getInsuranceRecommendationProducts(cartListData);
                 }
 
 
@@ -1142,6 +1141,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
 
                 cartAdapter.checkForShipmentForm();
+                onCartNotEmpty();
 
                 if (toolbar != null) {
                     setVisibilityRemoveButton(true);
@@ -1170,16 +1170,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 } else {
                     renderRecommendation(null);
                 }
-
-                if (toolbar != null) {
-                    setVisibilityRemoveButton(!cartListData.getShopGroupDataList().isEmpty());
-                } else {
-                    if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
-                        mIsMenuVisible = true;
-                        getActivity().invalidateOptionsMenu();
-                    }
-                }
-
 
             }
         }
@@ -1327,8 +1317,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData
-                                                                      promoCodeCartListData) {
+    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
         PromoStackingData promoStackingData = new PromoStackingData.Builder()
                 .typePromo(PromoStackingData.CREATOR.getTYPE_VOUCHER())
                 .promoCode(promoCodeCartListData.getDataVoucher().getCode())
@@ -1717,38 +1706,32 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct
-            (Map<String, Object> eeData) {
+    public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(Map<String, Object> eeData) {
         cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeData);
     }
 
     @Override
-    public void sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod
-            (Map<String, Object> eeData) {
+    public void sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod(Map<String, Object> eeData) {
         cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefaultEligibleCod(eeData);
     }
 
     @Override
-    public void sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod
-            (Map<String, Object> eeData) {
+    public void sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod(Map<String, Object> eeData) {
         cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAllEligibleCod(eeData);
     }
 
     @Override
-    public void sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod
-            (Map<String, Object> eeData) {
+    public void sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod(Map<String, Object> eeData) {
         cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopEligibleCod(eeData);
     }
 
     @Override
-    public void sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod
-            (Map<String, Object> eeData) {
+    public void sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod(Map<String, Object> eeData) {
         cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProductEligibleCod(eeData);
     }
 
     @Override
-    public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod
-            (Map<String, Object> eeData) {
+    public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(Map<String, Object> eeData) {
         cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProductEligibleCod(eeData);
     }
 
@@ -1810,20 +1793,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendAnalyticsOnClickRemoveCartConstrainedProduct
-            (Map<String, Object> eeDataLayerCart) {
+    public void sendAnalyticsOnClickRemoveCartConstrainedProduct(Map<String, Object> eeDataLayerCart) {
         cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusProdukBerkendala(eeDataLayerCart);
     }
 
     @Override
-    public void sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductWithAddToWishList
-            (Map<String, Object> eeDataLayerCart) {
+    public void sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductWithAddToWishList(Map<String, Object> eeDataLayerCart) {
         cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusDanTambahWishlistFromHapusProdukBerkendala(eeDataLayerCart);
     }
 
     @Override
-    public void sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList
-            (Map<String, Object> eeDataLayerCart) {
+    public void sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(Map<String, Object> eeDataLayerCart) {
         cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromHapusProdukBerkendala(eeDataLayerCart);
     }
 
@@ -2124,9 +2104,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onSubmitNewPromoAfterClash
-            (@NotNull ArrayList<String> oldPromoList, @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList, @NotNull String
-                    type) {
+    public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList,
+                                           @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList,
+                                           @NotNull String type) {
         dPresenter.processCancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList, type);
     }
 
@@ -2140,7 +2120,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void updateInsuranceProductData(InsuranceCartShops insuranceCartShops, ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
+    public void updateInsuranceProductData(InsuranceCartShops insuranceCartShops,
+                                           ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
         dPresenter.updateInsuranceProductData(insuranceCartShops, updateInsuranceProductApplicationDetailsArrayList);
     }
 

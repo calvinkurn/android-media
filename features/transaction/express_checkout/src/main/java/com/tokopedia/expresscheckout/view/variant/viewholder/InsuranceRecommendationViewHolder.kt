@@ -1,32 +1,26 @@
 package com.tokopedia.expresscheckout.view.variant.viewholder
 
 import android.app.Activity
-import android.os.Handler
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.webkit.WebSettings
-import android.webkit.WebView
 import android.widget.CompoundButton
-import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.date.util.SaldoDatePickerUtil
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceApplicationValueViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceProductApplicationDetailsViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceRecommendationViewModel
-import com.tokopedia.transactiondata.utils.*
+import com.tokopedia.transaction.insurance.utils.*
 import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page.view.*
 import java.util.*
+
 
 class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceRecommendationViewModel>(view) {
 
@@ -67,7 +61,6 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 itemView.tv_insurance_description.visibility = View.GONE
             }
 
-
             if (!TextUtils.isEmpty(insuranceCartDigitalProductViewModel.productInfo.iconUrl)) {
                 ImageHandler.loadImage(itemView.context, itemView.insurance_image_icon, insuranceCartDigitalProductViewModel.productInfo.iconUrl, R.drawable.ic_modal_toko)
             }
@@ -81,53 +74,9 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 itemView.insurance_tv_info.text = insuranceCartDigitalProductViewModel.productInfo.linkName
                 itemView.insurance_tv_info.setOnClickListener {
 
-                    val infoCloseableDialog = CloseableBottomSheetDialog.createInstance(itemView.context)
-
-                    val infoDialogView = (itemView.context as Activity?)?.layoutInflater?.inflate(R.layout.insurance_info_bottom_sheet, null)
-                    val webView = infoDialogView!!.findViewById<WebView>(R.id.bottom_sheet_webview)
-
-                    webView.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-
-                    webView.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
-
-                    /*infoDialogView.findViewById<TextView>(R.id.info_bottom_sheet_title_tv)?.text =
-                            insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle*/
-
-//                    val closeImageView = infoDialogView.findViewById<ImageView>(R.id.ic_close_icon)
-                    infoCloseableDialog.setOnShowListener { dialog ->
-                        val d = dialog as BottomSheetDialog
-                        val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
-                        if (bottomSheet != null) {
-                            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-                        }
-                        val behavior = BottomSheetBehavior.from(bottomSheet!!)
-                        behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                                }
-                            }
-
-                            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                        })
-
-//                        webView.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
-
-
-                    }
-
-                    /* closeImageView?.setOnClickListener {
-                         infoCloseableDialog.dismiss()
-                     }*/
-                    infoCloseableDialog.setContentView(infoDialogView,
+                    openBottomSheetWebView(itemView.context,
+                            insuranceCartDigitalProductViewModel.productInfo.appLinkUrl,
                             insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle)
-
-
-                    Handler().postDelayed(Runnable {
-                        infoCloseableDialog.show()
-                    }, 1000)
-
-//                    webView!!.loadUrl(insuranceCartDigitalProductViewModel.productInfo.appLinkUrl)
 
                 }
             }
@@ -150,7 +99,6 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
 
                     applicationDetailsView.addView(view)
                     addToValuesList(view, insuranceProductApplicationDetails)
-
 
                     textView.addTextChangedListener(object : TextWatcher {
                         override fun afterTextChanged(s: Editable?) {

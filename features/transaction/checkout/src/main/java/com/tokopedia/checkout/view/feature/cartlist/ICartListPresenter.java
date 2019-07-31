@@ -36,8 +36,6 @@ public interface ICartListPresenter {
 
     void processToUpdateCartData(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList);
 
-    void processToUpdateCartAndInsuranceData(List<CartItemData> cartItemDataList, List<InsuranceCartShops> insuranceShopsDataList);
-
     void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupData shopGroupData);
 
     void processUpdateCartDataPromoStacking(List<CartItemData> cartItemDataList, PromoStackingData promoStackingData, int goToDetail);
@@ -94,5 +92,4 @@ public interface ICartListPresenter {
 
     void setAllInsuranceProductsChecked(ArrayList<InsuranceCartShops> insuranceCartShops, boolean isChecked);
 
-    void getInsuranceRecommendationProducts(CartListData cartListData);
 }

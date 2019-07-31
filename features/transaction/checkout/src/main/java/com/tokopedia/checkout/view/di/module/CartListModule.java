@@ -34,10 +34,10 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceCartUseCase;
-import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceRecommendationUsecase;
-import com.tokopedia.transactiondata.insurance.usecase.RemoveInsuranceProductUsecase;
-import com.tokopedia.transactiondata.insurance.usecase.UpdateInsuranceProductDataUsecase;
+import com.tokopedia.checkout.domain.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.checkout.domain.usecase.GetInsuranceRecommendationUsecase;
+import com.tokopedia.checkout.domain.usecase.RemoveInsuranceProductUsecase;
+import com.tokopedia.checkout.domain.usecase.UpdateInsuranceProductDataUsecase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;

@@ -47,6 +47,7 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.checkout.view.common.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME;
 import static com.tokopedia.checkout.view.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME;
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.openBottomSheetWebView;
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -424,7 +425,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tvMicroInsuranceInfo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    openBottomSheetWebView(tvMicroInsuranceInfo.getContext(),
+                            data.getCartItemData().getMicroInsuranceData().getProductInfo().getAppLinkUrl(),
+                            data.getCartItemData().getMicroInsuranceData().getProductInfo().getDetailInfoTitle());
                 }
             });
 
@@ -446,9 +449,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
 
         } else {
-
             rlMicroInsurance.setVisibility(View.GONE);
-
         }
     }
 
