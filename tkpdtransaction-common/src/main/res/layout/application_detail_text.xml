@@ -16,9 +16,9 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="6sp"
-            android:textColor="#ae31353b"
-            android:textSize="12sp"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:textColor="@color/clr_ae31353b"
+            android:textSize="@dimen/sp_12"
             tools:text="Nama Lengkap (Sesuai KTP)" />
 
         <EditText
@@ -28,9 +28,9 @@
             android:layout_marginLeft="-4dp"
             android:layout_marginRight="-4dp"
             android:backgroundTint="@color/grey_300"
-            android:lineSpacingExtra="6sp"
-            android:textColor="#f531353b"
-            android:textSize="16sp"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:textColor="@color/clr_f531353b"
+            android:textSize="@dimen/sp_16"
             tools:text="Andrew Ignatius Sugijanto" />
 
         <TextView
@@ -43,6 +43,6 @@
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
             android:visibility="invisible"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
     </LinearLayout>
 </FrameLayout>
