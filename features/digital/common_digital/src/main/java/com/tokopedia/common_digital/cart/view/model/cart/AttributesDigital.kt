@@ -9,7 +9,7 @@ import com.tokopedia.common_digital.cart.domain.model.PostPaidPopupAttribute
  * @author by Nabilla Sabbaha on 3/1/2017.
  */
 
-class AttributesDigital : Parcelable {
+class AttributesDigital() : Parcelable {
 
     var userId: String? = null
 
@@ -45,7 +45,7 @@ class AttributesDigital : Parcelable {
 
     var postPaidPopupAttribute: PostPaidPopupAttribute? = null
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         userId = `in`.readString()
         clientNumber = `in`.readString()
         icon = `in`.readString()
@@ -64,8 +64,6 @@ class AttributesDigital : Parcelable {
         defaultPromoTab = `in`.readString()
         postPaidPopupAttribute = `in`.readParcelable(PostPaidPopupAttribute::class.java.classLoader)
     }
-
-    constructor() {}
 
     override fun describeContents(): Int {
         return 0

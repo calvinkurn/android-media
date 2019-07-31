@@ -11,7 +11,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.Sha1EncoderUtils;
-import com.tokopedia.transaction.exception.ResponseRuntimeException;
+import com.tokopedia.transaction.common.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.others.creditcard.authenticator.AuthenticatorUpdateWhiteListResponse;
 import com.tokopedia.transaction.others.creditcard.authenticator.UpdateWhiteListRequestData;
 import com.tokopedia.transaction.others.creditcardauthentication.UserInfoRepository;

@@ -48,6 +48,8 @@ public interface InboxDetailContract {
         void updateClosedStatus(String subject);
 
         String getCommentID();
+
+        void showNoTicketView(List<String> messageError);
     }
 
     interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter {

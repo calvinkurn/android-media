@@ -5,12 +5,13 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.settingbank.addeditaccount.domain.pojo.EditBankAccountPojo
 import retrofit2.Response
 import rx.functions.Func1
+import javax.inject.Inject
 
 /**
  * @author by nisie on 6/22/18.
  */
 
-class EditBankMapper : Func1<Response<DataResponse<EditBankAccountPojo>>, Boolean> {
+class EditBankMapper @Inject constructor(): Func1<Response<DataResponse<EditBankAccountPojo>>, Boolean> {
 
     override fun call(response: Response<DataResponse<EditBankAccountPojo>>): Boolean {
 

@@ -1,5 +1,6 @@
 package com.tokopedia.cacheapi.interceptor;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.cacheapi.constant.CacheApiConstant;
@@ -7,9 +8,9 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiCheckWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearTimeOutCacheUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiGetCacheDataUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiSaveToDbUseCase;
+import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
-import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
@@ -28,17 +29,19 @@ import okhttp3.ResponseBody;
 
 public class CacheApiInterceptor implements Interceptor {
 
+    private Context context;
     private CacheApiResponseValidator responseValidator;
 
     public void setResponseValidator(CacheApiResponseValidator responseValidator) {
         this.responseValidator = responseValidator;
     }
 
-    public CacheApiInterceptor() {
-        this(new CacheApiResponseValidator());
+    public CacheApiInterceptor(Context context) {
+        this(context, new CacheApiResponseValidator());
     }
 
-    public CacheApiInterceptor(CacheApiResponseValidator responseValidator) {
+    public CacheApiInterceptor(Context context, CacheApiResponseValidator responseValidator) {
+        this.context = context.getApplicationContext();
         this.responseValidator = responseValidator;
     }
 
@@ -58,11 +61,11 @@ public class CacheApiInterceptor implements Interceptor {
     private Response getCacheResponse(Chain chain) throws Throwable {
         Request request = chain.request();
 
-        new CacheApiClearTimeOutCacheUseCase().executeSync(RequestParams.EMPTY);
+        new CacheApiClearTimeOutCacheUseCase(context).executeSync(RequestParams.EMPTY);
 
-        CacheApiCheckWhiteListUseCase checkWhiteListUseCase = new CacheApiCheckWhiteListUseCase();
-        CacheApiGetCacheDataUseCase getCacheDataUseCase = new CacheApiGetCacheDataUseCase();
-        CacheApiSaveToDbUseCase saveToDbUseCase = new CacheApiSaveToDbUseCase();
+        CacheApiCheckWhiteListUseCase checkWhiteListUseCase = new CacheApiCheckWhiteListUseCase(context);
+        CacheApiGetCacheDataUseCase getCacheDataUseCase = new CacheApiGetCacheDataUseCase(context);
+        CacheApiSaveToDbUseCase saveToDbUseCase = new CacheApiSaveToDbUseCase(context);
 
         String host = request.url().host();
         String path = CacheApiUtils.getPath(request.url().toString());

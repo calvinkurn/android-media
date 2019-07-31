@@ -15,10 +15,10 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.ToastNetworkHandler;
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.model.Category;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
@@ -167,7 +167,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private List<Filter> getFilterListFromDbManager(DynamicFilterDbManager manager) throws RuntimeException {
-        String data = manager.getValueString(getIntent().getStringExtra(EXTRA_FILTER_LIST));
+        String data = DynamicFilterDbManager.getFilterData(this, getIntent().getStringExtra(EXTRA_FILTER_LIST));
         if (data == null) {
             throw new RuntimeException("error get filter cache");
         } else {
@@ -292,7 +292,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     private void handleResultFromLocationPage() {
         Observable.create(
-                (Observable.OnSubscribe<List<Option>>) subscriber -> subscriber.onNext(FilterDbHelper.loadLocationFilterOptions()))
+                (Observable.OnSubscribe<List<Option>>) subscriber -> subscriber.onNext(FilterDbHelper.loadLocationFilterOptions(RevampedDynamicFilterActivity.this)))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Option>>() {
@@ -354,7 +354,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     private void renderFilterResult() {
         Intent intent = new Intent();
-        HashMap<String, String> filterParameterHashMap = new HashMap<>(filterController.getFilterParameter());
+        HashMap<String, String> filterParameterHashMap = new HashMap<>(filterController.getParameter());
         HashMap<String, String> activeFilterParameterHashMap = new HashMap<>(filterController.getActiveFilterMap());
 
         intent.putExtra(EXTRA_FILTER_PARAMETER, filterParameterHashMap);

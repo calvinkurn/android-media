@@ -1,54 +1,44 @@
 package com.tokopedia.feedcomponent.view.adapter.posttag
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.DisplayMetrics
+import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.common.ColorPojo
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder.Companion.SOURCE_DETAIL
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.widget.RatingBarReview
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.visible
+import kotlin.math.roundToInt
+
 
 /**
  * @author by yfsx on 22/03/19.
  */
 class PostTagAdapter(private val itemList: List<PostTagItem>,
                      private val listener: DynamicPostViewHolder.DynamicPostListener,
-                     private val positionInFeed: Int)
+                     private val positionInFeed: Int,
+                     private val feedType: String)
     : RecyclerView.Adapter<PostTagAdapter.Holder>() {
 
-    companion object {
-        private val TYPE_LIST = "TYPE_LIST"
-        private val TYPE_GRID = "TYPE_GRID"
-    }
-
-    private var layoutType = ""
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        var layoutRes = 0
-        when(itemList.size) {
-            1 -> {
-                layoutRes = R.layout.item_producttag_list
-                layoutType = TYPE_LIST
-            }
-            else -> {
-                layoutRes = R.layout.item_producttag_grid
-                layoutType = TYPE_GRID
-            }
-        }
-        return Holder(LayoutInflater.from(parent.context).inflate(layoutRes, parent, false))
+        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.item_producttag_list, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -56,46 +46,69 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val item: PostTagItem = itemList.get(position)
-        holder.bind(item, layoutType, listener, positionInFeed, position)
+        val item: PostTagItem = itemList[position]
+        holder.bind(item, listener, positionInFeed, position, feedType, itemList.size != 1)
     }
 
     class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+        companion object {
+            private const val VALUE_CARD_SIZE = 0.75
+            private const val HEX_BLACK = "#000"
+            private const val HEX_WHITE = "#fff"
+            private const val OPACITY_70 = "0.7"
+            private const val OPACITY_100 = "1"
+        }
+
         private lateinit var productLayout: CardView
         private lateinit var productImage: ImageView
         private lateinit var productPrice: TextView
         private lateinit var productName: TextView
         private lateinit var productTag: TextView
+        private lateinit var btnBuy: ButtonCompat
         private lateinit var productNameSection: LinearLayout
-        private lateinit var productTagBackground: RelativeLayout
+        private lateinit var container: CardView
+        private lateinit var widgetRating: RatingBarReview
 
-        fun bind(item: PostTagItem, layoutType: String,
+        fun bind(item: PostTagItem,
                  listener: DynamicPostViewHolder.DynamicPostListener,
                  positionInFeed: Int,
-                 itemPosition: Int) {
+                 itemPosition: Int,
+                 feedType: String,
+                 needToResize: Boolean) {
             productLayout = itemView.findViewById(R.id.productLayout)
             productImage = itemView.findViewById(R.id.productImage)
             productPrice = itemView.findViewById(R.id.productPrice)
             productTag = itemView.findViewById(R.id.productTag)
-            productTagBackground = itemView.findViewById(R.id.productTagBackground)
-            productImage.loadImageRounded(item.thumbnail, 8f)
+            btnBuy = itemView.findViewById(R.id.btnProductBuy)
+            productNameSection = itemView.findViewById(R.id.productNameSection)
+            productName = itemView.findViewById(R.id.productName)
+            widgetRating = itemView.findViewById(R.id.widgetRating)
+            productImage.loadImageRounded(item.thumbnail, 10f)
             productPrice.text = item.price
-            if (item.tags.isNotEmpty()) {
-                productTagBackground.visibility = View.VISIBLE
-                renderTag(productTag, item.tags.get(0))
-            } else {
-                productTagBackground.visibility = View.GONE
-            }
+            btnBuy.visibility = View.GONE
             productLayout.setOnClickListener(
                 getItemClickNavigationListener(listener, positionInFeed, item, itemPosition)
             )
+            productName.text = item.text
+            productNameSection.setOnClickListener(
+                    getItemClickNavigationListener(listener, positionInFeed, item, itemPosition))
+            if (item.rating <= 0) {
+                widgetRating.gone()
+            } else {
+                widgetRating.visible()
+                widgetRating.updateRating((item.rating / 20f).roundToInt())
+            }
+            if (feedType != SOURCE_DETAIL && needToResize) {
+                container = itemView.findViewById(R.id.container)
+                container.viewTreeObserver.addOnGlobalLayoutListener(getGlobalLayoutListener())
+            }
 
-            if (layoutType.equals(TYPE_LIST)) {
-                productNameSection = itemView.findViewById(R.id.productNameSection)
-                productName = itemView.findViewById(R.id.productName)
-                productName.text = item.text
-                productNameSection.setOnClickListener(
-                        getItemClickNavigationListener(listener, positionInFeed, item, itemPosition))
+            if (item.tags.isNotEmpty()) {
+                productTag.visible()
+                renderTag(productTag, item.tags.first())
+            } else {
+                productTag.gone()
             }
         }
 
@@ -105,7 +118,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                 : View.OnClickListener {
              return View.OnClickListener {
                  listener.onPostTagItemClick(positionInFeed, item.applink, item, itemPosition)
-                 listener.onAffiliateTrackClicked(mappingTracking(item.tracking))
+                 listener.onAffiliateTrackClicked(mappingTracking(item.tracking), true)
              }
         }
 
@@ -120,6 +133,26 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                 ))
             }
             return trackList
+        }
+
+        private fun getGlobalLayoutListener(): ViewTreeObserver.OnGlobalLayoutListener {
+            return object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val viewTreeObserver = container.viewTreeObserver
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        viewTreeObserver.removeGlobalOnLayoutListener(this)
+                    }
+                    val displayMetrics = DisplayMetrics()
+                    (itemView.context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.let {
+                        it.defaultDisplay.getMetrics(displayMetrics)
+                        container.layoutParams.width = (displayMetrics.widthPixels * VALUE_CARD_SIZE).toInt()
+                        container.requestLayout()
+                    }
+                }
+            }
         }
 
         private fun renderTag(textView: TextView, tag: PostTagItemTag) {
@@ -143,17 +176,17 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
             return drawable
         }
 
-        private fun calculateBackgroundAlpha(opacityString: String) : Int {
+        private fun calculateBackgroundAlpha(opacityString: String): Int {
             val floatValue = opacityString.toFloat()
-            return (floatValue*100).toInt()
+            return (floatValue * 100).toInt()
         }
 
         private fun getDefaultBackgroundColor() : ColorPojo {
-            return ColorPojo("#000", "0.7")
+            return ColorPojo(HEX_BLACK, OPACITY_70)
         }
 
         private fun getDefaultTextColor() : ColorPojo {
-            return ColorPojo("#fff", "1")
+            return ColorPojo(HEX_WHITE, OPACITY_100)
         }
     }
 }

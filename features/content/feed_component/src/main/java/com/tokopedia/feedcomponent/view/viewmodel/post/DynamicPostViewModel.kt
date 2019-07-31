@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 
 /**
  * @author by milhamj on 28/11/18.
@@ -17,7 +18,9 @@ data class DynamicPostViewModel(
         val caption: Caption = Caption(),
         var contentList: MutableList<BasePostViewModel> = ArrayList(),
         val template: Template = Template(),
-        val trackingPostModel: TrackingPostModel = TrackingPostModel()
+        val trackingPostModel: TrackingPostModel = TrackingPostModel(),
+        val tracking: MutableList<TrackingViewModel> = ArrayList(),
+        val feedType: String = ""
 
 ) : Visitable<DynamicFeedTypeFactory> {
     

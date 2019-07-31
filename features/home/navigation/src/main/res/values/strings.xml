@@ -56,4 +56,18 @@
     <string name="navigation_home_label_longpress_share">Wishlist</string>
     <string name="navigation_home_label_longpress_bayar">Tagihan</string>
     <string name="navigation_home_label_longpress_jual">Jual</string>
+    <string name="text_title_filter">Filter</string>
+    <string name="text_title_reset">Reset</string>
+    <string name="text_button_show_filter">Tampilkan Hasil</string>
+    <string name="mark_all_as_read">Tandai semua dibaca</string>
+
+    <string name="seller_label">Untuk Penjual</string>
+    <string name="buyer_label">Untuk Pembeli</string>
+
+    <string name="title_counter_update_notification">" (%1$s)"</string>
+    <string name="title_notification_update">Update</string>
+    <string name="title_notification_activity">Transaksi</string>
+    <string name="exceed_ninety_nine">99+</string>
+
+    <string name="filter">Filter</string>
 </resources>

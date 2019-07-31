@@ -19,6 +19,8 @@ interface ChatbotContract {
         fun onUploadOversizedImage()
 
         fun showSnackbarError(stringId: Int)
+
+        fun clearChatText()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

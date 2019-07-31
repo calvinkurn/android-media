@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author : Steven 23/10/18
  */
-class SettingGroupChat : Parcelable {
+class SettingGroupChat() : Parcelable {
 
     @SerializedName("ping_interval")
     @Expose
@@ -28,14 +28,14 @@ class SettingGroupChat : Parcelable {
     var delay: Int = 0
         private set
 
-    constructor() {
+    init {
         pingInterval = DEFAULT_PING
         maxRetries = DEFAULT_MAX_RETRIES
         delay = DEFAULT_DELAY
         maxChar = DEFAULT_MAX_CHAR
     }
 
-    constructor(`in`: Parcel) {
+    constructor(`in`: Parcel): this() {
         pingInterval = `in`.readLong()
         maxChar = `in`.readInt()
         maxRetries = `in`.readInt()
@@ -75,6 +75,7 @@ class SettingGroupChat : Parcelable {
         const val DEFAULT_MAX_CHAR = 200
         const val DEFAULT_DELAY = 5000
 
+        @JvmField
         val CREATOR: Parcelable.Creator<SettingGroupChat> = object : Parcelable.Creator<SettingGroupChat> {
             override fun createFromParcel(`in`: Parcel): SettingGroupChat {
                 return SettingGroupChat(`in`)

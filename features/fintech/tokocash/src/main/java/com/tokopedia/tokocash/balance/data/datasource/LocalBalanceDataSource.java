@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.balance.data.entity.BalanceTokoCashEntity;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -15,10 +16,8 @@ import rx.functions.Func1;
 public class LocalBalanceDataSource implements BalanceDataSource {
 
     private static final String TAG = LocalBalanceDataSource.class.getName();
-    private CacheManager cacheManager;
 
-    public LocalBalanceDataSource(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
+    public LocalBalanceDataSource() {
     }
 
     @Override
@@ -41,7 +40,7 @@ public class LocalBalanceDataSource implements BalanceDataSource {
     }
 
     private String getCache() {
-        return cacheManager.get(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
+        return PersistentCacheManager.instance.getString(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
 }

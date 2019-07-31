@@ -19,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
@@ -90,6 +91,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView imgWishlist;
     private TextView tvEllipsize;
     private View divider;
+    private TextView tvPriceChanges;
+    private TextView tvInvenageText;
+    private RelativeLayout rlInvenageText;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -135,6 +139,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.imgWishlist = itemView.findViewById(R.id.img_wishlist);
         this.tvEllipsize = itemView.findViewById(R.id.tv_ellipsize);
         this.divider = itemView.findViewById(R.id.holder_item_cart_divider);
+        this.tvPriceChanges = itemView.findViewById(R.id.tv_price_changes);
+        this.tvInvenageText = itemView.findViewById(R.id.tv_invenage_text);
+        this.rlInvenageText = itemView.findViewById(R.id.rl_invenage_text);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -250,7 +257,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWarningAndError(CartItemHolderData data) {
         if (data.getCartItemData().isParentHasErrorOrWarning()) {
-            // if (data.getCartItemData().isSingleChild()) {
             if (!data.getCartItemData().isDisableAllProducts()) {
                 renderErrorItemHeader(data);
                 renderWarningItemHeader(data);
@@ -355,6 +361,30 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         });
 
         divider.setVisibility((getLayoutPosition() == dataSize - 1) ? View.GONE : View.VISIBLE);
+
+        String priceChangesText = data.getCartItemData().getOriginData().getPriceChangesDesc();
+        int priceChangesState = data.getCartItemData().getOriginData().getPriceChangesState();
+        if (priceChangesText.isEmpty() || priceChangesState >= 0) {
+            tvPriceChanges.setVisibility(View.GONE);
+        } else {
+            tvPriceChanges.setVisibility(View.VISIBLE);
+            tvPriceChanges.setText(priceChangesText);
+            actionListener.onCartItemShowTickerPriceDecrease(data.getCartItemData().getOriginData().getProductId());
+        }
+
+        if (!data.getCartItemData().getOriginData().getProductInvenageByUserText().isEmpty()) {
+            this.rlInvenageText.setVisibility(View.VISIBLE);
+            String completeText = data.getCartItemData().getOriginData().getProductInvenageByUserText();
+            int totalInOtherCart = data.getCartItemData().getOriginData().getProductInvenageByUserInCart();
+            int totalRemainingStock = data.getCartItemData().getOriginData().getProductInvenageByUserLastStockLessThan();
+            String invenageText = completeText
+                    .replace(context.getString(R.string.product_invenage_remaining_stock), "" + totalRemainingStock)
+                    .replace(context.getString(R.string.product_invenage_in_other_cart), "" + totalInOtherCart);
+            this.tvInvenageText.setText(Html.fromHtml(invenageText));
+            actionListener.onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(data.getCartItemData().getOriginData().getProductId());
+        } else {
+            this.rlInvenageText.setVisibility(View.GONE);
+        }
     }
 
     private void renderRemark(CartItemHolderData data, int parentPosition, ViewHolderListener viewHolderListener) {
@@ -687,7 +717,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 }
                 if (zeroCount == quantity.getEditable().length()) {
                     actionListener.onCartItemQuantityReseted(getAdapterPosition(), parentPosition, needToUpdateView);
-                    handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
+                    if (needToUpdateView) {
+                        handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
+                        needToUpdateView = false;
+                    }
                 } else if (quantity.getEditable().charAt(0) == '0') {
                     etQty.setText(quantity.getEditable().toString()
                             .substring(zeroCount, quantity.getEditable().toString().length()));
@@ -697,7 +730,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             } else if (TextUtils.isEmpty(etQty.getText())) {
                 actionListener.onCartItemQuantityReseted(getAdapterPosition(), parentPosition,
                         !String.valueOf(quantity.getQtyBefore()).equals(quantity.getEditable().toString()));
-                handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
+                if (needToUpdateView) {
+                    handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
+                    needToUpdateView = false;
+                }
             }
 
             int qty = 0;
@@ -709,7 +745,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             checkQtyMustDisabled(cartItemHolderData, qty);
             cartItemHolderData.getCartItemData().getUpdatedData().setQuantity(qty);
             validateWithAvailableQuantity(cartItemHolderData, qty);
-            actionListener.onCartItemQuantityFormEdited(getAdapterPosition(), parentPosition, needToUpdateView);
+            if (needToUpdateView) {
+                handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
+            }
         }
     }
 

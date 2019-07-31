@@ -18,6 +18,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextA
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by yoasfs on 16/10/17.
@@ -77,19 +78,19 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
         if (resolutionStatus == DetailResChatFragment.STATUS_CANCEL || resolutionStatus == DetailResChatFragment.STATUS_FINISHED) {
             holder.ivIndicatorCircle.setVisibility(View.VISIBLE);
             setTextStyle(holder.tvAction, false);
-            holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
-            holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_past));
+            holder.ivIndicatorArrow.setImageDrawable(MethodChecker.getDrawable(holder.ivIndicatorArrow.getContext(),R.drawable.ic_step_arrow_past));
+            holder.ivIndicatorCircle.setImageDrawable(MethodChecker.getDrawable(holder.ivIndicatorCircle.getContext(),R.drawable.ic_step_past));
             holder.ivIndicatorArrow.setVisibility(nextStep == null ? View.GONE : View.VISIBLE);
         } else {
             if (currentStepStatus == STEP_BEFORE_CURRENT) {
                 holder.ivIndicatorCircle.setVisibility(View.VISIBLE);
                 setTextStyle(holder.tvAction, false);
-                holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
-                holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_past));
+                holder.ivIndicatorArrow.setImageDrawable(MethodChecker.getDrawable(holder.ivIndicatorArrow.getContext(),R.drawable.ic_step_arrow_past));
+                holder.ivIndicatorCircle.setImageDrawable(MethodChecker.getDrawable(holder.ivIndicatorCircle.getContext(),R.drawable.ic_step_past));
             } else if (currentStepStatus == STEP_CURRENT) {
                 holder.glowingView.setVisibility(View.VISIBLE);
                 setTextStyle(holder.tvAction, true);
-                holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
+                holder.ivIndicatorArrow.setImageDrawable(MethodChecker.getDrawable(holder.ivIndicatorArrow.getContext(),R.drawable.ic_step_arrow_past));
                 holder.ivIndicatorArrow.setImageDrawable(nextStep != null && stepMap.get(nextStep) == STEP_AFTER_CURRENT ?
                         context.getResources().getDrawable(R.drawable.ic_arrow_dotted) :
                         context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
@@ -98,8 +99,8 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
             } else if (currentStepStatus == STEP_AFTER_CURRENT) {
                 holder.ivIndicatorCircle.setVisibility(View.VISIBLE);
                 setTextStyle(holder.tvAction, false);
-                holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_dotted));
-                holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_next));
+                holder.ivIndicatorArrow.setImageDrawable(MethodChecker.getDrawable(holder.ivIndicatorArrow.getContext(),R.drawable.ic_arrow_dotted));
+                holder.ivIndicatorCircle.setImageDrawable(MethodChecker.getDrawable(holder.ivIndicatorCircle.getContext(),R.drawable.ic_step_next));
                 holder.ivIndicatorArrow.setVisibility(nextStep == null ? View.GONE : View.VISIBLE);
             }
         }

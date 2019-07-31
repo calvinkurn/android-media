@@ -31,14 +31,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticCommon)
-    implementation project(rootProject.ext.features.logisticanalytics)
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.libraries.permissionchecker)
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.debugToolsDependencies.chuck
-
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

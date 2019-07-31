@@ -14,6 +14,7 @@ public class GlobalConfig {
 
     public static String VERSION_NAME = "1.0";
     public static int VERSION_CODE = 1;
+    public static String FLAVOR = "liveProd";
     public static int APPLICATION_TYPE = CONSUMER_APPLICATION;
     public static String PACKAGE_APPLICATION = PACKAGE_CONSUMER_APP;
     public static Boolean DEBUG = false;
@@ -24,7 +25,14 @@ public class GlobalConfig {
     public static String PREINSTALL_SITE = "";
     public static String APPLICATION_ID = "";
 
-    public static boolean isSellerApp(){
+    // use to set default root Activity for incoming deeplink
+    public static String HOME_ACTIVITY_CLASS_NAME = "";
+    // if the deeplink can be handled by multiple activities, this DeeplinkHandlerActivity and DeeplinkActivity
+    // should be the least priority
+    public static String DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = "";
+    public static String DEEPLINK_ACTIVITY_CLASS_NAME = "";
+
+    public static boolean isSellerApp() {
         return APPLICATION_TYPE == SELLER_APPLICATION;
     }
 

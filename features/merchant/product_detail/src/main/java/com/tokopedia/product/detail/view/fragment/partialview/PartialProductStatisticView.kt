@@ -6,8 +6,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.Rating
-import com.tokopedia.product.detail.data.model.shop.BBInfo
-import com.tokopedia.product.detail.data.model.shop.ShopShipment
+import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.product.detail.view.activity.CourierActivity
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
 
@@ -16,9 +16,9 @@ class PartialProductStatisticView private constructor(private val view: View) {
         fun build(_view: View) = PartialProductStatisticView(_view)
     }
 
-    fun renderData(data: ProductInfo, onReviewClicked: (()->Unit)? = null,
-                   onDiscussionClicked: (()-> Unit)? = null){
-        with(view){
+    fun renderData(data: ProductInfo, onReviewClicked: (() -> Unit)? = null,
+                   onDiscussionClicked: (() -> Unit)? = null) {
+        with(view) {
             txt_review.text = context.getString(R.string.template_review, data.stats.countReview)
             base_layout_rating.setOnClickListener { onReviewClicked?.invoke() }
             txt_review.setOnClickListener { onReviewClicked?.invoke() }
@@ -38,14 +38,27 @@ class PartialProductStatisticView private constructor(private val view: View) {
 
     fun renderClickShipment(activity: Activity, productId: String, shipment: List<ShopShipment>,
                             bbInfos: List<BBInfo>) {
-        with(view){
+        with(view) {
             icon_courier.setOnClickListener {
                 context.startActivity(CourierActivity.createIntent(context, productId, shipment, bbInfos))
-                activity.overridePendingTransition(0,0)
+                activity.overridePendingTransition(0, 0)
             }
             txt_courier.setOnClickListener {
                 context.startActivity(CourierActivity.createIntent(context, productId, shipment, bbInfos))
-                activity.overridePendingTransition(0,0)
+                activity.overridePendingTransition(0, 0)
+            }
+        }
+    }
+
+    fun renderClickShipmentForLoggedInUser(activity: Activity, onRateEstimationClicked: (() -> Unit)? = null) {
+        with(view) {
+            icon_courier.setOnClickListener {
+                onRateEstimationClicked?.invoke()
+                activity.overridePendingTransition(0, 0)
+            }
+            txt_courier.setOnClickListener {
+                onRateEstimationClicked?.invoke()
+                activity.overridePendingTransition(0, 0)
             }
         }
     }

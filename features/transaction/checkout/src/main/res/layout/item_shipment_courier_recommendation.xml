@@ -132,25 +132,23 @@
                     android:layout_height="wrap_content"
                     tools:text="Rp20.000" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_selected_price_b"
+                    style="@style/TextMidMediumBlack70"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:visibility="gone"
+                    tools:text="Rp20.000" />
 
-            <TextView
-                android:id="@+id/tv_change_selected_courier_recommendation"
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:background="@drawable/bg_grey_round"
-                android:foreground="?selectableItemBackground"
-                android:gravity="center"
-                android:paddingLeft="@dimen/dp_27"
-                android:paddingTop="@dimen/dp_9"
-                android:paddingRight="@dimen/dp_27"
-                android:paddingBottom="@dimen/dp_9"
-                android:text="@string/label_button_change_courier_recommendation"
-                android:textColor="@color/black_54"
-                android:textSize="@dimen/sp_11"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_button_change_courier"
+                    style="@style/TextSmallNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_button_change_courier_recommendation"
+                    android:textColor="@color/tkpd_main_green" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

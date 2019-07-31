@@ -10,42 +10,36 @@ import com.google.gson.annotations.SerializedName
  * @author by StevenFredian on 03/05/18.
  */
 
-class ExitMessage : Parcelable {
+data class ExitMessage(
+        @SerializedName("title")
+        @Expose
+        var title: String = "",
+        @SerializedName("body")
+        @Expose
+        var body: String = ""
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString() ?: "",
+            parcel.readString() ?: "") {
+    }
 
-    @SerializedName("title")
-    @Expose
-    var title: String = ""
-    @SerializedName("body")
-    @Expose
-    var body: String = ""
-
-
-    constructor() {}
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(title)
+        parcel.writeString(body)
+    }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(this.title)
-        dest.writeString(this.body)
-    }
+    companion object CREATOR : Parcelable.Creator<ExitMessage> {
+        override fun createFromParcel(parcel: Parcel): ExitMessage {
+            return ExitMessage(parcel)
+        }
 
-    protected constructor(`in`: Parcel) {
-        this.title = `in`.readString()
-        this.body = `in`.readString()
-    }
-
-    companion object {
-
-        val CREATOR: Parcelable.Creator<ExitMessage> = object : Parcelable.Creator<ExitMessage> {
-            override fun createFromParcel(source: Parcel): ExitMessage {
-                return ExitMessage(source)
-            }
-
-            override fun newArray(size: Int): Array<ExitMessage?> {
-                return arrayOfNulls(size)
-            }
+        override fun newArray(size: Int): Array<ExitMessage?> {
+            return arrayOfNulls(size)
         }
     }
+
 }

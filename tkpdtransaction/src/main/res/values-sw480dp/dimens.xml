@@ -1,7 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Payment Credit Cards -->
-    <dimen name="credit_card_layout_height">230dp</dimen>
-    <dimen name="credit_card_number_margin_top">30dp</dimen>
-
 </resources>

@@ -1,5 +1,7 @@
 package com.tokopedia.transactionanalytics;
 
+import android.text.TextUtils;
+
 import com.google.android.gms.tagmanager.DataLayer;
 
 import java.util.Map;
@@ -199,21 +201,12 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCourierSelectionClickPilihMetodePembayaranSuccess() {
+    public void eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(String errorMessage) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                EventLabel.SUCCESS
-        );
-    }
-
-    public void eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                EventLabel.NOT_SUCCESS
+                EventLabel.NOT_SUCCESS + " - " + errorMessage
         );
     }
 
@@ -306,8 +299,25 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void sendEnhancedECommerceAddToCart(Map<String, Object> atcMap,
+                                               String eventCategory,
+                                               String eventAction,
+                                               String eventLabel) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.EVENT, EventName.ADD_TO_CART,
+                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
+                ConstantTransactionAnalytics.Key.E_COMMERCE, atcMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
 
-    public void enhancedECommerceGoToCheckoutStep2(Map<String, Object> cartMap, String transactionId, boolean isTradeIn) {
+    public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
+                                              String transactionId,
+                                              boolean isTradeIn,
+                                              String eventAction,
+                                              String eventLabel) {
         String eventCategory = EventCategory.COURIER_SELECTION;
         if (isTradeIn) {
             eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
@@ -315,16 +325,18 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
                 ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
-                ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                ConstantTransactionAnalytics.Key.EVENT_LABEL, EventLabel.SUCCESS,
-                ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
                 ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
+        if (!TextUtils.isEmpty(transactionId)) {
+            dataLayer.put(ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId);
+        }
         sendEnhancedEcommerce(dataLayer);
     }
 
-    public void flushEnhancedECommerceGoToCheckoutStep2() {
+    public void flushEnhancedECommerceCheckout() {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.E_COMMERCE, null,
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, null
@@ -403,6 +415,15 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventClickBuyPromoRedState() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_BUY,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                EventLabel.NOT_SUCCESS + " - " + EventLabel.PROMO_RED_STATE
+        );
+    }
+
     public void eventClickBuyCourierSelectionClickBayarFailedDropshipper() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_BUY,
@@ -456,6 +477,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    // Implementation method has been removed due to absence of usage
     public void eventClickCourierCourierSelectionClickCtaButton() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,
@@ -535,42 +557,50 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void eventViewDuration(boolean isCourierPromo, String duration) {
+        String eventLabel = isCourierPromo ? EventLabel.PROMO + EventLabel.SEPARATOR + duration
+                : EventLabel.NON_PROMO + EventLabel.SEPARATOR + duration;
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.VIEW_DURATION,
-                isCourierPromo ? "promo - " + duration : "non promo - " + duration
+                eventLabel
         );
     }
 
     public void eventViewCourierOption(boolean isCourierPromo, int shippingProductId) {
+        String eventLabel = isCourierPromo ? EventLabel.PROMO + EventLabel.SEPARATOR + shippingProductId
+                : EventLabel.NON_PROMO + EventLabel.SEPARATOR + shippingProductId;
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.VIEW_COURIER_OPTION,
-                isCourierPromo ? "promo - " + shippingProductId : "non promo - " + shippingProductId
+                eventLabel
         );
     }
 
-    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration, boolean isCod) {
-        String label = (isCourierPromo ? "promo" : "non promo") +
-                " - " + duration + (isCod ? " - cod" : "");
+    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration, boolean isCod, String shippingPriceMin, String shippingPriceHigh) {
+        String eventLabel = (isCourierPromo ? EventLabel.PROMO : EventLabel.NON_PROMO)
+                + EventLabel.SEPARATOR + duration
+                + EventLabel.SEPARATOR + (isCod ? EventLabel.COD : "")
+                + EventLabel.SEPARATOR + shippingPriceMin
+                + EventLabel.SEPARATOR + shippingPriceHigh;
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                label
+                eventLabel
         );
     }
 
     public void eventClickChangeCourierOption(boolean isCourierPromo, int shippingProductId, boolean isCod) {
-        String label = (isCourierPromo ? "promo" : "non promo") +
-                " - " + shippingProductId + (isCod ? " - cod" : "");
+        String eventLabel = (isCourierPromo ? EventLabel.PROMO : EventLabel.NON_PROMO)
+                + EventLabel.SEPARATOR + shippingProductId
+                + EventLabel.SEPARATOR + (isCod ? EventLabel.COD : "");
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CHANGE_COURIER_OPTION,
-                label
+                eventLabel
         );
     }
 
@@ -803,4 +833,30 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 promoCode
         );
     }
+
+    // Promo not eligible bottomsheet
+    public void eventClickLanjutkanOnErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
+    public void eventClickBatalOnErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
+    public void eventViewPopupErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
 }

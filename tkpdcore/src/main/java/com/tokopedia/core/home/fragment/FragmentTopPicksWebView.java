@@ -111,7 +111,6 @@ public class FragmentTopPicksWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-
             if (((Uri.parse(url).getHost().contains(BASE_URL))
                     || Uri.parse(url).getHost().contains(BASE_MOBILE_URL))
                     && !url.endsWith(".pl")) {

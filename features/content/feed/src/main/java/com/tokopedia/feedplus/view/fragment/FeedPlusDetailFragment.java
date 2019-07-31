@@ -18,8 +18,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -29,12 +29,14 @@ import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetail
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter;
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
+import com.tokopedia.feedplus.view.analytics.ProductEcommerce;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -64,6 +66,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Inject
     FeedAnalytics analytics;
+
+    @Inject
+    UserSessionInterface userSession;
 
     private EndlessRecyclerViewScrollListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
@@ -158,7 +163,12 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.getFeedDetail(detailId, pagingHandler.getPage());
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        analytics.trackScreen(getScreenName());
     }
 
     private View.OnClickListener onShareClicked(final String url,
@@ -232,17 +242,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToBuyProduct(String productId, String price, String imageSource) {
-
-
-        if (getActivity() != null) {
-            Intent intent = ((FeedModuleRouter) getActivity().getApplicationContext()).getAddToCartIntent(
-                    getActivity(), productId, price, imageSource);
-            startActivity(intent);
-        }
-    }
-
-    @Override
     public void onSuccessGetFeedDetail(
             final FeedDetailHeaderViewModel header,
             ArrayList<Visitable> listDetail,
@@ -266,6 +265,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         pagingHandler.setHasNext(listDetail.size() > 1 && hasNextPage);
 
         adapter.notifyDataSetChanged();
+
+        trackImpression(listDetail);
     }
 
     private View.OnClickListener onGoToShopDetailFromButton(final Integer shopId) {
@@ -285,8 +286,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     private void goToShopDetail(Integer shopId) {
         if (getActivity() != null && getActivity().getApplicationContext() != null) {
-            Intent intent = ((FeedModuleRouter) getActivity().getApplicationContext())
-                    .getShopPageIntent(getActivity(), String.valueOf(shopId));
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConst.SHOP,
+                    String.valueOf(shopId));
             startActivity(intent);
         }
     }
@@ -368,19 +370,23 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(String productId, boolean isWishlist, int adapterPosition) {
+    public void onGoToProductDetail(FeedDetailViewModel feedDetailViewModel, int adapterPosition) {
         if (getActivity() != null
                 && getActivity().getApplicationContext() != null
                 && getArguments() != null
                 && getActivity().getApplicationContext() instanceof FeedModuleRouter) {
+            getActivity().startActivityForResult(
+                    getProductIntent(String.valueOf(feedDetailViewModel.getProductId())),
+                    REQUEST_OPEN_PDP
+            );
 
-            getActivity().startActivityForResult(getProductIntent(productId), REQUEST_OPEN_PDP);
-
-            analytics.eventFeedViewProduct(
-                    getScreenName(),
-                    productId,
-                    getArguments().getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
-                            + FeedTrackingEventLabel.View.PRODUCTLIST_PDP);
+            analytics.eventDetailProductClick(
+                    new ProductEcommerce(String.valueOf(feedDetailViewModel.getProductId()),
+                            feedDetailViewModel.getName(),
+                            feedDetailViewModel.getPrice(),
+                            adapterPosition),
+                    getUserIdInt()
+            );
         }
     }
 
@@ -446,4 +452,27 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         }
     }
 
+    private void trackImpression(ArrayList<Visitable> listDetail) {
+        ArrayList<ProductEcommerce> productList = new ArrayList<>();
+        for (int position = 0; position < listDetail.size(); position++) {
+            if (listDetail.get(position) instanceof FeedDetailViewModel) {
+                FeedDetailViewModel model = (FeedDetailViewModel) listDetail.get(position);
+                productList.add(new ProductEcommerce(
+                        String.valueOf(model.getProductId()),
+                        model.getName(),
+                        model.getPrice(),
+                        position
+                ));
+            }
+        }
+        analytics.eventDetailProductImpression(productList, getUserIdInt());
+    }
+
+    private int getUserIdInt() {
+        try {
+            return Integer.valueOf(userSession.getUserId());
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
+    }
 }

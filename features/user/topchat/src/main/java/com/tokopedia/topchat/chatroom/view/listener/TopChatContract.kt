@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 
@@ -36,6 +37,8 @@ interface TopChatContract {
         fun showErrorWebSocket(b: Boolean)
 
         fun onBackPressedEvent()
+
+        fun clearProductPreview()
 
     }
 
@@ -92,6 +95,10 @@ interface TopChatContract {
         fun followUnfollowShop(shopId: String,
                                onError: (Throwable) -> Unit,
                                onSuccess: (Boolean) -> Unit)
+
+        fun sendMessage(messageId: String, sendMessage: String,
+                        startTime: String, opponentId: String,
+                        onSendingMessage : () -> Unit, productPreview: ProductPreview?)
 
     }
 }

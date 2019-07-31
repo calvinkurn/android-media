@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.IHomeRouter
 import com.tokopedia.home.R
@@ -119,8 +120,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
                 adapter.data.indexOf(element).toString(),
                 "no code"
         )
-        (activity?.applicationContext as IHomeRouter).goToApplinkActivity(activity, element.applink)
-
+        RouteManager.route(context, element.applink)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {

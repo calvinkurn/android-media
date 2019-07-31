@@ -32,8 +32,6 @@ public interface ICheckoutModuleRouter {
             boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking,
             Promo promo);
 
-    Intent checkoutModuleRouterGetTransactionSummaryIntent();
-
     void checkoutModuleRouterResetBadgeCart();
 
     String checkoutModuleRouterGetAutoApplyCouponBranchUtil();
@@ -59,8 +57,6 @@ public interface ICheckoutModuleRouter {
     PublicKey checkoutModuleRouterGeneratePublicKey();
 
     String checkoutModuleRouterGetPublicKey(PublicKey publicKey);
-
-    void goToPurchasePage(Activity activity);
 
     Intent checkoutModuleRouterGetRecentViewIntent();
 

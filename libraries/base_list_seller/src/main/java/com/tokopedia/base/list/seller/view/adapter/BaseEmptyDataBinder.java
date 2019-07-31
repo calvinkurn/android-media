@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.base.list.seller.R;
 import com.tokopedia.base.list.seller.view.old.DataBindAdapter;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by Nisie on 2/26/16.
@@ -59,7 +60,8 @@ public abstract class BaseEmptyDataBinder extends NoResultDataBinder {
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_empty_list, parent, false);
-        ((ImageView) view.findViewById(R.id.no_result_image)).setImageResource(errorDrawableRes);
+        ((ImageView) view.findViewById(R.id.no_result_image))
+                .setImageDrawable(MethodChecker.getDrawable(view.getContext(),errorDrawableRes));
         if (isFullScreen) {
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {

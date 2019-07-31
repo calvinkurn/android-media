@@ -17,17 +17,12 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
 public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.DetailViewHolder> {
@@ -93,32 +88,38 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         return commentList.size();
     }
 
-    class DetailViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.iv_profile)
-        ImageView ivProfile;
-        @BindView(R2.id.tv_name)
-        TextView tvName;
-        @BindView(R2.id.tv_date_recent)
-        TextView tvDateRecent;
-        @BindView(R2.id.tv_comment)
-        TextView tvComment;
-        @BindView(R2.id.tv_collapsed_time)
-        TextView tvCollapsedTime;
-        @BindView(R2.id.layout_item_message)
-        View itemView;
-        @BindView(R2.id.rv_attached_image)
-        RecyclerView rvAttachedImage;
-        @BindView(R2.id.tv_hint_attachment)
-        TextView tvAttachmentHint;
+    class DetailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        ImageView ivProfile;
+        private TextView tvName;
+        private TextView tvDateRecent;
+        private TextView tvComment;
+        private TextView tvCollapsedTime;
+        private View itemView;
+        private RecyclerView rvAttachedImage;
+        private TextView tvAttachmentHint;
         private AttachmentAdapter attachmentAdapter;
         private LinearLayoutManager layoutManager;
 
-        DetailViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        DetailViewHolder(View view) {
+            super(view);
+            findindViewsId(view);
             layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
             rvAttachedImage.setLayoutManager(layoutManager);
+            itemView.setOnClickListener(this);
+            tvComment.setOnClickListener(this);
+            tvDateRecent.setOnClickListener(this);
+        }
+
+        private void findindViewsId(View view) {
+            ivProfile = view.findViewById(R.id.iv_profile);
+            tvName = view.findViewById(R.id.tv_name);
+            tvDateRecent = view.findViewById(R.id.tv_date_recent);
+            tvComment = view.findViewById(R.id.tv_comment);
+            tvCollapsedTime = view.findViewById(R.id.tv_collapsed_time);
+            itemView = view.findViewById(R.id.layout_item_message);
+            rvAttachedImage = view.findViewById(R.id.rv_attached_image);
+            tvAttachmentHint = view.findViewById(R.id.tv_hint_attachment);
         }
 
         void bindViewHolder(int position) {
@@ -171,14 +172,8 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvComment.setVisibility(View.GONE);
                 rvAttachedImage.setVisibility(View.GONE);
             }
-
         }
 
-        @OnClick({
-                R2.id.layout_item_message,
-                R2.id.tv_comment,
-                R2.id.tv_date_recent
-        })
         void toggleCollapse() {
             int tapIndex = getAdapterPosition();
             if (tapIndex != commentList.size() - 1) {
@@ -188,6 +183,11 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             }
             notifyItemChanged(tapIndex);
             ((InboxDetailActivity) mContext).scrollTo(indexExpanded);
+        }
+
+        @Override
+        public void onClick(View view) {
+                toggleCollapse();
         }
     }
 }

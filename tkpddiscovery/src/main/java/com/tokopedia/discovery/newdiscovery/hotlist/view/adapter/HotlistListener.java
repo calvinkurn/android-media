@@ -21,4 +21,7 @@ public interface HotlistListener {
     String getUserId();
 
     boolean isLoggedIn();
+
+    void onQuickFilterSelected(String filterKey, String filterValue);
+
 }

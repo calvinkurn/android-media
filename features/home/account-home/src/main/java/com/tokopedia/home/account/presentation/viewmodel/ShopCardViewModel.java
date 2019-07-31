@@ -15,6 +15,7 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
     private String shopImageUrl;
     private Boolean isGoldMerchant;
     private String reputationImageUrl;
+    private String shopIsOfficial;
     private String verificationStatusName;
     private int verificationStatus;
     private DataDeposit dataDeposit;
@@ -57,6 +58,14 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
 
     public void setReputationImageUrl(String reputationImageUrl) {
         this.reputationImageUrl = reputationImageUrl;
+    }
+
+    public String getShopIsOfficial() {
+        return shopIsOfficial;
+    }
+
+    public void setShopIsOfficial(String shopIsOfficial) {
+        this.shopIsOfficial = shopIsOfficial;
     }
 
     public String getVerificationStatusName() {

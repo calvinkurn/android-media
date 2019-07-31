@@ -5,11 +5,12 @@ import com.tokopedia.settingbank.banklist.domain.mapper.SetDefaultBankAccountMap
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 6/20/18.
  */
-class SetDefaultBankAccountUseCase(val api: SettingBankApi,
+class SetDefaultBankAccountUseCase @Inject constructor(val api: SettingBankApi,
                                    val mapper: SetDefaultBankAccountMapper) : UseCase<Boolean>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<Boolean> {

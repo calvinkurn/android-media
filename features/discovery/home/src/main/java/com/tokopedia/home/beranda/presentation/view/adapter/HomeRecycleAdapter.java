@@ -8,13 +8,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +21,16 @@ import java.util.List;
  */
 
 public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
+
+    //without ticker
+    static public final int POSITION_GEOLOCATION_WITHOUT_TICKER = 3;
+    static public final int POSITION_HEADER_WITHOUT_TICKER = 1;
+
+    //with ticker
+    static public final int POSITION_GEOLOCATION_WITH_TICKER = 4;
+    static public final int POSITION_HEADER_WITH_TICKER = 2;
+
+    static public final int POSITION_UNDEFINED = -1;
 
     protected HomeAdapterFactory typeFactory;
     private RetryModel retryModel;
@@ -41,6 +50,11 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         holder.bind(visitables.get(position));
+        //check if visitable is homerecommendation, we will set newData = false after bind
+        //because newData = true will force viewholder to recreate tab and viewpager
+        if (visitables.get(position) instanceof HomeRecommendationFeedViewModel) {
+            ((HomeRecommendationFeedViewModel) visitables.get(position)).setNewData(false);
+        }
     }
 
     @Override
@@ -51,11 +65,6 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     @Override
     public int getItemCount() {
         return visitables.size();
-    }
-
-    public void setItems(List<Visitable> items) {
-        this.visitables = items;
-        notifyDataSetChanged();
     }
 
     public Visitable getItem(int pos) {
@@ -70,46 +79,10 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         visitables.clear();
     }
 
-    public int findFirstInspirationPosition() {
-        for (int i = 0; i < getItemCount(); i++) {
-            if (getItems().get(i) instanceof TopAdsViewModel
-                    || getItems().get(i) instanceof InspirationViewModel) {
-                return i;
-            }
-        }
-        return getItemCount();
-    }
-
-    public void updateItems(List<Visitable> visitables) {
-        List<Visitable> temporaryList = new ArrayList<>();
-        temporaryList.addAll(visitables);
-        if (hasHeaderViewModelInPosition(1) && hasTicker(visitables)) {
-            temporaryList.add(2, getItems().get(1));
-        } else if (hasHeaderViewModelInPosition(2) && hasTicker(visitables)) {
-            temporaryList.add(2, getItems().get(2));
-        } else if (hasHeaderViewModelInPosition(1) && !hasTicker(visitables)) {
-            temporaryList.add(1, getItems().get(1));
-        }
-
-        int firstInspirationPos = findFirstInspirationPosition();
-        if (firstInspirationPos < getItemCount()) {
-            temporaryList.addAll(getItems().subList(firstInspirationPos, getItemCount()));
-        }
-
-        clearItems();
-        getItems().addAll(temporaryList);
-        notifyDataSetChanged();
-    }
-
-    private boolean hasTicker(List<Visitable> visitables) {
-        return visitables.size() > 1 && visitables.get(1) instanceof TickerViewModel;
-    }
-
-    private boolean hasHeaderViewModelInPosition(int position) {
-        return getItems().size() > position && getItems().get(position) instanceof HeaderViewModel;
-    }
-
     public void showRetry() {
+        if (this.visitables.contains(retryModel)) {
+            return;
+        }
         int positionStart = getItemCount();
         this.visitables.add(retryModel);
         notifyItemRangeInserted(positionStart, 1);
@@ -119,6 +92,150 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         int index = this.visitables.indexOf(retryModel);
         this.visitables.remove(retryModel);
         notifyItemRemoved(index);
+    }
+
+    //mapping another visitable to visitables from home_query
+    public void setItems(List<Visitable> visitables, HeaderViewModel headerViewModel) {
+        this.visitables = visitables;
+        addHomeHeaderViewModel(headerViewModel);
+        notifyDataSetChanged();
+    }
+
+    public void updateHomeQueryItems(List<Visitable> newVisitable) {
+        int headerHomePosition = hasHomeHeaderViewModel();
+        if (headerHomePosition != POSITION_UNDEFINED) {
+            newVisitable.add(headerHomePosition, getItems().get(headerHomePosition));
+        }
+        clearItems();
+        this.visitables = newVisitable;
+
+        notifyDataSetChanged();
+    }
+
+    public void removeGeolocationViewModel() {
+        int removedPosition = removeGeolocation();
+        notifyItemRemoved(removedPosition);
+    }
+
+    public void setHomeHeaderViewModel(HeaderViewModel homeHeaderViewModel) {
+        int changedPosition = setHomeHeader(homeHeaderViewModel);
+        if (changedPosition != POSITION_UNDEFINED) {
+            notifyItemChanged(changedPosition);
+        }
+    }
+
+    public void addHomeHeaderViewModel(HeaderViewModel homeHeaderViewModel) {
+        int addedPosition = addHomeHeader(homeHeaderViewModel);
+        if (addedPosition != POSITION_UNDEFINED) {
+            notifyItemInserted(addedPosition);
+        }
+    }
+
+    public void setGeolocationViewModel(GeolocationPromptViewModel geolocationViewModel) {
+        int addedPosition = setGeolocation(geolocationViewModel);
+        notifyItemInserted(addedPosition);
+    }
+
+    private boolean hasTicker() {
+        return getItems().size() > 1 && getItems().get(1) instanceof TickerViewModel;
+    }
+
+    private int hasHomeHeaderViewModel() {
+        if (this.visitables != null && this.visitables.size() > 0) {
+            if (this.visitables.get(POSITION_HEADER_WITHOUT_TICKER) instanceof HeaderViewModel) {
+                return POSITION_HEADER_WITHOUT_TICKER;
+            } else if (this.visitables.get(POSITION_HEADER_WITH_TICKER) instanceof HeaderViewModel) {
+                return POSITION_HEADER_WITH_TICKER;
+            } else {
+                return POSITION_UNDEFINED;
+            }
+        }
+        return POSITION_UNDEFINED;
+    }
+
+    private int hasGeolocationViewModel() {
+        if (this.visitables != null && this.visitables.size() > 0) {
+            if (this.visitables.get(POSITION_GEOLOCATION_WITHOUT_TICKER) instanceof GeolocationPromptViewModel) {
+                return POSITION_GEOLOCATION_WITHOUT_TICKER;
+            } else if (this.visitables.get(POSITION_GEOLOCATION_WITH_TICKER) instanceof GeolocationPromptViewModel) {
+                return POSITION_GEOLOCATION_WITH_TICKER;
+            } else {
+                return POSITION_UNDEFINED;
+            }
+        }
+        return POSITION_UNDEFINED;
+    }
+
+    private int removeGeolocation() {
+        switch (hasGeolocationViewModel()) {
+            case POSITION_GEOLOCATION_WITH_TICKER: {
+                this.visitables.remove(POSITION_GEOLOCATION_WITH_TICKER);
+                return POSITION_GEOLOCATION_WITH_TICKER;
+            }
+            case POSITION_GEOLOCATION_WITHOUT_TICKER: {
+                this.visitables.remove(POSITION_GEOLOCATION_WITHOUT_TICKER);
+                return POSITION_GEOLOCATION_WITHOUT_TICKER;
+            }
+        }
+        return POSITION_UNDEFINED;
+    }
+
+    private int setGeolocation(GeolocationPromptViewModel geolocationPromptViewModel) {
+        switch (hasGeolocationViewModel()) {
+            case POSITION_GEOLOCATION_WITH_TICKER: {
+                this.visitables.set(POSITION_GEOLOCATION_WITH_TICKER, geolocationPromptViewModel);
+                return POSITION_GEOLOCATION_WITH_TICKER;
+            }
+            case POSITION_GEOLOCATION_WITHOUT_TICKER: {
+                this.visitables.set(POSITION_GEOLOCATION_WITHOUT_TICKER, geolocationPromptViewModel);
+                return POSITION_GEOLOCATION_WITHOUT_TICKER;
+            }
+            case POSITION_UNDEFINED: {
+                if (hasTicker()) {
+                    this.visitables.add(
+                            POSITION_GEOLOCATION_WITH_TICKER,
+                            geolocationPromptViewModel
+                    );
+                    return POSITION_HEADER_WITH_TICKER;
+                } else {
+                    this.visitables.add(
+                            POSITION_GEOLOCATION_WITHOUT_TICKER,
+                            geolocationPromptViewModel
+                    );
+                    return POSITION_GEOLOCATION_WITHOUT_TICKER;
+                }
+            }
+        }
+        return POSITION_UNDEFINED;
+    }
+
+    //update and return updated position
+    private int setHomeHeader(HeaderViewModel homeHeaderViewModel) {
+        switch (hasHomeHeaderViewModel()) {
+            case POSITION_HEADER_WITH_TICKER: {
+                this.visitables.set(POSITION_HEADER_WITH_TICKER, homeHeaderViewModel);
+                return POSITION_HEADER_WITH_TICKER;
+            }
+            case POSITION_HEADER_WITHOUT_TICKER: {
+                this.visitables.set(POSITION_HEADER_WITHOUT_TICKER, homeHeaderViewModel);
+                return POSITION_HEADER_WITHOUT_TICKER;
+            }
+        }
+        return POSITION_UNDEFINED;
+    }
+
+    private int addHomeHeader(HeaderViewModel homeHeaderViewModel) {
+        if (hasTicker()) {
+            this.visitables.add(POSITION_HEADER_WITH_TICKER, homeHeaderViewModel);
+            return POSITION_HEADER_WITH_TICKER;
+        } else {
+            this.visitables.add(POSITION_HEADER_WITHOUT_TICKER, homeHeaderViewModel);
+            return POSITION_HEADER_WITHOUT_TICKER;
+        }
+    }
+
+    public int getRecommendationFeedSectionPosition() {
+        return visitables.size()-1;
     }
 
     public boolean isRetryShown() {

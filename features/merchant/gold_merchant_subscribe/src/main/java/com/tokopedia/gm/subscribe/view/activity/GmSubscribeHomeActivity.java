@@ -29,6 +29,7 @@ import com.tokopedia.gm.subscribe.view.fragment.GmHomeFragmentCallback;
 
 /**
  * Created by sebastianuskh on 11/23/16.
+ * Deeplink: GOLD_MERCHANT_SUBSCRIBE_DASHBOARD
  */
 
 public class GmSubscribeHomeActivity

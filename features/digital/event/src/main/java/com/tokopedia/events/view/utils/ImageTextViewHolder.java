@@ -1,27 +1,50 @@
 package com.tokopedia.events.view.utils;
 
+import android.content.Context;
+import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.events.R2;
-
-import butterknife.BindView;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.events.R;
 
 /**
  * Created by pranaymohapatra on 28/11/17.
  */
 
-public class ImageTextViewHolder {
+public class ImageTextViewHolder extends LinearLayout {
 
-    @BindView(R2.id.image_holder_small)
     ImageView imageHolderSmall;
-
-    @BindView(R2.id.textview_holder_small)
     TextView textViewHolder;
+    private Context mContext;
+
+    public ImageTextViewHolder(Context context) {
+        super(context);
+        this.mContext = context;
+        initView();
+    }
+
+    public ImageTextViewHolder(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initView();
+    }
+
+    public ImageTextViewHolder(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initView();
+    }
+
+    private void initView() {
+        View view = inflate(mContext, R.layout.image_textview_holder, this);
+        imageHolderSmall = view.findViewById(R.id.image_holder_small);
+        textViewHolder = view.findViewById(R.id.textview_holder_small);
+    }
 
     public void setImage(int resID) {
-        imageHolderSmall.setImageResource(resID);
+        imageHolderSmall.setImageDrawable(MethodChecker.getDrawable(imageHolderSmall.getContext(),resID));
     }
 
     public void setTextView(String label) {

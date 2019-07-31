@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
@@ -53,7 +54,11 @@ public class TrainSeatPassengerAndWagonView extends BaseCustomView {
     private void init() {
         View view = inflate(getContext(), R.layout.widget_train_seat_passenger_wagon, this);
         passengerLabel = view.findViewById(R.id.tv_passenger_label);
+        passengerLabel.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getContext(), R.drawable.ic_arrow_up_grey), null);
         wagonLabel = view.findViewById(R.id.tv_wagon_label);
+        wagonLabel.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getContext(), R.drawable.ic_arrow_up_grey), null);
         passengerRecyclerView = view.findViewById(R.id.rv_passenger);
         wagonBottomSeparator = view.findViewById(R.id.wagon_bottom_separator);
         adapter = new TrainSeatPassengerAdapter(new ArrayList<>());

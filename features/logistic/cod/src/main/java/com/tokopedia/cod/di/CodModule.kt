@@ -2,7 +2,7 @@ package com.tokopedia.cod.di
 
 import com.tokopedia.cod.view.CodContract
 import com.tokopedia.cod.view.CodPresenter
-import com.tokopedia.logisticanalytics.CodAnalytics
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics
 import dagger.Module
 import dagger.Provides
 

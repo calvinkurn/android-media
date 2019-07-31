@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
@@ -78,7 +77,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     interface ActionListener {
         fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel, type: String)
-        fun onSuccessCheckPromoFirstStep(promoData: ResponseGetPromoStackUiModel)
+        fun onSuccessCheckPromoMerchantFirstStep(promoData: ResponseGetPromoStackUiModel, promoCode: String)
     }
 
     companion object {
@@ -315,7 +314,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
         hideKeyboard()
         dismiss()
-        actionListener.onSuccessCheckPromoFirstStep(model)
+        actionListener.onSuccessCheckPromoMerchantFirstStep(model, promoCode)
     }
 
     override fun onClashCheckPromoFirstStep(model: ClashingInfoDetailUiModel, type: String) {
@@ -332,7 +331,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
+        (inputMethodManager as InputMethodManager?)?.hideSoftInputFromWindow(view?.windowToken, 0);
     }
 
 }

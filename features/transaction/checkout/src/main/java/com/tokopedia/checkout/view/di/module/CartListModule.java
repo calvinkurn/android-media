@@ -3,16 +3,21 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
+import com.tokopedia.checkout.view.feature.cartlist.ActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
@@ -20,17 +25,22 @@ import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -44,13 +54,21 @@ import rx.subscriptions.CompositeSubscription;
 public class CartListModule {
 
     private final ICartListView cartListView;
-    private final CartAdapter.ActionListener cartActionListener;
+    private final ActionListener cartActionListener;
+    private final PromoActionListener promoActionListener;
     private final CartItemAdapter.ActionListener cartItemActionListener;
 
     public CartListModule(CartFragment cartFragment) {
         this.cartListView = cartFragment;
         this.cartActionListener = cartFragment;
         this.cartItemActionListener = cartFragment;
+        this.promoActionListener = cartFragment;
+    }
+
+    @Provides
+    @CartListScope
+    Gson provideGson() {
+        return new Gson();
     }
 
     @Provides
@@ -79,21 +97,52 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    TopAdsGqlUseCase topAdsUseCase(Context context){
+    TopAdsGqlUseCase topAdsUseCase(Context context) {
         return new TopAdsGqlUseCase(context);
     }
 
     @Provides
     @CartListScope
-    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context){
+    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context) {
         return new CheckPromoStackingCodeUseCase(context.getResources());
     }
 
     @Provides
     @CartListScope
+    GetRecentViewUseCase provideGetRecentViewUseCase() {
+        return new GetRecentViewUseCase(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
+    GetWishlistUseCase provideGetWishlistUseCase() {
+        return new GetWishlistUseCase(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
+    GraphqlUseCase providesGraphqlUseCase()  {
+        return new GraphqlUseCase();
+    }
+
+    @Provides
+    @Named("recommendationQuery")
+    String provideRecommendationRawQuery(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_recommendation_widget);
+    }
+
+    @Provides
+    @CartListScope
+    GetRecommendationUseCase provideGetRecommendationUseCase(@Named("recommendationQuery") String recomQuery,
+                                                             GraphqlUseCase graphqlUseCase,
+                                                             UserSessionInterface userSessionInterface) {
+        return new GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface);
+    }
+
+    @Provides
+    @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
-                                                 DeleteCartUseCase deleteCartUseCase,
-                                                 DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
+                                                 DeleteCartListUseCase deleteCartListUseCase,
                                                  UpdateCartUseCase updateCartUseCase,
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                                                  CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
@@ -101,20 +150,23 @@ public class CartListModule {
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                  AddWishListUseCase addWishListUseCase,
                                                  RemoveWishListUseCase removeWishListUseCase,
                                                  UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                                                  UserSessionInterface userSessionInterface,
                                                  TopAdsGqlUseCase topAdsGqlUseCase,
-                                                 ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
-        return new CartListPresenter(
-                cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
+                                                 ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
+                                                 GetRecentViewUseCase getRecentViewUseCase,
+                                                 GetWishlistUseCase getWishlistUseCase,
+                                                 GetRecommendationUseCase getRecommendationUseCase,
+                                                 AddToCartUseCase addToCartUseCase) {
+        return new CartListPresenter(getCartListUseCase, deleteCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
-                cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase, addWishListUseCase,
-                removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
-                clearCacheAutoApplyStackUseCase);
+                cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
+                updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
+                clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
+                getRecommendationUseCase, addToCartUseCase);
     }
 
     @Provides
@@ -126,13 +178,13 @@ public class CartListModule {
     @Provides
     @CartListScope
     CartAdapter provideCartListAdapter() {
-        return new CartAdapter(cartActionListener, cartItemActionListener);
+        return new CartAdapter(cartActionListener, promoActionListener, cartItemActionListener);
     }
 
     @Provides
     @CartListScope
     @ApplicationContext
-    Context provideContextAbstraction(Context context){
+    Context provideContextAbstraction(Context context) {
         return context;
     }
 

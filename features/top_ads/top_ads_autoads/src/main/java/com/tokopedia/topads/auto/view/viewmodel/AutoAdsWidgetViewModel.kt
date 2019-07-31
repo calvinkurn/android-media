@@ -12,9 +12,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
 import com.tokopedia.topads.auto.data.network.response.TopAdsAutoAds
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Author errysuprayogi on 15,May,2019

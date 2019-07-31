@@ -1,7 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.webview">
-    <application
-        android:label="@string/app_name">
+    package="com.tokopedia.webview">
+    <application android:label="@string/app_name">
+        <activity
+            android:name=".BaseSimpleWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity android:name="com.tokopedia.webview.download.BaseDownloadAppLinkActivity"
+            android:label="@string/tokopedia"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
         <activity
             android:name=".WebViewActivity"
             android:hardwareAccelerated="true"
@@ -19,7 +26,6 @@
                     android:pathPattern="@string/path_webview"/>
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

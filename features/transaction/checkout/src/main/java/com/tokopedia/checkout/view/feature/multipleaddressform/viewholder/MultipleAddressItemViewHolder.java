@@ -1,14 +1,10 @@
 package com.tokopedia.checkout.view.feature.multipleaddressform.viewholder;
 
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -21,6 +17,7 @@ import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressItemAdapter;
+import com.tokopedia.checkout.view.feature.shipment.util.Utils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -306,31 +303,21 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        // addressTitle.setVisibility(View.GONE);
         String addressName = itemData.getRecipientAddressModel().getAddressName();
         String recipientName = itemData.getRecipientAddressModel().getRecipientName();
-        /*addressName = " (" + addressName + ")";
-        recipientName += addressName;
-        int startSpan = recipientName.indexOf(addressName);
-        int endSpan = recipientName.indexOf(addressName) + addressName.length();
-        Spannable formattedPromoMessage = new SpannableString(recipientName);
-        final int color = ContextCompat.getColor(addressReceiverName.getContext(), R.color.black_38);
-        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        addressReceiverName.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));*/
         if (itemData.getRecipientAddressModel().getAddressStatus() == 2) {
             addressStatus.setVisibility(View.VISIBLE);
         } else {
             addressStatus.setVisibility(View.GONE);
         }
-        addressTitle.setText(addressName);
-        addressReceiverName.setText(recipientName);
+        addressTitle.setText(Utils.getHtmlFormat(addressName));
+        addressReceiverName.setText(Utils.getHtmlFormat(recipientName));
         String fullAddress = itemData.getRecipientAddressModel().getStreet() + ", "
                 + itemData.getRecipientAddressModel().getDestinationDistrictName() + ", "
                 + itemData.getRecipientAddressModel().getCityName() + ", "
                 + itemData.getRecipientAddressModel().getProvinceName() + ", "
                 + itemData.getRecipientAddressModel().getRecipientPhoneNumber();
-        address.setText(fullAddress);
+        address.setText(Utils.getHtmlFormat(fullAddress));
 
     }
 

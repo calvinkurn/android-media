@@ -1,13 +1,12 @@
 package com.tokopedia.seller.reputation.view.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
-
-import butterknife.Unbinder;
 
 /**
  * @author normansyahputa on 3/21/17.
@@ -17,8 +16,7 @@ public class SellerReputationInfoActivity extends TActivity {
 
     WebView webviewReputationInfo;
 
-    Unbinder bind;
-
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

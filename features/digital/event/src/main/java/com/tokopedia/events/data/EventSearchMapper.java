@@ -65,6 +65,7 @@ public class EventSearchMapper {
                 itemDomain.setIsSearchable(eventItem.getIsSearchable());
                 itemDomain.setIsTop(eventItem.getIsTop());
                 itemDomain.setLongRichDesc(eventItem.getLongRichDesc());
+                itemDomain.setSeoUrl(eventItem.getSeoUrl());
                 itemDomain.setMaxEndDate(eventItem.getMaxEndDate());
                 itemDomain.setMaxEndTime(eventItem.getMaxEndTime());
                 itemDomain.setMetaDescription(eventItem.getMetaDescription());

@@ -1,11 +1,20 @@
 package com.tokopedia.user.session;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author by nisie on 9/25/18.
  */
 public interface UserSessionInterface {
 
+    String LOGIN_METHOD_EMAIL = "email";
+    String LOGIN_METHOD_GOOGLE = "google";
+    String LOGIN_METHOD_FACEBOOK = "facebook";
+    String LOGIN_METHOD_PHONE = "phone";
+
     String getAccessToken();
+
+    String getTokenType();
 
     String getFreshToken();
 
@@ -51,8 +60,13 @@ public interface UserSessionInterface {
 
     String getShopAvatar();
 
+    boolean isPowerMerchantIdle();
+  
+    String getAutofillUserData();
 
-        /**
+    String getLoginMethod();
+
+    /**
          * SETTER METHOD
          */
 
@@ -113,4 +127,10 @@ public interface UserSessionInterface {
     void setGCToken(String gcToken);
 
     void setShopAvatar(String shopAvatar);
+
+    void setIsPowerMerchantIdle(boolean powerMerchantIdle);
+  
+    void setAutofillUserData(String autofillUserData);
+
+    void setLoginMethod(@NotNull String loginMethod);
 }

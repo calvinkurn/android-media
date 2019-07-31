@@ -1,0 +1,37 @@
+query catalogMenuDetail($menuID: Int!){
+  status
+  rechargeCatalogMenuDetail(menuID: $menuID, platformID: 5) {
+    recommendations {
+      iconUrl
+      title
+      clientNumber
+      appLink
+      webLink
+      type
+      categoryId
+      productId
+      isATC
+      description
+      operatorID
+    }
+    promos {
+      id
+      filename
+      filename_webp
+      img_url
+      status
+      title
+      subtitle
+      promo_code
+    }
+    tickers {
+      ID
+      Name
+      Content
+      Type
+      Environment
+      ActionText
+      ActionLink
+    }
+  }
+}

@@ -73,30 +73,27 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
      *                        else will be template default using static value
      * @return will become requestParams spesifically for search using @See DiscoverySearchView.class
      */
-    public static RequestParams createInitializeSearchParam(SearchParameter searchParameter, boolean forceSearch) {
-        return createInitializeSearchParam(searchParameter, forceSearch, false);
-    }
-
-    public static RequestParams createInitializeSearchParam(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStoreBanner) {
+    public static RequestParams createInitializeSearchParam(SearchParameter searchParameter, boolean requestOfficialStoreBanner) {
         mRequestOfficialStoreBanner = requestOfficialStoreBanner;
 
         RequestParams requestParams = RequestParams.create();
 
+        putRequestParamsOtherParameters(requestParams, searchParameter);
+
         requestParams.putAll(searchParameter.getSearchParameterMap());
-        putRequestParamsOtherParameters(requestParams, searchParameter, forceSearch);
 
         return requestParams;
     }
 
-    private static void putRequestParamsOtherParameters(RequestParams requestParams, SearchParameter searchParameter, boolean forceSearch) {
-        putRequestParamsSearchParameters(requestParams, searchParameter, forceSearch);
+    private static void putRequestParamsOtherParameters(RequestParams requestParams, SearchParameter searchParameter) {
+        putRequestParamsSearchParameters(requestParams, searchParameter);
 
         putRequestParamsTopAdsParameters(requestParams, searchParameter);
 
         putRequestParamsDepartmentIdIfNotEmpty(requestParams, searchParameter);
     }
 
-    private static void putRequestParamsSearchParameters(RequestParams requestParams, SearchParameter searchParameter, boolean forceSearch) {
+    private static void putRequestParamsSearchParameters(RequestParams requestParams, SearchParameter searchParameter) {
         requestParams.putString(SearchApiConst.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(SearchApiConst.ROWS, getSearchRows());
@@ -104,9 +101,8 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         requestParams.putString(SearchApiConst.START, getSearchStart(searchParameter));
         requestParams.putString(SearchApiConst.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
-        requestParams.putString(SearchApiConst.Q, omitNewline(searchParameter.getSearchQuery()));
+        requestParams.putString(SearchApiConst.Q, omitNewlineAndPlusSign(searchParameter.getSearchQuery()));
         requestParams.putString(SearchApiConst.UNIQUE_ID, searchParameter.get(SearchApiConst.UNIQUE_ID));
-        requestParams.putBoolean(SearchApiConst.REFINED, forceSearch);
     }
 
     private static void putRequestParamsTopAdsParameters(RequestParams requestParams, SearchParameter searchParameter) {
@@ -142,8 +138,8 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         return String.valueOf(searchParameter.getInteger(SearchApiConst.START));
     }
 
-    private static String omitNewline(String text) {
-        return text.replace("\n", "");
+    private static String omitNewlineAndPlusSign(String text) {
+        return text.replace("\n", "").replace("+", " ");
     }
 
     private static int getTopAdsKeyPage(SearchParameter searchParameter) {

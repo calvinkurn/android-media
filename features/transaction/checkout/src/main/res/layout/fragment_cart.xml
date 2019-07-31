@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_cart_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/checkout_module_color_background"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <View
+            android:id="@+id/status_bar_bg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_25"
+            android:background="@color/green_600"
+            android:visibility="invisible"
+            app:layout_collapseMode="pin" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="@color/white"
+            android:minHeight="?attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:visibility="visible">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/rl_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:visibility="gone"
+                    app:cardElevation="@dimen/dp_2"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:id="@+id/ll_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:foreground="?selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/dp_9"
+                        android:paddingTop="@dimen/dp_16"
+                        android:paddingRight="@dimen/dp_25"
+                        android:paddingBottom="@dimen/dp_16">
+
+                        <CheckBox
+                            android:id="@+id/cb_select_all"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-5dp"
+                            android:layout_marginBottom="-5dp"
+                            android:paddingRight="@dimen/dp_8"
+                            android:theme="@style/TransactionCheckbox" />
+
+                        <TextView
+                            style="@style/TextSmallNormalBlack54"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="@dimen/sp_5"
+                            android:text="@string/label_select_all_product"
+                            android:textSize="@dimen/sp_12"
+                            tools:ignore="RelativeOverlap" />
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/card_footer"
+                    android:layout_below="@+id/card_header"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_cart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="-2dp"
+                    android:layout_marginTop="-2dp"
+                    android:layout_marginRight="-2dp"
+                    android:layout_marginBottom="-4dp"
+                    android:visibility="gone"
+                    app:cardPreventCornerOverlap="false"
+                    app:cardUseCompatPadding="true"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:id="@+id/bottom_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        tools:visibility="visible">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/grey_shadow" />
+
+                        <LinearLayout
+                            android:id="@+id/layout_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="@dimen/dp_16">
+
+                                <TextView
+                                    android:id="@+id/tv_item_count"
+                                    style="@style/TextSmallMediumBlack38"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:lineSpacingExtra="4sp"
+                                    android:text="@string/label_price_total" />
+
+                                <TextView
+                                    android:id="@+id/tv_total_prices"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:gravity="end"
+                                    android:textColor="@color/orange_red"
+                                    android:textSize="@dimen/sp_16"
+                                    tools:text="Rp600.000" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/go_to_courier_page_button"
+                                android:layout_width="@dimen/dp_150"
+                                android:layout_height="@dimen/dp_40"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="@dimen/dp_10"
+                                android:background="@drawable/transaction_checkout_orange_button_rounded"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center"
+                                android:textAllCaps="false"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/sp_14"
+                                tools:text="Checkout" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_network_error_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </FrameLayout>
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+</LinearLayout>

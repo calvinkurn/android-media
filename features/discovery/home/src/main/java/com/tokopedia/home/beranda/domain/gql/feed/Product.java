@@ -1,9 +1,11 @@
 
 package com.tokopedia.home.beranda.domain.gql.feed;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Product {
 
@@ -64,6 +66,12 @@ public class Product {
     @SerializedName("recommendation_type")
     @Expose
     private String recommendationType = "";
+    @SerializedName("badges")
+    @Expose
+    private List<Badge> badges = new ArrayList<>();
+    @SerializedName("shop")
+    @Expose
+    private Shop shop;
 
     public String getId() {
         return id;
@@ -215,5 +223,37 @@ public class Product {
 
     public void setRecommendationType(String recommendationType) {
         this.recommendationType = recommendationType;
+    }
+
+    public Boolean getWishlist() {
+        return isWishlist;
+    }
+
+    public void setWishlist(Boolean wishlist) {
+        isWishlist = wishlist;
+    }
+
+    public Boolean getTopads() {
+        return isTopads;
+    }
+
+    public void setTopads(Boolean topads) {
+        isTopads = topads;
+    }
+
+    public List<Badge> getBadges() {
+        return badges;
+    }
+
+    public void setBadges(List<Badge> badges) {
+        this.badges = badges;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 }

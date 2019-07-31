@@ -24,8 +24,8 @@ public class AutoCompleteInterceptorModule {
 
     @AutoCompleteScope
     @Provides
-    public CacheApiInterceptor provideApiCacheInterceptor() {
-        return new CacheApiInterceptor();
+    public CacheApiInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
+        return new CacheApiInterceptor(context);
     }
 
     @AutoCompleteScope

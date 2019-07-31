@@ -14,7 +14,8 @@ class FallbackAttachmentViewModel(msgId: String,
                                   attachmentId: String,
                                   attachmentType: String,
                                   replyTime: String,
-                                  message: String) : BaseChatViewModel(msgId, fromUid, from,
+                                  message: String,
+                                  var isOpposite: Boolean) : BaseChatViewModel(msgId, fromUid, from,
         fromRole, attachmentId, attachmentType, replyTime, message)
         , Visitable<BaseChatTypeFactory> {
 

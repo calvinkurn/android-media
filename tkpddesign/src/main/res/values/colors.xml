@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This resources is deprecated. Please use colors at unify_principles -->
 <resources>
 
     <color name="tkpd_main_green">#42b549</color>
@@ -126,5 +127,7 @@
     <color name="clr_f531353b">#f531353b</color>
     <color name="clr_ae31353b">#ae31353b</color>
     <color name="clr_80000000">#80000000</color>
+    <color name="clr_e6000000">#e6000000</color>
+    <color name="clr_99000000">#99000000</color>
 
 </resources>

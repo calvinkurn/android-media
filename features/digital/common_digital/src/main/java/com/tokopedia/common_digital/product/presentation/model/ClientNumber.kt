@@ -8,7 +8,7 @@ import java.util.ArrayList
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
-class ClientNumber : Parcelable {
+class ClientNumber() : Parcelable {
 
     var name: String? = null
     var type: String? = null
@@ -19,7 +19,7 @@ class ClientNumber : Parcelable {
     var additionalButton: AdditionalButton? = null
 
     constructor(name: String, type: String, text: String, placeholder: String, _default: String,
-                validation: List<Validation>) {
+                validation: List<Validation>): this() {
         this.name = name
         this.type = type
         this.text = text
@@ -41,9 +41,7 @@ class ClientNumber : Parcelable {
         dest.writeList(this.validation)
     }
 
-    constructor() {}
-
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         this.name = `in`.readString()
         this.type = `in`.readString()
         this.text = `in`.readString()

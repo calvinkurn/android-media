@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_30">
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="154dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:gravity="center_horizontal"
+            app:srcCompat="@drawable/ic_emptycart"
+            tools:ignore="ContentDescription,VectorDrawableCompat" />
+
+        <TextView
+            style="@style/TextSmallNormalBlack38"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/dp_8"
+            android:text="@string/checkout_module_keranjang_belanja_kosong" />
+
+        <TextView
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/dp_16"
+            android:text="@string/checkout_empty_cart_sub_message"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_add_from_whislist"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:background="@drawable/medium_green_button_rounded"
+            android:gravity="center"
+            android:text="@string/checkout_module_tambahkan_dari_wishlist"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/btn_shopping_now"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            android:background="@drawable/medium_green_button_rounded"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/checkout_module_belanja_sekarang"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:visibility="visible" />
+    </LinearLayout>
+
+</LinearLayout>

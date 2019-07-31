@@ -365,5 +365,4 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
                 EventLabel.NOT_SUCCESS
         );
     }
-
 }

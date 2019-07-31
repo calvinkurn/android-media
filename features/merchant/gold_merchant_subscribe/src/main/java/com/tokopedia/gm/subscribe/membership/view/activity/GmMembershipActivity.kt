@@ -11,6 +11,9 @@ import com.tokopedia.gm.subscribe.membership.di.DaggerGmSubscribeMembershipCompo
 import com.tokopedia.gm.subscribe.membership.di.GmSubscribeMembershipComponent
 import com.tokopedia.gm.subscribe.membership.di.GmSubscribeMembershipModule
 
+/**
+ * Deeplink: GOLD_MERCHANT_MEMBERSHIP
+ */
 class GmMembershipActivity : BaseSimpleActivity(), HasComponent<GmSubscribeMembershipComponent> {
 
     override fun getComponent(): GmSubscribeMembershipComponent {

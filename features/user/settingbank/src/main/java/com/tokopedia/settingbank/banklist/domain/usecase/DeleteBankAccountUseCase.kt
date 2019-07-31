@@ -5,12 +5,13 @@ import com.tokopedia.settingbank.banklist.domain.mapper.DeleteBankAccountMapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 6/20/18.
  */
 
-class DeleteBankAccountUseCase(val api: SettingBankApi,
+class DeleteBankAccountUseCase @Inject constructor(val api: SettingBankApi,
                                val mapper: DeleteBankAccountMapper) : UseCase<Boolean>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<Boolean> {

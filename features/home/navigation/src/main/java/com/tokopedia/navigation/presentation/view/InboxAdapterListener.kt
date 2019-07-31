@@ -7,4 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  */
 interface InboxAdapterListener {
     fun onItemClickListener(item: Visitable<*>, position: Int)
+
+    fun getStartProductPosition() : Int
 }

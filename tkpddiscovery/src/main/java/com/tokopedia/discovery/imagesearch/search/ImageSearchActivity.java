@@ -113,11 +113,8 @@ public class ImageSearchActivity extends DiscoveryActivity
     }
 
     @Override
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        setForceSearch(forceSearch);
-        setForceSwipeToShop(false);
-        setRequestOfficialStoreBanner(true);
-        performRequestProduct(query);
+    public void performNewProductSearch(String queryParams) {
+
     }
 
     @Override

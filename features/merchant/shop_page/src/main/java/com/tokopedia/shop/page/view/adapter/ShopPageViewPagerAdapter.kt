@@ -7,6 +7,7 @@ import android.support.v4.util.SparseArrayCompat
 import android.support.v4.view.PagerAdapter
 import android.view.ViewGroup
 import com.tokopedia.shop.ShopModuleRouter
+import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.page.view.activity.ShopPageActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
@@ -25,17 +26,17 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
             return when (position) {
                 ShopPageActivity.TAB_POSITION_HOME -> {
                     val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
-                    shopPageActivity.shopInfo?.run {
+                    shopPageActivity.getShopInfoData()?.run {
                         f.setShopInfo(this)
                     }
                     return f
                 }
                 ShopPageActivity.TAB_POSITION_FEED -> {
-                    router.getKolPostShopFragment(shopId, shopPageActivity.createPostUrl);
+                    FeedShopFragment.createInstance(shopId ?: "", shopPageActivity.createPostUrl)
                 }
                 ShopPageActivity.TAB_POSITION_INFO -> {
                     val f = ShopInfoFragment.createInstance()
-                    shopPageActivity.shopInfo?.run {
+                    shopPageActivity.getShopInfoData()?.run {
                         f.shopInfo = this
                     }
                     return f
@@ -46,14 +47,14 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
             return when (position) {
                 0 -> {
                     val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
-                    shopPageActivity.shopInfo?.run {
+                    shopPageActivity.getShopInfoData()?.run {
                         f.setShopInfo(this)
                     }
                     return f
                 }
                 1 -> {
                     val f = ShopInfoFragment.createInstance()
-                    shopPageActivity.shopInfo?.run {
+                    shopPageActivity.getShopInfoData()?.run {
                         f.shopInfo = this
                     }
                     return f

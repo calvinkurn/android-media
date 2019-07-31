@@ -39,8 +39,7 @@ data class DataUiModel(
 			parcel.readString(),
 			parcel.readParcelable(BenefitSummaryInfoUiModel::class.java.classLoader),
 			parcel.readParcelable(ClashingInfoDetailUiModel::class.java.classLoader),
-			parcel.createTypedArrayList(VoucherOrdersItemUiModel)) {
-	}
+			parcel.createTypedArrayList(VoucherOrdersItemUiModel))
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeByte(if (globalSuccess) 1 else 0)

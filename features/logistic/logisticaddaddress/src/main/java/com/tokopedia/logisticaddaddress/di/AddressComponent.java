@@ -15,7 +15,6 @@ import dagger.Component;
 public interface AddressComponent {
 
     void inject(AddAddressFragment addAddressFragment);
-
     void inject(ManagePeopleAddressService managePeopleAddressService);
 
 }

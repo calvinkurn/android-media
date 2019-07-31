@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,10 +18,12 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
+import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.model.Brand;
@@ -34,27 +38,30 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsContract.View, SearchInputView.Listener {
+public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsContract.View, SearchInputView.Listener{
 
     private static final boolean IS_SHORT_LAYOUT = true;
     private static final String ARG_PARAM_EXTRA_DEALS_DATA = "ARG_PARAM_EXTRA_DEALS_DATA";
-    private final int SPAN_COUNT_3 = 3;
+    private static final String SCREEN_NAME = "/digital/deals/brand";
     private LinearLayout baseMainContent;
     private LinearLayout noContent;
     private FrameLayout progressBarLayout;
     private GridLayoutManager layoutManager;
     private RecyclerView recyclerview;
-    private SearchInputView searchInputView;
     @Inject
     AllBrandsPresenter mPresenter;
     private CategoriesModel categoriesModel;
     private String searchText;
+    private String selectedLocation;
+    private UpdateLocation updateLocation;
+    private Location currentLocation;
 
 
-    public static Fragment newInstance(CategoriesModel categoriesModel) {
+    public static Fragment newInstance(CategoriesModel categoriesModel, String searchText) {
         AllBrandsFragment categoryFragment = new AllBrandsFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_PARAM_EXTRA_DEALS_DATA, categoriesModel);
+        args.putString(AllBrandsActivity.SEARCH_TEXT, searchText);
         categoryFragment.setArguments(args);
         return categoryFragment;
     }
@@ -63,8 +70,27 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.categoriesModel = getArguments().getParcelable(ARG_PARAM_EXTRA_DEALS_DATA);
+        this.searchText = getArguments().getString(AllBrandsActivity.SEARCH_TEXT);
+        currentLocation = Utils.getSingletonInstance().getLocation(getActivity());
         setHasOptionsMenu(true);
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            updateLocation = (UpdateLocation) activity;
+        }
+        catch (Exception e) {
+            throw new ClassCastException(activity.toString() + "must implement Update Location Interface");
+        }
+
+    }
+
+    public void getLocations(String selectedLocation) {
+        this.selectedLocation = selectedLocation;
+        mPresenter.getLocations();
     }
 
     @Nullable
@@ -78,23 +104,18 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mPresenter.sendScreenNameEvent(getScreenName());
         mPresenter.getAllBrands();
     }
 
     private void setUpVariables(View view) {
         recyclerview = view.findViewById(R.id.rv_brand_items);
-        searchInputView = view.findViewById(R.id.search_input_view);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         noContent = view.findViewById(R.id.no_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
-        searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_brand));
-        searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_17));
-        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_24), getResources().getDimensionPixelSize(R.dimen.dp_24));
-        layoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_3, GridLayoutManager.VERTICAL, false);
+        layoutManager = new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false);
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(new DealsBrandAdapter(null, DealsBrandAdapter.ITEM_BRAND_NORMAL));
-        searchInputView.setListener(this);
-        KeyboardHandler.DropKeyboard(getContext(), searchInputView);
     }
 
     @Override
@@ -106,16 +127,16 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public void onSearchSubmitted(String text) {
-        searchText = text;
-        mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
-        mPresenter.searchSubmitted(text);
+        onSearchTextChanged(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
+        if(text == null || text.equals(searchText)){
+            return;
+        }
         searchText = text;
-        mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
-        mPresenter.searchTextChanged(text);
+        mPresenter.searchSubmitted(searchText);
     }
 
 
@@ -127,7 +148,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override
@@ -156,12 +177,10 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         }
         if (brandList != null && brandList.size() > 0) {
             ((DealsBrandAdapter) recyclerview.getAdapter()).updateAdapter(brandList, fromSearch);
+            ((DealsBrandAdapter) recyclerview.getAdapter()).setBrandNativePage(true);
             recyclerview.setVisibility(View.VISIBLE);
             recyclerview.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
-            if (isSearchSubmitted) {
-                KeyboardHandler.DropKeyboard(getContext(), searchInputView);
-            }
         } else {
             mPresenter.sendEventView(DealsAnalytics.EVENT_NO_BRAND_FOUND,
                     searchText);
@@ -197,6 +216,9 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
         if (categoriesModel.getPosition() != 0) {
             requestParams.putInt(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
+        }
+        if (!TextUtils.isEmpty(searchText)) {
+            requestParams.putString(Utils.BRAND_QUERY_TAGS, searchText);
         }
         return requestParams;
     }
@@ -242,6 +264,11 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         noContent.setVisibility(View.GONE);
     }
 
+    @Override
+    public void startLocationFragment(List<Location> locations) {
+        updateLocation.startLocationFragment(locations);
+    }
+
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -259,5 +286,26 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public void onDestroyView() {
         mPresenter.onDestroy();
         super.onDestroyView();
+    }
+
+    public void onLocationUpdated() {
+        currentLocation = Utils.getSingletonInstance().getLocation(getActivity());
+        if (currentLocation!= null) {
+            mPresenter.getAllBrands();
+        }
+    }
+
+    public void reloadIfLocationUpdated(){
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if(location!=null) {
+            if (!location.equals(currentLocation)){
+                onLocationUpdated();
+            }
+        }
+
+    }
+
+    public interface UpdateLocation {
+        void startLocationFragment(List<Location> locations);
     }
 }

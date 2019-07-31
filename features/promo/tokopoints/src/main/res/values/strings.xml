@@ -2,6 +2,7 @@
     <string name="tp_title_tokopoints">TokoPoints</string>
     <string name="tp_title_detail">Detail Kupon</string>
     <string name="tp_title_send_coupon">Kirim Kupon</string>
+    <string name="tp_title_history">Riwayat</string>
     <string name="tp_label_coupon">Kupon</string>
     <string name="tp_mes_coupon_part_2">akan digunakan pada transaksi selanjutnya.</string>
     <string name="tp_label_later">Nanti Saja</string>
@@ -71,5 +72,19 @@
     <string name="tp_history">Riwayat</string>
     <string name="tp_leader">Leaderboard</string>
     <string name="moreCouponCount">99+</string>
+    <string name="tp_btn_exp_help">Selengkapnya tentang Points dan Loyalty</string>
+    <string name="tp_exp_info">Points dan Loyalty memiliki masa berlaku yang berbeda:</string>
+    <string name="tp_loyalty_info"><b>Loyalty</b> tidak dapat ditukarkan, tetapi dapat meningkatkan status Membership Anda. Semakin tinggi status Membership, semakin banyak keuntungan yang bisa Anda dapatkan.</string>
+    <string name="tp_point_info"><b>Points</b> dapat Anda tukarkan dengan berbagai Kupon di halaman TokoPoints.</string>
+    <string name="tp_history_header"><b>Points dan Loyalty</b> adalah hadiah yang Anda peroleh dari memecahkan Lucky Egg.</string>
+    <string name="tp_title_history_bottomshet">Beda Points dan Loyalty</string>
+    <string name="tp_btn_history_bottomshet">Cek Info Points &amp; Loyalty</string>
+    <string name="tp_ph_point">Points: </string>
+    <string name="tp_ph_loyalty">Loyalty: </string>
+    <string name="tp_title_err_history">Ada gangguan di rumah Toped</string>
+    <string name="tp_desc_err_history">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+    <string name="tp_history_empty_title">Kamu belum punya riwayat TokoPoints</string>
+    <string name="tp_history_empty_desc">Ayo lakukan transaksi dan dapatkan Lucky Egg</string>
+    <string name="tp_history_btn_action">Yuk Belanja</string>
 
 </resources>

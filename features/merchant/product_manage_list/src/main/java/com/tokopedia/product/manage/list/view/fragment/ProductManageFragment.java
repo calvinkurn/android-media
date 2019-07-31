@@ -8,18 +8,29 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
@@ -29,9 +40,10 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
@@ -47,6 +59,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -58,6 +71,7 @@ import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicat
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.constant.CashbackOption;
+import com.tokopedia.product.manage.list.constant.ManageTrackingConstant;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
@@ -84,6 +98,7 @@ import com.tokopedia.topads.common.data.model.FreeDeposit;
 import com.tokopedia.topads.freeclaim.data.constant.TopAdsFreeClaimConstantKt;
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -94,15 +109,22 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_POWER_MERCHANT_IDLE_POPUP;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_REGULAR_MERCHANT_POPUP;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_POWER_MERCHANT_SCORE_TIPS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment.URL_TIPS_TRICK;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
  */
 
 public class ProductManageFragment extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
-        implements ProductManageView, ProductManageListAdapter.ClickOptionCallback, BaseMultipleCheckListAdapter.CheckedCallback<ProductManageViewModel> {
+        implements ProductManageView,
+        ProductManageListAdapter.ClickOptionCallback,
+        BaseMultipleCheckListAdapter.CheckedCallback<ProductManageViewModel>,
+        MerchantCommonBottomSheet.BottomSheetListener {
 
     public static final String ERROR_CODE_LIMIT_CASHBACK = "422";
     public static final int REQUEST_CODE_ADD_IMAGE = 3859;
@@ -110,6 +132,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Inject
     ProductManagePresenter productManagePresenter;
+    @Inject
+    UserSessionInterface userSession;
     private BottomActionView bottomActionView;
     private ProgressDialog progressDialog;
     private CoordinatorLayout coordinatorLayout;
@@ -124,24 +148,92 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private Boolean goldMerchant;
     private boolean isOfficialStore;
     private String shopDomain;
-    private UserSessionInterface userSession;
-
+    private Button btnSubmit;
+    private Button btnGoToPdp;
+    private TextView txtTipsTrick;
+    private Dialog dialog;
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT) &&
                     intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
                     intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        resetPageAndRefresh();
-                    }
+                getActivity().runOnUiThread(() -> {
+                    String productId = intent.getExtras().getString(TkpdState.ProductService.PRODUCT_ID);
+                    productManagePresenter.getPopupsInfo(productId);
+                    resetPageAndRefresh();
                 });
 
             }
         }
     };
+
+    private Dialog initPopUpDialog(String productId){
+        dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_product_add);
+
+        btnSubmit = dialog.findViewById(R.id.btn_submit);
+        btnGoToPdp = dialog.findViewById(R.id.btn_product_list);
+        txtTipsTrick = dialog.findViewById(R.id.txt_tips_trick);
+
+        btnSubmit.setOnClickListener(v -> {
+            trackerManageCourierButton();
+            RouteManager.route(getContext(),ApplinkConst.SELLER_SHIPPING_EDITOR);
+            getActivity().finish();
+        });
+
+        btnGoToPdp.setOnClickListener(v -> {
+            trackerSeeProduct();
+            goToPDP(productId);
+            dialog.dismiss();
+        });
+        int backgroundColor = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
+
+        SpannableString spanText = new SpannableString(getString(R.string.popup_tips_trick_clickable));
+        spanText.setSpan(new StyleSpan(Typeface.BOLD),
+                5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spanText.setSpan(new ForegroundColorSpan(backgroundColor),
+                5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        ClickableSpan cs = new ClickableSpan() {
+            @Override
+            public void onClick(View v) {
+                trackerLinkClick();
+                RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK));
+                getActivity().finish();
+            }
+        };
+        spanText.setSpan(cs, 5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        txtTipsTrick.setMovementMethod(LinkMovementMethod.getInstance());
+        txtTipsTrick.setText(spanText);
+        return dialog;
+    }
+
+    private void trackerManageCourierButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                ManageTrackingConstant.EVENT_ADD_PRODUCT,
+                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ManageTrackingConstant.ACTION_CLICK_MANAGE_COURIER,
+                "");
+    }
+
+    private void trackerSeeProduct(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                ManageTrackingConstant.EVENT_ADD_PRODUCT,
+                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ManageTrackingConstant.ACTION_SEE_PRODUCT,
+                "");
+    }
+
+    private void trackerLinkClick(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                ManageTrackingConstant.EVENT_ADD_PRODUCT,
+                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ManageTrackingConstant.ACTION_LINK,
+                "");
+    }
 
     @Override
     protected void initInjector() {
@@ -278,6 +370,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             getActivity().startActionMode(getCallbackActionMode());
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSuccessGetPopUp(boolean isShowPopup, String productId) {
+        if (isShowPopup) {
+            initPopUpDialog(productId).show();
+        }
+    }
+
+    @Override
+    public void onErrorGetPopUp(Throwable e) {
+        onSuccessGetPopUp(false, null);
     }
 
     @NonNull
@@ -460,8 +564,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
      * This function is temporary for testing to avoid router and applink
      * For Dynamic Feature Support
      */
-    private void goToPDP(String productId) {
-        if (getContext() != null){
+      private void goToPDP(String productId) {
+        if (getContext() != null && productId != null){
             RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         }
     }
@@ -522,7 +626,23 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onErrorSetCashback(Throwable t, final String productId, final int cashback) {
         if (t instanceof MessageErrorException && ((MessageErrorException) t).getErrorCode().equals(ERROR_CODE_LIMIT_CASHBACK)) {
-            showDialogActionGoToGMSubscribe();
+            if (isIdlePowerMerchant()) {
+                showIdlePowerMerchantBottomSheet(
+                        getString(R.string.product_manage_feature_name_cashback)
+                );
+            } else if (!isPowerMerchant()) {
+                showRegularMerchantBottomSheet(
+                        getString(R.string.product_manage_feature_name_cashback)
+                );
+            } else {
+                NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
+                        ErrorHandler.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                productManagePresenter.setCashback(productId, cashback);
+                            }
+                        }).showRetrySnackbar();
+            }
         } else {
             NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
                     ErrorHandler.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
@@ -532,6 +652,41 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                         }
                     }).showRetrySnackbar();
         }
+    }
+
+    private boolean isIdlePowerMerchant() {
+        return userSession.isPowerMerchantIdle();
+    }
+
+    private boolean isPowerMerchant() {
+        return userSession.isGoldMerchant();
+    }
+
+    private void showRegularMerchantBottomSheet(String featureName) {
+        String title = getString(R.string.bottom_sheet_regular_title, featureName);
+        String description = getString(R.string.bottom_sheet_regular_desc, featureName);
+        String buttonName = getString(R.string.bottom_sheet_regular_btn);
+        showBottomSheet(title, IMG_URL_REGULAR_MERCHANT_POPUP, description, buttonName);
+    }
+
+    private void showIdlePowerMerchantBottomSheet(String featureName) {
+        String title = getString(R.string.bottom_sheet_idle_title, featureName);
+        String description = getString(R.string.bottom_sheet_idle_desc, featureName);
+        String buttonName = getString(R.string.bottom_sheet_idle_btn);
+        showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName);
+    }
+
+    private void showBottomSheet(String title, String imageUrl, String description, String buttonName) {
+        MerchantCommonBottomSheet.BottomSheetModel model = new MerchantCommonBottomSheet.BottomSheetModel(
+                title,
+                description,
+                imageUrl,
+                buttonName,
+                ""
+        );
+        MerchantCommonBottomSheet bottomSheet = MerchantCommonBottomSheet.newInstance(model);
+        bottomSheet.setListener(this);
+        bottomSheet.show(getChildFragmentManager(), "merchant_warning_bottom_sheet");
     }
 
     @Override
@@ -777,7 +932,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         };
     }
 
-    public void downloadBitmap(final ProductManageViewModel productManageViewModel){
+    public void downloadBitmap(final ProductManageViewModel productManageViewModel) {
         ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_IMAGE);
 
         String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();
@@ -849,5 +1004,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void goToEditProduct(String productId) {
         Intent intent = ProductEditActivity.Companion.createInstance(getActivity(), productId);
         startActivity(intent);
+    }
+
+    @Override
+    public void onBottomSheetButtonClicked() {
+        if (isIdlePowerMerchant()) {
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS);
+        } else if (!isPowerMerchant()) {
+            RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+        }
     }
 }

@@ -57,4 +57,7 @@
     <string name="instagram_label_login_ig">Login</string>
     <string name="image_picker_label_cancel">Batal</string>
     <string name="change_to_primary">Jadikan Gambar Utama</string>
+    <string name="recorder">Video</string>
+    <string name="vidpick_duration_default">01:00</string>
+    <string name="vidpick_duration_format">%1$s:%2$s</string>
 </resources>

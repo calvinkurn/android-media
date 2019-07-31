@@ -5,10 +5,10 @@ import android.content.Context;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.otp.common.network.AuthorizationBearerInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorResponse;
@@ -27,6 +27,20 @@ import okhttp3.logging.HttpLoggingInterceptor;
 @OtpScope
 @Module
 public class OtpNetModule {
+
+    @OtpScope
+    @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter) context;
+    }
+
+    @OtpScope
+    @Provides
+    public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                          NetworkRouter networkRouter,
+                                                          UserSessionInterface userSessionInterface) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSessionInterface);
+    }
 
     @OtpScope
     @Provides
@@ -64,10 +78,10 @@ public class OtpNetModule {
                                             TkpdAuthInterceptor tkpdAuthInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(OtpErrorResponse.class))
                 .addInterceptor(new ErrorResponseInterceptor(WSErrorResponse.class))
                 .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(authorizationBearerInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -85,9 +99,9 @@ public class OtpNetModule {
                                                       TkpdAuthInterceptor tkpdAuthInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(OtpErrorResponse.class))
-                .addInterceptor(tkpdAuthInterceptor);
+                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(fingerprintInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor).addInterceptor(httpLoggingInterceptor);

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/dp_16">
+
+    <ImageView
+        android:id="@+id/img_icon"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <TextView
+        android:id="@+id/text_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/tp_history_item_grey_color"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintLeft_toRightOf="@+id/img_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="10 April 2017"
+        android:layout_marginStart="@dimen/dp_16" />
+
+    <TextView
+        android:id="@+id/text_txn_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:gravity="end"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/tp_history_item_grey_color"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="#2036473" />
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@+id/text_date"
+        app:layout_constraintTop_toBottomOf="@+id/text_date"
+        tools:text="Penukaran Points" />
+
+    <TextView
+        android:id="@+id/text_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/clr_ae31353b"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintLeft_toLeftOf="@+id/text_date"
+        app:layout_constraintTop_toBottomOf="@+id/text_title"
+        tools:text="Kupon Gratis Ongkir J&amp;T Rp 5.000" />
+
+    <TextView
+        android:id="@+id/text_label_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/tp_ph_point"
+        android:textColor="@color/clr_ae31353b"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintLeft_toLeftOf="@+id/text_date"
+        app:layout_constraintTop_toBottomOf="@+id/text_note" />
+
+    <TextView
+        android:id="@+id/text_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/text_label_point"
+        app:layout_constraintTop_toTopOf="@+id/text_label_point"
+        tools:text="+100" />
+
+    <TextView
+        android:id="@+id/text_label_loyalty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/tp_ph_loyalty"
+        android:textColor="@color/clr_ae31353b"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toStartOf="@+id/text_loyalty"
+        app:layout_constraintTop_toBottomOf="@+id/text_note" />
+
+    <TextView
+        android:id="@+id/text_loyalty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_40"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_label_point"
+        tools:text="+50" />
+</android.support.constraint.ConstraintLayout>
+
+

@@ -53,6 +53,9 @@ public class CartDataListResponse {
     @SerializedName("autoapply_stack")
     @Expose
     private AutoapplyStack autoapplyStack = new AutoapplyStack();
+    @SerializedName("global_checkbox_state")
+    @Expose
+    private boolean globalCheckboxState;
 
     public GlobalCouponAttr getGlobalCouponAttr() {
         return globalCouponAttr;
@@ -104,5 +107,9 @@ public class CartDataListResponse {
 
     public Donation getDonation() {
         return donation;
+    }
+
+    public boolean isGlobalCheckboxState() {
+        return globalCheckboxState;
     }
 }

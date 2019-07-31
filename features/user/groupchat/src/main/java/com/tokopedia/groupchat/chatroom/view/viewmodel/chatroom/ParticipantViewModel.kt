@@ -9,21 +9,15 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupC
 /**
  * @author : Steven 06/11/18
  */
-class ParticipantViewModel : Visitable<GroupChatTypeFactory>, Parcelable {
+class ParticipantViewModel(
+        var channelId: String = "",
+        var totalView: String = ""
+) : Visitable<GroupChatTypeFactory>, Parcelable {
 
-    var channelId: String
-    var totalView: String
-
-
-    constructor(`in`: Parcel) {
-        channelId = `in`.readString()
-        totalView = `in`.readString()
-    }
-
-    constructor(channelId: String, totalView: String) {
-        this.channelId = channelId
-        this.totalView = totalView
-    }
+    constructor(`in`: Parcel): this (
+        channelId = `in`.readString() ?: "",
+        totalView = `in`.readString() ?: ""
+    )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(channelId)

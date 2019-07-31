@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:id="@+id/branding_container"
     android:layout_height="wrap_content"
@@ -11,7 +12,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_16"
-        android:src="@drawable/ic_lock" />
+        app:srcCompat="@drawable/ic_lock" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,5 +25,5 @@
         android:layout_width="@dimen/dp_36"
         android:layout_height="@dimen/dp_12"
         android:paddingLeft="@dimen/dp_5"
-        android:src="@drawable/ic_ovo_logo_purple" />
+        app:srcCompat="@drawable/ic_ovo_logo_purple" />
 </LinearLayout>

@@ -149,8 +149,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     private List<DrawerNotification> getData() {
         List<DrawerNotification> notifications = new ArrayList<>();
 
-        addUpdateNotification(notifications);
-
         DrawerNotification buyer = new DrawerNotification();
         buyer.setId(PEMBELIAN);
         buyer.setTitle(getString(R.string.pembelian));

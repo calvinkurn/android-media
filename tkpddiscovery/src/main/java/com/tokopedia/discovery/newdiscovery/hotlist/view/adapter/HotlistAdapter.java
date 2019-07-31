@@ -14,8 +14,8 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory.Hotlist
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.SearchEmptyViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
  */
 
 @SuppressWarnings("ALL")
-public class HotlistAdapter extends SearchSectionGeneralAdapter {
+public class HotlistAdapter extends BrowseSectionGeneralAdapter {
 
     private static final String INSTANCE_TOTAL_DATA = "INSTANCE_TOTAL_DATA";
     private static final String INSTANCE_LIST_DATA = "INSTANCE_LIST_DATA";
@@ -89,7 +89,7 @@ public class HotlistAdapter extends SearchSectionGeneralAdapter {
     }
 
     @Override
-    protected SearchSectionTypeFactory getTypeFactory() {
+    protected BrowseSectionTypeFactory getTypeFactory() {
         return typeFactory;
     }
 

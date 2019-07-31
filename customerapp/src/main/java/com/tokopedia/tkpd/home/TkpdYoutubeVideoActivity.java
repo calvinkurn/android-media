@@ -132,7 +132,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RECOVERY_DIALOG_REQUEST) {
             // Retry initialization if user performed a recovery action
-            getYouTubePlayerProvider().initialize(getString(com.tokopedia.tkpdpdp.R.string.GOOGLE_API_KEY), this);
+            getYouTubePlayerProvider().initialize(getString(R.string.GOOGLE_API_KEY), this);
         }
     }
 
@@ -158,7 +158,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
 
 
         }
-        youTubeView.initialize(getString(com.tokopedia.tkpdpdp.R.string.GOOGLE_API_KEY), this);
+        youTubeView.initialize(getString(R.string.GOOGLE_API_KEY), this);
     }
 
     private void setBannerAdapter(String jsonArray) {

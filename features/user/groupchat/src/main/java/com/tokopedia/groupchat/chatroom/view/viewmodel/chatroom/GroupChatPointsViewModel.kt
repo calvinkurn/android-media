@@ -10,7 +10,7 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupC
  * @author by StevenFredian on 28/03/18.
  */
 
-class GroupChatPointsViewModel : Parcelable, Visitable<GroupChatTypeFactory> {
+class GroupChatPointsViewModel() : Parcelable, Visitable<GroupChatTypeFactory> {
 
     var image: String = ""
     var text: String = ""
@@ -18,27 +18,23 @@ class GroupChatPointsViewModel : Parcelable, Visitable<GroupChatTypeFactory> {
     var url: String = ""
     var type: String = ""
 
-    constructor(){
-
-    }
-
-    constructor(text: String, url: String) {
+    constructor(text: String, url: String): this() {
         this.text = text
         this.url = url
     }
 
-    constructor(text: String, url: String, type: String) {
+    constructor(text: String, url: String, type: String): this() {
         this.text = text
         this.url = url
         this.type = type
     }
 
-    protected constructor(`in`: Parcel) {
-        image = `in`.readString()
-        text = `in`.readString()
-        span = `in`.readString()
-        url = `in`.readString()
-        type = `in`.readString()
+    protected constructor(`in`: Parcel): this() {
+        image = `in`.readString() ?: ""
+        text = `in`.readString() ?: ""
+        span = `in`.readString() ?: ""
+        url = `in`.readString() ?: ""
+        type = `in`.readString() ?: ""
     }
 
     override fun type(typeFactory: GroupChatTypeFactory): Int {

@@ -1,5 +1,7 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -79,6 +81,15 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (isOpenShop) {
+            getData();
+            isOpenShop = false;
+        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
@@ -99,7 +110,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             isLoaded = !isLoaded;
         }
     }
-
 
     private void getData() {
         String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
@@ -175,6 +185,17 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public void onScrollToTop() {
         if (recyclerView != null)
             recyclerView.scrollToPosition(0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == OPEN_SHOP_SUCCESS){
+            getData();
+        } else if (resultCode == Activity.RESULT_OK && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION){
+            userSession.setIsMSISDNVerified(true);
+            moveToCreateShop();
+        }
     }
 
     @Override

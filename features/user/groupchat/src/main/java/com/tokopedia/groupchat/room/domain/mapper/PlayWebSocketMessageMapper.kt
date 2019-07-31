@@ -15,7 +15,9 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.sprintsale.Product
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.InteractiveButton
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel
@@ -105,7 +107,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
     private fun convertDynamicButtons(button: ButtonsPojo): DynamicButtonsViewModel {
         val dynamicButtonsViewModel = DynamicButtonsViewModel()
         button.floatingButton?.let {
-            dynamicButtonsViewModel.floatingButton = DynamicButtonsViewModel.Button(
+            dynamicButtonsViewModel.floatingButton = DynamicButton(
                     it.buttonId,
                     it.imageUrl,
                     it.linkUrl,
@@ -122,7 +124,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
         button.listDynamicButton?.let{
             for (buttonItem in it) {
                 dynamicButtonsViewModel.listDynamicButton.add(
-                        DynamicButtonsViewModel.Button(
+                        DynamicButton(
                                 buttonItem.buttonId,
                                 buttonItem.imageUrl,
                                 buttonItem.linkUrl,
@@ -136,6 +138,13 @@ class PlayWebSocketMessageMapper @Inject constructor() {
                         )
                 )
             }
+        }
+
+        button.interactiveButton?.let {
+            dynamicButtonsViewModel.interactiveButton = InteractiveButton(
+                    it.isEnabled,
+                    it.listBalloon
+            )
         }
 
         return dynamicButtonsViewModel

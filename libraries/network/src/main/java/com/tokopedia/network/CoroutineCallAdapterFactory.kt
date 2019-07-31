@@ -1,7 +1,7 @@
 package com.tokopedia.network
 
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import retrofit2.*
 import retrofit2.adapter.rxjava.HttpException
 import java.lang.reflect.ParameterizedType
@@ -19,7 +19,7 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
 
         if (returnType !is ParameterizedType){
             throw IllegalStateException(
-                    "Deferred return type must be parameterized as Deferred<Foo> or Deferred<out Foo>")
+                "Deferred return type must be parameterized as Deferred<Foo> or Deferred<out Foo>")
         }
 
         val responseType = getParameterUpperBound(0, returnType)
@@ -27,7 +27,7 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
         return if (rawDeferredType == Response::class.java) {
             if (responseType !is ParameterizedType) {
                 throw IllegalStateException(
-                        "Response must be parameterized as Response<Foo> or Response<out Foo>")
+                    "Response must be parameterized as Response<Foo> or Response<out Foo>")
             }
             ResponseCallAdapter<Any>(getParameterUpperBound(0, responseType))
         } else {

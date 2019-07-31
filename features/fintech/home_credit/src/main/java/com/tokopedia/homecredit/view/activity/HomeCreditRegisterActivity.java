@@ -21,6 +21,8 @@ import com.tokopedia.homecredit.view.fragment.HomeCreditSelfieFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.applink.ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE;
+
 public class HomeCreditRegisterActivity extends BaseSimpleActivity {
 
     private final static String SHOW_KTP = "show_ktp";
@@ -29,7 +31,7 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
     private boolean isPermissionGotDenied;
     protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
 
-    @DeepLink(ApplinkConst.HOME_CREDIT_KTP)
+    @DeepLink({ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, HOME_CREDIT_KTP_WITHOUT_TYPE})
     public static Intent getHomeCreditKTPIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         bundle.putBoolean(SHOW_KTP, true);
@@ -38,7 +40,7 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
                 .putExtras(bundle);
     }
 
-    @DeepLink(ApplinkConst.HOME_CREDIT_SELFIE)
+    @DeepLink({ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE})
     public static Intent getHomeCreditSelfieIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         bundle.putBoolean(SHOW_KTP, false);

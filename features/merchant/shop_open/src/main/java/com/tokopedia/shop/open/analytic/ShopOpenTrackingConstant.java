@@ -34,6 +34,16 @@ public class ShopOpenTrackingConstant {
     public static String OPEN_SHOP_CLICK_PINPOINT_LOCATION = "click pinpoint location";
     public static String OPEN_SHOP_CLICK_DELETE_PINPOINT_LOCATION = "click delete pinpoint location";
 
+    public static String EVENT_CLICK_OPEN_SHOP = "clickOpenShop";
+    public static String CATEGORY_CLICK_OPEN_SHOP = "open shop page";
+    public static String CATEGORY_CLICK_OPEN_SHOP_SUCCESS = "open shop - success";
+    public static String ACTION_TNC = "click terms and condition";
+    public static String ACTION_PRIVACY_POLICY = "click privacy";
+    public static String ACTION_OPEN_SHOP_SUCCESS = "click open shop - success";
+    public static String ACTION_ADD_PRODUCT_CLICK = "click Tambah Produk";
+    public static String ACTION_ADD_LATER_CLICK = "click Nanti Saja";
+    public static String ACTION_LINK = "click di sini";
+
 
     // app shortcut
     static String EVENT = "event";

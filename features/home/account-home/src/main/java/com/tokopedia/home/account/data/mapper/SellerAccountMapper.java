@@ -16,6 +16,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.PowerMerchantCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
@@ -38,6 +39,7 @@ import javax.inject.Inject;
 import rx.functions.Func1;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.LOAN;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 
 /**
@@ -47,10 +49,12 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewModel> {
 
     private Context context;
+    private RemoteConfig remoteConfig;
 
     @Inject
     public SellerAccountMapper(@ApplicationContext Context context) {
         this.context = context;
+        this.remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @Override
@@ -82,10 +86,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-
-        boolean showPinjamanModalOnTop = remoteConfig
-                .getBoolean(RemoteConfigKey.PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP, false);
+        boolean showPinjamanModalOnTop = remoteConfig.getBoolean(RemoteConfigKey.PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP, false);
 
         String mitraTopperMaxLoan = "";
         String mitraTopperUrl = "";
@@ -180,6 +181,14 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuTitle = new MenuTitleViewModel(context.getString(R.string.title_menu_other_features));
         items.add(menuTitle);
 
+        if (!accountModel.getShopInfo().getInfo().getShopIsOfficial().equals("1")) {
+            PowerMerchantCardViewModel powerMerchantCardViewModel = new PowerMerchantCardViewModel();
+            powerMerchantCardViewModel.setTitleText(context.getString(R.string.title_pm_card));
+            powerMerchantCardViewModel.setDescText(context.getString(R.string.desc_pm_card));
+            powerMerchantCardViewModel.setIconRes(R.drawable.ic_pm_line_shades);
+            items.add(powerMerchantCardViewModel);
+        }
+
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_opportunity));
         menuList.setMenuDescription(context.getString(R.string.label_menu_opportunity));
@@ -202,6 +211,18 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuList.setApplink(ApplinkConst.SELLER_CENTER);
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
+        items.add(menuList);
+
+        menuTitle = new MenuTitleViewModel();
+        menuTitle.setTitle(context.getString(R.string.title_menu_help));
+        items.add(menuTitle);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_resolution_center));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_resolution_center));
+        menuList.setApplink(ApplinkConst.CONTACT_US_NATIVE);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_help));
         items.add(menuList);
 
         if (!showPinjamanModalOnTop) {
@@ -232,6 +253,11 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
                 && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
                 .getStatus() == KYCConstant.STATUS_NOT_VERIFIED) {
             sellerTickerModel.getListMessage().add(context.getString(R.string.ticker_unverified));
+        } else if (!accountModel.getShopInfo().getOwner().getGoldMerchant()) {
+            String tickerMessage = remoteConfig.getString(RemoteConfigKey.SELLER_ACCOUNT_TICKER_MSG);
+            if (!TextUtils.isEmpty(tickerMessage)) {
+                sellerTickerModel.getListMessage().add(tickerMessage);
+            }
         }
 
         return sellerTickerModel;
@@ -272,6 +298,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
+        shopCard.setShopIsOfficial(accountModel.getShopInfo().getInfo().getShopIsOfficial());
         shopCard.setDataDeposit(dataDeposit);
 
         if (accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {

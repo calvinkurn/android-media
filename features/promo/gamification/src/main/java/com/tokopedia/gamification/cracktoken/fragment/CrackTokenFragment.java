@@ -326,6 +326,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
             @Override
             public void showCrackResult(CrackResultEntity crackResult){
+                if(getActivity() == null || getActivity().isFinishing() || getContext() == null || !isAdded() || isRemoving()) {
+                    return;
+                }
                 setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
                 widgetCrackResult.showCrackResult(crackResult);
 
@@ -565,7 +568,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                         widgetTokenView.split(crackResult);
                         trackingRewardLuckyEggView(crackResult.getBenefitType());
                     }else{
-                        crackTokenSuccessHandler.postDelayed(this, 100);
+                        crackTokenSuccessHandler.postDelayed(this, 50);
                     }
                 }
             }
