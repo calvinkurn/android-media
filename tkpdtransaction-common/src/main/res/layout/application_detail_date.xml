@@ -11,9 +11,9 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="6sp"
-        android:textColor="#ae31353b"
-        android:textSize="12sp"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/clr_ae31353b"
+        android:textSize="@dimen/sp_12"
         tools:text="Nama Lengkap (Sesuai KTP)" />
 
     <TextView
@@ -22,9 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         android:drawableRight="@drawable/ic_arrow_drop_down_grey_checkout_module"
-        android:lineSpacingExtra="6sp"
-        android:textColor="#f531353b"
-        android:textSize="16sp"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_16"
         tools:text="Andrew Ignatius Sugijanto" />
 
     <View
