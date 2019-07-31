@@ -31,6 +31,7 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
 
     List<ProductItem> trendingDeals;
     private boolean isLocationUpdated;
+    private DealsHomeFragment dealsHomeFragment;
     private String title;
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS})
@@ -59,7 +60,8 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     @Override
     protected Fragment getNewFragment() {
         toolbar.setVisibility(View.GONE);
-        return DealsHomeFragment.createInstance(isLocationUpdated);
+        dealsHomeFragment = DealsHomeFragment.createInstance(isLocationUpdated);
+        return dealsHomeFragment;
     }
 
     @Override
@@ -86,5 +88,6 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     @Override
     public void onLocationItemUpdated(boolean isLocationUpdated) {
         this.isLocationUpdated = isLocationUpdated;
+        dealsHomeFragment.refreshHomePage(isLocationUpdated);
     }
 }

@@ -25,6 +25,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     public static final String FROM_HOME = "FROM_HOME";
     private String categoryName;
     private boolean isLocationUpdated;
+    private CategoryDetailHomeFragment categoryDetailHomeFragment;
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_CATEGORY})
     public static Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
@@ -64,7 +65,8 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         categoryName = getIntent().getStringExtra(CATEGORY_NAME);
         if (TextUtils.isEmpty(categoryName))
             categoryName = getString(R.string.text_deals);
-        return CategoryDetailHomeFragment.createInstance(getIntent().getExtras(), isLocationUpdated);
+        categoryDetailHomeFragment = CategoryDetailHomeFragment.createInstance(getIntent().getExtras(), isLocationUpdated);
+        return categoryDetailHomeFragment;
     }
 
     @Override
@@ -78,5 +80,6 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     @Override
     public void onLocationItemUpdated(boolean isLocationUpdated) {
         this.isLocationUpdated = isLocationUpdated;
+        categoryDetailHomeFragment.refreshPage(isLocationUpdated);
     }
 }

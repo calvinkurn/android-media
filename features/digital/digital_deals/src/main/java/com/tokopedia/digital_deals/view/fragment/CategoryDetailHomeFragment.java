@@ -117,8 +117,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         mPresenter.attachView(this);
     }
 
-    public static Fragment createInstance(Bundle bundle, boolean isLocationUpdated) {
-        Fragment fragment = new CategoryDetailHomeFragment();
+    public static CategoryDetailHomeFragment createInstance(Bundle bundle, boolean isLocationUpdated) {
+        CategoryDetailHomeFragment fragment = new CategoryDetailHomeFragment();
         bundle.putBoolean(LOCATION_UPDATE, isLocationUpdated);
         fragment.setArguments(bundle);
         return fragment;
@@ -232,7 +232,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void onStart() {
         super.onStart();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (isLocationUpdated && location != null) {
+        if (location != null) {
             toolbarTitle.setText(location.getName());
             popularLocation.setText(String.format(getActivity().getResources().getString(R.string.popular_deals_in_location), this.categoriesModel.getTitle(), location.getName()));
             mPresenter.getBrandsList(true);
@@ -543,5 +543,15 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                     .actionOpenGeneralWebView(getActivity(), DealsUrl.WebUrl.FAQURL);
         }
         return true;
+    }
+
+    public void refreshPage(boolean isLocationUpdated) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (isLocationUpdated && location != null) {
+            toolbarTitle.setText(location.getName());
+            popularLocation.setText(String.format(getActivity().getResources().getString(R.string.popular_deals_in_location), this.categoriesModel.getTitle(), location.getName()));
+            mPresenter.getBrandsList(true);
+            mPresenter.getCategoryDetails(true);
+        }
     }
 }

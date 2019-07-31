@@ -89,7 +89,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         crossIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().onBackPressed();
+                getFragmentManager().popBackStack();
             }
         });
         renderPopularLocations();
@@ -215,13 +215,13 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
     @Override
     public void onCityItemSelected(boolean locationUpdated) {
         selectedLocationListener.onLocationItemUpdated(locationUpdated);
-        getActivity().finish();
+        getFragmentManager().popBackStack();
     }
 
     @Override
     public void onPopularLocationSelected(boolean locationUpdated) {
         selectedLocationListener.onLocationItemUpdated(locationUpdated);
-        getActivity().finish();
+        getFragmentManager().popBackStack();
     }
 
     @Override

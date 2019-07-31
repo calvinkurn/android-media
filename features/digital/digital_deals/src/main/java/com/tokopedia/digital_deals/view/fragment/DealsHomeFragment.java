@@ -135,8 +135,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private boolean isFirstTime = false;
     private TextView promoheading;
 
-    public static Fragment createInstance(boolean isLocationUpdated) {
-        Fragment fragment = new DealsHomeFragment();
+    public static DealsHomeFragment createInstance(boolean isLocationUpdated) {
+        DealsHomeFragment fragment = new DealsHomeFragment();
         Bundle args = new Bundle();
         args.putBoolean(LOCATION_UPDATE, isLocationUpdated);
         fragment.setArguments(args);
@@ -748,6 +748,15 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void onCancel(DialogInterface dialog) {
         dealsCategoryBottomSheet.dismiss();
         selectLocationFragment.dismiss();
+    }
+
+    public void refreshHomePage(boolean isLocationUpdated) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
+            tvLocationName.setText(location.getName());
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
+        }
     }
 
 
