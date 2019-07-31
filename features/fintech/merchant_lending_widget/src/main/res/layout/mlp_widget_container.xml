@@ -36,7 +36,7 @@
         android:layout_height="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
         android:padding="@dimen/dp_4"
-        android:src="@drawable/ic_arrow_down_grey"
+        app:srcCompat="@drawable/ic_arrow_down_grey"
         app:layout_constraintBottom_toBottomOf="@+id/tv_title_widget"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_title_widget" />
