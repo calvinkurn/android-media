@@ -39,8 +39,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
     private var searchTemp = ""
 
-    lateinit var permissionCheckerHelper: PermissionCheckerHelper
-
     override fun shouldShowOptionMenu(): Boolean = false
 
     override fun getNewFragment(): Fragment = HotelRecommendationFragment.getInstance()
@@ -64,9 +62,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
         }
-
-        permissionCheckerHelper = PermissionCheckerHelper()
-        destinationViewModel.setPermissionChecker(permissionCheckerHelper)
     }
 
     fun initView() {
@@ -115,16 +110,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
                 //search
                 doSearch(text)
             }
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(this,
-                    requestCode, permissions,
-                    grantResults)
         }
     }
 
