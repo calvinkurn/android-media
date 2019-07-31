@@ -11,7 +11,6 @@ public interface SearchConstant {
     String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
-    String DEEP_LINK_URI = "deep_link_uri";
 
     String SEARCH_RESULT_TRACE = "search_result_trace";
 

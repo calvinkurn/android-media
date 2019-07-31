@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -30,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
@@ -79,6 +81,15 @@ public class SearchActivity extends BaseActivity
     private static final int TAB_FIRST_POSITION = 0;
     private static final int TAB_THIRD_POSITION = 2;
     private static final int TAB_SECOND_POSITION = 1;
+
+    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
+    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
+        Uri uri = Uri.parse(bundle.getString(DeepLink.URI));
+
+        if(uri == null) return new Intent();
+
+        return RouteManager.getIntent(context, ApplinkConstInternalDiscovery.SEARCH_RESULT, uri.getLastPathSegment());
+    }
 
     private ProductListFragment productListFragment;
     private CatalogListFragment catalogListFragment;

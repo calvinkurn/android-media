@@ -39,7 +39,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.DEEP_LINK_URI;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 
@@ -65,7 +64,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
     }
 
     private static SearchParameter createSearchParameterFromBundle(Bundle bundle) {
-        String deepLinkURI = bundle.getString(DEEP_LINK_URI);
+        String deepLinkURI = bundle.getString(DeepLink.URI);
         return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
     }
 
