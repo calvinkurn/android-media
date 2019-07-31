@@ -80,6 +80,7 @@
     <string name="tokocash_after_activation">Setelah terverifikasi, TokoCash akan aktif dan bisa digunakan sebagai salah satu metode pembayaran Anda.</string>
     <string name="phone_number_already_exist">Akun lain telah menggunakan nomor ponsel ini</string>
     <string name="success_add_phone">Nomor telepon berhasil ditambah</string>
+    <string name="button_next">Selanjutnya</string>
 
     <!-- CHANGE PHONE -->
     <string name="success_change_phone_number">Nomor telepon berhasil diubah</string>
