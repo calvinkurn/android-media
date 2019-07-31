@@ -26,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
         android:text="@string/thank_you_feedback_message"
         android:textColor="@color/Neutral_N700_68"
         android:gravity="center"
