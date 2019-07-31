@@ -38,37 +38,40 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
                     CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
                         NotificationManagerCompat.from(context).cancel(notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
+                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
 
                     CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
                         handleNotificationClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,  baseNotificationModel, CMConstant.NotificationType.GENERAL)
+                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
 
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
-                        handleActionButtonClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,  baseNotificationModel, CMConstant.NotificationType.GENERAL)
+                        if (baseNotificationModel != null) {
+                            handleActionButtonClick(context, intent, notificationId, baseNotificationModel)
+                        }
                     }
 
                     CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK -> {
-                        handlePersistentClick(context, intent)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,  baseNotificationModel, CMConstant.NotificationType.PERSISTENT)
+                        if (baseNotificationModel != null) {
+                            handlePersistentClick(context, intent,baseNotificationModel)
+                        }
                     }
                     CMConstant.ReceiverAction.ACTION_CANCEL_PERSISTENT -> {
                         cancelPersistentNotification(context, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,  baseNotificationModel, CMConstant.NotificationType.PERSISTENT)
+                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.PERSISTENT)
                     }
 
 
                     CMConstant.ReceiverAction.ACTION_GRID_CLICK -> {
-                        handleGridNotificationClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel,CMConstant.NotificationType.GRID_NOTIFICATION)
+                        baseNotificationModel?.let {
+                            handleGridNotificationClick(context, intent, notificationId, baseNotificationModel)
+                        }
                     }
 
                     CMConstant.ReceiverAction.ACTION_GRID_MAIN_CLICK -> {
                         handleMainClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel,CMConstant.NotificationType.GRID_NOTIFICATION)
+                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GRID_NOTIFICATION)
 
                     }
 
@@ -76,12 +79,13 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_CAROUSEL_MAIN_CLICK -> {
                         //has Base Notification Model
                         handleCarouselMainClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,baseNotificationModel ,CMConstant.NotificationType.CAROUSEL_NOTIFICATION)
+                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION)
                     }
                     CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK -> {
                         //has Base Notification Model
-                        handleCarouselImageClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION)
+                        baseNotificationModel?.let {
+                            handleCarouselImageClick(context, intent, notificationId, baseNotificationModel)
+                        }
                     }
                     CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK -> {
                         //has Base Notification Model
@@ -97,7 +101,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_CAROUSEL_NOTIFICATION_DISMISS -> {
                         //has Base Notification Model
                         clearCarouselImages(context.applicationContext)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED,baseNotificationModel ,CMConstant.NotificationType.CAROUSEL_NOTIFICATION)
+                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION)
 
                     }
                     /*Image Carousel Handling*/
@@ -106,13 +110,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK -> {
                         //has Base Notification Model
                         handleProductClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel , CMConstant.NotificationType.GENERAL)
+                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
                         //has Base Notification Model
                         handleCollapsedViewClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel , CMConstant.NotificationType.GENERAL)
-
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK -> {
                         //has Base Notification Model
@@ -127,7 +129,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_PRODUCT_NOTIFICATION_DISMISS -> {
                         //has Base Notification Model
                         clearProductImages(context.applicationContext)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED,baseNotificationModel ,CMConstant.NotificationType.GENERAL)
+                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
 
                     }
                     /*Product Info Carousel Click Handling*/
@@ -183,13 +185,19 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 })
     }
 
-    private fun handleGridNotificationClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleGridNotificationClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         val grid: Grid = intent.getParcelableExtra(CMConstant.ReceiverExtraData.EXTRA_GRID_DATA)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, grid.appLink)
-        appLinkIntent.putExtras(intent.extras!!)
-        startActivity(context, appLinkIntent)
-        NotificationManagerCompat.from(context).cancel(notificationId)
+        grid?.let {
+            val appLinkIntent = RouteManager.getIntent(context.applicationContext, grid.appLink)
+            appLinkIntent.putExtras(intent.extras!!)
+            startActivity(context, appLinkIntent)
+            NotificationManagerCompat.from(context).cancel(notificationId)
+            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,
+                    baseNotificationModel, CMConstant.NotificationType.GRID_NOTIFICATION, grid.element_id)
+
+        }
+
     }
 
     private fun cancelPersistentNotification(context: Context, notificationId: Int) {
@@ -199,7 +207,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
-    private fun handlePersistentClick(context: Context, intent: Intent) {
+    private fun handlePersistentClick(context: Context, intent: Intent, baseNotificationModel: BaseNotificationModel) {
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         if (intent.hasExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA)) {
             val persistentButton: PersistentButton = intent.getParcelableExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA)
@@ -213,6 +221,8 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             val appLinkIntent = RouteManager.getIntent(context.applicationContext, persistentButton.appLink)
             appLinkIntent.putExtras(intent.extras!!)
             startActivity(context, appLinkIntent)
+            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.PERSISTENT, persistentButton.element_id)
+
         }
     }
 
@@ -234,28 +244,31 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         }
     }
 
-    private fun handleActionButtonClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleActionButtonClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
         val actionButton: ActionButton? = intent.getParcelableExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA)
         actionButton?.apply {
             pdActions?.let {
-                handleShareActionButtonClick(context, it)
+                handleShareActionButtonClick(context, it, baseNotificationModel)
             } ?: let {
                 val appLinkIntent = RouteManager.getIntent(context.applicationContext, it.appLink)
                 appLinkIntent.putExtras(intent.extras!!)
                 startActivity(context, appLinkIntent)
+                sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL, it.element_id)
             }
         }
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
     }
 
-    private fun handleCarouselImageClick(context: Context, intent: Intent, notificationId: Int) {
-        val (appLink) = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLink)
+    private fun handleCarouselImageClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
+        val carousel: Carousel = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
+        //val (appLink) = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
+        val appLinkIntent = RouteManager.getIntent(context.applicationContext, carousel.appLink)
         appLinkIntent.putExtras(intent.extras!!)
         startActivity(context, appLinkIntent)
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION, carousel.element_id)
 
         launchCatchError(block = {
             CarouselUtilities.deleteCarouselImageDirectory(context)
@@ -273,13 +286,19 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         }
     }
 
-    private fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel?, pushType: String) {
+    private fun sendClickPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel?, pushType: String) {
         baseNotificationModel?.let {
-            IrisAnalyticsEvents.sendPushEvent(context, eventName, baseNotificationModel, pushType)
+            IrisAnalyticsEvents.sendPushEvent(context, eventName, baseNotificationModel)
         }
     }
 
-    private fun handleShareActionButtonClick(context: Context, preDefineActions: PreDefineActions) {
+    private fun sendElementClickPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, pushType: String, elementId: String?) {
+        baseNotificationModel?.let {
+            IrisAnalyticsEvents.sendPushEvent(context, eventName, baseNotificationModel,elementId)
+        }
+    }
+
+    private fun handleShareActionButtonClick(context: Context, preDefineActions: PreDefineActions, baseNotificationModel: BaseNotificationModel) {
         try {
             val share = Intent(Intent.ACTION_SEND)
             share.type = "text/plain"
@@ -288,6 +307,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             val sharingIntent = Intent.createChooser(share, "Tokopedia")
             sharingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.applicationContext.startActivity(sharingIntent)
+            sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
         } catch (e: ActivityNotFoundException) {
         }
     }
