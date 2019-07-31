@@ -186,6 +186,13 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                     propertyDetail.checkInOut[1].checkInOut.date,
                     propertyDetail.stayLength.content)
 
+            rdv_checkin_checkout_date.setRoomCheckTimes(
+                    getString(R.string.hotel_order_detail_day_and_time, propertyDetail.checkInOut[0].checkInOut.day,
+                            propertyDetail.checkInOut[0].checkInOut.time),
+                    getString(R.string.hotel_order_detail_day_and_time, propertyDetail.checkInOut[1].checkInOut.day,
+                            propertyDetail.checkInOut[1].checkInOut.time)
+            )
+
             for (i in 1..propertyDetail.propertyInfo.starRating) {
                 context?.run {
                     container_rating_view.addView(RatingStarView(this))
