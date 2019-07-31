@@ -13,7 +13,7 @@ class SearchShopMapperModule {
 
     @SearchScope
     @Provides
-    internal fun provideSearchShopMapper(): Func1<GraphqlResponse, SearchShopModel> {
+    fun provideSearchShopMapper(): Func1<GraphqlResponse, SearchShopModel> {
         return SearchShopMapper()
     }
 }
