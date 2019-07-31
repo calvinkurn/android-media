@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 public class WalletPref {
     private static final String WALLET_PREF = "wallet.pref";
     public static final String VCC_PREF = "vcc.pref";
+    private static final String DEBIT_INSTANT_URL = "debit_instant_url";
     private static final String TOKOSWIPE_URL = "tokoswipe_url";
 
     private SharedPreferences preferences;
@@ -28,6 +29,15 @@ public class WalletPref {
         SharedPreferences.Editor editor = preferences.edit();
         String jsonVccStatus = gson.toJson(vccUserStatus);
         editor.putString(VCC_PREF, jsonVccStatus).apply();
+    }
+
+    public void saveDebitInstantUrl(String url) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(DEBIT_INSTANT_URL, url).apply();
+    }
+
+    public String retrieveDebitInstantUrl() {
+        return preferences.getString(DEBIT_INSTANT_URL, "");
     }
 
     public WalletModel retrieveWallet() {

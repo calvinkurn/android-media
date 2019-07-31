@@ -25,12 +25,10 @@ class AddNewAddressModule {
             getDistrictUseCase: GetDistrictUseCase,
             getDistrictMapper: GetDistrictMapper,
             autofillUseCase: AutofillUseCase,
-            autofillMapper: AutofillMapper,
             districtBoundaryUseCase: DistrictBoundaryUseCase,
             districtBoundaryMapper: DistrictBoundaryMapper): PinpointMapPresenter {
-        return PinpointMapPresenter(getDistrictUseCase, getDistrictMapper,
-                                    autofillUseCase, autofillMapper,
-                                    districtBoundaryUseCase, districtBoundaryMapper)
+        return PinpointMapPresenter(getDistrictUseCase, getDistrictMapper, autofillUseCase,
+                districtBoundaryUseCase, districtBoundaryMapper)
     }
 
     @Provides

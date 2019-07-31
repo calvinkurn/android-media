@@ -90,9 +90,14 @@
     <string name="et_detail_address_hint">Tulis No. Rumah, Blok, RT/RW</string>
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
     <string name="detail_alamat">Detail Alamat</string>
-    <string name="invalid_title">Alamat tidak valid</string>
+    <string name="invalid_title">Oops, lokasimu tidak dikenal</string>
+    <string name="invalid_desc">Tenang, kamu tetap dapat memilih lokasi ini dengan menambahkan detail alamat secara jelas.</string>
+    <string name="out_of_indonesia_title">Lokasi di luar jangkauan</string>
+    <string name="out_of_indonesia_desc">Saat ini Tokopedia hanya melayani pengiriman di Indonesia.</string>
+    <string name="undetected_title">Lokasi Anda belum terisi</string>
+    <string name="undetected_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="research_description">ic_research</string>
-    <string name="invalid_description">ic_invalid</string>
+    <string name="invalid_img_description">alamat tidak mendukung</string>
     <string name="change_pinpoint">Ubah Pinpoint</string>
     <string name="address_based_on_pinpoint">Alamat (Berdasarkan pinpoint)</string>
     <string name="add_new_address_address_label">Label Alamat</string>
@@ -128,6 +133,7 @@
     <string name="validate_kode_pos">Kode Pos harus diisi</string>
     <string name="validate_kode_pos_length">Kode Pos minimal 5 karakter</string>
     <string name="validate_alamat">Alamat harus diisi</string>
+    <string name="validate_alamat_length">Alamat minimal 5 karakter</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

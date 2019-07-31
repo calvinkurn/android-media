@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Build
 import android.os.Handler
+import android.support.constraint.ConstraintLayout
+import android.support.constraint.ConstraintSet
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.FragmentActivity
@@ -52,20 +54,24 @@ import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
+import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.customview.StickyComponentHelper
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.kotlin.extensions.view.debug
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -79,6 +85,7 @@ open class PlayViewStateImpl(
         var view: View,
         var activity: FragmentActivity,
         var listener: PlayContract.View,
+        var fragmentManager: FragmentManager,
         quickReplyListener: ChatroomContract.QuickReply,
         imageListener: ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener,
         voteAnnouncementListener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
@@ -93,6 +100,7 @@ open class PlayViewStateImpl(
     private var viewModel: ChannelInfoViewModel? = null
     private var stickyComponentViewModel: StickyComponentViewModel? = null
     private var dynamicButtonsViewModel: DynamicButtonsViewModel? = null
+    private var videoStreamViewModel: VideoStreamViewModel? = null
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
     private var quickReplyAdapter: QuickReplyAdapter
@@ -103,7 +111,7 @@ open class PlayViewStateImpl(
     private var channelBanner: ImageView = view.findViewById(R.id.channel_banner)
     private var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
     private var sponsorImage = view.findViewById<ImageView>(R.id.sponsor_image)
-    private var videoContainer = view.findViewById<View>(R.id.video_horizontal)
+    private var videoHorizontalContainer = view.findViewById<View>(R.id.video_horizontal)
     private var pinnedMessageContainer = view.findViewById<View>(R.id.pinned_message)
     private var chatRecyclerView = view.findViewById<RecyclerView>(R.id.chat_list)
     private var quickReplyRecyclerView = view.findViewById<RecyclerView>(R.id.quick_reply)
@@ -123,10 +131,13 @@ open class PlayViewStateImpl(
     private var showVideoToggle: View = view.findViewById(R.id.show_video_toggle)
     private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
+    private var bufferContainer = view.findViewById<View>(R.id.video_buffer_container)
+    private var videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
+    private var gradientBackground = view.findViewById<View>(R.id.top_guideline)
+
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
-    private lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
     private lateinit var webviewDialog: PlayWebviewDialogFragment
 
     private var youtubeRunnable: Handler = Handler()
@@ -139,16 +150,13 @@ open class PlayViewStateImpl(
     private var onLeaveTime: Long = 0
     private val onTrackingTime: Long = 0
 
-    private var defaultBackground = arrayListOf(
-            R.drawable.bg_play_1,
-            R.drawable.bg_play_2,
-            R.drawable.bg_play_3
-    )
-
-    private var defaultType = arrayListOf(
-            "default", "default1", "default2", "default3")
-
     private var interactionAnimationHelper: InteractionAnimationHelper
+    private var overflowMenuHelper: OverflowMenuHelper
+    private var videoVerticalHelper: VideoVerticalHelper
+    private var videoHorizontalHelper: VideoHorizontalHelper
+    private var sponsorHelper: SponsorHelper
+    private var welcomeHelper: PlayWelcomeHelper
+    private var backgroundHelper: PlayBackgroundHelper
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -244,28 +252,55 @@ open class PlayViewStateImpl(
                 sendMessage(pendingChatViewModel)
             }
         }
-        hideVideoToggle.setOnClickListener {
-            it.hide()
-            showVideoToggle.show()
-            youTubePlayer?.pause()
-            videoContainer.visibility = View.GONE
-            setChatListHasSpaceOnTop(true)
-            analytics.eventClickHideVideoToggle(viewModel?.channelId)
-        }
-        showVideoToggle.setOnClickListener {
-            it.hide()
-            hideVideoToggle.show()
-            videoContainer.visibility = View.VISIBLE
-            setChatListHasSpaceOnTop(false)
-            analytics.eventClickShowVideoToggle(viewModel?.channelId)
-        }
         errorView.setOnClickListener {  }
 
+        backgroundHelper = PlayBackgroundHelper(viewModel, activity)
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
+        val videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
+        val rootView = (activity as PlayActivity).findViewById<View>(R.id.root_view)
+        overflowMenuHelper = OverflowMenuHelper(
+                viewModel,
+                activity,
+                onInfoMenuClicked(),
+                toggleHorizontalVideo(),
+                videoHorizontalContainer,
+                changeQualityVideoVertical(),
+                videoVerticalContainer,
+                toggleVerticalVideo(),
+                analytics
+        )
+        videoVerticalHelper = VideoVerticalHelper(
+                viewModel,
+                bufferContainer,
+                activity.supportFragmentManager,
+                videoVerticalContainer,
+                rootView,
+                setChatListHasSpaceOnTop(),
+                backgroundHelper,
+                analytics,
+                gradientBackground,
+                liveIndicator
 
-        errorView.setOnClickListener {  }
+        )
+        videoHorizontalHelper = VideoHorizontalHelper(
+                viewModel,
+                hideVideoToggle,
+                showVideoToggle,
+                videoHorizontalContainer,
+                youTubePlayer,
+                setChatListHasSpaceOnTop(),
+                liveIndicator,
+                analytics
+        )
+        sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
+        welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
+        errorView.setOnClickListener {}
+
     }
 
+    override fun onErrorVideoVertical() {
+        videoVerticalHelper.showRetryOnly()
+    }
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
         viewModel?.let { viewModel ->
@@ -348,19 +383,20 @@ open class PlayViewStateImpl(
                         }
                     })
 
+            val hideStickyComponent = Action1<Long> {
+                stickyComponent.animate().setDuration(200)
+                        .alpha(0f)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator) {
+                                stickyComponent.hide()
+                                stickyComponentViewModel = null
+                            }
+                        })
+            }
             if (item.stickyTime != 0) {
                 Observable.timer(item.stickyTime.toLong(), TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            stickyComponent.animate().setDuration(200)
-                                    .alpha(0f)
-                                    .setListener(object : AnimatorListenerAdapter() {
-                                        override fun onAnimationEnd(animation: Animator) {
-                                            stickyComponent.hide()
-                                            stickyComponentViewModel = null
-                                        }
-                                    })
-                        }
+                        .subscribe(hideStickyComponent, Action1{ it.printStackTrace()})
             }
         }
     }
@@ -397,9 +433,10 @@ open class PlayViewStateImpl(
     private fun scrollToBottom() {
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    chatRecyclerView.scrollToPosition(0)
-                }
+                .subscribe (
+                        {chatRecyclerView.scrollToPosition(0)},
+                        { it.printStackTrace() }
+                )
     }
 
     private fun attemptResetNewMessageCounter() {
@@ -409,12 +446,12 @@ open class PlayViewStateImpl(
 
     override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
         showBottomSheetFirstTime(it)
-        setDefaultBackground()
-        onSuccessGetInfo(it, childFragmentManager)
+        backgroundHelper.setDefaultBackground()
+        onSuccessGetInfo(it)
 
     }
 
-    override fun onSuccessGetInfo(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
+    override fun onSuccessGetInfo(it: ChannelInfoViewModel) {
         loadingView.hide()
 
         var needCueVideo = viewModel?.videoId != it.videoId
@@ -428,9 +465,9 @@ open class PlayViewStateImpl(
         }
 
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
-        setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
-        initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive, needCueVideo)
-        setBottomView()
+        if(needCueVideo) {
+            onVideoHorizontalUpdated(VideoViewModel(it.videoId, it.isVideoLive))
+        }
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {
             replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
@@ -439,36 +476,26 @@ open class PlayViewStateImpl(
 
         setPinnedMessage(it)
         onBackgroundUpdated(it.backgroundViewModel)
-
+        viewModel?.infoUrl = it.infoUrl
         autoAddSprintSale()
-    }
 
-    fun setDefaultBackground() {
-        var background = defaultBackground[0]
-        activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, background))
+        setBottomView()
+        videoVerticalHelper.assignViewModel(it)
+        videoHorizontalHelper.assignViewModel(it)
+        sponsorHelper.assignViewModel(it)
+        sponsorHelper.setSponsor()
+        overflowMenuHelper.assignViewModel(it)
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
-        var background: Int
-        lateinit var url: String
-        it.let {
-            var index = defaultType.indexOf(it.default)
-            background = defaultBackground[Math.max(0, index - 1)]
-            url = it.url
-
-            if (url.isBlank()) {
-                activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, background))
-            } else {
-                ImageHandler.loadBackgroundImage(activity.window, url)
-            }
-        }
+        backgroundHelper.setBackground(it)
     }
 
     /**
      * show overlay behind channel info
      */
     private fun showBottomSheetFirstTime(it: ChannelInfoViewModel) {
-        showInfoBottomSheet(it) {
+        welcomeHelper.showInfoBottomSheet(it) {
             if (it.overlayViewModel != null
                     && it.overlayViewModel.interuptViewModel != null
                     && !it.overlayViewModel.interuptViewModel!!.btnLink!!.isBlank())
@@ -513,23 +540,13 @@ open class PlayViewStateImpl(
             viewModel.adsImageUrl = it.adsUrl
             viewModel.adsId = it.adsId
             viewModel.adsLink = it.adsLink
-            setSponsorData(viewModel.adsId, viewModel.adsImageUrl, viewModel.adsName)
-        }
-
-    }
-
-    override fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager) {
-        viewModel?.let { viewModel ->
-            var needCueVideo = viewModel?.videoId != it.videoId
-            viewModel.videoId = it.videoId
-            viewModel.adsId?.let {
-                setSponsorData(it, viewModel.adsImageUrl, viewModel.adsName)
-            }
-            initVideoFragment(childFragmentManager, it.videoId, it.videoLive, needCueVideo)
+            sponsorHelper.assignViewModel(viewModel)
+            sponsorHelper.setSponsor()
         }
     }
 
     override fun onChannelFrozen(channelId: String) {
+        viewModel?.isFreeze = true
         viewModel?.let { viewModel ->
             var channelName = viewModel.title
             if (channelId == viewModel.channelId) {
@@ -669,6 +686,7 @@ open class PlayViewStateImpl(
 
     }
 
+
     private fun createOverlayView(channelInfoViewModel: ChannelInfoViewModel): View {
         val overlayView = activity.layoutInflater.inflate(R.layout.layout_interupt_page, null)
         val interruptViewModel = channelInfoViewModel.overlayViewModel.interuptViewModel
@@ -731,6 +749,14 @@ open class PlayViewStateImpl(
         if (::overlayDialog.isInitialized && overlayDialog.isShowing) overlayDialog.dismiss()
     }
 
+    private fun closePinnedMessageDialog() {
+        if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) pinnedMessageDialog.dismiss()
+    }
+
+    private fun closeWebViewDialog() {
+        if (::webviewDialog.isInitialized) webviewDialog.dismiss()
+    }
+
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
 
         toolbar.setBackgroundResource(R.color.transparent)
@@ -744,8 +770,6 @@ open class PlayViewStateImpl(
         toolbar.findViewById<TextView>(R.id.toolbar_title).setTextColor(MethodChecker.getColor(activity, R.color.white))
         toolbar.findViewById<TextView>(R.id.toolbar_subtitle).setTextColor(MethodChecker.getColor(activity, R.color.white))
 
-        loadImageChannelBanner(view.context, bannerUrl, blurredBannerUrl)
-
         when {
             title != null -> setVisibilityHeader(View.VISIBLE)
             else -> setVisibilityHeader(View.GONE)
@@ -753,7 +777,7 @@ open class PlayViewStateImpl(
     }
 
     private fun setToolbarWhite() {
-        sponsorLayout.hide()
+        sponsorHelper.hideSponsor()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 10f
             toolbar.setBackgroundResource(R.color.white)
@@ -774,6 +798,10 @@ open class PlayViewStateImpl(
         return errorView.isShown
     }
 
+    override fun verticalVideoShown(): Boolean {
+        return videoVerticalHelper.isVideoShown()
+    }
+
     private fun setToolbarParticipantCount(context: Context, totalParticipant: String) {
         val textParticipant = String.format("%s %s", totalParticipant, context.getString(R.string.view))
         toolbar.findViewById<TextView>(R.id.toolbar_subtitle).text = textParticipant
@@ -789,54 +817,21 @@ open class PlayViewStateImpl(
         channelBanner.visibility = visible
     }
 
-    fun setSponsorData(adsId: String?, adsImageUrl: String?, adsName: String?) {
-        if (adsId == null || adsImageUrl.isNullOrEmpty()) {
-            sponsorLayout.visibility = View.GONE
+    override fun onVideoVerticalUpdated(it: VideoStreamViewModel) {
+        videoVerticalHelper.setData(it)
+        if(it.isActive && it.androidStreamSD.isNotBlank()) {
+            videoVerticalHelper.playVideo(VideoVerticalHelper.VIDEO_480)
+            overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
+            videoHorizontalHelper.hideVideoAndToggle()
+            sponsorHelper.assignVideoVertical(true)
+            setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITH_VIDEO)
+            videoHorizontalHelper.clearDataVideoHorizontal()
         } else {
-            sponsorLayout.visibility = View.VISIBLE
-            ImageHandler.loadImage2(sponsorImage, adsImageUrl, R.drawable.loading_page)
-            viewModel?.let { infoViewModel ->
-                sponsorImage.setOnClickListener {
-                    listener.openRedirectUrl(generateLink(
-                            infoViewModel.adsLink,
-                            GroupChatAnalytics.ATTRIBUTE_BANNER,
-                            infoViewModel.channelUrl,
-                            infoViewModel.title))
-
-                    analytics.eventClickBanner(infoViewModel, adsId, adsName, adsImageUrl)
-                }
-            }
+            videoVerticalHelper.stopVideo()
+            setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO)
+            sponsorHelper.assignVideoVertical(false)
+            overflowMenuHelper.setQualityVideo(0)
         }
-
-        if (sponsorLayout.visibility == View.VISIBLE) {
-            viewModel?.run {
-                analytics.eventViewBanner(this, adsId, adsName, adsImageUrl)
-            }
-        }
-    }
-
-    private fun generateLink(
-            applink: String,
-            attributeBanner: String,
-            channelUrl: String,
-            channelName: String): String {
-        return if (applink.contains("?")) {
-            applink + "&" + generateTrackerAttribution(attributeBanner,
-                    channelUrl, channelName)
-        } else {
-            applink + "?" + generateTrackerAttribution(attributeBanner,
-                    channelUrl, channelName)
-        }
-    }
-
-    private fun generateTrackerAttribution(attributeBanner: String,
-                                           channelUrl: String,
-                                           channelName: String): String {
-        return "tracker_attribution=" + GroupChatAnalytics.generateTrackerAttribution(attributeBanner, channelUrl, channelName)
-    }
-
-    fun getAttributionTracking(attributeName: String): String {
-        return GroupChatAnalytics.generateTrackerAttribution(attributeName, viewModel?.channelUrl, viewModel?.title)
     }
 
     override fun autoPlayVideo() {
@@ -847,29 +842,38 @@ open class PlayViewStateImpl(
         }
     }
 
-    fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean, needCueVideo: Boolean) {
-        videoContainer.hide()
-        liveIndicator.hide()
-        hideVideoToggle.hide()
-        showVideoToggle.hide()
-        setChatListHasSpaceOnTop(true)
-        videoId.let {
-            if (it.isEmpty()) return
+
+    override fun onVideoHorizontalUpdated(it: VideoViewModel) {
+        viewModel?.let { viewModel ->
+            viewModel.videoId = it.videoId
+            viewModel.isVideoLive = it.videoLive
+            initVideoFragment(it.videoId, it.videoLive)
+            videoHorizontalHelper.assignViewModel(viewModel)
+            sponsorHelper.assignViewModel(viewModel)
+            sponsorHelper.setSponsor()
+            overflowMenuHelper.assignViewModel(viewModel)
+            videoVerticalHelper.stopVideo()
+            videoVerticalHelper.setData(VideoStreamViewModel())
+        }
+    }
+
+    private fun initVideoFragment(videoId: String, isVideoLive: Boolean) {
+        videoHorizontalHelper.hideVideoAndToggle()
+        if(!videoId.isNullOrBlank()){
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
-                videoContainer.show()
-                sponsorLayout.hide()
-                setChatListHasSpaceOnTop(false)
-                liveIndicator.showWithCondition(isVideoLive)
+                videoHorizontalHelper.showVideoOnly(isVideoLive)
+                sponsorHelper.hideSponsor()
                 youTubePlayer?.let {
-                    if (needCueVideo) {
-                        it.cueVideo(videoId)
-                    }
+                    it.cueVideo(videoId)
                     autoPlayVideo()
                 }
-
                 videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, getVideoInitializer(videoId))
             }
+            setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO)
+        } else {
+            setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITHOUT_VIDEO)
+            videoHorizontalHelper.hideVideoAndToggle()
         }
     }
 
@@ -894,13 +898,11 @@ open class PlayViewStateImpl(
                                         onPlayTime = System.currentTimeMillis() / 1000L
                                     }
                                     analytics.eventClickAutoPlayVideo(viewModel?.channelId)
-                                    hideVideoToggle.hide()
+                                    videoHorizontalHelper.onPlayed()
                                 }
 
                                 override fun onPaused() {
-                                    if (!showVideoToggle.isShown) {
-                                        hideVideoToggle.show()
-                                    }
+                                    videoHorizontalHelper.onPaused()
                                     analytics.eventClickPauseVideo(viewModel?.channelId)
                                     onPauseTime = System.currentTimeMillis() / 1000L
                                 }
@@ -934,6 +936,8 @@ open class PlayViewStateImpl(
                                 override fun onError(errorReason: YouTubePlayer.ErrorReason) {
                                 }
                             })
+
+                            videoHorizontalHelper.assignPlayer(it)
                         }
 
                     } catch (e: Exception) {
@@ -1039,7 +1043,6 @@ open class PlayViewStateImpl(
 
         if (!webviewDialog.isAdded)
             webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
-
     }
 
     override fun onBackPressed(): Boolean {
@@ -1112,9 +1115,17 @@ open class PlayViewStateImpl(
         replyEditText.text?.clear()
     }
 
-    override fun onInfoMenuClicked() {
+    private fun onInfoMenuClicked(): ()-> Unit{
+        return {
+            viewModel?.run {
+                showWebviewBottomSheet(infoUrl)
+            }
+        }
+    }
+
+    override fun onOverflowMenuClicked() {
         viewModel?.run {
-            showWebviewBottomSheet(infoUrl)
+            overflowMenuHelper.showOverflowMenuBottomSheet()
         }
     }
 
@@ -1128,10 +1139,8 @@ open class PlayViewStateImpl(
         viewModel = channelInfoViewModel
         viewModel?.let {
             if (userSession.isLoggedIn) {
-                if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
-                    welcomeInfoDialog.setOnDismissListener { onDismiss ->
-                        checkShowWhichBottomSheet(channelInfoViewModel)
-                    }
+                if (welcomeHelper.isShowingDialog()) {
+                    welcomeHelper.setOnDismissListener{checkShowWhichBottomSheet(channelInfoViewModel)}
                 } else if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) {
                     pinnedMessageDialog.setOnDismissListener { onDismiss ->
                         checkShowWhichBottomSheet(channelInfoViewModel)
@@ -1168,63 +1177,12 @@ open class PlayViewStateImpl(
         }
     }
 
-    private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
-                                    onDismiss: () -> Unit) {
-        if (!::welcomeInfoDialog.isInitialized) {
-            welcomeInfoDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
-        }
-
-        welcomeInfoDialog.setOnDismissListener {
-            onDismiss()
-            analytics.eventClickJoin(channelInfoViewModel.channelId)
-        }
-
-        val welcomeInfoView = createWelcomeInfoView(welcomeInfoDialog, channelInfoViewModel)
-        welcomeInfoDialog.setOnShowListener() { dialog ->
-            val d = dialog as BottomSheetDialog
-
-            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
-            if (bottomSheet != null) {
-                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-            }
-        }
-
-        welcomeInfoDialog.setCustomContentView(welcomeInfoView, "", false)
-        view.setOnClickListener(null)
-        welcomeInfoDialog.show()
-
-    }
-
-    private fun createWelcomeInfoView(welcomeInfoDialog: CloseableBottomSheetDialog,
-                                      channelInfoViewModel: ChannelInfoViewModel): View {
-        val welcomeInfoView = activity.layoutInflater.inflate(R.layout
-                .channel_info_bottom_sheet_dialog, null)
-
-        val image = welcomeInfoView.findViewById<ImageView>(R.id.product_image)
-        val profile = welcomeInfoView.findViewById<ImageView>(R.id.prof_pict)
-        val title = welcomeInfoView.findViewById<TextView>(R.id.title)
-        val subtitle = welcomeInfoView.findViewById<TextView>(R.id.subtitle)
-        val name = welcomeInfoView.findViewById<TextView>(R.id.name)
-        val participant = welcomeInfoView.findViewById<TextView>(R.id.participant)
-        val ctaButton = welcomeInfoView.findViewById<TextView>(R.id.action_button)
-
-        participant.text = TextFormatter.format(channelInfoViewModel.totalView.toString())
-        name.text = channelInfoViewModel.adminName
-        title.text = channelInfoViewModel.title
-        subtitle.text = channelInfoViewModel.description
-
-        ImageHandler.loadImage2(image, channelInfoViewModel.image, R.drawable.loading_page)
-        ImageHandler.loadImageCircle2(profile.context,
-                profile,
-                channelInfoViewModel.adminPicture,
-                R.drawable.loading_page)
-
-        ctaButton.setOnClickListener {
-            welcomeInfoDialog.dismiss()
-            analytics.eventClickJoin(channelInfoViewModel.channelId)
-        }
-
-        return welcomeInfoView
+    override fun dismissAllBottomSheet() {
+        overflowMenuHelper.hideBottomSheet()
+        welcomeHelper.hideBottomSheet()
+        closeOverlayDialog()
+        closePinnedMessageDialog()
+        closeWebViewDialog()
     }
 
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
@@ -1280,18 +1238,92 @@ open class PlayViewStateImpl(
         buttonTxt.text = buttonText
         button.setOnClickListener {
             action()
-            loadingView.show()
         }
     }
 
-    private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
-        val space = when {
-            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
-            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+    private fun setChatListHasSpaceOnTop(): (Int) -> Unit {
+        return {
+            val layoutParams = chatRecyclerView.layoutParams as ConstraintLayout.LayoutParams
+
+            val fadingEdgeLength = when (it){
+                VideoVerticalHelper.VERTICAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
+                VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                else -> {
+                    view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
+                }
+            }
+            chatRecyclerView.setFadingEdgeLength(fadingEdgeLength)
+
+            val displayMetrics = view.context.resources.displayMetrics
+            val height: Int
+            when (it){
+                VideoVerticalHelper.VERTICAL_WITH_VIDEO -> {
+                    height = 120.dpToPx(displayMetrics)
+                    spaceChatVideo.hide()
+                }
+                VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO -> {
+                    height = 0
+                    spaceChatVideo.hide()
+                }
+                VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO -> {
+                    height = 0
+                    if(!videoVerticalHelper.videoStreamViewModel.androidStreamSD.isNullOrBlank()) {
+                        spaceChatVideo.show()
+                    } else {
+                        spaceChatVideo.hide()
+                    }
+                }
+                else -> {
+                    height = 0
+                    spaceChatVideo.show()
+                }
+            }
+
+            layoutParams.height = height
+            chatRecyclerView.layoutParams = layoutParams
         }
-        spaceChatVideo.showWithCondition(hasSpace)
-        chatRecyclerView.setFadingEdgeLength(space)
-        chatRecyclerView.invalidate()
+    }
+
+    override fun isChannelActive(): Boolean {
+        viewModel?.isFreeze?.let {
+            return !it
+        }
+        return false
+    }
+
+    private fun toggleHorizontalVideo(): (Boolean) -> Unit {
+        return {
+            if(it) {
+                videoHorizontalHelper.showVideo()
+                videoVerticalHelper.stopVideo()
+                setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO)
+            } else {
+                videoHorizontalHelper.hideVideo()
+                setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITHOUT_VIDEO)
+            }
+        }
+    }
+
+    private fun toggleVerticalVideo(): (Boolean) -> Unit {
+        return {
+            if(it) {
+                videoHorizontalHelper.hideVideoAndToggle()
+                sponsorHelper.hideSponsor()
+                youTubePlayer?.release()
+                youTubePlayer = null
+                setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITH_VIDEO)
+            } else {
+                sponsorHelper.setSponsor()
+                videoVerticalHelper.stopVideo()
+                setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO)
+            }
+        }
+    }
+
+    private fun changeQualityVideoVertical(): (Int) -> Unit {
+        return {
+            videoVerticalHelper.playVideo(it)
+        }
     }
 
     override fun onShowOverlayCTAFromDynamicButton(button: DynamicButton) {
@@ -1380,7 +1412,7 @@ open class PlayViewStateImpl(
 
             Observable.timer(3, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
+                    .subscribe( {
                         if (adapter.list.size == 0
                                 || adapter.getItemAt(0) != null
                                 && adapter.getItemAt(0) !is SprintSaleAnnouncementViewModel) {
@@ -1388,7 +1420,7 @@ open class PlayViewStateImpl(
                             adapter.notifyItemInserted(0)
                             listener.vibratePhone()
                         }
-                    }
+                    }, {it.printStackTrace()})
         }
     }
 
@@ -1408,9 +1440,5 @@ open class PlayViewStateImpl(
 
     private fun getCurrentTime(): Long {
         return Date().time / 1000L
-    }
-
-    override fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?) {
-//NOT USED
     }
 }

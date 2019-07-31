@@ -45,7 +45,7 @@ class QuickReplyViewHolder(itemView: View,
                 mesageLayout.setBackgroundDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.chatbot.R.drawable.left_bubble_with_stroke))
                 mesageBottom.visibility = View.VISIBLE
                 mesageBottom.setOnClickListener {
-                    ReadMoreBottomSheet.createInstance(message.text.toString()).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")
+                    ReadMoreBottomSheet.createInstance(element.message).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")
 
                 }
 

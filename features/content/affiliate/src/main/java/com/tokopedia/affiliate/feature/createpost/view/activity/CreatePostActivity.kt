@@ -128,6 +128,7 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
 
     override fun updateHeader(header: HeaderViewModel) {
         avatar.loadImageCircle(header.avatar)
+        avatar.showWithCondition(header.avatar.isNotBlank())
         badge.loadImage(header.badge)
         badge.showWithCondition(header.badge.isNotBlank())
         name.text = header.title

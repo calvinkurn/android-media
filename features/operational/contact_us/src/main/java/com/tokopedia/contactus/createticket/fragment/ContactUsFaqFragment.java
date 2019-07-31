@@ -42,7 +42,6 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
-    private ScrollView mainView;
     private TkpdWebView webView;
     private ProgressBar progressBar;
 
@@ -119,7 +118,6 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         if (webView != null) {
             webView.clearCache(true);
         }
-        mainView = view.findViewById(R.id.scroll_view);
         webView = view.findViewById(R.id.webview);
         progressBar = view.findViewById(R.id.progressbar);
 
@@ -127,6 +125,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         webView.setWebChromeClient(new MyWebViewClient());
         progressBar.setIndeterminate(true);
         WebSettings webSettings = webView.getSettings();
+        webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setAppCacheEnabled(false);
@@ -253,18 +252,6 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
             }
         }
 
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            if (mainView != null)
-                mainView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mainView != null)
-                            mainView.smoothScrollTo(0, 0);
-                    }
-                }, 300);
-        }
 
         @Override
         protected boolean onOverrideUrl(Uri url) {

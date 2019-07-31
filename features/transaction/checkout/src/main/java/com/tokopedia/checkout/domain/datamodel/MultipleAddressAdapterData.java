@@ -12,6 +12,7 @@ import java.util.List;
 public class MultipleAddressAdapterData implements Parcelable {
 
     private String senderName;
+    private String senderCity;
     private String productImageUrl;
     private String productName;
     private String productPrice;
@@ -31,6 +32,7 @@ public class MultipleAddressAdapterData implements Parcelable {
 
     protected MultipleAddressAdapterData(Parcel in) {
         senderName = in.readString();
+        senderCity = in.readString();
         productImageUrl = in.readString();
         productName = in.readString();
         productPrice = in.readString();
@@ -49,6 +51,7 @@ public class MultipleAddressAdapterData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(senderName);
+        dest.writeString(senderCity);
         dest.writeString(productImageUrl);
         dest.writeString(productName);
         dest.writeString(productPrice);
@@ -87,6 +90,14 @@ public class MultipleAddressAdapterData implements Parcelable {
 
     public void setSenderName(String senderName) {
         this.senderName = senderName;
+    }
+
+    public String getSenderCity() {
+        return senderCity;
+    }
+
+    public void setSenderCity(String senderCity) {
+        this.senderCity = senderCity;
     }
 
     public String getProductImageUrl() {

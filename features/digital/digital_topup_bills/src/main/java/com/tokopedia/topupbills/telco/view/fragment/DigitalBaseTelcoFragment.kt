@@ -11,7 +11,6 @@ import android.support.design.widget.Snackbar
 import android.support.v4.widget.NestedScrollView
 import android.text.TextUtils
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -31,7 +30,6 @@ import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
-import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
 import com.tokopedia.unifycomponents.Toaster
@@ -83,7 +81,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun onErrorCustomData(error: Throwable)
 
-    fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
+    open fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
         renderPromoList(catalogMenuDetailData.catalogMenuDetailData.promos)
         renderRecentTransactions(catalogMenuDetailData.catalogMenuDetailData.recommendations)
         renderTicker(catalogMenuDetailData.catalogMenuDetailData.tickers)
@@ -123,9 +121,11 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         } else {
             tickerView.visibility = View.GONE
         }
+
     }
 
     fun navigateContact() {
+        topupAnalytics.eventClickOnContactPickerHomepage()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             activity?.let {
                 permissionCheckerHelper.checkPermission(it,
@@ -161,7 +161,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     }
 
     fun processToCart() {
-        if (userSession.isLoggedIn) {
+        if (userSession.isLoggedIn && ::checkoutPassData.isInitialized) {
             navigateToCart()
         } else {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -225,10 +225,10 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     private fun renderRecentTransactions(recentNumbers: List<TelcoRecommendation>) {
         if (recentNumbers.isNotEmpty()) {
             recentNumbersWidget.setListener(object : DigitalRecentTransactionWidget.ActionListener {
-                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryName: String,
+                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryId: Int,
                                                  position: Int) {
+                    telcoRecommendation.position = position
                     onClickItemRecentNumber(telcoRecommendation)
-                    topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, categoryName, position)
                 }
 
                 override fun onTrackImpressionRecentList(digitalTrackRecentList: List<DigitalTrackRecentTransactionTelco>) {
@@ -243,16 +243,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     }
 
     fun handleFocusClientNumber() {
-        mainContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS)
-        mainContainer.setFillViewport(true)
-        mainContainer.setFocusable(true)
-        mainContainer.setFocusableInTouchMode(true)
         mainContainer.setOnTouchListener { view1, motionEvent ->
-            if (view1 is DigitalClientNumberWidget) {
-                view1.requestFocusFromTouch()
-            } else {
-                view1.clearFocus()
-            }
+            view1.clearFocus()
             false
         }
     }
@@ -285,7 +277,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     topupAnalytics.impressionEnhanceCommercePromoList(digitalTrackPromoList)
                 }
 
-                override fun onClickItemPromo(telcoPromo: TelcoPromo) {
+                override fun onClickItemPromo(telcoPromo: TelcoPromo, position: Int) {
+                    topupAnalytics.clickEnhanceCommercePromo(telcoPromo, position)
                     if (!TextUtils.isEmpty(telcoPromo.urlBannerPromo)) {
                         RouteManager.route(activity, telcoPromo.urlBannerPromo)
                     }

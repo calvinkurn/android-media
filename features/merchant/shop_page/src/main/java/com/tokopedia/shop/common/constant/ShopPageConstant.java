@@ -17,7 +17,7 @@ public class ShopPageConstant {
     public static final int DEFAULT_ETALASE_HIGHLIGHT_POSITION = 3;
     public static final int DEFAULT_ETALASE_POSITION = 4;
     public static final int DEFAULT_ETALASE_TITLE_POSITION = 5;
-    public static final int ITEM_OFFSET = 6;
+    public static final int ITEM_OFFSET = 5;
 
     // if the count data <= SMALL_DATA_LIMIT, the data become vertical list
     public static final int SMALL_DATA_LIMIT = 2;

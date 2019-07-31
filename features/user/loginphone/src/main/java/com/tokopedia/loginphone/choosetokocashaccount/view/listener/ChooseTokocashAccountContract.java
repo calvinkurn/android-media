@@ -57,8 +57,6 @@ public interface ChooseTokocashAccountContract {
         @NotNull
         Function2<String, String, Unit> onGoToCreatePassword();
 
-        @NotNull
-        Function0<Unit> onGoToPhoneVerification();
     }
 
     public interface ViewAdapter {

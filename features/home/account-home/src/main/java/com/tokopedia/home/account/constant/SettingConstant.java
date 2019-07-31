@@ -29,6 +29,7 @@ public class SettingConstant {
     public static final int SETTING_SALDO_ID = 32;
     public static final int SETTING_BANK_ACCOUNT_ID = 33;
     public static final int SETTING_CREDIT_CARD_ID = 34;
+    public static final int SETTING_DEBIT_INSTANT = 35;
     public static final int SETTING_APP_NOTIF_ID = 41;
     public static final int SETTING_EMAIL_NOTIF_ID = 42;
 
@@ -41,6 +42,7 @@ public class SettingConstant {
         public static final String PATH_TERM_CONDITION = "terms.pl";
         public static final String PATH_PRIVACY_POLICY = "privacy.pl";
         public static final String PATH_CHECKOUT_TEMPLATE = "user/settings/template-pembelian";
+        public static final String BASE_WEBVIEW_APPLINK = "tokopedia://webview?url=";
     }
 
     public static class PeopleUrl{

@@ -12,10 +12,14 @@ import android.support.v4.app.Fragment
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
+import android.text.format.DateFormat
 import android.text.style.ClickableSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -41,6 +45,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -73,15 +78,15 @@ import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.ticker.TickerData;
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 
 /**
  * @author by nisie on 18/01/19.
@@ -89,6 +94,8 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
 
     private val ID_ACTION_REGISTER = 111
+    private val ID_ACTION_DEVOPS = 112
+    val RC_SIGN_IN_GOOGLE = 7777
 
     private val REQUEST_SMART_LOCK = 101
     private val REQUEST_SAVE_SMART_LOCK = 102
@@ -126,6 +133,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private lateinit var source : String
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var loginLayout: LinearLayout
@@ -200,6 +209,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (getDraw() != null) {
             menuItem.icon = getDraw()
         }
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, getString(R.string.developer_options))
+            menu.findItem(ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -217,8 +230,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         val id = item!!.itemId
         if (id == ID_ACTION_REGISTER) {
             registerAnalytics.trackClickTopSignUpButton()
-            goToRegisterInitial()
+            goToRegisterInitial(source)
             return true
+        }
+        if (id == ID_ACTION_DEVOPS) {
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -242,6 +261,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             mIris = IrisAnalytics.getInstance(this)
         }
 
+        source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -329,7 +349,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         emailPhoneEditText.setOnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE) {
                 showLoadingLogin()
-                analytics.trackClickOnNext()
+                analytics.trackClickOnNext(emailPhoneEditText.text.toString())
                 presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
                 true
             } else {
@@ -340,7 +360,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         partialActionButton.text = getString(R.string.next)
         partialActionButton.setOnClickListener {
             showLoadingLogin()
-            analytics.trackClickOnNext()
+            analytics.trackClickOnNext(emailPhoneEditText.text.toString())
             presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
         }
 
@@ -359,6 +379,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
         }
 
+        partialRegisterInputView.setButtonValidator(true)
         partialRegisterInputView.findViewById<TextView>(R.id.change_button).setOnClickListener {
             val email = emailPhoneEditText.text.toString()
             onChangeButtonClicked()
@@ -389,7 +410,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             register_button.setText(spannable, TextView.BufferType.SPANNABLE)
             register_button.setOnClickListener {
                 registerAnalytics.trackClickBottomSignUpButton()
-                goToRegisterInitial()
+                goToRegisterInitial(source)
             }
 
             val forgotPassword = partialRegisterInputView.findViewById<TextView>(R.id.forgot_pass)
@@ -522,11 +543,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     }
 
-    private fun goToRegisterInitial() {
+    private fun goToRegisterInitial(source : String) {
         if (activity != null) {
             analytics.eventClickRegisterFromLogin()
             val intent = RegisterInitialActivity.getCallingIntent(activity)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             startActivity(intent)
             activity!!.finish()
         }
@@ -582,6 +604,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 //Login Event
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
+                loginEventAppsFlyer(userSession.userId, userSession.email)
             }
 
             if (::mIris.isInitialized) {
@@ -606,8 +629,18 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
+    private fun loginEventAppsFlyer(userId:String, userEmail:String){
+        var dataMap = HashMap<String, Any>()
+        dataMap.put("user_id", userId)
+        dataMap.put("user_email", userEmail)
+        val date = Date()
+        val stringDate = DateFormat.format("EEEE, MMMM d, yyyy ", date.time)
+        dataMap.put("timestamp", stringDate)
+        TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
+    }
+
     fun onErrorLogin(errorMessage: String?) {
-        analytics.eventFailedLogin(userSession.loginMethod)
+        analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
 
         dismissLoadingLogin()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
@@ -620,13 +653,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun trackSuccessValidate() {
-        analytics.trackClickOnNextSuccess()
+        analytics.trackClickOnNextSuccess(emailPhoneEditText.text.toString())
     }
 
     override fun onErrorValidateRegister(throwable: Throwable) {
-        analytics.trackClickOnNextFail()
         dismissLoadingLogin()
         val message = ErrorHandlerSession.getErrorMessage(context, throwable)
+        analytics.trackClickOnNextFail(emailPhoneEditText.text.toString(), message)
         partialRegisterInputView.onErrorValidate(message)
     }
 
@@ -738,7 +771,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onErrorLoginEmail(email: String): (Throwable) -> Unit {
         return {
-            analytics.trackClickOnLoginButtonError()
             stopTrace()
 
             if (isEmailNotActive(it, email)) {
@@ -761,6 +793,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                                 analytics.logUnknownError(it)
                             }
                         }
+
 
                     }
                 }, it, context)
@@ -801,13 +834,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    override fun onGoToPhoneVerification(): () -> Unit {
-        return {
-            val intent = RouteManager.getIntent(context, ApplinkConst.PHONE_VERIFICATION)
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE)
-        }
-    }
-
     override fun onGoToActivationPage(email: String): (MessageErrorException) -> Unit {
         return {
             val intent = ActivationActivity.getCallingIntent(activity,
@@ -843,11 +869,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onErrorReloginAfterSQ(validateToken: String): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            analytics.eventFailedLogin(userSession.loginMethod)
-            NetworkErrorHelper.createSnackbarWithAction(activity,
-                    ErrorHandlerSession.getErrorMessage(it, context, true)) {
+            val errorMessage =   ErrorHandlerSession.getErrorMessage(it, context, true)
+            NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
                 presenter.reloginAfterSQ(validateToken)
             }.showRetrySnackbar()
+
+            analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
+
         }
     }
 
@@ -896,7 +924,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 presenter.loginEmail(data.extras!!.getString(SmartLockActivity.USERNAME, ""),
                         data.extras!!.getString(SmartLockActivity.PASSWORD, ""))
                 activity?.let {
-                    analytics.eventClickLoginEmailButton(it.applicationContext)
+                    analytics.eventClickSmartLock(it.applicationContext)
                 }
             } else if (requestCode == REQUEST_SMART_LOCK
                     && resultCode == SmartLockActivity.RC_READ
@@ -919,13 +947,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
-                analytics.eventFailedLogin(userSession.loginMethod)
+                analytics.eventFailedLogin(userSession.loginMethod, getString(R.string.error_login_user_cancel_create_password))
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-                onSuccessLogin()
+                onGoToWelcomeNewUserPage()
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
-                analytics.eventFailedLogin(userSession.loginMethod)
+                analytics.eventFailedLogin(userSession.loginMethod, getString(R.string.error_login_user_cancel_activate_account))
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE) {
@@ -937,14 +965,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val msisdn = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                startActivityForResult(WelcomePageActivity.newInstance(activity),
-                        REQUEST_WELCOME_PAGE)
-            } else if (requestCode == REQUEST_WELCOME_PAGE) {
-                if (resultCode == Activity.RESULT_OK) {
-                    goToProfileCompletionPage()
-                } else {
-                    onSuccessLogin()
-                }
+               onGoToWelcomeNewUserPage()
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -958,13 +979,25 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 onSuccessLogin()
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     || requestCode == REQUEST_CHOOSE_ACCOUNT) {
-                analytics.trackLoginPhoneNumberFailed()
+                analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
                 dismissLoadingLogin()
             } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
+    }
+
+    private fun onGoToWelcomeNewUserPage() {
+        if(isFromAccountPage()) {
+            val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+            startActivity(intent)
+        }
+        onSuccessLogin()
+    }
+
+    private fun isFromAccountPage(): Boolean {
+        return source == "account"
     }
 
     private fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
@@ -1093,6 +1126,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 Ticker.TYPE_ANNOUNCEMENT
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
     }
 
 }

@@ -265,18 +265,19 @@ public class ImageHandler {
     }
 
     public static void loadImage2(ImageView imageview, String url, int resId) {
+        Drawable error = AppCompatResources.getDrawable(imageview.getContext(), resId);
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
                     .load(url)
                     .placeholder(R.drawable.loading_page)
                     .dontAnimate()
-                    .error(resId)
+                    .error(error)
                     .into(imageview);
         } else {
             Glide.with(imageview.getContext())
                     .load(url)
                     .placeholder(resId)
-                    .error(resId)
+                    .error(error)
                     .into(imageview);
         }
     }

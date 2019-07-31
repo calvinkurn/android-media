@@ -17,6 +17,7 @@ public class CartItemModel implements Parcelable {
     private int productId;
     private String name;
     private double price;
+    private double originalPrice;
     private int currency;
 
     private int weightUnit;
@@ -123,6 +124,14 @@ public class CartItemModel implements Parcelable {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(double originalPrice) {
+        this.originalPrice = originalPrice;
     }
 
     public int getCurrency() {
@@ -380,6 +389,7 @@ public class CartItemModel implements Parcelable {
                 .append(getCartId(), that.getCartId())
                 .append(getProductId(), that.getProductId())
                 .append(getPrice(), that.getPrice())
+                .append(getOriginalPrice(), that.getOriginalPrice())
                 .append(getCurrency(), that.getCurrency())
                 .append(getWeightUnit(), that.getWeightUnit())
                 .append(getWeight(), that.getWeight())
@@ -415,6 +425,7 @@ public class CartItemModel implements Parcelable {
                 .append(getProductId())
                 .append(getName())
                 .append(getPrice())
+                .append(getOriginalPrice())
                 .append(getCurrency())
                 .append(getWeightUnit())
                 .append(getWeight())
@@ -451,6 +462,7 @@ public class CartItemModel implements Parcelable {
         dest.writeInt(this.productId);
         dest.writeString(this.name);
         dest.writeDouble(this.price);
+        dest.writeDouble(this.originalPrice);
         dest.writeInt(this.currency);
         dest.writeInt(this.weightUnit);
         dest.writeDouble(this.weight);
@@ -484,6 +496,7 @@ public class CartItemModel implements Parcelable {
         this.productId = in.readInt();
         this.name = in.readString();
         this.price = in.readDouble();
+        this.originalPrice = in.readDouble();
         this.currency = in.readInt();
         this.weightUnit = in.readInt();
         this.weight = in.readDouble();

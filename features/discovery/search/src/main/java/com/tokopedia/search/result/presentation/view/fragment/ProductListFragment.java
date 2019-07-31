@@ -490,7 +490,7 @@ public class ProductListFragment
 
     @Override
     public void onItemClicked(ProductItemViewModel item, int adapterPosition) {
-        Intent intent = getProductIntent(item.getProductID());
+        Intent intent = getProductIntent(item.getProductID(), item.getWarehouseID());
 
         if(intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
@@ -499,11 +499,15 @@ public class ProductListFragment
         }
     }
 
-    private Intent getProductIntent(String productId){
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        } else {
+    private Intent getProductIntent(String productId, String warehouseId){
+        if (getContext() == null) {
             return null;
+        }
+        
+        if (!TextUtils.isEmpty(warehouseId)) {
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID, productId, warehouseId);
+        } else {
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         }
     }
 
