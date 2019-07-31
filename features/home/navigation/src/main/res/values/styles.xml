@@ -3,7 +3,6 @@
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
-
     <style name="Tabs.Notification">
         <item name="footerIndicatorHeight">1dp</item>
         <item name="footerIndicatorStyle">underline</item>

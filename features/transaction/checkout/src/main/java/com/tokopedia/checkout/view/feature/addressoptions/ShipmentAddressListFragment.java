@@ -420,51 +420,45 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE:
-                    RecipientAddressModel newRecipientAddressModel = null;
+                    RecipientAddressModel address = null;
                     if (data != null && data.hasExtra(LogisticCommonConstant.EXTRA_ADDRESS)) {
-                        Destination newAddress = data.getParcelableExtra(LogisticCommonConstant.EXTRA_ADDRESS);
-                        newRecipientAddressModel = new RecipientAddressModel();
-                        newRecipientAddressModel.setAddressName(newAddress.getAddressName());
-                        newRecipientAddressModel.setDestinationDistrictId(newAddress.getDistrictId());
-                        newRecipientAddressModel.setCityId(newAddress.getCityId());
-                        newRecipientAddressModel.setProvinceId(newAddress.getProvinceId());
-                        newRecipientAddressModel.setRecipientName(newAddress.getReceiverName());
-                        newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
-                        newRecipientAddressModel.setStreet(newAddress.getAddressStreet());
-                        newRecipientAddressModel.setPostalCode(newAddress.getPostalCode());
+                        Destination intentModel = data.getParcelableExtra(LogisticCommonConstant.EXTRA_ADDRESS);
+                        address = new RecipientAddressModel();
+                        address.setAddressName(intentModel.getAddressName());
+                        address.setDestinationDistrictId(intentModel.getDistrictId());
+                        address.setCityId(intentModel.getCityId());
+                        address.setProvinceId(intentModel.getProvinceId());
+                        address.setRecipientName(intentModel.getReceiverName());
+                        address.setRecipientPhoneNumber(intentModel.getReceiverPhone());
+                        address.setStreet(intentModel.getAddressStreet());
+                        address.setPostalCode(intentModel.getPostalCode());
                     }
-                    mCurrentAddress = newRecipientAddressModel;
-                    onSearchReset();
+                    mActivityListener.finishAndSendResult(address);
                     break;
                 case LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT:
                     onSearchReset();
                     break;
                 case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY:
                 case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED:
-                    RecipientAddressModel newAddress = setRecipientAddressModel(data);
+                    RecipientAddressModel newAddress = new RecipientAddressModel();
+                    if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
+                        SaveAddressDataModel intentModel = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
+                        newAddress.setId(String.valueOf(intentModel.getId()));
+                        newAddress.setAddressName(intentModel.getAddressName());
+                        newAddress.setDestinationDistrictId(String.valueOf(intentModel.getDistrictId()));
+                        newAddress.setCityId(String.valueOf(intentModel.getCityId()));
+                        newAddress.setProvinceId(String.valueOf(intentModel.getProvinceId()));
+                        newAddress.setRecipientName(intentModel.getReceiverName());
+                        newAddress.setRecipientPhoneNumber(intentModel.getPhone());
+                        newAddress.setStreet(intentModel.getFormattedAddress());
+                        newAddress.setPostalCode(intentModel.getPostalCode());
+                    }
                     mActivityListener.finishAndSendResult(newAddress);
                     break;
                 default:
                     break;
             }
         }
-    }
-
-    private RecipientAddressModel setRecipientAddressModel(Intent data) {
-        RecipientAddressModel newRecipientAddAddressModel = new RecipientAddressModel();
-        if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
-            SaveAddressDataModel saveAddressDataModel = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
-            newRecipientAddAddressModel.setId(String.valueOf(saveAddressDataModel.getId()));
-            newRecipientAddAddressModel.setAddressName(saveAddressDataModel.getAddressName());
-            newRecipientAddAddressModel.setDestinationDistrictId(String.valueOf(saveAddressDataModel.getDistrictId()));
-            newRecipientAddAddressModel.setCityId(String.valueOf(saveAddressDataModel.getCityId()));
-            newRecipientAddAddressModel.setProvinceId(String.valueOf(saveAddressDataModel.getProvinceId()));
-            newRecipientAddAddressModel.setRecipientName(saveAddressDataModel.getReceiverName());
-            newRecipientAddAddressModel.setRecipientPhoneNumber(saveAddressDataModel.getPhone());
-            newRecipientAddAddressModel.setStreet(saveAddressDataModel.getFormattedAddress());
-            newRecipientAddAddressModel.setPostalCode(saveAddressDataModel.getPostalCode());
-        }
-        return newRecipientAddAddressModel;
     }
 
     @Override
@@ -477,7 +471,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, 0, false, false, null,
+                            false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
                 } else {
@@ -495,7 +489,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, 0, false, false, null,
+                            false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
                 } else {
@@ -557,6 +551,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     public interface ICartAddressChoiceActivityListener {
         void finishAndSendResult(RecipientAddressModel selectedAddressResult);
+
         void requestCornerList();
     }
 

@@ -51,7 +51,6 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<Visitable>
         this.isVerticalLayout = isVerticalLayout;
         this.shopCarouselSeeAllClickedListener = shopCarouselSeeAllClickedListener;
         shopProductCarouselAdapter = new ShopProductAdapter(new ShopProductAdapterTypeFactory(
-                null,
                 shopProductClickedListener, null, null,
                 null, null,
                 false, deviceWidth, shopTrackType));

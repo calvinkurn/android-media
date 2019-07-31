@@ -1,9 +1,6 @@
 package com.tokopedia.recommendation_widget_common.data.mapper
 
-import com.crashlytics.android.Crashlytics
-import com.tokopedia.kotlin.util.ContainNullException
-import com.tokopedia.kotlin.util.isContainNull
-import com.tokopedia.recommendation_widget_common.BuildConfig
+import com.tokopedia.kotlin.util.throwIfNull
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -16,14 +13,7 @@ import rx.functions.Func1
 class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationData>,
         List<RecommendationWidget>> {
     override fun call(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
-        isContainNull(recommendations) {
-            val exception = ContainNullException("Found $it in ${RecommendationEntityMapper::class.java.simpleName}")
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(exception)
-            }
-            throw exception
-        }
-
+        throwIfNull(recommendations, RecommendationEntityMapper::class.java)
         return mappingToRecommendationModel(recommendations)
     }
 
@@ -46,7 +36,8 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                                 recommendation,
                                 recomendationData.title ?: "",
                                 recomendationData.pageName ?: "",
-                                index + 1)
+                                index + 1,
+                                recomendationData.layoutType ?: "")
                     } ?: emptyList())
             return RecommendationWidget(
                     recommendationItemList,
@@ -67,7 +58,8 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                 data: RecomendationEntity.Recommendation,
                 title: String,
                 pageName: String,
-                position: Int): RecommendationItem {
+                position: Int,
+                layoutType: String): RecommendationItem {
             return RecommendationItem(
                     data.id,
                     data.name ?: "",
@@ -86,6 +78,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.stock,
                     data.recommendationType ?: "",
                     data.isIsTopads,
+                    data.isWishlist,
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
@@ -99,7 +92,9 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     pageName,
                     data.minOrder ?: 1,
                     data.shop?.city ?: "",
-                    data.badges?.map { it.imageUrl } ?: emptyList()
+                    data.badges?.map { it.imageUrl } ?: emptyList(),
+                    layoutType
+
             )
 
         }

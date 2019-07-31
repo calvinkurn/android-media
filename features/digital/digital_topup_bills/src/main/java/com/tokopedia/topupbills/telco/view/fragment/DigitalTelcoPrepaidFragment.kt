@@ -61,8 +61,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
     private var selectedProductId = ""
     private var selectedCategoryId = 0
-
-    private lateinit var selectedOperatorName: String
+    private var selectedOperatorName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -400,8 +399,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         selectedCategoryId = telcoRecommendation.categoryId
         telcoClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
 
-        topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, selectedOperatorName,
-                telcoRecommendation.position)
+        if (selectedOperatorName.isNotEmpty()) {
+            topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, selectedOperatorName,
+                    telcoRecommendation.position)
+        }
     }
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {

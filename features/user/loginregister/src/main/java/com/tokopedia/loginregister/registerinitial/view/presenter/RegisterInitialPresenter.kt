@@ -148,7 +148,6 @@ class RegisterInitialPresenter @Inject constructor(
                 view.onSuccessGetUserInfo(),
                 view.onErrorGetUserInfo(),
                 view.onGoToCreatePassword(),
-                view.onGoToPhoneVerification(),
                 shouldGoToCreatePassword))
     }
 
