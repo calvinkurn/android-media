@@ -87,5 +87,5 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
 
     public void setContactUsUrl(String contactUsUrl) { this.contactUsUrl = contactUsUrl; }
 
-    public String getContactUsUrl() { return getContactUsUrl(); }
+    public String getContactUsUrl() { return contactUsUrl; }
 }
