@@ -4,6 +4,7 @@ package com.tokopedia.topchat.common.analytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -80,6 +81,7 @@ public class TopChatAnalytics {
         public static final String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
         public static final String CLICK_ATC_PRODUCT_THUMBNAIL ="click atc on product thumbnail";
         public static final String CLICK_BUY_PRODUCT_THUMBNAIL ="click buy on product thumbnail";
+        public static final String SENT_INVOICE_ATTACHMENT = "click kirim after attach invoice";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
 
@@ -348,6 +350,17 @@ public class TopChatAnalytics {
                         )
                 )
         ));
+    }
+
+    public void invoiceAttachmentSent(@NotNull InvoicePreviewViewModel invoice) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, Name.CHAT_DETAIL,
+                        EVENT_CATEGORY, Category.CHAT_DETAIL,
+                        EVENT_ACTION, Action.SENT_INVOICE_ATTACHMENT,
+                        EVENT_LABEL, invoice.getId()
+                        )
+        );
     }
 
     public String getField(String blastId) {
