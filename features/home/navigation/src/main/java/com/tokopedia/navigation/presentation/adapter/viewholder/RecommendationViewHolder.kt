@@ -116,7 +116,7 @@ class RecommendationViewHolder(itemView: View, private val listener: InboxAdapte
                     if(success){
                         element.recommendationItem.isWishlist = !element.recommendationItem.isWishlist
                         setButtonWishlistImage(element.recommendationItem.isWishlist)
-                        InboxGtmTracker.getInstance().eventClickRecommendationWishlist(element.recommendationItem, element.recommendationItem.isWishlist)
+                        InboxGtmTracker.getInstance().eventClickRecommendationWishlist(context, element.recommendationItem, element.recommendationItem.isWishlist)
                         if(element.recommendationItem.isWishlist){
                             showSuccessAddWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist))
                         } else {

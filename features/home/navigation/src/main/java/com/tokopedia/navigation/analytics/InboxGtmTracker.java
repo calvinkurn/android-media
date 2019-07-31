@@ -65,15 +65,18 @@ public class InboxGtmTracker {
                 "position", String.valueOf(position)));
     }
 
-    public void eventClickRecommendationWishlist(RecommendationItem recommendationItem, boolean isAdd){
-        this.dataLayerList.add(
-          DataLayer.mapOf(
-                  "event", "clickInbox",
-                  "eventCategory", "inbox page",
-                  "eventAction", String.format("click %s wishlist on product recommendation", isAdd ? "add" : "remove"),
-                  "eventLabel", ""
-          )
-        );
+    public void eventClickRecommendationWishlist(Context context, RecommendationItem recommendationItem, boolean isAdd){
+        ContextAnalytics tracker = getTracker(context);
+        if(tracker != null) {
+            Map<String, Object> map =
+                    DataLayer.mapOf(
+                            "event", "clickInbox",
+                            "eventCategory", "inbox page",
+                            "eventAction", String.format("click %s wishlist on product recommendation", isAdd ? "add" : "remove"),
+                            "eventLabel", ""
+                    );
+            tracker.sendEnhanceEcommerceEvent(map);
+        }
     }
 
     public void eventInboxProductClick(Context context, RecommendationItem recommendationItem, int position) {
