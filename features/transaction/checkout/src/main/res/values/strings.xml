@@ -328,5 +328,6 @@
     <string name="text_desc_asuransi">Kamu akan menghapus asuransi demam berdarah. Apa kamu yakin?</string>
     <string name="text_button_positive">Ya, Hapus Produk</string>
     <string name="text_button_negative">Kembali</string>
+    <string name="checkout_insurance_default_title">Produk Asuransi</string>
 
 </resources>
