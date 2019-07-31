@@ -1,25 +1,20 @@
 package com.tokopedia.discovery.search.view.fragment;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteAdapter;
@@ -223,9 +218,8 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         if(getActivity() == null) return;
 
         getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY);
-        getActivity().finish();
-
         RouteManager.route(getActivity(), applink);
+        getActivity().finish();
     }
 
     @Override
