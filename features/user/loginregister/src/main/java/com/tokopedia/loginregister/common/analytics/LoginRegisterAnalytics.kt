@@ -595,8 +595,8 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     fun eventSuccessLogin(actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
         when (actionLoginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessLoginWithEmail(registerAnalytics)
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessLoginWithGoogle()
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessLoginWithFacebook()
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessLoginWithFacebook()
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessLoginWithGoogle()
             UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessLoginWithPhone(registerAnalytics)
             UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> onSuccessLoginWithSmartLock()
 
@@ -670,8 +670,8 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
         when (actionLoginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onErrorLoginWithEmail(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onErrorLoginWithGoogle(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onErrorLoginWithFacebook(errorMessage)
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onErrorLoginWithFacebook(errorMessage)
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onErrorLoginWithGoogle(errorMessage)
             UserSessionInterface.LOGIN_METHOD_PHONE -> onErrorLoginWithPhone(errorMessage)
             UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> onErrorLoginWithSmartLock(errorMessage)
 
