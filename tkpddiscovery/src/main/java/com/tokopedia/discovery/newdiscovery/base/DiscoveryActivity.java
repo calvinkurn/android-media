@@ -78,7 +78,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private TkpdProgressDialog tkpdProgressDialog;
     private boolean isFromCamera = false;
     private String imagePath;
-    private UserSessionInterface userSession;
     protected View root;
 
     protected SearchParameter searchParameter;
@@ -87,7 +86,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
-        userSession = new UserSession(this);
         proceed();
     }
 
@@ -336,17 +334,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     protected void performRequestProduct() {
-        performRequestProduct("");
-    }
-
-    protected void performRequestProduct(String keyword) {
-        performRequestProduct(keyword, "");
-    }
-
-    protected void performRequestProduct(String searchQuery, String categoryId) {
-        updateSearchParameterBeforeSearchIfNotEmpty(searchQuery, categoryId);
-
-        searchQuery = this.searchParameter.getSearchQuery();
+        String searchQuery = this.searchParameter.getSearchQuery();
 
         onSearchingStart(searchQuery);
 
@@ -364,16 +352,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private void moveToSearchPage() {
         Intent searchActivityIntent = createIntentToSearchActivity();
 
-        if(isActivityCalledForResult()) {
-            setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, searchActivityIntent);
-        }
-        else {
-            startActivity(searchActivityIntent);
-        }
-    }
-
-    private boolean isActivityCalledForResult() {
-        return getCallingActivity() != null;
+        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, searchActivityIntent);
+        startActivity(searchActivityIntent);
+        finish();
     }
 
     private Intent createIntentToSearchActivity() {
@@ -388,41 +369,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
 
         return intent;
-    }
-
-    private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {
-        if(searchParameter == null) searchParameter = new SearchParameter();
-
-        setSearchParameterQueryIfNotEmpty(searchQuery);
-        setSearchParameterUniqueId();
-        setSearchParameterUserIdIfLoggedIn();
-        setSearchParameterCategoryIdIfNotEmpty(categoryId);
-    }
-
-    private void setSearchParameterQueryIfNotEmpty(String searchQuery) {
-        if(!TextUtils.isEmpty(searchQuery)) {
-            searchParameter.setSearchQuery(searchQuery);
-        }
-    }
-
-    private void setSearchParameterUniqueId() {
-        String uniqueId = userSession.isLoggedIn() ?
-                AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(gcmHandler.getRegistrationId());
-
-        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
-    }
-
-    private void setSearchParameterUserIdIfLoggedIn() {
-        if(userSession.isLoggedIn()) {
-            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
-        }
-    }
-
-    private void setSearchParameterCategoryIdIfNotEmpty(String categoryId) {
-        if(!TextUtils.isEmpty(categoryId)) {
-            searchParameter.set(SearchApiConst.SC, categoryId);
-        }
     }
 
     public void deleteAllRecentSearch() {

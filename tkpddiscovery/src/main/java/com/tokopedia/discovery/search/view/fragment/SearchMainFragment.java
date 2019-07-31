@@ -219,12 +219,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
         Intent intent = getIntentForItemClicked(applink, webUrl);
 
-        if(isActivityCalledForResult()) {
-            setAutoCompleteActivityResult(intent);
-        }
-        else {
-            startActivityFromAutoComplete(intent);
-        }
+        startActivityFromAutoComplete(intent);
     }
 
     private Intent getIntentForItemClicked(String applink, String webUrl) {
@@ -269,21 +264,10 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         return null;
     }
 
-    private boolean isActivityCalledForResult() {
-        return getActivity() != null
-                && getActivity().getCallingActivity() != null;
-    }
-
-    private void setAutoCompleteActivityResult(Intent intent) {
-        if(intent == null || getActivity() == null) return;
-
-        getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, intent);
-        getActivity().finish();
-    }
-
     private void startActivityFromAutoComplete(Intent intent) {
         if(intent == null || getActivity() == null) return;
 
+        getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, intent);
         getActivity().finish();
         startActivity(intent);
     }
