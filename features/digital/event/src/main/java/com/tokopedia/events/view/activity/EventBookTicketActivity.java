@@ -100,23 +100,25 @@ public class EventBookTicketActivity
 
     @Override
     public void renderFromDetails(EventsDetailsViewModel detailsViewModel) {
-        toolbar.setTitle(detailsViewModel.getTitle());
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
-        title = detailsViewModel.getTitle();
-        if (detailsViewModel.getSchedulesViewModels() != null) {
-            if (detailsViewModel.getSchedulesViewModels().size() > 1) {
-                tvUbahJadwal.setVisibility(View.VISIBLE);
-            } else
+        if (detailsViewModel != null) {
+            toolbar.setTitle(detailsViewModel.getTitle());
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
+            title = detailsViewModel.getTitle();
+            if (detailsViewModel.getSchedulesViewModels() != null) {
+                if (detailsViewModel.getSchedulesViewModels().size() > 1) {
+                    tvUbahJadwal.setVisibility(View.VISIBLE);
+                } else
+                    tvUbahJadwal.setVisibility(View.GONE);
+            } else {
                 tvUbahJadwal.setVisibility(View.GONE);
-        } else {
-            tvUbahJadwal.setVisibility(View.GONE);
+            }
+            tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
+            if (detailsViewModel.getTimeRange() != null && detailsViewModel.getTimeRange().length() > 1)
+                tvDate.setText(Utils.getSingletonInstance().convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
+            else
+                tvDate.setVisibility(View.GONE);
+            setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
         }
-        tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
-        if (detailsViewModel.getTimeRange() != null && detailsViewModel.getTimeRange().length() > 1)
-            tvDate.setText(Utils.getSingletonInstance().convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
-        else
-            tvDate.setVisibility(View.GONE);
-        setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
     }
 
     @Override
