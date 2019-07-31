@@ -1,12 +1,10 @@
 package com.tokopedia.shop.product.view.model;
 
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
-
 /**
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class ShopProductPromoViewModel implements BaseShopProductViewModel {
+public class ShopProductPromoViewModel {
 
     private String url;
     private boolean isLogin;
@@ -40,8 +38,4 @@ public class ShopProductPromoViewModel implements BaseShopProductViewModel {
         return userId;
     }
 
-    @Override
-    public int type(ShopProductAdapterTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
 }

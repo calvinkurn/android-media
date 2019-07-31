@@ -57,6 +57,7 @@ import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PIC
 /**
  * A placeholder fragment containing a simple view.
  */
+@Deprecated
 public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeopleProfileFragmentPresenter>
         implements ManagePeopleProfileFragmentView {
 

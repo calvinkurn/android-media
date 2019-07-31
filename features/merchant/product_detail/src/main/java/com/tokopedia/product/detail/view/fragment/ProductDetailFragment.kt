@@ -88,6 +88,7 @@ import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
+import com.tokopedia.product.detail.view.activity.CourierActivity
 import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
@@ -113,7 +114,9 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -630,7 +633,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.goldOS?.shopTypeString,
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType)
-                intent.putExtra(NormalCheckoutActivity.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                if(::tradeInParams.isInitialized) {
+                    intent.putExtra(NormalCheckoutActivity.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                }
                 startActivityForResult(intent,
                         REQUEST_CODE_NORMAL_CHECKOUT)
             }
@@ -1170,7 +1175,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
         headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
         productInfoP3.rateEstSummarizeText?.let {
-            partialVariantAndRateEstView.renderRateEstimation(it) { gotoRateEstimation(false) }
+            partialVariantAndRateEstView.renderRateEstimation(it) {
+                productDetailTracking.eventShippingRateEstimationClicked()
+                gotoRateEstimation(false)
+            }
         }
     }
 
@@ -1213,6 +1221,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun goToCourier(
+            productId : String,
+            shipment: List<ShopShipment>,
+            bbInfos: List<BBInfo>
+    ) {
+        activity?.let {
+            startActivity(CourierActivity.createIntent(it, productId, shipment, bbInfos))
+        }
+    }
+
     private fun gotoRateEstimation(forDeliveryInfo: Boolean) {
         if (productInfo == null && shopInfo == null) return
         activity?.let {
@@ -1242,11 +1260,17 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 val userSession = UserSession(it)
-                if (userSession.isLoggedIn) {
-                    productStatsView.renderClickShipmentForLoggedInUser(it) { gotoRateEstimation(true) }
-                } else {
-                    productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString()
-                            ?: "", shopInfo.shipments, shopInfo.bbInfo)
+                productStatsView.renderClickShipping(it) {
+                    productDetailTracking.eventShippingClicked()
+                    if (userSession.isLoggedIn) {
+                        gotoRateEstimation(true)
+                    } else {
+                        goToCourier(
+                                productInfo?.basic?.id?.toString()?: "",
+                                shopInfo.shipments,
+                                shopInfo.bbInfo
+                        )
+                    }
                 }
             }
             productDetailTracking.sendScreen(shopInfo.shopCore.shopID, shopInfo.goldOS.shopTypeString,
@@ -1342,11 +1366,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun updateWishlist(wishlisted: Boolean) {
         context?.let {
             if (wishlisted) {
+                fab_detail.hide()
                 fab_detail.isActivated = true
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
+                fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_checked))
+                fab_detail.show()
             } else {
+                fab_detail.hide()
                 fab_detail.isActivated = false
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                fab_detail.show()
             }
         }
     }

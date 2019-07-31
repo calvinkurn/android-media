@@ -1,0 +1,14 @@
+query feedTabs {
+    feedTabs {
+        meta {
+            selectedIndex
+        }
+        data {
+            title
+            key
+            type
+            position
+            isActive
+        }
+    }
+}

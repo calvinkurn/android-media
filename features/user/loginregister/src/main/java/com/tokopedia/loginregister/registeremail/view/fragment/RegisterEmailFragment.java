@@ -50,7 +50,6 @@ import com.tokopedia.loginregister.registeremail.domain.pojo.RegisterEmailPojo;
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity;
 import com.tokopedia.loginregister.registeremail.view.listener.RegisterEmailContract;
 import com.tokopedia.loginregister.registeremail.view.presenter.RegisterEmailPresenter;
-import com.tokopedia.loginregister.registeremail.view.util.CustomPhoneNumberUtil;
 import com.tokopedia.loginregister.registeremail.view.util.RegisterUtil;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
@@ -77,7 +76,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     int PASSWORD_MINIMUM_LENGTH = 6;
 
     String NAME = "NAME";
-    String PHONE = "PHONE";
     String PASSWORD = "PASSWORD";
     String EMAIL = "EMAIL";
 
@@ -92,11 +90,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     AutoCompleteTextView email;
     TextInputEditText registerPassword;
     TextView registerButton;
-    EditText phone;
     TkpdHintTextInputLayout wrapperName;
     TkpdHintTextInputLayout wrapperEmail;
     TkpdHintTextInputLayout wrapperPassword;
-    TkpdHintTextInputLayout wrapperPhone;
     EditText name;
     TextView registerNextTAndC;
     ProgressBar progressBar;
@@ -131,19 +127,19 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerRegisterEmailComponent daggerLoginComponent =
+        DaggerRegisterEmailComponent daggerRegisterEmailComponent =
                 (DaggerRegisterEmailComponent) DaggerRegisterEmailComponent
-                        .builder().loginRegisterComponent(getComponent(LoginRegisterComponent.class))
+                        .builder()
+                        .loginRegisterComponent(getComponent(LoginRegisterComponent.class))
                         .build();
 
-        daggerLoginComponent.inject(this);
+        daggerRegisterEmailComponent.inject(this);
     }
 
     @Override
     protected String getScreenName() {
         return LoginRegisterAnalytics.Companion.getSCREEN_REGISTER_EMAIL();
     }
-
 
     @Nullable
     @Override
@@ -155,11 +151,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         email = view.findViewById(R.id.register_email);
         registerPassword = view.findViewById(R.id.register_password);
         registerButton = view.findViewById(R.id.register_button);
-        phone = view.findViewById(R.id.register_next_phone_number);
         wrapperName = view.findViewById(R.id.wrapper_name);
         wrapperEmail = view.findViewById(R.id.wrapper_email);
         wrapperPassword = view.findViewById(R.id.wrapper_password);
-        wrapperPhone = view.findViewById(R.id.wrapper_phone);
         name = view.findViewById(R.id.name);
         progressBar = view.findViewById(R.id.progress_bar);
         registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p);
@@ -230,7 +224,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         showPasswordHint();
         showEmailHint();
         showNameHint();
-        showPhoneHint();
     }
 
 
@@ -262,7 +255,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             name.setText(savedInstanceState.getString(NAME, ""));
-            phone.setText(savedInstanceState.getString(PHONE, ""));
             email.setText(savedInstanceState.getString(EMAIL, ""));
             registerPassword.setText(savedInstanceState.getString(PASSWORD, ""));
         }
@@ -275,8 +267,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         email.addTextChangedListener(emailWatcher(wrapperEmail));
         registerPassword.addTextChangedListener(passwordWatcher(wrapperPassword));
         name.addTextChangedListener(nameWatcher(wrapperName));
-        phone.addTextChangedListener(phoneWatcher(wrapperPhone));
-        phone.addTextChangedListener(phoneWatcher(phone));
 
         if (getActivity() != null && userSession.isLoggedIn()) {
             getActivity().setResult(Activity.RESULT_OK);
@@ -373,101 +363,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         };
     }
 
-
-    /**
-     * This textwatcher cause lag on UI.
-     * the owner of this code should fix this.
-     */
-    private TextWatcher phoneWatcher(final EditText editText) {
-        return new TextWatcher() {
-
-            private boolean backspacingFlag = false;
-            private int cursorComplement;
-            private int totalSpace, newTotalSpace;
-            private int selectionStart;
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                totalSpace = s.length() - s.toString().replace("-", "").length();
-                cursorComplement = s.length() - editText.getSelectionStart();
-
-                String cutString = s.toString().substring(0, editText.getSelectionStart());
-                int totalSpaceWithinCutString = cutString.length() - cutString.replace("-", "")
-                        .length();
-                selectionStart = editText.getSelectionStart() - totalSpaceWithinCutString;
-
-                backspacingFlag = count > after;
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String unformattedText = s.toString().replace("-", "");
-                String formattedText = CustomPhoneNumberUtil.transform(unformattedText);
-                newTotalSpace = formattedText.length() - unformattedText.length();
-
-
-                if (s.toString().length() > 4 && cursorComplement == 0) {
-                    formatPhoneNumber(formattedText, formattedText.length());
-                } else if (s.toString().length() > 4 && !backspacingFlag && cursorComplement > 0) {
-                    int cursorPosition = formattedText.length() -
-                            (cursorComplement + newTotalSpace - totalSpace);
-                    if (selectionStart % 4 == 0 && selectionStart != 0) cursorPosition += 1;
-                    formatPhoneNumber(formattedText, cursorPosition);
-                } else if (s.toString().length() > 4 && backspacingFlag && cursorComplement > 0) {
-                    int cursorPosition = s.length() - cursorComplement;
-                    formatPhoneNumber(formattedText, cursorPosition);
-                }
-
-            }
-
-            private void formatPhoneNumber(String formattedText, int cursorPosition) {
-                editText.removeTextChangedListener(this);
-                editText.setText(formattedText);
-                if (cursorPosition < 0)
-                    cursorPosition = 0;
-                editText.setSelection(cursorPosition);
-                editText.addTextChangedListener(this);
-            }
-        };
-    }
-
-
-    private TextWatcher phoneWatcher(final TkpdHintTextInputLayout wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperError(wrapper, null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                showPhoneHint();
-                if (s.length() == 0) {
-                    setWrapperError(wrapper, getString(R.string.error_field_required));
-                } else if (s.length() < 3) {
-                    setWrapperError(wrapper, getString(R.string.error_minimal_phone));
-                } else if (!RegisterUtil.isValidPhoneNumber(
-                        phone.getText().toString().replace("-", ""))) {
-                    setWrapperError(wrapper, getString(R.string.error_invalid_phone_number));
-                }
-
-                checkIsValidForm();
-            }
-        };
-    }
-
     public List<String> getEmailListOfAccountsUserHasLoggedInto() {
         Set<String> listOfAddresses = new LinkedHashSet<>();
         Pattern emailPattern = Patterns.EMAIL_ADDRESS;
@@ -508,19 +403,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 name.getText().toString(),
                 registerPassword.getText().toString(),
                 registerPassword.getText().toString(),
-                getUnmaskedPhone(),
                 getIsAutoVerify()
         );
     }
 
-    private String getUnmaskedPhone() {
-        return phone.getText().toString().replace("-", "");
-    }
-
-
     private void checkIsValidForm() {
-        if (presenter.isCanRegister(name.getText().toString(), email.getText().toString(),
-                registerPassword.getText().toString(), phone.getText().toString())) {
+        if (presenter.isCanRegister(name.getText().toString(), email.getText().toString(), registerPassword.getText().toString())) {
             setRegisterButtonEnabled();
         } else {
             setRegisterButtonDisabled();
@@ -577,7 +465,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         showPasswordHint();
         showEmailHint();
         showNameHint();
-        showPhoneHint();
     }
 
     public void showPasswordHint() {
@@ -592,16 +479,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         setWrapperHint(wrapperEmail, getResources().getString(R.string.send_verif_to_email));
     }
 
-    public void showPhoneHint() {
-        setWrapperHint(wrapperPhone, getResources().getString(R.string.phone_example));
-    }
-
-
     @Override
     public void setActionsEnabled(boolean isEnabled) {
 
         email.setEnabled(isEnabled);
-        phone.setEnabled(isEnabled);
         name.setEnabled(isEnabled);
         registerPassword.setEnabled(isEnabled);
         registerButton.setEnabled(isEnabled);
@@ -660,22 +541,19 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessRegister(RegisterEmailPojo pojo, String name, String email, String phone) {
+    public void onSuccessRegister(RegisterEmailPojo pojo, String name, String email) {
         if (getActivity() != null) {
             dismissLoadingProgress();
             setActionsEnabled(true);
             lostViewFocus();
             registerAnalytics.trackSuccessClickSignUpButtonEmail();
             registerAnalytics.trackSuccessClickEmailSignUpButton();
-            analytics.eventSuccessRegisterEmail(getActivity().getApplicationContext(),
-                    pojo.getuId(), name, email, phone);
+            analytics.eventSuccessRegisterEmail(getActivity().getApplicationContext(), pojo.getuId(), name, email);
         }
-
     }
 
     public void lostViewFocus() {
         email.clearFocus();
-        phone.clearFocus();
         name.clearFocus();
         registerPassword.clearFocus();
         registerButton.clearFocus();
@@ -732,7 +610,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(NAME, name.getText().toString());
-        outState.putString(PHONE, phone.getText().toString());
         outState.putString(EMAIL, email.getText().toString());
         outState.putString(PASSWORD, registerPassword.getText().toString());
     }

@@ -16,6 +16,8 @@ import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 
 import java.io.IOException;
@@ -110,8 +112,12 @@ public class FingerprintModelGenerator {
         String deviceLanguage = Utilities.getLanguage();
         String ssid         = Utilities.getSSID(context);
         String carrier      = Utilities.getCarrierName(context);
+        String isNakama = "False";
+        if(context instanceof UserSessionInterface)
+            isNakama = Utilities.isNakama((UserSessionInterface)context);
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
+                .isNakama(isNakama)
                 .deviceName(deviceName)
                 .deviceManufacturer(deviceFabrik)
                 .model(deviceName)
