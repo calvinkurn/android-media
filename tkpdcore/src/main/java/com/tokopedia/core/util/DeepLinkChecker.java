@@ -263,7 +263,8 @@ public class DeepLinkChecker {
                 && !isKycTerms(linkSegment)
                 && !isProfile(linkSegment)
                 && !isSMCReferral(linkSegment)
-                && !isHomeRecoomendation(linkSegment);
+                && !isHomeRecoomendation(linkSegment)
+                && !isLeasing(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -315,6 +316,10 @@ public class DeepLinkChecker {
 
     private static boolean isHomeRecoomendation(List<String> linkSegment){
         return (linkSegment.get(0).equals("rekomendasi"));
+    }
+
+    private static boolean isLeasing(List<String> linkSegment){
+        return (linkSegment.get(0).equals("kredit-motor"));
     }
 
     private static boolean isKycTerms(List<String> linkSegment) {

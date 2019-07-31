@@ -44,7 +44,6 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
@@ -784,16 +783,21 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onApplyCreditClicked() {
         productId?.let { productId ->
-            val urlApplyCreditWithProductId = String.format(
-                    URL_APPLY_CREDIT,
-                    productId
-            )
-            RouteManager.route(
-                    context,
-                    ApplinkConstInternalGlobal.WEBVIEW,
-                    urlApplyCreditWithProductId
-            )
+            goToApplyCredit(productId)
         }
+    }
+
+    private fun goToApplyCredit(productId: String) {
+        val urlApplyCreditWithProductId = String.format(
+                URL_APPLY_CREDIT,
+                productId
+        )
+        val webViewUrl = String.format(
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                urlApplyCreditWithProductId
+        )
+        RouteManager.route(context, webViewUrl)
     }
 
     private fun gotoShopDetail() {
