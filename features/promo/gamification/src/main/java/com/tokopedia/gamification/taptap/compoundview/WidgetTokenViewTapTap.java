@@ -104,7 +104,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
     private ObjectAnimator fadeInEggAfterMerge;
     private TapCounterView widgetTapCounter;
     private int tapCount;
-    private long tokenUserId;
+    private String tokenUserId;
 
     @Override
     public void onTapCountEnds() {
