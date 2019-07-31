@@ -217,8 +217,6 @@ public class SearchActivity extends BaseActivity
                 getAutoCompleteIntent(),
                 AUTO_COMPLETE_ACTIVITY_REQUEST_CODE,
                 getOptionsForTransitionAnimation().toBundle());
-
-        finish();
     }
 
     private Intent getAutoCompleteIntent() {
@@ -614,7 +612,6 @@ public class SearchActivity extends BaseActivity
     @Override
     public void onBackPressed() {
         if (!bottomSheetFilterView.onBackPressed()) {
-            moveToAutoCompleteActivity();
             finish();
         }
     }
