@@ -134,8 +134,9 @@ public class DialogLogoutFragment extends DialogFragment {
                                             AppComponent component = ((BaseActivity) getActivity()).getApplicationComponent();
                                             Router.onLogout(getActivity(), component);
                                         }
+
                                         if(cashShield != null) {
-                                            cashShield.send();
+                                            cashShield.clearSession();
                                         }
 
                                         dismiss();

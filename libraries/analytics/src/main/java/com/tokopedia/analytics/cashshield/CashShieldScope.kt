@@ -1,7 +1,6 @@
 package com.tokopedia.analytics.cashshield
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.cashshield.android.cashshieldclient
 import com.tokopedia.analytics.R
 import com.tokopedia.user.session.UserSession
@@ -29,7 +28,7 @@ class CashShieldScope(private val context: Context): CoroutineScope {
             try {
                 launch {
                     val cs = cashshieldclient()
-                    cs.sendSignatureFDS(context, getSession(), context.getString(R.string.cashshield_token))
+                    cs.sendSignatureFDS(context, getSessionId(), context.getString(R.string.cashshield_token))
                 }
             } catch (ignored: Exception) {
 
@@ -37,7 +36,7 @@ class CashShieldScope(private val context: Context): CoroutineScope {
         }
     }
 
-    fun getSession(): String {
+    fun getSessionId(): String {
         var session = sharedPref.getString("session", "")
         if (session.isEmpty()) {
             session = UUID.randomUUID().toString()
@@ -48,6 +47,13 @@ class CashShieldScope(private val context: Context): CoroutineScope {
 
         }
         return session
+    }
+
+    fun clearSession() {
+        sharedPref.edit().apply {
+            putString("session", "")
+            apply()
+        }
     }
 
     fun cancel() {

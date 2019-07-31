@@ -514,6 +514,11 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
     fun eventSuccessRegisterEmail(applicationContext: Context, userId: Int, name: String, email: String) {
+        if(applicationContext != null) {
+            cashShield = CashShield(applicationContext)
+            cashShield.clearSession()
+            cashShield.send()
+        }
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
@@ -562,11 +567,13 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
 
-    fun eventSuccessLogin(actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
+    fun eventSuccessLogin(context: Context, actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
         if(context != null) {
             cashShield = CashShield(context)
+            cashShield.clearSession()
             cashShield.send()
         }
+
         when (actionLoginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessLoginWithEmail(registerAnalytics)
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessLoginWithGoogle()

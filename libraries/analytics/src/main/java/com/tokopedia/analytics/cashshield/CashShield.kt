@@ -15,4 +15,8 @@ class CashShield(val context: Context) {
     fun cancel() {
         cashShieldScope.cancel()
     }
+
+    fun clearSession() {
+        return cashShieldScope.clearSession()
+    }
 }

@@ -51,7 +51,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.analytics.cashshield.CashShield;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
@@ -209,8 +208,6 @@ public class MainParentActivity extends BaseActivity implements
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
 
         initCategoryConfig();
-        cashShield = new CashShield(this);
-        cashShield.send();
     }
 
     private void initCategoryConfig() {
@@ -527,7 +524,6 @@ public class MainParentActivity extends BaseActivity implements
         super.onDestroy();
         if (presenter != null)
             presenter.onDestroy();
-        if(cashShield != null) cashShield.cancel();
     }
 
     private void reloadPage() {

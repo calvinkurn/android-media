@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.view.fragment
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -573,7 +574,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             activity!!.setResult(Activity.RESULT_OK)
             activity!!.finish()
 
-            analytics.eventSuccessLogin(activity, userSession.loginMethod, registerAnalytics)
+            analytics.eventSuccessLogin(activity as Context, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
             setFCM()
         }
