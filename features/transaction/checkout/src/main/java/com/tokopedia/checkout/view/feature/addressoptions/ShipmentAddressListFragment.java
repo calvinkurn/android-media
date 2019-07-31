@@ -419,6 +419,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
+                case LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT:
                 case LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE:
                     RecipientAddressModel address = null;
                     if (data != null && data.hasExtra(LogisticCommonConstant.EXTRA_ADDRESS)) {
@@ -435,9 +436,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         address.setPostalCode(intentModel.getPostalCode());
                     }
                     mActivityListener.finishAndSendResult(address);
-                    break;
-                case LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT:
-                    onSearchReset();
                     break;
                 case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY:
                 case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED:
