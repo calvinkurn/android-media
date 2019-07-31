@@ -16,7 +16,11 @@ class CashShield(val context: Context) {
         cashShieldScope.cancel()
     }
 
-    fun clearSession() {
-        return cashShieldScope.clearSession()
+    fun getSessionId(): String {
+        return cashShieldScope.getSessionId()
+    }
+
+    fun refreshSession() {
+        return cashShieldScope.refreshSession()
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
@@ -40,6 +41,7 @@ public class CommonNetwork {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession, characterPerMinuteInterface));
+        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();

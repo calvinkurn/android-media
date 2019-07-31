@@ -20,11 +20,9 @@ import com.tokopedia.analytics.cashshield.CashShield;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.Router;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.network.apiservices.user.SessionService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -41,9 +39,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by m.normansyah on 11/12/2015.
@@ -136,7 +131,7 @@ public class DialogLogoutFragment extends DialogFragment {
                                         }
 
                                         if(cashShield != null) {
-                                            cashShield.clearSession();
+                                            cashShield.refreshSession();
                                         }
 
                                         dismiss();

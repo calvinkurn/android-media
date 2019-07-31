@@ -27,7 +27,7 @@ import javax.inject.Inject
  * https://docs.google.com/spreadsheets/d/1F3IQYqqG62aSxNbeFvrxyy-Pu--ZrShh8ewMKELeKj4/edit?ts=5cca711b#gid=910823048
  */
 class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInterface) {
-    private lateinit var cashShield: CashShield
+    private var cashShield: CashShield? = null
 
     companion object {
 
@@ -513,12 +513,11 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
     }
 
-    fun eventSuccessRegisterEmail(applicationContext: Context, userId: Int, name: String, email: String) {
-        if(applicationContext != null) {
-            cashShield = CashShield(applicationContext)
-            cashShield.clearSession()
-            cashShield.send()
+    fun eventSuccessRegisterEmail(context: Context?, userId: Int, name: String, email: String) {
+        context?.let {
+            getCashShield(it).send()
         }
+
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
@@ -567,11 +566,9 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
 
-    fun eventSuccessLogin(context: Context, actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
-        if(context != null) {
-            cashShield = CashShield(context)
-            cashShield.clearSession()
-            cashShield.send()
+    fun eventSuccessLogin(context: Context?, actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
+        context?.let {
+            getCashShield(it).send()
         }
 
         when (actionLoginMethod) {
@@ -740,8 +737,23 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     }
 
+    fun onCreate(context: Context?) {
+        context?.let {
+            getCashShield(it).refreshSession()
+        }
+    }
+
+    private fun getCashShield(context: Context): CashShield {
+        if(cashShield == null) {
+            cashShield = CashShield(context)
+        }
+
+        return cashShield!!
+    }
+
     fun onDestroy() {
         cashShield?.cancel()
+        cashShield = null
     }
 
 }

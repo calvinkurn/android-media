@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.common.analytics
 import android.content.Context
 
 import com.tokopedia.analytics.TrackAnalytics
+import com.tokopedia.analytics.cashshield.CashShield
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
 import com.tokopedia.track.TrackApp
@@ -18,6 +19,7 @@ import javax.inject.Inject
  * https://docs.google.com/spreadsheets/d/1CBXovkdWu7NMkxrHIOJihMyfuRWNZvxgJd36KxLS25I/edit#gid=471355800
  */
 class RegisterAnalytics @Inject constructor() {
+    private var cashShield: CashShield? = null
 
     companion object {
 
@@ -498,7 +500,11 @@ class RegisterAnalytics @Inject constructor() {
 
     }
 
-    fun trackSuccessRegister(loginMethod: String) {
+    fun trackSuccessRegister(context: Context?, loginMethod: String) {
+        context?.let {
+            getCashShield(it).send()
+        }
+
         when(loginMethod){
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail()
             UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone()
@@ -580,5 +586,18 @@ class RegisterAnalytics @Inject constructor() {
                 ACTION_CLICK_ON_BUTTON_CLOSE_TICKER,
                 ""
         ))
+    }
+
+    private fun getCashShield(context: Context): CashShield {
+        if(cashShield == null) {
+            cashShield = CashShield(context)
+        }
+
+        return cashShield!!
+    }
+
+    fun onDestroy() {
+        cashShield?.cancel()
+        cashShield = null
     }
 }

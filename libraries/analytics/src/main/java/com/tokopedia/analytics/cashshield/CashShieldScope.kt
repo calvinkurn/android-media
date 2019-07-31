@@ -16,9 +16,11 @@ import kotlin.coroutines.CoroutineContext
  * @author okasurya on 2019-07-11.
  */
 class CashShieldScope(private val context: Context): CoroutineScope {
+    val CASHSHIELD = "CASHSHIELD"
+    val SESSION = "session"
     val job = Job()
     val userSession: UserSessionInterface = UserSession(context)
-    var sharedPref = context.getSharedPreferences("CASHSHIELD", Context.MODE_PRIVATE)
+    var sharedPref = context.getSharedPreferences(CASHSHIELD, Context.MODE_PRIVATE)
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
@@ -37,21 +39,13 @@ class CashShieldScope(private val context: Context): CoroutineScope {
     }
 
     fun getSessionId(): String {
-        var session = sharedPref.getString("session", "")
-        if (session.isEmpty()) {
-            session = UUID.randomUUID().toString()
-            sharedPref.edit().apply {
-                putString("session", session)
-                apply()
-            }
-
-        }
-        return session
+        return sharedPref.getString(SESSION, "")?: ""
     }
 
-    fun clearSession() {
+    fun refreshSession() {
+        val session = UUID.randomUUID().toString()
         sharedPref.edit().apply {
-            putString("session", "")
+            putString(SESSION, session)
             apply()
         }
     }
