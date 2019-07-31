@@ -27,21 +27,17 @@ public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
         int spanIndex = ((StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
 
         if (isTopProductItem(position)) {
-            outRect.top = spacing;
+            outRect.top = spacing*2;
         }
 
         if (!isProductItem(parent, position)) {
             return;
         }
 
-        if(spanIndex == 1){
-            outRect.left = spacing / 2;
-            outRect.right = spacing * 2;
-        } else{
-            outRect.left = spacing * 2;
-            outRect.right = spacing / 2;
-        }
-        outRect.bottom = spacing;
+        outRect.left = spacing;
+        outRect.right = spacing;
+
+        outRect.bottom = spacing*2;
     }
 
     private boolean isProductItem(RecyclerView parent, int viewPosition) {
@@ -49,7 +45,7 @@ public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
         if (viewPosition < 0 || viewPosition > adapter.getItemCount() - 1) {
             return false;
         }
-        return adapter.getItemViewType(viewPosition) == HomeFeedViewHolder.LAYOUT;
+        return adapter.getItemViewType(viewPosition) == HomeFeedViewHolder.Companion.getLAYOUT();
     }
 
     private boolean isTopProductItem(int viewPosition) {

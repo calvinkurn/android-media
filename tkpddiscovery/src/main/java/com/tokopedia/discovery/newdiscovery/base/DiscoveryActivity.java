@@ -1,10 +1,11 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -21,24 +22,23 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
+import com.tokopedia.discovery.imagesearch.search.ImageSearchImagePickerActivity;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
+import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -72,14 +72,15 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected ProgressBar loadingView;
 
     public MenuItem searchItem;
-    private boolean isLastRequestForceSearch;
 
     private TkpdProgressDialog tkpdProgressDialog;
-    private boolean fromCamera;
+    private boolean isFromCamera = false;
     private String imagePath;
     private UserSessionInterface userSession;
     private PerformanceMonitoring performanceMonitoring;
-    private View root;
+    protected View root;
+
+    protected SearchParameter searchParameter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +89,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         userSession = new UserSession(this);
         proceed();
     }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -149,12 +149,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchView.showSearch(false, true);
-            }
-        });
+        toolbar.setOnClickListener(v -> searchView.showSearch(false, true));
     }
 
     protected void setToolbarTitle(String query) {
@@ -188,40 +183,47 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query, boolean isOfficial) {
+    public boolean onQueryTextSubmit(SearchParameter searchParameter) {
+        this.searchParameter = new SearchParameter(searchParameter);
+
+        String query = searchParameter.getSearchQuery();
         AutoCompleteTracking.eventClickSubmit(this, query);
-        if (OfficialStoreQueryHelper.isOfficialStoreSearchQuery(query)) {
-            onHandleOfficialStorePage();
-            sendSearchProductGTM(query);
-            return true;
-        } else {
-            switch (searchView.getSuggestionFragment().getCurrentTab()) {
-                case SearchMainFragment.PAGER_POSITION_PRODUCT:
-                    onProductQuerySubmit(query, isOfficial);
-                    sendSearchProductGTM(query);
-                    return false;
-                case SearchMainFragment.PAGER_POSITION_SHOP:
-                    onShopQuerySubmit(query, isOfficial);
-                    sendSearchShopGTM(query);
-                    return false;
-                default:
-                    throw new RuntimeException("Please handle this function if you have new tab of suggestion search view.");
-            }
+
+        handleQueryTextSubmitBasedOnCurrentTab();
+
+        return false;
+    }
+
+    private void handleQueryTextSubmitBasedOnCurrentTab() throws RuntimeException {
+        String query = searchParameter.getSearchQuery();
+
+        switch (searchView.getSuggestionFragment().getCurrentTab()) {
+            case SearchMainFragment.PAGER_POSITION_PRODUCT:
+                onProductQuerySubmit();
+                sendSearchProductGTM(query);
+                break;
+            case SearchMainFragment.PAGER_POSITION_SHOP:
+                onShopQuerySubmit();
+                sendSearchShopGTM(query);
+                break;
+            default:
+                throw new RuntimeException("Please handle this function if you have new tab of suggestion search view.");
         }
     }
 
-    protected void onProductQuerySubmit(String query, boolean isOfficial) {
+    @Override
+    protected void onProductQuerySubmit() {
         setForceSwipeToShop(false);
-        setForceSearch(false);
         setRequestOfficialStoreBanner(true);
-        performRequestProduct(query, isOfficial);
+
+        performRequestProduct();
     }
 
-    private void onShopQuerySubmit(String query, boolean isOfficial) {
+    private void onShopQuerySubmit() {
         setForceSwipeToShop(true);
-        setForceSearch(false);
         setRequestOfficialStoreBanner(true);
-        performRequestProduct(query, isOfficial);
+
+        performRequestProduct();
     }
 
     private void sendSearchProductGTM(String keyword) {
@@ -233,9 +235,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public void eventDiscoverySearch(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_PRODUCT,
+                SearchEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                SearchEventTracking.Category.EVENT_TOP_NAV,
+                SearchEventTracking.Action.SEARCH_PRODUCT,
                 label);
     }
 
@@ -248,9 +250,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public void eventDiscoverySearchShop(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_SHOP,
+                SearchEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                SearchEventTracking.Category.EVENT_TOP_NAV,
+                SearchEventTracking.Action.SEARCH_SHOP,
                 label);
     }
 
@@ -262,41 +264,32 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     public void eventDiscoveryVoiceSearch(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
-                AppEventTracking.Action.VOICE_SEARCH,
-                label
-        ).getEvent());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.SEARCH,
+                SearchEventTracking.Category.SEARCH,
+                SearchEventTracking.Action.VOICE_SEARCH,
+                label);
     }
 
     private void sendGalleryImageSearchResultGTM(String label) {
-        eventDiscoveryGalleryImageSearchResult(label);
-    }
-
-    public void eventDiscoveryGalleryImageSearchResult(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
-                AppEventTracking.Category.IMAGE_SEARCH,
-                AppEventTracking.Action.GALLERY_SEARCH_RESULT,
+                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                SearchEventTracking.Category.IMAGE_SEARCH,
+                SearchEventTracking.Action.GALLERY_SEARCH_RESULT,
                 label);
     }
 
 
     private void sendCameraImageSearchResultGTM(String label) {
-        eventDiscoveryCameraImageSearchResult(label);
-    }
-
-    public void eventDiscoveryCameraImageSearchResult(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
-                AppEventTracking.Category.IMAGE_SEARCH,
-                AppEventTracking.Action.CAMERA_SEARCH_RESULT,
+                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                SearchEventTracking.Category.IMAGE_SEARCH,
+                SearchEventTracking.Action.CAMERA_SEARCH_RESULT,
                 label);
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(String searchQuery) {
         return false;
     }
 
@@ -324,7 +317,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public void onBackPressed() {
         if (searchView.isSearchOpen()) {
             if (searchView.isFinishOnClose()) {
-                finish();
+                finishWithAnimation();
             } else {
                 searchView.closeSearch();
             }
@@ -333,54 +326,111 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    public void onSuggestionProductClick(String keyword, String categoryID, boolean isOfficial) {
-        SearchParameter parameter = new SearchParameter();
-        parameter.setQueryKey(keyword);
-        parameter.setUniqueID(
-                userSession.isLoggedIn() ?
-                        AuthUtil.md5(userSession.getUserId()) :
-                        AuthUtil.md5(gcmHandler.getRegistrationId())
-        );
-        parameter.setUserID(
-                userSession.isLoggedIn() ?
-                        userSession.getUserId() :
-                        null
-        );
-        parameter.setDepartmentId(categoryID);
-        parameter.setOfficial(isOfficial);
-        onSearchingStart(keyword);
-        setForceSearch(false);
-        getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
+    private void finishWithAnimation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AnimationUtil.unreveal(root, new AnimationUtil.AnimationListener() {
+                @Override
+                public boolean onAnimationStart(View view) {
+                    return false;
+                }
+
+                @Override
+                public boolean onAnimationEnd(View view) {
+                    finish();
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
+                @Override
+                public boolean onAnimationCancel(View view) {
+                    return false;
+                }
+            });
+        } else {
+            finish();
+        }
     }
 
-    public void onSuggestionProductClick(String keyword, boolean isOfficial) {
-        setForceSwipeToShop(false);
-        setForceSearch(false);
-        setRequestOfficialStoreBanner(true);
-        performRequestProduct(keyword, isOfficial);
+    protected void performRequestProduct() {
+        performRequestProduct("");
     }
 
     protected void performRequestProduct(String keyword) {
-        performRequestProduct(keyword, false);
+        performRequestProduct(keyword, "");
     }
 
-    protected void performRequestProduct(String keyword, boolean isOfficial) {
-        SearchParameter parameter = new SearchParameter();
-        parameter.setQueryKey(keyword);
-        parameter.setUniqueID(
-                userSession.isLoggedIn() ?
-                        AuthUtil.md5(userSession.getUserId()) :
-                        AuthUtil.md5(gcmHandler.getRegistrationId())
-        );
-        parameter.setUserID(
-                userSession.isLoggedIn() ?
-                        userSession.getUserId() :
-                        null
-        );
-        parameter.setOfficial(isOfficial);
-        onSearchingStart(keyword);
+    protected void performRequestProduct(String searchQuery, String categoryId) {
+        updateSearchParameterBeforeSearchIfNotEmpty(searchQuery, categoryId);
+
+        searchQuery = this.searchParameter.getSearchQuery();
+
+        onSearchingStart(searchQuery);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
-        getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
+
+        getPresenter().initiateSearch(searchParameter, getInitiateSearchListener());
+    }
+
+    private InitiateSearchListener getInitiateSearchListener() {
+        return new InitiateSearchListener() {
+            @Override
+            public void onHandleResponseSearch(boolean isHasCatalog) {
+                ProductViewModel model = new ProductViewModel();
+                model.setSearchParameter(searchParameter);
+                model.setHasCatalog(isHasCatalog);
+
+                DiscoveryActivity.this.onHandleResponseSearch(model);
+            }
+
+            @Override
+            public void onHandleApplink(@NonNull String applink) {
+                DiscoveryActivity.this.onHandleApplink(applink);
+            }
+
+            @Override
+            public void onHandleResponseError() {
+                DiscoveryActivity.this.onHandleResponseError();
+            }
+
+            @Override
+            public void onHandleResponseUnknown() {
+                DiscoveryActivity.this.onHandleResponseUnknown();
+            }
+        };
+    }
+
+    private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {
+        if(searchParameter == null) searchParameter = new SearchParameter();
+
+        setSearchParameterQueryIfNotEmpty(searchQuery);
+        setSearchParameterUniqueId();
+        setSearchParameterUserIdIfLoggedIn();
+        setSearchParameterCategoryIdIfNotEmpty(categoryId);
+    }
+
+    private void setSearchParameterQueryIfNotEmpty(String searchQuery) {
+        if(!TextUtils.isEmpty(searchQuery)) {
+            searchParameter.setSearchQuery(searchQuery);
+        }
+    }
+
+    private void setSearchParameterUniqueId() {
+        String uniqueId = userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
+                AuthUtil.md5(gcmHandler.getRegistrationId());
+
+        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
+    }
+
+    private void setSearchParameterUserIdIfLoggedIn() {
+        if(userSession.isLoggedIn()) {
+            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
+        }
+    }
+
+    private void setSearchParameterCategoryIdIfNotEmpty(String categoryId) {
+        if(!TextUtils.isEmpty(categoryId)) {
+            searchParameter.set(SearchApiConst.SC, categoryId);
+        }
     }
 
     public void deleteAllRecentSearch() {
@@ -464,12 +514,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         showLoadingView(false);
         showContainer(true);
-        NetworkErrorHelper.showEmptyState(this, container, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                performRequestProduct(searchView.getLastQuery(), searchView.getIsOfficial());
-            }
-        });
+        NetworkErrorHelper.showEmptyState(this, container, this::performRequestProduct);
     }
 
     @Override
@@ -494,15 +539,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.IMAGE_SEARCH_MIN_RESOLUTION, null, true,
                 imagePickerEditorBuilder, null);
-        Intent intent = ImagePickerActivity.getIntent(this, builder);
+        Intent intent = ImageSearchImagePickerActivity.getIntent(this, builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImageSearchImagePickerActivity.PICKER_RESULT_PATHS);
             if (imagePathList == null || imagePathList.size() <= 0) {
                 return;
             }
@@ -515,6 +561,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             if (searchView != null) {
                 searchView.clearFocus();
             }
+
+            isFromCamera = data.getBooleanExtra(ImageSearchImagePickerActivity.RESULT_IS_FROM_CAMERA, false);
         } else if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case DiscoverySearchView.REQUEST_VOICE:
@@ -543,7 +591,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             tkpdProgressDialog.dismiss();
         }
 
-        if (fromCamera) {
+        if (isFromCamera) {
             sendCameraImageSearchResultGTM(FAILURE);
         } else {
             sendGalleryImageSearchResultGTM(FAILURE);
@@ -557,7 +605,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             tkpdProgressDialog.dismiss();
         }
 
-        if (fromCamera) {
+        if (isFromCamera) {
             sendCameraImageSearchResultGTM(NO_RESPONSE);
         } else {
             sendGalleryImageSearchResultGTM(NO_RESPONSE);
@@ -599,7 +647,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             tkpdProgressDialog.dismiss();
         }
 
-        if (fromCamera) {
+        if (isFromCamera) {
             sendCameraImageSearchResultGTM(NO_RESPONSE);
         } else {
             sendGalleryImageSearchResultGTM(NO_RESPONSE);
@@ -614,7 +662,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         if (tkpdProgressDialog != null) {
             tkpdProgressDialog.dismiss();
         }
-        if (fromCamera) {
+        if (isFromCamera) {
             sendCameraImageSearchResultGTM(SUCCESS);
         } else {
             sendGalleryImageSearchResultGTM(SUCCESS);
@@ -650,6 +698,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         super.onHandleResponseSearch(productViewModel);
+        stopPerformanceMonitoring();
+    }
+
+    protected void stopPerformanceMonitoring() {
         if (performanceMonitoring != null) {
             performanceMonitoring.stopTrace();
         }

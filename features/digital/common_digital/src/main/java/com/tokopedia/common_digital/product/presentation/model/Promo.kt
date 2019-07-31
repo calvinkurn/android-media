@@ -6,50 +6,46 @@ import android.os.Parcelable
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-class Promo : Parcelable {
+class Promo(var bonusText: String? = null,
+            var id: String? = null,
+            var newPrice: String? = null,
+            var newPricePlain: Long = 0,
+            var tag: String? = null,
+            var terms: String? = null,
+            var valueText: String? = null) : Parcelable {
 
-    var bonusText: String? = null
-    var id: String? = null
-    var newPrice: String? = null
-    var newPricePlain: Long = 0
-    var tag: String? = null
-    var terms: String? = null
-    var valueText: String? = null
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readLong(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString()) {
+    }
 
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(bonusText)
+        parcel.writeString(id)
+        parcel.writeString(newPrice)
+        parcel.writeLong(newPricePlain)
+        parcel.writeString(tag)
+        parcel.writeString(terms)
+        parcel.writeString(valueText)
+    }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(this.bonusText)
-        dest.writeString(this.id)
-        dest.writeString(this.newPrice)
-        dest.writeLong(this.newPricePlain)
-        dest.writeString(this.tag)
-        dest.writeString(this.terms)
-        dest.writeString(this.valueText)
-    }
-
-    constructor() {}
-
-    protected constructor(`in`: Parcel) {
-        this.bonusText = `in`.readString()
-        this.id = `in`.readString()
-        this.newPrice = `in`.readString()
-        this.newPricePlain = `in`.readLong()
-        this.tag = `in`.readString()
-        this.terms = `in`.readString()
-        this.valueText = `in`.readString()
-    }
-
     companion object CREATOR : Parcelable.Creator<Promo> {
-        override fun createFromParcel(source: Parcel): Promo {
-            return Promo(source)
+        override fun createFromParcel(parcel: Parcel): Promo {
+            return Promo(parcel)
         }
 
         override fun newArray(size: Int): Array<Promo?> {
             return arrayOfNulls(size)
         }
     }
+
 }

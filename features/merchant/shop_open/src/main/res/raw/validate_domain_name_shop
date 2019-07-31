@@ -1,0 +1,8 @@
+query validateDomainShopName($domain:String,$shopName:String){
+  validateDomainShopName(domain:$domain,shopName:$shopName){
+   isValid
+   error{
+      message
+    }
+ }
+}

@@ -7,191 +7,269 @@
     android:layout_height="match_parent"
     android:background="@color/bottomnav_bg">
 
-    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="top"
-        android:minHeight="?attr/actionBarSize"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:elevation="0dp">
 
-        <LinearLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/bottomnav_bg"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imageViewBack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:tint="@color/toolbar_home"
-                    app:srcCompat="@drawable/ic_close_deals" />
-
-                <com.tokopedia.digital_deals.view.customview.SearchInputView
-                    android:id="@+id/search_input_view"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_marginBottom="@dimen/dp_7"
+                    android:layout_height="wrap_content"
+                    android:background="@color/bottomnav_bg"
+                    android:orientation="horizontal">
 
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_7" />
+                    <ImageView
+                        android:id="@+id/imageViewBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        app:srcCompat="@drawable/toolbar_back_black" />
 
+
+                    <com.tokopedia.digital_deals.view.customview.SearchInputView
+                        android:id="@+id/search_input_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_40"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginTop="@dimen/dp_7"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_7" />
+
+
+                </LinearLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/bottomnav_bg">
+
+
+                    <ImageView
+                        android:id="@+id/iv_map"
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_11"
+                        android:layout_marginBottom="@dimen/dp_11"
+                        app:srcCompat="@drawable/deals_location_icon"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/lokasi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:text="@string/location_text_search"
+                        android:textColor="@color/clr_ae31353b"
+                        android:textSize="@dimen/sp_14"
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_map"
+                        app:layout_constraintLeft_toRightOf="@+id/iv_map"
+                        app:layout_constraintTop_toTopOf="@+id/iv_map" />
+
+                    <TextView
+                        android:id="@+id/tv_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:drawablePadding="@dimen/dp_4"
+                        android:textColor="@color/clr_f531353b"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_14"
+                        android:padding="@dimen/dp_4"
+                        app:layout_constraintBottom_toBottomOf="@+id/lokasi"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/lokasi"
+                        app:layout_constraintVertical_bias="0.5"
+                        tools:text="Jakarta" />
+
+                </android.support.constraint.ConstraintLayout>
 
             </LinearLayout>
 
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
-                android:background="@color/divider_color" />
+        </android.support.v7.widget.Toolbar>
 
-        </LinearLayout>
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/search_divider_color" />
+    </android.support.design.widget.AppBarLayout>
 
-    </android.support.v7.widget.Toolbar>
-
-
-    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/base_main_content"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:background="@color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar_layout"
+            android:id="@+id/app_bar_brands"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/cl_location"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_40"
-                android:background="@color/bottomnav_bg"
-                app:layout_scrollFlags="scroll|enterAlways">
-
-
-                <ImageView
-                    android:id="@+id/iv_map"
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
-                    android:layout_marginBottom="@dimen/dp_11"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_11"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_location_2" />
-
-                <TextView
-                    android:id="@+id/tv_location"
-                    style="@style/TextView.Small.FontMedium.BlackPrimary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_map"
-                    app:layout_constraintLeft_toRightOf="@+id/iv_map"
-                    app:layout_constraintTop_toTopOf="@+id/iv_map"
-                    tools:text="Jakarta" />
-
-                <TextView
-                    android:id="@+id/tv_change_city"
-                    style="@style/TextView.Micro.FontMedium.Green"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:text="@string/change_location"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_location"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_location"
-                    app:layout_constraintVertical_bias="0.5" />
-
-            </android.support.constraint.ConstraintLayout>
-
-
-        </android.support.design.widget.AppBarLayout>
-
-
-        <LinearLayout
-            android:id="@+id/ll_deals"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_search_results"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                tools:listitem="@layout/deal_item_card" />
-
-        </LinearLayout>
-
-
-        <com.tokopedia.design.button.BottomActionView
-            android:id="@+id/bottom_action_view"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:paddingBottom="@dimen/dp_20"
-            android:visibility="gone"
-            app:bav_1_display="true"
-            app:bav_2_display="true"
-            app:bav_icon_1="@drawable/ic_search_sort"
-            app:bav_icon_2="@drawable/ic_search_filter"
-            app:bav_label_1="@string/search_sort_label"
-            app:bav_label_2="@string/search_filter_label"
-            app:layout_behavior="com.tokopedia.digital_deals.view.behaviour.QuickHideBehavior" />
-
-
-        <LinearLayout
-            android:id="@+id/no_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_80"
             android:background="@color/white"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <ImageView
-                android:layout_width="@dimen/dp_121"
-                android:layout_height="@dimen/dp_85"
-                android:layout_gravity="center_horizontal"
-                app:srcCompat="@drawable/empty_search_illustration_big" />
+            app:elevation="@dimen/dp_4">
 
             <TextView
-                style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_24"
-                android:gravity="center_horizontal"
-                android:text="@string/empty_search_text_upper" />
-
-            <TextView
-                style="@style/TextView.Small.Black38"
+                android:id="@+id/brand_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:gravity="center_horizontal"
-                android:text="@string/empty_search_text_lower" />
+                android:paddingLeft="@dimen/dp_16"
+                android:text="@string/brands_title_search"
+                android:textColor="@color/clr_ae31353b"
+                android:textSize="@dimen/sp_12"
+                android:visibility="gone"
+                app:layout_scrollFlags="scroll" />
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/brand_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:padding="@dimen/dp_8"
+                app:layout_scrollFlags="scroll" />
+
+            <TextView
+                android:id="@+id/num_of_brands"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_green_selected_border"
+                android:text="@string/brand_count_text"
+                android:textSize="@dimen/sp_12"
+                android:textColor="#03ac0e"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4"
+                app:layout_scrollFlags="scroll"
+                android:padding="@dimen/dp_8"/>
+
+            <LinearLayout
+                android:id="@+id/no_brands"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="gone"
+                app:layout_scrollFlags="scroll">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:text="@string/no_brand_text"
+                    android:textColor="@color/clr_f531353b"
+                    android:textSize="@dimen/sp_16" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/dp_12"
+                    android:text="@string/no_brand_subtext"
+                    android:textColor="@color/clr_ae31353b"
+                    android:textSize="@dimen/sp_14" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_topevents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/products_title_search"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/clr_ae31353b"
+                android:visibility="visible"
+                app:layout_scrollFlags="scroll" />
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView
+            android:id="@+id/no_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_80"
+                android:background="@color/white"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_121"
+                    android:layout_height="@dimen/dp_85"
+                    android:layout_gravity="center_horizontal"
+                    app:srcCompat="@drawable/empty_search_illustration_big" />
+
+                <TextView
+                    style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:gravity="center_horizontal"
+                    android:text="@string/empty_search_text_upper" />
+
+                <TextView
+                    style="@style/TextView.Small.Black38"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:gravity="center_horizontal"
+                    android:text="@string/empty_search_text_lower" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_search_results"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:layout_marginTop="@dimen/dp_6"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/item_top_suggestions" />
+
+
     </android.support.design.widget.CoordinatorLayout>
 
 
@@ -202,7 +280,9 @@
         android:background="@color/black_12"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="gone">
 
         <ProgressBar
             android:id="@+id/prog_bar"

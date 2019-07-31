@@ -35,7 +35,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_af_camera" />
+            app:srcCompat="@drawable/ic_af_camera" />
     </FrameLayout>
 
     <View
@@ -52,7 +52,7 @@
         android:layout_height="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
-        android:src="@drawable/ic_kol_badge"
+        app:srcCompat="@drawable/ic_kol_badge"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/name"
         app:layout_constraintStart_toEndOf="@+id/avatarSeparator"

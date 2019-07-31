@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_partner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_16"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/text_label_lending_partner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/il_padding_medium"
+        android:paddingLeft="@dimen/il_padding_medium"
+        android:paddingEnd="@dimen/il_padding_medium"
+        android:paddingRight="@dimen/il_padding_medium"
+        android:text="@string/il_lending_partner"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
+        android:id="@+id/view_pager_partner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/text_label_lending_partner" />
+
+    <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/il_partner_page_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        app:fillColor="@color/text_error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_pager_partner"
+        app:pageColor="@color/grey_300" />
+
+</android.support.constraint.ConstraintLayout>

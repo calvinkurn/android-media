@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
@@ -46,7 +47,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordO
 
     protected BaseFilterContentFragment.Callback callback;
     @Inject
-    TopAdsKeywordOldNewChooseGroupPresenter topAdsKeywordOldNewChooseGroupPresenter;
+    TopAdsKeywordOldNewChooseGroupPresenter topAdsKeywordOldNewChooseGroupPresenter;F
     private EditText groupFilterSearch;
     private GroupAd selection;
 
@@ -127,7 +128,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordO
         View view = super.onCreateView(inflater, container, savedInstanceState);
         groupFilterSearch = (EditText) view.findViewById(R.id.group_filter_search);
         groupFilterImage = (ImageView) view.findViewById(R.id.group_filter_search_icon);
-        groupFilterImage.setImageResource(R.drawable.ic_group_magnifier);
+        groupFilterImage.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_group_magnifier));
         hideThings = view.findViewById(R.id.hide_things);
         hideThings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,7 +280,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordO
         selection = null;
         groupFilterSearch.setFocusableInTouchMode(true);
         groupFilterSearch.setEnabled(true);
-        groupFilterImage.setImageResource(R.drawable.ic_group_magnifier);
+        groupFilterImage.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_group_magnifier));
         groupFilterImage.setOnClickListener(null);
         groupFilterSearch.addTextChangedListener(textWatcher);
         groupFilterSearch.setText("");

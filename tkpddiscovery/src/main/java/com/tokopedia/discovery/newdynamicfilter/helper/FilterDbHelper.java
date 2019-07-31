@@ -1,9 +1,11 @@
 package com.tokopedia.discovery.newdynamicfilter.helper;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -13,21 +15,17 @@ import java.util.List;
  */
 
 public class FilterDbHelper {
-    public static void storeLocationFilterOptions(List<Option> optionList) {
+    public static void storeLocationFilterOptions(Context context, List<Option> optionList) {
 
         Type listType = new TypeToken<List<Option>>() {}.getType();
         Gson gson = new Gson();
         String optionData = gson.toJson(optionList, listType);
 
-        DynamicFilterDbManager cache = new DynamicFilterDbManager();
-        cache.setFilterID(Filter.TEMPLATE_NAME_LOCATION);
-        cache.setFilterData(optionData);
-        cache.store();
+        DynamicFilterDbManager.store(context, Filter.TEMPLATE_NAME_LOCATION, optionData);
     }
 
-    public static List<Option> loadLocationFilterOptions() {
-        String data = new DynamicFilterDbManager()
-                .getValueString(Filter.TEMPLATE_NAME_LOCATION);
+    public static List<Option> loadLocationFilterOptions(Context context) {
+        String data = DynamicFilterDbManager.getFilterData(context, Filter.TEMPLATE_NAME_LOCATION);
         Type listType = new TypeToken<List<Option>>() {}.getType();
         return new Gson().fromJson(data, listType);
     }

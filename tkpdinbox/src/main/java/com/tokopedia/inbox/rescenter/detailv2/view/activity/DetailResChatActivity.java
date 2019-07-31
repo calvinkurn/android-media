@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -93,8 +94,13 @@ public class DetailResChatActivity
 
     private static Intent getApplinkIntent(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
-            return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
-                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
+            if (GlobalConfig.isSellerApp()) {
+            return ((ResolutionRouter)context.getApplicationContext()).getSellerWebViewIntent(context,
+                    String.format(ResolutionUrl.RESO_DETAIL, resolutionId));
+            } else {
+                return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+                        String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
+            }
         }
         return null;
     }

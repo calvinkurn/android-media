@@ -1,19 +1,19 @@
 package com.tokopedia.settingbank.choosebank.domain.usecase
 
-import com.raizlabs.android.dbflow.sql.language.Select
-import com.tokopedia.bankdb.Bank
-import com.tokopedia.bankdb.Bank_Table
-
+import com.tokopedia.settingbank.choosebank.data.database.BankDao
+import com.tokopedia.settingbank.choosebank.data.database.BankTable
 import com.tokopedia.settingbank.choosebank.domain.mapper.GetBankListDBMapper
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 7/2/18.
  */
-class GetBankListDBUseCase(private val getBankListMapper: GetBankListDBMapper) : UseCase<BankListViewModel>() {
+class GetBankListDBUseCase @Inject constructor(private val getBankListMapper: GetBankListDBMapper,
+                           val bankDao: BankDao) : UseCase<BankListViewModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<BankListViewModel> {
         return Observable.just(requestParams.parameters[PARAM_KEYWORD])
@@ -21,12 +21,12 @@ class GetBankListDBUseCase(private val getBankListMapper: GetBankListDBMapper) :
     }
 
     private fun getDataFromDB(query: String): Observable<out BankListViewModel>? {
-        val bankList: List<Bank>
+        val bankList: List<BankTable>
 
         if (query == "")
-            bankList = Select().from(Bank::class.java).queryList()
+            bankList = bankDao.findAllBank()
         else {
-            bankList = Select().from(Bank::class.java).where(Bank_Table.bank_name.like("%$query%")).queryList()
+            bankList = bankDao.findBankByName("%$query%")
         }
         return getBankListMapper.map(bankList, query)
 

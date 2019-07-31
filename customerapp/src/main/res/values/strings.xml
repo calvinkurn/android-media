@@ -82,6 +82,7 @@
 
     <string name="shake_shake_success">Berhasil shake shake</string>
     <string name="shake_shake_wrong_deeplink">Sedang terjadi kendala. Mohon coba beberapa saat lagi.</string>
+    <string name="shake_default_error">Untuk saat ini, Tokopedia sedang kepenuhan pengunjung</string>
 
     <string name="drawer_title_shopping_list">Daftar Belanja</string>
     <string name="drawer_title_payment_list">Menunggu Pembayaran</string>
@@ -136,4 +137,7 @@
     <string name="title_header_saldo_intro" >Info Detail Saldo</string>
     <string name="rationale_need_location_for_promotion">Akses lokasi diperlukan untuk memudahkan
         pengiriman dan mendapatkan rekomendasi produk. Perbolehkan?</string>
+
+    <string name="title_dialog_tokopedia_app_not_valid">Aplikasi Tokopedia tidak valid</string>
+    <string name="title_message_install_from_playstore">Install Tokopedia dari Google Play Store untuk melanjutkan</string>
 </resources>

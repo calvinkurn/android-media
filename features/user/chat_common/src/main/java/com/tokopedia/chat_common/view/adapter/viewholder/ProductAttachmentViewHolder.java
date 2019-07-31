@@ -9,11 +9,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener;
 import com.tokopedia.design.component.ButtonCompat;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by nisie on 5/14/18.
@@ -65,7 +67,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         prerequisiteUISetup(element);
         setupProductUI(element, chatBalloon);
         setupChatBubbleAlignment(chatBalloon, element);
-
+        viewListener.trackSeenProduct(element);
     }
 
     private void setupChatBubbleAlignment(View productContainerView, ProductAttachmentViewModel element) {
@@ -128,7 +130,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             if (element.isDummy()) {
                 imageResource = R.drawable.ic_chat_pending;
             }
-            chatStatus.setImageResource(imageResource);
+            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),imageResource));
         } else {
             chatStatus.setVisibility(View.GONE);
         }
@@ -159,8 +161,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         setUIVisibility(productContainer, R.id.drop_price, element.getDropPercentage());
         setUIVisibility(productContainer, R.id.attach_product_chat_price_old, element.getPriceBefore());
         setStrikeThrough(productContainer, R.id.attach_product_chat_price_old);
-        ImageHandler.loadImage2(productContainer.findViewById(R.id.drop_price),
-                "", R.drawable.ic_arrow_drop_price);
     }
 
     private void setUIVisibility(View productContainer, int resourceId, String content) {
@@ -176,7 +176,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 
     private void setFooter(View productContainer, ProductAttachmentViewModel element) {
         View separator = productContainer.findViewById(R.id.separator);
-        if (element.getCanShowFooter()) {
+        if (element.getCanShowFooter() && !GlobalConfig.isSellerApp()) {
             separator.setVisibility(View.VISIBLE);
             footerLayout.setVisibility(View.VISIBLE);
             tvBuy.setVisibility(View.VISIBLE);

@@ -59,7 +59,7 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
 
     private fun setTitle() {
         if (searchQueryStartIndexInKeyword == -1) {
-            view.titleTextView.text = boundedProfileSearch.keyword.toLowerCase()
+            view.titleTextView.text = boundedProfileSearch.keyword
         } else {
             view.titleTextView.text = getHighlightedTitle()
         }
@@ -112,7 +112,7 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
         itemView.setOnClickListener {
             AutoCompleteTracking.eventClickProfile(itemView.context, getFormattedStringForAutoCompleteTracking())
 
-            clickListener.onItemClicked(boundedProfileSearch.applink, boundedProfileSearch.url, false)
+            clickListener.onItemClicked(boundedProfileSearch.applink, boundedProfileSearch.url)
         }
     }
 

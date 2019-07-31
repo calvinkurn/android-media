@@ -79,7 +79,7 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
 
     private void setTitle() {
         if(searchQueryStartIndexInKeyword == -1){
-            titleTextView.setText(boundedShopSearch.getKeyword().toLowerCase());
+            titleTextView.setText(boundedShopSearch.getKeyword());
         } else {
             titleTextView.setText(getHighlightedTitle());
         }

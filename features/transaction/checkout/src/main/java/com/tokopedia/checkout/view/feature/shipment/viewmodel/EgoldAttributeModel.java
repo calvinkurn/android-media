@@ -5,9 +5,12 @@ import android.os.Parcelable;
 
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 
+import java.util.ArrayList;
+
 public class EgoldAttributeModel implements ShipmentData, Parcelable {
 
     private boolean isEligible;
+    private boolean isTiering;
     private int minEgoldRange;
     private int maxEgoldRange;
     private String titleText;
@@ -15,7 +18,8 @@ public class EgoldAttributeModel implements ShipmentData, Parcelable {
     private String tickerText;
     private String tooltipText;
     private boolean checked;
-    private int buyEgoldValue;
+    private long buyEgoldValue;
+    private ArrayList<EgoldTieringModel> egoldTieringModelArrayList;
 
     public boolean isEligible() {
         return isEligible;
@@ -73,12 +77,28 @@ public class EgoldAttributeModel implements ShipmentData, Parcelable {
         this.tooltipText = tooltipText;
     }
 
-    public int getBuyEgoldValue() {
+    public long getBuyEgoldValue() {
         return buyEgoldValue;
     }
 
-    public void setBuyEgoldValue(int buyEgoldValue) {
+    public void setBuyEgoldValue(long buyEgoldValue) {
         this.buyEgoldValue = buyEgoldValue;
+    }
+
+    public boolean isTiering() {
+        return isTiering;
+    }
+
+    public void setTiering(boolean tiering) {
+        isTiering = tiering;
+    }
+
+    public ArrayList<EgoldTieringModel> getEgoldTieringModelArrayList() {
+        return egoldTieringModelArrayList;
+    }
+
+    public void setEgoldTieringModelArrayList(ArrayList<EgoldTieringModel> egoldTieringModelArrayList) {
+        this.egoldTieringModelArrayList = egoldTieringModelArrayList;
     }
 
     @Override
@@ -86,31 +106,36 @@ public class EgoldAttributeModel implements ShipmentData, Parcelable {
         return 0;
     }
 
-    public EgoldAttributeModel(){}
+    public EgoldAttributeModel() {
+    }
 
     protected EgoldAttributeModel(Parcel in) {
         isEligible = in.readByte() != 0;
+        isTiering = in.readByte() != 0;
         checked = in.readByte() != 0;
         minEgoldRange = in.readInt();
         maxEgoldRange = in.readInt();
-        buyEgoldValue = in.readInt();
+        buyEgoldValue = in.readLong();
         titleText = in.readString();
         subText = in.readString();
         tickerText = in.readString();
         tooltipText = in.readString();
+        egoldTieringModelArrayList = (ArrayList<EgoldTieringModel>) in.readArrayList(EgoldTieringModel.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte((byte) (isEligible ? 1 : 0));
+        dest.writeByte((byte) (isTiering ? 1 : 0));
         dest.writeByte((byte) (checked ? 1 : 0));
         dest.writeInt(minEgoldRange);
         dest.writeInt(maxEgoldRange);
-        dest.writeInt(buyEgoldValue);
+        dest.writeLong(buyEgoldValue);
         dest.writeString(titleText);
         dest.writeString(subText);
         dest.writeString(tickerText);
         dest.writeString(tooltipText);
+        dest.writeList(egoldTieringModelArrayList);
     }
 
     public static final Creator<EgoldAttributeModel> CREATOR = new Creator<EgoldAttributeModel>() {

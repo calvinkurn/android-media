@@ -117,6 +117,7 @@
     <string name="userGender">Jenis Kelamin</string>
     <string name="userDob">Tanggal Lahir</string>
     <string name="userIdentity">No. Identitas</string>
+    <string name="ticketQuantity">Jumlah Tiket</string>
     <string name="btn_redeem_ticket">Redeem Tiket</string>
     <string name="btn_ticket_redeemed">Tutup</string>
     <string name="ticket_close">Kembali</string>

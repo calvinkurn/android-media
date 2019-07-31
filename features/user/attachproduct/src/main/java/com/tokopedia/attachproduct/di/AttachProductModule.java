@@ -106,8 +106,8 @@ public class AttachProductModule {
     }
 
     @Provides
-    CacheApiInterceptor provideCacheApiInterceptor() {
-        return new CacheApiInterceptor();
+    CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
+        return new CacheApiInterceptor(context);
     }
 
     @AttachProductScope

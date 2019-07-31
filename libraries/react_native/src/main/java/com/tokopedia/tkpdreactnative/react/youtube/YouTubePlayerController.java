@@ -65,7 +65,10 @@ public class YouTubePlayerController implements
 
     @Override
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult result) {
-        if (result.isUserRecoverableError()) {
+        if (result.isUserRecoverableError()
+                && mYouTubeView != null
+                && mYouTubeView.getReactContext()!= null
+                && mYouTubeView.getReactContext().getCurrentActivity() != null) {
             result.getErrorDialog(mYouTubeView.getReactContext().getCurrentActivity(), 0).show();
         }
         mYouTubeView.receivedError(result.toString());

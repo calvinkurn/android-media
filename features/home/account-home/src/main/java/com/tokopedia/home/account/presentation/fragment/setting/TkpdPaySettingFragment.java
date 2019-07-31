@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.user.session.UserSession;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +106,8 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                 getString(R.string.title_bank_account_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_CREDIT_CARD_ID,
                 getString(R.string.title_credit_card_setting)));
+        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_DEBIT_INSTANT,
+                getString(R.string.title_debit_instant_setting)));
 
         return settingItems;
     }
@@ -170,9 +175,24 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                     }
 
                     break;
+                case SettingConstant.SETTING_DEBIT_INSTANT:
+                    String debitInstantUrl = walletPref.retrieveDebitInstantUrl();
+                    if (!TextUtils.isEmpty(debitInstantUrl)) {
+                        RouteManager.route(getActivity(), SettingConstant.Url.BASE_WEBVIEW_APPLINK + encodeUrl(debitInstantUrl));
+                    }
+                    break;
                 default:
                     break;
             }
+        }
+    }
+
+    private String encodeUrl(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
     }
 

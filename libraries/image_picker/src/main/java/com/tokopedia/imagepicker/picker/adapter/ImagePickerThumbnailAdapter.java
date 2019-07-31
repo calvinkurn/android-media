@@ -21,6 +21,7 @@ import com.tokopedia.imagepicker.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by hendry on 02/05/18.
@@ -146,7 +147,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
         public void bind(@DrawableRes int drawableRes, int backgroundColor) {
             vFrameImage.setBackgroundColor(backgroundColor);
-            ivPlaceholder.setImageResource(drawableRes);
+            ivPlaceholder.setImageDrawable(MethodChecker.getDrawable(ivPlaceholder.getContext(),drawableRes));
         }
     }
 

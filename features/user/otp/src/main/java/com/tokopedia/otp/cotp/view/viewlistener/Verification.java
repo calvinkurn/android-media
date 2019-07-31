@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
+import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpLoginDomain;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
 /**
@@ -15,7 +16,7 @@ public interface Verification {
     interface View extends CustomerView {
         void onSuccessGetOTP(String message);
 
-        void onSuccessVerifyOTP();
+        void onSuccessVerifyOTP(String uuid, String msisdn);
 
         void onErrorGetOTP(String errorMessage);
 

@@ -46,24 +46,19 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
 public class WidgetTokenView extends FrameLayout {
 
     public static final float Y_PIVOT_PERCENT = 0.9f;
-    public static final int CRACK_STEP1_SHAKE_DURATION = 150;
-    public static final int CRACK_STEP1_DURATION = 350;
+    public static final int CRACK_STEP1_DURATION = 100;
     public static final int CRACK_STEP1_DEGREE = 3;
     public static final int CRACK_STEP2_DEGREE = 3;
-    public static final int CRACK_STEP2_DURATION = 350;
-    public static final int CRACK_STEP2_SHAKE_DURATION = 120;
-    public static final int CRACK_STEP2_START_DELAY = 80;
-    public static final int CRACK_STEP3_START_DELAY = 100;
-    public static final int CRACK_STEP3_DURATION = 350;
-    public static final int CRACK_STEP3_SHAKE_DURATION = 150;
+    public static final int CRACK_STEP2_DURATION = 100;
+    public static final int CRACK_STEP2_START_DELAY = 25;
+    public static final int CRACK_STEP3_START_DELAY = 40;
+    public static final int CRACK_STEP3_DURATION = 100;
     public static final int STEP2_END_MASKED_PERCENT = 30;
     public static final int STEP1_END_MASKED_PERCENT = 70;
-    public static final double RATIO_LIGHT_WIDTH = 0.8;
-    public static final int CRACK_STEP3_DEGREE = 4;
     private static final long INFINITE_BOUNCE_START_DELAY = 2000;
     private static final long INFINITE_BOUNCE_DURATION = 180;
-    private static final long CRACK_BOUNCE_DURATION = 250;
-    private static final long CRACK_BOUNCE_BACK_DURATION = 200;
+    private static final long CRACK_BOUNCE_DURATION = 150;
+    private static final long CRACK_BOUNCE_BACK_DURATION = 150;
 
     private volatile ImageView imageViewFull;
     private volatile MaskedHeightImageView imageViewCracked;
@@ -87,7 +82,6 @@ public class WidgetTokenView extends FrameLayout {
     private AnimatorSet bounceAnimatorSet;
     private Animation rotateRightAnimation;
     private Animation rotateLeftAnimation;
-    private AnimatorSet quickBounceAnimatorSet;
 
     public interface WidgetTokenListener {
         void onClick();
@@ -437,9 +431,6 @@ public class WidgetTokenView extends FrameLayout {
             initialBounceAnimatorSet.removeListener(bounceListener);
             initialBounceAnimatorSet.cancel();
         }
-
-        quickBounce();
-
         PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.25f);
         PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.7f);
 
@@ -454,7 +445,6 @@ public class WidgetTokenView extends FrameLayout {
         ObjectAnimator animCrackBounceBack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex1, scaley1);
         animCrackBounceBack.setDuration(CRACK_BOUNCE_BACK_DURATION);
         bounceAnimatorSet.playSequentially(animCrackBounce, animCrackBounceBack);
-        bounceAnimatorSet.setStartDelay(4 * INFINITE_BOUNCE_DURATION);
         bounceAnimatorSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -504,23 +494,6 @@ public class WidgetTokenView extends FrameLayout {
 
     }
 
-    private void quickBounce() {
-        quickBounceAnimatorSet = new AnimatorSet();
-        PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.1f);
-        PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.9f);
-        ObjectAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex, scaley);
-        bounceAnim.setRepeatCount(2);
-        bounceAnim.setRepeatMode(ValueAnimator.REVERSE);
-        bounceAnim.setDuration(INFINITE_BOUNCE_DURATION);
-
-        PropertyValuesHolder scalex1 = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f);
-        PropertyValuesHolder scaley1 = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f);
-        ObjectAnimator bounceBackAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex1, scaley1);
-        bounceBackAnim.setDuration(INFINITE_BOUNCE_DURATION);
-        quickBounceAnimatorSet.playSequentially(bounceAnim, bounceBackAnim);
-        quickBounceAnimatorSet.start();
-    }
-
     private void reset() {
         isTokenClicked = false;
 
@@ -554,9 +527,21 @@ public class WidgetTokenView extends FrameLayout {
         if (rotateRightAnimation != null) {
             rotateRightAnimation.cancel();
         }
-        if (quickBounceAnimatorSet != null) {
-            quickBounceAnimatorSet.cancel();
+    }
+
+    public void releaseMediaPlayer(){
+        if (crackMediaPlayer != null) {
+            crackMediaPlayer.release();
         }
+    }
+
+    /**
+     * This is method is clearing all Animation and releasing media player
+     *  called from onDestroyView of Fragment
+     * */
+    public void releaseResourcesOnDestroy() {
+        clearTokenAnimation();
+        releaseMediaPlayer();
     }
 
     public void clearTokenAnimationAndCrack() {

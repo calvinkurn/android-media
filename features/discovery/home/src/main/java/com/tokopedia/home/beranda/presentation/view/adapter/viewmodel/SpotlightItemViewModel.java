@@ -90,7 +90,7 @@ public class SpotlightItemViewModel {
                         "promoClick", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                "id", id,
+                                                "id", String.valueOf(id),
                                                 "name", promoName,
                                                 "position", String.valueOf(position + 1),
                                                 "creative", title,

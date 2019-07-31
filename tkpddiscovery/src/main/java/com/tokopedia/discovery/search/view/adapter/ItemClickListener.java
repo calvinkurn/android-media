@@ -12,11 +12,7 @@ public interface ItemClickListener {
 
     void onDeleteAllRecentSearch();
 
-    void onItemClicked(String applink, String webUrl, boolean shouldFinishActivity);
-
     void onItemClicked(String applink, String webUrl);
-
-    void onItemSearchClicked(String keyword, String categoryId, boolean isOfficial);
 
     void setOnTabShop(boolean onTabShop);
 }

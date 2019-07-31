@@ -11,5 +11,6 @@ data class TrackingRecommendationModel (
         val authorName: String = "",
         val authorType: String = "",
         val authorId: Int = 0,
-        val cardPosition: Int = 0
+        val cardPosition: Int = 0,
+        val adId: Int = 0
 )

@@ -1,23 +1,23 @@
 package com.tokopedia.tkpdreactnative.react;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.Arguments;
-
 import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.WritableMap;
-import com.tokopedia.network.constant.TkpdBaseURL;
-import com.tokopedia.network.utils.AuthUtil;
-
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
@@ -27,13 +27,9 @@ import com.tokopedia.tkpdreactnative.react.domain.UnifyReactNetworkRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -253,17 +249,17 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getBaseApiUrl(String param, Promise promise){
         if (param.equals("mojito")){
-            promise.resolve(TkpdBaseURL.MOJITO_DOMAIN);
+            promise.resolve(TokopediaUrl.Companion.getInstance().getMOJITO());
         } else if (param.equals("ace")){
-            promise.resolve(TkpdBaseURL.ACE_DOMAIN);
+            promise.resolve(TokopediaUrl.Companion.getInstance().getACE());
         } else if (param.equals("gql")) {
-            promise.resolve(TkpdBaseURL.HOME_DATA_BASE_URL);
+            promise.resolve(TokopediaUrl.Companion.getInstance().getGQL());
         } else if (param.equals("pulsa")){
-            promise.resolve(TkpdBaseURL.DIGITAL_API_DOMAIN);
+            promise.resolve(TokopediaUrl.Companion.getInstance().getPULSA_API());
         } else if (param.equals("tome")) {
-            promise.resolve(TkpdBaseURL.TOME_DOMAIN);
+            promise.resolve(TokopediaUrl.Companion.getInstance().getTOME());
         } else if (param.equals("tokopedia")) {
-            promise.resolve(TkpdBaseURL.WEB_DOMAIN);
+            promise.resolve(TokopediaUrl.Companion.getInstance().getWEB());
         } else {
             promise.reject("Base api url param is not found!");
         }
@@ -296,6 +292,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
                 if(!TextUtils.isEmpty(getSensorData()))
                 headers.put("X-acf-sensor-data", getSensorData());
             }
+            headers.put("User-Agent", getUserAgent());
             builder.setHeaders(headers);
             builder.setParams(getHashMap.convert(maps, ReactConst.Networking.PARAMS));
             ReactNetworkingConfiguration configuration = builder.build();
@@ -326,5 +323,10 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject(e);
         }
+    }
+
+    private static final String userAgentFormat = "TkpdConsumer/%s (%s;)";
+    public static String getUserAgent(){
+        return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
     }
 }

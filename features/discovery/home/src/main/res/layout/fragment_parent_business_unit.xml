@@ -114,7 +114,7 @@
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_32"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_reload_yellow_32dp"
+                    app:srcCompat="@drawable/ic_reload_yellow_32dp"
                     />
 
             </FrameLayout>

@@ -14,11 +14,10 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.image.SquareImageView;
-import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DateHelper;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
@@ -92,8 +91,10 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
             }
             if (isSprintSale(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
-                countDownView.setVisibility(View.VISIBLE);
+                if (!DateHelper.isExpired(element.getServerTimeOffset(), expiredTime)){
+                    countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
+                    countDownView.setVisibility(View.VISIBLE);
+                }
             } else {
                 countDownView.setVisibility(View.GONE);
             }

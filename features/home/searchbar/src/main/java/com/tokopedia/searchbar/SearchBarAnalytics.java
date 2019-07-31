@@ -54,10 +54,10 @@ public class SearchBarAnalytics {
         return eventTracking;
     }
 
-    public void eventTrackingSearchBar() {
+    public void eventTrackingSearchBar(String screenName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchBarConstant.CLICK_TOP_NAV,
-                SearchBarConstant.TOP_NAV,
+                SearchBarConstant.TOP_NAV + " - " + screenName,
                 SearchBarConstant.CLICK_SEARCH_BOX,
                 ""
         ));

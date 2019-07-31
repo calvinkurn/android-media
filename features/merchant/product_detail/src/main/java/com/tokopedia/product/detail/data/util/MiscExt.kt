@@ -2,6 +2,8 @@ package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.data.model.constant.TimeUnitTypeDef
+import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
 inline fun <reified T> GraphqlResponse.getSuccessData(): T {
@@ -19,3 +21,9 @@ val WarehouseInfo.origin: String?
             arrayOf(districtId, postalCode, geoLocation).joinToString("|")
         } else null
     }
+
+val PreOrder.timeUnitValue: String
+    get() = if (timeUnit.toLowerCase() == TimeUnitTypeDef.DAY.toLowerCase()) "Hari"
+            else if ((timeUnit.toLowerCase() == TimeUnitTypeDef.WEEK.toLowerCase())) "Minggu"
+            else if ((timeUnit.toLowerCase() == TimeUnitTypeDef.MONTH.toLowerCase())) "Bulan"
+            else ""

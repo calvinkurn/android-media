@@ -9,8 +9,8 @@ import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
@@ -23,26 +23,37 @@ class TrackingRepository (
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
 
     suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
-        if (isSizeOver()) { // check if db over 2 MB
-            trackingDao.flush()
-        }
-        trackingDao.insert(Tracking(data, session.getUserId(), session.getDeviceId()))
+        try {
+            if (isSizeOver()) { // check if db over 2 MB
+                trackingDao.flush()
+            }
+            trackingDao.insert(Tracking(data, session.getUserId(), session.getDeviceId()))
+        } catch (e: Throwable) {}
     }
 
-    fun getFromOldest(maxRow: Int) = trackingDao.getFromOldest(maxRow)
+    fun getFromOldest(maxRow: Int) : List<Tracking> {
+        return try {
+            trackingDao.getFromOldest(maxRow)
+        } catch (e: Throwable) {
+            ArrayList()
+        }
+    }
 
-    fun delete(data: List<Tracking>) = trackingDao.delete(data)
+    fun delete(data: List<Tracking>) {
+        try {
+            trackingDao.delete(data)
+        } catch (e: Throwable) {}
+    }
 
-    suspend fun sendSingleEvent(data: String, session: Session) : Boolean =
-            withContext(Dispatchers.Default) {
-                val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
-                        session.getUserId(), session.getDeviceId())
-                val service = ApiService(context).makeRetrofitService()
-                val requestBody = ApiService.parse(dataRequest)
-                val request = service.sendSingleEvent(requestBody)
-                val response = request.await()
-                response.isSuccessful
-            }
+    suspend fun sendSingleEvent(data: String, session: Session) : Boolean {
+        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
+                session.getUserId(), session.getDeviceId())
+        val service = ApiService(context).makeRetrofitService()
+        val requestBody = ApiService.parse(dataRequest)
+        val request = service.sendSingleEvent(requestBody)
+        val response = request.await()
+        return response.isSuccessful
+    }
 
     private fun isSizeOver() : Boolean {
         val f: File? = context.getDatabasePath(DATABASE_NAME)
@@ -52,5 +63,20 @@ class TrackingRepository (
             return sizeDbInMb >= 2
         }
         return false
+    }
+
+    suspend fun sendRemainingEvent(maxRow: Int) {
+        val trackings: List<Tracking> = getFromOldest(maxRow)
+
+        if (trackings.isNotEmpty()) {
+            val request: String = TrackingMapper().transformListEvent(trackings)
+
+            val service = ApiService(context).makeRetrofitService()
+            val requestBody = ApiService.parse(request)
+            val response = service.sendMultiEvent(requestBody).await()
+            if (response.isSuccessful && response.code() == 200) {
+                delete(trackings)
+            }
+        }
     }
 }

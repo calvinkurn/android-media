@@ -61,6 +61,7 @@ public class GetHotlistInitializeUseCase extends UseCase<HotlistModel> {
         if(queryModel!=null) {
             requestParams.putString(BrowseApi.OB, queryModel.getOrderBy());
             requestParams.putString(BrowseApi.Q, queryModel.getQueryKey());
+            requestParams.putBoolean(BrowseApi.IS_CURATED, queryModel.getQueryKey().isEmpty());
             requestParams.putString(BrowseApi.H, queryModel.getHotlistID());
             requestParams.putString(BrowseApi.SHOP_ID, queryModel.getShopID());
             requestParams.putString(BrowseApi.FSHOP, queryModel.getFilterGoldMerchant());

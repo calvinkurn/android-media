@@ -12,6 +12,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 public class ShipmentEmasViewHolder extends RecyclerView.ViewHolder {
 
@@ -44,7 +45,7 @@ public class ShipmentEmasViewHolder extends RecyclerView.ViewHolder {
         imgEmasInfo.setOnClickListener(v -> showBottomSheet(egoldAttributeModel));
         tvEmasDesc.setText(Html.fromHtml(String.format(llContainer.getContext()
                         .getString(R.string.emas_checkout_desc), egoldAttributeModel.getSubText(),
-                String.valueOf(egoldAttributeModel.getBuyEgoldValue()))));
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.getBuyEgoldValue(), false))));
 
         buyEmas.setOnCheckedChangeListener((buttonView, isChecked) -> shipmentAdapterActionListener.onEgoldChecked(isChecked));
     }

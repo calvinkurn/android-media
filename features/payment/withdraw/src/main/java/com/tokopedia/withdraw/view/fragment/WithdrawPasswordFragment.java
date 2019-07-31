@@ -2,15 +2,18 @@ package com.tokopedia.withdraw.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -19,6 +22,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
@@ -39,7 +43,7 @@ import static com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToStrin
 
 public class WithdrawPasswordFragment extends BaseDaggerFragment implements WithdrawPasswordContract.View {
 
-    private View withdrawButton;
+    private TextView withdrawButton;
     private View forgotPassword;
     private EditText passwordView;
     private Snackbar snackBarError;
@@ -88,6 +92,19 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        disableWithdrawButton();
+
+        passwordView.addTextChangedListener(new AfterTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().isEmpty()) {
+                    disableWithdrawButton();
+                } else {
+                    enableWithdrawButton();
+                }
+            }
+        });
         withdrawButton.setOnClickListener(v -> {
             int withdrawal = (int) StringUtils.convertToNumeric(
                     Objects.requireNonNull(getArguments()).getString(WithdrawPasswordActivity.BUNDLE_WITHDRAW)
@@ -114,6 +131,18 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                     snackBarError.dismiss();
                 });
 
+    }
+
+    private void disableWithdrawButton() {
+        withdrawButton.setTextColor(getResources().getColor(R.color.black_26));
+        withdrawButton.setEnabled(false);
+        withdrawButton.setClickable(false);
+    }
+
+    private void enableWithdrawButton() {
+        withdrawButton.setTextColor(Color.WHITE);
+        withdrawButton.setEnabled(true);
+        withdrawButton.setClickable(true);
     }
 
     @Override

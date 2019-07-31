@@ -3,12 +3,11 @@ package com.tokopedia.discovery.newdynamicfilter.adapter.viewholder;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 /**
@@ -17,14 +16,14 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
 
-    TextView title;
-    SwitchCompat toggle;
+    private TextView title;
+    private SwitchCompat toggle;
     private final DynamicFilterView dynamicFilterView;
 
     public DynamicFilterItemToggleViewHolder(View itemView, DynamicFilterView dynamicFilterView) {
         super(itemView);
-        title = (TextView) itemView.findViewById(R.id.title);
-        toggle = (SwitchCompat) itemView.findViewById(R.id.toggle);
+        title = itemView.findViewById(R.id.title);
+        toggle = itemView.findViewById(R.id.toggle);
         this.dynamicFilterView = dynamicFilterView;
     }
 
@@ -33,20 +32,14 @@ public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
         final Option option = filter.getOptions().get(0);
         title.setText(option.getName());
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggle.setChecked(!toggle.isChecked());
-            }
-        });
+        itemView.setOnClickListener(v -> toggle.setChecked(!toggle.isChecked()));
 
-        CompoundButton.OnCheckedChangeListener onCheckedChangeListener
-                = new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        dynamicFilterView.saveCheckedState(option, isChecked);
-                    }
-                };
+        bindSwitchForOption(option);
+    }
+
+    private void bindSwitchForOption(Option option) {
+        CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
+                (buttonView, isChecked) -> dynamicFilterView.saveCheckedState(option, isChecked);
 
         bindSwitch(toggle,
                 dynamicFilterView.loadLastCheckedState(option),

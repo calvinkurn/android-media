@@ -15,6 +15,7 @@ import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
 import javax.inject.Inject;
@@ -69,12 +70,20 @@ public class ImageSearchActivity extends DiscoveryActivity
 
             setToolbarTitle(getString(R.string.image_search_title));
         } else if (!TextUtils.isEmpty(searchQuery)) {
-            onProductQuerySubmit(searchQuery,false);
+            createAndSetSearchParameter(searchQuery);
+            onProductQuerySubmit();
         } else {
             searchView.showSearch(true, false);
         }
 
         super.initView();
+    }
+
+    private void createAndSetSearchParameter(String searchQuery) {
+        SearchParameter searchParameter = new SearchParameter();
+        searchParameter.setSearchQuery(searchQuery);
+
+        this.searchParameter = searchParameter;
     }
 
     private void initInjector() {
@@ -104,11 +113,8 @@ public class ImageSearchActivity extends DiscoveryActivity
     }
 
     @Override
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        setForceSearch(forceSearch);
-        setForceSwipeToShop(false);
-        setRequestOfficialStoreBanner(true);
-        performRequestProduct(query);
+    public void performNewProductSearch(String queryParams) {
+
     }
 
     @Override

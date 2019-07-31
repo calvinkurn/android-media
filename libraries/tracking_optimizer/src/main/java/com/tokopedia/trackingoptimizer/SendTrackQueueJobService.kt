@@ -5,9 +5,9 @@ import android.app.job.JobParameters
 import android.app.job.JobService
 import android.os.Build
 import com.tokopedia.trackingoptimizer.repository.TrackingRepository
-import kotlinx.coroutines.experimental.CoroutineExceptionHandler
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class SendTrackQueueJobService : JobService(), CoroutineScope {

@@ -1,5 +1,7 @@
 package com.tokopedia.flight.dashboard.view.validator;
 
+import android.text.TextUtils;
+
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 
@@ -33,7 +35,7 @@ public class FlightDashboardValidator {
 
     public boolean validateArrivalAndDestinationNotSame(FlightDashboardViewModel currentDashboardViewModel) {
         List<String> departureAirports = new ArrayList<>();
-        if (currentDashboardViewModel.getDepartureAirport().getAirportCode() != null) {
+        if (!TextUtils.isEmpty(currentDashboardViewModel.getDepartureAirport().getAirportCode())) {
             departureAirports.add(currentDashboardViewModel.getDepartureAirport().getAirportCode());
         }
 
@@ -41,7 +43,7 @@ public class FlightDashboardValidator {
             departureAirports.addAll(currentDashboardViewModel.getDepartureAirport().getCityAirports());
         }
         List<String> arrivalAirports = new ArrayList<>();
-        if (currentDashboardViewModel.getArrivalAirport().getAirportCode() != null) {
+        if (!TextUtils.isEmpty(currentDashboardViewModel.getArrivalAirport().getAirportCode())) {
             arrivalAirports.add(currentDashboardViewModel.getArrivalAirport().getAirportCode());
         }
 

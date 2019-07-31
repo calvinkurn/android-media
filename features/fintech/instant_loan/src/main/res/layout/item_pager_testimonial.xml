@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_15"
+    app:cardBackgroundColor="@color/white"
+    app:cardElevation="@dimen/dp_4"
+    app:cardUseCompatPadding="true">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_testimonial"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/il_person_image"
+            android:layout_width="@dimen/dp_56"
+            android:layout_height="@dimen/dp_56"
+            android:layout_margin="@dimen/dp_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/il_testimonial_person_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:textColor="#f531353b"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/il_person_image"
+            app:layout_constraintLeft_toRightOf="@+id/il_person_image"
+            app:layout_constraintTop_toTopOf="@+id/il_person_image"
+            tools:text="Asty Afisha" />
+
+        <TextView
+            android:id="@+id/il_testimonial_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16"
+            android:textColor="#f531353b"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/il_person_image"
+            tools:text="“Alhamdulillah dengan adanya dana instan di Tokopedia saya merasa terbantu untuk penambahan modal usaha kecil yang saya jalani, sebagai member di Tokopedia saya merasa d untungkan oleh dana instan Tokopedia pengajuan sangat cepat dan tak ribet sekali klik dana langsung cair.trimss danainstan top markotop deh." />
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

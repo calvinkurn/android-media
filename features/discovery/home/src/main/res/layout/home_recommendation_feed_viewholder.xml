@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_recommendation_feed_container"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
+        android:id="@+id/tab_layout_home_feeds"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tab_home_feed_max_height"
+        app:tabBackground="@android:color/transparent"
+        app:tabPaddingStart="0dp"
+        app:tabPaddingEnd="0dp"
+        app:tabMode="scrollable"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:visibility="gone"
+        app:tabIndicatorHeight="0dp"
+        />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager_home_feeds"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"/>
+        <View
+            android:id="@+id/view_feed_shadow"
+            android:visibility="invisible"
+            android:layout_gravity="top"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_10"
+            android:background="@drawable/feed_bg_shadow_bottom"/>
+    </FrameLayout>
+
+</LinearLayout>

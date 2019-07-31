@@ -65,6 +65,7 @@ public class EventSearchMapper {
                 itemDomain.setIsSearchable(eventItem.getIsSearchable());
                 itemDomain.setIsTop(eventItem.getIsTop());
                 itemDomain.setLongRichDesc(eventItem.getLongRichDesc());
+                itemDomain.setSeoUrl(eventItem.getSeoUrl());
                 itemDomain.setMaxEndDate(eventItem.getMaxEndDate());
                 itemDomain.setMaxEndTime(eventItem.getMaxEndTime());
                 itemDomain.setMetaDescription(eventItem.getMetaDescription());
@@ -106,7 +107,7 @@ public class EventSearchMapper {
                 itemDomain.setLikes(eventItem.getLikes());
                 itemDomain.setLiked(eventItem.isLiked());
                 itemDomain.setShortDesc(eventItem.getShortDesc());
-
+                itemDomain.setCustomText1(eventItem.getCustomText1());
                 eventsItemDomains.add(itemDomain);
             }
             target.setEvents(eventsItemDomains);

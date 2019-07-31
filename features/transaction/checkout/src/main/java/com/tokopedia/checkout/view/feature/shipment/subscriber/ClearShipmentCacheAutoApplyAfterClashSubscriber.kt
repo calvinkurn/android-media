@@ -15,7 +15,8 @@ class ClearShipmentCacheAutoApplyAfterClashSubscriber(val view: ShipmentContract
                                                       private val isOneClickShipment: Boolean,
                                                       private val cornerId: String,
                                                       private val isTradeIn: Boolean,
-                                                      private val devieId: String) : Subscriber<GraphqlResponse>() {
+                                                      private val devieId: String,
+                                                      private val type: String) : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
 
@@ -32,8 +33,8 @@ class ClearShipmentCacheAutoApplyAfterClashSubscriber(val view: ShipmentContract
         presenter.setCouponStateChanged(true)
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (responseData.successData.success) {
-            view?.onSuccessClearPromoStachAfterClash()
-            presenter.applyPromoStackAfterClash(newPromoList, isFromMultipleAddress, isOneClickShipment, isTradeIn, cornerId, devieId)
+            view?.onSuccessClearPromoStackAfterClash()
+            presenter.applyPromoStackAfterClash(newPromoList, isFromMultipleAddress, isOneClickShipment, isTradeIn, cornerId, devieId, type)
         } else {
             view?.onFailedClearPromoStack(false)
         }

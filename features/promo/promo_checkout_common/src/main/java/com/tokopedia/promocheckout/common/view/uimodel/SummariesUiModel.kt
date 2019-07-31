@@ -14,9 +14,9 @@ data class SummariesUiModel(
         var amount: Int = -1
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readInt()) {
     }
 

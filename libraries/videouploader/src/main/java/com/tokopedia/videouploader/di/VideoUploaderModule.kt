@@ -137,8 +137,8 @@ class VideoUploaderModule constructor() {
 
     @VideoUploaderQualifier
     @Provides
-    fun provideCacheApiInterceptor(): CacheApiInterceptor {
-        return CacheApiInterceptor()
+    fun provideCacheApiInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
+        return CacheApiInterceptor(context)
     }
 
     @VideoUploaderQualifier

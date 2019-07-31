@@ -20,7 +20,6 @@ import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventBaseContract;
 
-import butterknife.ButterKnife;
 
 public abstract class EventBaseActivity extends BaseSimpleActivity implements EventBaseContract.EventBaseView {
 
@@ -35,9 +34,11 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initPresenter();
-        bindViews();
+        setupVariables();
         mPresenter.attachView(this);
     }
+
+    abstract void setupVariables();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -104,14 +105,5 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
 
     private BaseAppComponent getBaseAppComponent() {
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
-    }
-
-    private void bindViews() {
-        ButterKnife.bind(this);
-        bindCustomViews();
-    }
-
-    protected void bindCustomViews() {
-
     }
 }

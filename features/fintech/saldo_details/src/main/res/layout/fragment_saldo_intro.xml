@@ -46,24 +46,22 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/dana_refund"
                 style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"
-                android:drawableStart="@drawable/ic_refund"
-                android:drawableLeft="@drawable/ic_refund"
                 android:drawablePadding="@dimen/dp_8"
                 android:gravity="center_vertical"
                 android:lineSpacingExtra="@dimen/sp_5"
                 android:text="@string/dana_refund" />
 
             <TextView
+                android:id="@+id/disbursement_fund"
                 style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:drawableStart="@drawable/ic_refund_disbursement"
-                android:drawableLeft="@drawable/ic_refund_disbursement"
                 android:drawablePadding="@dimen/dp_8"
                 android:gravity="left|start"
                 android:lineSpacingExtra="@dimen/sp_5"
@@ -104,24 +102,22 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/hasil_penjualan"
                 style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"
-                android:drawableStart="@drawable/ic_sales_report"
-                android:drawableLeft="@drawable/ic_sales_report"
                 android:drawablePadding="@dimen/dp_8"
                 android:gravity="center_vertical"
                 android:lineSpacingExtra="@dimen/sp_5"
                 android:text="@string/hasil_penjualan" />
 
             <TextView
+                android:id="@+id/disbursement_priority_balance"
                 style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_14"
-                android:drawableStart="@drawable/ic_balance_disbursement"
-                android:drawableLeft="@drawable/ic_balance_disbursement"
                 android:drawablePadding="@dimen/dp_8"
                 android:gravity="left|start"
                 android:lineSpacingExtra="@dimen/sp_5"

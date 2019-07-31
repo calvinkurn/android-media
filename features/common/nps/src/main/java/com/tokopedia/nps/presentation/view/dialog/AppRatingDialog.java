@@ -37,7 +37,6 @@ public abstract class AppRatingDialog {
     protected Activity activity;
     protected RemoteConfig remoteConfig;
     protected LocalCacheHandler cacheHandler;
-    protected CacheManager globalCacheManager;
 
     @Nullable
     protected DialogInterface.OnDismissListener listener;
@@ -49,7 +48,6 @@ public abstract class AppRatingDialog {
         this.initInjector();
         this.remoteConfig = new FirebaseRemoteConfigImpl(activity);
         cacheHandler = new LocalCacheHandler(activity, APP_RATING);
-        globalCacheManager = ((AbstractionRouter) activity.getApplication()).getGlobalCacheManager();
     }
 
     private void initInjector() {

@@ -16,27 +16,23 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class GetCategoryDetailRequestUseCase extends RestRequestUseCase {
-    private RequestParams params;
+    private String  url;
 
     @Inject
     public GetCategoryDetailRequestUseCase(){ }
 
-    public void setRequestParams(RequestParams params) {
-        this.params = params;
+    public void setRequestParams(String url) {
+        this.url = url;
     }
 
     @Override
     protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        HashMap<String, Object> mapParams=params.getParameters();
-        String url=String.valueOf(mapParams.get(DealsHomePresenter.TAG));
-        mapParams.remove(DealsHomePresenter.TAG);
         Type token = new TypeToken<DataResponse<CategoryDetailsResponse>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)
-                .setQueryParams(params.getParameters())
                 .build();
         tempRequest.add(restRequest1);
         return tempRequest;

@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.domain.model.scanticket.ScanTicketResponse;
 import com.tokopedia.events.view.contractor.ScanCodeContract;
 import com.tokopedia.events.view.presenter.ScanCodeDataPresenter;
@@ -20,7 +19,7 @@ import com.tokopedia.events.view.presenter.ScanCodeDataPresenter;
 public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeContract.ScanCodeDataView, View.OnClickListener {
 
     private View divider1, divider2;
-    private TextView userName, gender, dob, identityNum, eventName, eventDate, eventLocation;
+    private TextView userName, gender, dob, identityNum, ticketQty, ticketQtyNum, eventName, name, eventDate, eventLocation;
     private TextView redeemTicket, ticketRedeemed, closeTicket;
     private LinearLayout ownerData, ticketSuccessLayouyt, ticketFailureLayout;
     private TextView userNameTitle, userGenderTitle, userDobTitle, userIdentityTitle;
@@ -56,6 +55,10 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    void setupVariables() {
         divider1 = findViewById(R.id.divider1);
         divider2 = findViewById(R.id.divider2);
         userName = findViewById(R.id.user_name);
@@ -63,6 +66,7 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
         dob = findViewById(R.id.user_dob);
         identityNum = findViewById(R.id.user_identity_num);
         eventName = findViewById(R.id.event_name);
+        name = findViewById(R.id.name);
         eventDate = findViewById(R.id.event_date);
         eventLocation = findViewById(R.id.event_location);
         redeemTicket = findViewById(R.id.redeem_ticket);
@@ -73,6 +77,9 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
         userGenderTitle = findViewById(R.id.user_gender_title);
         userDobTitle = findViewById(R.id.user_dob_title);
         userIdentityTitle = findViewById(R.id.user_identity_title);
+
+        ticketQty = findViewById(R.id.ticket_qty);
+        ticketQtyNum = findViewById(R.id.ticket_qty_num);
 
         ownerData = findViewById(R.id.owner_data_ll);
         ticketSuccessLayouyt = findViewById(R.id.redeem_ticket_success);
@@ -116,6 +123,9 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
                     eventName.setText(scanTicketResponse.getProduct().getDisplayName());
                     if (scanTicketResponse.getSchedule() != null) {
                         eventDate.setText(scanTicketResponse.getSchedule().getShowData());
+                        if (!TextUtils.isEmpty(scanTicketResponse.getSchedule().getName())) {
+                            name.setText(scanTicketResponse.getSchedule().getName());
+                        }
                     }
                     ticketRedeemDate.setText(getString(R.string.ticket_updatedAt) + " " + scanTicketResponse.getProduct().getUpdatedAt());
                 }
@@ -137,6 +147,10 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
                         identityNum.setText(scanTicketResponse.getUser().getIdentityNum());
                         userIdentityTitle.setVisibility(View.VISIBLE);
                     }
+                    if (!TextUtils.isEmpty(scanTicketResponse.getQuantity())) {
+                        ticketQty.setVisibility(View.VISIBLE);
+                        ticketQtyNum.setText(scanTicketResponse.getQuantity() + " " + "Tiket");
+                    }
                 }
 
 
@@ -144,7 +158,9 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
                     eventName.setText(scanTicketResponse.getProduct().getDisplayName());
                     if (scanTicketResponse.getSchedule() != null) {
                         eventDate.setText(scanTicketResponse.getSchedule().getShowData());
-
+                        if (!TextUtils.isEmpty(scanTicketResponse.getSchedule().getName())) {
+                            name.setText(scanTicketResponse.getSchedule().getName());
+                        }
                     }
                 }
 

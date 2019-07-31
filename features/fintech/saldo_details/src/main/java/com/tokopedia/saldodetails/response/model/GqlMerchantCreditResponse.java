@@ -42,15 +42,15 @@ public class GqlMerchantCreditResponse implements Parcelable {
     @SerializedName("box_info")
     private GqlBoxInfoResponse boxInfo;
 
-    public static final Creator<GqlDetailsResponse> CREATOR = new Creator<GqlDetailsResponse>() {
+    public static final Creator<GqlMerchantCreditResponse> CREATOR = new Creator<GqlMerchantCreditResponse>() {
         @Override
-        public GqlDetailsResponse createFromParcel(Parcel in) {
-            return new GqlDetailsResponse(in);
+        public GqlMerchantCreditResponse createFromParcel(Parcel in) {
+            return new GqlMerchantCreditResponse(in);
         }
 
         @Override
-        public GqlDetailsResponse[] newArray(int size) {
-            return new GqlDetailsResponse[size];
+        public GqlMerchantCreditResponse[] newArray(int size) {
+            return new GqlMerchantCreditResponse[size];
         }
     };
 
@@ -63,7 +63,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
         this.mainRedirectUrl = in.readString();
         this.logoURL = in.readString();
         this.bodyDesc = in.readString();
-        this.anchorList = ((GqlAnchorListResponse) in.readValue((GqlAnchorListResponse.class.getClassLoader())));// in.createTypedArrayList(GqlAnchorListResponse.CREATOR);
+        this.anchorList = ((GqlAnchorListResponse) in.readValue((GqlAnchorListResponse.class.getClassLoader())));
         this.infoList = in.createTypedArrayList(GqlInfoListResponse.CREATOR);
         this.showBox = in.readByte() != 0;
         this.boxInfo = ((GqlBoxInfoResponse) in.readValue((GqlBoxInfoResponse.class.getClassLoader())));

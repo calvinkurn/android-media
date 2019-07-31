@@ -40,11 +40,11 @@
                         android:scaleType="centerCrop" />
 
                     <TextView
+                        android:id="@+id/ulng"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:background="@color/transparent"
-                        android:drawableLeft="@drawable/ic_refresh_turqoise"
                         android:gravity="center"
                         android:text="@string/ulng"
                         android:textColor="@color/white"
@@ -84,11 +84,11 @@
                     android:scaleType="centerCrop" />
 
                 <TextView
+                    android:id="@+id/ulng2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@color/transparent"
-                    android:drawableLeft="@drawable/ic_refresh_turqoise"
                     android:gravity="center"
                     android:text="@string/ulng"
                     android:textColor="@color/white"

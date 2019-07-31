@@ -1,9 +1,9 @@
 package com.tokopedia.tkpd.thankyou.view;
 
-import android.app.IntentService;
-import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v4.app.JobIntentService;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -13,8 +13,9 @@ import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import javax.inject.Inject;
 
 
-public class ThanksTrackerService extends IntentService {
+public class ThanksTrackerService extends JobIntentService {
     public static final String DATA = "ThanksTrackerData";
+    private static final int THANKSTRACKER_JOB_ID = 1000;
 
     @Inject
     ThanksTracker.Presenter presenter;
@@ -23,11 +24,7 @@ public class ThanksTrackerService extends IntentService {
         Intent intent = new Intent(context, ThanksTrackerService.class);
         intent.putExtra(DATA, data);
 
-        context.startService(intent);
-    }
-
-    public ThanksTrackerService() {
-        super("ThanksTrackerService");
+        enqueueWork(context, ThanksTrackerService.class, THANKSTRACKER_JOB_ID, intent);
     }
 
     @Override
@@ -36,7 +33,7 @@ public class ThanksTrackerService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleWork(@NonNull Intent intent) {
         if(intent != null) {
             ThanksTrackerData data = intent.getParcelableExtra(DATA);
             if(isDataValid(data)) {

@@ -10,8 +10,6 @@
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_add_round"
-        android:drawableLeft="@drawable/ic_add_round"
         android:drawablePadding="@dimen/dp_16"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"

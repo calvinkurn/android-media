@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -23,6 +22,7 @@ import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.NotificationPresenter;
 import com.tokopedia.navigation.presentation.view.NotificationView;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,15 +149,13 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     private List<DrawerNotification> getData() {
         List<DrawerNotification> notifications = new ArrayList<>();
 
-        addUpdateNotification(notifications);
-
         DrawerNotification buyer = new DrawerNotification();
         buyer.setId(PEMBELIAN);
         buyer.setTitle(getString(R.string.pembelian));
         List<DrawerNotification.ChildDrawerNotification> childBuyer = new ArrayList<>();
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_PEMBAYARAN,
                 getString(R.string.menunggu_pembayaran), ApplinkConst.PMS));
-        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(TkpdCache.RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
 
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI,
                     getString(R.string.menunggu_konfirmasi), ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION));

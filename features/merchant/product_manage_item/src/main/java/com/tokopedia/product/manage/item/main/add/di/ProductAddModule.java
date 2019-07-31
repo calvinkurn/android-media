@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.core.common.category.data.source.CategoryDataSource;
@@ -15,6 +16,7 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.product.manage.item.R;
 import com.tokopedia.product.manage.item.catalog.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.product.manage.item.catalog.data.source.CatalogDataSource;
 import com.tokopedia.product.manage.item.catalog.domain.CatalogRepository;
@@ -39,6 +41,8 @@ import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -54,7 +58,8 @@ public class ProductAddModule {
     @ProductAddScope
     @Provides
     ProductAddPresenterImpl<ProductAddView> provideProductAddPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
-                                                                       GetShopInfoUseCase getShopInfoUseCase, UserSessionInterface userSession,
+                                                                       GetShopInfoUseCase getShopInfoUseCase,
+                                                                       UserSessionInterface userSession,
                                                                        FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase){
         return new ProductAddPresenterImpl<>(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
     }
@@ -145,5 +150,4 @@ public class ProductAddModule {
     ProductVariantRepository productVariantRepository(ProductVariantDataSource productVariantDataSource){
         return new ProductVariantRepositoryImpl(productVariantDataSource);
     }
-
 }

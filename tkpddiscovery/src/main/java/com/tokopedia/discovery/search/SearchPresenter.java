@@ -8,6 +8,7 @@ import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.usecase.AutoCompleteUseCase;
 import com.tokopedia.discovery.autocomplete.usecase.DeleteRecentSearchUseCase;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.subscriber.SearchSubscriber;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.usecase.RequestParams;
@@ -41,12 +42,11 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
     }
 
     @Override
-    public void search(String query, boolean isOfficial) {
-        this.querySearch = query;
+    public void search(SearchParameter searchParameter) {
+        this.querySearch = searchParameter.getSearchQuery();
         autoCompleteUseCase.execute(
                 AutoCompleteUseCase.getParams(
-                        this.querySearch,
-                        isOfficial,
+                        searchParameter.getSearchParameterMap(),
                         GCMHandler.getRegistrationId(context),
                         userSession.getUserId()
                 ),

@@ -4,9 +4,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 import java.util.List;
 
@@ -38,13 +36,11 @@ public interface ImageProductListFragmentView extends CustomerView {
 
     void setHeaderTopAds(boolean hasHeader);
 
-    void setProductList(List<Visitable> list);
+    void appendProductList(List<Visitable> list);
 
     void disableWishlistButton(String productId);
 
     void enableWishlistButton(String productId);
-
-    void showNetworkError(int startRow);
 
     String getQueryKey();
 

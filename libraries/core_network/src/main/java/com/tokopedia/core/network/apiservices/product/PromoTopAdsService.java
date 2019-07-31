@@ -1,8 +1,7 @@
 package com.tokopedia.core.network.apiservices.product;
 
-import com.tokopedia.core.network.apiservices.product.apis.ProductApi;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.product.apis.PromoTopAdsApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
 import retrofit2.Retrofit;
@@ -26,7 +25,7 @@ public class PromoTopAdsService extends AuthService<PromoTopAdsApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.TOPADS_DOMAIN;
+        return TokopediaUrl.Companion.getInstance().getTA();
     }
 
     @Override

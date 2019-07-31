@@ -1,6 +1,6 @@
 package com.tokopedia.flashsale.management
 
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.delay
 import rx.Observable
 import java.util.concurrent.TimeUnit
 

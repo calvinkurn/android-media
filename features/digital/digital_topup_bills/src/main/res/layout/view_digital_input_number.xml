@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/dp_12"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingRight="@dimen/dp_12"
+    android:paddingBottom="@dimen/dp_10">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_input_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_8"
+        android:text="Nomor HP"
+        android:textColor="@color/Neutral_N700_96"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hint_input_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_8"
+        android:textColor="@color/font_black_disabled_38"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/ac_input_number"
+        app:layout_constraintEnd_toStartOf="@+id/img_operator"
+        app:layout_constraintStart_toStartOf="@+id/ac_input_number"
+        app:layout_constraintTop_toTopOf="@+id/ac_input_number"
+        app:typographyType="body_1"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/img_operator"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_25"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
+        android:contentDescription="@string/app_name"
+        android:paddingBottom="@dimen/dp_5"
+        app:layout_constraintBottom_toBottomOf="@+id/ac_input_number"
+        app:layout_constraintEnd_toStartOf="@+id/btn_clear_input_number"
+        app:layout_constraintLeft_toRightOf="@+id/hint_input_number"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ac_input_number" />
+
+    <Button
+        android:id="@+id/btn_clear_input_number"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_25"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:background="@drawable/digital_bg_topup_close"
+        android:paddingBottom="@dimen/dp_5"
+        app:layout_constraintBottom_toBottomOf="@+id/ac_input_number"
+        app:layout_constraintEnd_toStartOf="@+id/contact_picker_layout"
+        app:layout_constraintLeft_toRightOf="@+id/img_operator"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ac_input_number" />
+
+    <AutoCompleteTextView
+        android:id="@+id/ac_input_number"
+        style="@style/HintTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_5"
+        android:focusable="false"
+        android:hint="@string/digital_hint_input_numbers"
+        android:inputType="numberDecimal"
+        android:maxLines="1"
+        android:popupBackground="@color/white"
+        android:textColor="@color/Neutral_N700_96"
+        android:textColorHint="@color/grey_400"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintHorizontal_weight="9"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/contact_picker_layout"
+        app:layout_constraintTop_toBottomOf="@+id/label_input_number"
+        tools:layout_editor_absoluteY="12dp" />
+
+    <LinearLayout
+        android:id="@+id/contact_picker_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/ac_input_number"
+        app:layout_constraintHorizontal_weight="0.75"
+        app:layout_constraintLeft_toRightOf="@+id/ac_input_number"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ac_input_number">
+
+        <Button
+            android:id="@+id/btn_copy_promo"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:background="@drawable/digital_bg_topup_contact_picker" />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/error_input_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_4"
+        android:text="@string/title_empty_stock"
+        android:textColor="@color/red_600"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/ac_input_number"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+</android.support.constraint.ConstraintLayout>

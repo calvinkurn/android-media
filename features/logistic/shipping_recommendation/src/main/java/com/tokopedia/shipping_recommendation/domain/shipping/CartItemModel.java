@@ -17,6 +17,7 @@ public class CartItemModel implements Parcelable {
     private int productId;
     private String name;
     private double price;
+    private double originalPrice;
     private int currency;
 
     private int weightUnit;
@@ -51,6 +52,7 @@ public class CartItemModel implements Parcelable {
     private String protectionLinkText;
     private String protectionLinkUrl;
     private boolean protectionOptIn;
+    private boolean protectionCheckboxDisabled;
     private String preOrderInfo;
 
     // Trade in
@@ -122,6 +124,14 @@ public class CartItemModel implements Parcelable {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(double originalPrice) {
+        this.originalPrice = originalPrice;
     }
 
     public int getCurrency() {
@@ -356,6 +366,14 @@ public class CartItemModel implements Parcelable {
         this.oldDevicePrice = oldDevicePrice;
     }
 
+    public boolean isProtectionCheckboxDisabled() {
+        return protectionCheckboxDisabled;
+    }
+
+    public void setProtectionCheckboxDisabled(boolean protectionCheckboxDisabled) {
+        this.protectionCheckboxDisabled = protectionCheckboxDisabled;
+    }
+
     public CartItemModel() {
     }
 
@@ -371,6 +389,7 @@ public class CartItemModel implements Parcelable {
                 .append(getCartId(), that.getCartId())
                 .append(getProductId(), that.getProductId())
                 .append(getPrice(), that.getPrice())
+                .append(getOriginalPrice(), that.getOriginalPrice())
                 .append(getCurrency(), that.getCurrency())
                 .append(getWeightUnit(), that.getWeightUnit())
                 .append(getWeight(), that.getWeight())
@@ -393,6 +412,7 @@ public class CartItemModel implements Parcelable {
                 .append(getErrorMessageDescription(), that.getErrorMessageDescription())
                 .append(getPreOrderDurationDay(), that.getPreOrderDurationDay())
                 .append(getPreOrderInfo(), that.getPreOrderInfo())
+                .append(isProtectionCheckboxDisabled(), that.isProtectionCheckboxDisabled())
                 .isEquals();
     }
 
@@ -405,6 +425,7 @@ public class CartItemModel implements Parcelable {
                 .append(getProductId())
                 .append(getName())
                 .append(getPrice())
+                .append(getOriginalPrice())
                 .append(getCurrency())
                 .append(getWeightUnit())
                 .append(getWeight())
@@ -424,6 +445,7 @@ public class CartItemModel implements Parcelable {
                 .append(getErrorMessageDescription())
                 .append(getPreOrderDurationDay())
                 .append(getPreOrderInfo())
+                .append(isProtectionCheckboxDisabled())
                 .toHashCode();
     }
 
@@ -440,6 +462,7 @@ public class CartItemModel implements Parcelable {
         dest.writeInt(this.productId);
         dest.writeString(this.name);
         dest.writeDouble(this.price);
+        dest.writeDouble(this.originalPrice);
         dest.writeInt(this.currency);
         dest.writeInt(this.weightUnit);
         dest.writeDouble(this.weight);
@@ -463,6 +486,7 @@ public class CartItemModel implements Parcelable {
         dest.writeByte(this.isValidTradeIn ? (byte) 1 : (byte) 0);
         dest.writeInt(this.newDevicePrice);
         dest.writeInt(this.oldDevicePrice);
+        dest.writeByte(this.protectionCheckboxDisabled ? (byte) 1 : (byte) 0);
     }
 
     protected CartItemModel(Parcel in) {
@@ -472,6 +496,7 @@ public class CartItemModel implements Parcelable {
         this.productId = in.readInt();
         this.name = in.readString();
         this.price = in.readDouble();
+        this.originalPrice = in.readDouble();
         this.currency = in.readInt();
         this.weightUnit = in.readInt();
         this.weight = in.readDouble();
@@ -495,6 +520,7 @@ public class CartItemModel implements Parcelable {
         this.isValidTradeIn = in.readByte() != 0;
         this.newDevicePrice = in.readInt();
         this.oldDevicePrice = in.readInt();
+        this.protectionCheckboxDisabled = in.readByte() != 0;
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {

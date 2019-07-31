@@ -29,10 +29,10 @@ import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DateHelper;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
@@ -123,7 +123,12 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             HomeTrackingUtils.homeSprintSaleImpression(context,
                     channels.getGrids(),channels.getType());
             Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
-            countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
+            if (!DateHelper.isExpired(element.getServerTimeOffset(), expiredTime)){
+                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
+                countDownView.setVisibility(View.VISIBLE);
+            } else {
+                countDownView.setVisibility(View.GONE);
+            }
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
                 seeMore.setVisibility(View.VISIBLE);
             } else {
@@ -262,5 +267,4 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             return view.getContext();
         }
     }
-
 }

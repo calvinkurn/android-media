@@ -3,7 +3,6 @@ package com.tokopedia.shipping_recommendation.domain.shipping;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.VoucherOrdersItem;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
@@ -46,6 +45,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String dropshiperName;
     private String dropshiperPhone;
     private boolean isInsurance;
+    private boolean saveStateFlag;
 
     private int weightUnit;
     private boolean productFinsurance;
@@ -75,6 +75,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     // Flag for courier recommendation
     private boolean useCourierRecommendation;
+    private boolean isHidingCourier;
 
     // for robinhood III
     private boolean isBlackbox;
@@ -115,6 +116,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dropshiperName = in.readString();
         dropshiperPhone = in.readString();
         isInsurance = in.readByte() != 0;
+        saveStateFlag = in.readByte() != 0;
         weightUnit = in.readInt();
         productFinsurance = in.readByte() != 0;
         productFcancelPartial = in.readByte() != 0;
@@ -134,6 +136,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         stateHasExtraMarginTop = in.readByte() != 0;
         recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
+        isHidingCourier = in.readByte() != 0;
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
         blackboxInfo = in.readString();
@@ -168,6 +171,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeString(dropshiperName);
         dest.writeString(dropshiperPhone);
         dest.writeByte((byte) (isInsurance ? 1 : 0));
+        dest.writeByte((byte) (saveStateFlag ? 1 : 0));
         dest.writeInt(weightUnit);
         dest.writeByte((byte) (productFinsurance ? 1 : 0));
         dest.writeByte((byte) (productFcancelPartial ? 1 : 0));
@@ -187,6 +191,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
         dest.writeParcelable(recipientAddressModel, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
+        dest.writeByte((byte) (isHidingCourier ? 1 : 0));
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
         dest.writeInt(addressId);
         dest.writeString(blackboxInfo);
@@ -246,12 +251,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
         newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
         newShipmentCartItemModel.setUseCourierRecommendation(shipmentCartItemModel.isUseCourierRecommendation());
+        newShipmentCartItemModel.setHidingCourier(shipmentCartItemModel.isHidingCourier());
         newShipmentCartItemModel.setCartString(shipmentCartItemModel.getCartString());
         newShipmentCartItemModel.setShippingId(shipmentCartItemModel.getShippingId());
         newShipmentCartItemModel.setSpId(shipmentCartItemModel.getSpId());
         newShipmentCartItemModel.setDropshiperName(shipmentCartItemModel.getDropshiperName());
         newShipmentCartItemModel.setDropshiperPhone(shipmentCartItemModel.getDropshiperPhone());
         newShipmentCartItemModel.setInsurance(shipmentCartItemModel.isInsurance());
+        newShipmentCartItemModel.setSaveStateFlag(shipmentCartItemModel.isSaveStateFlag());
         newShipmentCartItemModel.setStateLoadingCourierState(shipmentCartItemModel.isStateLoadingCourierState());
         newShipmentCartItemModel.setStateHasLoadCourierState(shipmentCartItemModel.isStateHasLoadCourierState());
         newShipmentCartItemModel.setStateHasExtraMarginTop(shipmentCartItemModel.isStateHasExtraMarginTop());
@@ -508,6 +515,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.useCourierRecommendation = useCourierRecommendation;
     }
 
+    public boolean isHidingCourier() {
+        return isHidingCourier;
+    }
+
+    public void setHidingCourier(boolean hidingCourier) {
+        isHidingCourier = hidingCourier;
+    }
+
     public String getCartString() { return cartString; }
 
     public void setCartString(String cartString) { this.cartString = cartString; }
@@ -648,6 +663,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setVoucherLogisticItemUiModel(VoucherLogisticItemUiModel voucherLogisticItemUiModel) {
         this.voucherLogisticItemUiModel = voucherLogisticItemUiModel;
+    }
+
+    public boolean isSaveStateFlag() {
+        return saveStateFlag;
+    }
+
+    public void setSaveStateFlag(boolean saveStateFlag) {
+        this.saveStateFlag = saveStateFlag;
     }
 
     @Override

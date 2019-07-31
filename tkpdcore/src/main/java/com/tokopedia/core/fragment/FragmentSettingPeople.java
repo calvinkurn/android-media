@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.Router;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -184,7 +185,8 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                         startActivityForResult(intent, 0);
                         break;
                     case 1:
-                        intent = new Intent(getActivity(), ManagePeopleAddressActivity.class);
+                        intent = ((TkpdCoreRouter) getActivity().getApplicationContext())
+                                .getManageAdressIntent(getActivity());
                         startActivity(intent);
                         break;
                     case 2:

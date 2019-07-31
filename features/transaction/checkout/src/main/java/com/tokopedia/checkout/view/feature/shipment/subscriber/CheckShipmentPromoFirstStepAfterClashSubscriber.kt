@@ -13,11 +13,8 @@ import rx.Subscriber
 class CheckShipmentPromoFirstStepAfterClashSubscriber(private val view: ShipmentContract.View?,
                                                       private val presenter: ShipmentPresenter,
                                                       private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
-                                                      private val isFromMultipleAddress: Boolean,
-                                                      private val isOneClickShipment: Boolean,
-                                                      private val cornerId: String,
-                                                      private val isTradeIn: Boolean,
-                                                      private val deviceId: String) : Subscriber<GraphqlResponse>() {
+                                                      private val type: String,
+                                                      private val promoCode: String) : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
 
@@ -32,15 +29,16 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(private val view: Shipment
     override fun onNext(response: GraphqlResponse) {
         view?.hideLoading()
         presenter.couponStateChanged = true
+        checkPromoStackingCodeMapper.isFinal = false
         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
         if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
             val message = responseGetPromoStack.data.message.text
             view?.showToastError(message)
         } else {
             if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
+                view?.onClashCheckPromo(responseGetPromoStack.data.clashings, type)
             } else {
-                view?.onSuccessCheckPromoFirstStep(responseGetPromoStack)
+                view?.onSuccessCheckPromoFirstStepAfterClash(responseGetPromoStack, promoCode)
             }
         }
     }

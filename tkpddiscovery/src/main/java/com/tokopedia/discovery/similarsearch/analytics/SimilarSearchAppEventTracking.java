@@ -12,6 +12,7 @@ public class SimilarSearchAppEventTracking implements AppEventTracking {
         String GenericProductClick = "productClick";
         String GenericViewSearchResult = "viewSearchResult";
         String GenericClickSearchResult = "clickSearchResult";
+        String GenericClickWishlist = "clickWishlist";
 
     }
 

@@ -10,6 +10,7 @@ import android.support.annotation.RequiresApi;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
@@ -31,7 +32,15 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
     private static boolean mAllowShake = true;
     private PermissionListener mPermissionListener;
 
-    @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
+    }
+    
+    @DeepLink({ ApplinkConst.DISCOVERY_PAGE })
     public static Intent getDiscoveryPageIntent(Context context, Bundle bundle) {
         if (bundle != null) {
             String key = getKeyValueByCaseInsensitive(bundle);

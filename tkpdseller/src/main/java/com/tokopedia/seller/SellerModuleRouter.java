@@ -4,14 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-
-import java.util.Map;
-
-import rx.Observable;
 
 /**
  * Created by normansyahputa on 12/14/16.
@@ -19,11 +12,7 @@ import rx.Observable;
 
 public interface SellerModuleRouter {
 
-    ProductComponent getProductComponent();
-
     void goToGMSubscribe(Activity activity);
-
-    GetShopInfoUseCase getShopInfo();
 
     ShopComponent getShopComponent();
 
@@ -42,6 +31,10 @@ public interface SellerModuleRouter {
     Intent getGMHomeIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
+
+    Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload);
+
+    boolean isToggleBuyAgainOn();
 
 }
 

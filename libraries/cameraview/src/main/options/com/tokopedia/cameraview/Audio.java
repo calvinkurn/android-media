@@ -20,7 +20,7 @@ public enum Audio implements Control {
      */
     ON(1);
 
-    final static Audio DEFAULT = ON;
+    final static Audio DEFAULT = OFF;
 
     private int value;
 

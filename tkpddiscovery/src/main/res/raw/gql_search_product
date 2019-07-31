@@ -8,11 +8,6 @@ searchProduct(params: $params) {
    isFilter
   count
   additional_params
-  redirection {
-     redirect_url
-     redirect_applink
-     department_id
-   }
    suggestion {
      currentKeyword
      suggestion
@@ -77,21 +72,6 @@ searchProduct(params: $params) {
        clover
        is_official
      }
-   }
-   catalogs {
-     id
-     name
-     price
-     price_min
-     price_max
-     price_raw
-     price_min_raw
-     price_max_raw
-     count_product
-     description
-     image_url
-     url
-     department_id
    }
  }
  productAds: displayAdsV3(displayParams: $params) {

@@ -34,8 +34,8 @@ import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Random;
 
+import static com.tokopedia.imagepicker.common.util.FileUtils.getTokopediaPublicDirectory;
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE;
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA;
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT;
@@ -55,40 +55,21 @@ public class ImageUtils {
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
     public static final String TOKOPEDIA_FOLDER_PREFIX = "Tokopedia";
-    public static final String TOKOPEDIA_DIRECTORY = "Tokopedia/";
+
 
     @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_CACHE_CAMERA, DIRECTORY_TOKOPEDIA_EDIT_RESULT})
     public @interface DirectoryDef {
-        String DIRECTORY_TOKOPEDIA_CACHE = TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Cache/";
-        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Camera/";
-        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Edit/";
+        String DIRECTORY_TOKOPEDIA_CACHE = FileUtils.TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Cache/";
+        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = FileUtils.TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Camera/";
+        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = FileUtils.TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Edit/";
     }
 
-    public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
-        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + directoryType + "/";
-        File directory = new File(filePath);
-        if (!directory.exists()) {
-            if (!directory.mkdirs()) {
-                return Environment.getDownloadCacheDirectory();
-            }
-        }
-        return directory;
-    }
 
-    public static String generateUniqueFileName() {
-        String timeString = String.valueOf(System.currentTimeMillis());
-        int length = timeString.length();
-        int startIndex = length - 5;
-        if (startIndex < 0) {
-            startIndex = 0;
-        }
-        timeString = timeString.substring(startIndex);
-        return timeString + new Random().nextInt(100);
-    }
+
 
     public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, boolean isPng) {
         File directory = getTokopediaPublicDirectory(directoryDef);
-        return new File(directory.getAbsolutePath(), generateUniqueFileName() + (isPng ? PNG_EXT : JPG_EXT));
+        return new File(directory.getAbsolutePath(), FileUtils.generateUniqueFileName() + (isPng ? PNG_EXT : JPG_EXT));
     }
 
     public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, String referencePath) {
@@ -111,36 +92,6 @@ public class ImageUtils {
         }
     }
 
-    public static void deleteFileInTokopediaFolder(String filesToDelete) {
-        if (TextUtils.isEmpty(filesToDelete)) {
-            return;
-        }
-        File fileToDelete = new File(filesToDelete);
-        if (isInTokopediaDirectory(fileToDelete)) {
-            fileToDelete.delete();
-        }
-    }
-
-    public static void deleteFilesInTokopediaFolder(ArrayList<String> filesToDelete) {
-        if (filesToDelete == null || filesToDelete.size() == 0) {
-            return;
-        }
-        for (int i = 0, sizei = filesToDelete.size(); i < sizei; i++) {
-            String filePathToDelete = filesToDelete.get(i);
-            deleteFileInTokopediaFolder(filePathToDelete);
-        }
-    }
-
-    /**
-     * check if the file is in Tokopedia directory.
-     */
-    private static boolean isInTokopediaDirectory(File file) {
-        return file.exists() && file.getAbsolutePath().contains(TOKOPEDIA_DIRECTORY);
-    }
-
-    private static boolean isInTokopediaDirectory(String filePath, @DirectoryDef String directory) {
-        return filePath.contains(directory);
-    }
 
     public static boolean isPng(String referencePath) {
         return referencePath.endsWith(PNG_EXT);
@@ -170,7 +121,7 @@ public class ImageUtils {
         File file;
         try {
             file = getTokopediaPhotoPath(directoryDef, galleryOrCameraPath);
-            copyFile(galleryOrCameraPath, file.getAbsolutePath());
+            FileUtils.copyFile(galleryOrCameraPath, file.getAbsolutePath());
         } catch (Throwable e) {
             return null;
         }
@@ -178,24 +129,6 @@ public class ImageUtils {
             return file;
         } else {
             return null;
-        }
-    }
-
-    public static void copyFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
-        if (pathFrom.equalsIgnoreCase(pathTo)) {
-            return;
-        }
-
-        FileChannel outputChannel = null;
-        FileChannel inputChannel = null;
-        try {
-            inputChannel = new FileInputStream(new File(pathFrom)).getChannel();
-            outputChannel = new FileOutputStream(new File(pathTo)).getChannel();
-            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
-            inputChannel.close();
-        } finally {
-            if (inputChannel != null) inputChannel.close();
-            if (outputChannel != null) outputChannel.close();
         }
     }
 
@@ -211,12 +144,12 @@ public class ImageUtils {
 
     public static String copyFileToDirectory(String imagePathFrom,
                                              @DirectoryDef String directoryDef) throws IOException {
-        if (isInTokopediaDirectory(imagePathFrom, directoryDef)) {
+        if (FileUtils.isInTokopediaDirectory(imagePathFrom, directoryDef)) {
             return imagePathFrom;
         } else {
             File outputFile = getTokopediaPhotoPath(directoryDef, imagePathFrom);
             String resultPath = outputFile.getAbsolutePath();
-            copyFile(imagePathFrom, resultPath);
+            FileUtils.copyFile(imagePathFrom, resultPath);
             return resultPath;
         }
     }

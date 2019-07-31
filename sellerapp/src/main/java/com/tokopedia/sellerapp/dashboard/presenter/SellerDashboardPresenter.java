@@ -11,6 +11,8 @@ import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
@@ -19,18 +21,16 @@ import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
 import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUseCase;
-import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
-import com.tokopedia.seller.shopscore.view.mapper.ShopScoreMapper;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
-import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
 
 import javax.inject.Inject;
 
+import kotlin.Triple;
 import rx.Subscriber;
 
 /**
@@ -45,6 +45,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     private final UpdateShopScheduleUseCase updateShopScheduleUseCase;
     private final GetProductListSellingUseCase getProductListSellingUseCase;
     private final GetApprovalStatusUseCase getVerificationStatusUseCase;
+    private final UserSessionInterface userSession;
 
     @Inject
     public SellerDashboardPresenter(GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase,
@@ -53,7 +54,8 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                                     CacheApiClearAllUseCase cacheApiClearAllUseCase,
                                     UpdateShopScheduleUseCase updateShopScheduleUseCase,
                                     GetProductListSellingUseCase getProductListSellingUseCase,
-                                    GetApprovalStatusUseCase getVerificationStatusUseCase) {
+                                    GetApprovalStatusUseCase getVerificationStatusUseCase,
+                                    UserSessionInterface userSession) {
         this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
         this.getTickerUseCase = getTickerUseCase;
         this.newNotificationUseCase = newNotificationUseCase;
@@ -61,15 +63,16 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         this.updateShopScheduleUseCase = updateShopScheduleUseCase;
         this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.getVerificationStatusUseCase = getVerificationStatusUseCase;
+        this.userSession = userSession;
     }
 
     public void getShopInfoWithScore() {
         getShopInfoWithScoreUseCase.execute(
-                RequestParams.EMPTY, getShopInfoAndScoreSubscriber());
+                GetShopInfoWithScoreUseCase.createRequestParams(userSession.getShopId()), getShopInfoAndScoreSubscriber());
     }
 
-    private Subscriber<ShopModelWithScore> getShopInfoAndScoreSubscriber() {
-        return new Subscriber<ShopModelWithScore>() {
+    private Subscriber<Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult>> getShopInfoAndScoreSubscriber() {
+        return new Subscriber<Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult>>() {
             @Override
             public void onCompleted() {
 
@@ -83,15 +86,11 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             }
 
             @Override
-            public void onNext(ShopModelWithScore ShopInfoWithScoreModel) {
-                ShopScoreMainDomainModel shopScoreMainDomainModel =
-                        ShopInfoWithScoreModel.getShopScoreMainDomainModel();
-                ShopScoreViewModel shopScoreViewModel = ShopScoreMapper.map(shopScoreMainDomainModel);
-
-                ShopModel shopModel = ShopInfoWithScoreModel.getShopModel();
+            public void onNext(Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult> resultTriple) {
                 getView().onSuccessGetShopInfoAndScore(
-                        shopModel,
-                        shopScoreViewModel);
+                        resultTriple.getFirst(),
+                        resultTriple.getSecond(),
+                        resultTriple.getThird());
             }
         };
     }

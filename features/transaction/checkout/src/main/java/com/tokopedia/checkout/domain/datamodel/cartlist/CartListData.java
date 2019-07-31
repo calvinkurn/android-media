@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,11 @@ public class CartListData implements Parcelable {
     private CartTickerErrorData cartTickerErrorData;
     private AutoApplyData autoApplyData;
     private AutoApplyStackData autoApplyStackData;
+    private GlobalCouponAttr globalCouponAttr;
     private String defaultPromoDialogTab;
     private boolean allSelected;
     private TopAdsModel adsModel;
+    private boolean isShowOnboarding;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -99,6 +102,14 @@ public class CartListData implements Parcelable {
         this.autoApplyStackData = autoApplyStackData;
     }
 
+    public GlobalCouponAttr getGlobalCouponAttr() {
+        return globalCouponAttr;
+    }
+
+    public void setGlobalCouponAttr(GlobalCouponAttr globalCouponAttr) {
+        this.globalCouponAttr = globalCouponAttr;
+    }
+
     public List<ShopGroupData> getShopGroupDataList() {
         return shopGroupDataList;
     }
@@ -113,6 +124,14 @@ public class CartListData implements Parcelable {
 
     public void setAllSelected(boolean allSelected) {
         this.allSelected = allSelected;
+    }
+
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
+    }
+
+    public void setShowOnboarding(boolean showOnboarding) {
+        isShowOnboarding = showOnboarding;
     }
 
     public CartListData() {
@@ -133,6 +152,7 @@ public class CartListData implements Parcelable {
         dest.writeByte(this.allSelected ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.cartTickerErrorData, flags);
         dest.writeParcelable(this.autoApplyData, flags);
+        dest.writeByte(this.isShowOnboarding ? (byte) 1 : (byte) 0);
     }
 
     protected CartListData(Parcel in) {
@@ -144,6 +164,7 @@ public class CartListData implements Parcelable {
         this.allSelected = in.readByte() != 0;
         this.cartTickerErrorData = in.readParcelable(CartTickerErrorData.class.getClassLoader());
         this.autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
+        this.isShowOnboarding = in.readByte() != 0;
     }
 
     public static final Creator<CartListData> CREATOR = new Creator<CartListData>() {

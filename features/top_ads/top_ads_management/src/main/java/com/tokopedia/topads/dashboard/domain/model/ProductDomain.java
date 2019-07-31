@@ -12,6 +12,7 @@ public class ProductDomain {
     private boolean isPromoted;
     private int adId;
     private String groupName;
+    private int groupId;
     private int departmentId;
 
     public int getDepartmentId() {
@@ -28,6 +29,14 @@ public class ProductDomain {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public String getName() {

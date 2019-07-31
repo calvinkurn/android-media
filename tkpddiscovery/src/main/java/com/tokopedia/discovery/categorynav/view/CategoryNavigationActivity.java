@@ -14,6 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.applink.DiscoveryAppLink;
@@ -38,7 +40,9 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
     @DeepLink(DiscoveryAppLink.CATEGORY)
     public static Intent getAppLinkIntent(Context context, Bundle bundle) {
-        return new Intent(context, CategoryNavigationActivity.class).putExtras(bundle);
+        Intent intent = new Intent(context, CategoryNavigationActivity.class);
+        intent.putExtra(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID, bundle.getString(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID));
+        return intent;
     }
 
     @Override
@@ -123,8 +127,8 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     }
 
     public static Intent createInstance(Context context, String departmentId) {
-        Intent intent = new Intent(context, CategoryNavigationActivity.class);
-        intent.putExtra(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID, departmentId);
+        Intent intent =   RouteManager.getIntent(context, ApplinkConst.CATEGORY_BELANJA_DEFAULT);
+        intent.putExtra(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID,departmentId);
         return intent;
     }
     public ProgressBar getProgressBar() {

@@ -7,7 +7,27 @@
             android:name=".main.add.view.activity.ProductAddNameCategoryActivity"
             android:label="@string/label_product_add"
             android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_product"
+                    android:path="@string/path_add"/>
+
+                <data
+                    android:scheme="@string/sellerapp_scheme"
+                    android:host="@string/host_product"
+                    android:path="@string/path_add"/>
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_product_add_item"/>
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -84,7 +104,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_product_edit"/>
+                    android:pathPattern="@string/path_product_edit_item"/>
             </intent-filter>
         </activity>
         <activity

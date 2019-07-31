@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_home" translatable="false">home</string>
+    <string name="path_store_setting_sellerapp_temp" translatable="false">/seller/manage-shop</string>
+</resources>

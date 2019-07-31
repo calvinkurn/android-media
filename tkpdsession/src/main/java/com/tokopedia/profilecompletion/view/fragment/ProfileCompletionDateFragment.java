@@ -25,8 +25,6 @@ import com.tokopedia.session.R;
 import java.text.DateFormatSymbols;
 import java.util.Locale;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -52,7 +50,6 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     private View skip;
     private View progress;
     private int position;
-    private Unbinder unbinder;
     private ProfileCompletionContract.Presenter presenter;
     private Observable<String> dateObservable;
     private Observable<String> yearObservable;
@@ -68,7 +65,6 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_profile_completion_dob, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
         if (this.view != null && this.view.getView() != null) {
             initView(parentView);
             setViewListener();
@@ -83,7 +79,6 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         presenter.detachView();
     }
 
@@ -218,13 +213,15 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
             }
         });
 
-        allField.subscribe(Properties.enabledFrom(proceed));
+        Action1<Throwable> onError = Throwable::printStackTrace;
+
+        allField.subscribe(Properties.enabledFrom(proceed), onError);
         allField.subscribe(new Action1<Boolean>() {
             @Override
             public void call(Boolean aBoolean) {
                 view.canProceed(aBoolean);
             }
-        });
+        }, onError);
     }
 
 

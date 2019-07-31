@@ -5,14 +5,10 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -22,7 +18,7 @@ import com.tokopedia.design.R;
 
 /**
  * Created by meta on 15/03/18.
- *
+ * <p>
  * Note: to avoid error "Fatal Exception: java.lang.IllegalArgumentException: The view is not a child of CoordinatorLayout"
  * please use `android.support.design.widget.CoordinatorLayout` as parent layout on your xml
  */
@@ -31,7 +27,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
     public abstract int getLayoutResourceId();
 
-    public int getBaseLayoutResourceId(){
+    public int getBaseLayoutResourceId() {
         return R.layout.widget_bottomsheet;
     }
 
@@ -55,7 +51,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
     private BottomSheetBehavior bottomSheetBehavior;
     private View inflatedView;
-    
+
     public interface BottomSheetDismissListener {
         void onDismiss();
     }
@@ -83,23 +79,26 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         } catch (IllegalArgumentException e) {
             Log.d(BottomSheets.class.getName(), e.getMessage());
         }
+      
+        try {
+            ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) ((View) inflatedView.getParent()).getLayoutParams();
 
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) inflatedView.getParent()).getLayoutParams();
+            inflatedView.measure(0, 0);
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            int screenHeight = displaymetrics.heightPixels;
 
-        inflatedView.measure(0, 0);
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int screenHeight = displaymetrics.heightPixels;
+            if (state() == BottomSheetsState.FULL) {
+                height = screenHeight;
+            }
 
-        if (state() == BottomSheetsState.FULL) {
-            height = screenHeight;
-        }
+            if (bottomSheetBehavior != null)
+                bottomSheetBehavior.setPeekHeight(height);
 
-        if (bottomSheetBehavior != null)
-            bottomSheetBehavior.setPeekHeight(height);
+            params.height = screenHeight;
+            parent.setLayoutParams(params);
+        } catch (Exception ignored) { }
 
-        params.height = screenHeight;
-        parent.setLayoutParams(params);
     }
 
     public BottomSheetBehavior getBottomSheetBehavior() {
@@ -111,14 +110,19 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         textViewTitle.setText(title());
 
         TextView resetButton = parentView.findViewById(R.id.tv_reset);
-        if (!TextUtils.isEmpty(resetButtonTitle())) {
-            resetButton.setText(resetButtonTitle());
-            resetButton.setVisibility(View.VISIBLE);
+        if (resetButton != null) {
+            if (!TextUtils.isEmpty(resetButtonTitle())) {
+                resetButton.setText(resetButtonTitle());
+                resetButton.setVisibility(View.VISIBLE);
+            }
+            resetButton.setOnClickListener(view -> onResetButtonClicked());
         }
-        resetButton.setOnClickListener(view -> onResetButtonClicked());
 
         View layoutTitle = parentView.findViewById(R.id.layout_title);
         layoutTitle.setOnClickListener(v -> onCloseButtonClick());
+
+        View closeButton = parentView.findViewById(R.id.btn_close);
+        closeButton.setOnClickListener(view -> BottomSheets.this.dismiss());
 
         FrameLayout frameParent = parentView.findViewById(R.id.bottomsheet_container);
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);

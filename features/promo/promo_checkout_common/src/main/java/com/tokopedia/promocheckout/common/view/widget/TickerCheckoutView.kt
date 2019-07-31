@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.R
 import kotlinx.android.synthetic.main.layout_checkout_ticker.view.*
@@ -87,9 +88,12 @@ class TickerCheckoutView @JvmOverloads constructor(
         val drawableBackground = layoutTicker.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.bright_red))
         imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_red)
-        imageCheck.setImageResource(R.drawable.ic_failed_promo_checkout)
-        imageTitleCoupon.setImageResource(R.drawable.ic_coupon_red_promo_checkout)
-        imageClose.setImageResource(R.drawable.ic_close_red_promo_checkout)
+        imageCheck.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.ic_failed_promo_checkout))
+        imageTitleCoupon.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.ic_coupon_red_promo_checkout))
+        imageClose.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.ic_close_red_promo_checkout))
         titleCoupon.setTextColor(ContextCompat.getColor(context, R.color.background_error))
     }
 
@@ -98,9 +102,12 @@ class TickerCheckoutView @JvmOverloads constructor(
         val drawableBackground = layoutTicker.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.green_200))
         imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_green)
-        imageCheck.setImageResource(R.drawable.ic_check_black)
-        imageTitleCoupon.setImageResource(R.drawable.ic_coupon_green_promo_checkout)
-        imageClose.setImageResource(R.drawable.ic_close_green_promo_checkout)
+        imageCheck.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.ic_check_black))
+        imageTitleCoupon.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.ic_coupon_green_promo_checkout))
+        imageClose.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.ic_close_green_promo_checkout))
         titleCoupon.setTextColor(ContextCompat.getColor(context,R.color.tkpd_main_green))
     }
 
@@ -109,9 +116,12 @@ class TickerCheckoutView @JvmOverloads constructor(
         val drawableBackground = layoutTicker.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.grey_300))
         imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_grey)
-        imageCheck.setImageResource(R.drawable.ic_question_promo_checkout)
-        imageTitleCoupon.setImageResource(R.drawable.ic_coupon_grey_promo_checkout)
-        imageClose.setImageResource(R.drawable.ic_close_grey_promo_checkout)
+        imageCheck.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.ic_question_promo_checkout))
+        imageTitleCoupon.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.ic_coupon_grey_promo_checkout))
+        imageClose.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.ic_close_grey_promo_checkout))
         titleCoupon.setTextColor(ContextCompat.getColor(context,R.color.font_black_secondary_54))
     }
 

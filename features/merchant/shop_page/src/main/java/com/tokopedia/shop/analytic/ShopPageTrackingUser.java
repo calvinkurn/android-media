@@ -11,6 +11,8 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_READ_NO
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REQUEST_OPEN_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REVIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHARE_BUTTON;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_MANAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT_BY;
@@ -59,6 +62,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_BAR;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_INFO;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
@@ -209,6 +213,15 @@ public class ShopPageTrackingUser {
                 joinDash(MANAGE_SHOP, CLICK),
                 CLICK_ADD_PRODUCT,
                 customDimensionShopPage);
+    }
+
+    public void sendOpenShop() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickManageShop",
+                "Manage Shop",
+                "Click",
+                "Shop Info"
+        );
     }
 
     public void clickFollowerList(boolean isOwner,
@@ -447,4 +460,26 @@ public class ShopPageTrackingUser {
         }
     }
 
+    public void sendGeneralManageShop() {
+        TrackApp.getInstance().getGTM()
+                .sendGeneralEvent(CLICK_SHOP_MANAGE, "Manage Shop", CLICK, SHOP_INFO);
+    }
+
+    public void clickReviewMore(@NotNull String shopId, boolean myShop) {
+        HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put("event", "clickOfficialStore");
+        eventMap.put("eventCategory", getEventReputationCategory(myShop));
+        eventMap.put("eventAction", "Ulasan - bottom navigation - click");
+        eventMap.put("eventLabel", "click see more");
+        eventMap.put("shop_id", shopId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
+    }
+
+    private String getEventReputationCategory(boolean myShop) {
+        if(myShop){
+            return "official store shop page - buyer";
+        }else{
+            return "official store shop page - brand";
+        }
+    }
 }

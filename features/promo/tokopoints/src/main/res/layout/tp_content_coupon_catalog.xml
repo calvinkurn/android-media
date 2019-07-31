@@ -265,8 +265,6 @@
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
                             android:background="@drawable/bg_tp_bg_gift"
-                            android:drawableStart="@drawable/ic_tp_gift"
-                            android:drawableLeft="@drawable/ic_tp_gift"
                             android:gravity="center"
                             android:paddingLeft="@dimen/dp_12"
                             android:paddingRight="@dimen/dp_12"

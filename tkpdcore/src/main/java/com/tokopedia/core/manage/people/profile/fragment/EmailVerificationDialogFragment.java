@@ -17,16 +17,12 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.manage.people.profile.listener.EmailVerificationView;
 import com.tokopedia.core.manage.people.profile.presenter.EmailVerificationPresenter;
 import com.tokopedia.core.manage.people.profile.presenter.EmailVerificationPresenterImpl;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.util.concurrent.TimeUnit;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by nisie on 9/29/16.
@@ -39,34 +35,15 @@ public class EmailVerificationDialogFragment extends DialogFragment implements E
     private static final String FORMAT = "%02d:%02d";
     private static final String CACHE_CHANGE_EMAIL = "CACHE_CHANGE_EMAIL";
 
-    @BindView(R2.id.current_email)
     TextView currentEmail;
-
-    @BindView(R2.id.email_input)
     EditText emailInput;
-
-    @BindView(R2.id.password)
     EditText userPassword;
-
-    @BindView(R2.id.input_otp_code)
     EditText inputOtpCodeField;
-
-    @BindView(R2.id.code_confirm_button)
     TextView confirmButton;
-
-    @BindView(R2.id.abort_button)
     TextView cancelButton;
-
-    @BindView(R2.id.close_button)
     TextView closeButton;
-
-    @BindView(R2.id.request_otp_code)
     TextView requestOTPButton;
-
-    @BindView(R2.id.instruction_check_new_email)
     View checkEmailInstruction;
-
-    @BindView(R2.id.change_email_layout)
     View changeEmailLayout;
 
     public interface EmailChangeConfirmationListener {
@@ -114,7 +91,6 @@ public class EmailVerificationDialogFragment extends DialogFragment implements E
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
         initView(view);
         setViewListener();
         initialVar();
@@ -136,6 +112,17 @@ public class EmailVerificationDialogFragment extends DialogFragment implements E
     }
 
     private void initView(View view) {
+        currentEmail = (TextView) view.findViewById(R.id.current_email);
+        emailInput = (EditText) view.findViewById(R.id.email_input);
+        userPassword = (EditText) view.findViewById(R.id.password);
+        inputOtpCodeField = (EditText) view.findViewById(R.id.input_otp_code);
+        confirmButton = (TextView) view.findViewById(R.id.code_confirm_button);
+        cancelButton = (TextView) view.findViewById(R.id.abort_button);
+        closeButton = (TextView) view.findViewById(R.id.close_button);
+        requestOTPButton = (TextView) view.findViewById(R.id.request_otp_code);
+        checkEmailInstruction = (View) view.findViewById(R.id.instruction_check_new_email);
+        changeEmailLayout = (View) view.findViewById(R.id.change_email_layout);
+
         mTkpdProgressDialog = new TkpdProgressDialog(getActivity(),
                 TkpdProgressDialog.NORMAL_PROGRESS);
         currentEmail.setText(getArguments().getString(PARAM_USER_EMAIL));

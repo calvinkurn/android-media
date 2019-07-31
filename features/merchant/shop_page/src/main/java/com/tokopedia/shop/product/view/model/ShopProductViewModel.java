@@ -54,7 +54,7 @@ public class ShopProductViewModel implements BaseShopProductViewModel {
         setImageUrl300(shopProduct.getProductImage300());
         setImageUrl700(shopProduct.getProductImage700());
         setProductUrl(shopProduct.getProductUrl());
-        // shopProductViewModel.setRating(); Api not support
+        setRating(shopProduct.getRating());
         setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
         setTotalReview(shopProduct.getProductReviewCount());
         setWholesale(TextApiUtils.isValueTrue(shopProduct.getProductWholesale()));

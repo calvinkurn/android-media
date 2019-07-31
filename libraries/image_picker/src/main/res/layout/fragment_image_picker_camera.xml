@@ -18,19 +18,16 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:keepScreenOn="true"
-            app:cameraAudio="on"
-            app:cameraCropOutput="false"
-            app:cameraFacing="back"
-            app:cameraFlash="off"
-            app:cameraGestureLongTap="none"
-            app:cameraGesturePinch="zoom"
-            app:cameraGestureScrollHorizontal="none"
-            app:cameraGestureScrollVertical="exposureCorrection"
-            app:cameraGestureTap="focusWithMarker"
-            app:cameraGrid="off"
-            app:cameraJpegQuality="100"
+            app:camGestureLongTap="none"
+            app:camGesturePinch="zoom"
+            app:camGestureScrollHorizontal="none"
+            app:camGestureScrollVertical="none"
+            app:camGestureTap="focusWithMarker"
+            app:camGrid="off"
+            app:camFlash="off"
             app:cameraPlaySounds="true"
-            app:cameraSessionType="picture" />
+            app:cameraMode="picture"
+            app:camFacing="back" />
 
         <ImageButton
             android:id="@+id/image_button_flash"

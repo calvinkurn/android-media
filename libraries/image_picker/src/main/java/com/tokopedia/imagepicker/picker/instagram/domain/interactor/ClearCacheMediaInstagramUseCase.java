@@ -1,5 +1,8 @@
 package com.tokopedia.imagepicker.picker.instagram.domain.interactor;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.usecase.RequestParams;
@@ -15,7 +18,8 @@ import rx.Observable;
 public class ClearCacheMediaInstagramUseCase extends CacheApiDataDeleteUseCase {
 
     @Inject
-    public ClearCacheMediaInstagramUseCase() {
+    public ClearCacheMediaInstagramUseCase(@ApplicationContext Context context) {
+        super(context);
     }
 
     public Observable<Boolean> createObservable() {

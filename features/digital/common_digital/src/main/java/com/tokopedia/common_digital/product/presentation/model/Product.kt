@@ -6,35 +6,35 @@ import android.os.Parcelable
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-class Product : Parcelable, BaseWidgetItem {
+class Product(
+        var productId: String? = null,
+        var productType: String? = null,
+        var desc: String? = null,
+        var detail: String? = null,
+        var detailCompact: String? = null,
+        var detailUrl: String? = null,
+        var detailUrlText: String? = null,
+        var info: String? = null,
+        var price: String? = null,
+        var pricePlain: Long = 0,
+        var promo: Promo? = null,
+        var status: Int = 0
+) : Parcelable, BaseWidgetItem {
 
-    var productId: String? = null
-    var productType: String? = null
-    var desc: String? = null
-    var detail: String? = null
-    var detailCompact: String? = null
-    var detailUrl: String? = null
-    var detailUrlText: String? = null
-    var info: String? = null
-    var price: String? = null
-    var pricePlain: Long = 0
-    var promo: Promo? = null
-    var status: Int = 0
-
-    private constructor(builder: Builder) {
-        productId = builder.productId
-        productType = builder.productType
-        desc = builder.desc
-        detail = builder.detail
-        detailCompact = builder.detailCompact
-        detailUrl = builder.detailUrl
-        detailUrlText = builder.detailUrlText
-        info = builder.info
-        price = builder.price
-        pricePlain = builder.pricePlain
-        promo = builder.promo
+    private constructor(builder: Builder): this(
+        builder.productId,
+        builder.productType,
+        builder.desc,
+        builder.detail,
+        builder.detailCompact,
+        detailUrl = builder.detailUrl,
+        detailUrlText = builder.detailUrlText,
+        info = builder.info,
+        price = builder.price,
+        pricePlain = builder.pricePlain,
+        promo = builder.promo,
         status = builder.status
-    }
+    )
 
 
     override fun describeContents(): Int {
@@ -55,21 +55,19 @@ class Product : Parcelable, BaseWidgetItem {
         dest.writeInt(this.status)
     }
 
-    constructor() {}
-
-    protected constructor(`in`: Parcel) {
-        this.productId = `in`.readString()
-        this.productType = `in`.readString()
-        this.desc = `in`.readString()
-        this.detail = `in`.readString()
-        this.detailUrl = `in`.readString()
-        this.detailUrlText = `in`.readString()
-        this.info = `in`.readString()
-        this.price = `in`.readString()
-        this.pricePlain = `in`.readLong()
-        this.promo = `in`.readParcelable(Promo::class.java.classLoader)
-        this.status = `in`.readInt()
-    }
+    protected constructor(`in`: Parcel): this(
+        productId = `in`.readString(),
+        productType = `in`.readString(),
+        desc = `in`.readString(),
+        detail = `in`.readString(),
+        detailUrl = `in`.readString(),
+        detailUrlText = `in`.readString(),
+        info = `in`.readString(),
+        price = `in`.readString(),
+        pricePlain = `in`.readLong(),
+        promo = `in`.readParcelable(Promo::class.java.classLoader),
+        status = `in`.readInt()
+    )
 
     class Builder {
          var productId: String? = null

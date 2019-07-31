@@ -15,15 +15,7 @@ public class DealsLocationContract {
     public interface View extends CustomerView {
         Activity getActivity();
 
-        void navigateToActivityRequest(Intent intent, int requestCode);
-
         void renderFromSearchResults(List<Location> locationList, boolean isTopLocations, String... searchText);
-
-        void showProgressBar();
-
-        void hideProgressBar();
-
-        void showViews();
 
         RequestParams getParams();
 

@@ -13,6 +13,9 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity
+import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.FlightModuleRouter
@@ -20,10 +23,8 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity
-import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.adapter.*
-import com.tokopedia.flight.booking.view.fragment.FLightBookingPhoneCodeFragment
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.booking.widget.FlightInsuranceView
@@ -69,7 +70,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     private lateinit var flightBookingCartData: FlightBookingCartData
     private lateinit var passengerAdapter: FlightBookingPassengerAdapter
     private lateinit var userBirthdate: String
-    private lateinit var bookingCartId: String
+    private var bookingCartId: String = ""
     private var userGender: Int = 0
     private lateinit var expiredDate: Date
     private var flightInsuranceAdapter: FlightInsuranceAdapter? = null
@@ -112,7 +113,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
             flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA)
             paramViewModel = savedInstanceState.getParcelable(KEY_PARAM_VIEW_MODEL_DATA)
             expiredDate = savedInstanceState.getSerializable(KEY_PARAM_EXPIRED_DATE) as Date
-            flightPriceViewModel = savedInstanceState.getParcelable(KEY_PARAM_EXTRA_PRICE)
+            flightPriceViewModel = savedInstanceState.getParcelable(EXTRA_PRICE)
             hideFullPageLoading()
             flightBookingPresenter.renderUi(flightBookingCartData, true)
         }
@@ -132,7 +133,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         outState.putParcelable(KEY_CART_DATA, flightBookingCartData)
         outState.putParcelable(KEY_PARAM_VIEW_MODEL_DATA, paramViewModel)
         outState.putSerializable(KEY_PARAM_EXPIRED_DATE, expiredDate)
-        outState.putParcelable(KEY_PARAM_EXTRA_PRICE, flightPriceViewModel)
+        outState.putParcelable(EXTRA_PRICE, flightPriceViewModel)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -143,9 +144,9 @@ class FlightBookingFragment : BaseDaggerFragment(),
                 val passengerViewModel = data!!.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
                 flightBookingPresenter.onPassengerResultReceived(passengerViewModel)
             }
-            REQUEST_CODEP_PHONE_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val phoneCodeViewModel = data!!.getParcelableExtra<FlightBookingPhoneCodeViewModel>(FLightBookingPhoneCodeFragment.EXTRA_SELECTED_PHONE_CODE)
-                flightBookingPresenter.onPhoneCodeResultReceived(phoneCodeViewModel)
+            REQUEST_CODE_PHONE_CODE -> if (resultCode == Activity.RESULT_OK) {
+                val phoneCode = data!!.getParcelableExtra<CountryPhoneCode>(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
+                flightBookingPresenter.onPhoneCodeResultReceived(phoneCode)
             }
             REQUEST_CODE_NEW_PRICE_DIALOG -> if (resultCode != Activity.RESULT_OK) {
                 FlightFlowUtil.actionSetResultAndClose(activity!!,
@@ -164,7 +165,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
                     } else {
                         if (data.getBooleanExtra(FlightBookingReviewFragment.EXTRA_NEED_TO_REFRESH, false)) {
                             isCountdownRestarted = true
-                            flightBookingPresenter.onGetCart(true, flightBookingCartData)
+                            flightBookingPresenter.initialize()
                         }
 
                         if (data.getParcelableExtra<Parcelable>(FlightBookingReviewFragment.EXTRA_COUPON_CHANGED) != null) {
@@ -544,8 +545,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     private fun initView() {
         et_phone_country_code.setOnClickListener {
-            startActivityForResult(FlightBookingPhoneCodeActivity.getCallingIntent(activity),
-                    REQUEST_CODEP_PHONE_CODE)
+            startActivityForResult(PhoneCodePickerActivity.getCallingIntent(activity),
+                    REQUEST_CODE_PHONE_CODE)
         }
 
         button_submit.setOnClickListener {
@@ -593,10 +594,9 @@ class FlightBookingFragment : BaseDaggerFragment(),
         private val KEY_CART_DATA = "KEY_CART_DATA"
         private val KEY_PARAM_VIEW_MODEL_DATA = "KEY_PARAM_VIEW_MODEL_DATA"
         private val KEY_PARAM_EXPIRED_DATE = "KEY_PARAM_EXPIRED_DATE"
-        private val KEY_PARAM_EXTRA_PRICE = "KEY_PARAM_EXTRA_PRICE"
 
         private val REQUEST_CODE_PASSENGER = 1
-        private val REQUEST_CODEP_PHONE_CODE = 2
+        private val REQUEST_CODE_PHONE_CODE = 2
         private val REQUEST_CODE_NEW_PRICE_DIALOG = 3
         private val REQUEST_CODE_REVIEW = 4
         private val REQUEST_CODE_OTP = 5

@@ -65,7 +65,7 @@ public class UploadIdentificationUseCase {
         RequestParams param = RequestParams.create();
         param.putInt(KYC_TYPE, kycType);
         param.putString(PIC_OBJ_KYC, picObjKyc);
-        param.putString(FILE_NAME, fileName);
+//        param.putString(FILE_NAME, fileName);
         if (projectId > 0)
             param.putInt(PROJECT_ID, projectId);
         else

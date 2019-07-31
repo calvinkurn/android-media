@@ -216,12 +216,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
 
     private int getToggleImageId() {
         switch (TYPE) {
-            case TYPE_LARGE:
-                return R.drawable.ic_grid_box;
-            case TYPE_MEDIUM:
-                return R.drawable.ic_grid_2;
-            case TYPE_LIST:
-                return R.drawable.ic_grid_list;
             default:
                 return R.drawable.ic_image_unavailable;
         }

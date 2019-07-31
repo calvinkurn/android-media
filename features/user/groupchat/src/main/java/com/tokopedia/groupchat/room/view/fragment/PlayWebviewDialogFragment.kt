@@ -29,6 +29,7 @@ import com.tokopedia.groupchat.common.data.GroupChatUrl
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -161,7 +162,19 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     }
 
     private fun loadWebview() {
+        if(shouldRedirectToSeamless(url)){
+            url = URLGenerator.generateURLSessionLogin(url, userSession.deviceId, userSession
+                    .userId)
+
+        }
+
         webview.loadAuthUrl(url, userSession.userId, userSession.accessToken, getHeaderPlay())
+
+    }
+
+    private fun shouldRedirectToSeamless(url: String): Boolean {
+        return !url.contains("tokopedia.com/play", true)
+                && !url.contains("js.tokopedia.com/seamless", true)
     }
 
     fun setUrl(url: String) {

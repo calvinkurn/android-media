@@ -8,9 +8,9 @@ import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.ekstension.gone
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoTnCViewModel
 import kotlinx.android.synthetic.main.item_flash_sale_info_tnc.view.*
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class CampaignInfoTnCViewHolder(view: View) : AbstractViewHolder<CampaignInfoTnCViewModel>(view) {

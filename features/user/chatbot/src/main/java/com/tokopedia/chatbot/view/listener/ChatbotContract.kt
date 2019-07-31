@@ -4,9 +4,9 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
+import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 
 /**
@@ -19,6 +19,8 @@ interface ChatbotContract {
         fun onUploadOversizedImage()
 
         fun showSnackbarError(stringId: Int)
+
+        fun clearChatText()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

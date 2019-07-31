@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by nabillasabbaha on 8/18/17.
@@ -51,6 +52,8 @@ public class BalanceTokoCashView extends FrameLayout {
         View view = inflater.inflate(R.layout.view_tokocash_balance, this, true);
         balance = view.findViewById(R.id.balance_tokocash);
         holdBalance = view.findViewById(R.id.hold_balance);
+        ((TextView)view.findViewById(R.id.text_balance_tokocash)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (view.getContext(), R.drawable.ic_tokocash_icon), null, null , null);
         tooltip = view.findViewById(R.id.tooltip_tokocash);
         layoutHoldBalance = view.findViewById(R.id.layout_hold_balance);
     }

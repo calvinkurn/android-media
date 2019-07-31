@@ -1,6 +1,5 @@
 package com.tokopedia.shipping_recommendation.domain.usecase;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -10,20 +9,14 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRate
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -44,13 +37,13 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
 
     public void execute(String query,
                         int codHistory,
-                        String cornerId,
+                        boolean isCorner,
                         ShippingParam shippingParam,
                         int selectedSpId,
                         int selectedServiceId,
                         List<ShopShipment> shopShipments,
                         Subscriber<ShippingRecommendationData> subscriber) {
-        query = getQueryWithParams(query, codHistory, cornerId, shopShipments, shippingParam);
+        query = getQueryWithParams(query, codHistory, isCorner, shopShipments, shippingParam);
         executeQuery(query, selectedSpId, selectedServiceId, shopShipments, subscriber);
     }
 
@@ -108,7 +101,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 .subscribe(subscriber);
     }
 
-    private String getQueryWithParams(String query, int codHistory, String cornerId, List<ShopShipment> shopShipmentList, ShippingParam shippingParam) {
+    private String getQueryWithParams(String query, int codHistory, boolean isCorner, List<ShopShipment> shopShipmentList, ShippingParam shippingParam) {
         StringBuilder queryStringBuilder = new StringBuilder(query);
 
         StringBuilder spidsStringBuilder = new StringBuilder();
@@ -156,10 +149,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
 
         double weightInKilograms = shippingParam.getWeightInKilograms();
         queryStringBuilder = setParam(queryStringBuilder, Param.WEIGHT, String.valueOf(weightInKilograms));
-
-        int cornerIdInt = TextUtils.isEmpty(cornerId) ? 0 : Integer.parseInt(cornerId);
-        queryStringBuilder = setParam(queryStringBuilder, Param.CORNER_ID, String.valueOf(cornerIdInt));
-
+        queryStringBuilder = setParam(queryStringBuilder, Param.IS_CORNER, String.valueOf(isCorner ? 1 : 0));
         queryStringBuilder = setParam(queryStringBuilder, Param.SHOP_ID, shippingParam.getShopId());
         queryStringBuilder = setParam(queryStringBuilder, Param.TYPE, Param.VALUE_ANDROID);
         queryStringBuilder = setParam(queryStringBuilder, Param.FROM, Param.VALUE_CLIENT);
@@ -201,7 +191,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         static final String CAT_ID = "$cat_id";
         static final String LANG = "$lang";
         static final String USER_HISTORY = "$user_history";
-        static final String CORNER_ID = "$corner_id";
+        static final String IS_CORNER = "$is_corner";
         static final String IS_BLACKBOX = "$is_blackbox";
         static final String ADDRESS_ID = "$address_id";
         static final String PREORDER = "$preorder";

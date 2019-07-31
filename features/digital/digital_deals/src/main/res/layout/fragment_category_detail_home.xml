@@ -5,147 +5,213 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:background="@color/bottomnav_bg">
 
-
-    <android.support.design.widget.CoordinatorLayout
-
-        android:id="@+id/base_main_content"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bottomnav_bg"
-        android:visibility="gone">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_100"
+        android:visibility="visible"
+        app:elevation="@dimen/dp_0">
 
-        <android.support.design.widget.AppBarLayout
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_brands"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/dp_8"
+            android:background="@color/white"
+            app:layout_scrollFlags="scroll"
+            android:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_popular_brand"
+                style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/bottomnav_bg"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/popular_brand"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_see_all"
+                style="@style/TextView.Micro.Green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_16"
+                android:text="@string/see_all"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_popular_brand"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_popular_brand" />
 
 
-                <android.support.constraint.ConstraintLayout
-                    android:id="@+id/cl_brands"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/tv_popular_brand"
-                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_24"
-                        android:text="@string/popular_brand"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_see_all"
-                        style="@style/TextView.Micro.Green"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:text="@string/see_all"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_popular_brand"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tv_popular_brand" />
-
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rv_brands"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        app:layoutManager="android.support.v7.widget.GridLayoutManager"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
-                        app:spanCount="4"
-                        tools:listitem="@layout/item_brand" />
-                </android.support.constraint.ConstraintLayout>
-
-
-                <TextView
-                    android:id="@+id/tv_popular"
-                    style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_brands"
-                    tools:text="Populer di Jakarta " />
-
-                <TextView
-                    android:id="@+id/number_of_locations"
-                    style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:textColor="@color/black_38"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_popular"
-                    app:layout_constraintTop_toTopOf="@+id/tv_popular"
-                    app:layout_constraintVertical_bias="0.5"
-                    tools:text="(23)" />
-            </android.support.constraint.ConstraintLayout>
-
-        </android.support.design.widget.AppBarLayout>
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_deals"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingTop="@dimen/dp_16"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:listitem="@layout/deal_item_card" />
-
-        <ScrollView
-            android:id="@+id/scroll_view_no_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <LinearLayout
-                android:id="@+id/no_content"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_brands"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_40"
-                android:background="@color/white"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
+                tools:listitem="@layout/item_brand_short" />
 
-                <ImageView
-                    android:layout_width="@dimen/dp_121"
-                    android:layout_height="@dimen/dp_85"
-                    android:layout_gravity="center_horizontal"
-                    app:srcCompat="@drawable/empty_search_illustration_big" />
+            <TextView
+                android:id="@+id/tv_popular"
+                style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rv_brands"
+                tools:text="Populer di Jakarta " />
+
+            <TextView
+                android:id="@+id/number_of_locations"
+                style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:textColor="@color/black_38"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
+                app:layout_constraintLeft_toRightOf="@+id/tv_popular"
+                app:layout_constraintTop_toTopOf="@+id/tv_popular"
+                app:layout_constraintVertical_bias="0.5"
+                tools:text="(23)" />
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.design.widget.AppBarLayout>
 
 
-                <TextView
-                    style="@style/TextView.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:gravity="center_horizontal"
-                    android:text="@string/empty_deals_text"
-                    android:textColor="@color/black_38" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_deals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/dp_16"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@+id/tv_popular"
+        tools:listitem="@layout/deal_item_card" />
 
-            </LinearLayout>
-        </ScrollView>
+    <LinearLayout
+        android:id="@+id/no_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_100"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="@dimen/dp_121"
+            android:layout_height="@dimen/dp_85"
+            android:layout_gravity="center_horizontal"
+            app:srcCompat="@drawable/empty_search_illustration_big" />
 
 
-    </android.support.design.widget.CoordinatorLayout>
+        <TextView
+            style="@style/TextView.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:gravity="center_horizontal"
+            android:text="@string/empty_deals_text"
+            android:textColor="@color/black_38" />
+
+    </LinearLayout>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="@dimen/dp_8"
+        app:contentInsetLeft="@dimen/dp_0"
+        app:contentInsetStart="@dimen/dp_0"
+        app:contentInsetStartWithNavigation="@dimen/dp_0">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/backArraw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/toolbar_back_black" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:drawableRight="@drawable/location_arrow_down"
+                android:gravity="center"
+                android:text="@string/deals_toolbar_title"
+                android:textColor="@color/toolbar_title_color"
+                android:textSize="@dimen/sp_12"
+                app:layout_constraintLeft_toRightOf="@+id/backArraw"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_location_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:gravity="top"
+                android:text="Jakarta"
+                android:textColor="@color/clr_f531353b"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/backArraw"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar_title" />
+
+            <ImageView
+                android:id="@+id/overFlow_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_8"
+                app:srcCompat="@drawable/ic_three_dot_menu"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/search_input_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_15"
+                android:background="@drawable/rect_grey_search_background"
+                android:drawableLeft="@drawable/ic_search_deal"
+                android:drawablePadding="@dimen/dp_4"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_10"
+                android:textColor="@color/clr_ae31353b"
+                android:textSize="@dimen/sp_16"
+                app:layout_constraintTop_toBottomOf="@+id/tv_location_name" />
+
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/progress_bar_layout"

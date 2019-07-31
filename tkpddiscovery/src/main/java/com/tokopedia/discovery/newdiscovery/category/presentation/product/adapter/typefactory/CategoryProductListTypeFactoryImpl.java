@@ -2,7 +2,6 @@ package com.tokopedia.discovery.newdiscovery.category.presentation.product.adapt
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.base.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.core.var.TkpdState;
@@ -17,7 +16,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.ListProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.topads.sdk.base.Config;
 
@@ -26,7 +25,7 @@ import com.tokopedia.topads.sdk.base.Config;
  * Edited by alifa handle category
  */
 
-public class CategoryProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements CategoryProductListTypeFactory {
+public class CategoryProductListTypeFactoryImpl extends BrowseSectionTypeFactoryImpl implements CategoryProductListTypeFactory {
 
     private static final String TEMPLATE_LIFESTYLE = "LIFESTYLE";
     private final ItemClickListener itemClickListener;

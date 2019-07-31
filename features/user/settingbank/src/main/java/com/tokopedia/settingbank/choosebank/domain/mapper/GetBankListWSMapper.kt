@@ -8,20 +8,26 @@ import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import retrofit2.Response
 import rx.functions.Func1
+import javax.inject.Inject
 
 /**
  * @author by nisie on 7/2/18.
  */
-class GetBankListWSMapper : Func1<Response<DataResponse<BankListPojo>>,
+class GetBankListWSMapper @Inject constructor() : Func1<Response<DataResponse<BankListPojo>>,
         BankListViewModel> {
 
     override fun call(response: Response<DataResponse<BankListPojo>>): BankListViewModel {
-        if (response.body().header.messages.isEmpty() ||
-                response.body().header.messages[0].isBlank()) {
-            val pojo: BankListPojo = response.body().data
-            return mapToViewModel(pojo)
+        val body = response.body()
+        if(body != null) {
+            if (body.header.messages.isEmpty() ||
+                    body.header.messages[0].isBlank()) {
+                val pojo: BankListPojo = body.data
+                return mapToViewModel(pojo)
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 

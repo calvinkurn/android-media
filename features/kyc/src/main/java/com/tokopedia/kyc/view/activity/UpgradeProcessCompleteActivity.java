@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.kyc.Constants;
+import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.DaggerKYCComponent;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
@@ -25,6 +26,7 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
         HasComponent<KYCComponent>, ActivityListener {
 
     private String status;
+    private String message;
     private KYCComponent KYCComponent = null;
 
     @DeepLink(Constants.AppLinks.OVOUPGRADE_STATUS)
@@ -37,7 +39,11 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
 
     @Override
     protected Fragment getNewFragment() {
-        status = getIntent().getExtras().getString(Constants.Keys.STATUS);
+        showHideActionbar(false);
+        if(getIntent().getExtras() != null) {
+            status = getIntent().getExtras().getString(Constants.Keys.STATUS);
+            message = getIntent().getExtras().getString(Constants.Keys.MESSAGE);
+        }
         BaseDaggerFragment baseDaggerFragment = null;
         if(TextUtils.isEmpty(status)){
             finish();
@@ -51,6 +57,9 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
         else if(status.equalsIgnoreCase(Constants.Status.FAILED)){
             baseDaggerFragment = FragmentVerificationFailure.newInstance();
         }
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.Keys.MESSAGE, message);
+        baseDaggerFragment.setArguments(bundle);
         return baseDaggerFragment;
     }
 
@@ -69,6 +78,11 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
 
     @Override
     public void addReplaceFragment(BaseDaggerFragment baseDaggerFragment, boolean replace, String tag) {
+
+    }
+
+    @Override
+    public void addReplaceFragmentWithCustAnim(BaseDaggerFragment baseDaggerFragment, boolean replace, String tag, int entryAnimId, int exitAnimId) {
 
     }
 
@@ -92,4 +106,17 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
     public boolean isRetryValid() {
         return false;
     }
+
+    @Override
+    protected void inflateFragment() {
+        Fragment newFragment = getNewFragment();
+        if (newFragment == null) {
+            return;
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(com.tokopedia.abstraction.R.id.parent_view, newFragment, getTagFragment())
+                .setCustomAnimations(R.anim.enter_from_bottom_to_top, R.anim.exit_from_top_to_bottom)
+                .commit();
+    }
+
 }

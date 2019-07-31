@@ -86,30 +86,34 @@ class FlightAirportPickerPresenterImpl
 
     override fun onTextReceive(keyword: String) {
         if (isViewAttached) {
-            view.showLoading()
-            compositeSubscription.add(flightAirportSuggestionUseCase.createObservable(
-                    flightAirportSuggestionUseCase.createRequestParam(keyword))
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Subscriber<List<Visitable<*>>>() {
-                        override fun onCompleted() {
+            if (TextUtils.isEmpty(keyword)) {
+                getPopularCityAirport()
+            } else {
+                view.showLoading()
+                compositeSubscription.add(flightAirportSuggestionUseCase.createObservable(
+                        flightAirportSuggestionUseCase.createRequestParam(keyword))
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(object : Subscriber<List<Visitable<*>>>() {
+                            override fun onCompleted() {
 
-                        }
-
-                        override fun onError(e: Throwable) {
-                            if (isViewAttached) {
-                                view.hideGetAirportListLoading()
-                                view.showGetListError(e)
                             }
-                        }
 
-                        override fun onNext(visitables: List<Visitable<*>>) {
-                            view.hideGetAirportListLoading()
-                            view.renderList(visitables)
-                        }
-                    })
-            )
+                            override fun onError(e: Throwable) {
+                                if (isViewAttached) {
+                                    view.hideGetAirportListLoading()
+                                    view.showGetListError(e)
+                                }
+                            }
+
+                            override fun onNext(visitables: List<Visitable<*>>) {
+                                view.hideGetAirportListLoading()
+                                view.renderList(visitables)
+                            }
+                        })
+                )
+            }
         }
     }
 

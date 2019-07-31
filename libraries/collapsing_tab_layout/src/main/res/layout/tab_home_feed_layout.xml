@@ -24,7 +24,7 @@
 
     </android.support.v7.widget.CardView>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tabTitle"
         android:layout_width="@dimen/tab_home_feed_width"
         android:layout_height="match_parent"
@@ -32,10 +32,10 @@
         android:paddingRight="@dimen/dp_10"
         android:paddingTop="@dimen/dp_16"
         android:textColor="@color/white"
-        android:textSize="12sp"
         android:gravity="top"
         android:ellipsize="end"
         android:maxLines="2"
+        app:typographyType="heading_6"
         tools:text="AAA"/>
 
     <com.tokopedia.collapsing.tab.layout.ExpandingLineView

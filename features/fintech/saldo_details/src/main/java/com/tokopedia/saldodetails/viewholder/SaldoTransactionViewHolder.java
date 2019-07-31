@@ -18,8 +18,8 @@ import java.util.Date;
 
 public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistoryList> {
 
-    private static final String DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd hh:mm:ss";
-    private static final String DATE_PATTERN_FOR_UI = "dd MMM yyyy hh:mm";
+    private static final String DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_PATTERN_FOR_UI = "dd MMM yyyy HH:mm";
     private TextView dateTV;
     private TextView note;
     private TextView nominal;

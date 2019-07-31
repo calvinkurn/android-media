@@ -81,7 +81,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/error_image"
-                android:text="@string/failed_to_load_content"
+                android:text="@string/no_connection_play"
                 />
 
             <TextView
@@ -96,7 +96,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/error_title"
-                android:text="@string/please_try_again"
+                android:text="@string/try_connection_play"
                 />
 
             <TextView

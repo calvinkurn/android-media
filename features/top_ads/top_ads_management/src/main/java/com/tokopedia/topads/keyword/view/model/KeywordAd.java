@@ -3,6 +3,8 @@ package com.tokopedia.topads.keyword.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
@@ -32,8 +34,37 @@ public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsList
     private String statTotalCtr;
     private String statTotalConversion;
     private String labelPerClick;
+    private boolean isAutoAds;
+    private String productImageUrl;
+    private String statTotalGrossProfit;
+    private String statTotalSold;
+
+    public String getStatTotalGrossProfit() {
+        return statTotalGrossProfit;
+    }
+
+    public void setStatTotalGrossProfit(String statTotalGrossProfit) {
+        this.statTotalGrossProfit = statTotalGrossProfit;
+    }
+
+    public String getStatTotalSold() {
+        return statTotalSold;
+    }
+
+    public void setStatTotalSold(String statTotalSold) {
+        this.statTotalSold = statTotalSold;
+    }
 
     public KeywordAd() {
+    }
+
+    @Override
+    public boolean isAutoAds() {
+        return isAutoAds;
+    }
+
+    public void setAutoAds(boolean autoAds) {
+        isAutoAds = autoAds;
     }
 
     public int getGroupBid() {
@@ -202,6 +233,15 @@ public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsList
         return keywordTag;
     }
 
+    @Override
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
+
     public String getkeywordTypeDesc() {
         return keywordTypeDesc;
     }
@@ -275,7 +315,11 @@ public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsList
         dest.writeString(this.priceBidFmt);
         dest.writeString(this.labelPerClick);
         dest.writeString(this.keywordTypeDesc);
+        dest.writeString(this.productImageUrl);
+        dest.writeString(this.statTotalGrossProfit);
+        dest.writeString(this.statTotalSold);
         dest.writeInt(this.groupBid);
+        dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
 
     protected KeywordAd(Parcel in) {
@@ -296,7 +340,11 @@ public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsList
         this.priceBidFmt = in.readString();
         this.labelPerClick = in.readString();
         this.keywordTypeDesc = in.readString();
+        this.productImageUrl = in.readString();
+        this.statTotalGrossProfit = in.readString();
+        this.statTotalSold = in.readString();
         this.groupBid = in.readInt();
+        this.isAutoAds = in.readByte() != 0;
     }
 
     public static final Creator<KeywordAd> CREATOR = new Creator<KeywordAd>() {

@@ -1,9 +1,12 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.video
 
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -16,9 +19,11 @@ import kotlinx.android.synthetic.main.item_post_video.view.*
 class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHolder<VideoViewModel>() {
 
     override var layoutRes = R.layout.item_post_video
+    var isPlaying = false
 
     companion object {
         const val STRING_DEFAULT_TRANSCODING = "customerTrans"
+        const val TAG = "TAG_VIDEO_VIEW_HOLDER"
     }
 
     override fun bind(element: VideoViewModel) {
@@ -50,7 +55,53 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                     }
                 }
         )
+        itemView.image.setOnClickListener{
+            if (canPlayVideo(element)) {
+                playVideo(element.url)
+            }
+        }
         itemView.image.loadImage(element.thumbnail)
+        if (canPlayVideo(element)) {
+            playVideo(element.url)
+        } else {
+            stopVideo()
+        }
+    }
+
+    private fun canPlayVideo(element: VideoViewModel): Boolean {
+        return element.canPlayVideo && ContentNetworkListener.getInstance(itemView.context).isWifiEnabled()
+    }
+
+    private fun playVideo(url: String) {
+        if (!isPlaying) {
+            itemView.frame_video.visibility = View.INVISIBLE
+            itemView.layout_video.setVideoURI(Uri.parse(url))
+            itemView.layout_video.setOnPreparedListener(object: MediaPlayer.OnPreparedListener{
+                override fun onPrepared(mp: MediaPlayer) {
+                    mp.isLooping = true
+                    itemView.ic_play.visibility = View.GONE
+                    mp.setOnInfoListener(object: MediaPlayer.OnInfoListener{
+                        override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                            if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                                itemView.frame_video.visibility = View.VISIBLE
+                                return true
+                            }
+                            return false
+                        }
+                    })
+                }
+            })
+            itemView.layout_video.start()
+            isPlaying = true
+        }
+    }
+
+    private fun stopVideo() {
+        if (isPlaying) {
+            itemView.layout_video.stopPlayback()
+            itemView.layout_video.visibility = View.GONE
+            isPlaying = false
+        }
     }
 
     interface VideoViewListener {
@@ -59,6 +110,6 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                                  contentPosition: Int,
                                  postId: String)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>)
+        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
     }
 }

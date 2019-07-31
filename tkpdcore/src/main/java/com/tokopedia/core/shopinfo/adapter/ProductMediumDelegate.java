@@ -12,16 +12,12 @@ import android.widget.TextView;
 import com.tkpd.library.utils.BadgeUtil;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.var.ProductItem;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Tkpd_Eka on 10/9/2015.
@@ -29,23 +25,23 @@ import butterknife.ButterKnife;
 public class ProductMediumDelegate {
 
     public class VHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.img)
         public SquareImageView img;
-        @BindView(R2.id.product_name)
         public TextView name;
-        @BindView(R2.id.product_price)
         public TextView price;
-        @BindView(R2.id.preorder)
         public View preorder;
-        @BindView(R2.id.grosir)
         public View wholesale;
         public View mainView;
-        @BindView(R2.id.container_badge)
         public LinearLayout containerBadge;
 
         public VHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            img = (SquareImageView) itemView.findViewById(R.id.img);
+            name = (TextView) itemView.findViewById(R.id.prod_name);
+            price = (TextView) itemView.findViewById(R.id.prod_price);
+            preorder = (View) itemView.findViewById(R.id.preorder);
+            wholesale = (View) itemView.findViewById(R.id.grosir);
+            containerBadge = (LinearLayout) itemView.findViewById(R.id.container_badge);
             mainView = itemView;
         }
     }

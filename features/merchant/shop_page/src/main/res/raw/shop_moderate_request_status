@@ -1,0 +1,11 @@
+{
+  shopModerateRequestStatus{
+    result {
+      shopID
+      status
+    }
+    error {
+      message
+    }
+  }
+}

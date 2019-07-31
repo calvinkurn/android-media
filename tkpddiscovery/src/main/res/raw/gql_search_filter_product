@@ -1,0 +1,55 @@
+query SearchProduct(
+ $params: String,
+ $query: String!,
+ $source: String
+) {
+search_filter_product(query: $query, source: $source, extraParams: $params) {
+      data {
+        filter {
+          title
+          search {
+            searchable
+            placeholder
+          }
+      template_name
+          options {
+            name
+            key
+            icon
+            value
+            input_type
+            total_data
+            val_max
+            val_min
+            key_min
+            key_max
+            metric
+            is_popular
+            hex_color
+            child {
+              key
+              value
+              name
+              icon
+              input_type
+              total_data
+              child {
+                key
+                value
+                name
+                icon
+                input_type
+                total_data
+              }
+            }
+          }
+        }
+        sort {
+          name
+          key
+          value
+          input_type
+        }
+     }
+  }
+}

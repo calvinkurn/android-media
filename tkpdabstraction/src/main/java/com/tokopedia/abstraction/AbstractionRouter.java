@@ -33,11 +33,14 @@ public interface AbstractionRouter {
 
     void unregisterShake();
 
+    /**
+     * Use PersistentCacheManager library
+     * @return
+     */
+    @Deprecated
     CacheManager getGlobalCacheManager();
 
     void logInvalidGrant(Response response);
-
-    void instabugCaptureUserStep(Activity activity, MotionEvent me);
 
     boolean isAllowLogOnChuckInterceptorNotification();
 }

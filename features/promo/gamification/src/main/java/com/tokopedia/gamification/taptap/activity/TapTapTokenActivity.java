@@ -60,10 +60,6 @@ public class TapTapTokenActivity extends BaseSimpleActivity {
         TapTapTokenFragment crackTokenFragment = getCrackFragment();
         if (crackTokenFragment != null && crackTokenFragment.isShowBackPopup()) {
             crackTokenFragment.showBackPopup();
-
-        } else if (crackTokenFragment != null) {
-            crackTokenFragment.clearViewAndAnimations();
-            onBackPressedRoot();
         } else {
             onBackPressedRoot();
         }

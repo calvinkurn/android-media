@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by ricoharisin on 5/30/16.
@@ -182,6 +183,10 @@ public class NetworkErrorHelper {
     }
 
     public static void showEmptyState(Context context, final View rootview, final RetryClickedListener listener) {
+        if (context == null) {
+            return;
+        }
+
         try {
             rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {
@@ -231,8 +236,7 @@ public class NetworkErrorHelper {
             if (titleRetry != null) retryButon.setText(titleRetry);
             if (iconRes != 0) {
                 //noinspection deprecation
-                ivIcon.setImageDrawable(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ?
-                        context.getDrawable(iconRes) : context.getResources().getDrawable(iconRes));
+                ivIcon.setImageDrawable(MethodChecker.getDrawable(ivIcon.getContext(),iconRes));
             }
             if (listener != null) {
                 retryButon.setOnClickListener(new View.OnClickListener() {

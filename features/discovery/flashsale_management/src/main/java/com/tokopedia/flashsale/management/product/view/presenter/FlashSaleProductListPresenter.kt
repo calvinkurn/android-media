@@ -8,7 +8,7 @@ import com.tokopedia.flashsale.management.product.domain.usecase.*
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 import java.lang.NullPointerException
 import java.lang.RuntimeException
 import javax.inject.Inject

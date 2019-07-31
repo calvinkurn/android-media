@@ -37,11 +37,16 @@ public class ValidateOtpUseCase extends UseCase<ValidateOtpDomain> {
         return otpSource.validateOtp(requestParams.getParameters());
     }
 
-    public static RequestParams getParam(String userId, int otpType, String otp) {
+    public static RequestParams getParam(String userId, int otpType, String otp,
+                                         String phoneNumber) {
         RequestParams param = RequestParams.create();
         param.putString(PARAM_USER, userId);
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putString(PARAM_CODE, otp);
+        if(!phoneNumber.isEmpty()) {
+            param.putString(PARAM_PHONE, phoneNumber);
+        }
+
         return param;
     }
 

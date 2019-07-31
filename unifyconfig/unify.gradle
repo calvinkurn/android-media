@@ -1,0 +1,10 @@
+// getting version from properties and save as new variable
+// this file included to all unify modules
+def unifyProps = new Properties()
+file("$rootDir/unifyconfig/version.properties").withInputStream { unifyProps.load(it) }
+
+def unifyIconVersion = unifyProps.getProperty("unify_icon_version")
+def unifyPrinciplesVersion = unifyProps.getProperty("unify_principles_version")
+def unifyComponentsVersion = unifyProps.getProperty("unify_components_version")
+def unifyCalendarVersion = unifyProps.getProperty("unify_calendar_version")
+def unifyCoachMarkVersion = unifyProps.getProperty("unify_coach_mark_version")

@@ -714,7 +714,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightSearchPresenter.resetCounterCall()
 
         searchFlightData()
-        flightSearchPresenter.fetchCombineData(flightSearchPassData)
+        if (!flightSearchPassData.isOneWay && !isCombineDone) {
+            flightSearchPresenter.fetchCombineData(flightSearchPassData)
+        }
     }
 
     private fun onResetFilterClicked() {

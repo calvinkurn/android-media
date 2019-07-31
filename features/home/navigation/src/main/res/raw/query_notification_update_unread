@@ -1,0 +1,6 @@
+query get_notification_update_unread(){
+  notifcenter_unread {
+            notif_unread
+            notif_unread_int
+       }
+}

@@ -75,6 +75,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             permissionCheckerHelper.request(this, getPermissions(), {
                 initView()
             }, {
+                onBackPressed()
                 finish()
             })
         } else {

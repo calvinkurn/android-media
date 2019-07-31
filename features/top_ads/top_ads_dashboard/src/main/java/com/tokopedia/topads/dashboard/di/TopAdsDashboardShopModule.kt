@@ -20,8 +20,8 @@ import retrofit2.Retrofit
 class TopAdsDashboardShopModule {
     @ShopQualifier
     @Provides
-    fun provideApiCacheInterceptor(): CacheApiInterceptor {
-        return CacheApiInterceptor(CacheApiTKPDResponseValidator(TkpdV4ResponseError::class.java))
+    fun provideApiCacheInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
+        return CacheApiInterceptor(context, CacheApiTKPDResponseValidator(TkpdV4ResponseError::class.java))
     }
 
     @ShopQualifier

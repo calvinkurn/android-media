@@ -2,13 +2,11 @@ package com.tokopedia.discovery.newdynamicfilter.adapter;
 
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
 
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.network.apiservices.product.apis.DynamicFilter;
 import com.tokopedia.design.list.adapter.SectionDividedItemAdapter;
 import com.tokopedia.design.list.adapter.SectionTitleDictionary;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.model.OptionWrapper;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;

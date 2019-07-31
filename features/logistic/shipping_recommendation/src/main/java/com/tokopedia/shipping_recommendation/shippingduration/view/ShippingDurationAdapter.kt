@@ -17,8 +17,6 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     private var mData: MutableList<RatesViewModelType>
     private var shippingDurationAdapterListener: ShippingDurationAdapterListener? = null
     private var cartPosition: Int = 0
-    // set true if has courier promo, whether own courier or other duration's courier
-    private var hasCourierPromo: Boolean = false
 
     init {
         mData = mutableListOf()
@@ -36,10 +34,6 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     fun setCartPosition(cartPosition: Int) {
         this.cartPosition = cartPosition
-    }
-
-    fun setHasCourierPromo(hasCourierPromo: Boolean) {
-        this.hasCourierPromo = hasCourierPromo
     }
 
     fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationViewModel? {
@@ -73,7 +67,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
             LogisticPromoViewHolder.LAYOUT -> LogisticPromoViewHolder(view)
-            else -> ShippingDurationViewHolder(view, this, cartPosition, hasCourierPromo)
+            else -> ShippingDurationViewHolder(view, this, cartPosition)
         }
     }
 

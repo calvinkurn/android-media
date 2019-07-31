@@ -43,7 +43,7 @@ public class YouTubeView extends FrameLayout {
 
     @Override
     protected void onAttachedToWindow() {
-        if (!mHasSavedInstance) {
+        if (!mHasSavedInstance && getReactContext() != null && getReactContext().getCurrentActivity() != null) {
             FragmentManager fragmentManager = getReactContext().getCurrentActivity().getFragmentManager();
             fragmentManager.beginTransaction().add(getId(), mVideoFragment).commit();
         }
@@ -52,19 +52,20 @@ public class YouTubeView extends FrameLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-        if (getReactContext().getCurrentActivity() != null) {
+        if (getReactContext() != null && getReactContext().getCurrentActivity() != null) {
             FragmentManager fragmentManager = getReactContext().getCurrentActivity().getFragmentManager();
 
             // Code crashes with java.lang.IllegalStateException: Activity has been destroyed
             // if our activity has been destroyed when this runs
             if (mVideoFragment != null) {
                 boolean isDestroyed = false;
+                boolean isFinishing = getReactContext().getCurrentActivity().isFinishing();
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     isDestroyed = getReactContext().getCurrentActivity().isDestroyed();
                 }
 
-                if (!isDestroyed) {
+                if (!isDestroyed && !isFinishing) {
                     // https://stackoverflow.com/a/34508430/61072
                     fragmentManager.beginTransaction().remove(mVideoFragment).commitAllowingStateLoss();
                 }
@@ -106,51 +107,64 @@ public class YouTubeView extends FrameLayout {
     }
 
     public void receivedError(String param) {
-        WritableMap event = Arguments.createMap();
-        ReactContext reactContext = getReactContext();
-        event.putString("error", param);
-        event.putInt("target", getId());
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "error", event);
+        if (getReactContext() != null) {
+            WritableMap event = Arguments.createMap();
+            ReactContext reactContext = getReactContext();
+            event.putString("error", param);
+            event.putInt("target", getId());
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "error", event);
+        }
     }
 
     public void playerViewDidBecomeReady() {
-        WritableMap event = Arguments.createMap();
-        ReactContext reactContext = getReactContext();
-        event.putInt("target", getId());
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "ready", event);
+        if (getReactContext() != null) {
+            WritableMap event = Arguments.createMap();
+            ReactContext reactContext = getReactContext();
+            event.putInt("target", getId());
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "ready", event);
+        }
     }
 
     public void didChangeToSeeking(int milliSeconds) {
-        WritableMap event = Arguments.createMap();
-        event.putString("state", "seeking");
-        event.putInt("currentTime", milliSeconds / 1000);
-        event.putInt("target", getId());
-        ReactContext reactContext = getReactContext();
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "state", event);
+        if (getReactContext() != null) {
+            WritableMap event = Arguments.createMap();
+            event.putString("state", "seeking");
+            event.putInt("currentTime", milliSeconds / 1000);
+            event.putInt("target", getId());
+            ReactContext reactContext = getReactContext();
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "state", event);
+        }
     }
 
     public void didChangeToState(String param) {
-        WritableMap event = Arguments.createMap();
-        event.putString("state", param);
-        event.putInt("target", getId());
-        ReactContext reactContext = getReactContext();
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "state", event);
+
+        if (getReactContext() != null) {
+            WritableMap event = Arguments.createMap();
+            event.putString("state", param);
+            event.putInt("target", getId());
+            ReactContext reactContext = getReactContext();
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "state", event);
+        }
     }
 
     public void didChangeToQuality(String param) {
-        WritableMap event = Arguments.createMap();
-        event.putString("quality", param);
-        event.putInt("target", getId());
-        ReactContext reactContext = getReactContext();
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "quality", event);
+        if (getReactContext() != null) {
+            WritableMap event = Arguments.createMap();
+            event.putString("quality", param);
+            event.putInt("target", getId());
+            ReactContext reactContext = getReactContext();
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "quality", event);
+        }
     }
 
     public void didChangeToFullscreen(boolean isFullscreen) {
-        WritableMap event = Arguments.createMap();
-        ReactContext reactContext = getReactContext();
-        event.putBoolean("isFullscreen", isFullscreen);
-        event.putInt("target", getId());
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "fullscreen", event);
+        if (getReactContext() != null) {
+            WritableMap event = Arguments.createMap();
+            ReactContext reactContext = getReactContext();
+            event.putBoolean("isFullscreen", isFullscreen);
+            event.putInt("target", getId());
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "fullscreen", event);
+        }
     }
 
     public void setApiKey(String apiKey) {

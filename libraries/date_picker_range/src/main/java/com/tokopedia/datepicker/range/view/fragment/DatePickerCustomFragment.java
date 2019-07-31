@@ -8,12 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.datepicker.range.R;
 import com.tokopedia.datepicker.range.utils.DatePickerUtils;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.util.DatePickerUtil;
 import com.tokopedia.datepicker.range.view.widget.DatePickerLabelView;
 
 import java.util.Calendar;

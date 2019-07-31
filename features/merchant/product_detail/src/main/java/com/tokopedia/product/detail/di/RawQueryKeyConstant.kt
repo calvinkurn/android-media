@@ -24,4 +24,6 @@ object RawQueryKeyConstant {
     const val QUERY_USER_COD_STATUS = "user_cod_status"
     const val QUERY_MULTI_ORIGIN = "multiorigin"
     const val QUERY_PRODUCT_PP = "query_ppGetItemDetailPage"
+    const val QUERY_RECOMMEN_PRODUCT = "query_recommendation_product"
+    const val QUERY_SHOP_FEATURE = "query_shop_feature"
 }

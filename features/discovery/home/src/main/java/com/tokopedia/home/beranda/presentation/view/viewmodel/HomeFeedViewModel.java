@@ -2,8 +2,12 @@ package com.tokopedia.home.beranda.presentation.view.viewmodel;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.home.beranda.domain.gql.feed.Badge;
+import com.tokopedia.home.beranda.domain.gql.feed.Label;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
+import com.tokopedia.kotlin.model.ImpressHolder;
+
+import java.util.List;
 
 public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFeedTypeFactory> {
     private static final String DATA_NONE_OTHER = "none / other";
@@ -27,10 +31,17 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
     private String price;
     private String slashedPrice;
     private int discountPercentage;
+    private final int rating;
+    private final int countReview;
     private String clickUrl;
     private String trackerImageUrl;
     private int priceNumber;
     private boolean isTopAds;
+    private List<Label> labels;
+    private List<Badge> badges;
+    private String location;
+    private String wishlistUrl;
+    private boolean isWishList;
 
     public HomeFeedViewModel(String productId,
                              String productName,
@@ -38,19 +49,28 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                              String recommendationType,
                              String imageUrl,
                              String price,
+                             int rating,
+                             int countReview,
                              String clickUrl,
                              String trackerImageUrl,
                              String slashedPrice,
                              int discountPercentage,
                              int priceNumber,
                              boolean isTopAds,
-                             int position) {
+                             int position,
+                             List<Label> labels,
+                             List<Badge> badges,
+                             String location,
+                             String wishlistUrl,
+                             boolean isWishList) {
         this.productId = productId;
         this.productName = productName;
         this.categoryBreadcrumbs = categoryBreadcrumbs;
         this.recommendationType = recommendationType;
         this.imageUrl = imageUrl;
         this.price = price;
+        this.rating = rating;
+        this.countReview = countReview;
         this.clickUrl = clickUrl;
         this.trackerImageUrl = trackerImageUrl;
         this.slashedPrice = slashedPrice;
@@ -58,6 +78,11 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
         this.priceNumber = priceNumber;
         this.isTopAds = isTopAds;
         this.position = position;
+        this.labels = labels;
+        this.badges = badges;
+        this.location = location;
+        this.wishlistUrl = wishlistUrl;
+        this.isWishList = isWishList;
     }
 
     public String getProductId() {
@@ -124,6 +149,34 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
         return discountPercentage;
     }
 
+    public int getRating() {
+        return rating;
+    }
+
+    public int getCountReview() {
+        return countReview;
+    }
+
+    public List<Label> getLabels() {
+        return labels;
+    }
+
+    public List<Badge> getBadges() {
+        return badges;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getWishlistUrl(){ return wishlistUrl; }
+
+    public boolean isWishList() { return isWishList; }
+
+    public void setWishList(boolean value){
+        isWishList = value;
+    }
+
     @Override
     public int type(HomeFeedTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -144,7 +197,7 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                         tabName,
                         getRecommendationType()
                 ),
-                DATA_POSITION, getPosition());
+                DATA_POSITION, String.valueOf(getPosition()));
     }
 
     public Object convertFeedTabModelToImpressionDataForNonLoginUser(
@@ -162,7 +215,7 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                         tabName,
                         getRecommendationType()
                 ),
-                DATA_POSITION, getPosition());
+                DATA_POSITION, String.valueOf(getPosition()));
     }
 
     public Object convertFeedTabModelToClickData() {
@@ -173,6 +226,6 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                 DATA_BRAND, DATA_NONE_OTHER,
                 DATA_VARIANT, DATA_NONE_OTHER,
                 DATA_CATEGORY, getCategoryBreadcrumbs(),
-                DATA_POSITION, getPosition());
+                DATA_POSITION, String.valueOf(getPosition()));
     }
 }

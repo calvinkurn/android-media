@@ -37,8 +37,8 @@ public class ShippingCourierViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(productData, flags);
-        dest.writeString(blackboxInfo);
         dest.writeParcelable(serviceData, flags);
+        dest.writeString(blackboxInfo);
         dest.writeString(ratesId);
         dest.writeInt(additionalFee);
         dest.writeByte((byte) (allowDropshipper ? 1 : 0));

@@ -1,14 +1,11 @@
 package com.tokopedia.discovery.newdynamicfilter;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailColorAdapter;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
