@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.normalcheckout.constant
+package com.tokopedia.expresscheckout.common
 
 import android.support.annotation.IntDef
 

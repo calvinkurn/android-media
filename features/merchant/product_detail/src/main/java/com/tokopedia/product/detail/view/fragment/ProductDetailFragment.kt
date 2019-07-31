@@ -62,12 +62,12 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.normalcheckout.constant.ATC_AND_BUY
-import com.tokopedia.purchase_platform.normalcheckout.constant.ATC_ONLY
-import com.tokopedia.purchase_platform.normalcheckout.constant.ProductAction
-import com.tokopedia.purchase_platform.normalcheckout.constant.TRADEIN_BUY
-import com.tokopedia.purchase_platform.normalcheckout.view.NormalCheckoutActivity
-import com.tokopedia.purchase_platform.normalcheckout.view.NormalCheckoutFragment
+import com.tokopedia.expresscheckout.common.ATC_AND_BUY
+import com.tokopedia.expresscheckout.common.ATC_ONLY
+import com.tokopedia.expresscheckout.common.ProductAction
+import com.tokopedia.expresscheckout.common.TRADEIN_BUY
+//import com.tokopedia.expresscheckout.common.view.NormalCheckoutActivity
+//import com.tokopedia.expresscheckout.common.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
@@ -620,6 +620,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productInfo?.run {
                 val isOcsCheckoutType = (productInfoViewModel.p2Login.value)?.isOcsCheckoutType
                     ?: false
+/*
                 val intent = NormalCheckoutActivity.getIntent(it,
                         basic.shopID.toString(),
                         parentProductId,
@@ -638,6 +639,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
                 startActivityForResult(intent,
                         REQUEST_CODE_NORMAL_CHECKOUT)
+*/
             }
         }
     }
@@ -1041,6 +1043,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             REQUEST_CODE_NORMAL_CHECKOUT -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
+/*
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
                         //refresh product by selected variant/product
                         val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
@@ -1073,6 +1076,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shouldShowCartAnimation = true
                         updateCartNotification()
                     }
+*/
 
                 }
             }
