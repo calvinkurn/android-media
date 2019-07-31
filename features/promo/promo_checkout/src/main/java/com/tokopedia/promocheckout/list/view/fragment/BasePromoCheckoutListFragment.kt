@@ -1,6 +1,8 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
@@ -18,6 +20,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
@@ -103,6 +106,10 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
         getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
 
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage(getString(R.string.title_loading))
+        textInputCoupon.setText(promoCode)
+
         populateLastSeen()
         buttonUse.setOnClickListener {
             onPromoCodeUse(textInputCoupon.text.toString())
@@ -146,6 +153,14 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     override fun onErrorEmptyPromoCode() {
         textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_PROMO_DETAIL && resultCode == Activity.RESULT_OK) {
+            activity?.setResult(Activity.RESULT_OK, data)
+            activity?.finish()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>) {

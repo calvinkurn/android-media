@@ -6,26 +6,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.analytics.FROM_CART
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
+import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
-import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import javax.inject.Inject
 
 class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), PromoCheckoutListMarketplaceContract.View {
@@ -48,13 +42,6 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         promoCheckoutListMarketplacePresenter.attachView(this)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(R.string.title_loading))
-        textInputCoupon.setText(promoCode)
-    }
-
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
         super.onItemClicked(promoCheckoutListModel)
         startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
@@ -65,7 +52,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         promoCheckoutListMarketplacePresenter.checkPromoStackingCode(promoCode, isOneClickShipment, promo)
     }
 
-    override fun onSuccessCheckPromoStackingCode(data: DataUiModel) {
+    override fun onSuccessCheckPromoCode(data: DataUiModel) {
         trackSuccessCheckPromoCode(data)
         val intent = Intent()
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER

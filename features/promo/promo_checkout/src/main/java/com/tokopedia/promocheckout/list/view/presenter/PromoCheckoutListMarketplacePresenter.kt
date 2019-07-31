@@ -61,7 +61,7 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
                                     view?.hideProgressLoading()
                                     view.onErrorCheckPromoCode(MessageErrorException(responseGetPromoStack.data.message.text))
                                 } else {
-                                    view.onSuccessCheckPromoStackingCode(responseGetPromoStack.data)
+                                    view.onSuccessCheckPromoCode(responseGetPromoStack.data)
                                 }
                             }
                         }

@@ -45,7 +45,7 @@ class PromoCheckoutListModule {
     @PromoCheckoutListScope
     @Provides
     fun provideDigitalPresenter(checkVoucherDigitalUseCase: CheckVoucherDigitalUseCase, checkVoucherDigitalMapper: CheckVoucherDigitalMapper) : PromoCheckoutListDigitalPresenter {
-        return PromoCheckoutListDigitalPresenter(GraphqlUseCase(), checkVoucherDigitalUseCase, checkVoucherDigitalMapper)
+        return PromoCheckoutListDigitalPresenter(checkVoucherDigitalUseCase, checkVoucherDigitalMapper)
     }
 
     @PromoCheckoutListScope

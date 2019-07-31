@@ -8,7 +8,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 interface PromoCheckoutListMarketplaceContract {
 
     interface View : PromoCheckoutListContract.View{
-        fun onSuccessCheckPromoStackingCode(data: DataUiModel)
         fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel)
     }
 
