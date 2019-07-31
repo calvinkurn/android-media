@@ -8,7 +8,10 @@ import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -82,6 +85,16 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     public void renderData() {
         etInputEmailPhone.addTextChangedListener(watcher(wrapperEmailPhone));
+        etInputEmailPhone.setOnEditorActionListener((v, actionId, event) -> {
+            boolean handled = false;
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                handled = true;
+            }
+            return handled;
+        });
+
         etPassword.addTextChangedListener(watcher(wrapperPassword));
 
         btnAction.setOnClickListener(new ClickRegister());
@@ -140,6 +153,10 @@ public class PartialRegisterInputView extends BaseCustomView {
         else onValidValue();
     }
 
+    private Boolean isValidValue(String value){
+        return PartialRegisterInputUtils.isValidPhone(value) || PartialRegisterInputUtils.isValidEmail(value);
+    }
+
     private void validateValue(String value){
         switch (PartialRegisterInputUtils.getType(value)){
             case PartialRegisterInputUtils.PHONE_TYPE: {
@@ -193,6 +210,8 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void showLoginEmailView(@NotNull String email) {
+        isButtonValidatorActived = false;
+
         wrapperPassword.setVisibility(View.VISIBLE);
         btnForgotPassword.setVisibility(View.VISIBLE);
         btnChange.setVisibility(View.VISIBLE);
@@ -207,6 +226,8 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void showDefaultView() {
+        isButtonValidatorActived = true;
+
         wrapperPassword.setVisibility(View.GONE);
         btnForgotPassword.setVisibility(View.GONE);
         btnChange.setVisibility(View.GONE);
@@ -222,5 +243,4 @@ public class PartialRegisterInputView extends BaseCustomView {
         setWrapperError(wrapperEmailPhone, null);
         setWrapperError(wrapperPassword, null);
     }
-
 }
