@@ -54,6 +54,7 @@ public class TopChatAnalytics {
         public static final String SHOP_PAGE = "ClickShopPage";
         public static final String INBOX_CHAT = "clickInboxChat";
         public static final String CHAT_DETAIL = "ClickChatDetail";
+        public static final String CLICK_CHAT_DETAIL = "clickChatDetail";
 
         String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
         String EVENT_NAME_PRODUCT_CLICK = "productClick";
@@ -355,7 +356,7 @@ public class TopChatAnalytics {
     public void invoiceAttachmentSent(@NotNull InvoicePreviewViewModel invoice) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        EVENT_NAME, Name.CHAT_DETAIL,
+                        EVENT_NAME, Name.CLICK_CHAT_DETAIL,
                         EVENT_CATEGORY, Category.CHAT_DETAIL,
                         EVENT_ACTION, Action.SENT_INVOICE_ATTACHMENT,
                         EVENT_LABEL, invoice.getId()
