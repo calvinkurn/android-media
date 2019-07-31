@@ -3,7 +3,6 @@ package com.tokopedia.navigation.analytics;
 import android.content.Context;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -64,6 +63,17 @@ public class InboxGtmTracker {
                 "category", recommendationItem.getDepartmentId(),
                 "list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType(),
                 "position", String.valueOf(position)));
+    }
+
+    public void eventClickRecommendationWishlist(RecommendationItem recommendationItem, boolean isAdd){
+        this.dataLayerList.add(
+          DataLayer.mapOf(
+                  "event", "clickInbox",
+                  "eventCategory", "inbox page",
+                  "eventAction", String.format("click %s wishlist on product recommendation", isAdd ? "add" : "remove"),
+                  "eventLabel", ""
+          )
+        );
     }
 
     public void eventInboxProductClick(Context context, RecommendationItem recommendationItem, int position) {

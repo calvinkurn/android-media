@@ -23,7 +23,6 @@ public class LoadingMoreViewHolder extends AbstractViewHolder<LoadingMoreModel> 
 
     @Override
     public void bind(LoadingMoreModel element) {
-        itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
 }
