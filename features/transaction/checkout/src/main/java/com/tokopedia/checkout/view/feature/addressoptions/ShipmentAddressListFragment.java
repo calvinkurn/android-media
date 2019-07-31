@@ -424,6 +424,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     if (data != null && data.hasExtra(LogisticCommonConstant.EXTRA_ADDRESS)) {
                         Destination intentModel = data.getParcelableExtra(LogisticCommonConstant.EXTRA_ADDRESS);
                         address = new RecipientAddressModel();
+                        address.setId(intentModel.getAddressId());
                         address.setAddressName(intentModel.getAddressName());
                         address.setDestinationDistrictId(intentModel.getDistrictId());
                         address.setCityId(intentModel.getCityId());
