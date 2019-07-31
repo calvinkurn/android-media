@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.view.ViewPager
 import android.text.TextUtils
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -64,6 +65,8 @@ class OnboardingActivity : BaseActivity() {
     private var indicatorItems = java.util.ArrayList<ImageView>()
     lateinit var fragmentList: ArrayList<Fragment>
 
+    private var lastFragment: OnboardingVideoListener? = null
+
     companion object {
         fun createIntent(context: Context) = Intent(context, OnboardingActivity::class.java)
     }
@@ -117,8 +120,14 @@ class OnboardingActivity : BaseActivity() {
             val fragment = it.fragmentList[position]
             if (fragment is OnboardingVideoListener) {
                 fragment.onPageSelected(position)
+                lastFragment = fragment
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lastFragment?.onPageSelected(currentPosition)
     }
 
     private val pageChangeListener: ViewPager.OnPageChangeListener = (object: ViewPager.OnPageChangeListener {
@@ -128,12 +137,14 @@ class OnboardingActivity : BaseActivity() {
 
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
             if (first && positionOffset == 0f && positionOffsetPixels == 0){
-                onPageSelected(0);
+                onPageSelected(0)
                 first = false
             }
         }
 
         override fun onPageSelected(position: Int) {
+            lastFragment?.onPageUnSelected()
+
             onFragmentSelected(position)
             setIndicator(position)
             currentPosition = position

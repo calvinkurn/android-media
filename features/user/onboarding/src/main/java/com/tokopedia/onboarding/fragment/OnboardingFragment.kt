@@ -122,7 +122,7 @@ class OnboardingFragment : BaseDaggerFragment(),
 
         videoView?.setZOrderOnTop(true)
         videoView?.setVideoURI(Uri.parse(videoPath))
-        videoView?.setOnErrorListener { p0, p1, p2 -> true }
+        videoView?.setOnErrorListener { _, _, _ -> true }
         videoView?.setOnPreparedListener {
             it.isLooping = true
         }
@@ -137,11 +137,11 @@ class OnboardingFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
-        playAnimationTitleDesc()
+        videoView?.start()
     }
 
-    private fun playAnimationTitleDesc() {
-        videoView?.start()
+    override fun onPageUnSelected() {
+        videoView?.pause()
     }
 
     private fun getTitleMsg(): String {
