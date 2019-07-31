@@ -3,13 +3,13 @@ package com.tokopedia.promocheckout.list.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promocheckout.common.domain.CheckVoucherDigitalUseCase
+import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import rx.Subscriber
 
-class PromoCheckoutListDigitalPresenter(private val checkVoucherUseCase: CheckVoucherDigitalUseCase,
+class PromoCheckoutListDigitalPresenter(private val checkVoucherUseCase: DigitalCheckVoucherUseCase,
                                         val checkVoucherDigitalMapper: CheckVoucherDigitalMapper) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListDigitalContract.Presenter {
 
     override fun checkPromoCode(promoCode: String, promoDigitalModel: PromoDigitalModel) {

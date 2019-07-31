@@ -2,19 +2,17 @@ package com.tokopedia.promocheckout.detail.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.domain.CheckVoucherDigitalUseCase
+import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
-import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
-import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
 class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                          private val checkVoucherDigitalUseCase: CheckVoucherDigitalUseCase,
+                                          private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
                                           val checkVoucherDigitalMapper: CheckVoucherDigitalMapper,
                                           private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailDigitalContract.Presenter {
@@ -22,7 +20,7 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
     override fun checkVoucher(promoCode: String, promoDigitalModel: PromoDigitalModel) {
         view.showProgressLoading()
 
-        checkVoucherDigitalUseCase.execute(checkVoucherDigitalUseCase.createRequestParams(promoCode, promoDigitalModel), object : Subscriber<GraphqlResponse>() {
+        digitalCheckVoucherUseCase.execute(digitalCheckVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
                 val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response

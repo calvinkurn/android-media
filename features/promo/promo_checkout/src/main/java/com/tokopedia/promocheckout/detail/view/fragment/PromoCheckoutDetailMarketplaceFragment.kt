@@ -28,13 +28,8 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     @Inject
     lateinit var promoCheckoutDetailPresenter: PromoCheckoutDetailPresenter
 
-    @Inject
-    lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
-
     private var isOneClickShipment: Boolean = false
-    var pageTracking: Int = 1
     var promo: Promo? = null
-    lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,21 +56,8 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     }
 
     override fun onClickCancel() {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickCancelPromoCoupon(codeCoupon)
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickCancelPromoCoupon(codeCoupon)
-        }
+        super.onClickCancel()
         promoCheckoutDetailPresenter.cancelPromo(codeCoupon)
-    }
-
-    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(data.codes[0])
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
-        }
-        super.onSuccessValidatePromoStacking(data)
     }
 
     override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
@@ -87,24 +69,6 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         super.onClashCheckPromo(clasingInfoDetailUiModel)
     }
 
-    override fun onErrorValidatePromo(e: Throwable) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
-        }
-        super.onErrorValidatePromo(e)
-    }
-
-    override fun onErrorValidatePromoStacking(e: Throwable) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
-        }
-        super.onErrorValidatePromoStacking(e)
-    }
-
     override fun initInjector() {
         DaggerPromoCheckoutDetailComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
@@ -114,28 +78,13 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         promoCheckoutDetailPresenter.attachView(this)
     }
 
-    override fun hideProgressLoading() {
-        progressDialog?.hide()
-    }
-
-    override fun showProgressLoading() {
-        try {
-            progressDialog?.show()
-        } catch (exception: UnsupportedOperationException) {
-            CommonUtils.dumper(exception)
-        }
-    }
-
     override fun onDestroy() {
         promoCheckoutDetailPresenter.detachView()
         super.onDestroy()
     }
 
     companion object {
-        val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
-        val EXTRA_IS_USE = "EXTRA_IS_USE"
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
-        val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
 
         fun createInstance(codeCoupon: String, isUse: Boolean, oneClickShipment: Boolean, pageTracking: Int,

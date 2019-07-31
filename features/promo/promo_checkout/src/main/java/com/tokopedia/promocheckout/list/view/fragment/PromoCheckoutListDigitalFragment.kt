@@ -89,10 +89,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     }
 
     companion object {
-        val EXTRA_IS_COUPON_ACTIVE = "EXTRA_IS_COUPON_ACTIVE"
-        val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
         val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
-        val PAGE_TRACKING = "PAGE_TRACKING"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()
