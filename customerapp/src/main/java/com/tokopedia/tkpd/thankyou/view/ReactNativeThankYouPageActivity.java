@@ -144,7 +144,6 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     private void closeThankyouPage() {
-        super.onBackPressed();
         RouteManager.route(this, ApplinkConst.HOME);
         finish();
     }
