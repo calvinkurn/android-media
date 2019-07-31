@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
@@ -13,6 +14,7 @@ import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.EmptySearchViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.HeaderViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RelatedSearchViewHolder;
@@ -95,6 +97,11 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     }
 
     @Override
+    public int type(GlobalNavViewModel globalNavViewModel) {
+        return GlobalNavViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(LoadingMoreModel loadingMoreModel) {
         return SearchLoadingMoreViewHolder.LAYOUT;
     }
@@ -111,13 +118,15 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
             viewHolder = new BigGridProductItemViewHolder(view, productListener);
         } else if(type == HeaderViewHolder.LAYOUT){
             viewHolder = new HeaderViewHolder(view, suggestionListener, quickFilterListener,
-                    guidedSearchListener, globalNavWidgetListener, bannerAdsListener);
+                    guidedSearchListener, bannerAdsListener);
         } else if (type == EmptySearchViewHolder.LAYOUT) {
             viewHolder = new EmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig);
         } else if (type == TopAdsViewHolder.LAYOUT) {
             viewHolder = new TopAdsViewHolder(view, productListener);
         } else if (type == RelatedSearchViewHolder.LAYOUT) {
             viewHolder = new RelatedSearchViewHolder(view, relatedSearchListener);
+        } else if (type == GlobalNavViewHolder.LAYOUT) {
+            viewHolder = new GlobalNavViewHolder(view, globalNavWidgetListener);
         } else if (type == SearchLoadingMoreViewHolder.LAYOUT) {
             viewHolder = new SearchLoadingMoreViewHolder(view);
         } else {

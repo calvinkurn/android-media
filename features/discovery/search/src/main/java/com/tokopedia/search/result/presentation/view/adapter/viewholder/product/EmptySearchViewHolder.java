@@ -169,7 +169,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         bindContentTextView();
         bindNewSearchButton();
         bindRecylerView();
-        loadBannerAdsIfNotNull();
+        bindBannerAds();
     }
 
     private void bindNoResultImage() {
@@ -220,8 +220,8 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         selectedFilterAdapter.setOptionList(selectedFilterOptionList);
     }
 
-    private void loadBannerAdsIfNotNull() {
-        if (topAdsParams != null) {
+    private void bindBannerAds() {
+        if (topAdsParams != null && boundedEmptySearchModel.isTopAdsAllowed()) {
             loadBannerAds();
         }
     }

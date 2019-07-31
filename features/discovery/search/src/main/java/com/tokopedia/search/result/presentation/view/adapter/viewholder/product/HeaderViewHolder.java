@@ -20,15 +20,12 @@ import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
-import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
 import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
-import com.tokopedia.search.result.presentation.view.widget.GlobalNavWidget;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
@@ -48,26 +45,21 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private Context context;
     private SuggestionListener suggestionListener;
     private QuickFilterListener quickFilterListener;
-    private GlobalNavWidgetListener globalNavWidgetListener;
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
-    private GlobalNavWidget globalNavWidget;
 
     public HeaderViewHolder(View itemView,
                             SuggestionListener suggestionListener,
                             QuickFilterListener quickFilterListener,
                             GuidedSearchListener guidedSearchListener,
-                            GlobalNavWidgetListener globalNavWidgetListener,
                             BannerAdsListener bannerAdsListener) {
         super(itemView);
         context = itemView.getContext();
         this.suggestionListener = suggestionListener;
         this.quickFilterListener = quickFilterListener;
-        this.globalNavWidgetListener = globalNavWidgetListener;
         suggestionContainer = itemView.findViewById(R.id.suggestion_container);
         adsBannerView = itemView.findViewById(R.id.ads_banner);
-        globalNavWidget = itemView.findViewById(R.id.globalNavWidget);
         quickFilterListView = itemView.findViewById(R.id.quickFilterListView);
         guidedSearchRecyclerView = itemView.findViewById(R.id.guidedSearchRecyclerView);
         guidedSearchAdapter = new GuidedSearchAdapter(guidedSearchListener);
@@ -110,8 +102,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     public void bind(final HeaderViewModel element) {
         bindAdsBannerView(element);
 
-        bindGlobalNavWidget(element);
-
         bindSuggestionView(element);
 
         bindQuickFilterView(element);
@@ -121,29 +111,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     private void bindAdsBannerView(final HeaderViewModel element) {
         adsBannerView.displayAds(element.getCpmModel());
-    }
-
-    private void bindGlobalNavWidget(final HeaderViewModel element) {
-        if (element.getGlobalNavViewModel() != null) {
-            globalNavWidget.setData(element.getGlobalNavViewModel(), new GlobalNavWidget.ClickListener() {
-                @Override
-                public void onClickItem(GlobalNavViewModel.Item item) {
-                    if (globalNavWidgetListener != null) {
-                        globalNavWidgetListener.onGlobalNavWidgetClicked(item, element.getGlobalNavViewModel().getKeyword());
-                    }
-                }
-
-                @Override
-                public void onclickSeeAllButton(GlobalNavViewModel globalNavViewModel) {
-                    if (globalNavWidgetListener != null) {
-                        globalNavWidgetListener.onGlobalNavWidgetClickSeeAll(globalNavViewModel);
-                    }
-                }
-            });
-            globalNavWidget.setVisibility(View.VISIBLE);
-        } else {
-            globalNavWidget.setVisibility(View.GONE);
-        }
     }
 
     private void bindSuggestionView(final HeaderViewModel element) {

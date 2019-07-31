@@ -15,6 +15,7 @@ import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.TopAdsSwitcher;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
@@ -30,13 +31,13 @@ import java.util.List;
 
 public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
-    private static final int ADAPTER_POSITION_HEADER = 0;
     private List<Visitable> list = new ArrayList<>();
     private ProductListTypeFactory typeFactory;
     private int startFrom;
     private int totalData;
     private LoadingMoreModel loadingMoreModel;
     private TopAdsSwitcher topAdsSwitcher;
+    private GlobalNavViewModel globalNavViewModel;
 
     public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
@@ -265,5 +266,42 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
             notifyItemRemoved(loadingModelPosition);
             notifyItemRangeChanged(loadingModelPosition, 1);
         }
+    }
+
+    @Override
+    public void showEmptyState(Context context, String query, boolean isFilterActive, String sectionTitle) {
+        clearData();
+        if (globalNavViewModel != null) {
+            getItemList().add(globalNavViewModel);
+        }
+        getItemList().add(mapEmptySearch(context, query, isFilterActive, sectionTitle,
+                globalNavViewModel == null));
+        notifyDataSetChanged();
+    }
+
+    private EmptySearchViewModel mapEmptySearch(Context context, String query,
+                                                boolean isFilterActive, String sectionTitle,
+                                                boolean isTopAdsAllowed) {
+        EmptySearchViewModel emptySearchViewModel = new EmptySearchViewModel();
+        emptySearchViewModel.setImageRes(R.drawable.ic_empty_search);
+        emptySearchViewModel.setTopAdsAllowed(isTopAdsAllowed);
+        if (isFilterActive) {
+            emptySearchViewModel.setTitle(getEmptySearchTitle(context, sectionTitle));
+            emptySearchViewModel.setContent(String.format(context.getString(R.string.msg_empty_search_with_filter_2), query));
+        } else {
+            emptySearchViewModel.setTitle(getEmptySearchTitle(context, sectionTitle));
+            emptySearchViewModel.setContent(String.format(context.getString(R.string.empty_search_content_template), query));
+            emptySearchViewModel.setButtonText(context.getString(R.string.empty_search_button_text));
+        }
+        return emptySearchViewModel;
+    }
+
+    private String getEmptySearchTitle(Context context, String sectionTitle) {
+        String templateText = context.getString(R.string.msg_empty_search_with_filter_1);
+        return String.format(templateText, sectionTitle);
+    }
+
+    public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
+        this.globalNavViewModel = globalNavViewModel;
     }
 }
