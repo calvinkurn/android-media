@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -21,13 +20,14 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchImagePickerActivity;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
@@ -46,6 +46,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
@@ -77,7 +79,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private boolean isFromCamera = false;
     private String imagePath;
     private UserSessionInterface userSession;
-    private PerformanceMonitoring performanceMonitoring;
     protected View root;
 
     protected SearchParameter searchParameter;
@@ -126,18 +127,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     protected void showContainer(boolean visible) {
         container.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
-
-    public AHBottomNavigation getBottomNavigation() {
-        return bottomNavigation;
-    }
-
-    protected void onSearchingStart(String keyword) {
-        searchView.closeSearch();
-        showLoadingView(true);
-        showContainer(false);
-        setToolbarTitle(keyword);
-        setLastQuerySearchView(keyword);
     }
 
     private void initToolbar() {
@@ -211,18 +200,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    @Override
     protected void onProductQuerySubmit() {
         setForceSwipeToShop(false);
-        setRequestOfficialStoreBanner(true);
-
         performRequestProduct();
     }
 
     private void onShopQuerySubmit() {
         setForceSwipeToShop(true);
-        setRequestOfficialStoreBanner(true);
-
         performRequestProduct();
     }
 
@@ -365,37 +349,45 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         searchQuery = this.searchParameter.getSearchQuery();
 
         onSearchingStart(searchQuery);
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        getPresenter().initiateSearch(searchParameter, getInitiateSearchListener());
+        moveToSearchPage();
     }
 
-    private InitiateSearchListener getInitiateSearchListener() {
-        return new InitiateSearchListener() {
-            @Override
-            public void onHandleResponseSearch(boolean isHasCatalog) {
-                ProductViewModel model = new ProductViewModel();
-                model.setSearchParameter(searchParameter);
-                model.setHasCatalog(isHasCatalog);
+    protected void onSearchingStart(String keyword) {
+        searchView.closeSearch();
+        showLoadingView(true);
+        showContainer(false);
+        setToolbarTitle(keyword);
+        setLastQuerySearchView(keyword);
+    }
 
-                DiscoveryActivity.this.onHandleResponseSearch(model);
-            }
+    private void moveToSearchPage() {
+        Intent searchActivityIntent = createIntentToSearchActivity();
 
-            @Override
-            public void onHandleApplink(@NonNull String applink) {
-                DiscoveryActivity.this.onHandleApplink(applink);
-            }
+        if(isActivityCalledForResult()) {
+            setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, searchActivityIntent);
+        }
+        else {
+            startActivity(searchActivityIntent);
+        }
+    }
 
-            @Override
-            public void onHandleResponseError() {
-                DiscoveryActivity.this.onHandleResponseError();
-            }
+    private boolean isActivityCalledForResult() {
+        return getCallingActivity() != null;
+    }
 
-            @Override
-            public void onHandleResponseUnknown() {
-                DiscoveryActivity.this.onHandleResponseUnknown();
-            }
-        };
+    private Intent createIntentToSearchActivity() {
+        String searchApplink =
+                UriUtil.buildUriAppendParam(
+                        ApplinkConstInternalDiscovery.SEARCH_RESULT,
+                        searchParameter.getSearchParameterHashMap()
+                );
+
+        Intent intent = RouteManager.getIntent(this, searchApplink);
+
+        intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
+
+        return intent;
     }
 
     private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {
@@ -693,17 +685,5 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public String getImagePath() {
         return imagePath;
-    }
-
-    @Override
-    public void onHandleResponseSearch(ProductViewModel productViewModel) {
-        super.onHandleResponseSearch(productViewModel);
-        stopPerformanceMonitoring();
-    }
-
-    protected void stopPerformanceMonitoring() {
-        if (performanceMonitoring != null) {
-            performanceMonitoring.stopTrace();
-        }
     }
 }
