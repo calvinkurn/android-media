@@ -34,6 +34,9 @@ public class PurchaseProtectionPlanData {
     @SerializedName("protection_opt_in")
     @Expose
     private Boolean protectionOptIn;
+    @SerializedName("protection_checkbox_disabled")
+    @Expose
+    private Boolean protectionCheckboxDisabled;
 
     public Boolean getProtectionAvailable() {
         return protectionAvailable;
@@ -105,5 +108,13 @@ public class PurchaseProtectionPlanData {
 
     public void setProtectionOptIn(Boolean protectionOptIn) {
         this.protectionOptIn = protectionOptIn;
+    }
+
+    public Boolean getProtectionCheckboxDisabled() {
+        return protectionCheckboxDisabled;
+    }
+
+    public void setProtectionCheckboxDisabled(Boolean protectionCheckboxDisabled) {
+        this.protectionCheckboxDisabled = protectionCheckboxDisabled;
     }
 }

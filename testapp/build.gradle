@@ -199,12 +199,21 @@ dependencies {
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.cacheApi)
 
+    implementation rootProject.ext.libraries.unifyComponents
+    implementation rootProject.ext.libraries.unifyIcon
+    implementation rootProject.ext.libraries.unifyPrinciples
+
     implementation rootProject.ext.playServicesDependencies.base
 
     implementation rootProject.ext.firebase.core
 
     // TO BE ADDED AS FEATURE REQUIREMENT
     implementation project(rootProject.ext.features.shopSettings)
+
+    implementation project(rootProject.ext.libraries.logger)
+    implementation (rootProject.ext.debugToolsDependencies.timber){
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
 }
 
 repositories {

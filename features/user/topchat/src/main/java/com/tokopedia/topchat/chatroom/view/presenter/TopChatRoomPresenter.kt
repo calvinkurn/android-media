@@ -1,11 +1,16 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.graphics.BitmapFactory
+import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
@@ -31,12 +36,12 @@ import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.common.TopChatRouter
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest
-import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -72,7 +77,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var deleteMessageListUseCase: DeleteMessageListUseCase,
         private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase,
         private var getShopFollowingUseCase: GetShopFollowingUseCase,
-        private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase)
+        private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
+        private var addToCartUseCase: AddToCartUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     override fun clearText() {
@@ -86,7 +92,9 @@ class TopChatRoomPresenter @Inject constructor(
     private var isUploading: Boolean = false
     private var dummyList: ArrayList<Visitable<*>>
     var thisMessageId: String = ""
-    private lateinit var addToCardSubscriber : Subscriber<AddToCartResult>
+    private lateinit var addToCardSubscriber : Subscriber<AddToCartDataModel>
+
+    private var attachmentsPreview: ArrayList<PreviewViewModel> = arrayListOf()
 
     init {
         mSubscription = CompositeSubscription()
@@ -401,34 +409,35 @@ class TopChatRoomPresenter @Inject constructor(
         RxWebSocket.send(messageText, listInterceptor)
     }
 
-
     override fun addProductToCart(
             router: TopChatRouter,
             element: ProductAttachmentViewModel,
             onError: (Throwable) -> Unit,
-            onSuccess: (addToCartResult: AddToCartResult) -> Unit,
+            onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
             shopId: Int
     ) {
         addToCardSubscriber = addToCartSubscriber(onError, onSuccess)
 
-        router.addToCartProduct(
-                AddToCartRequest.Builder()
-                        .productId(Integer.parseInt(element.productId.toString()))
-                        .notes("")
-                        .quantity(1)
-                        .shopId(shopId)
-                        .build(),
-                false).subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+        val addToCartRequestParams = AddToCartRequestParams()
+        addToCartRequestParams.productId = Integer.parseInt(element.productId.toString()).toLong()
+        addToCartRequestParams.shopId = shopId
+        addToCartRequestParams.quantity = 1
+        addToCartRequestParams.notes = ""
+
+        val requestParams = RequestParams.create()
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
+        addToCartUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(addToCardSubscriber)
     }
 
     private fun addToCartSubscriber(
             onError: (Throwable) -> Unit,
-            onSuccess: (addToCartResult: AddToCartResult) -> Unit
-    ): Subscriber<AddToCartResult> {
-        return object : Subscriber<AddToCartResult>() {
+            onSuccess: (addToCartResult: AddToCartDataModel) -> Unit
+    ): Subscriber<AddToCartDataModel> {
+        return object : Subscriber<AddToCartDataModel>() {
             override fun onCompleted() {
 
             }
@@ -437,44 +446,33 @@ class TopChatRoomPresenter @Inject constructor(
                 onError(e)
             }
 
-            override fun onNext(addToCartResult: AddToCartResult) {
+            override fun onNext(addToCartResult: AddToCartDataModel) {
                 onSuccess(addToCartResult)
             }
         }
     }
 
-    override fun sendMessage(
+    override fun sendAttachmentsAndMessage(
             messageId: String,
             sendMessage: String,
             startTime: String,
             opponentId: String,
-            onSendingMessage: () -> Unit,
-            productPreview: ProductPreview?
+            onSendingMessage: () -> Unit
     ) {
-        if (doesNotHaveMessageToSend(productPreview, sendMessage)) {
-            showErrorSnackbar(com.tokopedia.chat_common.R.string.error_empty_product)
-            return
-        }
-
-        if (hasProductPreview(productPreview)) {
-            sendProductAttachment(
-                    messageId, productPreview!!.generateResultProduct(),
-                    SendableViewModel.generateStartTime(), opponentId
-            )
-            view.clearProductPreview()
-        }
-
         if (isValidReply(sendMessage)) {
+            sendAttachments(messageId, opponentId)
             sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
+        } else {
+            showErrorSnackbar(R.string.error_empty_product)
         }
     }
 
-    private fun doesNotHaveMessageToSend(productPreview: ProductPreview?, sendMessage: String): Boolean {
-        return productPreview == null && !isValidReply(sendMessage)
-    }
-
-    private fun hasProductPreview(productPreview: ProductPreview?): Boolean {
-        return productPreview != null
+    private fun sendAttachments(messageId: String, opponentId: String) {
+        if (attachmentsPreview.isEmpty()) return
+        attachmentsPreview.forEach { attachment ->
+            attachment.sendTo(messageId, opponentId, listInterceptor)
+        }
+        view.notifyAttachmentsSent()
     }
 
     override fun sendProductAttachment(messageId: String, item: ResultProduct,
@@ -518,6 +516,7 @@ class TopChatRoomPresenter @Inject constructor(
         deleteMessageListUseCase.unsubscribe()
         changeChatBlockSettingUseCase.unsubscribe()
         getShopFollowingUseCase.unsubscribe()
+        addToCartUseCase.unsubscribe()
         if(::addToCardSubscriber.isInitialized) {
             addToCardSubscriber.unsubscribe()
         }
@@ -553,4 +552,71 @@ class TopChatRoomPresenter @Inject constructor(
         })
     }
 
+    override fun initProductPreview(savedInstanceState: Bundle?) {
+        val productId = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, savedInstanceState)
+        val productImageUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, savedInstanceState)
+        val productName = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, savedInstanceState)
+        val productPrice = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, savedInstanceState)
+        val productUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, savedInstanceState)
+        val productColorVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, savedInstanceState)
+        val productColorHexVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, savedInstanceState)
+        val productSizeVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, savedInstanceState)
+
+        val productPreviewViewModel = ProductPreviewViewModel(
+                productId,
+                productImageUrl,
+                productName,
+                productPrice,
+                productColorVariant,
+                productColorHexVariant,
+                productSizeVariant,
+                productUrl
+        )
+
+        attachmentsPreview.add(productPreviewViewModel)
+
+        if (productPreviewViewModel.notEnoughRequiredData()) {
+            attachmentsPreview.remove(productPreviewViewModel)
+        }
+    }
+
+    override fun initInvoicePreview(savedInstanceState: Bundle?) {
+        val id = view.getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
+        val invoiceCode = view.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
+        val productName = view.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
+        val date = view.getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState)
+        val imageUrl = view.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState)
+        val invoiceUrl = view.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState)
+        val statusId = view.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState)
+        val status = view.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
+        val totalPriceAmount = view.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
+
+        val invoiceViewModel = InvoicePreviewViewModel(
+                id.toIntOrNull() ?: InvoicePreviewViewModel.INVALID_ID,
+                invoiceCode,
+                productName,
+                date,
+                imageUrl,
+                invoiceUrl,
+                statusId.toIntOrNull() ?: InvoicePreviewViewModel.INVALID_ID,
+                status,
+                totalPriceAmount
+        )
+
+        attachmentsPreview.add(invoiceViewModel)
+
+        if (invoiceViewModel.notEnoughRequiredData()) {
+            attachmentsPreview.remove(invoiceViewModel)
+        }
+    }
+
+    override fun initAttachmentPreview() {
+        if (attachmentsPreview.isEmpty()) return
+        view.showAttachmentPreview(attachmentsPreview)
+        view.focusOnReply()
+    }
+
+    override fun clearAttachmentPreview() {
+        attachmentsPreview.clear()
+    }
 }

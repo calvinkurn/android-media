@@ -28,13 +28,18 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
     private val SELLER_LABEL_ID = 3
 
     override fun call(response: Response<DataResponse<ProductTalkPojo>>): ProductTalkViewModel {
-        if ((response.body() != null) && (response.body().header == null ||
-                        (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                        (response.body().header != null && response.body().header.messages[0].isBlank()))) {
-            val pojo: ProductTalkPojo = response.body().data
-            return mapToViewModel(pojo)
+        val body = response.body()
+        if (body != null) {
+            if ((body.header == null ||
+                            (body.header != null && body.header.messages.isEmpty()) ||
+                            (body.header != null && body.header.messages[0].isBlank()))) {
+                val pojo: ProductTalkPojo = body.data
+                return mapToViewModel(pojo)
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 

@@ -87,7 +87,7 @@ class BottomSheetImageReviewSlider : FrameLayout, ImageReviewSliderView {
                 }
             }
         }
-        recyclerView!!.addOnScrollListener(loadMoreTriggerListener)
+        loadMoreTriggerListener?.let { recyclerView!!.addOnScrollListener(it) }
     }
 
     fun setup(callback: Callback) {

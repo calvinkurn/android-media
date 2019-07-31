@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.adapter.AddTicketAdapter;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
-import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 
 import java.util.List;

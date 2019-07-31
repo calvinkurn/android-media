@@ -27,7 +27,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/10/17.
  */
 
-public class SubmitProductUseCase extends UseCase<Boolean> {
+public class SubmitProductUseCase extends UseCase<Integer> {
 
     private static final String NOTIFICATION_COUNT_LISTENER = "NOTIFICATION_COUNT_LISTENER";
     private static final String PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
@@ -55,70 +55,39 @@ public class SubmitProductUseCase extends UseCase<Boolean> {
     }
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<Integer> createObservable(RequestParams requestParams) {
         ProductViewModel productViewModel = (ProductViewModel) requestParams.getObject(PRODUCT_VIEW_MODEL);
         notificationCountListener = (ProductSubmitNotificationListener) requestParams.getObject(NOTIFICATION_COUNT_LISTENER);
         return Observable.just(productViewModel)
-                .flatMap(new Func1<ProductViewModel, Observable<ProductViewModel>>() {
-                    @Override
-                    public Observable<ProductViewModel> call(ProductViewModel productFromDraft) {
-                        if (TextUtils.isEmpty(productFromDraft.getProductId())) {
-                            return Observable.just(productFromDraft);
-                        } else {
-                            return getProductDetailUseCase.createObservable(GetProductDetailUseCase.createParams(productFromDraft.getProductId()))
-                                    .map(removeUnusedParam(productFromDraft));
-                        }
+                .flatMap((Func1<ProductViewModel, Observable<ProductViewModel>>) productFromDraft -> {
+                    if (TextUtils.isEmpty(productFromDraft.getProductId())) {
+                        return Observable.just(productFromDraft);
+                    } else {
+                        return getProductDetailUseCase.createObservable(GetProductDetailUseCase.createParams(productFromDraft.getProductId()))
+                                .map(removeUnusedParam(productFromDraft));
                     }
                 })
-                .doOnNext(new Action1<ProductViewModel>() {
-                    @Override
-                    public void call(ProductViewModel productViewModel) {
-                        notificationCountListener.addProgress();
+                .doOnNext(productViewModel1 -> notificationCountListener.addProgress())
+                .flatMap((Func1<ProductViewModel, Observable<ProductViewModel>>) productViewModel12 -> {
+                    // Replace product id to shop id if new, recommendation from power ranger team to avoid null on image path
+                    if (!TextUtils.isEmpty(productViewModel12.getProductId())) {
+                        return uploadProductPhoto(productViewModel12, productViewModel12.getProductId());
+                    } else {
+                        return getShopInfoUseCase.createObservable()
+                                .flatMap((Func1<ShopModel, Observable<ProductViewModel>>) shopModel ->
+                                        uploadProductPhoto(productViewModel12, shopModel.getInfo().getShopId()));
                     }
                 })
-                .flatMap(new Func1<ProductViewModel, Observable<ProductViewModel>>() {
-                    @Override
-                    public Observable<ProductViewModel> call(final ProductViewModel productViewModel) {
-                        // Replace product id to shop id if new, recommendation from power ranger team to avoid null on image path
-                        if (!TextUtils.isEmpty(productViewModel.getProductId())) {
-                            return uploadProductPhoto(productViewModel, productViewModel.getProductId());
-                        } else {
-                            return getShopInfoUseCase.createObservable().flatMap(new Func1<ShopModel, Observable<ProductViewModel>>() {
-                                @Override
-                                public Observable<ProductViewModel> call(ShopModel shopModel) {
-                                    return uploadProductPhoto(productViewModel, shopModel.getInfo().getShopId());
-                                }
-                            });
-                        }
+                .onErrorResumeNext(throwable -> {
+                    if (!(throwable instanceof SocketTimeoutException) && !(throwable instanceof UnknownHostException)) {
+                        throw new ImageUploadErrorException();
                     }
+                    return Observable.error(throwable);
                 })
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends ProductViewModel>>() {
-                    @Override
-                    public Observable<? extends ProductViewModel> call(Throwable throwable) {
-                        if (!(throwable instanceof SocketTimeoutException) && !(throwable instanceof UnknownHostException)) {
-                            throw new ImageUploadErrorException();
-                        }
-                        return Observable.error(throwable);
-                    }
-                })
-                .doOnNext(new Action1<ProductViewModel>() {
-                    @Override
-                    public void call(ProductViewModel productViewModel) {
-                        notificationCountListener.addProgress();
-                    }
-                })
-                .flatMap(new Func1<ProductViewModel, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(final ProductViewModel productViewModel) {
-                        return submitRawProductUseCase.createObservable(SubmitRawProductUseCase.createParams(productViewModel));
-                    }
-                })
-                .doOnNext(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        notificationCountListener.addProgress();
-                    }
-                });
+                .doOnNext(productViewModel13 -> notificationCountListener.addProgress())
+                .flatMap((Func1<ProductViewModel, Observable<Integer>>) productViewModel14 ->
+                        submitRawProductUseCase.createObservable(SubmitRawProductUseCase.createParams(productViewModel14)))
+                .doOnNext(aBoolean -> notificationCountListener.addProgress());
     }
 
     private Observable<ProductViewModel> uploadProductPhoto(final ProductViewModel productViewModel, String productId) {

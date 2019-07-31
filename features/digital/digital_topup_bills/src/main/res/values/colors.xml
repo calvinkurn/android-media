@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="digital_grey_bg_header">#f3f4f5</color>
+    <color name="digital_title_header_non_active">#7031353b</color>
+    <color name="digital_text_black_regular">#f531353b</color>
+    <color name="digital_text_enquiry_non_active">#1e000000</color>
+</resources>

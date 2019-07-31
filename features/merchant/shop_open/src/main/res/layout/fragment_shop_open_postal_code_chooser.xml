@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:padding="@dimen/dp_25"
-        android:text="@string/message_search_address_no_result"
+        android:text="@string/message_no_result_address"
         android:visibility="gone"
         tools:visibility="gone" />
 

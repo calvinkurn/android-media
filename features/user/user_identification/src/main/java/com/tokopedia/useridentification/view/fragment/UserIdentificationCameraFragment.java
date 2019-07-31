@@ -17,11 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.otaliastudios.cameraview.CameraListener;
-import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraUtils;
-import com.otaliastudios.cameraview.CameraView;
-import com.otaliastudios.cameraview.Size;
+import com.tokopedia.cameraview.BitmapCallback;
+import com.tokopedia.cameraview.CameraListener;
+import com.tokopedia.cameraview.CameraOptions;
+import com.tokopedia.cameraview.CameraUtils;
+import com.tokopedia.cameraview.CameraView;
+import com.tokopedia.cameraview.PictureResult;
+import com.tokopedia.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -160,7 +162,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
                             @Override
                             public void onPermissionGranted() {
                                 hideCameraButtonAndShowLoading();
-                                cameraView.capturePicture();
+                                cameraView.takePicture();
                             }
                         }, "");
             }
@@ -194,7 +196,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             }
 
             @Override
-            public void onPictureTaken(byte[] imageByte) {
+            public void onPictureTaken(@NonNull PictureResult result) {
                 Fragment fragment = UserIdentificationCameraFragment.this;
                 permissionCheckerHelper.checkPermission(fragment,
                         PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
@@ -211,7 +213,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
                             @Override
                             public void onPermissionGranted() {
-                                saveToFile(imageByte);
+                                saveToFile(result.getData());
                             }
                         }, "");
             }
@@ -379,7 +381,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         try {
             cameraView.clearCameraListeners();
             cameraView.addCameraListener(cameraListener);
-            cameraView.start();
+            cameraView.open();
         } catch (Throwable e) {
             // no-op
         }
@@ -397,14 +399,10 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         mCaptureNativeSize = cameraView.getPictureSize();
         try {
             //rotate the bitmap using the library
-            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize
-                    .getHeight(), new CameraUtils.BitmapCallback() {
-                @Override
-                public void onBitmapReady(Bitmap bitmap) {
-                    File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
-                            .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                    onSuccessImageTakenFromCamera(cameraResultFile);
-                }
+            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), bitmap -> {
+                File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
+                        .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                onSuccessImageTakenFromCamera(cameraResultFile);
             });
         } catch (Throwable error) {
             File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef

@@ -28,6 +28,9 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
       title
       quantity
       price
+      trackingURL
+      trackingNumber
+      invoiceID
       promotionAmount
       metaData
       actionButtons {

@@ -111,5 +111,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onNeedToRefreshMultipleShop();
 
         void onNeedToRecalculate();
+
+        void onCartItemShowTickerPriceDecrease(String productId);
+
+        void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId);
     }
 }

@@ -2,9 +2,12 @@ package com.tokopedia.design.bottomsheet;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,6 +33,13 @@ public class BottomSheetCallAction extends BottomSheetDialog {
     public BottomSheetCallAction(@NonNull Context context) {
         super(context);
         initialView(context);
+    }
+
+    public Drawable getDrawable(Context context, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+            return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
+        else
+            return AppCompatResources.getDrawable(context, resId);
     }
 
     public BottomSheetCallAction(@NonNull Context context, @StyleRes int theme) {
@@ -85,14 +95,14 @@ public class BottomSheetCallAction extends BottomSheetDialog {
                         callActionData.getLabelAction2() : DEFAULT_LABEL_ACTION_2
         );
 
-        ivAction1.setImageResource(
+        ivAction1.setImageDrawable(getDrawable(ivAction1.getContext(),
                 callActionData.getIconAction1() != 0 ?
                         callActionData.getIconAction1() : DEFAULT_ICON_ACTION_1
-        );
-        ivAction2.setImageResource(
+        ));
+        ivAction2.setImageDrawable(getDrawable(ivAction2.getContext(),
                 callActionData.getIconAction2() != 0 ?
                         callActionData.getIconAction2() : DEFAULT_ICON_ACTION_2
-        );
+        ));
 
         btnAction1.setOnClickListener(new View.OnClickListener() {
             @Override

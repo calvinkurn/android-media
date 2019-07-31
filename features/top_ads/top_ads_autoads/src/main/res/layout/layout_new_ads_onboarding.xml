@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/dp_16"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="@dimen/dp_16">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|top"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_180"
+                    android:layout_gravity="center|top"
+                    android:layout_weight="1"
+                    android:src="@drawable/ilustration_onboard_empty" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/beriklan_dengan_topads"
+                    style="@style/TextView.SubHeadline.Bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    style="@style/TextView.Micro.Black40"
+                    android:text="@string/jangkau_lebih_banyak_calon_pembeli_seluruh_indonesia_untuk_tokomu_dengan_iklan_otomatis" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_28"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/tanpa_ribet_btn"
+                            android:layout_width="@dimen/dp_48"
+                            android:layout_height="@dimen/dp_48"
+                            android:src="@drawable/tanpa_ribet" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:layout_weight="1"
+                            style="@style/TextView.Micro.FontMedium.Bold"
+                            android:text="@string/tanpa_ribet" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/pasti_tayang_btn"
+                            android:layout_width="@dimen/dp_48"
+                            android:layout_height="@dimen/dp_48"
+                            android:src="@drawable/pasti_tayang" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:layout_weight="1"
+                            style="@style/TextView.Micro.FontMedium.Bold"
+                            android:text="@string/pasti_tayang" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/banyak_pengunjung_btn"
+                            android:layout_width="@dimen/dp_48"
+                            android:layout_height="@dimen/dp_48"
+                            android:src="@drawable/banyak_pengunjung" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:layout_weight="1"
+                            style="@style/TextView.Micro.FontMedium.Bold"
+                            android:text="@string/banyak_pengunjung" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_start"
+                    style="@style/Button.Submit.Green.Full"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mulai_beriklan"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

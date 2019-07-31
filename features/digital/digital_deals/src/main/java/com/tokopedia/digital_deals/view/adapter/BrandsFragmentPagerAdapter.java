@@ -15,19 +15,18 @@ public class BrandsFragmentPagerAdapter extends FragmentPagerAdapter {
     private List<CategoriesModel> categoryList;
     private ArrayList<Fragment> fragmentArrayList;
 
-    public BrandsFragmentPagerAdapter(FragmentManager fm, List<CategoriesModel> categoryList) {
+    public BrandsFragmentPagerAdapter(FragmentManager fm, List<CategoriesModel> categoryList, String searchText) {
         super(fm);
         this.categoryList = categoryList;
         fragmentArrayList = new ArrayList<>();
         for (CategoriesModel categoriesModel : categoryList) {
-            Fragment fragment = AllBrandsFragment.newInstance(categoriesModel);
+            Fragment fragment = AllBrandsFragment.newInstance(categoriesModel, searchText);
             fragmentArrayList.add(fragment);
         }
     }
 
     @Override
     public Fragment getItem(int position) {
-
         return fragmentArrayList.get(position);
     }
 
@@ -44,5 +43,9 @@ public class BrandsFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getItemPosition(Object object) {
         return PagerAdapter.POSITION_UNCHANGED;
+    }
+
+    public Fragment getSelectedFragment(int position){
+        return fragmentArrayList.get(position);
     }
 }

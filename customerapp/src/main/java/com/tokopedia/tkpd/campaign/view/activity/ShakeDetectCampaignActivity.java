@@ -27,8 +27,6 @@ import android.os.Build;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-
 /**
  * Created by sandeepgoyal on 14/02/18.
  */
@@ -83,7 +81,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
         initInjector();
         attachToPresenter();
-        ButterKnife.bind(this);
         cancelButton.setOnClickListener(cancelListener);
         cancelBtn.setOnClickListener(cancelListener);
         cancelBtn1.setOnClickListener(cancelListener);

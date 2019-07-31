@@ -2,12 +2,12 @@ package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -19,6 +19,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -32,9 +33,10 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private ShipmentItemListener shipmentItemListener;
 
     private ImageView mIvProductImage;
-    private TextView mTvProductName;
-    private TextView mTvProductPrice;
-    private TextView mTvProductCountAndWeight;
+    private Typography mTvProductName;
+    private Typography mTvProductPrice;
+    private Typography mTvProductOriginalPrice;
+    private Typography mTvProductCountAndWeight;
     private LinearLayout mLlOptionalNoteToSellerLayout;
     private TextView mTvOptionalNoteToSeller;
     private FlexboxLayout mllProductPoliciesLayout;
@@ -48,6 +50,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvPPPPrice;
     private TextView mTvPPPMore;
     private CheckBox mCbPPP;
+    private CheckBox mCbPPPDisabled;
     private LinearLayout mLlShippingWarningContainer;
     private View mSeparatorMultipleProductSameStore;
     private TextView tvErrorShipmentItemTitle;
@@ -59,6 +62,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mIvProductImage = itemView.findViewById(R.id.iv_product_image);
         mTvProductName = itemView.findViewById(R.id.tv_product_name);
         mTvProductPrice = itemView.findViewById(R.id.tv_product_price);
+        mTvProductOriginalPrice = itemView.findViewById(R.id.tv_product_original_price);
         mTvProductCountAndWeight = itemView.findViewById(R.id.tv_item_count_and_weight);
         mLlOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
         mTvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
@@ -67,6 +71,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
         mTvPPPMore = itemView.findViewById(R.id.text_ppp_more);
         mCbPPP = itemView.findViewById(R.id.checkbox_ppp);
+        mCbPPPDisabled = itemView.findViewById(R.id.checkbox_ppp_disabled);
         mllProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
         mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
         mTvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
@@ -92,6 +97,13 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvProductName.setText(cartItem.getName());
         mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItem.getPrice(), false));
+        if (cartItem.getOriginalPrice() > 0) {
+            mTvProductOriginalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false));
+            mTvProductOriginalPrice.setPaintFlags(mTvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            mTvProductOriginalPrice.setVisibility(View.VISIBLE);
+        } else {
+            mTvProductOriginalPrice.setVisibility(View.GONE);
+        }
         mTvProductCountAndWeight.setText(String.format(mTvProductCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItem.getQuantity()),
@@ -112,13 +124,20 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
             });
             mTvPPPLinkText.setText(cartItem.getProtectionTitle());
             mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
-            mCbPPP.setChecked(cartItem.isProtectionOptIn());
-            mCbPPP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1);
-                }
-            });
+
+
+            if (cartItem.isProtectionCheckboxDisabled()) {
+                mCbPPP.setVisibility(View.GONE);
+                mCbPPPDisabled.setVisibility(View.VISIBLE);
+                mCbPPPDisabled.setChecked(true);
+                mCbPPPDisabled.setClickable(false);
+            } else {
+                mCbPPPDisabled.setVisibility(View.GONE);
+                mCbPPP.setVisibility(View.VISIBLE);
+                mCbPPP.setChecked(cartItem.isProtectionOptIn());
+                mCbPPP.setClickable(true);
+                mCbPPP.setOnCheckedChangeListener((compoundButton, checked) -> shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1));
+            }
         }
 
         mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
@@ -167,6 +186,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         int colorGreyNonActiveText = ContextCompat.getColor(mTvProductName.getContext(), R.color.grey_nonactive_text);
         mTvProductName.setTextColor(colorGreyNonActiveText);
         mTvProductPrice.setTextColor(colorGreyNonActiveText);
+        mTvProductOriginalPrice.setTextColor(colorGreyNonActiveText);
         mTvFreeReturnLabel.setTextColor(colorGreyNonActiveText);
         mTvPreOrder.setTextColor(colorGreyNonActiveText);
         mTvNoteToSellerLabel.setTextColor(colorGreyNonActiveText);
@@ -190,6 +210,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private void enableItemView() {
         mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), R.color.black_70));
         mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), R.color.orange_red));
+        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.getContext(), R.color.n_700_44));
         mTvFreeReturnLabel.setTextColor(ContextCompat.getColor(mTvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
         mTvPreOrder.setTextColor(ContextCompat.getColor(mTvPreOrder.getContext(), R.color.font_black_secondary_54));
         mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mTvNoteToSellerLabel.getContext(), R.color.black_38));

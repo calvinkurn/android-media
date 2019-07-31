@@ -24,7 +24,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.cameraView)
+    implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.design)

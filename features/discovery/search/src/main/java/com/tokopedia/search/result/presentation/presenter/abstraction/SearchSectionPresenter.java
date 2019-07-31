@@ -59,4 +59,10 @@ public abstract class SearchSectionPresenter<T extends SearchSectionContract.Vie
             }
         };
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        if(getDynamicFilterUseCase != null) getDynamicFilterUseCase.unsubscribe();
+    }
 }

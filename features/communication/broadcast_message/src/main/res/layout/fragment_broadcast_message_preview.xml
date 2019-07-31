@@ -187,9 +187,7 @@
                     android:id="@+id/time_message"
                     android:layout_marginTop="@dimen/dp_6"
                     tools:text="@string/temp_message_time"
-                    android:gravity="center"
-                    android:drawableRight="@drawable/ic_broadcast_message_grey"
-                    android:drawableEnd="@drawable/ic_broadcast_message_grey"/>
+                    android:gravity="center"/>
 
             </LinearLayout>
 

@@ -9,15 +9,12 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.contactus.createticket.model.ImageUpload;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Nisie on 2/16/16.
@@ -35,15 +32,13 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.image_upload)
-        ImageView image;
-
-        @BindView(R2.id.delete_but)
-        ImageView deleteButton;
+       private ImageView image;
+       private ImageView deleteButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            image = itemView.findViewById(R.id.image_upload);
+            deleteButton = itemView.findViewById(R.id.delete_button);
         }
     }
 

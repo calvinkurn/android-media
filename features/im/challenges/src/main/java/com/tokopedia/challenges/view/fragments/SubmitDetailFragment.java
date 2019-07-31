@@ -37,11 +37,13 @@ import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
 
 /**
  * Created by ashwanityagi on 06/08/18.
@@ -134,6 +136,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         btnSubmit = view.findViewById(R.id.btn_submit);
         llShare = view.findViewById(R.id.ll_share);
         tvWinnerNumber = view.findViewById(R.id.tv_winner_number);
+        tvWinnerNumber.setBackground(MethodChecker.getDrawable(tvWinnerNumber.getContext(), R.drawable.ic_winner_badge));
 
         scrollView = view.findViewById(R.id.submit_detail_scrollview);
 
@@ -354,12 +357,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         submissionResult.getMe().setLiked(isLiked);
         if (isLiked) {
             updateLikeCount(true);
-            likeBtn.setImageResource(R.drawable.ic_wishlist_checked);
-            likesImageView.setImageResource(R.drawable.ic_wishlist_checked);
+            likeBtn.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_checked));
+            likesImageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_checked));
         } else {
             updateLikeCount(false);
-            likeBtn.setImageResource(R.drawable.ic_wishlist_unchecked);
-            likesImageView.setImageResource(R.drawable.ic_wishlist_unchecked);
+            likeBtn.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_unchecked));
+            likesImageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_unchecked));
         }
     }
 

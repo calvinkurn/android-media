@@ -4,8 +4,7 @@ object InstantLoanEventConstants {
 
     object Screen {
         val DANA_INSTAN_SCREEN_NAME = "dana instan"
-        val TANPA_AGUNAN_SCREEN_NAME = "tanpa agunan"
-        val AGUNAN_SCREEN_NAME = "agunan"
+        val TANPA_AGUNAN_SCREEN_NAME = "pinjaman online"
     }
 
     object Event {

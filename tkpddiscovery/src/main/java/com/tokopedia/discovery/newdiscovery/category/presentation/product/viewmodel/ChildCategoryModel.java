@@ -13,43 +13,11 @@ public class ChildCategoryModel implements Parcelable{
     private String categoryName = "";
     private String categoryImageUrl = "";
     private String categoryUrl = "";
+    private int isAdult = 0;
 
     public ChildCategoryModel() {
 
     }
-
-    protected ChildCategoryModel(Parcel in) {
-        categoryId = in.readString();
-        categoryName = in.readString();
-        categoryImageUrl = in.readString();
-        categoryUrl = in.readString();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(categoryId);
-        dest.writeString(categoryName);
-        dest.writeString(categoryImageUrl);
-        dest.writeString(categoryUrl);
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ChildCategoryModel> CREATOR = new Parcelable.Creator<ChildCategoryModel>() {
-        @Override
-        public ChildCategoryModel createFromParcel(Parcel in) {
-            return new ChildCategoryModel(in);
-        }
-
-        @Override
-        public ChildCategoryModel[] newArray(int size) {
-            return new ChildCategoryModel[size];
-        }
-    };
 
     public String getCategoryId() {
         return categoryId;
@@ -75,6 +43,14 @@ public class ChildCategoryModel implements Parcelable{
         this.categoryImageUrl = categoryImageUrl;
     }
 
+    public int getIsAdult() {
+        return isAdult;
+    }
+
+    public void setIsAdult(int isAdult) {
+        this.isAdult = isAdult;
+    }
+
     public String getCategoryUrl() {
         return categoryUrl;
     }
@@ -83,4 +59,37 @@ public class ChildCategoryModel implements Parcelable{
         this.categoryUrl = categoryUrl;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.categoryId);
+        dest.writeString(this.categoryName);
+        dest.writeString(this.categoryImageUrl);
+        dest.writeString(this.categoryUrl);
+        dest.writeInt(this.isAdult);
+    }
+
+    protected ChildCategoryModel(Parcel in) {
+        this.categoryId = in.readString();
+        this.categoryName = in.readString();
+        this.categoryImageUrl = in.readString();
+        this.categoryUrl = in.readString();
+        this.isAdult = in.readInt();
+    }
+
+    public static final Creator<ChildCategoryModel> CREATOR = new Creator<ChildCategoryModel>() {
+        @Override
+        public ChildCategoryModel createFromParcel(Parcel source) {
+            return new ChildCategoryModel(source);
+        }
+
+        @Override
+        public ChildCategoryModel[] newArray(int size) {
+            return new ChildCategoryModel[size];
+        }
+    };
 }

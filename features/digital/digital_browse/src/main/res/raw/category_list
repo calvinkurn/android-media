@@ -1,0 +1,41 @@
+query AllCategoryQuery($safeSearch: Boolean!) {
+  categoryAllList(safeSearch:$safeSearch) {
+    categories {
+      id
+      name
+      identifier
+      isAdult
+      url
+      iconImageUrl
+      template
+      applinks
+      isRevamp
+      isIntermediary
+      child {
+        id
+        name
+        identifier
+        url
+        iconImageUrl
+        isAdult
+        parentName
+        template
+        applinks
+        isRevamp
+        isIntermediary
+        child {
+          id
+          name
+          isAdult
+          identifier
+          url
+          iconImageUrl
+          template
+          applinks
+          isRevamp
+          isIntermediary
+        }
+      }
+    }
+  }
+}

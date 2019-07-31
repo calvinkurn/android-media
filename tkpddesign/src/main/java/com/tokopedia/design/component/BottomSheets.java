@@ -5,14 +5,10 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -124,6 +120,9 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
         View layoutTitle = parentView.findViewById(R.id.layout_title);
         layoutTitle.setOnClickListener(v -> onCloseButtonClick());
+
+        View closeButton = parentView.findViewById(R.id.btn_close);
+        closeButton.setOnClickListener(view -> BottomSheets.this.dismiss());
 
         FrameLayout frameParent = parentView.findViewById(R.id.bottomsheet_container);
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);

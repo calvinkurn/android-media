@@ -45,15 +45,12 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
     private int cartPosition;
     private ShippingDurationAdapter adapter;
-    // set true if has courier promo, whether own courier or other duration's courier
-    private boolean hasCourierPromo;
 
     public ShippingDurationViewHolder(View itemView, ShippingDurationAdapter adapter,
-                                      int cartPosition, boolean hasCourierPromo) {
+                                      int cartPosition) {
         super(itemView);
         this.cartPosition = cartPosition;
         this.adapter = adapter;
-        this.hasCourierPromo = hasCourierPromo;
 
         tvOrderPrioritas = itemView.findViewById(R.id.tv_order_prioritas);
         tvError = itemView.findViewById(R.id.tv_error);
@@ -120,7 +117,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
                     shippingDurationViewModel.setSelected(!shippingDurationViewModel.isSelected());
                     shippingDurationAdapterListener.onShippingDurationChoosen(
                             shippingDurationViewModel.getShippingCourierViewModelList(), cartPosition,
-                            shippingDurationViewModel.getServiceData(), hasCourierPromo);
+                            shippingDurationViewModel.getServiceData());
                 }
             }
         });

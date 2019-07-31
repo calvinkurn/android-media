@@ -96,8 +96,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_tv_status"
-            android:drawableStart="@drawable/ic_status_dot"
-            android:drawableLeft="@drawable/ic_status_dot"
             android:drawablePadding="@dimen/dp_6"
             android:paddingLeft="@dimen/dp_8"
             android:paddingTop="@dimen/dp_4"

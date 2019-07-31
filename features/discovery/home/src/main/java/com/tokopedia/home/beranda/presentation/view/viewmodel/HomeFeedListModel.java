@@ -1,16 +1,25 @@
 package com.tokopedia.home.beranda.presentation.view.viewmodel;
 
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
+
 import java.util.List;
 
 public class HomeFeedListModel {
-    private List<HomeFeedViewModel> homeFeedViewModels;
+    private List<Visitable<HomeFeedTypeFactory>> homeFeedViewModels;
     private boolean hasNextPage;
 
-    public List<HomeFeedViewModel> getHomeFeedViewModels() {
+    public HomeFeedListModel(List<Visitable<HomeFeedTypeFactory>> homeFeedViewModels, boolean hasNextPage) {
+        this.homeFeedViewModels = homeFeedViewModels;
+        this.hasNextPage = hasNextPage;
+    }
+
+    public List<Visitable<HomeFeedTypeFactory>> getHomeFeedViewModels() {
         return homeFeedViewModels;
     }
 
-    public void setHomeFeedViewModels(List<HomeFeedViewModel> homeFeedViewModels) {
+    public void setHomeFeedViewModels(List<Visitable<HomeFeedTypeFactory>> homeFeedViewModels) {
         this.homeFeedViewModels = homeFeedViewModels;
     }
 

@@ -206,4 +206,12 @@ public class CatalogListAdapter extends SearchSectionGeneralAdapter {
                 return R.drawable.ic_grid_default_green;
         }
     }
+
+    // Override parent's clearData
+    // CatalogListAdapter do not need to notifyItemRangeRemoved
+    // It will be done via TopAdsRecyclerAdapter
+    @Override
+    public void clearData() {
+        getItemList().clear();
+    }
 }

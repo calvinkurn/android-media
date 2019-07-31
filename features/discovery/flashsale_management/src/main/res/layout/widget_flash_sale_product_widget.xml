@@ -28,7 +28,7 @@
             <ImageView
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:src="@drawable/ic_info_black"
+                app:srcCompat="@drawable/ic_info_black"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="@dimen/dp_8"/>
 
@@ -145,7 +145,7 @@
                         android:layout_width="@dimen/dp_24"
                         android:layout_height="@dimen/dp_24"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_check"
+                        app:srcCompat="@drawable/ic_check"
                         android:layout_marginRight="@dimen/dp_8"/>
                 </LinearLayout>
 

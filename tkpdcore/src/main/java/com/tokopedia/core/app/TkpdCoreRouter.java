@@ -38,8 +38,6 @@ public interface TkpdCoreRouter {
 
     void resetAddProductCache(Context context);
 
-    void goToWallet(Context context, String url);
-
     void actionAppLink(Context context, String linkUrl);
 
     /**
@@ -93,8 +91,6 @@ public interface TkpdCoreRouter {
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
 
     boolean isInMyShop(Context context, String shopId);
-
-    Intent getForgotPasswordIntent(Context context, String email);
 
     void invalidateCategoryMenuData();
 
