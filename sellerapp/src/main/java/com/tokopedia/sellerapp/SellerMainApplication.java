@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatDelegate;
 import android.webkit.URLUtil;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -73,6 +74,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     public static SellerMainApplication get(Context context) {
         return (SellerMainApplication) context.getApplicationContext();
+    }
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     @Override
