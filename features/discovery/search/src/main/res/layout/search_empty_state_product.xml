@@ -26,6 +26,8 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_view_empty_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:typographyType="heading_4"
             android:textColor="@color/font_black_primary_70"
             android:layout_toRightOf="@id/no_result_image"
@@ -33,6 +35,8 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_view_empty_content_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             android:textColor="@color/font_black_secondary_54"
@@ -50,11 +54,15 @@
             />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/button_add_promo"
             style="@style/Button.Submit.Green"
             android:layout_below="@id/text_view_empty_content_text"
             android:layout_marginTop="16dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp"
             android:paddingTop="11dp"
             android:paddingBottom="11dp"
             android:paddingLeft="21dp"
