@@ -1,24 +1,17 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
@@ -32,10 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
-import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
-import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
 
 /**
  * Created by hangnadi on 9/26/17.
