@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -57,7 +58,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     public static final String ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG";
 
     private RecyclerView listComment;
-    private EditText kolComment;
+    private MultiAutoCompleteTextView kolComment;
     private ImageView sendButton;
     private ImageView wishlist;
 
