@@ -283,7 +283,7 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
                                                 boolean isFilterActive,
                                                 boolean isBannerAdsAllowed) {
         EmptySearchViewModel emptySearchViewModel = new EmptySearchViewModel();
-        emptySearchViewModel.setImageRes(R.drawable.ic_empty_search_product);
+        emptySearchViewModel.setImageRes(R.drawable.product_search_not_found);
         emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
         if (isFilterActive) {
             emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));
