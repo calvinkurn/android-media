@@ -47,7 +47,6 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.checkout.view.common.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME;
 import static com.tokopedia.checkout.view.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME;
-import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.openBottomSheetWebView;
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -96,11 +95,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPriceChanges;
     private TextView tvInvenageText;
     private RelativeLayout rlInvenageText;
-    private RelativeLayout rlMicroInsurance;
+    /*private RelativeLayout rlMicroInsurance;
     private CheckBox cbSelectMicroInsurance;
     private TextView tvMicroInsuranceTitle;
     private TextView tvMicroInsuranceSubTitle;
-    private TextView tvMicroInsuranceInfo;
+    private TextView tvMicroInsuranceInfo;*/
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -149,11 +148,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.tvPriceChanges = itemView.findViewById(R.id.tv_price_changes);
         this.tvInvenageText = itemView.findViewById(R.id.tv_invenage_text);
         this.rlInvenageText = itemView.findViewById(R.id.rl_invenage_text);
-        this.rlMicroInsurance = itemView.findViewById(R.id.rl_micro_insurance);
+        /*this.rlMicroInsurance = itemView.findViewById(R.id.rl_micro_insurance);
         this.cbSelectMicroInsurance = itemView.findViewById(R.id.cb_select_micro_insurance);
         this.tvMicroInsuranceTitle = itemView.findViewById(R.id.micro_insurance_title);
         this.tvMicroInsuranceSubTitle = itemView.findViewById(R.id.tv_micro_insurance_sub_title);
-        this.tvMicroInsuranceInfo = itemView.findViewById(R.id.tv_micro_insurance_info);
+        this.tvMicroInsuranceInfo = itemView.findViewById(R.id.tv_micro_insurance_info);*/
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -248,7 +247,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         renderWarningAndError(data);
         renderWishlist(data);
         renderSelection(data, parentPosition);
-        renderInsuranceData(data, parentPosition);
+//        renderInsuranceData(data, parentPosition);
     }
 
     private void renderSelection(CartItemHolderData data, int parentPosition) {
@@ -265,7 +264,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     }
                 }
 
-                if (!isChecked) {
+                /*if (!isChecked) {
                     data.getCartItemData().getMicroInsuranceData().setOptIn(isChecked);
                     cbSelectMicroInsurance.setChecked(isChecked);
                     cbSelectMicroInsurance.setVisibility(View.GONE);
@@ -275,7 +274,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     cbSelectMicroInsurance.setVisibility(View.VISIBLE);
                     cbSelectMicroInsurance.setEnabled(true);
                     cbSelectMicroInsurance.setClickable(true);
-                }
+                }*/
             }
         });
     }
@@ -412,7 +411,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void renderInsuranceData(CartItemHolderData data, int parentPosition) {
+    /*private void renderInsuranceData(CartItemHolderData data, int parentPosition) {
         if (data != null &&
                 data.getCartItemData() != null &&
                 data.getCartItemData().getMicroInsuranceData() != null &&
@@ -451,7 +450,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             rlMicroInsurance.setVisibility(View.GONE);
         }
-    }
+    }*/
 
     private void renderRemark(CartItemHolderData data, int parentPosition, ViewHolderListener viewHolderListener) {
         this.etRemark.setOnEditorActionListener(new TextView.OnEditorActionListener() {

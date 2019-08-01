@@ -3,8 +3,6 @@ package com.tokopedia.checkout.domain.datamodel.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
-
 import java.util.List;
 
 /**
@@ -26,16 +24,7 @@ public class CartItemData implements Parcelable {
     private String errorMessageDescription;
     private boolean isDisableAllProducts;
     private boolean isFulfillment;
-    private InsuranceCartDigitalProduct microInsuranceData;
 
-
-    public InsuranceCartDigitalProduct getMicroInsuranceData() {
-        return microInsuranceData;
-    }
-
-    public void setMicroInsuranceData(InsuranceCartDigitalProduct microInsuranceData) {
-        this.microInsuranceData = microInsuranceData;
-    }
 
     public boolean isFulfillment() {
         return isFulfillment;
@@ -418,13 +407,17 @@ public class CartItemData implements Parcelable {
             this.invenageValue = invenageValue;
         }
 
-        public int getPriceChangesState() { return priceChangesState; }
+        public int getPriceChangesState() {
+            return priceChangesState;
+        }
 
         public void setPriceChangesState(int priceChangesState) {
             this.priceChangesState = priceChangesState;
         }
 
-        public String getPriceChangesDesc() { return priceChangesDesc; }
+        public String getPriceChangesDesc() {
+            return priceChangesDesc;
+        }
 
         public void setPriceChangesDesc(String priceChangesDesc) {
             this.priceChangesDesc = priceChangesDesc;
@@ -970,7 +963,6 @@ public class CartItemData implements Parcelable {
         dest.writeString(this.errorMessageDescription);
         dest.writeByte(this.isDisableAllProducts ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.microInsuranceData, flags);
     }
 
     protected CartItemData(Parcel in) {
@@ -987,7 +979,6 @@ public class CartItemData implements Parcelable {
         this.errorMessageDescription = in.readString();
         this.isDisableAllProducts = in.readByte() != 0;
         this.isFulfillment = in.readByte() != 0;
-        this.microInsuranceData = in.readParcelable(InsuranceCartDigitalProduct.class.getClassLoader());
     }
 
     public static final Creator<CartItemData> CREATOR = new Creator<CartItemData>() {

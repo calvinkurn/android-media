@@ -15,7 +15,6 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -39,7 +38,6 @@ import com.tokopedia.expresscheckout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerConstants
@@ -53,7 +51,10 @@ import com.tokopedia.normalcheckout.constant.ATC_ONLY
 import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.normalcheckout.constant.TRADEIN_BUY
 import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
+import com.tokopedia.normalcheckout.model.Fail
+import com.tokopedia.normalcheckout.model.InsuranceRecommendationContainer
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
+import com.tokopedia.normalcheckout.model.ProductInfoAndVariantContainer
 import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
@@ -67,12 +68,9 @@ import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
 import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.transactiondata.insurance.entity.request.*
-import com.tokopedia.transactiondata.insurance.entity.response.AddInsuranceProductToCartGqlResponse
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
-import rx.Subscriber
 import javax.inject.Inject
 
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
@@ -211,7 +209,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         super.onActivityCreated(savedInstanceState)
         viewModel.productInfoResp.observe(this, Observer {
             when (it) {
-                is Success -> onSuccessGetProductInfo(it.data)
+                is ProductInfoAndVariantContainer -> onSuccessGetProductInfo(it.productInfoAndVariant)
+                is InsuranceRecommendationContainer -> onSuccessInsuranceRecommendation(it.insuranceRecommendation)
                 is Fail -> onErrorGetProductInfo(it.throwable)
             }
         })
@@ -592,16 +591,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         super.onDestroy()
     }
 
-
-    inline fun <reified T> GraphqlResponse.getSuccessData(): T {
-        val error = getError(T::class.java)
-        if (error == null || error.isEmpty()) {
-            return getData(T::class.java)
-        } else {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-        }
-    }
-
     private fun generateInsuranceRequest() {
 
 
@@ -813,7 +802,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
 
         addToInsuranceCart(onFinish = { message: String?, cartId: String? ->
-            onFinishAddToCart(message)
+
+            hideLoadingDialog()
+            normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
+                    selectedProductInfo?.basic?.price.toString(),
+                    quantity,
+                    selectedProductInfo?.basic?.name ?: "",
+                    selectedProductInfo?.category?.name ?: "")
+
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickAddToCartInVariant(
                         originalProduct,
@@ -823,8 +819,20 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         trackerAttribution, trackerListName,
                         viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false)
             }
-        }, onRetryWhenError = {
-            addToCart()
+            onFinishAddToCart(message)
+        }, onRetryWhenError = { message: String ->
+            hideLoadingDialog()
+            var toastMessage = if (message.isNullOrBlank()) {
+                getString(R.string.default_request_error_unknown_short)
+            } else {
+                message
+            }
+            activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(toastMessage)
+        }, onGqlError = { e: Throwable? ->
+            hideLoadingDialog()
+            showToastError(e) {
+                addToCart()
+            }
         })
 
     }
@@ -847,7 +855,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun addToInsuranceCart(onFinish: ((message: String?, cartId: String?) -> Unit),
-                                   onRetryWhenError: (() -> Unit)) {
+                                   onRetryWhenError: ((message: String) -> Unit), onGqlError: ((e: Throwable?) -> Unit)) {
         val selectedVariant = selectedVariantId
         val selectedWarehouseId = viewModel.selectedwarehouse?.warehouseInfo?.id?.toLong() ?: 0
         showLoadingDialog()
@@ -858,8 +866,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 quantity,
                 selectedProductInfo?.basic?.name ?: "",
                 selectedProductInfo?.category?.name ?: "")
-
-        val addToInsuranceCartUseCase = router.addInsuranceProductToCart()
 
         val addMarketPlaceToCartRequest = AddMarketPlaceToCartRequest()
         addMarketPlaceToCartRequest.notes = notes ?: ""
@@ -926,49 +932,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             addInsuranceProductToCartRequest.addInsuranceData = addInsuranceProductDataList
         }
 
-        addToInsuranceCartUseCase.setRequestParams(addInsuranceProductToCartRequest, addMarketPlaceToCartRequest)
-        addToInsuranceCartUseCase.execute(object : Subscriber<GraphqlResponse>() {
-            override fun onNext(graphqlResponse: GraphqlResponse?) {
-                hideLoadingDialog()
 
-
-                graphqlResponse?.run {
-
-                    if (graphqlResponse.getSuccessData<AddInsuranceProductToCartGqlResponse>() != null) {
-
-                        val addInsuranceResponse = graphqlResponse.getData<AddInsuranceProductToCartGqlResponse>(AddInsuranceProductToCartGqlResponse::class.java)
-
-
-                        if (addInsuranceResponse.addToCartTransactional.addCart.successData.success == 1) {
-                            normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
-                                    selectedProductInfo?.basic?.price.toString(),
-                                    quantity,
-                                    selectedProductInfo?.basic?.name ?: "",
-                                    selectedProductInfo?.category?.name ?: "")
-                            onFinish(addInsuranceResponse.addToCartTransactional.addCart.successData.message.get(0),
-                                    addInsuranceResponse.addToCartTransactional.addCart.successData.cartId.toString())
-                        } else {
-                            activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
-                                    addInsuranceResponse.addToCartTransactional.addCart.errorMessage.get(0)
-                                            ?: getString(R.string.default_request_error_unknown_short))
-                        }
-
-                    }
-                }
-
-            }
-
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-                hideLoadingDialog()
-                showToastError(e) {
-                    onRetryWhenError()
-                }
-            }
-        })
+        viewModel.addInsuranceProductToCart(addInsuranceProductToCartRequest,
+                addMarketPlaceToCartRequest, onFinish, onRetryWhenError, onGqlError)
 
     }
 
@@ -1157,12 +1123,22 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
         selectedProductInfo?.let {
             val viewModels = ModelMapper.convertVariantToModels(it, viewModel.selectedwarehouse,
-                    originalProduct.productVariant, originalProduct.insuranceRecommendation, notes, quantity)
+                    originalProduct.productVariant, /*originalProduct.insuranceRecommendation,*/ notes, quantity)
             fragmentViewModel.viewModels = viewModels
             quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
                     ?: 0
             adapter.clearAllElements()
             adapter.addDataViewModel(viewModels)
+            adapter.notifyDataSetChanged()
+            renderActionButton(it)
+            renderTotalPrice(it, viewModel.selectedwarehouse)
+        }
+    }
+
+    private fun onSuccessInsuranceRecommendation(insuranceRecommendation: InsuranceRecommendationGqlResponse) {
+        selectedProductInfo?.let {
+            fragmentViewModel.viewModels.add(ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation))
+            adapter.addSingleDataViewModel(ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation))
             adapter.notifyDataSetChanged()
             renderActionButton(it)
             renderTotalPrice(it, viewModel.selectedwarehouse)

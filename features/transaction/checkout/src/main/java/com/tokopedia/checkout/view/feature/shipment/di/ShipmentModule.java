@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.checkout.data.repository.AddressRepository;
-import com.tokopedia.checkout.domain.insurance.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
@@ -18,6 +17,7 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.CodCheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;

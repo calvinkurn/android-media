@@ -508,7 +508,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 break;
                             }
                         }
-                    } else if (item instanceof CartShopHolderData) {
+                    } /*else if (item instanceof CartShopHolderData) {
                         if (((CartShopHolderData) item).getShopGroupData() != null &&
                                 ((CartShopHolderData) item).getShopGroupData().getCartItemDataList() != null) {
                             for (CartItemHolderData cartItemHolderData : ((CartShopHolderData) item).getShopGroupData().getCartItemDataList()) {
@@ -523,7 +523,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             }
                         }
 
-                    }
+                    }*/
                 }
 
             }
@@ -602,7 +602,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return insuranceCartDigitalProductArrayList;
     }
 
-    public ArrayList<InsuranceCartDigitalProduct> getUnselectedMicroInsuranceProduct() {
+    /*public ArrayList<InsuranceCartDigitalProduct> getUnselectedMicroInsuranceProduct() {
 
         ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
 
@@ -620,7 +620,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         return insuranceCartDigitalProductArrayList;
-    }
+    }*/
 
 
     public ArrayList<InsuranceCartShops> getInsuranceCartShops() {

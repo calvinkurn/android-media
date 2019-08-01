@@ -948,11 +948,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean) {
     }
 
-    override fun setErrorInInsuranceSelection(value: Boolean) {
-
-
-    }
-
     override fun onNoCourierAvailable(message: String?) {
 
     }

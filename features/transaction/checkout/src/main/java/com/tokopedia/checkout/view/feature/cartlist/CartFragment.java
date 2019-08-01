@@ -527,11 +527,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (message == null || message.equals("")) {
                 ArrayList<InsuranceCartDigitalProduct> insuranceCartShopsArrayList = cartAdapter.isInsuranceCartProductUnSelected();
 
-                ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = cartAdapter.getUnselectedMicroInsuranceProduct();
-                insuranceCartShopsArrayList.addAll(insuranceCartDigitalProductArrayList);
+//                ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = cartAdapter.getUnselectedMicroInsuranceProduct();
+//                insuranceCartShopsArrayList.addAll(insuranceCartDigitalProductArrayList);
 
                 if (!insuranceCartShopsArrayList.isEmpty()) {
-                    deleteMicroInsurance(insuranceCartShopsArrayList, false);
+//                    deleteMicroInsurance(insuranceCartShopsArrayList, false);
+                    deleteMacroInsurance(insuranceCartShopsArrayList, false);
                 }
 
 
@@ -1959,11 +1960,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                                     insuranceCartDigitalProduct.setShopId(cartItemData.getOriginData().getShopId());
                                     insuranceCartDigitalProduct.setProductId(cartItemData.getOriginData().getProductId());
 
-                                    if (insuranceCartDigitalProduct.isProductLevel()) {
-                                        cartItemData.setMicroInsuranceData(insuranceCartDigitalProduct);
-                                    } else {
+                                    if (!insuranceCartDigitalProduct.isProductLevel()) {
                                         cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
-                                    }
+                                    } /*else {
+                                        cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
+                                    }*/
 
                                 }
 
@@ -2126,10 +2127,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
 
-    @Override
+    /*@Override
     public void deleteMicroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartShops, boolean showConfirmationDialog) {
         dPresenter.processDeleteCartMicroInsurance(insuranceCartShops, showConfirmationDialog);
-    }
+    }*/
 
 
     @Override

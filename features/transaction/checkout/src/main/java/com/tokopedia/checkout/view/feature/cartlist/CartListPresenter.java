@@ -37,7 +37,6 @@ import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetInsuranceCartS
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetRecentViewSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetRemoveMacroInsuranceProductSubscriber;
-import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetRemoveMicroInsuranceProductSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetSubscriberUpdateInsuranceProductData;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetWishlistSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
@@ -324,7 +323,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
 
-    @Override
+    /*@Override
     public void processDeleteCartMicroInsurance(ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList, boolean showToaster) {
         if (insuranceCartDigitalProductArrayList != null &&
                 !insuranceCartDigitalProductArrayList.isEmpty()) {
@@ -359,7 +358,7 @@ public class CartListPresenter implements ICartListPresenter {
             removeInsuranceProductUsecase.setRequestParams(removeInsuranceDataArrayList, "cart", String.valueOf(Build.VERSION.SDK_INT), cartIdList);
             removeInsuranceProductUsecase.execute(new GetRemoveMicroInsuranceProductSubscriber(view, productIdArrayList, showToaster));
         }
-    }
+    }*/
 
     @Override
     public void updateInsuranceProductData(InsuranceCartShops insuranceCartShops,
@@ -787,10 +786,10 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
 
-                if (data.getCartItemData().getMicroInsuranceData() != null &&
+                /*if (data.getCartItemData().getMicroInsuranceData() != null &&
                         data.getCartItemData().getMicroInsuranceData().getOptIn()) {
                     totalPrice = totalPrice + (data.getCartItemData().getUpdatedData().getQuantity() * data.getCartItemData().getMicroInsuranceData().getPricePerProduct());
-                }
+                }*/
             }
         }
 
@@ -945,8 +944,10 @@ public class CartListPresenter implements ICartListPresenter {
 
 
     @NonNull
-    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(List<Integer> toBeDeletedCartIds, List<CartItemData> removedCartItems,
-                                                                                       boolean removeAllItems, boolean removeInsurance) {
+    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(List<Integer> toBeDeletedCartIds,
+                                                                                       List<CartItemData> removedCartItems,
+                                                                                       boolean removeAllItems,
+                                                                                       boolean removeInsurance) {
         return new Subscriber<DeleteAndRefreshCartListData>() {
             @Override
             public void onCompleted() {
@@ -984,7 +985,7 @@ public class CartListPresenter implements ICartListPresenter {
                             view.onDeleteCartDataSuccess(toBeDeletedCartIds);
                         }
 
-                        ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
+                        /*ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
                         for (CartItemData cartItemData : removedCartItems) {
 
                             if (cartItemData.getMicroInsuranceData() != null) {
@@ -992,7 +993,7 @@ public class CartListPresenter implements ICartListPresenter {
                             }
 
                         }
-                        processDeleteCartMicroInsurance(insuranceCartDigitalProductArrayList, false);
+                        processDeleteCartMicroInsurance(insuranceCartDigitalProductArrayList, false);*/
                     } else {
                         view.showToastMessageRed(
                                 deleteAndRefreshCartListData.getDeleteCartData().getMessage()

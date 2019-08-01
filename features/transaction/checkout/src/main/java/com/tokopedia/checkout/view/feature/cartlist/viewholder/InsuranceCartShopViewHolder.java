@@ -313,6 +313,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
                  * */
 
                 cbSelectInsurance.setChecked(true);
+                insuranceCartDigitalProduct.setOptIn(true);
 
                 ivDeleteInsurance.setVisibility(View.VISIBLE);
                 ivDeleteInsurance.setOnClickListener(new View.OnClickListener() {

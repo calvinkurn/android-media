@@ -2779,10 +2779,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     }
 
-    @Override
+    /*@Override
     public void deleteMicroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductList, boolean showconfirmationDialog) {
 
-    }
+    }*/
 
     @Override
     public void updateInsuranceProductData(@NotNull InsuranceCartShops insuranceCartShops, @NotNull ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {

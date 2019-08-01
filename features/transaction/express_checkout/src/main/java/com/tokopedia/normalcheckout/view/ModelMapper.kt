@@ -23,7 +23,7 @@ object ModelMapper {
     fun convertVariantToModels(productInfo: ProductInfo,
                                multiorigin: MultiOriginWarehouse?,
                                productVariant: ProductVariant?,
-                               insuranceRecommendation: InsuranceRecommendationGqlResponse?,
+            /*insuranceRecommendation: InsuranceRecommendationGqlResponse?,*/
                                noteString: String?, quantity: Int = 0): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
         dataList.add(convertToProductViewModel(productInfo, multiorigin))
@@ -41,7 +41,7 @@ object ModelMapper {
         }
         dataList.add(convertToQuantityViewModel(productInfo, quantity))
         dataList.add(convertToNoteViewModel(noteString))
-        dataList.add(convertToInsuranceRecommendationViewModel(insuranceRecommendation))
+
         return dataList
     }
 
@@ -121,7 +121,6 @@ object ModelMapper {
 
         val insuranceCartShopsViewModelList = ArrayList<InsuranceCartShopsViewModel>()
 
-
         for (data: InsuranceCartShops in insuranceRecommendation?.data?.cartShopsList!!) {
 
             val insuranceCartShopsViewModel = InsuranceCartShopsViewModel()
@@ -136,66 +135,68 @@ object ModelMapper {
                 val list = ArrayList<InsuranceCartDigitalProductViewModel>()
                 for (digitalProduct: InsuranceCartDigitalProduct in dataItems.digitalProductList) {
 
-                    val insuranceCartProductInfoViewModel = InsuranceCartProductInfoViewModel()
-                    insuranceCartProductInfoViewModel.description = digitalProduct.productInfo.description
-                    insuranceCartProductInfoViewModel.iconUrl = digitalProduct.productInfo.iconUrl
-                    insuranceCartProductInfoViewModel.subTitle = digitalProduct.productInfo.subTitle
-                    insuranceCartProductInfoViewModel.title = digitalProduct.productInfo.title
+                    if (!digitalProduct.isProductLevel) {
+                        val insuranceCartProductInfoViewModel = InsuranceCartProductInfoViewModel()
+                        insuranceCartProductInfoViewModel.description = digitalProduct.productInfo.description
+                        insuranceCartProductInfoViewModel.iconUrl = digitalProduct.productInfo.iconUrl
+                        insuranceCartProductInfoViewModel.subTitle = digitalProduct.productInfo.subTitle
+                        insuranceCartProductInfoViewModel.title = digitalProduct.productInfo.title
 
-                    insuranceCartProductInfoViewModel.detailInfoTitle = digitalProduct.productInfo.detailInfoTitle
-                    insuranceCartProductInfoViewModel.sectionTitle = digitalProduct.productInfo.sectionTitle
-                    insuranceCartProductInfoViewModel.appLinkUrl = digitalProduct.productInfo.appLinkUrl
-                    insuranceCartProductInfoViewModel.linkName = digitalProduct.productInfo.linkName
-                    insuranceCartProductInfoViewModel.infoText = digitalProduct.productInfo.infoText
+                        insuranceCartProductInfoViewModel.detailInfoTitle = digitalProduct.productInfo.detailInfoTitle
+                        insuranceCartProductInfoViewModel.sectionTitle = digitalProduct.productInfo.sectionTitle
+                        insuranceCartProductInfoViewModel.appLinkUrl = digitalProduct.productInfo.appLinkUrl
+                        insuranceCartProductInfoViewModel.linkName = digitalProduct.productInfo.linkName
+                        insuranceCartProductInfoViewModel.infoText = digitalProduct.productInfo.infoText
 
+                        val applicationDetailList = ArrayList<InsuranceProductApplicationDetailsViewModel>()
 
-                    val applicationDetailList = ArrayList<InsuranceProductApplicationDetailsViewModel>()
-
-                    for (applicationDetails: InsuranceProductApplicationDetails in digitalProduct.applicationDetails) {
-                        val insuranceProductApplicationDetailsViewModel = InsuranceProductApplicationDetailsViewModel()
-                        insuranceProductApplicationDetailsViewModel.id = applicationDetails.id
-                        insuranceProductApplicationDetailsViewModel.isRequired = applicationDetails.isRequired
-                        insuranceProductApplicationDetailsViewModel.label = applicationDetails.label
-                        insuranceProductApplicationDetailsViewModel.placeHolder = applicationDetails.placeHolder
-                        insuranceProductApplicationDetailsViewModel.value = applicationDetails.value
-                        insuranceProductApplicationDetailsViewModel.type = applicationDetails.type
-                        insuranceProductApplicationDetailsViewModel.isError = false
-                        val valueList = ArrayList<InsuranceApplicationValueViewModel>()
-                        for (value: InsuranceApplicationValue in applicationDetails.valuesList) {
-                            val insuranceApplicationValueViewModel = InsuranceApplicationValueViewModel()
-                            insuranceApplicationValueViewModel.value = value.value
-                            insuranceApplicationValueViewModel.valuesId = value.valuesId
-                            valueList.add(insuranceApplicationValueViewModel)
+                        for (applicationDetails: InsuranceProductApplicationDetails in digitalProduct.applicationDetails) {
+                            val insuranceProductApplicationDetailsViewModel = InsuranceProductApplicationDetailsViewModel()
+                            insuranceProductApplicationDetailsViewModel.id = applicationDetails.id
+                            insuranceProductApplicationDetailsViewModel.isRequired = applicationDetails.isRequired
+                            insuranceProductApplicationDetailsViewModel.label = applicationDetails.label
+                            insuranceProductApplicationDetailsViewModel.placeHolder = applicationDetails.placeHolder
+                            insuranceProductApplicationDetailsViewModel.value = applicationDetails.value
+                            insuranceProductApplicationDetailsViewModel.type = applicationDetails.type
+                            insuranceProductApplicationDetailsViewModel.isError = false
+                            val valueList = ArrayList<InsuranceApplicationValueViewModel>()
+                            for (value: InsuranceApplicationValue in applicationDetails.valuesList) {
+                                val insuranceApplicationValueViewModel = InsuranceApplicationValueViewModel()
+                                insuranceApplicationValueViewModel.value = value.value
+                                insuranceApplicationValueViewModel.valuesId = value.valuesId
+                                valueList.add(insuranceApplicationValueViewModel)
+                            }
+                            insuranceProductApplicationDetailsViewModel.valuesList = valueList
+                            val validationList = ArrayList<InsuranceApplicationValidationViewModel>()
+                            for (validation: InsuranceApplicationValidation in applicationDetails.validationsList) {
+                                val insuranceApplicationValidationViewModel = InsuranceApplicationValidationViewModel()
+                                insuranceApplicationValidationViewModel.type = validation.type
+                                insuranceApplicationValidationViewModel.validationErrorMessage = validation.validationErrorMessage
+                                insuranceApplicationValidationViewModel.validationId = validation.validationId
+                                insuranceApplicationValidationViewModel.validationValue = validation.validationValue
+                                validationList.add(insuranceApplicationValidationViewModel)
+                            }
+                            insuranceProductApplicationDetailsViewModel.validationsList = validationList
+                            applicationDetailList.add(insuranceProductApplicationDetailsViewModel)
                         }
-                        insuranceProductApplicationDetailsViewModel.valuesList = valueList
-                        val validationList = ArrayList<InsuranceApplicationValidationViewModel>()
-                        for (validation: InsuranceApplicationValidation in applicationDetails.validationsList) {
-                            val insuranceApplicationValidationViewModel = InsuranceApplicationValidationViewModel()
-                            insuranceApplicationValidationViewModel.type = validation.type
-                            insuranceApplicationValidationViewModel.validationErrorMessage = validation.validationErrorMessage
-                            insuranceApplicationValidationViewModel.validationId = validation.validationId
-                            insuranceApplicationValidationViewModel.validationValue = validation.validationValue
-                            validationList.add(insuranceApplicationValidationViewModel)
-                        }
-                        insuranceProductApplicationDetailsViewModel.validationsList = validationList
-                        applicationDetailList.add(insuranceProductApplicationDetailsViewModel)
+
+                        val insuranceCartDigitalProductViewModel = InsuranceCartDigitalProductViewModel(digitalProduct.digitalProductId,
+                                digitalProduct.cartItemId,
+                                digitalProduct.typeId,
+                                digitalProduct.pricePerProduct,
+                                digitalProduct.totalPrice,
+                                digitalProduct.optIn,
+                                digitalProduct.isProductLevel,
+                                digitalProduct.isPurchaseProtection,
+                                digitalProduct.isSellerMoney,
+                                digitalProduct.isApplicationNeeded,
+                                digitalProduct.isNew,
+                                insuranceCartProductInfoViewModel,
+                                applicationDetailList)
+
+                        list.add(insuranceCartDigitalProductViewModel)
                     }
 
-                    val insuranceCartDigitalProductViewModel = InsuranceCartDigitalProductViewModel(digitalProduct.digitalProductId,
-                            digitalProduct.cartItemId,
-                            digitalProduct.typeId,
-                            digitalProduct.pricePerProduct,
-                            digitalProduct.totalPrice,
-                            digitalProduct.optIn,
-                            digitalProduct.isProductLevel,
-                            digitalProduct.isPurchaseProtection,
-                            digitalProduct.isSellerMoney,
-                            digitalProduct.isApplicationNeeded,
-                            digitalProduct.isNew,
-                            insuranceCartProductInfoViewModel,
-                            applicationDetailList)
-
-                    list.add(insuranceCartDigitalProductViewModel)
                 }
                 insuranceCartShopItemsViewModel.digitalProductList = list
                 shopItemsList.add(insuranceCartShopItemsViewModel)

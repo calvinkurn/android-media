@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.domain.usecase
+package com.tokopedia.expresscheckout.domain.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
