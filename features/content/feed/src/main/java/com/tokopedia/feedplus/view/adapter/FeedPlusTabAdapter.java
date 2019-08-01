@@ -37,7 +37,7 @@ public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         FeedTabs.FeedData data = itemList.get(position);
         if (data.getType().equals(TYPE_FEEDS)){
-            return FeedPlusFragment.newInstance(bundle);
+            return FeedPlusFragment.Companion.newInstance(bundle);
         } else if (data.getType().equals(TYPE_EXPLORE)){
             return ContentExploreFragment.newInstance(bundle);
         } else {
