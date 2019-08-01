@@ -203,7 +203,7 @@ class OnboardingActivity : BaseActivity() {
     private fun addIndicator(size: Int) {
         indicator = findViewById(R.id.indicator_container)
 
-        for (count in 0..size) {
+        for (count in 0 until size) {
             val pointView = ImageView(this)
             pointView.setPadding(5, 0, 5, 0)
             if (count == 0) {
