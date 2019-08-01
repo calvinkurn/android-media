@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'applink'
-    groupId = 'com.tokopedia.applink'
-    versionName = "${tkpdApplinkVersion}"
-    artifactName ="applink-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -20,13 +13,11 @@ buildscript {
 }
 
 dependencies {
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
     implementation project(rootProject.ext.libraries.config)
-    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.abstraction)
+
+    implementation rootProject.ext.unifyDependencies.components
 
     implementation rootProject.ext.playServicesDependencies.core
 }
-
-apply from: '../../publish_local.gradle'

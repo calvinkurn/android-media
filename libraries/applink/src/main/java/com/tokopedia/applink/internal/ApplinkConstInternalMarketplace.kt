@@ -83,22 +83,28 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val GOLD_MERCHANT_MEMBERSHIP = "$INTERNAL_MARKETPLACE/gold-merchant-membership"
 
+    /**
+     * This will be pattern to shop settings module
+     * In the future, If there is a new shop settings deeplink, start with this base
+     */
+    @JvmField
+    val SHOP_SETTINGS_BASE = "$INTERNAL_MARKETPLACE/shop-settings"
 
     //ShopSettingsInfoActivity
     @JvmField
-    val SHOP_SETTINGS_INFO = "$INTERNAL_MARKETPLACE/shop-settings-info"
+    val SHOP_SETTINGS_INFO = "$SHOP_SETTINGS_BASE-info"
 
     //ShopSettingsNotesActivity
     @JvmField
-    val SHOP_SETTINGS_NOTES = "$INTERNAL_MARKETPLACE/shop-settings-notes"
+    val SHOP_SETTINGS_NOTES = "$SHOP_SETTINGS_BASE-notes"
 
     //ShopSettingsEtalaseActivity
     @JvmField
-    val SHOP_SETTINGS_ETALASE = "$INTERNAL_MARKETPLACE/shop-settings-etalase"
+    val SHOP_SETTINGS_ETALASE = "$SHOP_SETTINGS_BASE-etalase"
 
     //ShopSettingsAddressActivity
     @JvmField
-    val SHOP_SETTINGS_ADDRESS = "$INTERNAL_MARKETPLACE/shop-settings-address"
+    val SHOP_SETTINGS_ADDRESS = "$SHOP_SETTINGS_BASE-address"
 
     //DistrictRecommendationShopSettingsActivity
     @JvmField
