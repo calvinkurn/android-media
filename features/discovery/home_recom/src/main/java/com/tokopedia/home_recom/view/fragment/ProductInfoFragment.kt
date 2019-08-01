@@ -397,7 +397,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
             pageName = "",
             minOrder = productDataModel.productDetailData.minOrder,
             location = "",
-            isWishlist = false,
             badgesUrl = listOf(),
             type = ""
     )
