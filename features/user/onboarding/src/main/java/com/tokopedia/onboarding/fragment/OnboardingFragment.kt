@@ -132,10 +132,10 @@ class OnboardingFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
+        titleView?.text = MethodChecker.fromHtml(getTitleMsg())
+        descView?.text = MethodChecker.fromHtml(getDescMsg())
+
         videoView?.start()
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            videoView?.start()
-        }
     }
 
     override fun onPageUnSelected() {

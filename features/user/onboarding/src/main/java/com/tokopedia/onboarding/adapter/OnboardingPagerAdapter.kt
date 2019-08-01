@@ -19,6 +19,4 @@ class OnboardingPagerAdapter(fm: FragmentManager?, var fragmentList: ArrayList<F
         return fragmentList.size
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {}
-
 }
