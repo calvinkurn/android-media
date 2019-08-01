@@ -88,7 +88,7 @@ public class SearchActivity extends BaseActivity
 
         if(uri == null) return new Intent();
 
-        return RouteManager.getIntent(context, ApplinkConstInternalDiscovery.SEARCH_RESULT, uri.getLastPathSegment());
+        return RouteManager.getIntent(context, ApplinkConstInternalDiscovery.SEARCH_RESULT + uri.getEncodedQuery());
     }
 
     private ProductListFragment productListFragment;
