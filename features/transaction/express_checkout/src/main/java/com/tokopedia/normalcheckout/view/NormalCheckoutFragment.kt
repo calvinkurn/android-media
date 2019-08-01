@@ -52,7 +52,6 @@ import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
-import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.URL_APPLY_LEASING
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
