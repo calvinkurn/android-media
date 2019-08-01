@@ -23,7 +23,8 @@
             android:layout_height="wrap_content"
             android:lineSpacingExtra="3sp"
             android:text="@string/label_shipment_counter"
-            tools:ignore="RelativeOverlap" />
+            tools:ignore="RelativeOverlap"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -52,9 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_change_recipient_address"
-        style="@style/TextSmallMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
@@ -62,7 +62,9 @@
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_4"
         android:text="@string/label_change_address"
-        android:textColor="@color/tkpd_main_green" />
+        android:textColor="@color/tkpd_main_green"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -70,15 +72,16 @@
         android:focusable="false"
         android:focusableInTouchMode="true">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_label_note_for_seller"
-            style="@style/TextSmallMediumBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_note_for_seller"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_btn_show_notes_for_seller"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,12 +89,11 @@
             android:layout_marginStart="@dimen/dp_6"
             android:layout_toEndOf="@id/tv_label_note_for_seller"
             android:layout_toRightOf="@id/tv_label_note_for_seller"
-            android:fontFamily="sans-serif-medium"
             android:text="@string/label_button_add_note"
             android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/et_notes_for_seller"
@@ -122,52 +124,50 @@
             android:layout_marginTop="@dimen/dp_8"
             android:background="@color/grey_300" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_error_form_remark_validation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/v_notes_separator"
-            android:fontFamily="sans-serif"
             android:maxLines="1"
             android:paddingLeft="@dimen/dp_4"
             android:paddingStart="@dimen/dp_4"
             android:textColor="@color/text_cart_item_error_red"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
             android:visibility="gone"
             tools:ignore="RtlSymmetry,SmallSp"
             tools:text="Maksimal 2 broh"
-            tools:visibility="gone" />
+            tools:visibility="gone"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_error_note_validation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@id/v_notes_separator"
-            android:fontFamily="sans-serif"
             android:maxLines="2"
             android:textColor="@color/text_cart_item_error_red"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
             android:visibility="gone"
             tools:ignore="SmallSp"
             tools:text="Maksimal 2 broh"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_note_char_counter"
-            style="@style/TextSmallNormalBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/v_notes_separator"
-            android:fontFamily="sans-serif"
             android:lineSpacingExtra="0sp"
-            tools:text="60/140" />
+            tools:text="60/140"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
     </RelativeLayout>
 
@@ -179,11 +179,12 @@
         android:paddingBottom="@dimen/dp_8"
         android:paddingTop="@dimen/dp_8">
 
-        <TextView
-            style="@style/TextSmallMediumBlack54"
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_total" />
+            android:text="@string/label_total"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -199,9 +200,9 @@
 
                 <ImageView
                     android:id="@+id/btn_qty_min"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_32"
-                    app:srcCompat="@drawable/bg_button_counter_minus" />
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    app:srcCompat="@drawable/bg_button_counter_minus_checkout" />
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_qty"
@@ -218,26 +219,25 @@
 
                 <ImageView
                     android:id="@+id/btn_qty_plus"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_32"
-                    app:srcCompat="@drawable/bg_button_counter_plus"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    app:srcCompat="@drawable/bg_button_counter_plus_checkout"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_error_qty_validation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
                 android:maxLines="2"
                 android:textColor="@color/text_cart_item_error_red"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="normal"
                 android:visibility="gone"
                 tools:ignore="SmallSp"
                 tools:text="Maksimal 2 broh"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"/>
 
         </LinearLayout>
 

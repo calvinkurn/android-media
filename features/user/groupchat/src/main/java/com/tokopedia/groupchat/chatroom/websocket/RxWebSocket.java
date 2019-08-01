@@ -19,8 +19,4 @@ public final class RxWebSocket {
         RxWebSocketUtil.getInstance().send(url, msg);
     }
 
-    public static void asyncSend(String url, String msg, String groupChatToken) {
-        RxWebSocketUtil.getInstance().asyncSend(url, msg, groupChatToken);
-    }
-
 }

@@ -22,6 +22,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder
@@ -49,6 +50,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val pollOptionListener: PollAdapter.PollOptionListener,
                              private val gridItemListener: GridPostAdapter.GridItemListener,
                              private val videoViewListener: VideoViewHolder.VideoViewListener,
+                             private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                              private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
                              private val onOtherProfilePostItemClick: ((applink: String, authorId:String) -> Unit),
                              private val userSession : UserSessionInterface)
@@ -148,6 +150,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                         pollOptionListener,
                         gridItemListener,
                         videoViewListener,
+                        feedMultipleImageViewListener,
                         userSession) as AbstractViewHolder< Visitable<*>>
             FeedRecommendationViewHolder.LAYOUT ->
                 FeedRecommendationViewHolder(parent, recommendationCardListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>

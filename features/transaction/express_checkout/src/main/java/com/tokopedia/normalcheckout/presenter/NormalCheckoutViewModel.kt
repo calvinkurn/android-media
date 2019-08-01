@@ -3,6 +3,11 @@ package com.tokopedia.normalcheckout.presenter
 import android.arch.lifecycle.MutableLiveData
 import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -19,6 +24,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,12 +32,17 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
 class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                   private val userSessionInterface: UserSessionInterface,
                                                   private val rawQueries: Map<String, String>,
+                                                  private val addToCartUseCase: AddToCartUseCase,
+                                                  private val addToCartOcsUseCase: AddToCartOcsUseCase,
                                                   @Named("Main")
                                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -43,8 +54,8 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
 
         launchCatchError(block = {
             val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
-                PARAM_SHOP_DOMAIN to productParams.shopDomain,
-                PARAM_PRODUCT_KEY to productParams.productName)
+                    PARAM_SHOP_DOMAIN to productParams.shopDomain,
+                    PARAM_PRODUCT_KEY to productParams.productName)
             val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO], ProductInfo.Response::class.java, paramsInfo)
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
             val productInfoData = withContext(Dispatchers.IO) {
@@ -64,26 +75,27 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                         val nearestWarehouseParam = mapOf("productIds" to productIds)
                         val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
                                 MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
-                        val response = withContext(Dispatchers.IO){
+                        val response = withContext(Dispatchers.IO) {
                             graphqlRepository.getReseponse(listOf(nearestWarehouseRequest), cacheStrategy)
                         }
-                        if (response.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true){
+                        if (response.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true) {
                             warehouses = response.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
                                     .result.data.groupBy { warehouse -> warehouse.productId }
-                                    .filterValues { warehousesInfos -> warehousesInfos.isNotEmpty()  }
+                                    .filterValues { warehousesInfos -> warehousesInfos.isNotEmpty() }
                                     .mapValues { warehousesInfos -> warehousesInfos.value.first() }
                             selectedwarehouse = warehouses[productVariant.data.defaultChild.toString()]
                         }
                         productInfo.productVariant = productVariant.data
                     }
                 } else {
-                    val nearestWarehouseParam = mapOf("productIds" to listOf(productParams.productId ?: ""))
+                    val nearestWarehouseParam = mapOf("productIds" to listOf(productParams.productId
+                            ?: ""))
                     val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
                             MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
-                    val response = withContext(Dispatchers.IO){
+                    val response = withContext(Dispatchers.IO) {
                         graphqlRepository.getReseponse(listOf(nearestWarehouseRequest), cacheStrategy)
                     }
-                    if (response.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true){
+                    if (response.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true) {
                         selectedwarehouse = response.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
                                 .result.data.firstOrNull()
                     }
@@ -99,12 +111,63 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
 
     fun isUserSessionActive(): Boolean = userSessionInterface.userId.isNotEmpty()
 
+    fun addToCartProduct(atcParams: Any,
+                         onSuccessAtc: (addToCartResult: AddToCartDataModel?, onFinish: (message: String?, cartId: String?) -> Unit) -> Unit,
+                         onErrorAtc: (e: Throwable?, () -> Unit) -> Unit,
+                         onFinish: (message: String?, cartId: String?) -> Unit,
+                         onRetryWhenError: () -> Unit) {
+        if (atcParams is AddToCartRequestParams) {
+            val requestParams = RequestParams.create()
+            requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
+            addToCartUseCase.createObservable(requestParams)
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Subscriber<AddToCartDataModel>() {
+                        override fun onNext(addToCartResult: AddToCartDataModel?) {
+                            onSuccessAtc(addToCartResult, onFinish)
+                        }
 
+                        override fun onCompleted() {
+
+                        }
+
+                        override fun onError(e: Throwable?) {
+                            onErrorAtc(e, onRetryWhenError)
+                        }
+                    })
+        } else if (atcParams is AddToCartOcsRequestParams) {
+            val requestParams = RequestParams.create()
+            requestParams.putObject(AddToCartOcsUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
+            addToCartOcsUseCase.createObservable(requestParams)
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Subscriber<AddToCartDataModel>() {
+                        override fun onNext(addToCartResult: AddToCartDataModel?) {
+                            onSuccessAtc(addToCartResult, onFinish)
+                        }
+
+                        override fun onCompleted() {
+
+                        }
+
+                        override fun onError(e: Throwable?) {
+                            onErrorAtc(e, onRetryWhenError)
+                        }
+                    })
+        }
+    }
+
+    fun unsubscribe() {
+        addToCartUseCase.unsubscribe()
+        addToCartOcsUseCase.unsubscribe()
+    }
 }
 
 inline fun <reified T> GraphqlResponse.getSuccessData(): T {
     val error = getError(T::class.java)
-    if (error == null || error.isEmpty()){
+    if (error == null || error.isEmpty()) {
         return getData(T::class.java)
     } else {
         throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
