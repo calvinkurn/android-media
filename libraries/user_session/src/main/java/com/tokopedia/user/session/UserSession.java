@@ -370,6 +370,14 @@ public class UserSession implements UserSessionInterface {
     }
 
     @Override
+    public void setRefreshToken(String refreshToken) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(REFRESH_TOKEN, refreshToken);
+        editor.apply();
+    }
+
+    @Override
     public void setLoginSession(boolean isLogin, String userId, String fullName,
                                 String shopId, boolean isMsisdnVerified, String shopName,
                                 String email, boolean isGoldMerchant, String phoneNumber) {
