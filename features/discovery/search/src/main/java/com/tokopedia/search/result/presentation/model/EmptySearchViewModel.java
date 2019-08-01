@@ -12,7 +12,7 @@ public class EmptySearchViewModel implements Visitable<SearchSectionTypeFactory>
     private String title;
     private String content;
     private String buttonText;
-    private boolean topAdsAllowed = true;
+    private boolean bannerAdsAllowed = true;
 
     public int getImageRes() {
         return imageRes;
@@ -46,12 +46,12 @@ public class EmptySearchViewModel implements Visitable<SearchSectionTypeFactory>
         this.buttonText = buttonText;
     }
 
-    public boolean isTopAdsAllowed() {
-        return topAdsAllowed;
+    public boolean isBannerAdsAllowed() {
+        return bannerAdsAllowed;
     }
 
-    public void setTopAdsAllowed(boolean topAdsAllowed) {
-        this.topAdsAllowed = topAdsAllowed;
+    public void setBannerAdsAllowed(boolean bannerAdsAllowed) {
+        this.bannerAdsAllowed = bannerAdsAllowed;
     }
 
     @Override

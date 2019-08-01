@@ -113,6 +113,11 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     }
 
     private void loadBannerAds() {
+        if (!boundedEmptySearchModel.isBannerAdsAllowed()) {
+            loadProductAds();
+            return;
+        }
+
         Config bannerAdsConfig = new Config.Builder()
                 .setSessionId(emptyStateListener.getRegistrationId())
                 .setUserId(emptyStateListener.getUserId())
@@ -221,7 +226,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     }
 
     private void bindBannerAds() {
-        if (topAdsParams != null && boundedEmptySearchModel.isTopAdsAllowed()) {
+        if (topAdsParams != null) {
             loadBannerAds();
         }
     }
