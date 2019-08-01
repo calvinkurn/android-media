@@ -128,7 +128,7 @@
         android:layout_marginTop="@dimen/dp_12"
         android:lineSpacingExtra="@dimen/sp_5"
         android:text="@string/ticker_text"
-        android:textColor="#7031353b"
+        android:textColor="@color/n_700_44"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/insurance_appliation_details"
         app:typographyType="body_3" />
