@@ -547,6 +547,7 @@ public class SearchActivity extends BaseActivity
     public void initiateSearchHandleApplink(@NonNull String applink) {
         moveWithApplink(applink);
     }
+
     public void moveWithApplink(String applink) {
         startActivityWithApplink(applink);
         finish();
@@ -564,7 +565,6 @@ public class SearchActivity extends BaseActivity
 
     private void finishCurrentActivityIfRedirectedToSearch(String applink) {
         if(isApplinkToSearchActivity(applink)) {
-            setIntent(new Intent());
             finish();
         }
     }
