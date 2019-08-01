@@ -72,7 +72,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         private val LABEL_REGISTER = "Register"
         private val LABEL_PASSWORD = "Kata Sandi"
         val LABEL_EMAIL = "Email"
-        private val LABEL_PHONE_NUMBER = "Phone Number"
         val LABEL_GPLUS = "Google Plus"
         val LABEL_FACEBOOK = "Facebook"
         private val LABEL_SAVE_PASSWORD = "Save Password"
@@ -512,7 +511,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
     }
 
-    fun eventSuccessRegisterEmail(applicationContext: Context, userId: Int, name: String, email: String, phone: String) {
+    fun eventSuccessRegisterEmail(applicationContext: Context, userId: Int, name: String, email: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
@@ -521,17 +520,16 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
 
         TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), "Email")
-        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, phone)
-        sendBranchRegisterEvent(email, phone)
+        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, "")
+        sendBranchRegisterEvent(email)
 
     }
 
-    private fun sendBranchRegisterEvent(email: String, phone: String) {
+    private fun sendBranchRegisterEvent(email: String) {
         val userData = UserData()
         userData.email = email
-        userData.phoneNumber = phone
-        LinkerManager.getInstance().sendEvent(
-                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData))
+        userData.phoneNumber = ""
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData))
     }
 
     fun eventSuccessRegisterSosmed(methodName: String) {

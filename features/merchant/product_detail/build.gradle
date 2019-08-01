@@ -55,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.discoveryCommon)
+    implementation rootProject.ext.playServicesDependencies.tagManager
 
 
     implementation rootProject.ext.miscDependencies.dagger

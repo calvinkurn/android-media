@@ -1,4 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.explore">
-    <application></application>
+    <application>
+        <activity android:name=".view.activity.HashtagLandingPageActivity"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_content"
+                    android:pathPattern="@string/path_hashtag_page_landing"/>
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

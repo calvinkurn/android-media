@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.TaskStackBuilder
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.text.TextUtils
 import android.view.ViewGroup
@@ -21,7 +20,7 @@ import com.tokopedia.onboarding.adapter.OnboardingPagerAdapter
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.fragment.OnboardingFragment
-import com.tokopedia.onboarding.listener.CustomAnimationPageTransformer
+import com.tokopedia.onboarding.listener.OnboardingVideoListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -35,9 +34,9 @@ import javax.inject.Inject
 
 class OnboardingActivity : BaseActivity() {
 
-    lateinit var viewPager: ViewPager
-    lateinit var indicator: ViewGroup
-    private lateinit var pagerAdapter: OnboardingPagerAdapter
+    var viewPager: ViewPager? = null
+    var indicator: ViewGroup? = null
+    var pagerAdapter: OnboardingPagerAdapter? = null
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -54,16 +53,16 @@ class OnboardingActivity : BaseActivity() {
         fun onResponse(remoteConfig: RemoteConfig)
     }
 
-    val indicatorNormal: Int = R.drawable.indicator_onboarding_unfocused
-    val indicatorFocused: Int = R.drawable.indicator_onboarding_focused
+    private val indicatorNormal: Int = R.drawable.indicator_onboarding_unfocused
+    private val indicatorFocused: Int = R.drawable.indicator_onboarding_focused
 
     lateinit var loginButton: ButtonCompat
     lateinit var registerButton: ButtonCompat
     lateinit var skipButton: TextView
     var currentPosition = 0
 
-
-    protected var indicatorItems = java.util.ArrayList<ImageView>()
+    private var indicatorItems = java.util.ArrayList<ImageView>()
+    lateinit var fragmentList: ArrayList<Fragment>
 
     companion object {
         fun createIntent(context: Context) = Intent(context, OnboardingActivity::class.java)
@@ -103,34 +102,47 @@ class OnboardingActivity : BaseActivity() {
         registerButton = findViewById(R.id.btnRegister)
         skipButton = findViewById(R.id.skip)
 
-        val fragmentList = addFragments()
+        fragmentList = addFragments()
 
-        viewPager.setPageTransformer(false, CustomAnimationPageTransformer())
-        viewPager.offscreenPageLimit = 1
+        viewPager?.offscreenPageLimit = 2
         pagerAdapter = OnboardingPagerAdapter(supportFragmentManager, fragmentList)
-        viewPager.adapter = pagerAdapter
+        viewPager?.adapter = pagerAdapter
 
         addIndicator(fragmentList)
         setListener()
-
     }
 
+    private fun onFragmentSelected(position: Int) {
+        pagerAdapter?.let {
+            val fragment = it.fragmentList[position]
+            if (fragment is OnboardingVideoListener) {
+                fragment.onPageSelected(position)
+            }
+        }
+    }
+
+    private val pageChangeListener: ViewPager.OnPageChangeListener = (object: ViewPager.OnPageChangeListener {
+
+        var first: Boolean = true
+        override fun onPageScrollStateChanged(state: Int) {}
+
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            if (first && positionOffset == 0f && positionOffsetPixels == 0){
+                onPageSelected(0);
+                first = false
+            }
+        }
+
+        override fun onPageSelected(position: Int) {
+            onFragmentSelected(position)
+            setIndicator(position)
+            currentPosition = position
+            analytics.sendScreen(position)
+        }
+    })
+
     private fun setListener() {
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            }
-
-            override fun onPageSelected(position: Int) {
-                setIndicator(position)
-                currentPosition = position
-                analytics.sendScreen(position)
-
-            }
-        })
+        viewPager?.addOnPageChangeListener(pageChangeListener)
 
         loginButton.setOnClickListener {
             analytics.trackClickLogin(currentPosition)
@@ -143,7 +155,7 @@ class OnboardingActivity : BaseActivity() {
         }
 
         skipButton.setOnClickListener {
-            analytics.eventOnboardingSkip(applicationContext, viewPager.currentItem)
+            analytics.eventOnboardingSkip(applicationContext, currentPosition)
             finishOnboarding()
             RouteManager.route(this, ApplinkConst.HOME)
         }
@@ -191,7 +203,7 @@ class OnboardingActivity : BaseActivity() {
                 pointView.setImageResource(indicatorNormal)
             }
             indicatorItems.add(pointView)
-            indicator.addView(pointView)
+            indicator?.addView(pointView)
         }
     }
 
@@ -202,57 +214,56 @@ class OnboardingActivity : BaseActivity() {
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB1_TTL, R.string.nonb_1_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB1_DESC, R.string.nonb_1_desc),
-                R.raw.onboard1,
-                ContextCompat.getColor(applicationContext, R.color.green_nob),
                 0,
                 RemoteConfigKey.NONB1_TTL,
-                RemoteConfigKey.NONB1_DESC
+                RemoteConfigKey.NONB1_DESC,
+                getStringVideoPath(R.raw.onboard_1)
         ))
 
         //#2
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB2_TTL, R.string.nonb_2_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB2_DESC, R.string.nonb_2_desc),
-                R.raw.onboard2,
-                ContextCompat.getColor(applicationContext, R.color.blue_nob),
                 1,
                 RemoteConfigKey.NONB2_TTL,
-                RemoteConfigKey.NONB2_DESC
+                RemoteConfigKey.NONB2_DESC,
+                getStringVideoPath(R.raw.onboard_2)
         ))
 
         //#3
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB3_TTL, R.string.nonb_3_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB3_DESC, R.string.nonb_3_desc),
-                R.raw.onboard3,
-                ContextCompat.getColor(applicationContext, R.color.orange_nob),
                 2,
                 RemoteConfigKey.NONB3_TTL,
-                RemoteConfigKey.NONB3_DESC
+                RemoteConfigKey.NONB3_DESC,
+                getStringVideoPath(R.raw.onboard_3)
         ))
 
         //#4
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB4_TTL, R.string.nonb_4_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB4_DESC, R.string.nonb_4_desc),
-                R.raw.onboard4,
-                ContextCompat.getColor(applicationContext, R.color.green_nob),
                 3,
                 RemoteConfigKey.NONB4_TTL,
-                RemoteConfigKey.NONB4_DESC
+                RemoteConfigKey.NONB4_DESC,
+                getStringVideoPath(R.raw.onboard_4)
         ))
 
         //#5
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB5_TTL, R.string.nonb_5_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB5_DESC, R.string.nonb_5_desc),
-                R.raw.onboard5,
-                ContextCompat.getColor(applicationContext, R.color.blue_nob),
                 4,
                 RemoteConfigKey.NONB5_TTL,
-                RemoteConfigKey.NONB5_DESC
+                RemoteConfigKey.NONB5_DESC,
+                getStringVideoPath(R.raw.onboard_5)
         ))
         return fragmentList
+    }
+
+    private fun getStringVideoPath(rawResource: Int): String {
+        return "android.resource://$packageName/$rawResource"
     }
 
     private fun getMessageFromRemoteConfig(firebaseKey: String, defaultMessageResId: Int): String {
@@ -267,7 +278,7 @@ class OnboardingActivity : BaseActivity() {
         remoteConfig = FirebaseRemoteConfigImpl(this)
         remoteConfig.fetch(object : RemoteConfig.Listener {
             override fun onComplete(rc: RemoteConfig?) {
-                if (slideCallBackList != null && slideCallBackList.isNotEmpty()) {
+                if (slideCallBackList.isNotEmpty()) {
                     for (slideCallback in slideCallBackList) {
                         slideCallback.onResponse(remoteConfig)
                     }
@@ -281,14 +292,15 @@ class OnboardingActivity : BaseActivity() {
     }
 
     private fun createAndAddSlide(title: String, description: String,
-                                  assetName: Int, bgColor: Int,
                                   position: Int,
                                   ttlKey: String,
-                                  descKey: String):OnboardingFragment {
+                                  descKey: String,
+                                  videoPath: String):OnboardingFragment {
         val slide = OnboardingFragment.createInstance(title,
-                description, assetName,
-                bgColor,
-                position, ttlKey,
+                description,
+                videoPath,
+                position,
+                ttlKey,
                 descKey)
         slideCallBackList.add(slide)
         return slide

@@ -14,6 +14,7 @@ public class ShippingCourierConverter {
     public CourierItemData convertToCourierItemData(ShippingCourierViewModel shippingCourierViewModel) {
         CourierItemData courierItemData = new CourierItemData();
         courierItemData.setShipperId(shippingCourierViewModel.getProductData().getShipperId());
+        courierItemData.setServiceId(shippingCourierViewModel.getServiceData().getServiceId());
         courierItemData.setShipperProductId(shippingCourierViewModel.getProductData().getShipperProductId());
         courierItemData.setName(shippingCourierViewModel.getProductData().getShipperName());
         courierItemData.setEstimatedTimeDelivery(shippingCourierViewModel.getServiceData().getServiceName());

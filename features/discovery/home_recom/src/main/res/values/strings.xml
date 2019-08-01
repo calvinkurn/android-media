@@ -5,6 +5,7 @@
     <string name="recom_add_to_cart">Tambah ke Keranjang</string>
     <string name="recom_buy">Beli</string>
     <string name="recom_see_cart">Lihat Keranjang</string>
+    <string name="recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="recom_review_count">(%d)</string>
     <string name="recom_similar_product_title">Produk Serupa</string>
     <string name="recom_another_product_title">Produk Lain dari Toko Ini</string>

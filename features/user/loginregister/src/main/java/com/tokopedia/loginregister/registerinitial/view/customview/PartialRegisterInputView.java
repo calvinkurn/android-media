@@ -4,16 +4,20 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
+import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,12 +31,14 @@ public class PartialRegisterInputView extends BaseCustomView {
     EditText etInputEmailPhone;
     TextView tvMessage;
     TextView tvError;
-    TextView btnAction;
+    ButtonCompat btnAction;
 
     TextInputEditText etPassword;
     TkpdHintTextInputLayout wrapperPassword;
     TextView btnForgotPassword;
     TextView btnChange;
+
+    private static Boolean isButtonValidatorActived = false;
 
     private PartialRegisterInputViewListener listener;
 
@@ -118,12 +124,49 @@ public class PartialRegisterInputView extends BaseCustomView {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 setWrapperError(wrapper, null);
+                if(s != null && isButtonValidatorActived)
+                    validateValue(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
             }
         };
+    }
+
+    public void setButtonValidator(Boolean status){
+        isButtonValidatorActived = status;
+        if(status) onInvalidValue();
+        else onValidValue();
+    }
+
+    private void validateValue(String value){
+        switch (PartialRegisterInputUtils.getType(value)){
+            case PartialRegisterInputUtils.PHONE_TYPE: {
+                if(PartialRegisterInputUtils.isValidPhone(value))
+                    onValidValue();
+                else if(!value.isEmpty())
+                    onInvalidValue();
+                break;
+            }
+            case PartialRegisterInputUtils.EMAIL_TYPE: {
+                if(PartialRegisterInputUtils.isValidEmail(value))
+                    onValidValue();
+                else if(!value.isEmpty())
+                    onInvalidValue();
+                break;
+            }
+        }
+
+    }
+
+    private void onValidValue(){
+        hideError();
+        btnAction.setButtonCompatType(ButtonCompat.PRIMARY);
+    }
+
+    private void onInvalidValue(){
+        btnAction.setButtonCompatType(ButtonCompat.PRIMARY_DISABLED);
     }
 
     public String getTextValue() {

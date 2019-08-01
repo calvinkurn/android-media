@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter
  * @author by stevenfredian on 14/05/19.
  */
 class OnboardingPagerAdapter(fm: FragmentManager?,
-                             var fragmentList : ArrayList<Fragment> ) : FragmentPagerAdapter(fm) {
+                             var fragmentList : ArrayList<Fragment>) : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         return fragmentList[position]
