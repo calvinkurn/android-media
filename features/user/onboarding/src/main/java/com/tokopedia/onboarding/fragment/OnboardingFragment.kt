@@ -132,9 +132,6 @@ class OnboardingFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
-        titleView?.text = MethodChecker.fromHtml(getTitleMsg())
-        descView?.text = MethodChecker.fromHtml(getDescMsg())
-
         videoView?.start()
     }
 

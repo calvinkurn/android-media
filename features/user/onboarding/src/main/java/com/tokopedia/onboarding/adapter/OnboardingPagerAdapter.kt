@@ -3,7 +3,6 @@ package com.tokopedia.onboarding.adapter
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.view.ViewGroup
 
 /**
  * @author by stevenfredian on 14/05/19.
