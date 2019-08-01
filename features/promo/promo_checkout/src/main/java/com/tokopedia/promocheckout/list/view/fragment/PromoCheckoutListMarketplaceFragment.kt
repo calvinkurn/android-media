@@ -29,12 +29,12 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
         promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
         isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT) ?: false
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         promo = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
-        super.onCreate(savedInstanceState)
         promoCheckoutListMarketplacePresenter.attachView(this)
     }
 
@@ -48,7 +48,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         promoCheckoutListMarketplacePresenter.checkPromoStackingCode(promoCode, isOneClickShipment, promo)
     }
 
-    override fun onSuccessCheckPromoCode(data: DataUiModel) {
+    override fun onSuccessCheckPromo(data: DataUiModel) {
         trackSuccessCheckPromoCode(data)
         val intent = Intent()
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER

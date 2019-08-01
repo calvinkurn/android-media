@@ -781,20 +781,5 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
     }
 
-    private void setVoucherValue(AttributesVoucher voucherValue, int isCoupon, String couponTitle) {
-        FlightBookingVoucherViewModel voucherViewModel = getCurrentBookingReviewModel().getVoucherViewModel();
-
-        voucherViewModel.setCode(voucherValue.getVoucherCode());
-        voucherViewModel.setIsCoupon(isCoupon);
-        voucherViewModel.setDiscountAmount(voucherValue.getDiscountAmountPlain());
-        voucherViewModel.setDiscountPrice(voucherValue.getDiscountAmount());
-        voucherViewModel.setDiscountedAmount(voucherValue.getDiscountedPricePlain());
-        voucherViewModel.setDiscountedPrice(voucherValue.getDiscountedPrice());
-        voucherViewModel.setTitleDescription(couponTitle);
-        voucherViewModel.setMessageSuccess(voucherValue.getMessage());
-
-        getCurrentBookingReviewModel().setVoucherViewModel(voucherViewModel);
-    }
-
 
 }

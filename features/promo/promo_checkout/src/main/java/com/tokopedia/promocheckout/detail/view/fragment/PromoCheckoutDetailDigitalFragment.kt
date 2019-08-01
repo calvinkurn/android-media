@@ -56,7 +56,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         activity?.finish()
     }
 
-    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
+    override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
         val promoData = PromoData(PromoData.TYPE_COUPON, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())

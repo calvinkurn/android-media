@@ -12,7 +12,6 @@ import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCa
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
@@ -48,7 +47,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                     view.hideProgressLoading()
                     val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
                     if (responseData.successData.success) {
-                        view.onSuccessCancelPromoStacking()
+                        view.onSuccessCancelPromo()
                     } else {
                         view.onErrorCancelPromo(RuntimeException())
                     }
@@ -102,9 +101,9 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                                     if (it.equals(promoCode, true)) {
                                         if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
                                             view?.hideProgressLoading()
-                                            view.onErrorValidatePromoStacking(MessageErrorException(responseGetPromoStack.data.message.text))
+                                            view.onErrorCheckPromoStacking(MessageErrorException(responseGetPromoStack.data.message.text))
                                         } else {
-                                            view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                                            view.onSuccessCheckPromo(responseGetPromoStack.data)
                                         }
                                     }
                                 }
@@ -112,7 +111,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                         }
                     } else {
                         val message = responseGetPromoStack.data.message.text
-                        view.onErrorValidatePromoStacking(MessageErrorException(message))
+                        view.onErrorCheckPromoStacking(MessageErrorException(message))
                     }
                 }
             }
@@ -124,7 +123,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
                     view.hideProgressLoading()
-                    view.onErrorValidatePromo(e)
+                    view.onErrorCheckPromo(e)
                 }
             }
 

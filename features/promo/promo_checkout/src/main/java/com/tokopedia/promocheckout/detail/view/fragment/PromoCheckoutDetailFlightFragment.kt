@@ -49,17 +49,21 @@ class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
 
     override fun onClickCancel() {
         super.onClickCancel()
+        promoCheckoutDetailFlightPresenter.cancelPromo()
+    }
+
+    override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
-        val promoData = PromoData(PromoData.TYPE_COUPON, state = TickerCheckoutView.State.EMPTY)
+        val promoData = PromoData(PromoData.TYPE_COUPON, data.codes[0],
+                data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 
-    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
+    override fun onSuccessCancelPromo() {
         val intent = Intent()
-        val promoData = PromoData(PromoData.TYPE_COUPON, data.codes[0],
-                data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
+        val promoData = PromoData(PromoData.TYPE_COUPON, state = TickerCheckoutView.State.EMPTY)
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()

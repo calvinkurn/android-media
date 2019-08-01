@@ -7,6 +7,5 @@ interface PromoCheckoutListFlightContract {
 
     interface Presenter : CustomerPresenter<PromoCheckoutListContract.View>{
         fun checkPromoCode(cartID: String, promoCode: String)
-        fun cancelPromoCode()
     }
 }

@@ -6,7 +6,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel
 import javax.inject.Inject
 
-open class CheckVoucherDigitalMapper @Inject constructor() {
+open class DigitalCheckVoucherMapper @Inject constructor() {
 
     fun mapData(data: CheckVoucherDigitalData): DataUiModel {
         return DataUiModel(

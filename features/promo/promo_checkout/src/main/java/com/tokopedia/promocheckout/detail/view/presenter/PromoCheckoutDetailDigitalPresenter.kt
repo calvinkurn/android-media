@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
+import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
@@ -13,7 +13,7 @@ import rx.Subscriber
 
 class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                           private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
-                                          val checkVoucherDigitalMapper: CheckVoucherDigitalMapper,
+                                          val digitalCheckVoucherMapper: DigitalCheckVoucherMapper,
                                           private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailDigitalContract.Presenter {
 
@@ -25,9 +25,9 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
                 view.hideProgressLoading()
                 val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
                 if (checkVoucherData.voucherData.success) {
-                    view.onSuccessValidatePromoStacking(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))
+                    view.onSuccessCheckPromo(digitalCheckVoucherMapper.mapData(checkVoucherData.voucherData))
                 } else {
-                    view.onErrorValidatePromoStacking(com.tokopedia.network.exception.MessageErrorException(checkVoucherData.errors.getOrNull(0)?.status))
+                    view.onErrorCheckPromoStacking(com.tokopedia.network.exception.MessageErrorException(checkVoucherData.errors.getOrNull(0)?.status))
                 }
             }
 
@@ -38,7 +38,7 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
                     view.hideProgressLoading()
-                    view.onErrorValidatePromoStacking(e)
+                    view.onErrorCheckPromoStacking(e)
                 }
             }
 

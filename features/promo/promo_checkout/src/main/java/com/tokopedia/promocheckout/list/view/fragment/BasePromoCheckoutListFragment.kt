@@ -138,7 +138,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
 
-    override fun onErrorCheckPromoCode(e: Throwable) {
+    override fun onErrorCheckPromo(e: Throwable) {
         if (e is CheckPromoCodeException || e is MessageErrorException) {
             textInputLayoutCoupon.error = e.message
         } else {
@@ -151,7 +151,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
     }
 
-    override fun onErrorEmptyPromoCode() {
+    override fun onErrorEmptyPromo() {
         textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
     }
 

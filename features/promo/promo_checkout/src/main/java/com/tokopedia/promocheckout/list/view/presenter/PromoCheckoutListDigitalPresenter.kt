@@ -4,13 +4,13 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
+import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import rx.Subscriber
 
 class PromoCheckoutListDigitalPresenter(private val checkVoucherUseCase: DigitalCheckVoucherUseCase,
-                                        val checkVoucherDigitalMapper: CheckVoucherDigitalMapper) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListDigitalContract.Presenter {
+                                        val checkVoucherMapper: DigitalCheckVoucherMapper) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListDigitalContract.Presenter {
 
     override fun checkPromoCode(promoCode: String, promoDigitalModel: PromoDigitalModel) {
         view.showProgressLoading()
@@ -20,9 +20,9 @@ class PromoCheckoutListDigitalPresenter(private val checkVoucherUseCase: Digital
                 view.hideProgressLoading()
                 val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
                 if (checkVoucherData.voucherData.success) {
-                    view.onSuccessCheckPromoCode(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))
+                    view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData.voucherData))
                 } else {
-                    view.onErrorCheckPromoCode(MessageErrorException(checkVoucherData.voucherData.message.text))
+                    view.onErrorCheckPromo(MessageErrorException(checkVoucherData.voucherData.message.text))
                 }
             }
 
@@ -33,7 +33,7 @@ class PromoCheckoutListDigitalPresenter(private val checkVoucherUseCase: Digital
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
                     view.hideProgressLoading()
-                    view.onErrorCheckPromoCode(e)
+                    view.onErrorCheckPromo(e)
                 }
             }
 

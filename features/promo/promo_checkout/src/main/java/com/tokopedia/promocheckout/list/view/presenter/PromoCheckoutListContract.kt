@@ -14,9 +14,9 @@ interface PromoCheckoutListContract {
         fun hideProgressLoading()
         fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>)
         fun showGetListLastSeenError(e: Throwable)
-        fun onSuccessCheckPromoCode(data: DataUiModel)
-        fun onErrorCheckPromoCode(e: Throwable)
-        fun onErrorEmptyPromoCode()
+        fun onSuccessCheckPromo(data: DataUiModel)
+        fun onErrorCheckPromo(e: Throwable)
+        fun onErrorEmptyPromo()
     }
 
     interface Presenter : CustomerPresenter<View>{

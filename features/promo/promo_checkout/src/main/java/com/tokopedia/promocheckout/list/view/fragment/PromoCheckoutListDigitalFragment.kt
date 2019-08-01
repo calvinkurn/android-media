@@ -34,12 +34,12 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
         promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
         promoDigitalModel = arguments?.getParcelable(EXTRA_PROMO_DIGITAL_MODEL) ?: PromoDigitalModel()
         categoryId = promoDigitalModel.categoryId
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
-        super.onCreate(savedInstanceState)
         promoCheckoutListDigitalPresenter.attachView(this)
     }
 
@@ -53,7 +53,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
         if (promoCode.isNotEmpty()) promoCheckoutListDigitalPresenter.checkPromoCode(promoCode, promoDigitalModel)
     }
 
-    override fun onSuccessCheckPromoCode(data: DataUiModel) {
+    override fun onSuccessCheckPromo(data: DataUiModel) {
         trackSuccessCheckPromoCode(data)
         val intent = Intent()
         val promoData = PromoData(data.isCoupon, data.codes[0],

@@ -2,19 +2,18 @@ package com.tokopedia.promocheckout.detail.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
-import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
-import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
+import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
+import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
+import com.tokopedia.promocheckout.common.domain.model.FlightCheckVoucher
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import rx.Subscriber
 
 class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                          private val checkVoucherUseCase: FlightCheckVoucherUseCase,
+                                         val checkVoucherMapper: FlightCheckVoucherMapper,
                                          private val cancelVoucherUseCase: FlightCancelVoucherUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailFlightContract.Presenter {
 
@@ -23,12 +22,8 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, cartID), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
-//                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
-//                if (checkVoucherData.voucherData.success) {
-//                    view.onSuccessValidatePromoStacking(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))
-//                } else {
-//                    view.onErrorValidatePromoStacking(com.tokopedia.network.exception.MessageErrorException(checkVoucherData.errors.getOrNull(0)?.status))
-//                }
+                val checkVoucherData = objects.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
+                view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
             }
 
             override fun onCompleted() {
@@ -38,7 +33,7 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
                     view.hideProgressLoading()
-                    view.onErrorValidatePromoStacking(e)
+                    view.onErrorCheckPromoStacking(e)
                 }
             }
 
@@ -75,11 +70,14 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
         view.showLoading()
         cancelVoucherUseCase.execute(object : Subscriber<GraphqlResponse>() {
 
-            override fun onNext(response: GraphqlResponse?) {
+            override fun onNext(response: GraphqlResponse) {
                 view.hideLoading()
-//                val dataDetailCheckoutPromo = response?.getData<DataPromoCheckoutDetail>(DataPromoCheckoutDetail::class.java)
-//                view.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel
-//                        ?: throw RuntimeException())
+                val cancelPromoResponse = response.getData<FlightCancelVoucher.Response>(FlightCancelVoucher.Response::class.java).response
+                if (cancelPromoResponse.attributes.success) {
+                    view.onSuccessCancelPromo()
+                } else {
+                    view.onErrorCancelPromo(Throwable("Promo tidak berhasil dilepas"))
+                }
             }
 
             override fun onCompleted() {

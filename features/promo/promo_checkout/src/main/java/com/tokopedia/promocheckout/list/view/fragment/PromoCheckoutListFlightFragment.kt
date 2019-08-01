@@ -29,10 +29,10 @@ class PromoCheckoutListFlightFragment : BasePromoCheckoutListFragment(), PromoCh
     override var categoryId: Int = 27
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
         promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
-        super.onCreate(savedInstanceState)
         promoCheckoutListFlightPresenter.attachView(this)
     }
 
@@ -46,7 +46,7 @@ class PromoCheckoutListFlightFragment : BasePromoCheckoutListFragment(), PromoCh
         if (promoCode.isNotEmpty()) promoCheckoutListFlightPresenter.checkPromoCode(cartID, promoCode)
     }
 
-    override fun onSuccessCheckPromoCode(data: DataUiModel) {
+    override fun onSuccessCheckPromo(data: DataUiModel) {
         trackSuccessCheckPromoCode(data)
         val intent = Intent()
         val promoData = PromoData(data.isCoupon, data.codes[0],

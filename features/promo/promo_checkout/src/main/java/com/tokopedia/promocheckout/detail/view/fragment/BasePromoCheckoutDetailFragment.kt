@@ -212,7 +212,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         view?.timerUsage?.start()
     }
 
-    override fun onErrorValidatePromo(e: Throwable) {
+    override fun onErrorCheckPromo(e: Throwable) {
         if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
         } else {
@@ -226,7 +226,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         NetworkErrorHelper.createSnackbarRedWithAction(activity, message, { onClickUse() }).showRetrySnackbar()
     }
 
-    override fun onErrorValidatePromoStacking(e: Throwable) {
+    override fun onErrorCheckPromoStacking(e: Throwable) {
         if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
         } else {
@@ -245,7 +245,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     }
 
-    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
+    override fun onSuccessCheckPromo(data: DataUiModel) {
         if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(data.codes[0])
         } else {
@@ -275,7 +275,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
 
-    override fun onSuccessCancelPromoStacking() {
+    override fun onSuccessCancelPromo() {
         isUse = false
         validateButton()
         val intent = Intent()
