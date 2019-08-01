@@ -130,11 +130,11 @@ class OnboardingFragment : BaseDaggerFragment(),
         return defaultView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        view.tag = this
-        super.onViewCreated(view, savedInstanceState)
-    }
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        view.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+//        view.tag = this
+//        super.onViewCreated(view, savedInstanceState)
+//    }
 
     override fun onPageSelected(position: Int) {
         videoView?.start()
