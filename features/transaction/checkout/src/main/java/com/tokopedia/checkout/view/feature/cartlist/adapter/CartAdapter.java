@@ -557,7 +557,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         notifyDataSetChanged();
-        // TODO: 19/6/19 check if need to call checkForShipmentForm()
     }
 
     public List<InsuranceCartShops> getSelectedRecommendedInsuranceList() {
@@ -566,7 +565,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (InsuranceCartShops insuranceCartShops : insuranceRecommendationList) {
 
             if (insuranceCartShops != null &&
+                    insuranceCartShops.getShopItemsList().size() > 0 &&
                     insuranceCartShops.getShopItemsList().get(0) != null &&
+                    insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().size() > 0 &&
                     insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0) != null &&
                     insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).getOptIn()) {
 
