@@ -193,7 +193,7 @@
     </FrameLayout>
 
     <com.tokopedia.design.component.ButtonCompat
-        android:id="@+id/btn_apply_credit"
+        android:id="@+id/btn_apply_leasing"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_40"
         android:layout_margin="@dimen/dp_8"

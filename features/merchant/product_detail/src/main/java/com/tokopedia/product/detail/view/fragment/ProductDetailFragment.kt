@@ -70,7 +70,7 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant.URL_APPLY_CREDIT
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.URL_APPLY_LEASING
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -778,27 +778,27 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             R.id.container_ready -> onValuePropositionClick(R.id.container_ready)
             R.id.container_ori -> onValuePropositionClick(R.id.container_ori)
             R.id.container_guarantee_7_days -> onValuePropositionClick(R.id.container_guarantee_7_days)
-            R.id.btn_apply_credit -> onApplyCreditClicked()
+            R.id.btn_apply_leasing -> onApplyLeasingClicked()
             else -> {
             }
         }
     }
 
-    private fun onApplyCreditClicked() {
+    private fun onApplyLeasingClicked() {
         productId?.let { productId ->
-            goToApplyCredit(productId)
+            goToApplyLeasing(productId)
         }
     }
 
-    private fun goToApplyCredit(productId: String) {
-        val urlApplyCreditWithProductId = String.format(
-                URL_APPLY_CREDIT,
+    private fun goToApplyLeasing(productId: String) {
+        val urlApplyLeasingWithProductId = String.format(
+                URL_APPLY_LEASING,
                 productId
         )
         val webViewUrl = String.format(
                 "%s?url=%s",
                 ApplinkConst.WEBVIEW,
-                urlApplyCreditWithProductId
+                urlApplyLeasingWithProductId
         )
         RouteManager.route(context, webViewUrl)
     }

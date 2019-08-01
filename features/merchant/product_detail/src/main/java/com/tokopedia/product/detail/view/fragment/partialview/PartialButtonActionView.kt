@@ -6,7 +6,6 @@ import android.support.constraint.ConstraintLayout.LayoutParams.PARENT_ID
 import android.support.constraint.ConstraintLayout.LayoutParams.UNSET
 import android.support.v4.content.ContextCompat
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.kotlin.extensions.view.gone
@@ -93,12 +92,12 @@ class PartialButtonActionView private constructor(private val view: View,
             if (isSpecialPrize) btn_add_to_cart.gone()
             else btn_add_to_cart.visible()
             if(isLeasing){
-                btn_apply_credit.visibility  = View.VISIBLE
+                btn_apply_leasing.visibility  = View.VISIBLE
                 btn_add_to_cart.visibility = View.GONE
                 btn_buy_now.visibility = View.GONE
-                changeButtonTopChatLayoutParamsForApplyCredit()
+                changeTopChatLayoutParamsToHandleLeasingLayout()
             }else{
-                btn_apply_credit.visibility  = View.GONE
+                btn_apply_leasing.visibility  = View.GONE
                 resetTopChatLayoutParams()
             }
 
@@ -111,7 +110,7 @@ class PartialButtonActionView private constructor(private val view: View,
                 addToCartClick?.invoke()
             }
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
-            btn_apply_credit.setOnClickListener(this@PartialButtonActionView)
+            btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
         }
     }
 
@@ -126,13 +125,13 @@ class PartialButtonActionView private constructor(private val view: View,
         }
     }
 
-    private fun changeButtonTopChatLayoutParamsForApplyCredit() {
+    private fun changeTopChatLayoutParamsToHandleLeasingLayout() {
         with(view){
             val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
             topChatParams.startToEnd = UNSET
             topChatParams.startToStart = PARENT_ID
-            topChatParams.rightToLeft = btn_apply_credit.id
-            topChatParams.endToStart = btn_apply_credit.id
+            topChatParams.rightToLeft = btn_apply_leasing.id
+            topChatParams.endToStart = btn_apply_leasing.id
             btn_topchat.layoutParams = topChatParams
         }
 

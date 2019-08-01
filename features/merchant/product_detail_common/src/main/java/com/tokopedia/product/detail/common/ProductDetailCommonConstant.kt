@@ -9,6 +9,6 @@ object ProductDetailCommonConstant{
     const val PARAM_PRODUCT_KEY = "productKey"
     const val PARAM_INPUT = "input"
 
-    val URL_APPLY_CREDIT =   "${TokopediaUrl.getInstance().WEB}kredit-motor/kalkulator?productID=%s"
+    val URL_APPLY_LEASING =   "${TokopediaUrl.getInstance().WEB}kredit-motor/kalkulator?productID=%s"
 
 }
