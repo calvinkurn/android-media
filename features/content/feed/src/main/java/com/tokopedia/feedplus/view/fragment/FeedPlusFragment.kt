@@ -130,12 +130,6 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
     private lateinit var newFeed: View
     private lateinit var feedModuleRouter: FeedModuleRouter
     private lateinit var newFeedReceiver: BroadcastReceiver
-    private lateinit var fabFeed: FloatingActionButton
-    private lateinit var fabByme: FloatingActionButton
-    private lateinit var fabShop: FloatingActionButton
-    private lateinit var fabTextByme: TextView
-    private lateinit var fabTextShop: TextView
-    private lateinit var greyBackground: FrameLayout
 
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter: FeedPlusAdapter
@@ -145,7 +139,6 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
     private var loginIdInt: Int = 0
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
-    var isFabExpanded = false
 
     @Inject
     @get:RestrictTo(RestrictTo.Scope.TESTS)
@@ -160,9 +153,6 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
 
     @Inject
     internal lateinit var userSession: UserSessionInterface
-
-    @Inject
-    internal lateinit var affiliatePreference: AffiliatePreference
 
     val isMainViewVisible: Boolean
         get() = userVisibleHint
@@ -205,7 +195,6 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
     }
 
     private fun initVar() {
-
         val typeFactory = FeedPlusTypeFactoryImpl(this, analytics, userSession)
         adapter = FeedPlusAdapter(typeFactory)
         adapter.setOnLoadListener { totalCount ->
@@ -230,7 +219,6 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
         newFeedReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
                 if (intent != null && intent.action != null && intent.action == BROADCAST_FEED) {
-                    hideAllFab(false)
                     val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
                     if (isHaveNewFeed) {
                         onShowNewFeed("")
@@ -265,12 +253,6 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout)
         mainContent = parentView.findViewById(R.id.main)
         newFeed = parentView.findViewById(R.id.layout_new_feed)
-        fabFeed = parentView.findViewById(R.id.fab_feed)
-        fabShop = parentView.findViewById(R.id.fab_feed_2)
-        fabByme = parentView.findViewById(R.id.fab_feed_1)
-        fabTextByme = parentView.findViewById(R.id.text_fab_1)
-        fabTextShop = parentView.findViewById(R.id.text_fab_2)
-        greyBackground = parentView.findViewById(R.id.layout_grey_popup)
 
         prepareView()
         presenter.attachView(this)
@@ -278,28 +260,8 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
 
     }
 
-    private fun hideAllFab(isInitial: Boolean) {
-        if (::fabFeed.isInitialized) {
-            if (isInitial) {
-                fabFeed.hide()
-            } else {
-                fabFeed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_backward)
-            }
-            fabShop.hide()
-            fabByme.hide()
-            fabTextByme.visibility = View.GONE
-            fabTextShop.visibility = View.GONE
-            greyBackground.visibility = View.GONE
-            isFabExpanded = false
-        }
-    }
 
     private fun prepareView() {
-        hideAllFab(true)
-        if (!userSession.isLoggedIn) {
-            fabFeed.show()
-            fabFeed.setOnClickListener { v -> onGoToLogin() }
-        }
         adapter.itemTreshold = 2
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
@@ -406,9 +368,6 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
         adapter.setList(listFeed)
         adapter.notifyDataSetChanged()
         triggerClearNewFeedNotification()
-        if (getUserSession().isLoggedIn && whitelistViewModel != null && !whitelistViewModel.whitelist.authors.isEmpty()) {
-            showFeedFab(whitelistViewModel)
-        }
     }
 
     override fun onShowEmpty() {
@@ -641,7 +600,6 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
     override fun onPause() {
         super.onPause()
         unRegisterNewFeedReceiver()
-        hideAllFab(false)
     }
 
     private fun registerNewFeedReceiver() {
@@ -660,59 +618,6 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
             LocalBroadcastManager
                     .getInstance(activity!!.applicationContext)
                     .unregisterReceiver(newFeedReceiver)
-        }
-    }
-
-    private fun showFeedFab(whitelistViewModel: WhitelistViewModel) {
-        fabFeed.show()
-        isFabExpanded = false
-        if (!whitelistViewModel.whitelist.authors.isEmpty() && whitelistViewModel.whitelist.authors.size != 1) {
-            fabFeed.setOnClickListener(fabClickListener(whitelistViewModel))
-        } else {
-            val author = whitelistViewModel.whitelist.authors[0]
-            fabFeed.setOnClickListener { v -> onGoToLink(author.link) }
-        }
-    }
-
-    private fun fabClickListener(whitelistViewModel: WhitelistViewModel): View.OnClickListener {
-        return View.OnClickListener {
-            if (isFabExpanded) {
-                hideAllFab(false)
-            } else {
-                fabFeed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
-                greyBackground.visibility = View.VISIBLE
-                for (author in whitelistViewModel.whitelist.authors) {
-                    if (author.title.equals(Author.KEY_POST_TOKO, ignoreCase = true)) {
-                        fabShop.show()
-                        fabTextShop.visibility = View.VISIBLE
-                        fabShop.setOnClickListener { v1 -> onGoToLink(author.link) }
-                    } else {
-                        fabByme.show()
-                        fabTextByme.visibility = View.VISIBLE
-                        fabByme.setOnClickListener { v12 -> goToCreateAffiliate(author.link) }
-                    }
-                }
-                greyBackground.setOnClickListener { v3 -> hideAllFab(false) }
-                isFabExpanded = true
-            }
-        }
-    }
-
-    private fun goToCreateAffiliate(link: String) {
-        if (context != null) {
-            if (affiliatePreference.isFirstTimeEducation(userSession.userId)) {
-
-                val intent = RouteManager.getIntent(
-                        context,
-                        ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
-                )
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                startActivity(intent)
-                affiliatePreference.setFirstTimeEducation(getUserSession().userId)
-
-            } else {
-                RouteManager.route(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
-            }
         }
     }
 
@@ -739,10 +644,6 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         loadData(isVisibleToUser)
-        if (!isVisibleToUser) {
-            hideAllFab(false)
-        }
-
     }
 
     override fun hasFeed(): Boolean {
@@ -862,7 +763,7 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
 
     override fun onGoToLink(link: String) {
         if (!TextUtils.isEmpty(link)) {
-            feedModuleRouter.openRedirectUrl(activity, link)
+            RouteManager.route(activity, link)
         }
     }
 
