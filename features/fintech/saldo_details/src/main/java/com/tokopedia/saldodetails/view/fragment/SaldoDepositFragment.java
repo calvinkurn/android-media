@@ -706,11 +706,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
                     showMerchantCreditLineWidget(response);
                     break;
 
-                case MCL_STATUS_BLOCK2:
-                    showMerchantCreditLineWidget(response);
-                    break;
-
                 case MCL_STATUS_BLOCK3:
+                    showTicker();
                     hideMerchantCreditLineFragment();
                     break;
 
