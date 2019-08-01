@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.domain.insurance.usecase
+package com.tokopedia.checkout.domain.usecase
 
 import android.content.Context
 import android.os.Build

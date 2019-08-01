@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -7,11 +8,11 @@
     android:paddingTop="@dimen/dp_20"
     android:paddingBottom="@dimen/dp_20">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ubah Data Asuransi"
-        android:textStyle="bold" />
+        android:text="@string/text_ubah_data_asuransi"
+        app:typographyType="heading_5" />
 
     <LinearLayout
         android:id="@+id/ll_application_details"
@@ -26,9 +27,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/bg_round_corner_solid_green"
-        android:text="Simpan Data"
+        android:text="@string/text_btn_validate"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="12sp" />
+        android:textSize="@dimen/sp_12" />
 
 </LinearLayout>

@@ -321,5 +321,14 @@
     <string name="label_toko">Toko: </string>
 
     <string name="insurance_cart_label">Produk Asuransi</string>
+    <string name="ticker_text">Polis akan dikirim ke email / no. ponsel / TopChat setelah pembayaran berhasil</string>
+    <string name="text_details_change">Ubah</string>
+    <string name="text_ubah_data_asuransi">Ubah Data Asuransi</string>
+    <string name="text_btn_validate">Simpan Data</string>
+    <string name="text_heading_produk_asuransi">Hapus Produk Asuransi</string>
+    <string name="text_desc_asuransi">Kamu akan menghapus asuransi demam berdarah. Apa kamu yakin?</string>
+    <string name="text_button_positive">Ya, Hapus Produk</string>
+    <string name="text_button_negative">Kembali</string>
+    <string name="checkout_insurance_default_title">Produk Asuransi</string>
 
 </resources>

@@ -78,9 +78,7 @@ import javax.inject.Inject
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
         NormalCheckoutContract.View, CheckoutVariantActionListener {
 
-    //    private var isErrorInInsurance: Int = 0
     private var isInsuranceSelected: Boolean = false
-    private var insuranceRecommendationViewModel = InsuranceRecommendationViewModel()
 
     private var selectedInsuranceProduct = InsuranceRecommendationViewModel()
 
@@ -805,19 +803,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun addToCart() {
 
-//        addinsurance product to cart as well
-
         if (isInsuranceSelected &&
                 !selectedInsuranceProduct.cartShopsList.isNullOrEmpty() &&
                 !selectedInsuranceProduct.cartShopsList[0].shopItemsList.isNullOrEmpty()) {
 
             if (isErrorInInsurance()) {
-                Toast.makeText(context, "Please Enter Correct Application Details for insurance", Toast.LENGTH_SHORT).show()
                 return
-
             }
         }
-
 
         addToInsuranceCart(onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart(message)
@@ -834,23 +827,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             addToCart()
         })
 
-        /*tempQuantity = quantity
-        isTradeIn = 0
-
-        addToCart(false, onFinish = { message: String?, cartId: String? ->
-            onFinishAddToCart(message)
-            selectedProductInfo?.run {
-                normalCheckoutTracking.eventClickAddToCartInVariant(
-                    originalProduct,
-                    selectedVariantId ?: "",
-                    this, quantity,
-                    shopId, shopType, shopName, cartId,
-                    trackerAttribution, trackerListName,
-                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment?: false)
-            }
-        }, onRetryWhenError = {
-            addToCart()
-        })*/
     }
 
     private fun isErrorInInsurance(): Boolean {
@@ -1249,11 +1225,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         outState.putString(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
         outState.putInt(EXTRA_QUANTITY, quantity)
         outState.putString(EXTRA_NOTES, notes)
-    }
-
-    override fun setErrorInInsuranceSelection(value: Boolean) {
-//        if (value) isErrorInInsurance++ else isErrorInInsurance--
-
     }
 
     override fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean) {

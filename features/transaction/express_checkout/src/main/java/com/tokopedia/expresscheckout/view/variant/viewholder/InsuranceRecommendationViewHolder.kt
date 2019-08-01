@@ -127,7 +127,6 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                             } else {
                                 itemView.tv_info_text.visibility = View.GONE
                             }
-                            listener.setErrorInInsuranceSelection(!errorMessage.isBlank())
                             updateEditTextBackground(textView, errorMessageView.currentTextColor, !errorMessage.isBlank())
                         }
                     })
@@ -168,7 +167,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                                 } else {
                                     itemView.tv_info_text.visibility = View.GONE
                                 }
-                                listener.setErrorInInsuranceSelection(!errorMessage.isBlank())
+
                                 updateEditTextBackground(subTitleTextView, errorMessageView.currentTextColor, !errorMessage.isBlank())
                             }
 
@@ -220,7 +219,6 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                         applicationDetailsView.visibility = View.GONE
                         itemView.tv_info_text.visibility = View.GONE
                     }
-                    listener.setErrorInInsuranceSelection(!errorMessage.isBlank())
                     listener.onInsuranceSelectedStateChanged(originalData, isChecked)
                 }
 

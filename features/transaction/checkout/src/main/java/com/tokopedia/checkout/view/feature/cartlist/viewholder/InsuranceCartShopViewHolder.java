@@ -94,237 +94,243 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
     public void bindData(InsuranceCartShops insuranceCartShops, int position, String pageType) {
 
         this.insuranceCartShops = insuranceCartShops;
-        InsuranceCartDigitalProduct insuranceCartDigitalProduct = insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0);
 
-        datePicker = new SaldoDatePickerUtil((Activity) ivInsuranceIcon.getContext());
+        if (!insuranceCartShops.getShopItemsList().isEmpty() &&
+                !insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().isEmpty()) {
 
-        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getSectionTitle())) {
-            tvProductTitle.setText(insuranceCartDigitalProduct.getProductInfo().getSectionTitle());
-        } else {
-            tvProductTitle.setText("Produk Asuransi");
-        }
+            InsuranceCartDigitalProduct insuranceCartDigitalProduct = insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0);
 
-        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getTitle())) {
-            tvInsuranceTitle.setText(insuranceCartDigitalProduct.getProductInfo().getTitle());
-        } else {
-            tvInsuranceTitle.setText("Produk Asuransi");
-        }
+            datePicker = new SaldoDatePickerUtil((Activity) ivInsuranceIcon.getContext());
 
-        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getSubTitle())) {
-            tvInsuranceSubtitle.setText(insuranceCartDigitalProduct.getProductInfo().getSubTitle());
-            tvInsuranceSubtitle.setVisibility(View.VISIBLE);
-        } else {
-            tvInsuranceSubtitle.setVisibility(View.GONE);
-        }
-
-        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getTickerText())) {
-            tvInsuranceTickerText.setText(insuranceCartDigitalProduct.getProductInfo().getTickerText());
-            tvInsuranceTickerText.setVisibility(View.VISIBLE);
-        } else {
-            tvInsuranceTickerText.setVisibility(View.GONE);
-        }
-
-        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getIconUrl())) {
-            ImageHandler.loadImage(ivInsuranceIcon.getContext(), ivInsuranceIcon, insuranceCartDigitalProduct.getProductInfo().getIconUrl(), R.drawable.ic_modal_toko);
-        }
-
-        if (TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getLinkName())) {
-            tvInsuranceInfo.setVisibility(View.GONE);
-        } else {
-            tvInsuranceInfo.setVisibility(View.VISIBLE);
-            tvInsuranceInfo.setText(insuranceCartDigitalProduct.getProductInfo().getLinkName());
-            tvInsuranceInfo.setOnClickListener(v -> {
-
-                openBottomSheetWebView(tvInsuranceInfo.getContext(),
-                        insuranceCartDigitalProduct.getProductInfo().getAppLinkUrl(),
-                        insuranceCartDigitalProduct.getProductInfo().getDetailInfoTitle());
-            });
-        }
-
-        if (!insuranceCartDigitalProduct.getApplicationDetails().isEmpty()) {
-
-            StringBuilder applicationDetails = new StringBuilder();
-            for (int i = 0; i < insuranceCartDigitalProduct.getApplicationDetails().size(); i++) {
-                if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getApplicationDetails().get(i).getValue())) {
-                    applicationDetails.append(insuranceCartDigitalProduct.getApplicationDetails().get(i).getValue());
-                }
-
-                if (i < insuranceCartDigitalProduct.getApplicationDetails().size() - 1) {
-                    applicationDetails.append(" | ");
-                }
+            if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getSectionTitle())) {
+                tvProductTitle.setText(insuranceCartDigitalProduct.getProductInfo().getSectionTitle());
+            } else {
+                tvProductTitle.setText(itemView.getContext().getResources().getString(R.string.checkout_insurance_default_title));
             }
 
-            if (!TextUtils.isEmpty(applicationDetails)) {
-                tvInsuranceApplicationDetails.setText(applicationDetails);
-                tvInsuranceApplicationDetails.setVisibility(View.VISIBLE);
-                tvChangeInsuranceApplicationDetails.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getTitle())) {
+                tvInsuranceTitle.setText(insuranceCartDigitalProduct.getProductInfo().getTitle());
+            } else {
+                tvProductTitle.setText(itemView.getContext().getResources().getString(R.string.checkout_insurance_default_title));
+            }
 
-                tvChangeInsuranceApplicationDetails.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getSubTitle())) {
+                tvInsuranceSubtitle.setText(insuranceCartDigitalProduct.getProductInfo().getSubTitle());
+                tvInsuranceSubtitle.setVisibility(View.VISIBLE);
+            } else {
+                tvInsuranceSubtitle.setVisibility(View.GONE);
+            }
 
-                        closeableBottomSheetDialog =
-                                CloseableBottomSheetDialog.createInstanceRounded(tvChangeInsuranceApplicationDetails.getContext());
-                        View rootView = LayoutInflater.from(tvChangeInsuranceApplicationDetails.getContext()).inflate(R.layout.layout_insurance_bottom_sheet, null, false);
+            if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getTickerText())) {
+                tvInsuranceTickerText.setText(insuranceCartDigitalProduct.getProductInfo().getTickerText());
+                tvInsuranceTickerText.setVisibility(View.VISIBLE);
+            } else {
+                tvInsuranceTickerText.setVisibility(View.GONE);
+            }
 
-                        LinearLayout applicationDetailsView = rootView.findViewById(R.id.ll_application_details);
-                        btnValidate = rootView.findViewById(R.id.btn_validate);
+            if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getIconUrl())) {
+                ImageHandler.loadImage(ivInsuranceIcon.getContext(), ivInsuranceIcon, insuranceCartDigitalProduct.getProductInfo().getIconUrl(), R.drawable.ic_modal_toko);
+            }
 
-                        typeValues.clear();
-                        for (InsuranceProductApplicationDetails insuranceProductApplicationDetails :
-                                insuranceCartDigitalProduct.getApplicationDetails()) {
+            if (TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getLinkName())) {
+                tvInsuranceInfo.setVisibility(View.GONE);
+            } else {
+                tvInsuranceInfo.setVisibility(View.VISIBLE);
+                tvInsuranceInfo.setText(insuranceCartDigitalProduct.getProductInfo().getLinkName());
+                tvInsuranceInfo.setOnClickListener(v -> {
 
-                            if (insuranceProductApplicationDetails.getType().equalsIgnoreCase("text") ||
-                                    insuranceProductApplicationDetails.getType().equalsIgnoreCase("number")) {
-
-                                View view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.getContext()).inflate(R.layout.application_detail_text, null, false);
-
-                                TextView subtitle = view.findViewById(R.id.sub_title);
-                                TextView errorMessageView = view.findViewById(R.id.error_message);
-
-                                ((TextView) view.findViewById(R.id.tv_title)).setText(insuranceProductApplicationDetails.getLabel());
-                                subtitle.setText(insuranceProductApplicationDetails.getValue());
-
-                                subtitle.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                                    }
-
-                                    @Override
-                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                        if (validateView(subtitle, insuranceProductApplicationDetails)) {
-                                            errorMessageView.setVisibility(View.GONE);
-                                        } else {
-                                            errorMessageView.setVisibility(View.VISIBLE);
-                                            errorMessageView.setText(errorMessage);
-                                        }
-                                        updateEditTextBackground(subtitle, errorMessageView.getCurrentTextColor(), !TextUtils.isEmpty(errorMessage));
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable s) {
-
-                                    }
-                                });
-
-                                applicationDetailsView.addView(view);
-                                addToValuesList(view, insuranceProductApplicationDetails);
-
-                            } else if (insuranceProductApplicationDetails.getType().equalsIgnoreCase("date")) {
-
-                                View view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.getContext()).inflate(R.layout.application_detail_date, null, false);
-
-                                ((TextView) view.findViewById(R.id.title)).setText(insuranceProductApplicationDetails.getLabel());
-                                TextView subTitleTextView = view.findViewById(R.id.sub_title);
-                                TextView errorMessageView = view.findViewById(R.id.error_message);
-
-                                String dateText = insuranceProductApplicationDetails.getValue();
-                                subTitleTextView.setText(getDateStringInUIFormat(dateText));
-                                subTitleTextView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        onDateViewClicked(subTitleTextView);
-                                    }
-                                });
-
-                                subTitleTextView.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                                    }
-
-                                    @Override
-                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                                        if (validateView(subTitleTextView, insuranceProductApplicationDetails)) {
-                                            errorMessageView.setVisibility(View.GONE);
-                                            insuranceProductApplicationDetails.setValue(getDateInServerFormat(s.toString()));
-                                            insuranceProductApplicationDetails.setError(false);
-                                        } else {
-                                            errorMessageView.setVisibility(View.VISIBLE);
-                                            errorMessageView.setText(errorMessage);
-                                            insuranceProductApplicationDetails.setError(true);
-                                        }
-                                        updateEditTextBackground(subTitleTextView, errorMessageView.getCurrentTextColor(), !TextUtils.isEmpty(errorMessage));
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable s) {
-
-                                    }
-                                });
-
-                                applicationDetailsView.addView(view);
-                                addToValuesList(view, insuranceProductApplicationDetails);
-
-                            } else if (insuranceProductApplicationDetails.getType().equalsIgnoreCase("dropdown")) {
-
-                                View view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.getContext()).inflate(R.layout.application_detail_date, null, false);
-
-                                ((TextView) view.findViewById(R.id.title)).setText(insuranceProductApplicationDetails.getLabel());
-                                TextView subTitleTextView = view.findViewById(R.id.sub_title);
-                                if (!TextUtils.isEmpty(insuranceProductApplicationDetails.getValue())) {
-                                    subTitleTextView.setText(insuranceProductApplicationDetails.getValue());
-                                } else {
-                                    subTitleTextView.setText(insuranceProductApplicationDetails.getPlaceHolder());
-                                }
-
-                                TextView errorMessageView = view.findViewById(R.id.error_message);
-
-                                applicationDetailsView.addView(view);
-                                addToValuesList(view, insuranceProductApplicationDetails);
-                            }
-                        }
-
-                        setValidateListener();
-
-                        closeableBottomSheetDialog.setContentView(rootView);
-                        closeableBottomSheetDialog.show();
-                    }
+                    openBottomSheetWebView(tvInsuranceInfo.getContext(),
+                            insuranceCartDigitalProduct.getProductInfo().getAppLinkUrl(),
+                            insuranceCartDigitalProduct.getProductInfo().getDetailInfoTitle());
                 });
+            }
+
+            if (!insuranceCartDigitalProduct.getApplicationDetails().isEmpty()) {
+
+                StringBuilder applicationDetails = new StringBuilder();
+                for (int i = 0; i < insuranceCartDigitalProduct.getApplicationDetails().size(); i++) {
+                    if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getApplicationDetails().get(i).getValue())) {
+                        applicationDetails.append(insuranceCartDigitalProduct.getApplicationDetails().get(i).getValue());
+                    }
+
+                    if (i < insuranceCartDigitalProduct.getApplicationDetails().size() - 1) {
+                        applicationDetails.append(" | ");
+                    }
+                }
+
+                if (!TextUtils.isEmpty(applicationDetails)) {
+                    tvInsuranceApplicationDetails.setText(applicationDetails);
+                    tvInsuranceApplicationDetails.setVisibility(View.VISIBLE);
+                    tvChangeInsuranceApplicationDetails.setVisibility(View.VISIBLE);
+
+                    tvChangeInsuranceApplicationDetails.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            closeableBottomSheetDialog =
+                                    CloseableBottomSheetDialog.createInstanceRounded(tvChangeInsuranceApplicationDetails.getContext());
+                            View rootView = LayoutInflater.from(tvChangeInsuranceApplicationDetails.getContext()).inflate(R.layout.layout_insurance_bottom_sheet, null, false);
+
+                            LinearLayout applicationDetailsView = rootView.findViewById(R.id.ll_application_details);
+                            btnValidate = rootView.findViewById(R.id.btn_validate);
+
+                            typeValues.clear();
+                            for (InsuranceProductApplicationDetails insuranceProductApplicationDetails :
+                                    insuranceCartDigitalProduct.getApplicationDetails()) {
+
+                                if (insuranceProductApplicationDetails.getType().equalsIgnoreCase("text") ||
+                                        insuranceProductApplicationDetails.getType().equalsIgnoreCase("number")) {
+
+                                    View view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.getContext()).inflate(R.layout.application_detail_text, null, false);
+
+                                    TextView subtitle = view.findViewById(R.id.sub_title);
+                                    TextView errorMessageView = view.findViewById(R.id.error_message);
+
+                                    ((TextView) view.findViewById(R.id.tv_title)).setText(insuranceProductApplicationDetails.getLabel());
+                                    subtitle.setText(insuranceProductApplicationDetails.getValue());
+
+                                    subtitle.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                        }
+
+                                        @Override
+                                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                            if (validateView(subtitle, insuranceProductApplicationDetails)) {
+                                                errorMessageView.setVisibility(View.GONE);
+                                            } else {
+                                                errorMessageView.setVisibility(View.VISIBLE);
+                                                errorMessageView.setText(errorMessage);
+                                            }
+                                            updateEditTextBackground(subtitle, errorMessageView.getCurrentTextColor(), !TextUtils.isEmpty(errorMessage));
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable s) {
+
+                                        }
+                                    });
+
+                                    applicationDetailsView.addView(view);
+                                    addToValuesList(view, insuranceProductApplicationDetails);
+
+                                } else if (insuranceProductApplicationDetails.getType().equalsIgnoreCase("date")) {
+
+                                    View view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.getContext()).inflate(R.layout.application_detail_date, null, false);
+
+                                    ((TextView) view.findViewById(R.id.title)).setText(insuranceProductApplicationDetails.getLabel());
+                                    TextView subTitleTextView = view.findViewById(R.id.sub_title);
+                                    TextView errorMessageView = view.findViewById(R.id.error_message);
+
+                                    String dateText = insuranceProductApplicationDetails.getValue();
+                                    subTitleTextView.setText(getDateStringInUIFormat(dateText));
+                                    subTitleTextView.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            onDateViewClicked(subTitleTextView);
+                                        }
+                                    });
+
+                                    subTitleTextView.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                        }
+
+                                        @Override
+                                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                            if (validateView(subTitleTextView, insuranceProductApplicationDetails)) {
+                                                errorMessageView.setVisibility(View.GONE);
+                                                insuranceProductApplicationDetails.setValue(getDateInServerFormat(s.toString()));
+                                                insuranceProductApplicationDetails.setError(false);
+                                            } else {
+                                                errorMessageView.setVisibility(View.VISIBLE);
+                                                errorMessageView.setText(errorMessage);
+                                                insuranceProductApplicationDetails.setError(true);
+                                            }
+                                            updateEditTextBackground(subTitleTextView, errorMessageView.getCurrentTextColor(), !TextUtils.isEmpty(errorMessage));
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable s) {
+
+                                        }
+                                    });
+
+                                    applicationDetailsView.addView(view);
+                                    addToValuesList(view, insuranceProductApplicationDetails);
+
+                                } else if (insuranceProductApplicationDetails.getType().equalsIgnoreCase("dropdown")) {
+
+                                    View view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.getContext()).inflate(R.layout.application_detail_date, null, false);
+
+                                    ((TextView) view.findViewById(R.id.title)).setText(insuranceProductApplicationDetails.getLabel());
+                                    TextView subTitleTextView = view.findViewById(R.id.sub_title);
+                                    if (!TextUtils.isEmpty(insuranceProductApplicationDetails.getValue())) {
+                                        subTitleTextView.setText(insuranceProductApplicationDetails.getValue());
+                                    } else {
+                                        subTitleTextView.setText(insuranceProductApplicationDetails.getPlaceHolder());
+                                    }
+
+                                    TextView errorMessageView = view.findViewById(R.id.error_message);
+
+                                    applicationDetailsView.addView(view);
+                                    addToValuesList(view, insuranceProductApplicationDetails);
+                                }
+                            }
+
+                            setValidateListener();
+
+                            closeableBottomSheetDialog.setContentView(rootView);
+                            closeableBottomSheetDialog.show();
+                        }
+                    });
+                } else {
+                    tvInsuranceApplicationDetails.setVisibility(View.GONE);
+                    tvChangeInsuranceApplicationDetails.setVisibility(View.GONE);
+                }
+
             } else {
                 tvInsuranceApplicationDetails.setVisibility(View.GONE);
                 tvChangeInsuranceApplicationDetails.setVisibility(View.GONE);
+
             }
 
+            tvInsurancePrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceCartDigitalProduct.getPricePerProduct(), false));
+
+            if (pageType.equalsIgnoreCase(PAGE_TYPE_CART)) {
+                tvChangeInsuranceApplicationDetails.setVisibility(View.VISIBLE);
+                cbSelectInsurance.setVisibility(View.VISIBLE);
+                cbSelectInsurance.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
+                    insuranceItemActionlistener.onInsuranceSelectStateChanges();
+                });
+
+                /*
+                 * By default need to keep this checked for cart page
+                 * */
+
+                cbSelectInsurance.setChecked(true);
+
+                ivDeleteInsurance.setVisibility(View.VISIBLE);
+                ivDeleteInsurance.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
+                        insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct);
+                        insuranceItemActionlistener.deleteMacroInsurance(insuranceCartDigitalProductArrayList, true);
+                    }
+                });
+            } else {
+                tvChangeInsuranceApplicationDetails.setVisibility(View.GONE);
+                cbSelectInsurance.setVisibility(View.GONE);
+                ivDeleteInsurance.setVisibility(View.GONE);
+            }
         } else {
-            tvInsuranceApplicationDetails.setVisibility(View.GONE);
-            tvChangeInsuranceApplicationDetails.setVisibility(View.GONE);
-
+            itemView.setVisibility(View.GONE);
         }
-
-        tvInsurancePrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceCartDigitalProduct.getPricePerProduct(), false));
-
-        if (pageType.equalsIgnoreCase(PAGE_TYPE_CART)) {
-            tvChangeInsuranceApplicationDetails.setVisibility(View.VISIBLE);
-            cbSelectInsurance.setVisibility(View.VISIBLE);
-            cbSelectInsurance.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
-                insuranceItemActionlistener.onInsuranceSelectStateChanges();
-            });
-
-            /*
-             * By default need to keep this checked for cart page
-             * */
-
-            cbSelectInsurance.setChecked(true);
-
-            ivDeleteInsurance.setVisibility(View.VISIBLE);
-            ivDeleteInsurance.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
-                    insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct);
-                    insuranceItemActionlistener.deleteMacroInsurance(insuranceCartDigitalProductArrayList, true);
-                }
-            });
-        } else {
-            tvChangeInsuranceApplicationDetails.setVisibility(View.GONE);
-            cbSelectInsurance.setVisibility(View.GONE);
-            ivDeleteInsurance.setVisibility(View.GONE);
-        }
-
     }
 
     private void onDateViewClicked(TextView view) {
