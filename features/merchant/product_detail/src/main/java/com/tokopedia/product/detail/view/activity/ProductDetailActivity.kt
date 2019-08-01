@@ -30,6 +30,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var shopDomain: String? = null
     private var productKey: String? = null
     private var productId: String? = null
+    private var warehouseId: String? = null
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
     private var isSpecialPrize: Boolean = false
@@ -91,7 +92,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment
-        .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate, isSpecialPrize,
+        .newInstance(productId,warehouseId, shopDomain, productKey, isFromDeeplink, isFromAffiliate, isSpecialPrize,
                 trackerAttribution, trackerListName)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
@@ -103,6 +104,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         val bundle = intent.extras
+        bundle?.let {
+            warehouseId = it.getString("warehouse_id")
+        }
         if (uri != null) {
             if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL) {
                 val segmentUri = uri.pathSegments
