@@ -594,8 +594,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                             getArguments().getString(KEY_ORDER_ID));
                                     startActivityForResult(newIntent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
-                                } else
-                                    RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                } else {
+                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
+                                        startSellerAndAddInvoice(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                    } else
+                                        RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                }
                             } else {
                                 dialog.dismiss();
                             }
@@ -616,20 +620,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 dialog.show();
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                 if (actionButton.getUri().contains("askseller")) {
-                    if (shopInfo != null) {
-                        String shopId = String.valueOf(this.shopInfo.getShopId());
-                        String shopName = this.shopInfo.getShopName();
-                        String shopLogo = this.shopInfo.getShopLogo();
-                        String shopUrl = this.shopInfo.getShopUrl();
-                        String invoiceUrl;
-                        Uri uri = Uri.parse(actionButton.getUri());
-                        invoiceUrl = uri.getQueryParameter("invoiceUrl");
-                        String applink = "tokopedia://topchat/askseller/" + shopId;
-                        Intent intent = RouteManager.getIntent(getContext(), applink);
-                        presenter.assignInvoiceDataTo(intent);
-                        intent.putExtra(ApplinkConst.Chat.SOURCE, "tx_ask_seller");
-                        startActivity(intent);
-                    }
+                    startSellerAndAddInvoice(actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
                     intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
@@ -665,6 +656,23 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 }
             }
         };
+    }
+
+    private void startSellerAndAddInvoice(String uriString) {
+        if (shopInfo != null) {
+            String shopId = String.valueOf(this.shopInfo.getShopId());
+            String shopName = this.shopInfo.getShopName();
+            String shopLogo = this.shopInfo.getShopLogo();
+            String shopUrl = this.shopInfo.getShopUrl();
+            String invoiceUrl;
+            Uri uri = Uri.parse(uriString);
+            invoiceUrl = uri.getQueryParameter("invoiceUrl");
+            String applink = "tokopedia://topchat/askseller/" + shopId;
+            Intent intent = RouteManager.getIntent(getContext(), applink);
+            presenter.assignInvoiceDataTo(intent);
+            intent.putExtra(ApplinkConst.Chat.SOURCE, "tx_ask_seller");
+            startActivity(intent);
+        }
     }
 
     @Override
