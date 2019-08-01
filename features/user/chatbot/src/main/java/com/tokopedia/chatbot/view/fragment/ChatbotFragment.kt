@@ -139,6 +139,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun openCsat(csatResponse: WebSocketCsatResponse) {
         mCsatResponse = csatResponse
+        list_quick_reply.visibility = View.GONE
         showCsatRatingView(View.VISIBLE)
     }
 
