@@ -49,15 +49,6 @@ public interface SearchConstant {
         String KEY_HEADLINE_PARAMS = "headline_params";
     }
 
-    interface SearchProduct {
-        String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
-        String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
-        String PARAMETER_ROWS = "8";
-        String HEADLINE = "headline";
-        String HEADLINE_TEMPLATE_VALUE = "3,4";
-        String HEADLINE_ITEM_VALUE = "1";
-    }
-
     interface RemoteConfigKey {
         String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
     }
@@ -71,7 +62,6 @@ public interface SearchConstant {
     interface Ace {
         String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
-        String PATH_BROWSE_SHOP = "search/v1/shop";
         String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
     }
 
@@ -87,10 +77,30 @@ public interface SearchConstant {
         String DYNAMIC_FILTER_REPOSITORY_V4 = "dynamic_filter_repository_v4";
     }
 
+    interface SearchProduct {
+        String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
+        String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
+        String PARAMETER_ROWS = "8";
+        String HEADLINE = "headline";
+        String HEADLINE_TEMPLATE_VALUE = "3,4";
+        String HEADLINE_ITEM_VALUE = "1";
+    }
+
     interface SearchShop {
-        String SEARCH_SHOP_USE_CASE = "search_shop_use_case";
-        String TOGGLE_FAVORITE_SHOP_USE_CASE = "toggle_favorite_shop_use_case";
-        String TOGGLE_FAVORITE_SHOP_ID = "SHOP_ID";
+        String SEARCH_SHOP_FIRST_PAGE_USE_CASE = "search_shop_first_page_use_case";
+        String SEARCH_SHOP_LOAD_MORE_USE_CASE = "search_shop_load_more_use_case";
+        String HEADLINE = "headline";
+        String HEADLINE_TEMPLATE_VALUE = "3";
+        String HEADLINE_ITEM_VALUE = "1";
+        String ADS_SOURCE = "search";
+        int SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT = 3;
+    }
+
+    interface ShopStatus {
+        int KEY_SHOP_IS_GOLD = 1;
+        int KEY_SHOP_STATUS_CLOSED = 2;
+        int KEY_SHOP_STATUS_MODERATED = 3;
+        int KEY_SHOP_STATUS_INACTIVE = 4;
     }
 
     interface SearchCatalog {
