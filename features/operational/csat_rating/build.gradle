@@ -7,9 +7,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
-//    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.commonNetwork)
-//    implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 

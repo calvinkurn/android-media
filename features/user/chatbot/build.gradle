@@ -34,7 +34,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.features.csat_rating)
     implementation rootProject.ext.unifyDependencies.components
-
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.chatcommon)

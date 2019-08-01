@@ -17,11 +17,11 @@ public class BaseProvideRatingFragmentPresenter extends BaseDaggerPresenter<Prov
 
     public static final String EMOJI_STATE = "emoji_state";
     public static final String SELECTED_ITEM = "selected_items";
-    public static final int FIRST_EMOGI = 1;
-    public static final int SECOND_EMOGI = 2;
-    public static final int THIRD_EMOGI = 3;
-    public static final int FOURTH_EMOGI = 4;
-    public static final int FIFTH_EMOGI = 5;
+    public static final int FIRST_EMOJI = 1;
+    public static final int SECOND_EMOJI = 2;
+    public static final int THIRD_EMOJI = 3;
+    public static final int FOURTH_EMOJI = 4;
+    public static final int FIFTH_EMOJI = 5;
     private ArrayList<String> captionsList;
     private ArrayList<String> questionList;
 
@@ -43,20 +43,20 @@ public class BaseProvideRatingFragmentPresenter extends BaseDaggerPresenter<Prov
     public ScreenState getScreenState(int emoji) {
         ScreenState screenState = null;
         switch (emoji) {
-            case FIRST_EMOGI:
-                screenState = new FirstScreenState(captionsList.get(FIRST_EMOGI-1),questionList.get(FIRST_EMOGI-1));
+            case FIRST_EMOJI:
+                screenState = new FirstScreenState(captionsList.get(FIRST_EMOJI -1),questionList.get(FIRST_EMOJI -1));
                 break;
-            case SECOND_EMOGI:
-                screenState = new SecondScreenState(captionsList.get(SECOND_EMOGI-1),questionList.get(SECOND_EMOGI-1));
+            case SECOND_EMOJI:
+                screenState = new SecondScreenState(captionsList.get(SECOND_EMOJI -1),questionList.get(SECOND_EMOJI -1));
                 break;
-            case THIRD_EMOGI:
-                screenState = new ThirdScreenState(captionsList.get(THIRD_EMOGI-1),questionList.get(THIRD_EMOGI-1));
+            case THIRD_EMOJI:
+                screenState = new ThirdScreenState(captionsList.get(THIRD_EMOJI -1),questionList.get(THIRD_EMOJI -1));
                 break;
-            case FOURTH_EMOGI:
-                screenState = new FourthScreenState(captionsList.get(FOURTH_EMOGI-1),questionList.get(FOURTH_EMOGI-1));
+            case FOURTH_EMOJI:
+                screenState = new FourthScreenState(captionsList.get(FOURTH_EMOJI -1),questionList.get(FOURTH_EMOJI -1));
                 break;
-            case FIFTH_EMOGI:
-                screenState = new FifthScreenState(captionsList.get(FIFTH_EMOGI-1),questionList.get(FIFTH_EMOGI-1));
+            case FIFTH_EMOJI:
+                screenState = new FifthScreenState(captionsList.get(FIFTH_EMOJI -1),questionList.get(FIFTH_EMOJI -1));
                 break;
 
         }

@@ -14,7 +14,7 @@
         android:id="@+id/layout_inside"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp_point_one"
+        android:layout_margin="0.1dp"
         android:background="@drawable/rounded_stroke_grey"
         android:paddingLeft="@dimen/dp_10"
         android:paddingTop="@dimen/dp_15"

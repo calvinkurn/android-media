@@ -14,6 +14,8 @@ import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist.ChatActionBubbleAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * Created by Hendri on 18/07/18.
@@ -39,16 +41,18 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
 
     override fun bind(viewModel: ChatActionSelectionBubbleViewModel) {
         super.bind(viewModel)
-        chatActionListSelection.visibility = View.VISIBLE
-        hour.visibility = View.VISIBLE
+        chatActionListSelection.show()
+        hour.show()
         model = viewModel
         adapter.setDataList(viewModel.chatActionList)
     }
 
     override fun onChatActionSelected(selected: ChatActionBubbleViewModel) {
-        viewListener.onChatActionBalloonSelected(selected, model!!)
-        chatActionListSelection.visibility = View.GONE
-        hour.visibility = View.GONE
+        model?.let {
+            viewListener.onChatActionBalloonSelected(selected, it)
+        }
+        chatActionListSelection.hide()
+        hour.hide()
     }
 
     override fun onViewRecycled() {
