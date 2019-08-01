@@ -11,6 +11,9 @@
 /feature/discovery/recentview/          @tokopedia/minion-dave
 /feature/discovery/wishlist_common/     @tokopedia/minion-dave
 /feature/discovery/productcard/         @tokopedia/minion-dave
+/feature/discovery/search/              @tokopedia/minion-dave
+/features/discovery/productcard/        @tokopedia/minion-dave
+/features/discovery/search/             @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
 /tkpdseller/        @tokopedia/minion-stuart

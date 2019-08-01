@@ -2,16 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-android {
-    configurations {
-        all {
-            resolutionStrategy {
-                force "android.arch.core:runtime:1.1.1"
-            }
-        }
-    }
-}
-
 project.ext {
     artifactId = 'imagepreviewslider'
     groupId = 'com.tokopedia.imagepreviewslider'
@@ -40,11 +30,6 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
-
-    // Room components
-    implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
-    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 apply from: '../../../publish_local.gradle'
