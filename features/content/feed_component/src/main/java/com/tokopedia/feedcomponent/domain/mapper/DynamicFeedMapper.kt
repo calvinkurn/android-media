@@ -1,8 +1,6 @@
 package com.tokopedia.feedcomponent.domain.mapper
 
-import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.feedcomponent.BuildConfig
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
 import com.tokopedia.feedcomponent.data.pojo.feed.Cardpost
@@ -34,8 +32,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.util.ContainNullException
-import com.tokopedia.kotlin.util.isContainNull
+import com.tokopedia.kotlin.util.throwIfNull
 import rx.functions.Func1
 import javax.inject.Inject
 
@@ -72,13 +69,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         var lastCursor = ""
         var hasNext = false
 
-        isContainNull(feedQuery) {
-            val exception = ContainNullException("Found $it in ${DynamicFeedMapper::class.java.simpleName}")
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(exception)
-            }
-            throw exception
-        }
+        throwIfNull(feedQuery, DynamicFeedMapper::class.java)
 
         feedQuery?.let {
             for (feed in it.feedv2.data) {
@@ -270,9 +261,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     true
 
         return feed.content.cardpost.header.avatarTitle.isNotEmpty() &&
-                feed.content.cardpost.body.media.isNotEmpty() &&
-                contentList.size > 0 &&
-                postTag.items.size > 0 &&
+                ((feed.content.cardpost.body.media.isNotEmpty() && contentList.size > 0) || postTag.items.size > 0) &&
                 isGridNotEmpty
     }
 

@@ -311,6 +311,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
                 return false;
             }
         } else {
+            if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_file_size_reached));
+                return false;
+            }
             if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
                 NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
                 return false;

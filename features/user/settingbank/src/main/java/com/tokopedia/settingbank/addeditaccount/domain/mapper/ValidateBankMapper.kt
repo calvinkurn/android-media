@@ -8,6 +8,7 @@ import com.tokopedia.settingbank.addeditaccount.view.viewmodel.ValidateBankViewM
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.ValidationForm
 import retrofit2.Response
 import rx.functions.Func1
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 /**
@@ -18,17 +19,20 @@ class ValidateBankMapper @Inject constructor(): Func1<Response<DataResponse<Vali
         ValidateBankViewModel> {
 
     override fun call(response: Response<DataResponse<ValidateBankAccountPojo>>): ValidateBankViewModel {
-
-        if (response.body().header.messages.isEmpty() ||
-                response.body().header.messages[0].isBlank()) {
-            val pojo: ValidateBankAccountPojo = response.body().data
-            return ValidateBankViewModel(pojo.is_valid,
-                    pojo.is_data_change,
-                    mapToFormInfo(pojo.form_info))
+        val body = response.body()
+        if (body != null) {
+            if (body.header.messages.isEmpty() ||
+                    body.header.messages[0].isBlank()) {
+                val pojo: ValidateBankAccountPojo = body.data
+                return ValidateBankViewModel(pojo.is_valid,
+                        pojo.is_data_change,
+                        mapToFormInfo(pojo.form_info))
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException()
         }
-
     }
 
     private fun mapToFormInfo(form_info: List<FormInfoPojo>): ArrayList<ValidationForm> {

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
+import com.tokopedia.explore.view.fragment.HashtagLandingPageFragment;
 
 import dagger.Component;
 
@@ -13,10 +14,11 @@ import dagger.Component;
  */
 
 @ExploreScope
-@Component(modules = ExploreModule.class, dependencies = BaseAppComponent.class)
+@Component(modules = {ExploreModule.class, ExploreViewModelModule.class}, dependencies = BaseAppComponent.class)
 public interface ExploreComponent {
     @ApplicationContext
     Context context();
 
     void inject(ContentExploreFragment contentExploreFragment);
+    void inject(HashtagLandingPageFragment hashtagLandingPageFragment);
 }

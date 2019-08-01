@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/dp_4">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="@string/hotel_order_detail_transaction_date"
+        app:fontSize="micro"
+        app:layout_constraintBottom_toBottomOf="@+id/text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text"
+        app:textViewTheme="lightPrimary"
+        app:weight="medium"
+        tools:textSize="@dimen/sp_12"
+        tools:textStyle="bold" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/deep_orange_500"
+        app:fontSize="title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:weight="medium"
+        tools:text="1 Sep 2017, 05:00 WIB"
+        tools:textSize="@dimen/sp_17"
+        tools:textStyle="bold" />
+
+</android.support.constraint.ConstraintLayout>

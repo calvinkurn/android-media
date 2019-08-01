@@ -47,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.features.explore)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.atc_common)
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.analytics)
@@ -55,6 +56,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.reactNative)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.userSession)
@@ -92,6 +94,9 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 }
 
 apply from: '../../../publish_local.gradle'

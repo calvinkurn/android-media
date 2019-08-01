@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -100,5 +99,5 @@ dependencies {
     implementation "com.moengage:integration-verifier:1.0.00"
 }
 
-apply plugin: 'com.google.gms.google-services'
 apply from: '../../publish_local.gradle'
+apply plugin: 'com.google.gms.google-services'

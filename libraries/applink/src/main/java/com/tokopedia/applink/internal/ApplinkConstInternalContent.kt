@@ -7,4 +7,5 @@ object ApplinkConstInternalContent {
     const val INTERNAL_CONTENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT"
     const val AFFILIATE_EDIT = "$INTERNAL_CONTENT/affiliate/{id}/edit"
     const val SHOP_POST_EDIT = "$INTERNAL_CONTENT/content-shop/{id}/edit"
+    const val HASHTAG_PAGE = "$INTERNAL_CONTENT/explore-hashtag/{hashtag}/"
 }

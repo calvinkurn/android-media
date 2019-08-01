@@ -13,6 +13,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.List;
 
@@ -25,24 +28,22 @@ public class FeedScrollListener {
     private static final String TYPE_VIDEO = "video";
 
     public static void onFeedScrolled(RecyclerView recyclerView, List<Visitable> list) {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-
-        int firstPosition = layoutManager.findFirstVisibleItemPosition();
-        int lastPosition = layoutManager.findLastVisibleItemPosition();
-
-
-        for (int i =firstPosition ; i<=lastPosition; i ++) {
-            if (isVideoCard(list, i)) {
-                VideoViewModel item = getVideoCardViewModel(list, i);
-                if (item != null) {
-                    getVideoModelScrollListener(item, layoutManager, recyclerView, i);
-                } else {
-                    MediaItem mediaItem = getVideoCardItemViewModel(list, i);
-                    getVideoCardModelScrollListener(mediaItem, layoutManager, recyclerView, i);
+        if (canAutoplayVideo(recyclerView)) {
+            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            int firstPosition = layoutManager.findFirstVisibleItemPosition();
+            int lastPosition = layoutManager.findLastVisibleItemPosition();
+            for (int i = firstPosition; i <= lastPosition; i++) {
+                if (isVideoCard(list, i)) {
+                    VideoViewModel item = getVideoCardViewModel(list, i);
+                    if (item != null) {
+                        getVideoModelScrollListener(item, layoutManager, recyclerView, i);
+                    } else {
+                        MediaItem mediaItem = getVideoCardItemViewModel(list, i);
+                        getVideoCardModelScrollListener(mediaItem, layoutManager, recyclerView, i);
+                    }
                 }
             }
         }
-
     }
 
     private static void getVideoModelScrollListener(VideoViewModel item, LinearLayoutManager layoutManager, RecyclerView recyclerView, int i) {
@@ -128,4 +129,10 @@ public class FeedScrollListener {
     private static MediaItem getVideoCardItemViewModel(List<Visitable> list, int position) {
         return ((MultimediaGridViewModel)((DynamicPostViewModel)list.get(position)).getContentList().get(0)).getMediaItemList().get(0);
     }
+
+    private static boolean canAutoplayVideo(RecyclerView recyclerView) {
+        RemoteConfig config = new FirebaseRemoteConfigImpl(recyclerView.getContext());
+        return config.getBoolean(RemoteConfigKey.CONFIG_AUTOPLAY_VIDEO_WIFI,false);
+    }
+
 }

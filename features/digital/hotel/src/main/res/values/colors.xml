@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue_booking">#0066a9</color>
+    <color name="pink_property">#ef144a</color>
+    <color name="blue_background">#e5f5ff</color>
+    <color name="grey_no_image">#f3f4f5</color>
+    <color name="grey_share_menu">#52565e</color>
+    <color name="ticket_start_gradient">#f7fff0</color>
+    <color name="ticket_end_gradient">#d1ffdd</color>
+    <color name="ticket_divider">#e5e7e9</color>
+    <color name="bg_green_e_voucher">#82ef95</color>
+    <color name="green_all_facility_tab_underlined">#42b549</color>
+</resources>

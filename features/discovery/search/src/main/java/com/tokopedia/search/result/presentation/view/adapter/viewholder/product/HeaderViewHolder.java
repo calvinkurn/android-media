@@ -29,7 +29,6 @@ import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListen
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.widget.GlobalNavWidget;
-import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
@@ -40,8 +39,7 @@ import java.util.List;
 public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.search__header_layout;
-    private static final String SHOP = "shop";
+    public static final int LAYOUT = R.layout.search_result_product_header_layout;
     private LinearLayout suggestionContainer;
     private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
@@ -80,18 +78,15 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
             if (bannerAdsListener != null) {
-                bannerAdsListener.onBannerAdsClicked(applink);
-            }
-            if (applink.contains(SHOP)) {
-                TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
-            } else {
-                TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, position);
+                bannerAdsListener.onBannerAdsClicked(position, applink, data);
             }
         });
         adsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionHeadlineAdsItem(int position, CpmData data) {
-                TopAdsGtmTracker.eventSearchResultPromoView(context, data, position);
+                if(bannerAdsListener != null) {
+                    bannerAdsListener.onBannerAdsImpressionListener(position, data);
+                }
             }
         });
     }

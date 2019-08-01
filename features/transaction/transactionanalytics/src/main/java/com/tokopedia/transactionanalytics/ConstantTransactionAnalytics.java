@@ -62,6 +62,7 @@ public interface ConstantTransactionAnalytics {
     }
 
     interface EventAction {
+        String CLICK_ALL_COURIER_SELECTED = "click all courier selected";
         String CLICK_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click gunakan kode promo atau kupon";
         String CLICK_GUNAKAN_KODE_PROMO = "click gunakan kode promo";
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
@@ -279,6 +280,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
         String CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION = "click batal on error promo confirmation";
         String VIEW_POP_UP_ERROR_PROMO_CONFIRMATION = "view pop up error promo confirmation";
+
+        String SEARCH_NOT_FOUND = "search result not found";
     }
 
     interface EventLabel {

@@ -20,9 +20,9 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     private int horizontalCardViewOffset;
 
     private final List<Integer> allowedViewTypes = Arrays.asList(
-            R.layout.search_product_card_small_grid,
-            R.layout.search_product_card_big_grid,
-            R.layout.search_product_card_list);
+            R.layout.search_result_product_card_small_grid,
+            R.layout.search_result_product_card_big_grid,
+            R.layout.search_result_product_card_list);
 
     public ProductItemDecoration(int spacing) {
         this.spacing = spacing;
