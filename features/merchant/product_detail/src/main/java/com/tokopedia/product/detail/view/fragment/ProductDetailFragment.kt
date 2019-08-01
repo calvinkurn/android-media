@@ -50,8 +50,8 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.discovery.common.manager.AdultManager
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
+import com.tokopedia.purchase_platform.common.errorview.ErrorBottomsheets
+import com.tokopedia.purchase_platform.common.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -62,10 +62,10 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.expresscheckout.common.ATC_AND_BUY
-import com.tokopedia.expresscheckout.common.ATC_ONLY
-import com.tokopedia.expresscheckout.common.ProductAction
-import com.tokopedia.expresscheckout.common.TRADEIN_BUY
+import com.tokopedia.purchase_platform.common.ATC_AND_BUY
+import com.tokopedia.purchase_platform.common.ATC_ONLY
+import com.tokopedia.purchase_platform.common.ProductAction
+import com.tokopedia.purchase_platform.common.TRADEIN_BUY
 //import com.tokopedia.expresscheckout.common.view.NormalCheckoutActivity
 //import com.tokopedia.expresscheckout.common.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter

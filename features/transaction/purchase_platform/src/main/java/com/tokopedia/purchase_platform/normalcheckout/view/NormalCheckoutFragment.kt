@@ -43,10 +43,6 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
-import com.tokopedia.expresscheckout.common.ATC_AND_BUY
-import com.tokopedia.expresscheckout.common.ATC_ONLY
-import com.tokopedia.expresscheckout.common.ProductAction
-import com.tokopedia.expresscheckout.common.TRADEIN_BUY
 import com.tokopedia.purchase_platform.normalcheckout.di.DaggerNormalCheckoutComponent
 import com.tokopedia.purchase_platform.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.purchase_platform.normalcheckout.presenter.NormalCheckoutViewModel
@@ -57,6 +53,10 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.ATC_AND_BUY
+import com.tokopedia.purchase_platform.common.ATC_ONLY
+import com.tokopedia.purchase_platform.common.ProductAction
+import com.tokopedia.purchase_platform.common.TRADEIN_BUY
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.model.TradeInParams

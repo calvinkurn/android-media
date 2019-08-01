@@ -323,11 +323,9 @@ ext {
             checkout                        : ":features:transaction:checkout",
             transactionInvoice              : ":features:transaction:transactioninvoice",
             purchase_platform               : ":features:transaction:purchase_platform",
+            purchase_platform_common        : ":features:transaction:purchase_platform_common",
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
-            expressCheckout                 : ":features:transaction:express_checkout",
-//            expressCheckout                 : ":features:transaction:express_checkout_no_op",
-            expressCheckoutCommon           : ":features:transaction:express_checkout_common",
 
             attachproduct                   : ":features:user:attachproduct",
             bankdb                          : ":features:user:bankdb",
