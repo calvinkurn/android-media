@@ -2,7 +2,6 @@ package com.tokopedia.navigation.domain.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.navigation.presentation.adapter.InboxTypeFactory
-import com.tokopedia.navigation.presentation.view.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**

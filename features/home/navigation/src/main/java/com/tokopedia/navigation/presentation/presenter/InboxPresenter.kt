@@ -48,11 +48,11 @@ class InboxPresenter @Inject constructor(
         if (this.inboxView == null)
             return
 
-        this.inboxView!!.onStartLoading()
+        this.inboxView?.onStartLoading()
 
         val requestParams = RequestParams.create()
         requestParams.putString(GlobalNavConstant.QUERY,
-                GraphqlHelper.loadRawString(this.inboxView!!.context.resources, R.raw.query_notification))
+                GraphqlHelper.loadRawString(this.inboxView?.context?.resources, R.raw.query_notification))
         getNotificationUseCase.execute(requestParams, InboxSubscriber(this.inboxView))
     }
 
@@ -65,15 +65,15 @@ class InboxPresenter @Inject constructor(
                 ArrayList()),
                 object : Subscriber<List<RecommendationWidget>>() {
                     override fun onStart() {
-                        inboxView!!.showLoadMoreLoading()
+                        inboxView?.showLoadMoreLoading()
                     }
 
                     override fun onCompleted() {
-                        inboxView!!.hideLoadMoreLoading()
+                        inboxView?.hideLoadMoreLoading()
                     }
 
                     override fun onError(e: Throwable) {
-                        inboxView!!.hideLoadMoreLoading()
+                        inboxView?.hideLoadMoreLoading()
                     }
 
                     override fun onNext(recommendationWidgets: List<RecommendationWidget>) {
@@ -81,8 +81,8 @@ class InboxPresenter @Inject constructor(
                         val recommendationWidget = recommendationWidgets[0]
                         visitables.add(RecomTitle(recommendationWidget.title))
                         visitables.addAll(getRecommendationVisitables(recommendationWidget))
-                        inboxView!!.hideLoadMoreLoading()
-                        inboxView!!.onRenderRecomInbox(visitables)
+                        inboxView?.hideLoadMoreLoading()
+                        inboxView?.onRenderRecomInbox(visitables)
                     }
                 })
     }
@@ -97,21 +97,21 @@ class InboxPresenter @Inject constructor(
                 ArrayList()),
                 object : Subscriber<List<RecommendationWidget>>() {
                     override fun onStart() {
-                        inboxView!!.showLoadMoreLoading()
+                        inboxView?.showLoadMoreLoading()
                     }
 
                     override fun onCompleted() {
-                        inboxView!!.hideLoadMoreLoading()
+                        inboxView?.hideLoadMoreLoading()
                     }
 
                     override fun onError(e: Throwable) {
-                        inboxView!!.hideLoadMoreLoading()
+                        inboxView?.hideLoadMoreLoading()
                     }
 
                     override fun onNext(recommendationWidgets: List<RecommendationWidget>) {
-                        inboxView!!.hideLoadMoreLoading()
+                        inboxView?.hideLoadMoreLoading()
                         val recommendationWidget = recommendationWidgets[0]
-                        inboxView!!.onRenderRecomInbox(getRecommendationVisitables(recommendationWidget))
+                        inboxView?.onRenderRecomInbox(getRecommendationVisitables(recommendationWidget))
                     }
                 })
     }

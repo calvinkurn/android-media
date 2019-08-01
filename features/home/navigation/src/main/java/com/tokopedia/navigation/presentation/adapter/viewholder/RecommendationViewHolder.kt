@@ -1,7 +1,6 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder
 
 import android.app.Activity
-import android.content.Context
 import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
@@ -13,57 +12,50 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.InboxGtmTracker
 import com.tokopedia.navigation.domain.model.Recommendation
-import com.tokopedia.navigation.presentation.view.InboxAdapterListener
-import com.tokopedia.navigation.presentation.view.listener.RecommendationListener
 import com.tokopedia.navigation.util.RecomSnackBar
 import com.tokopedia.productcard.v2.ProductCardView
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
-import com.tokopedia.topads.sdk.domain.model.Category
-import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 /**
  * Author errysuprayogi on 13,March,2019
  * Modify Lukas on July 31, 2019
  */
-class RecommendationViewHolder(itemView: View, private val listener: InboxAdapterListener, private val recommendationListener: RecommendationListener) : AbstractViewHolder<Recommendation>(itemView){
+class RecommendationViewHolder(itemView: View, private val recommendationListener: RecommendationListener) : AbstractViewHolder<Recommendation>(itemView){
     private val productCardView by lazy { itemView.findViewById<ProductCardView>(R.id.productCardView) }
-    private val context: Context? = itemView.context
-
-    private fun onImpressionTopAds(item: RecommendationItem) {
-        val product = Product()
-        val pos = (adapterPosition - listener.getStartProductPosition())
-        product.id = item.productId.toString()
-        product.name = item.name
-        product.priceFormat = item.price
-        product.category = Category(item.departmentId)
-        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, pos, item.recommendationType)
-    }
-
-    private fun onImpressionOrganic(item: RecommendationItem) {
-        val pos = (adapterPosition - listener.getStartProductPosition())
-        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, pos)
-    }
-
-    private fun onClickTopAds(item: RecommendationItem) {
-        val product = Product()
-        val pos = (adapterPosition - listener.getStartProductPosition())
-        product.id = item.productId.toString()
-        product.name = item.name
-        product.priceFormat = item.price
-        product.category = Category(item.departmentId)
-        context?.run {
-            TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, pos, item.recommendationType)
-        }
-    }
-
-    private fun onClickOrganic(item: RecommendationItem) {
-        val pos = (adapterPosition - listener.getStartProductPosition())
-        context?.run {
-            InboxGtmTracker.getInstance().eventInboxProductClick(context, item, pos)
-        }
-    }
+//
+//    private fun onImpressionTopAds(item: RecommendationItem) {
+//        val product = Product()
+//        val pos = (adapterPosition - listener.getStartProductPosition())
+//        product.id = item.productId.toString()
+//        product.name = item.name
+//        product.priceFormat = item.price
+//        product.category = Category(item.departmentId)
+//        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, pos, item.recommendationType)
+//    }
+//
+//    private fun onImpressionOrganic(item: RecommendationItem) {
+//        val pos = (adapterPosition - listener.getStartProductPosition())
+//        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, pos)
+//    }
+//
+//    private fun onClickTopAds(item: RecommendationItem) {
+//        val product = Product()
+//        val pos = (adapterPosition - listener.getStartProductPosition())
+//        product.id = item.productId.toString()
+//        product.name = item.name
+//        product.priceFormat = item.price
+//        product.category = Category(item.departmentId)
+//        context?.run {
+//            TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, pos, item.recommendationType)
+//        }
+//    }
+//
+//    private fun onClickOrganic(item: RecommendationItem) {
+//        val pos = (adapterPosition - listener.getStartProductPosition())
+//        context?.run {
+//            InboxGtmTracker.getInstance().eventInboxProductClick(context, item, pos)
+//        }
+//    }
 
     override fun bind(element: Recommendation) {
         productCardView.run {
@@ -92,23 +84,12 @@ class RecommendationViewHolder(itemView: View, private val listener: InboxAdapte
             realignLayout()
             setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener {
                 override fun onViewHint() {
-                    if(element.recommendationItem.isTopAds){
-                        ImpresionTask().execute(element.recommendationItem.trackerImageUrl)
-                        onImpressionTopAds(element.recommendationItem)
-                    }else {
-                        onImpressionOrganic(element.recommendationItem)
-                    }
+                    recommendationListener.onProductImpression(element.recommendationItem)
                 }
             })
 
             setOnClickListener {
-                listener.onItemClickListener(element, adapterPosition)
-                if (element.recommendationItem.isTopAds) {
-                    ImpresionTask().execute(element.recommendationItem.clickUrl)
-                    onClickTopAds(element.recommendationItem)
-                }else {
-                    onClickOrganic(element.recommendationItem)
-                }
+                recommendationListener.onProductClick(element.recommendationItem, null, adapterPosition)
             }
 
             setButtonWishlistOnClickListener {

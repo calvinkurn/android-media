@@ -21,6 +21,13 @@ import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.PDP_EXTRA_PRODUCT_ID
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.PDP_EXTRA_UPDATED_POSITION
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.REQUEST_FROM_PDP
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SAVED_PRODUCT_ID
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SHARE_PRODUCT_TITLE
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SPAN_COUNT
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import com.tokopedia.linker.LinkerManager
@@ -33,7 +40,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
 import com.tokopedia.recommendation_widget_common.TYPE_CUSTOM_HORIZONTAL
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
-import com.tokopedia.home_recom.view.listener.TrackingListener
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -63,7 +70,7 @@ import javax.inject.Inject
  * @property REQUEST_FROM_PDP the const value for set request calling startActivityForResult ProductDetailActivity.
  * @constructor Creates an empty recommendation.
  */
-class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), TrackingListener {
+class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -198,7 +205,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
 
     /**
-     * This void from Callback [TrackingListener]
+     * This void from Callback [RecommendationListener]
      * It handling wishlist click from item
      * @param item the item clicked
      * @param isAddWishlist the wishlist is selected or not
@@ -220,7 +227,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     /**
-     * This void from Callback [TrackingListener]
+     * This void from Callback [RecommendationListener]
      * It handling product impression item
      * @param item the item clicked
      */
@@ -234,7 +241,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
 
     /**
-     * This void from Callback [TrackingListener]
+     * This void from Callback [RecommendationListener]
      * It handling item click
      * @param item the item clicked
      * @param layoutType the layoutType is type layout where item placed

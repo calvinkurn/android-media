@@ -27,17 +27,19 @@ import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
 import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
-import com.tokopedia.navigation.presentation.adapter.viewholder.RecommendationViewHolder;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
-import com.tokopedia.navigation.presentation.view.listener.RecommendationListener;
 import com.tokopedia.navigation_common.model.NotificationsModel;
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
@@ -171,11 +173,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             Inbox inbox = (Inbox) item;
             globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
-        }else if(item instanceof Recommendation){
-            Recommendation recommendation = (Recommendation) item;
-            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(recommendation.getRecommendationItem().getProductId()));
-            intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position);
-            startActivityForResult(intent, REQUEST_FROM_PDP);
         }
     }
 
@@ -189,6 +186,29 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             }
         }else{
             RouteManager.route(getContext(), ApplinkConst.LOGIN);
+        }
+    }
+
+    @Override
+    public void onProductClick(@NotNull RecommendationItem item, @org.jetbrains.annotations.Nullable String layoutType, @NotNull int... position) {
+        if (item.isTopAds()) {
+            new ImpresionTask().execute(item.getClickUrl());
+            onClickTopAds(item);
+        }else {
+            onClickOrganic(item);
+        }
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(item.getProductId()));
+        if(position.length >= 1) intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[0]);
+        startActivityForResult(intent, REQUEST_FROM_PDP);
+    }
+
+    @Override
+    public void onProductImpression(@NotNull RecommendationItem item) {
+        if(item.isTopAds()){
+            new ImpresionTask().execute(item.getTrackerImageUrl());
+            onImpressionTopAds(item);
+        }else {
+            onImpressionOrganic(item);
         }
     }
 
@@ -328,5 +348,31 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public int getStartProductPosition() {
         //product start after inbox data (like chat, diskusi, etc) + 1 recom title
         return (getData().size()-1)+1;
+    }
+
+    private void onImpressionTopAds(RecommendationItem item) {
+        Product product = new Product();
+        product.setId(String.valueOf(item.getProductId()));
+        product.setName(item.getName());
+        product.setPriceFormat(item.getPrice());
+        product.setCategory(new Category(item.getDepartmentId()));
+        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, item.getPosition(), item.getRecommendationType());
+    }
+
+    private void onImpressionOrganic(RecommendationItem item) {
+        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition());
+    }
+
+    private void onClickTopAds(RecommendationItem item) {
+        Product product = new Product();
+        product.setId(String.valueOf(item.getProductId()));
+        product.setName(item.getName());
+        product.setPriceFormat(item.getPrice());
+        product.setCategory(new Category(item.getDepartmentId()));
+        TopAdsGtmTracker.getInstance().eventInboxProductClick(getContext(), product, item.getPosition(), item.getRecommendationType());
+    }
+
+    private void onClickOrganic(RecommendationItem item) {
+        InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition());
     }
 }

@@ -1,11 +1,8 @@
 package com.tokopedia.home_recom.view.viewholder
 
 import android.app.Activity
-import android.graphics.Color
-import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
@@ -14,7 +11,6 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.util.RecomSnackBar
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
