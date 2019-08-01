@@ -78,9 +78,7 @@ import javax.inject.Inject
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
         NormalCheckoutContract.View, CheckoutVariantActionListener {
 
-    //    private var isErrorInInsurance: Int = 0
     private var isInsuranceSelected: Boolean = false
-    private var insuranceRecommendationViewModel = InsuranceRecommendationViewModel()
 
     private var selectedInsuranceProduct = InsuranceRecommendationViewModel()
 

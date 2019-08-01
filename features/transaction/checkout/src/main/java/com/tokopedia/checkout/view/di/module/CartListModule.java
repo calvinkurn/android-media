@@ -117,12 +117,6 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    GetInsuranceRecommendationUsecase provideGetInsuranceRecommendationUsecase(@ApplicationContext Context context) {
-        return new GetInsuranceRecommendationUsecase(context);
-    }
-
-    @Provides
-    @CartListScope
     RemoveInsuranceProductUsecase getRemoveInsuranceProductUsecase(@ApplicationContext Context context) {
         return new RemoveInsuranceProductUsecase(context);
     }
@@ -202,8 +196,7 @@ public class CartListModule {
                                                  AddToCartUseCase addToCartUseCase,
                                                  GetInsuranceCartUseCase getInsuranceCartUseCase,
                                                  RemoveInsuranceProductUsecase removeInsuranceProductUsecase,
-                                                 UpdateInsuranceProductDataUsecase updateInsuranceProductDataUsecase,
-                                                 GetInsuranceRecommendationUsecase getInsuranceRecommendationUsecase) {
+                                                 UpdateInsuranceProductDataUsecase updateInsuranceProductDataUsecase) {
         return new CartListPresenter(getCartListUseCase,
                 deleteCartListUseCase,
                 updateCartUseCase,
@@ -225,8 +218,7 @@ public class CartListModule {
                 clearCacheAutoApplyStackUseCase,
                 getInsuranceCartUseCase,
                 removeInsuranceProductUsecase,
-                updateInsuranceProductDataUsecase,
-                getInsuranceRecommendationUsecase);
+                updateInsuranceProductDataUsecase);
     }
 
     @Provides
