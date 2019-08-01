@@ -369,7 +369,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private int calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange, long basisAmount) {
 
-        if (valueTOCheck == 0 || basisAmount == 0) {
+        if (basisAmount == 0) {
             return 0;
         }
 
@@ -538,18 +538,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         graphqlResponse.getData(InsuranceCartGqlResponse.class) != null) {
                     insuranceCartGqlResponse =
                             graphqlResponse.getData(InsuranceCartGqlResponse.class);
-                } else {
-                    /*
-                      Do Nothing if insureTech cart service fails
-                     */
-                    getView().showToastError("Cart Fail");
-                }
-
-                if (insuranceCartGqlResponse != null) {
                     getView().renderInsuranceCartData(insuranceCartGqlResponse.getData());
                 } else {
                     getView().renderInsuranceCartData(null);
                 }
+
             }
         };
     }

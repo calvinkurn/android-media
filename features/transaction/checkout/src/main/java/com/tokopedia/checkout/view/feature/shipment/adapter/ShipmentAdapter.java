@@ -503,7 +503,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private long calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange, long basisAmount) {
 
-        if (valueTOCheck == 0 || basisAmount == 0) {
+        if (basisAmount == 0) {
             return 0;
         }
 

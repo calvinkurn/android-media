@@ -612,39 +612,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
 
 
-                            if (insuranceCartDigitalProduct.isProductLevel()) {
-
-                                /*List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
-
-                                if (shipmentCartItemModelList != null && !shipmentCartItemModelList.isEmpty()) {
-
-                                    for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-
-                                        if (shipmentCartItemModel.getCartItemModels() != null && !shipmentCartItemModel.getCartItemModels().isEmpty()) {
-
-                                            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-
-                                                if (cartItemModel.getProductId() == insuranceCartShopItems.getProductId()) {
-
-//                                                    cartItemModel.setMicroInsuranceData(insuranceCartDigitalProduct);
-                                                }
-
-
-                                            }
-
-                                        }
-
-                                    }
-                                }*/
-
-                            } else {
+                            if (!insuranceCartDigitalProduct.isProductLevel()) {
                                 shipmentAdapter.addInsuranceDataList(insuranceCartShops);
                             }
-
                         }
                     }
                 }
                 shipmentAdapter.notifyDataSetChanged();
+                shipmentAdapter.updateShipmentCostModel();
             }
         }
     }
