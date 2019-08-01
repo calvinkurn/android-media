@@ -2,6 +2,7 @@ package com.tokopedia.onboarding.fragment
 
 import android.app.Activity
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -130,14 +131,11 @@ class OnboardingFragment : BaseDaggerFragment(),
         return defaultView
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        view.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-//        view.tag = this
-//        super.onViewCreated(view, savedInstanceState)
-//    }
-
     override fun onPageSelected(position: Int) {
         videoView?.start()
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            videoView?.start()
+        }
     }
 
     override fun onPageUnSelected() {
