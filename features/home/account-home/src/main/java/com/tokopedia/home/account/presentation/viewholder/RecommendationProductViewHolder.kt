@@ -42,7 +42,6 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
             setImageRatingVisible(element.product.rating > 0 && element.product.countReview > 0)
             setReviewCountVisible(element.product.rating > 0 && element.product.countReview > 0)
             setShopLocationVisible(true)
-            setButtonWishlistVisible(element.product.badgesUrl.isNotEmpty())
             setShopBadgesVisible(true)
             setButtonWishlistImage(element.product.isWishlist)
             setProductNameText(element.product.name)
@@ -59,9 +58,6 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
             setImageProductViewHintListener(element.product, object : ViewHintListener {
                 override fun onViewHint() {
                     accountItemListener.onProductRecommendationImpression(element.product, adapterPosition)
-                    if (element.product.isTopAds) {
-                        ImpresionTask().execute(element.product.trackerImageUrl)
-                    }
                 }
             })
 

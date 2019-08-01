@@ -328,7 +328,7 @@ public class AccountAnalytics {
 
     private Object addAccountProductViewImpressions(RecommendationItem recommendationItem, int position) {
         String list =
-                String.format(VALUE_PRODUCT_RECOMMENDATION_LIST, recommendationItem.getType());
+                String.format(VALUE_PRODUCT_RECOMMENDATION_LIST, recommendationItem.getRecommendationType());
         if (recommendationItem.isTopAds()) {
             list+=VALUE_PRODUCT_TOPADS;
         }
@@ -344,7 +344,7 @@ public class AccountAnalytics {
 
     public void eventAccountProductClick(RecommendationItem recommendationItem, int position, String widgetTitle) {
         String list =
-                String.format(VALUE_PRODUCT_RECOMMENDATION_LIST, recommendationItem.getType());
+                String.format(VALUE_PRODUCT_RECOMMENDATION_LIST, recommendationItem.getRecommendationType());
         if (recommendationItem.isTopAds()) {
             list+=VALUE_PRODUCT_TOPADS;
         }
