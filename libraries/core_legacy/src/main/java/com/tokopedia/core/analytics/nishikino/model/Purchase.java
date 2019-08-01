@@ -207,7 +207,6 @@ public class Purchase {
         try {
             Purchase.put("actionField", ActionField);
             Purchase.put("products", ListProduct);
-//            Purchase.put("currencyCode", currency);
         }catch (Exception e) {
             e.printStackTrace();
         }

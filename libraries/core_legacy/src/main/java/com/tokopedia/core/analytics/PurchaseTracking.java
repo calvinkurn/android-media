@@ -55,7 +55,6 @@ public class PurchaseTracking extends TrackingUtils {
                 AppEventTracking.ECOMMERCE, DataLayer.mapOf(
                         Purchase.PURCHASE, purchase.getPurchase(),
                         Purchase.CURRENCY_CODE, purchase.getCurrency()
-
                 )
         ));
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_FINISH_TX);
