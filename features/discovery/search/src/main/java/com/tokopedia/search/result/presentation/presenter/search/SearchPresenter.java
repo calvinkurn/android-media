@@ -111,7 +111,7 @@ class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implement
 
         switch (defineRedirectApplink(redirectApplink)) {
             case DISCOVERY_URL_SEARCH :
-                onHandleSearch(initiateSearchModel);
+                onHandleSearch();
                 break;
             case DISCOVERY_APPLINK :
                 getView().initiateSearchHandleApplink(redirectApplink);
@@ -136,16 +136,8 @@ class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implement
         return applink.equals("") ? DISCOVERY_URL_SEARCH : DISCOVERY_APPLINK;
     }
 
-    private void onHandleSearch(InitiateSearchModel initiateSearchModel) {
-        boolean isHasCatalog = ListHelper.isContainItems(
-                // in Kotlin:
-                // initiateSearchModel?.searchProduct?.catalogs
-                initiateSearchModel == null ? null :
-                        initiateSearchModel.getSearchProduct() == null ? null :
-                                initiateSearchModel.getSearchProduct().getCatalogs()
-        );
-
-        getView().initiateSearchHandleResponseSearch(isHasCatalog);
+    private void onHandleSearch() {
+        getView().initiateSearchHandleResponseSearch();
     }
 
     private void initiateSearchOnError(Throwable e) {

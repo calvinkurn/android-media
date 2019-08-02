@@ -395,7 +395,7 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void initiateSearchHandleResponseSearch(boolean isHasCatalog) {
+    public void initiateSearchHandleResponseSearch() {
         stopPerformanceMonitoring();
         loadSection();
     }
