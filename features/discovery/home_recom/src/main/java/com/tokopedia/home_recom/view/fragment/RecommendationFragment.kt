@@ -107,6 +107,8 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         activity?.let {
             trackingQueue = TrackingQueue(it)
         }
+        if(productId.isEmpty()) RecommendationPageTracking.eventUserViewRecommendationPage(ref)
+        else RecommendationPageTracking.eventUserViewRecommendationPageWithProductId(ref, productId)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -370,7 +372,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
      */
     private fun shareProduct(productDetailData: ProductDetailData){
         context?.let{ context ->
-            RecommendationPageTracking.eventClickIconShare(ref)
+            RecommendationPageTracking.eventClickIconShare()
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult) {

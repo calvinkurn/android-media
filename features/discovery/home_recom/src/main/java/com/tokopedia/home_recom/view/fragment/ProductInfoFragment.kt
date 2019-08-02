@@ -139,11 +139,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
         product_image.addOnImpressionListener(recommendationItem, object: ViewHintListener{
             override fun onViewHint() {
                 RecommendationPageTracking.eventImpressionPrimaryProduct(recommendationItem, "0", ref)
-                if(productDataModel.productDetailData.isTopads){
-                    onImpressionTopAds(recommendationItem)
-                }else {
-                    onImpressionOrganic(recommendationItem)
-                }
             }
         })
     }
@@ -155,11 +150,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onClickProductCard(){
         product_card.setOnClickListener {
             RecommendationPageTracking.eventClickPrimaryProduct(recommendationItem, "0", ref)
-            if (productDataModel.productDetailData.isTopads) {
-                onClickTopAds(recommendationItem)
-            } else {
-                onClickOrganic(recommendationItem)
-            }
             val intent = RouteManager.getIntent(
                     context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -181,7 +171,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else{
                                 showToastSuccessWithAction(result[MESSAGE].toString(), getString(R.string.recom_see_cart)){
-                                    RecommendationPageTracking.eventUserClickSeeToCart(ref)
+                                    RecommendationPageTracking.eventUserClickSeeToCart()
                                     goToCart()
                                 }
                             }
@@ -413,38 +403,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
         } else {
             product_discount.visibility = View.GONE
             product_slashed_price.visibility = View.GONE
-        }
-    }
-
-    private fun onImpressionOrganic(item: RecommendationItem) {
-        if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForLoginUser(trackingQueue, item, item.position.toString(), ref)
-        } else {
-            RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString(), ref)
-        }
-    }
-
-    private fun onImpressionTopAds(item: RecommendationItem) {
-        if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForLoginUser(trackingQueue, item, item.position.toString(), ref)
-        } else {
-            RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString(), ref)
-        }
-    }
-
-    private fun onClickTopAds(item: RecommendationItem) {
-        if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForLoginUser(item, item.position.toString(), ref)
-        }else{
-            RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForNonLoginUser(item, item.position.toString(), ref)
-        }
-    }
-
-    private fun onClickOrganic(item: RecommendationItem) {
-        if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventClickOnOrganicProductRecommendationForLoginUser(item, item.position.toString(), ref)
-        }else{
-            RecommendationPageTracking.eventClickOnOrganicProductRecommendationForNonLoginUser(item, item.position.toString(), ref)
         }
     }
 

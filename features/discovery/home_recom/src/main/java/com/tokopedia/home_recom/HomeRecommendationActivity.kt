@@ -17,6 +17,7 @@ import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
     companion object{
@@ -79,6 +80,11 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        TrackingQueue(this).sendAll()
+    }
+
     override fun getComponent(): HomeRecommendationComponent = DaggerHomeRecommendationComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
@@ -86,7 +92,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when(item?.itemId){
             android.R.id.home -> {
-                RecommendationPageTracking.eventUserClickBack(intent?.data?.getQueryParameter(REF) ?: "")
+                RecommendationPageTracking.eventUserClickBack()
+                TrackingQueue(this).sendAll()
                 RouteManager.route(this, ApplinkConst.HOME)
                 this.finish()
                 true
@@ -96,7 +103,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     }
 
     override fun onBackPressed() {
-        RecommendationPageTracking.eventUserClickBack(intent?.data?.getQueryParameter(REF) ?: "")
+        RecommendationPageTracking.eventUserClickBack()
+        TrackingQueue(this).sendAll()
         RouteManager.route(this, ApplinkConst.HOME)
         this.finish()
     }

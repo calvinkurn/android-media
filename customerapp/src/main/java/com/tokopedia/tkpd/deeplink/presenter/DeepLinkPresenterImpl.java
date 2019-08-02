@@ -548,7 +548,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
-        String source = uriData.getQueryParameter("source");
+        String source = uriData.getQueryParameter("ref");
         Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
                 linkSegment.size() > 1 ? linkSegment.get(1) : "",
                 source == null ? "" : source);
