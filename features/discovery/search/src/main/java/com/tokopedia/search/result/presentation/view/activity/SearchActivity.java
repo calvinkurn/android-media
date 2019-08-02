@@ -420,6 +420,7 @@ public class SearchActivity extends BaseActivity
 
         searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
+        viewPager.removeAllViews();
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
