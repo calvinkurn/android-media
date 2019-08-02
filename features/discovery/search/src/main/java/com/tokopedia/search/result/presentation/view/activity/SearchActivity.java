@@ -415,12 +415,13 @@ public class SearchActivity extends BaseActivity
     }
 
     private void loadSection() {
+        viewPager.removeAllViews();
+
         List<SearchSectionItem> searchSectionItemList = new ArrayList<>();
         populateTab(searchSectionItemList);
 
         searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
-        viewPager.removeAllViews();
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
