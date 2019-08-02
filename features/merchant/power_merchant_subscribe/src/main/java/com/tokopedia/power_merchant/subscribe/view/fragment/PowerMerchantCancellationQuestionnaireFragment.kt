@@ -15,13 +15,14 @@ import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_quest
 class PowerMerchantCancellationQuestionnaireFragment : BaseDaggerFragment() {
 
     private lateinit var parentActivity: PowerMerchantCancellationQuestionnaireActivity
-    private var model: PMCancellationQuestionnaireModel? = null
     companion object {
+        private var model: PMCancellationQuestionnaireModel? = null
         fun createInstance(model: PMCancellationQuestionnaireModel): PowerMerchantCancellationQuestionnaireFragment {
             val frag = PowerMerchantCancellationQuestionnaireFragment()
             val bundle = Bundle()
-            bundle.putParcelable("model", model)
-            frag.arguments = bundle
+//            bundle.putParcelable("model", model)
+//            frag.arguments = bundle
+            this.model = model
             return frag
         }
     }
