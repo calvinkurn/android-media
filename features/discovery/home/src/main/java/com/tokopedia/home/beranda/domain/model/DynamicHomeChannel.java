@@ -40,6 +40,8 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_TOPADS = "topads";
         public static final String LAYOUT_SPOTLIGHT = "spotlight";
         public static final String LAYOUT_HOME_WIDGET = "home_widget";
+        public static final String LAYOUT_BANNER_ORGANIC = "banner_organic";
+        public static final String LAYOUT_BANNER_CAROUSEL = "banner_carousel";
 
         @Expose
         @SerializedName("id")
@@ -68,6 +70,9 @@ public class DynamicHomeChannel {
         @Expose
         @SerializedName("header")
         private Header header;
+        @Expose
+        @SerializedName("banner")
+        private Banner banner;
         @SerializedName("promoName")
         private String promoName;
         @SerializedName("homeAttribution")
@@ -928,6 +933,142 @@ public class DynamicHomeChannel {
 
         public void setBackImage(String backImage) {
             this.backImage = backImage;
+        }
+    }
+
+    public class Banner {
+        @Expose
+        @SerializedName("id")
+        private String id;
+
+        @Expose
+        @SerializedName("title")
+        private String title;
+
+        @Expose
+        @SerializedName("description")
+        private String description;
+
+        @Expose
+        @SerializedName("cta")
+        private CtaData cta;
+
+        @Expose
+        @SerializedName("url")
+        private String url;
+
+        @Expose
+        @SerializedName("applink")
+        private String applink;
+
+        @Expose
+        @SerializedName("text_color")
+        private String textColor;
+
+        @Expose
+        @SerializedName("image_url")
+        private String imageUrl;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public CtaData getCta() {
+            return cta;
+        }
+
+        public void setCta(CtaData cta) {
+            this.cta = cta;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public void setApplink(String applink) {
+            this.applink = applink;
+        }
+
+        public String getTextColor() {
+            return textColor;
+        }
+
+        public void setTextColor(String textColor) {
+            this.textColor = textColor;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public void setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+        }
+    }
+
+    public class CtaData {
+        @Expose
+        @SerializedName("type")
+        private String type;
+
+        @Expose
+        @SerializedName("mode")
+        private String mode;
+
+        @Expose
+        @SerializedName("text")
+        private String text;
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getMode() {
+            return mode;
+        }
+
+        public void setMode(String mode) {
+            this.mode = mode;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
         }
     }
 }

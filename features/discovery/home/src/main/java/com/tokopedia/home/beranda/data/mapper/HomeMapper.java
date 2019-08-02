@@ -183,6 +183,26 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                         list.size(),channel);
                                 break;
+                            case DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC:
+                                list.add(mappingDynamicChannel(
+                                        channel,
+                                        channel.getEnhanceImpressionDynamicSprintLegoHomePage(),
+                                        null,
+                                        false,
+                                        homeData.isCache()));
+                                HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                        list.size(),channel);
+                                break;
+                            case DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL:
+                                list.add(mappingDynamicChannel(
+                                        channel,
+                                        channel.getEnhanceImpressionDynamicSprintLegoHomePage(),
+                                        null,
+                                        false,
+                                        homeData.isCache()));
+                                HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                        list.size(),channel);
+                                break;
                         }
                     }
                 }
