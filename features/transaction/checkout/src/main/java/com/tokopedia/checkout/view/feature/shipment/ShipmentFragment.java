@@ -222,6 +222,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
+    private boolean hasInsurance = false;
 
     public static ShipmentFragment newInstance(String defaultSelectedTabPromo,
                                                boolean isAutoApplyPromoCodeApplied,
@@ -503,9 +504,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
         }
 
-        List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
+        List<DataCheckoutRequest> dataCheckoutRequests =
+                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
+                hasInsurance,
                 EnhancedECommerceActionField.STEP_2,
                 ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS);
@@ -605,14 +608,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse) {
         if (shipmentAdapter != null) {
+            hasInsurance = false;
             if (insuranceCartResponse != null &&
                     !insuranceCartResponse.getCartShopsList().isEmpty()) {
                 for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
                     for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                         for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
-
-
                             if (!insuranceCartDigitalProduct.isProductLevel()) {
+                                hasInsurance = true;
                                 shipmentAdapter.addInsuranceDataList(insuranceCartShops);
                             }
                         }
@@ -657,7 +660,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderCheckShipmentPrepareCheckoutSuccess() {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
-        shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
+        shipmentPresenter.processCheckout(checkPromoParam, hasInsurance, isOneClickShipment(), isTradeIn(), getDeviceId());
     }
 
     @Override
@@ -1656,9 +1659,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             );
             shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
         }
-        List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
+        List<DataCheckoutRequest> dataCheckoutRequests =
+                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
+                hasInsurance,
                 EnhancedECommerceActionField.STEP_3,
                 ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
                 "");
@@ -1868,10 +1873,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         switch (requestCode) {
             case REQUEST_CODE_NORMAL_CHECKOUT:
                 shipmentPresenter.processSaveShipmentState();
-                shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
+                shipmentPresenter.processCheckout(checkPromoParam, hasInsurance, isOneClickShipment(), isTradeIn(), getDeviceId());
                 break;
             case REQUEST_CODE_COD:
-                shipmentPresenter.proceedCodCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
+                shipmentPresenter.proceedCodCheckout(checkPromoParam, hasInsurance, isOneClickShipment(), isTradeIn(), getDeviceId());
         }
     }
 
@@ -2529,9 +2534,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess() {
-        List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
+        List<DataCheckoutRequest> dataCheckoutRequests =
+                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
+                hasInsurance,
                 EnhancedECommerceActionField.STEP_4,
                 ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS);

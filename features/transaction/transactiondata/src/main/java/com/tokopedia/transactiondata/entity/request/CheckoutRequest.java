@@ -36,6 +36,9 @@ public class CheckoutRequest implements Parcelable {
     @SerializedName("promo_codes")
     @Expose
     public ArrayList<String> promoCodes;
+    @SerializedName("has_macro_insurance")
+    @Expose
+    public boolean hasMacroInsurance;
 
     public CheckoutRequest() {
     }
@@ -48,6 +51,7 @@ public class CheckoutRequest implements Parcelable {
         cornerData = in.readParcelable(TokopediaCornerData.class.getClassLoader());
         hasPromoStacking = in.readByte() != 0;
         promoCodes = in.createStringArrayList();
+        hasMacroInsurance = in.readByte() != 0;
     }
 
     @Override
@@ -59,6 +63,7 @@ public class CheckoutRequest implements Parcelable {
         dest.writeParcelable(cornerData, flags);
         dest.writeByte((byte) (hasPromoStacking ? 1 : 0));
         dest.writeStringList(promoCodes);
+        dest.writeByte((byte) (hasMacroInsurance ? 1 : 0));
     }
 
     @Override
@@ -99,12 +104,14 @@ public class CheckoutRequest implements Parcelable {
         cornerData = builder.cornerData;
         hasPromoStacking = builder.hasPromoStacking;
         promoCodes = builder.promoCodes;
+        hasMacroInsurance = builder.hasInsurance;
     }
 
 
     public static final class Builder {
         private String promoCode;
         private int isDonation;
+        private boolean hasInsurance;
         private EgoldData egoldData;
         private List<DataCheckoutRequest> data;
         private TokopediaCornerData cornerData;
@@ -121,6 +128,11 @@ public class CheckoutRequest implements Parcelable {
 
         public Builder isDonation(int val) {
             isDonation = val;
+            return this;
+        }
+
+        public Builder hasInsurance(boolean val) {
+            hasInsurance = val;
             return this;
         }
 
