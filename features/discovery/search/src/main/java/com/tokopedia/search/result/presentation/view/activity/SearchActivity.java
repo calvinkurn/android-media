@@ -314,7 +314,7 @@ public class SearchActivity extends BaseActivity
         initPresenter();
         initResources();
         getExtrasFromIntent(intent);
-        performProductSearch("");
+        performProductSearch();
         setToolbarTitle(searchParameter.getSearchQuery());
     }
 
@@ -341,16 +341,15 @@ public class SearchActivity extends BaseActivity
         return (uri == null) ? new SearchParameter() : new SearchParameter(uri.toString());
     }
 
-    private void performProductSearch(String queryParams) {
-        updateSearchParameterBeforeSearch(queryParams);
+    private void performProductSearch() {
+        updateSearchParameterBeforeSearch();
         onSearchingStart();
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
         searchPresenter.initiateSearch(searchParameter.getSearchParameterMap());
     }
 
-    private void updateSearchParameterBeforeSearch(String queryParams) {
-        searchParameter.getSearchParameterHashMap().putAll(NetworkParamHelper.getParamMap(queryParams));
+    private void updateSearchParameterBeforeSearch() {
         setSearchParameterUniqueId();
         setSearchParameterUserIdIfLoggedIn();
     }
@@ -575,7 +574,7 @@ public class SearchActivity extends BaseActivity
     public void initiateSearchHandleResponseError() {
         NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
             if(searchParameter == null) return;
-            SearchActivity.this.performProductSearch("");
+            SearchActivity.this.performProductSearch();
         });
     }
 
