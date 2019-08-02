@@ -14,7 +14,9 @@ class PowerMerchantSubscribeActivity : BaseSimpleActivity() {
 
     companion object {
         fun newInstance(context: Context): Intent {
-            return Intent(context, PowerMerchantSubscribeActivity::class.java)
+//            return Intent(context, PowerMerchantSubscribeActivity::class.java)
+            return Intent(context, PowerMerchantCancellationQuestionnaireActivity::class.java)
+
         }
     }
 
