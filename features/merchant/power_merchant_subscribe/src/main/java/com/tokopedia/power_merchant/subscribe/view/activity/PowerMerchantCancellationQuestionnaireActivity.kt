@@ -7,14 +7,22 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireFragment
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment
 
-class PowerMerchantCancellationQuestionnaireActivity : BaseSimpleActivity() {
-
-    override fun getNewFragment(): Fragment {
-        return PowerMerchantCancellationQuestionnaireFragment.createInstance()
+class PowerMerchantCancellationQuestionnaireActivity : BaseStepperActivity() {
+    override fun getListFragment(): MutableList<Fragment> {
+        return  mutableListOf(
+                PowerMerchantCancellationQuestionnaireFragment.createInstance("Page 1"),
+                PowerMerchantCancellationQuestionnaireFragment.createInstance("Page 2"),
+                PowerMerchantCancellationQuestionnaireFragment.createInstance("Page 3"),
+                PowerMerchantCancellationQuestionnaireFragment.createInstance("Page 4"),
+                PowerMerchantCancellationQuestionnaireFragment.createInstance("Page 5")
+        )
     }
+
+    fun isFinalPage(): Boolean = currentPosition == listFragment.size
 
 }

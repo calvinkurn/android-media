@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context=".view.fragment.PowerMerchantCancellationQuestionnaireFragment">
 
     <TextView
+        android:id="@+id/tv_page"
         android:layout_margin="100dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+    <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/button_next"
+        style="@style/Button.Submit.Green.Full"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:text="Button Text"
+        android:layout_marginTop="@dimen/dp_12"
+        app:buttonCompatSize="big"
+        />
+
+</LinearLayout>
