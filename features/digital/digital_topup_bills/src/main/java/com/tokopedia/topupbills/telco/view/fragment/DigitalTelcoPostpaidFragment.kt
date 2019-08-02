@@ -194,7 +194,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         })
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
-                getEnquiryNumber()
+                if (userSession.isLoggedIn) {
+                    getEnquiryNumber()
+                } else {
+                    navigateToLoginPage()
+                }
             }
         })
     }
