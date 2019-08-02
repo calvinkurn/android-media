@@ -194,8 +194,9 @@ public class CatalogListFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void initViewBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.initViewBeforeLoadData(view, savedInstanceState);
+
         initView(view);
         prepareView();
     }

@@ -107,20 +107,25 @@ public abstract class SearchSectionFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initSpan();
-        initLayoutManager();
-        initSwipeToRefresh(view);
 
-        if (savedInstanceState == null) {
-            refreshLayout.post(this::onFirstTimeLaunch);
-        } else {
-            onRestoreInstanceState(savedInstanceState);
-        }
+        initViewBeforeLoadData(view, savedInstanceState);
+
+        refreshLayout.post(this::onFirstTimeLaunch);
     }
 
     private void initSwipeToRefresh(View view) {
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         refreshLayout.setOnRefreshListener(this::onSwipeToRefresh);
+    }
+
+    protected void initViewBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        initSpan();
+        initLayoutManager();
+        initSwipeToRefresh(view);
+
+        if(savedInstanceState != null) {
+            onRestoreInstanceState(savedInstanceState);
+        }
     }
 
     @Override
