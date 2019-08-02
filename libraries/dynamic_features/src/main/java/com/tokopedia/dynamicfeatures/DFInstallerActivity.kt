@@ -124,8 +124,13 @@ class DFInstallerActivity : BaseSimpleActivity() {
             loadAndLaunchModule(moduleName)
         }
         closeButton.setOnClickListener {
-            task?.run {
-                manager.cancelInstall(this.result)
+            try {
+                task?.run {
+                    manager.cancelInstall(this.result)
+                }
+            } catch (e: Exception) {
+            } finally {
+                task = null
             }
             hideProgress()
         }
