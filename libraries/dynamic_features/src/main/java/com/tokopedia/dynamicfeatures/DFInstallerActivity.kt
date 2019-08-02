@@ -43,13 +43,12 @@ class DFInstallerActivity : BaseActivity() {
     private lateinit var imageView: ImageView
     private lateinit var progressGroup: View
     private var isAutoDownload = false
-    private var name: String? = null
     private var task: Task<Int>? = null
 
     private lateinit var moduleName: String
     private lateinit var moduleNameTranslated: String
     private lateinit var applink: String
-    private var imageUrl: String = ""
+    private var imageUrl: String? = null
 
     companion object {
         private const val EXTRA_NAME = "name"
@@ -67,7 +66,10 @@ class DFInstallerActivity : BaseActivity() {
             moduleNameTranslated = uri.getQueryParameter(EXTRA_NAME) ?: ""
             applink = Uri.decode(uri.getQueryParameter(EXTRA_APPLINK)) ?: ""
             isAutoDownload = uri.getQueryParameter(EXTRA_AUTO)?.toBoolean() ?: true
-            imageUrl = uri.getQueryParameter(EXTRA_IMAGE) ?: defaultImageUrl
+            imageUrl = uri.getQueryParameter(EXTRA_IMAGE)
+            if (imageUrl.isNullOrEmpty()) {
+                imageUrl = defaultImageUrl
+            }
         }
         if (moduleName.isEmpty()) {
             finish()
@@ -79,11 +81,11 @@ class DFInstallerActivity : BaseActivity() {
         setContentView(R.layout.activity_dynamic_feature_installer)
         manager = SplitInstallManagerFactory.create(this)
         initializeViews()
-        if (manager.installedModules.contains(name)) {
-            onSuccessfulLoad(name ?: "", launch = true)
+        if (manager.installedModules.contains(moduleName)) {
+            onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
-                loadAndLaunchModule(name ?: "")
+                loadAndLaunchModule(moduleName)
             } else {
                 hideProgress()
             }
@@ -118,7 +120,7 @@ class DFInstallerActivity : BaseActivity() {
         closeButton = findViewById<View>(R.id.close_button)
 
         buttonDownload.setOnClickListener {
-            loadAndLaunchModule(name ?: "")
+            loadAndLaunchModule(moduleName)
         }
         closeButton.setOnClickListener {
             task?.run {
@@ -128,7 +130,7 @@ class DFInstallerActivity : BaseActivity() {
         }
         progressGroup = findViewById(R.id.progress_group)
 
-        if (imageUrl.isEmpty()) {
+        if (imageUrl?.isEmpty() == true) {
             imageView.visibility = View.GONE
         } else {
             ImageHandler.LoadImage(imageView, imageUrl)
@@ -157,7 +159,7 @@ class DFInstallerActivity : BaseActivity() {
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
         hideProgress()
-        if (launch && manager.installedModules.contains(name)) {
+        if (launch && manager.installedModules.contains(moduleName)) {
             RouteManager.getIntentNoFallback(this, applink)?.let {
                 it.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT;
                 startActivity(it)
