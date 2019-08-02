@@ -1,28 +1,51 @@
 package com.tokopedia.power_merchant.subscribe.view.activity
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
-import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.power_merchant.subscribe.model.PMCancellationQuestionnaireModel
+import com.tokopedia.power_merchant.subscribe.model.PMCancellationQuestionnaireStepperModel
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireFragment
-import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment
 
 class PowerMerchantCancellationQuestionnaireActivity : BaseStepperActivity() {
     override fun getListFragment(): MutableList<Fragment> {
-        return  mutableListOf(
-                PowerMerchantCancellationQuestionnaireFragment.createInstance("Page 1"),
-                PowerMerchantCancellationQuestionnaireFragment.createInstance("Page 2"),
-                PowerMerchantCancellationQuestionnaireFragment.createInstance("Page 3"),
-                PowerMerchantCancellationQuestionnaireFragment.createInstance("Page 4"),
-                PowerMerchantCancellationQuestionnaireFragment.createInstance("Page 5")
+        val list = listOf(
+                PMCancellationQuestionnaireModel.LinearScaleQuestionnaire(
+                        "Question 1"
+                ),
+                PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire(
+                        "Question 2",
+                        listOf("Ch 1","Ch 2","Ch 3")
+                ),
+                PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire(
+                        "Question 3",
+                        listOf("Ch 1","Ch 2","Ch 3")
+                ),
+                PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire(
+                        "Question 4",
+                        listOf("Ch 1","Ch 2","Ch 3")
+                ),
+                PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire(
+                        "Question 5",
+                        listOf("Ch 1","Ch 2","Ch 3")
+                )
         )
+        val fragmentList: ArrayList<Fragment> = ArrayList()
+        list.forEach {
+            fragmentList.add(PowerMerchantCancellationQuestionnaireFragment.createInstance(it))
+        }
+        return  fragmentList
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        stepperModel = PMCancellationQuestionnaireStepperModel()
+        super.onCreate(savedInstanceState)
     }
 
     fun isFinalPage(): Boolean = currentPosition == listFragment.size
 
+
+    override fun updateToolbarTitle() {}
+
+    override fun updateToolbarTitle(title: String?) {}
 }
