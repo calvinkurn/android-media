@@ -189,7 +189,7 @@ public protected *;
 
 -keep class com.tokopedia.core.util.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
--keep class com.tokopedia.payment.model.PaymentPassData
+-keep class com.tokopedia.common.payment.model.PaymentPassData
 -keep class com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData
 
 # -- Feeds --

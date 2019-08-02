@@ -46,6 +46,7 @@ object AddNewAddressAnalytics {
     private const val CLICK_FIELD_KOTA_KECAMATAN = "click field kota/kecamatan"
     private const val CLICK_CHIPS_KOTA_KECAMATAN = "click chips kota/kecamatan"
     private const val CLICK_SUGGESTION_KOTA_KECAMATAN = "click suggestion kota/kecamatan"
+    private const val CLICK_PILIH_LOKASI_UNNAMED_ROAD = "click pilih lokasi unnamed road"
     private const val CLICK_FIELD_KODE_POS = "click field kode pos"
     private const val CLICK_CHIPS_KODE_POS = "click chips kode pos"
     private const val CLICK_FIELD_ALAMAT = "click field alamat"
@@ -151,6 +152,10 @@ object AddNewAddressAnalytics {
 
     fun eventClickButtonUbahPinPointChangeAddressPositive() {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BUTTON_UBAH_PIN_POINT)
+    }
+
+    fun eventClickButtonUnnamedRoad() {
+        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS, CLICK_PILIH_LOKASI_UNNAMED_ROAD)
     }
 
     fun eventClickBackArrowOnPositivePageChangeAddressPositive() {

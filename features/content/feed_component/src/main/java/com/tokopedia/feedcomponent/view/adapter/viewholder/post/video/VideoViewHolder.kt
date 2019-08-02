@@ -55,6 +55,11 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                     }
                 }
         )
+        itemView.image.setOnClickListener{
+            if (canPlayVideo(element)) {
+                playVideo(element.url)
+            }
+        }
         itemView.image.loadImage(element.thumbnail)
         if (canPlayVideo(element)) {
             playVideo(element.url)

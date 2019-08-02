@@ -17,7 +17,6 @@ public abstract class BaseViewModel extends ViewModel {
 
     protected void doOnCreate() {
         createRepository();
-        progBarVisibility.setValue(true);
     }
 
     protected void doOnPause() {
@@ -25,7 +24,8 @@ public abstract class BaseViewModel extends ViewModel {
     }
 
     protected void doOnResume() {
-        progBarVisibility.setValue(false);
+
+
     }
 
     protected void doOnStop() {

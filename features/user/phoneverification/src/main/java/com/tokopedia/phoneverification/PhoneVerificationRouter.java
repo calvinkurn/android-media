@@ -15,8 +15,6 @@ public interface PhoneVerificationRouter {
 
     Intent getIntentCreateShop(Context context);
 
-    Intent getProfileSettingIntent(Context context);
-
     Interceptor getChuckInterceptor();
 
 }

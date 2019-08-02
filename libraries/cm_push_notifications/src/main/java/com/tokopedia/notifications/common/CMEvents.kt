@@ -2,6 +2,7 @@ package com.tokopedia.notifications.common
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -23,21 +24,55 @@ object PersistentEvent {
     const val EVENT_CATEGORY = "cm_persistent_push"
     const val EVENT_ACTION_CANCELED = "click close button"
 
-    const val EVENT_ACTION_PERISTENT_CLICK = "Click_Action_Persistent"
 }
 
 object IrisAnalyticsEvents {
-    private const val PUSH_RECEIVED = "push_received"
-    const val PUSH_CLICKED = "push_clicked"
-    const val PUSH_DISMISSED = "push_dismissed"
+    private const val PUSH_RECEIVED = "pushReceived"
+    const val PUSH_CLICKED = "pushClicked"
+    const val PUSH_DISMISSED = "pushDismissed"
 
-    @JvmStatic
+    private const val EVENT_NAME = "event"
+    private const val EVENT_TIME = "event_time"
+    private const val CAMPAIGN_ID = "campaign_id"
+    private const val NOTIFICATION_ID = "notification_id"
+    private const val SOURCE = "source"
+    private const val PARENT_ID = "parent_id"
+    private const val PUSH_TYPE = "push_type"
+    private const val IS_SILENT = "is_silent"
+
     fun sendPushReceiveEvent(context: Context, baseNotificationModel: BaseNotificationModel) {
+        val values = HashMap<String, Any>()
+        val irisAnalytics = IrisAnalytics(context)
+        if (irisAnalytics != null) {
+            values[EVENT_NAME] = PUSH_RECEIVED
+            values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp
+            values[CAMPAIGN_ID] = baseNotificationModel.campaignId.toString()
+            values[NOTIFICATION_ID] = baseNotificationModel.notificationId.toString()
+            values[SOURCE] = CMNotificationUtils.getApplicationName(context)
+            values[PARENT_ID] = baseNotificationModel.parentId.toString()
+            values[PUSH_TYPE] = baseNotificationModel.type.let { baseNotificationModel.type } ?: ""
+            values[IS_SILENT] = CMConstant.NotificationType.SILENT_PUSH == baseNotificationModel.type
+
+        }
+       //todo irisAnalytics.sendEvent(values)
 
     }
 
-    @JvmStatic
-    fun sendPushEvent(context: Context, eventName: String, campaignID: String, notificationID: String) {
+    fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, pushType: String) {
+        val values = HashMap<String, Any>()
+        val irisAnalytics = IrisAnalytics(context)
+        if (irisAnalytics != null) {
+            values[EVENT_NAME] = eventName
+            values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp
+            values[CAMPAIGN_ID] = baseNotificationModel.campaignId.toString()
+            values[NOTIFICATION_ID] = baseNotificationModel.notificationId.toString()
+            values[SOURCE] = CMNotificationUtils.getApplicationName(context)
+            values[PARENT_ID] = baseNotificationModel.parentId.toString()
+            values[PUSH_TYPE] = pushType
+            values[IS_SILENT] = false
+        }
+       //todo irisAnalytics.saveEvent(values)
+
     }
 }
 

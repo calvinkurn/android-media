@@ -63,7 +63,7 @@ class RecommendationPageTestViewModel {
     @Before
     fun setup(){
         MockKAnnotations.init(this)
-        viewModel = RecommendationPageViewModel(graphqlRepository, userSessionInterface, getRecommendationUseCase, dispatcher, "")
+        viewModel = RecommendationPageViewModel(graphqlRepository, userSessionInterface, getRecommendationUseCase, mockk(), mockk(), mockk(), dispatcher, "")
     }
 
     @Test
