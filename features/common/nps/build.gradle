@@ -5,6 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
+
 buildscript {
     repositories {
         mavenCentral()
@@ -17,13 +18,15 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.miscDependencies.dagger

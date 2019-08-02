@@ -112,11 +112,13 @@
             android:layout_height="wrap_content"
             android:theme="@style/TransactionCheckboxDisabled" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_label_insurance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_shipment_insurance" />
+            android:text="@string/label_shipment_insurance"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"/>
 
         <ImageView
             android:id="@+id/img_insurance_info"
@@ -145,10 +147,12 @@
             android:layout_height="wrap_content"
             android:theme="@style/TransactionCheckbox" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_dropshipper_new" />
+            android:text="@string/label_dropshipper_new"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"/>
 
         <ImageView
             android:id="@+id/img_dropshipper_info"
@@ -238,13 +242,14 @@
             android:orientation="vertical"
             android:padding="@dimen/dp_10">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_ticker_info"
-                style="@style/TextSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="7sp"
-                tools:text="@string/label_hardcoded_courier_ticker" />
+                tools:text="@string/label_hardcoded_courier_ticker"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"/>
 
         </LinearLayout>
 

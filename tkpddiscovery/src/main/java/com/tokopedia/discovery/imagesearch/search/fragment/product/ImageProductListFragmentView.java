@@ -36,13 +36,11 @@ public interface ImageProductListFragmentView extends CustomerView {
 
     void setHeaderTopAds(boolean hasHeader);
 
-    void setProductList(List<Visitable> list);
+    void appendProductList(List<Visitable> list);
 
     void disableWishlistButton(String productId);
 
     void enableWishlistButton(String productId);
-
-    void showNetworkError(int startRow);
 
     String getQueryKey();
 

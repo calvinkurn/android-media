@@ -21,6 +21,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopViewHolder
 import com.tokopedia.shop.feed.view.adapter.holder.WhitelistViewHolder
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
@@ -42,6 +43,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                           private val pollOptionListener: PollAdapter.PollOptionListener,
                           private val gridItemListener: GridPostAdapter.GridItemListener,
                           private val videoViewListener: VideoViewHolder.VideoViewListener,
+                          private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                           private val userSession : UserSessionInterface):
         BaseAdapterTypeFactory(), DynamicFeedTypeFactory, FeedShopTypeFactory {
 
@@ -81,6 +83,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                         pollOptionListener,
                         gridItemListener,
                         videoViewListener,
+                        feedMultipleImageViewListener,
                         userSession) as AbstractViewHolder< Visitable<*>>
             FeedRecommendationViewHolder.LAYOUT ->
                 FeedRecommendationViewHolder(parent, recommendationCardListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>

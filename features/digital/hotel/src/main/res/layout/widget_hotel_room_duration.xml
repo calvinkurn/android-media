@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_88"
+    android:gravity="center_vertical"
+    android:padding="@dimen/dp_16">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/hotel_check_in_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hotel_homepage_check_in"
+            app:fontSize="micro"
+            app:textViewTheme="lightSecondary" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/hotel_check_in_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            app:fontSize="small"
+            app:textViewTheme="lightPrimary"
+            tools:text="18 Des 2018" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/hotel_check_in_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:fontSize="micro"
+            app:textViewTheme="lightSecondary"
+            tools:text="Senin, 14:00"
+            tools:visibility="visible"/>
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/hotel_check_out_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hotel_homepage_check_out"
+            app:fontSize="micro"
+            app:textViewTheme="lightSecondary" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/hotel_check_out_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            app:fontSize="small"
+            app:textViewTheme="lightPrimary"
+            tools:text="28 Des 2018" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/hotel_check_out_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:fontSize="micro"
+            app:textViewTheme="lightSecondary"
+            tools:text="Kamis, 12:00"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/hotel_room_night_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_search_destination_tag"
+        android:paddingLeft="@dimen/dp_6"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingRight="@dimen/dp_6"
+        android:paddingBottom="@dimen/dp_2"
+        android:text="@string/hotel_room_night_count"
+        android:textColor="#9e9fa3"
+        android:textStyle="bold"
+        app:fontSize="micro"
+        tools:text="10 Malam" />
+</LinearLayout>

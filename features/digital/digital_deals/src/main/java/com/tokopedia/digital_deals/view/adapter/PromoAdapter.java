@@ -59,7 +59,7 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromosViewHo
         if (!holder.isShown()) {
             holder.setShown(true);
             productItems.get(holder.getAdapterPosition()).setTrack(true);
-            dealsAnalytics.sendPromoImpressionEvent(productItems.get(holder.getIndex()), holder.getIndex());
+            dealsAnalytics.sendPromoImpressionEvent(productItems, holder.getIndex());
         }
 
     }

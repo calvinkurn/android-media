@@ -137,7 +137,7 @@
             android:id="@+id/icon_add_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_af_add"/>
+            app:srcCompat="@drawable/ic_af_add"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_add_product"
@@ -165,7 +165,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
-            android:src="@drawable/ic_af_pick_media"/>
+            app:srcCompat="@drawable/ic_af_pick_media"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/add_sticker"
@@ -183,7 +183,7 @@
             android:id="@+id/add_coupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_af_add_voucher"
+            app:srcCompat="@drawable/ic_af_add_voucher"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:visibility="gone"

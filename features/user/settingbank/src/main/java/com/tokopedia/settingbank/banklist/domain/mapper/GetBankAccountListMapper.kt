@@ -19,14 +19,19 @@ class GetBankAccountListMapper @Inject constructor(): Func1<Response<DataRespons
 
     override fun call(response: Response<DataResponse<BankAccountListPojo>>):
             BankAccountListViewModel {
-        if (response.body().header.messages.isEmpty() ||
-                response.body().header.messages[0].isBlank()) {
-            val pojo: BankAccountListPojo = response.body().data
-            return mapToViewModel(pojo)
+        val body = response.body()
+        if (body != null) {
+            if (body.header.messages.isEmpty() ||
+                    body.header.messages[0].isBlank()) {
+                val pojo: BankAccountListPojo = body.data
+                return mapToViewModel(pojo)
 
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
-
+            throw MessageErrorException("")
         }
     }
 

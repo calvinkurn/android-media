@@ -283,7 +283,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         if (v.getId() == R.id.ll_select_payment_method) {
             mPresenter.getPaymentLink();
             if (dealDetails.getBrand() != null) {
-                dealsAnalytics.sendEcommercePayment(dealDetails.getId(), quantity, dealDetails.getSalesPrice(),
+                dealsAnalytics.sendEcommercePayment(dealDetails.getCategoryId(), dealDetails.getId(), quantity, dealDetails.getSalesPrice(),
                         dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied);
             }
         } else if (v.getId() == R.id.tv_promocode) {

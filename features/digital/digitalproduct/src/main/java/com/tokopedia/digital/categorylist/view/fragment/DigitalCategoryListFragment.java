@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.digital.R;
@@ -199,7 +200,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
                         .title(getString(
                                 R.string.title_header_menu_digital_categories_transaction_list_digital_module
                         ))
-                        .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                        .siteUrl(TokopediaUrl.Companion.getInstance().getPULSA()
                                 + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
                         .resIconId(R.drawable.ic_digital_homepage_header_my_transaction)
                         .typeMenu(DigitalCategoryItemHeader.TypeMenu.TRANSACTION)
@@ -211,7 +212,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
                         .title(getString(
                                 R.string.title_header_menu_digital_categories_favorite_number_digital_module
                         ))
-                        .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                        .siteUrl(TokopediaUrl.Companion.getInstance().getPULSA()
                                 + TkpdBaseURL.DigitalWebsite.PATH_FAVORITE_NUMBER)
                         .resIconId(R.drawable.ic_digital_homepage_header_fav_number)
                         .typeMenu(DigitalCategoryItemHeader.TypeMenu.FAVORITE_NUMBER)
@@ -223,7 +224,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
                         .title(getString(
                                 R.string.title_header_menu_digital_categories_subscription_digital_module
                         ))
-                        .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                        .siteUrl(TokopediaUrl.Companion.getInstance().getPULSA()
                                 + TkpdBaseURL.DigitalWebsite.PATH_MY_BILLS)
                         .resIconId(R.drawable.ic_digital_homepage_header_mybills)
                         .typeMenu(DigitalCategoryItemHeader.TypeMenu.SUBSCRIPTION)

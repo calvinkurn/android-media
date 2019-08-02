@@ -60,11 +60,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     private val bottomChatMenu = BottomChatMenuFragment()
 
-    override fun getAdapterTypeFactory(): BaseChatTypeFactoryImpl {
-        return BaseChatTypeFactoryImpl(this,
-            this, this, this)
-    }
-
     override fun onItemClicked(t: Visitable<*>?) {
         return
     }

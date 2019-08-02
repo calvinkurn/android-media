@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_60"
+    android:orientation="vertical">
+
+  <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/dp_4"
+      android:src="@drawable/top_shadow_gradient" />
+
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56">
+
+      <TextView
+          android:id="@+id/tv_reply_button"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/dp_40"
+          android:layout_marginRight="@dimen/dp_16"
+          android:layout_marginLeft="@dimen/dp_16"
+          android:layout_gravity="center"
+          android:background="@drawable/bg_button_state"
+          android:gravity="center"
+          android:text="@string/balas"
+          android:textColor="@color/white"
+          android:textSize="@dimen/sp_14"
+          android:textStyle="bold"
+          />
+
+    </LinearLayout>
+
+</LinearLayout>

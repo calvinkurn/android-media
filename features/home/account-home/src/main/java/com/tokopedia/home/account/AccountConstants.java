@@ -102,6 +102,10 @@ public class AccountConstants {
         public static final String CATEGORY_ACCOUNT_SELL = "my account - sell";
         public static final String ACTION_CLICK_OPEN_SHOP = "click open shop";
         public static final String ACTION_CLICK_LEARN_MORE = "click learn more";
+
+        public static final String SECTION_OTHER_FEATURE = "Fitur Lainnya";
+        public static final String ITEM_POWER_MERCHANT = "Power Merchant";
+
     }
 
     public interface VccStatus {

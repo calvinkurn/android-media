@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.view.adapter
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,7 +56,11 @@ class DigitalRecentNumbersAdapter(val digitalRecentNumbers: List<TelcoRecommenda
             ImageHandler.loadImageWithoutPlaceholder(iconOperator, telcoRecommendation.iconUrl,
                     ContextCompat.getDrawable(itemView.context, R.drawable.status_no_result)
             )
-            textClientNumber.text = telcoRecommendation.clientNumber
+            if (telcoRecommendation.description.isEmpty()) {
+                textClientNumber.text = telcoRecommendation.clientNumber
+            } else {
+                textClientNumber.text = telcoRecommendation.description
+            }
             textProductName.text = telcoRecommendation.title
         }
 

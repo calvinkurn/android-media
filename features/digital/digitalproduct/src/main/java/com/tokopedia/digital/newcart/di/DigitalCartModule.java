@@ -7,6 +7,7 @@ import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.data.repository.CartDigitalRepository;
 import com.tokopedia.digital.newcart.data.repository.CheckoutRepository;
@@ -17,6 +18,7 @@ import com.tokopedia.digital.newcart.domain.IVoucherDigitalRepository;
 import com.tokopedia.digital.newcart.domain.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -93,6 +95,12 @@ public class DigitalCartModule {
     @DigitalCartScope
     DigitalPostPaidLocalCache provideDigitalPostPaidLocalCache(@ApplicationContext Context context) {
         return DigitalPostPaidLocalCache.newInstance(context);
+    }
+
+    @Provides
+    @DigitalCartScope
+    RechargePushEventRecommendationUseCase provideRechargePushEventRecommendationUseCase(@ApplicationContext Context context){
+        return new RechargePushEventRecommendationUseCase(new GraphqlUseCase(), context);
     }
 
 }

@@ -3,11 +3,11 @@ package com.tokopedia.product.manage.item.main.base.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -119,7 +119,7 @@ public class AddProductserviceModule {
     @Provides
     NetworkCalculator provideNetworkCalculator(@ApplicationContext Context context,
                                                UploadImageDataSource uploadImageDataSource) {
-        return new NetworkCalculator(NetworkConfig.POST, context, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL).setIdentity().compileAllParam().finish();
+        return new NetworkCalculator(NetworkConfig.POST, context, TokopediaUrl.Companion.getInstance().getWEB()).setIdentity().compileAllParam().finish();
     }
 
     @AddProductServiceScope

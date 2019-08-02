@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/dp_260"
+    android:layout_height="@dimen/dp_140"
+    android:layout_margin="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/dp_8">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_12">
+
+        <LinearLayout
+            android:id="@+id/container_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_review_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:fontSize="title"
+                app:textViewTheme="lightPrimary"
+                app:weight="medium"
+                tools:text="Sangat Baik" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_review_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:background="@drawable/bg_hotel_blue_radius"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_1"
+                android:paddingRight="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_1"
+                android:textColor="@color/blue_booking"
+                app:fontSize="small"
+                app:weight="medium"
+                tools:text="8,6" />
+
+        </LinearLayout>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_review_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/container_top"
+            android:layout_marginTop="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="2"
+            app:fontSize="small"
+            tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. " />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_review_reviewer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_review_date"
+            android:layout_marginTop="@dimen/dp_8"
+            app:fontSize="small"
+            app:textViewTheme="lightSecondary"
+            app:weight="medium"
+            tools:text="Ignatius Andrew" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_review_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            app:fontSize="micro"
+            tools:text="8 Sep 2018" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

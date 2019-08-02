@@ -10,8 +10,11 @@ import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.IrisBroadcastReceiver
+import com.tokopedia.iris.worker.IrisExecutor
+import com.tokopedia.iris.worker.IrisExecutor.handler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
@@ -22,11 +25,13 @@ import kotlin.coroutines.CoroutineContext
  */
 class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO
-    private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
     private var cache: Cache = Cache(context)
+
+
+    override val coroutineContext: CoroutineContext by lazy {
+        IrisExecutor.executor + handler
+    }
 
     override fun setService(config: String, isEnabled: Boolean) {
         try {
@@ -61,7 +66,8 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
-            launchCatchError {
+            launch(coroutineContext + Dispatchers.IO) {
+                val trackingRepository = TrackingRepository(context)
                 // convert map to json then save as string
                 val event = JSONObject(map).toString()
                 val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
@@ -71,12 +77,12 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     }
 
     override fun sendEvent(map: Map<String, Any>) {
-         if (cache.isEnabled()) {
-             launchCatchError {
-                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
-                        session)
+        if (cache.isEnabled()) {
+            launch(coroutineContext + Dispatchers.IO) {
+                val trackingRepository = TrackingRepository(context)
+                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
                 if (isSuccess && BuildConfig.DEBUG) {
-                    Log.e("Iris", "Success Send Single Event")
+                    Log.d("Iris", "Success Send Single Event")
                 }
             }
          }

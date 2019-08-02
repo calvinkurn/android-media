@@ -474,14 +474,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void sendAnalyticsOnSubmitSaveAddressClicked() {
-        if (isAddAddressFromCartCheckoutMarketplace()) {
-            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickSimpanFromTambahAlamat();
-            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahAlamatFromTambah();
-        }
-    }
-
-    @Override
     public void sendAnalyticsOnDistrictSelectionClicked() {
         if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickKotaAtauKecamatanPadaTambahAddress();
@@ -600,8 +592,6 @@ public class AddAddressFragment extends BaseDaggerFragment
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanFromEditSuccess();
             } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT) {
                 checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickButtonSimpanFromEditSuccess();
-            } else if (instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT) {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
             }
         } else {
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
@@ -611,8 +601,6 @@ public class AddAddressFragment extends BaseDaggerFragment
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanFromEditNotSuccess();
             } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT) {
                 checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickButtonSimpanFromEditNotSuccess();
-            } else if (instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT) {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
             }
         }
     }
@@ -689,7 +677,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
 
         saveButton.setOnClickListener(view -> {
-            sendAnalyticsOnSubmitSaveAddressClicked();
             if (isValidAddress()) {
                 updateAddress();
                 performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_SUBMIT_ADD_ADDRESS);
