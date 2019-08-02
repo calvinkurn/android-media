@@ -7,8 +7,7 @@
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayoutProductCard"
@@ -195,7 +194,7 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textViewPrice"
             app:layout_constraintStart_toEndOf="@id/linearLayoutShopBadges"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonWishlist"
             app:typographyType="body_3"
             tools:visibility="visible"
             tools:text="Town Location" />
