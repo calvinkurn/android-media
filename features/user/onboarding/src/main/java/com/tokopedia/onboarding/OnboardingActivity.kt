@@ -105,7 +105,7 @@ class OnboardingActivity : BaseActivity() {
 
         val fragmentList = addFragments()
 
-        viewPager?.offscreenPageLimit = 4
+        viewPager?.offscreenPageLimit = 2
         pagerAdapter = OnboardingPagerAdapter(supportFragmentManager, fragmentList)
         viewPager?.adapter = pagerAdapter
 
