@@ -77,10 +77,6 @@ class DFInstallerActivity : BaseActivity() {
             setTitle(getString(R.string.installing_x, moduleNameTranslated))
         }
         setContentView(R.layout.activity_dynamic_feature_installer)
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        progressBar.getProgressDrawable().setColorFilter(
-            ContextCompat.getColor(this, R.color.tkpd_main_green),
-            android.graphics.PorterDuff.Mode.MULTIPLY);
         manager = SplitInstallManagerFactory.create(this)
         initializeViews()
         if (manager.installedModules.contains(name)) {
@@ -108,6 +104,9 @@ class DFInstallerActivity : BaseActivity() {
 
     private fun initializeViews() {
         progressBar = findViewById(R.id.progress_bar)
+        progressBar.getProgressDrawable().setColorFilter(
+            ContextCompat.getColor(this, R.color.tkpd_main_green),
+            android.graphics.PorterDuff.Mode.MULTIPLY)
         progressText = findViewById(R.id.progress_text)
         progressTextPercent = findViewById(R.id.progress_text_percent)
         imageView = findViewById(R.id.image)
