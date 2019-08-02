@@ -197,6 +197,7 @@ public interface ApplinkConst {
 
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
+    String SETTING_NOTIFICATION = "tokopedia://settings/notification";
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
