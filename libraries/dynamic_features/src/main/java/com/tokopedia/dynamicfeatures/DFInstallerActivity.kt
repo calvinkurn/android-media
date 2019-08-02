@@ -141,7 +141,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     private fun loadAndLaunchModule(name: String) {
         displayProgress()
-        progressText.text = getString(R.string.downloading_x, name)
+        progressText.text = getString(R.string.downloading_x, moduleNameTranslated)
 
         // Skip loading if the module already is installed. Perform success action directly.
         if (manager.installedModules.contains(name)) {
@@ -181,7 +181,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         when (state.status()) {
             SplitInstallSessionStatus.DOWNLOADING -> {
                 //  In order to see this, the application has to be uploaded to the Play Store.
-                displayLoadingState(state, getString(R.string.downloading_x, names))
+                displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
             }
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                 /*
@@ -198,7 +198,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
             SplitInstallSessionStatus.INSTALLING -> {
                 updateProgressMessage(
-                    getString(R.string.installing_x, names)
+                    getString(R.string.installing_x, moduleNameTranslated)
                 )
             }
             SplitInstallSessionStatus.FAILED -> {
