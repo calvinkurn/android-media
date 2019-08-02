@@ -113,6 +113,7 @@ public class ShopListFragment
         return inflater.inflate(R.layout.fragment_shop_list_search, null);
     }
 
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initListener();
