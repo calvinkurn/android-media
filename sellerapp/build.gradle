@@ -263,6 +263,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.features.commonDigital)
