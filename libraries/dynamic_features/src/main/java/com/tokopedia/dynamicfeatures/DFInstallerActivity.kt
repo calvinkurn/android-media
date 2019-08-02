@@ -249,8 +249,8 @@ class DFInstallerActivity : BaseSimpleActivity() {
         super.onPause()
     }
 
-    override fun getNewFragment(): Fragment {
-        return Fragment()
+    override fun getNewFragment(): Fragment? {
+        return null
     }
 
 }
