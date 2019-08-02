@@ -162,7 +162,10 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressGroup.visibility = View.INVISIBLE
         if (launch && manager.installedModules.contains(moduleName)) {
             RouteManager.getIntentNoFallback(this, applink)?.let {
-                it.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT;
+                it.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                intent.extras?.let { passBundle ->
+                    it.putExtras(passBundle)
+                }
                 startActivity(it)
             }
         }
