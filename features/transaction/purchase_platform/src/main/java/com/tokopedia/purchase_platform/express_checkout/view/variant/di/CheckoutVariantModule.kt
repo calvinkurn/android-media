@@ -3,8 +3,8 @@ package com.tokopedia.purchase_platform.express_checkout.view.variant.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.errorview.ErrorBottomsheets
 import com.tokopedia.purchase_platform.express_checkout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantContract
 import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantItemDecorator

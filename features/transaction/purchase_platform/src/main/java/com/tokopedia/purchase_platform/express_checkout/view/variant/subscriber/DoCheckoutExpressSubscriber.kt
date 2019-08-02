@@ -1,10 +1,10 @@
 package com.tokopedia.purchase_platform.express_checkout.view.variant.subscriber
 
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.purchase_platform.express_checkout.data.entity.response.checkout.CheckoutExpressGqlResponse
 import com.tokopedia.purchase_platform.express_checkout.domain.mapper.checkout.CheckoutDomainModelMapper
 import rx.Subscriber

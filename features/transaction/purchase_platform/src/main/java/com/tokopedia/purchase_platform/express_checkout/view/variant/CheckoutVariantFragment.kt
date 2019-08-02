@@ -21,11 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.purchase_platform.express_checkout.data.constant.MAX_QUANTITY
 import com.tokopedia.purchase_platform.express_checkout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.purchase_platform.express_checkout.view.profile.CheckoutProfileFragmentListener
@@ -49,6 +44,11 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.errorview.ErrorBottomsheets
+import com.tokopedia.purchase_platform.common.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
+import com.tokopedia.purchase_platform.common.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
+import com.tokopedia.purchase_platform.common.errorview.ErrorBottomsheetsActionListener
+import com.tokopedia.purchase_platform.common.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.WholesalePriceModel
 import com.tokopedia.purchase_platform.express_checkout.router.ExpressCheckoutRouter
