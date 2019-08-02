@@ -81,7 +81,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private var selectedInsuranceProduct = InsuranceRecommendationViewModel()
 
     private var productPrice: Float? = 0f
-    private var insuranceRecommendationRequest: InsuranceRecommendationRequest
+    private var insuranceRecommendationRequest =  InsuranceRecommendationRequest()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: NormalCheckoutViewModel
