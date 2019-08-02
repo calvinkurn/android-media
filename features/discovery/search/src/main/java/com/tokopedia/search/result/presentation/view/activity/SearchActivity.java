@@ -6,8 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,7 +30,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
@@ -79,8 +76,8 @@ public class SearchActivity extends BaseActivity
         HasComponent<BaseAppComponent> {
 
     private static final int TAB_FIRST_POSITION = 0;
-    private static final int TAB_THIRD_POSITION = 2;
     private static final int TAB_SECOND_POSITION = 1;
+    private static final int TAB_THIRD_POSITION = 2;
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
@@ -119,7 +116,6 @@ public class SearchActivity extends BaseActivity
     private String shopTabTitle;
     private String profileTabTitle;
     private boolean isForceSwipeToShop;
-    private boolean isHasCatalog;
     private int activeTabPosition;
 
     @Inject SearchContract.Presenter searchPresenter;
@@ -198,29 +194,13 @@ public class SearchActivity extends BaseActivity
     }
 
     private void moveToAutoCompleteActivity() {
-        ActivityCompat.startActivityForResult(
-                this,
-                getAutoCompleteIntent(),
-                AUTO_COMPLETE_ACTIVITY_REQUEST_CODE,
-                getOptionsForTransitionAnimation().toBundle());
-    }
+        String query = searchParameter.getSearchQuery();
 
-    private Intent getAutoCompleteIntent() {
-        SearchParameter autoCompleteSearchParameter = new SearchParameter();
-        autoCompleteSearchParameter.setSearchQuery(searchParameter.getSearchQuery());
-
-        Intent intent = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
-        intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, autoCompleteSearchParameter);
-
-        return intent;
-    }
-
-    private ActivityOptionsCompat getOptionsForTransitionAnimation() {
-        return ActivityOptionsCompat.makeSceneTransitionAnimation(this, toolbar, SearchConstant.TRANSITION);
+        startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + query);
     }
 
     private void initViewPager() {
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -417,7 +397,6 @@ public class SearchActivity extends BaseActivity
     @Override
     public void initiateSearchHandleResponseSearch(boolean isHasCatalog) {
         stopPerformanceMonitoring();
-        setHasCatalog(isHasCatalog);
         loadSection();
     }
 
@@ -425,10 +404,6 @@ public class SearchActivity extends BaseActivity
         if (performanceMonitoring != null) {
             performanceMonitoring.stopTrace();
         }
-    }
-
-    private void setHasCatalog(boolean isHasCatalog) {
-        this.isHasCatalog = isHasCatalog;
     }
 
     private void loadSection() {
@@ -451,7 +426,7 @@ public class SearchActivity extends BaseActivity
 
     private void initFragments() {
         productListFragment = getProductFragment();
-        if(isHasCatalog) catalogListFragment = getCatalogFragment();
+        catalogListFragment = getCatalogFragment();
         shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment();
     }
@@ -474,7 +449,7 @@ public class SearchActivity extends BaseActivity
 
     private void addFragmentsToList(List<SearchSectionItem> searchSectionItemList) {
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        if(isHasCatalog) searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogListFragment));
+        searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
         searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
     }
@@ -500,11 +475,10 @@ public class SearchActivity extends BaseActivity
                 productListFragment.backToTop();
                 break;
             case TAB_SECOND_POSITION:
-                if(isHasCatalog) catalogListFragment.backToTop();
-                else shopListFragment.backToTop();
+                catalogListFragment.backToTop();
                 break;
             case TAB_THIRD_POSITION:
-                if(isHasCatalog) shopListFragment.backToTop();
+                shopListFragment.backToTop();
                 break;
         }
     }
@@ -515,11 +489,10 @@ public class SearchActivity extends BaseActivity
                 SearchTracking.eventSearchResultTabClick(this, productTabTitle);
                 break;
             case TAB_SECOND_POSITION:
-                if(isHasCatalog) SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
-                else SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
+                SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
                 break;
             case TAB_THIRD_POSITION:
-                if(isHasCatalog) SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
+                SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
                 break;
         }
     }
@@ -535,12 +508,8 @@ public class SearchActivity extends BaseActivity
     }
 
     private int getViewPagerCurrentItem() {
-        if(isForceSwipeToShop) return getShopTabPosition();
+        if(isForceSwipeToShop) return TAB_SECOND_POSITION;
         else return activeTabPosition;
-    }
-
-    private int getShopTabPosition() {
-        return isHasCatalog ? 2 : 1;
     }
 
     @Override
@@ -570,8 +539,21 @@ public class SearchActivity extends BaseActivity
     }
 
     private boolean isApplinkToSearchActivity(String applink) {
-        return !TextUtils.isEmpty(applink)
-                && applink.startsWith(ApplinkConst.DISCOVERY_SEARCH + "?");
+        if(TextUtils.isEmpty(applink)) return false;
+
+        Uri uri = Uri.parse(applink);
+        String applinkTarget = constructApplinkTarget(uri);
+
+        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH)
+                || applinkTarget.equals(ApplinkConstInternalDiscovery.SEARCH_RESULT);
+    }
+
+    private String constructApplinkTarget(@NonNull Uri uri) {
+        String scheme = uri.getScheme();
+        String host = uri.getHost();
+        String path = uri.getEncodedPath();
+
+        return scheme + "://" + host + path;
     }
 
     private int getStartActivityForResultRequestCode(String applink) {
@@ -583,8 +565,10 @@ public class SearchActivity extends BaseActivity
     }
 
     private boolean isApplinkToAutoCompleteActivity(String applink) {
-        return !TextUtils.isEmpty(applink)
-                && applink.startsWith(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?");
+        Uri uri = Uri.parse(applink);
+        String applinkTarget = constructApplinkTarget(uri);
+
+        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
     }
 
     @Override
@@ -618,19 +602,6 @@ public class SearchActivity extends BaseActivity
         searchPresenter.onDestroy();
         searchPresenter.detachView();
         super.onDestroy();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        restartActivityWithoutAnimation(intent);
-    }
-
-    private void restartActivityWithoutAnimation(Intent intent) {
-        startActivity(intent);
-        finish();
-        overridePendingTransition(0, 0);
     }
 
     @Override
@@ -713,13 +684,6 @@ public class SearchActivity extends BaseActivity
         if (searchNavigationClickListener != null) {
             searchNavigationClickListener.onChangeGridClick();
         }
-    }
-
-    @Override
-    public void performNewProductSearch(String queryParams) {
-        this.searchParameter = new SearchParameter();
-        this.isForceSwipeToShop = false;
-        performProductSearch(queryParams);
     }
 
     @Override
