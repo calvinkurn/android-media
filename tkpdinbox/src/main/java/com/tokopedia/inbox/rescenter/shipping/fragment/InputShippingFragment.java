@@ -25,7 +25,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core2.R2;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
@@ -43,20 +42,16 @@ import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentImp
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentPresenter;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.track.TrackApp;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import okhttp3.OkHttpClient;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 import retrofit2.Retrofit;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
@@ -67,7 +62,6 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 /**
  * Created by hangnadi on 12/13/16.
  */
-@RuntimePermissions
 public class InputShippingFragment extends BasePresenterFragment<InputShippingFragmentPresenter>
         implements InputShippingFragmentView, AttachmentAdapter.AttachmentAdapterListener {
 
@@ -75,6 +69,8 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     public static final String EXTRA_PARAM_MODEL = "params_model";
     public static final String URL_IMG = "https://ecs7.tokopedia.net/img/android/others/img_awb_example.png";
     private static final int REQUEST_CODE_IMAGE_RESI = 3124;
+    private PermissionCheckerHelper permissionCheckerHelper;
+
 
     @BindView(R2.id.ref_number)
     EditText shippingRefNum;
@@ -268,7 +264,31 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
                 EditText shippingRefNum = (EditText) view;
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if(motionEvent.getRawX() >= (shippingRefNum.getRight() - shippingRefNum.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        InputShippingFragmentPermissionsDispatcher.scanBarcodeClickWithCheck(InputShippingFragment.this);
+
+                        String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE};
+
+                        if(null == permissionCheckerHelper ){
+                            permissionCheckerHelper = new PermissionCheckerHelper();
+                        }
+
+                        permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
+                            @Override
+                            public void onPermissionDenied(@NotNull String permissionText) {
+                                permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                            }
+
+                            @Override
+                            public void onNeverAskAgain(@NotNull String permissionText) {
+                                permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+                            }
+
+                            @Override
+                            public void onPermissionGranted() {
+                                presenter.onScanBarcodeClick(getActivity());
+                            }
+                        },listOfPermission.toString());
+
                         return true;
                     }
                 }
@@ -342,11 +362,6 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
                 presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
             }
         });
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void scanBarcodeClick() {
-        presenter.onScanBarcodeClick(getActivity());
     }
 
     @Override
@@ -484,59 +499,11 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        InputShippingFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                InputShippingFragment.this, requestCode, grantResults);
-    }
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+       /* InputShippingFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                InputShippingFragment.this, requestCode, grantResults);*/
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
+        }
     }
 
     @Override

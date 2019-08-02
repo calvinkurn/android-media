@@ -1,6 +1,6 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
-class RecommendationWidget(
+open class RecommendationWidget(
         val recommendationItemList: List<RecommendationItem>,
         val title: String,
         val foreignTitle: String,

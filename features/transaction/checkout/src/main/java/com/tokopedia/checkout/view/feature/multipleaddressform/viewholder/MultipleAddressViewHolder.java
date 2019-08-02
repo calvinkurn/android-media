@@ -5,6 +5,9 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,6 +24,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 
@@ -33,15 +37,16 @@ import rx.subscriptions.CompositeSubscription;
 public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
     private Context context;
-    private TextView senderName;
+    private Typography senderName;
+    private Typography senderCity;
     private ImageView productImage;
-    private TextView productName;
-    private TextView productPrice;
+    private Typography productName;
+    private Typography productPrice;
     private RecyclerView shippingDestinationList;
     private ImageView imgFreeReturn;
-    private TextView tvFreeReturnLabel;
-    private TextView tvPreOrder;
-    private TextView tvCashback;
+    private Typography tvFreeReturnLabel;
+    private Typography tvPreOrder;
+    private Typography tvCashback;
     private Button btAddNewShipment;
     private FlexboxLayout productPoliciesLayout;
     private ImageView imgShopBadge;
@@ -51,6 +56,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
         this.context = context;
         senderName = itemView.findViewById(R.id.sender_name);
+        senderCity = itemView.findViewById(R.id.sender_city);
         productImage = itemView.findViewById(R.id.product_image);
         productName = itemView.findViewById(R.id.product_name);
         productPrice = itemView.findViewById(R.id.product_price);
@@ -84,7 +90,17 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
             imgShopBadge.setVisibility(View.GONE);
         }
 
-        senderName.setText(data.getSenderName());
+        String labelShop = senderName.getContext().getResources().getString(R.string.label_toko) + " ";
+        int startLabelShop = labelShop.length();
+        String shopName = data.getSenderName();
+
+        SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
+        completeLabelShop.append(labelShop);
+        completeLabelShop.append(shopName);
+        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        senderName.setText(completeLabelShop);
+        senderCity.setText(data.getSenderCity());
         productName.setText(data.getProductName());
         productPrice.setText(data.getProductPrice());
         ImageHandler.LoadImage(productImage, data.getProductImageUrl());

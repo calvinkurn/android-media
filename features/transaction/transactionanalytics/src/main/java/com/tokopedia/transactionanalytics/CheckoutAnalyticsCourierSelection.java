@@ -201,15 +201,6 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCourierSelectionClickPilihMetodePembayaranSuccess() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                EventLabel.SUCCESS
-        );
-    }
-
     public void eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(String errorMessage) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
@@ -308,6 +299,19 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void sendEnhancedECommerceAddToCart(Map<String, Object> atcMap,
+                                               String eventCategory,
+                                               String eventAction,
+                                               String eventLabel) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.EVENT, EventName.ADD_TO_CART,
+                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
+                ConstantTransactionAnalytics.Key.E_COMMERCE, atcMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
 
     public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
                                               String transactionId,
@@ -408,6 +412,15 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 EventLabel.COURIER_NOT_COMPLETE
+        );
+    }
+
+    public void eventClickBuyPromoRedState() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_BUY,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                EventLabel.NOT_SUCCESS + " - " + EventLabel.PROMO_RED_STATE
         );
     }
 
@@ -818,6 +831,47 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_SUBMIT_PROMO_CONFLICT,
                 promoCode
+        );
+    }
+
+    // Promo not eligible bottomsheet
+    public void eventClickLanjutkanOnErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
+    public void eventClickBatalOnErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
+    public void eventViewPopupErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
+    public void eventViewPromoLogisticTicker(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_LOGISTIC_TICKER,
+                promoCode
+        );
+    }
+    public void eventViewCourierImpressionErrorCourierNoAvailable() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.IMPRESSION_ERROR_COURIER_NO_AVAILABLE
         );
     }
 }

@@ -61,6 +61,9 @@ public class UserAddress {
     @SerializedName("corner_id")
     @Expose
     private int cornerId;
+    @SerializedName("is_corner")
+    @Expose
+    private boolean isCorner;
 
     public int getAddressId() {
         return addressId;
@@ -136,5 +139,13 @@ public class UserAddress {
 
     public void setCornerId(int cornerId) {
         this.cornerId = cornerId;
+    }
+
+    public boolean isCorner() {
+        return isCorner;
+    }
+
+    public void setCorner(boolean corner) {
+        isCorner = corner;
     }
 }

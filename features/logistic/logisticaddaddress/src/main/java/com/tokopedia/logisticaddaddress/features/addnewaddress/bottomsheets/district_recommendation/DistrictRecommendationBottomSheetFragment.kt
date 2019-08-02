@@ -107,6 +107,8 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
             layoutManager = linearLayoutManager
             adapter = listDistrictAdapter
         }
+
+        etSearch.setSelection(etSearch.text.length)
     }
 
     fun setActionListener(actionListener: AddEditAddressFragment) {
@@ -136,8 +138,8 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            onCloseButtonClick()
             AddNewAddressAnalytics.eventClickBackArrowOnNegativePage()
+            onCloseButtonClick()
         }
     }
 
@@ -147,34 +149,35 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     }
 
     private fun setViewListener(staticDimen8dp: Int?) {
-        etSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
-                                           after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int,
-                                       count: Int) {
-                if (s.isNotEmpty()) {
-                    input = "$s"
-                    handler.postDelayed({
-                        presenter.clearCacheDistrictRecommendation()
-                        presenter.getDistrictRecommendation(input, "1")
-                    }, 500)
+        etSearch.apply {
+            isFocusableInTouchMode = true
+            requestFocus()
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
+                                               after: Int) {
                 }
-            }
 
-            override fun afterTextChanged(s: Editable) {
-            }
-        })
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int,
+                                           count: Int) {
+                    if (s.isNotEmpty()) {
+                        input = "$s"
+                        showClearBtn()
+                        handler.postDelayed({
+                            presenter.clearCacheDistrictRecommendation()
+                            presenter.getDistrictRecommendation(input, "1")
+                        }, 500)
 
-        icCloseBtn.setOnClickListener {
-            etSearch.setText("")
-            llListDistrict.visibility = View.GONE
-            llPopularCity.visibility = View.VISIBLE
-            popularCityAdapter.notifyDataSetChanged()
+                    } else {
+                        icCloseBtn.visibility = View.GONE
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable) {
+                }
+            })
         }
 
-        rvChips.addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) })
+        staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) }?.let { rvChips.addItemDecoration(it) }
 
         var visibleItemCount: Int
         var totalItemCount: Int
@@ -196,6 +199,16 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         })
     }
 
+    private fun showClearBtn() {
+        icCloseBtn.setOnClickListener {
+            etSearch.setText("")
+            llListDistrict.visibility = View.GONE
+            llPopularCity.visibility = View.VISIBLE
+            popularCityAdapter.notifyDataSetChanged()
+            icCloseBtn.visibility = View.GONE
+        }
+    }
+
     override fun onSuccessGetDistrictRecommendation(getDistrictRecommendationResponseUiModel: DistrictRecommendationResponseUiModel, numPage: String) {
         if (getDistrictRecommendationResponseUiModel.listDistrict.isNotEmpty()) {
             isLoading = false
@@ -207,7 +220,6 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
                 listDistrictAdapter.loadDistrictRecommendationNextPage(getDistrictRecommendationResponseUiModel.listDistrict.toMutableList())
             }
             listDistrictAdapter.notifyDataSetChanged()
-            updateHeight()
         }
     }
 
@@ -219,5 +231,10 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
                 dismiss()
             }
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        presenter.detachView()
     }
 }

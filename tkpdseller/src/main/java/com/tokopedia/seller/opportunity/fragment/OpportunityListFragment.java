@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import static com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER;
+import static com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER_EXPIRY;
 
 /**
  * Created by nisie on 3/1/17.
@@ -425,6 +426,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                 cacheManager.setValue(CacheUtil.convertModelToString(opportunityFilterPassModel,
                         new TypeToken<OpportunityFilterPassModel>() {
                         }.getType()));
+                cacheManager.setCacheDuration(CACHE_OPPORTUNITY_FILTER_EXPIRY);
                 cacheManager.store();
 
                 Intent intent = OpportunityFilterActivity.createIntent(getActivity());

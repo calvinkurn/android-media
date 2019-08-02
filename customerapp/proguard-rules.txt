@@ -350,7 +350,10 @@
 -keep class com.tokopedia.events.data.entity.response.** { *; }
 
 #tradein
--keep class viewmodel.** { *; }
+-keep class com.tokopedia.tradein.viewmodel.** { *; }
+
+#agerestriction
+-keep class com.tokopedia.age_restriction.viewmodel.** { *; }
 
 #image search
 -keep class com.tokopedia.discovery.imagesearch.domain.model.** { *; }
@@ -377,3 +380,14 @@
 
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
+
+# -- logentries
+-dontwarn org.apache.logging.**
+-dontwarn org.apache.log4j.**
+-dontwarn ch.qos.**
+-dontwarn com.rapid7.**
+-keep class ch.qos.** { *; }
+-keep class com.rapid7.** { *; }
+
+-keepnames class com.rapid7.jul.LogentriesHandler
+-keepnames class com.tokopedia.logger.LogFormatter

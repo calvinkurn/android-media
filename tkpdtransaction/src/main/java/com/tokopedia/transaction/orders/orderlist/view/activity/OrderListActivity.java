@@ -41,7 +41,6 @@ public class OrderListActivity extends BaseSimpleActivity
     private OrderListComponent orderListComponent;
     private OrderListInitContract.Presenter presenter;
 
-
     @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
     public static Intent getConfirmedIntent(Context context, Bundle extras) {
         return getMarketPlaceIntent(context, extras);
@@ -97,6 +96,15 @@ public class OrderListActivity extends BaseSimpleActivity
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_order_list_module;
+    }
+
+    @DeepLink(ApplinkConst.HOTEL_ORDER)
+    public static Intent getHotelOrderListIntent(Context context, Bundle bundle) {
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        bundle.putString(ORDER_CATEGORY, OrderCategory.HOTELS);
+        return new Intent(context, OrderListActivity.class)
+                .setData(uri.build())
+                .putExtras(bundle);
     }
 
     @DeepLink(ApplinkConst.FLIGHT_ORDER)

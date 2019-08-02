@@ -28,6 +28,8 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import kotlinx.android.synthetic.main.layout_card_banner_dynamic_background.view.*
 import java.util.*
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 class BannerViewDynamicBackground : BannerView {
 
@@ -107,7 +109,7 @@ class BannerViewDynamicBackground : BannerView {
             var currentImagePosition = 0
             var oldImagePosition = 0
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val manager : LinearLayoutManager =
                         recyclerView!!.layoutManager as LinearLayoutManager
                 val position = manager.findFirstCompletelyVisibleItemPosition()
@@ -159,5 +161,13 @@ class BannerViewDynamicBackground : BannerView {
 
     override fun getIndicatorFocus(): Int {
         return R.drawable.home_indicator_focus
+    }
+
+    fun shouldShowSeeAllButton(show:Boolean) {
+        if (show) {
+            bannerSeeAll.show()
+        } else {
+            bannerSeeAll.hide()
+        }
     }
 }

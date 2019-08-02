@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_4"
+    android:paddingBottom="@dimen/dp_4">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/hotel_order_detail_transaction_date"
+        app:fontSize="micro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_seperator"
+        tools:textSize="@dimen/sp_12" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_3"
+        android:textColor="@color/light_primary"
+        app:fontSize="small"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:textViewTheme="lightPrimary"
+        tools:text="1 Sep 2017, 05:00 WIB"
+        tools:textSize="@dimen/sp_14" />
+
+</android.support.constraint.ConstraintLayout>

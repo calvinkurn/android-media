@@ -62,7 +62,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     protected static final String ARGS_DATA = "ARGS_DATA";
     protected static final String ARGS_PASS_DATA = "pass_data";
 
-    private static final int COUNTDOWN_LENGTH = 90;
+    private static final int COUNTDOWN_LENGTH = 30;
     private static final int INTERVAL = 1000;
     protected static final int MAX_OTP_LENGTH = 6;
 
@@ -347,6 +347,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             Bundle bundle = new Bundle();
             bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
             bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, msisdn);
+            String otpCode =  inputOtp.getText().toString().trim();
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, otpCode);
             intent.putExtras(bundle);
             getActivity().setResult(Activity.RESULT_OK, intent);
             getActivity().finish();

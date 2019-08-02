@@ -95,7 +95,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
             holder.item_child_recycler_divider.show()
 
             holder.carrot.setImageResource(R.drawable.carrot_up)
-            holder.item_child_recycler.adapter.notifyDataSetChanged()
+            holder.item_child_recycler.adapter?.notifyDataSetChanged()
 
         } else {
             holder.carrot.setImageResource(R.drawable.carrot_down)

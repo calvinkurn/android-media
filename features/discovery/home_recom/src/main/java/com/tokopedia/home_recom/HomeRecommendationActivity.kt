@@ -41,6 +41,12 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
 
     object DeeplinkIntents{
         @JvmStatic
+        @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE)
+        fun getDefaultCallingIntent(context: Context, extras: Bundle): Intent{
+            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "")
+        }
+
+        @JvmStatic
         @DeepLink(ApplinkConst.RECOMMENDATION_PAGE)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
@@ -51,10 +57,13 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     }
 
     override fun getNewFragment(): Fragment {
-        if(intent.data != null && intent.data.pathSegments.size > 1 ){
-            return RecommendationFragment.newInstance(intent.data.lastPathSegment)
+        return if(intent.data != null && intent.data.pathSegments.size > 1 ){
+            RecommendationFragment.newInstance(intent.data.lastPathSegment ?: "")
+        } else if (intent.hasExtra(PRODUCT_ID)) {
+            RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID))
+        } else {
+            RecommendationFragment.newInstance()
         }
-        return RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID))
     }
 
     override fun getComponent(): HomeRecommendationComponent = DaggerHomeRecommendationComponent.builder()
@@ -66,6 +75,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             android.R.id.home -> {
                 RecommendationPageTracking.eventUserClickBack()
                 RouteManager.route(this, ApplinkConst.HOME)
+                this.finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -107,11 +107,6 @@
             android:name="com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity"
             android:label="@string/title_activity_choose_address"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.tokopedia.core.ManagePeople"
-            android:label="@string/title_activity_manage_people"
-            android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity"
             android:label="@string/title_activity_manage_notification"
@@ -161,11 +156,6 @@
         <activity
             android:name="com.tokopedia.core.tracking.activity.TrackingActivity"
             android:label="Tracking"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.DeveloperOptions"
-            android:label="@string/title_activity_developer_options"
-            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.TermPrivacy"

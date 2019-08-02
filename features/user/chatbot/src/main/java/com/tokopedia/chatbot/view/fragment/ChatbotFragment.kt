@@ -26,8 +26,8 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
-import com.tokopedia.chatbot.ChatbotRouter
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
@@ -37,11 +37,12 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
-import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
+import com.tokopedia.chatbot.view.adapter.viewholder.factory.ChatBotChatMenuFactory
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
@@ -58,6 +59,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /**
@@ -66,6 +68,7 @@ import javax.inject.Inject
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener, TypingListener {
+
     override fun clearChatText() {
         replyEditText.setText("")
     }
@@ -106,37 +109,55 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return view
     }
 
+    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
+        return ChatbotTypeFactoryImpl(
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this
+        )
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return ChatbotAdapter(ChatbotTypeFactoryImpl(this,
-                this, this, this,
-                this, this, this))
+        if (adapterTypeFactory !is ChatbotTypeFactoryImpl) {
+            throw IllegalStateException("getAdapterTypeFactory() must return ChatbotTypeFactoryImpl")
+        }
+        val typeFactory = adapterTypeFactory as ChatbotTypeFactoryImpl
+        return ChatbotAdapter(typeFactory)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        super.viewState = ChatbotViewStateImpl(view, session, this,
-                this, onAttachImageClicked(),
-                (activity as BaseChatToolbarActivity).getToolbar(), adapter)
+        super.viewState = ChatbotViewStateImpl(
+                view,
+                session,
+                this,
+                this,
+                this,
+                (activity as BaseChatToolbarActivity).getToolbar(),
+                adapter
+        )
         viewState.initView()
         loadInitialData()
     }
 
-    private fun onAttachImageClicked(): () -> Unit {
-        return {
-            activity?.let {
-                val builder = ImagePickerBuilder(it.getString(R.string.choose_image),
-                        intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
-                                ImagePickerTabTypeDef.TYPE_CAMERA),
-                        GalleryType.IMAGE_ONLY,
-                        ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                        ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                        null,
-                        true,
-                        null,
-                        null)
-                val intent = ImagePickerActivity.getIntent(it, builder)
-                startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
-            }
+    private fun onAttachImageClicked() {
+        activity?.let {
+            val builder = ImagePickerBuilder(it.getString(R.string.choose_image),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
+                            ImagePickerTabTypeDef.TYPE_CAMERA),
+                    GalleryType.IMAGE_ONLY,
+                    ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
+                    null,
+                    true,
+                    null,
+                    null)
+            val intent = ImagePickerActivity.getIntent(it, builder)
+            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
         }
     }
 
@@ -411,4 +432,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.detachView()
     }
 
+    override fun onClickImagePicker() {
+        onAttachImageClicked()
+    }
+
+    override fun createChatMenuFactory(): ChatMenuFactory {
+        return ChatBotChatMenuFactory()
+    }
 }

@@ -182,7 +182,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
         shopStatisticsResp.shopReputation?.let {
             totalPoin.text = getString(R.string.dashboard_x_points, it.score)
-            context?.run { ImageHandler.loadImage(this, shopReputationView, it.badgeHD, -1) }
+            context?.run { ImageHandler.loadImage2(shopReputationView, it.badgeHD,  R.drawable.ic_loading_image) }
         }
 
         shopStatisticsResp.shopPackSpeed?.let {

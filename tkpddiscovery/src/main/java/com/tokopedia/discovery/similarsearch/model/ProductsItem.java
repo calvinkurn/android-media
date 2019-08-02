@@ -247,7 +247,7 @@ public class ProductsItem {
         }
         return DataLayer.mapOf(
                 "name", getName(),
-                "id", getId(),
+                "id", String.valueOf(getId()),
                 "price", price,
                 "brand", "none / other",
                 "category", categoryName,

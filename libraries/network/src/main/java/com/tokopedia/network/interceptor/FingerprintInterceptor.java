@@ -68,7 +68,8 @@ public class FingerprintInterceptor implements Interceptor {
         newRequest.addHeader(KEY_USER_ID, userSession.getUserId());
         newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + userSession.getUserId()));
         newRequest.removeHeader(KEY_ACC_AUTH); //prevent double
-        newRequest.addHeader(KEY_ACC_AUTH, BEARER + userSession.getAccessToken());
+        newRequest.addHeader(KEY_ACC_AUTH, String.format("%s %s", userSession.getTokenType(),
+                userSession.getAccessToken()));
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_ADSID, fingerprintModel.getAdsId());
 

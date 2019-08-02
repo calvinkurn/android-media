@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cl_product_preview"
+    android:id="@+id/cl_attachment_preview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
@@ -14,7 +14,7 @@
     android:visibility="gone">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_product_preview"
+        android:id="@+id/rv_attachment_preview"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

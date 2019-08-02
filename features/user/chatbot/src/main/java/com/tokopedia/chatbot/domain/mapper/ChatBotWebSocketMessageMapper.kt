@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_RATING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
@@ -12,15 +13,14 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
-import com.tokopedia.chatbot.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -42,7 +42,6 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment?.type) {
             TYPE_QUICK_REPLY -> convertToQuickReplyModel(pojo, jsonAttributes)
-            TYPE_INVOICE_SEND -> convertToInvoiceSent(pojo, jsonAttributes)
             TYPE_INVOICES_SELECTION -> convertToInvoiceSelection(pojo, jsonAttributes)
             TYPE_CHAT_BALLOON_ACTION -> convertToChatActionSelectionBubbleModel(pojo, jsonAttributes)
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(pojo)
@@ -107,29 +106,6 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         )
 
     }
-
-    private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            AttachInvoiceSentViewModel {
-        val invoiceSentPojo = GsonBuilder().create().fromJson<InvoiceSentPojo>(jsonAttribute,
-                InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel(
-                pojo.msgId.toString(),
-                pojo.fromUid,
-                pojo.from,
-                pojo.fromRole,
-                pojo.attachment!!.id,
-                pojo.attachment!!.type,
-                pojo.message.timeStampUnixNano,
-                pojo.startTime,
-                invoiceSentPojo.invoiceLink.attributes.title,
-                invoiceSentPojo.invoiceLink.attributes.description,
-                invoiceSentPojo.invoiceLink.attributes.imageUrl,
-                invoiceSentPojo.invoiceLink.attributes.totalAmount,
-                !pojo.isOpposite
-        )
-
-    }
-
 
     private fun convertToChatActionSelectionBubbleModel(pojo: ChatSocketPojo, jsonAttribute: JsonObject): ChatActionSelectionBubbleViewModel {
         val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(jsonAttribute, ChatActionBalloonSelectionAttachmentAttributes::class.java)

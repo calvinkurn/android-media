@@ -6,4 +6,5 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     tools:context=".features.addnewaddress.pinpoint.PinpointMapActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame"
+    android:fitsSystemWindows="true"/>

@@ -64,7 +64,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
 
         type.text = element.sectionTitle
 
-        convertTypeUser(element.label)
+        convertTypeUser(element)
 
         container.setOnClickListener {
             listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
@@ -73,11 +73,24 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
         }
     }
 
-    private fun convertTypeUser(labelIndex: Int) {
+    private fun convertTypeUser(element: NotificationUpdateItemViewModel) {
         label.visibility = View.GONE
+        val labelIndex = element.label
 
-        if (labelIndex == BUYER_TYPE) {
+        if (labelIndex == BUYER_TYPE && element.hasShop) {
             getStringResource(R.string.buyer_label)?.apply {
+                label.text = this
+                label.setTextColor(getColorResource(R.color.Neutral_N200))
+                label.visibility = View.VISIBLE
+            }
+
+            label.background.let {
+                if (it is GradientDrawable) {
+                    it.setColor(getColorResource(R.color.Neutral_N50))
+                }
+            }
+        } else if (labelIndex == SELLER_TYPE) {
+            getStringResource(R.string.seller_label)?.apply {
                 label.text = this
                 label.setTextColor(getColorResource(R.color.Green_G500))
                 label.visibility = View.VISIBLE
@@ -86,18 +99,6 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
             label.background.let {
                 if (it is GradientDrawable) {
                     it.setColor(getColorResource(R.color.Green_G200))
-                }
-            }
-        } else if (labelIndex == SELLER_TYPE) {
-            getStringResource(R.string.seller_label)?.apply {
-                label.text = this
-                label.setTextColor(getColorResource(R.color.Blue_B500))
-                label.visibility = View.VISIBLE
-            }
-
-            label.background.let {
-                if (it is GradientDrawable) {
-                    it.setColor(getColorResource(R.color.Blue_B200))
                 }
             }
         }

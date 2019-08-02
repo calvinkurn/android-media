@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.pushnotif.db.PushNotificationDB;
 import com.tokopedia.pushnotif.db.model.HistoryNotificationDB;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

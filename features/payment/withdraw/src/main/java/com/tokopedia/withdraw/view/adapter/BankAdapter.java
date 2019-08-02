@@ -99,7 +99,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
             text = itemView.findViewById(R.id.text);
             if (text != null) {
                 text.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                        (text.getContext(), R.drawable.ic_add_round), null, null, null);
+                        (itemView.getContext(), R.drawable.ic_add_round), null, null, null);
             }
         }
     }

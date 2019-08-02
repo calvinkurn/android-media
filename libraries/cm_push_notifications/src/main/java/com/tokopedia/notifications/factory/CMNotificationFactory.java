@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.tokopedia.notifications.model.Carousel;
 import com.tokopedia.notifications.model.Grid;
 import com.tokopedia.notifications.model.Media;
 import com.tokopedia.notifications.model.PersistentButton;
+import com.tokopedia.notifications.model.ProductInfo;
 
 import org.json.JSONObject;
 
@@ -36,51 +38,68 @@ import java.util.List;
 public class CMNotificationFactory {
 
     private static final String TAG = CMNotificationFactory.class.getSimpleName();
-
+    
+    @Nullable
     public static BaseNotification getNotification(Context context, Bundle bundle) {
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
 
+        IrisAnalyticsEvents.INSTANCE.sendPushReceiveEvent(context,baseNotificationModel);
+
         if (CMConstant.NotificationType.SILENT_PUSH.equals(baseNotificationModel.getType())) {
-            handleSilentPush(context,baseNotificationModel);
+            handleSilentPush(context, baseNotificationModel);
             return null;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isChannelBlocked(context, baseNotificationModel)) {
             //todo notify to server for Blocked Channel By User.
         } else {
+            if (baseNotificationModel.getType() == null)
+                return null;
             switch (baseNotificationModel.getType()) {
+
                 case CMConstant.NotificationType.GENERAL:
                     if (CMNotificationUtils.INSTANCE.hasActionButton(baseNotificationModel)) {
                         return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
                     }
                     return (new GeneralNotification(context.getApplicationContext(), baseNotificationModel));
-                case CMConstant.NotificationType.GRID_NOTIFICATION:
-                    return (new GridNotification(context.getApplicationContext(), baseNotificationModel));
+
                 case CMConstant.NotificationType.ACTION_BUTTONS:
                     return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
+
                 case CMConstant.NotificationType.BIG_IMAGE:
                     if (CMNotificationUtils.INSTANCE.hasActionButton(baseNotificationModel)) {
                         return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
                     }
                     return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
+
                 case CMConstant.NotificationType.PERSISTENT:
                     CMEvents.postGAEvent(PersistentEvent.EVENT_VIEW_NOTIFICATION, PersistentEvent.EVENT_CATEGORY,
                             PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, PersistentEvent.EVENT_LABEL);
                     return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel));
+
+                case CMConstant.NotificationType.GRID_NOTIFICATION:
+                    return (new GridNotification(context.getApplicationContext(), baseNotificationModel));
+
+                case CMConstant.NotificationType.CAROUSEL_NOTIFICATION:
+                    return (new CarouselNotification(context.getApplicationContext(), baseNotificationModel));
+
+                case CMConstant.NotificationType.VISUAL_NOTIIFICATION:
+                    return new VisualNotification(context.getApplicationContext(), baseNotificationModel);
+
+                case CMConstant.NotificationType.PRODUCT_NOTIIFICATION:
+                    return new ProductNotification(context.getApplicationContext(), baseNotificationModel);
+
                 case CMConstant.NotificationType.DELETE_NOTIFICATION:
                     cancelNotification(context, baseNotificationModel.getNotificationId());
                     return null;
-                case CMConstant.NotificationType.CAROUSEL_NOTIFICATION:
-                    return (new CarouselNotification(context.getApplicationContext(), baseNotificationModel));
-                case CMConstant.NotificationType.VISUAL_NOTIIFICATION:
-                    return new VisualNotification(context.getApplicationContext(), baseNotificationModel);
+
             }
         }
         return null;
     }
 
     private static void handleSilentPush(Context context, BaseNotificationModel baseNotificationModel) {
-        IrisAnalyticsEvents.sendPushReceiveEvent(context, baseNotificationModel);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -110,6 +129,7 @@ public class CMNotificationFactory {
         model.setSoundFileName(data.getString(CMConstant.PayloadKeys.SOUND, ""));
         model.setNotificationId(Integer.parseInt(data.getString(CMConstant.PayloadKeys.NOTIFICATION_ID, "500")));
         model.setCampaignId(Long.parseLong(data.getString(CMConstant.PayloadKeys.CAMPAIGN_ID, "0")));
+        model.setParentId(Long.parseLong(data.getString(CMConstant.PayloadKeys.PARENT_ID, "0")));
         model.setTribeKey(data.getString(CMConstant.PayloadKeys.TRIBE_KEY, ""));
         model.setType(data.getString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, ""));
         model.setChannelName(data.getString(CMConstant.PayloadKeys.CHANNEL, ""));
@@ -130,17 +150,19 @@ public class CMNotificationFactory {
             model.setCarouselIndex(data.getInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0));
         }
         model.setVibration(data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true));
-        model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE, false));
+        model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, false));
 
         List<Grid> gridList = getGridList(data);
         if (gridList != null)
             model.setGridList(gridList);
+        model.setProductInfoList(getProductInfoList(data));
         model.setSubText(data.getString(CMConstant.PayloadKeys.SUB_TEXT));
         model.setVisualCollapsedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_COLLAPSED_IMAGE));
         model.setVisualExpandedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_EXPANDED_IMAGE));
         return model;
     }
 
+    @Nullable
     private static Media getMedia(Bundle extras) {
         String actions = extras.getString(CMConstant.PayloadKeys.MEDIA);
         if (TextUtils.isEmpty(actions)) {
@@ -154,6 +176,7 @@ public class CMNotificationFactory {
         return null;
     }
 
+    @Nullable
     private static JSONObject getCustomValues(Bundle extras) {
         String values = extras.getString(CMConstant.PayloadKeys.CUSTOM_VALUE);
         if (TextUtils.isEmpty(values)) {
@@ -166,7 +189,7 @@ public class CMNotificationFactory {
         }
         return null;
     }
-
+    @Nullable
     private static List<ActionButton> getActionButtons(Bundle extras) {
         String actions = extras.getString(CMConstant.PayloadKeys.ACTION_BUTTON);
         if (TextUtils.isEmpty(actions)) {
@@ -174,7 +197,8 @@ public class CMNotificationFactory {
         }
         try {
             Gson gson = new Gson();
-            Type actionButtonListType = new TypeToken<ArrayList<ActionButton>>(){}.getType();
+            Type actionButtonListType = new TypeToken<ArrayList<ActionButton>>() {
+            }.getType();
             List<ActionButton> actionButtonList = gson.fromJson(actions, actionButtonListType);
             return actionButtonList;
         } catch (Exception e) {
@@ -182,7 +206,7 @@ public class CMNotificationFactory {
         }
         return null;
     }
-
+    @Nullable
     private static List<PersistentButton> getPersistentNotificationData(Bundle bundle) {
         String persistentData = bundle.getString(CMConstant.PayloadKeys.PERSISTENT_DATA);
         if (TextUtils.isEmpty(persistentData)) {
@@ -199,6 +223,23 @@ public class CMNotificationFactory {
         return null;
     }
 
+    @Nullable
+    private static ArrayList<ProductInfo> getProductInfoList(Bundle bundle) {
+        String productInfoListStr = bundle.getString(CMConstant.PayloadKeys.PRODUCT_INFO_LIST);
+        if (TextUtils.isEmpty(productInfoListStr)) {
+            return null;
+        }
+        try {
+            Type listType = new TypeToken<ArrayList<ProductInfo>>() {
+            }.getType();
+            return new Gson().fromJson(productInfoListStr, listType);
+        } catch (Exception e) {
+            Log.e(TAG, "CM-getProductInfo", e);
+        }
+        return null;
+    }
+
+    @Nullable
     private static List<Grid> getGridList(Bundle bundle) {
         String persistentData = bundle.getString(CMConstant.PayloadKeys.GRID_DATA);
         if (TextUtils.isEmpty(persistentData)) {
@@ -214,6 +255,7 @@ public class CMNotificationFactory {
         return null;
     }
 
+    @Nullable
     private static JSONObject getVideoNotificationData(Bundle bundle) {
 
         String values = bundle.getString(CMConstant.PayloadKeys.VIDEO_DATA);
@@ -228,6 +270,7 @@ public class CMNotificationFactory {
         return null;
     }
 
+    @Nullable
     private static List<Carousel> getCarouselList(Bundle extras) {
         String carouselData = extras.getString(CMConstant.PayloadKeys.CAROUSEL_DATA);
         if (TextUtils.isEmpty(carouselData)) {

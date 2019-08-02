@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
@@ -30,6 +31,7 @@ class HomeRecommendationAdapter(
             TitleDataModel.LAYOUT -> layout.isFullSpan = true
             EmptyViewHolder.LAYOUT -> layout.isFullSpan = true
             ErrorNetworkViewHolder.LAYOUT -> layout.isFullSpan = true
+            LoadingShimmeringGridViewHolder.LAYOUT -> layout.isFullSpan = true
         }
         holder.bind(visitables[position])
     }

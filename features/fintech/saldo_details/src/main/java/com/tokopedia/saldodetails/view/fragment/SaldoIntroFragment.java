@@ -45,13 +45,13 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
         viewMore = view.findViewById(R.id.si_view_more);
         gotoSaldoPage = view.findViewById(R.id.si_goto_balance_page);
         ((TextView)view.findViewById(R.id.dana_refund)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_refund), null, null , null);
+                (view.getContext(), R.drawable.ic_refund), null, null , null);
         ((TextView)view.findViewById(R.id.disbursement_fund)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_refund_disbursement), null, null , null);
+                (view.getContext(), R.drawable.ic_refund_disbursement), null, null , null);
         ((TextView)view.findViewById(R.id.hasil_penjualan)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_sales_report), null, null , null);
+                (view.getContext(), R.drawable.ic_sales_report), null, null , null);
         ((TextView)view.findViewById(R.id.disbursement_priority_balance)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_balance_disbursement), null, null , null);
+                (view.getContext(), R.drawable.ic_balance_disbursement), null, null , null);
         return view;
     }
 

@@ -22,6 +22,7 @@ project.ext {
 
 dependencies {
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.libraries.design)

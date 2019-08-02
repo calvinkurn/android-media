@@ -49,7 +49,8 @@ public class ShopProductCheckoutRequest implements Parcelable {
     @Expose
     public int isOrderPriority;
 
-    public String cartString;
+    // Additional data, won't be dispatched over network
+    public String cartString = "";
 
     public ShopProductCheckoutRequest() {
     }

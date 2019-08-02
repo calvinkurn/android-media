@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.config.GlobalConfig;
@@ -204,8 +205,8 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
 
         if (requestCode ==
                 DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL())
-            if (data != null && data.hasExtra(DigitalRouter.Companion.getEXTRA_MESSAGE())) {
-                String message = data.getStringExtra(DigitalRouter.Companion.getEXTRA_MESSAGE());
+            if (data != null && data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
+                String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
                 if (!TextUtils.isEmpty(message)) {
                     Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                 }

@@ -1,0 +1,18 @@
+mutation goldTurnOffSubscription{
+  goldTurnOffSubscription(autoExtend:false){
+    header{
+      process_time
+      message
+      reason
+      error_code
+    }
+    data{
+      product{
+        id
+        autoextend
+      }
+      shopID
+      expiredTime
+    }
+  }
+}

@@ -160,7 +160,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         categoryLevelTwoViewModel.getCategoryHotlist().observe(this, Observer<List<ListItem>> {
             categoryHotlist.clear()
             categoryHotlist.addAll(it as List<ListItem>)
-            hotlist.adapter.notifyDataSetChanged()
+            hotlist.adapter?.notifyDataSetChanged()
 
         })
     }
@@ -178,7 +178,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                val type = slave_list.adapter.getItemViewType(position)
+                val type = slave_list.adapter?.getItemViewType(position)
                 return if (type == 1)
                     1
                 else

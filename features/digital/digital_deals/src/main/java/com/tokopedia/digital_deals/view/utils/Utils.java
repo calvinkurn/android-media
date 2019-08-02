@@ -66,6 +66,7 @@ public class Utils {
     public static String QUERY_PARAM_CITY_ID = "cities";
     public static String LOCATION_NAME = "Jakarta";
     public static int LOCATION_ID = 318;
+    public static int MAX_ITEMS_FOR_GA = 5;
     public static final String NEXT_URL = "nexturl";
     private static final float MAX_RADIUS = 25.0f;
     private static final float MIN_RADIUS = 0.0f;

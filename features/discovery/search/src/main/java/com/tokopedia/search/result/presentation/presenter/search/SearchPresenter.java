@@ -32,7 +32,7 @@ class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implement
 
     @Override
     public void onPause() {
-        if(initiateSearchModelUseCase != null) initiateSearchModelUseCase.unsubscribe();
+        unsubscribeUseCases();
     }
 
     @Override
@@ -43,6 +43,16 @@ class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implement
     @Override
     public void onDestroy() {
 
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        unsubscribeUseCases();
+    }
+
+    private void unsubscribeUseCases() {
+        if(initiateSearchModelUseCase != null) initiateSearchModelUseCase.unsubscribe();
     }
 
     @Override

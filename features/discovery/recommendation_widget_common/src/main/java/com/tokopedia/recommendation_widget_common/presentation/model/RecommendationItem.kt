@@ -20,10 +20,22 @@ class RecommendationItem(val productId: Int,
                          val stock: Int,
                          val recommendationType: String,
                          val isTopAds: Boolean,
+                         var isWishlist: Boolean,
                          val slashedPrice: String,
                          val slashedPriceInt: Int,
                          val discountPercentage: Int,
-                         val position: Int) : ImpressHolder(){
+                         val position: Int,
+                         val shopId: Int,
+                         val shopType: String,
+                         val shopName: String,
+                         var cartId: Int,
+                         val quantity: Int,
+                         val header: String,
+                         val pageName: String,
+                         val minOrder: Int,
+                         val location: String,
+                         val badgesUrl: List<String?>,
+                         val type: String): ImpressHolder(){
 
     fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
 }

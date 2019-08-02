@@ -6,8 +6,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
-import butterknife.ButterKnife;
-
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
  */
@@ -44,7 +42,6 @@ public abstract class BaseView<D, L> extends FrameLayout {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(getLayoutView(), this, true);
-        ButterKnife.bind(this);
     }
 
     protected abstract int getLayoutView();

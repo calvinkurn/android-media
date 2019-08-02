@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +20,6 @@ import android.widget.Toast;
 
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
-import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.customview.CustomSeatAreaLayout;
 import com.tokopedia.events.view.customview.CustomSeatLayout;
@@ -40,50 +37,31 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SeatSelectionActivity extends EventBaseActivity implements
-        SeatSelectionContract.SeatSelectionView {
+        SeatSelectionContract.SeatSelectionView, View.OnClickListener {
 
 
-    @BindView(R2.id.tv_movie_name)
     TextView movieName;
-    @BindView(R2.id.selected_seats)
     TextView selectedSeatText;
-    @BindView(R2.id.tv_show_timing)
     TextView showTiming;
-    @BindView(R2.id.vertical_layout)
     LinearLayout seatTextLayout;
-    @BindView(R2.id.small_preview)
     ImageView previewWindow;
-    @BindView(R2.id.preview_window)
     View previewLayout;
-    @BindView(R2.id.seatLayout)
     LinearLayout seatLayout;
-    @BindView(R2.id.seat_plan)
     LinearLayout seatPlan;
-    @BindView(R2.id.abc)
     ScrollView scrollView;
-    @BindView(R2.id.horizontal_scroll)
     HorizontalScrollView horizontalScrollView;
-    @BindView(R2.id.ticket_count)
     TextView ticketCount;
-    @BindView(R2.id.ticket_price)
     TextView ticketPrice;
-    @BindView(R2.id.progress_bar_layout)
     View progressBarLayout;
-    @BindView(R2.id.prog_bar)
     ProgressBar progBar;
-    @BindView(R2.id.main_content)
     FrameLayout mainContent;
-    @BindView(R2.id.tv_seats_available)
+    LinearLayout verifySeatLayout;
+    TextView verifySeatLayoutBtn;
     TextView tvSeatsAvailable;
-    @BindView(R2.id.tv_seats__not_available)
     TextView tvSeatsNotAvailable;
-    @BindView(R2.id.seats_booking)
     TextView seatsLooking;
 
     SeatSelectionPresenter seatSelectionPresenter;
@@ -135,6 +113,31 @@ public class SeatSelectionActivity extends EventBaseActivity implements
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
         seatSelectionPresenter.getSeatSelectionDetails();
+    }
+
+    @Override
+    void setupVariables() {
+        movieName = findViewById(R.id.tv_movie_name);
+        selectedSeatText = findViewById(R.id.selected_seats);
+        showTiming = findViewById(R.id.tv_show_timing);
+        seatTextLayout = findViewById(R.id.vertical_layout);
+        previewWindow = findViewById(R.id.small_preview);
+        previewLayout = findViewById(R.id.preview_window);
+        seatLayout = findViewById(R.id.seatLayout);
+        seatPlan = findViewById(R.id.seat_plan);
+        scrollView = findViewById(R.id.abc);
+        horizontalScrollView = findViewById(R.id.horizontal_scroll);
+        ticketCount = findViewById(R.id.ticket_count);
+        ticketPrice = findViewById(R.id.ticket_price);
+        progressBarLayout = findViewById(R.id.progress_bar_layout);
+        progBar = findViewById(R.id.prog_bar);
+        mainContent = findViewById(R.id.main_content);
+        verifySeatLayout = findViewById(R.id.pay_tickets);
+        verifySeatLayoutBtn = verifySeatLayout.findViewById(R.id.button_textview);
+        tvSeatsAvailable = findViewById(R.id.tv_seats_available);
+        tvSeatsNotAvailable = findViewById(R.id.tv_seats__not_available);
+        seatsLooking = findViewById(R.id.seats_booking);
+        verifySeatLayoutBtn.setOnClickListener(this);
 
         tvSeatsAvailable.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
                 (this, R.drawable.seat_bg), null, null, null);
@@ -142,6 +145,7 @@ public class SeatSelectionActivity extends EventBaseActivity implements
                 (this, R.drawable.cannot_select_seat_bg), null, null, null);
         seatsLooking.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
                 (this, R.drawable.currently_selected_seat_bg), null, null, null);
+
     }
 
     @Override
@@ -205,11 +209,6 @@ public class SeatSelectionActivity extends EventBaseActivity implements
     @Override
     public void hidePayButton() {
 
-    }
-
-    @OnClick(R2.id.verifySeat)
-    void verifySeat() {
-        setSelectedSeatModel();
     }
 
     @Override
@@ -340,5 +339,12 @@ public class SeatSelectionActivity extends EventBaseActivity implements
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.button_textview) {
+            setSelectedSeatModel();
+        }
     }
 }

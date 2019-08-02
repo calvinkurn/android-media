@@ -2,7 +2,7 @@ package com.tokopedia.discovery.newdiscovery.category.presentation.base;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author by alifa on 10/26/17.
  */
 
-public class CategorySectionPagerAdapter extends FragmentPagerAdapter {
+public class CategorySectionPagerAdapter extends FragmentStatePagerAdapter {
     private List<CategorySectionItem> categorySectionItems = new ArrayList<>();
 
     public CategorySectionPagerAdapter(FragmentManager fm) {
@@ -22,6 +22,11 @@ public class CategorySectionPagerAdapter extends FragmentPagerAdapter {
 
     public void setData(List<CategorySectionItem> categorySectionItems) {
         this.categorySectionItems = categorySectionItems;
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        this.categorySectionItems.clear();
         notifyDataSetChanged();
     }
 

@@ -14,6 +14,7 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -32,6 +33,7 @@ import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -39,7 +41,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
@@ -73,6 +74,8 @@ import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModule;
+import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModuleLoader;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
@@ -136,6 +139,10 @@ import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
 import com.tokopedia.tokopoints.TokopointApplinkModule;
 import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
+import com.tokopedia.topads.auto.internal.AutoAdsLinkModule;
+import com.tokopedia.topads.auto.internal.AutoAdsLinkModuleLoader;
+import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
+import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
@@ -149,6 +156,16 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.webview.WebViewApplinkModule;
+import com.tokopedia.webview.WebViewApplinkModuleLoader;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -167,6 +184,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
         TrainApplinkModule.class,
+        InstantDebitBcaApplinkModule.class,
         DigitalBrowseApplinkModule.class,
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
@@ -209,12 +227,17 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
         OvoPayWithQrApplinkModule.class,
-        RecommendationDeeplinkModule.class
+        WebViewApplinkModule.class,
+        RecommendationDeeplinkModule.class,
+        TopAdsDashboardApplinkModule.class,
+        AutoAdsLinkModule.class,
+        PowerMerchantSubscribeDeeplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static ApplinkDelegate applinkDelegate;
+    private Subscription clearNotifUseCase;
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
@@ -236,6 +259,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new FeedDeeplinkModuleLoader(),
                     new FlightApplinkModuleLoader(),
                     new TrainApplinkModuleLoader(),
+                    new InstantDebitBcaApplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new ReputationApplinkModuleLoader(),
                     new TokoCashApplinkModuleLoader(),
@@ -277,7 +301,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
                     new OvoPayWithQrApplinkModuleLoader(),
-                    new RecommendationDeeplinkModuleLoader()
+                    new WebViewApplinkModuleLoader(),
+                    new RecommendationDeeplinkModuleLoader(),
+                    new TopAdsDashboardApplinkModuleLoader(),
+                    new AutoAdsLinkModuleLoader(),
+                    new PowerMerchantSubscribeDeeplinkModuleLoader()
             );
         }
 
@@ -314,27 +342,56 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 } else if (bundle.getBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, false)) {
                     int notificationType = bundle.getInt(Constant.EXTRA_NOTIFICATION_TYPE, 0);
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
-
-                    if (notificationId == 0) {
-                        HistoryNotification.clearAllHistoryNotification(this, notificationType);
-                    } else {
-                        HistoryNotification.clearHistoryNotification(this, notificationType, notificationId);
-                    }
-
-                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-                    notificationManagerCompat.cancel(notificationId);
-
-                    //clear summary notification if group notification only have 1 left
-                    if (notificationId != 0 && HistoryNotification.isSingleNotification(this, notificationType)) {
-                        notificationManagerCompat.cancel(notificationType);
-                    }
-
-
+                    cancelNotification(notificationType, notificationId);
                 }
-//                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
         }
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (clearNotifUseCase != null && !clearNotifUseCase.isUnsubscribed()) {
+            clearNotifUseCase.unsubscribe();
+        }
+    }
+
+    private void cancelNotification(int notificationType, int notificationId) {
+        clearNotifUseCase = Observable.just(true)
+                .subscribeOn(Schedulers.io())
+                .map(aBoolean -> {
+                    if (notificationId == 0) {
+                        HistoryNotification.clearAllHistoryNotification(DeeplinkHandlerActivity.this, notificationType);
+                    } else {
+                        HistoryNotification.clearHistoryNotification(DeeplinkHandlerActivity.this, notificationType, notificationId);
+                    }
+
+                    return HistoryNotification.isSingleNotification(DeeplinkHandlerActivity.this, notificationType);
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable ignored) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean isSingleNotif) {
+                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(DeeplinkHandlerActivity.this);
+                        notificationManagerCompat.cancel(notificationId);
+
+                        //clear summary notification if group notification only have 1 left
+                        if (notificationId != 0 && isSingleNotif) {
+                            notificationManagerCompat.cancel(notificationType);
+                        }
+                    }
+                });
     }
 
     private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString) {
@@ -422,7 +479,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     @DeepLink(Constants.Applinks.BROWSER)
     public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
         String webUrl = extras.getString(
-                Constants.ARG_NOTIFICATION_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+                Constants.ARG_NOTIFICATION_URL, TokopediaUrl.Companion.getInstance().getWEB()
         );
         Intent destination = new Intent(Intent.ACTION_VIEW);
         destination.setData(Uri.parse(webUrl));

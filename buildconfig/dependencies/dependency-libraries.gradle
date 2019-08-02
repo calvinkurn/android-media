@@ -18,10 +18,7 @@ ext {
     tkpdYoutubeUtilVersion = '2.22'
     tkpdBaseAdapterlVersion = '2.22'
     tkpdGraphViewVersion = '2.22'
-
-    unifyIconVersion = '0.0.2'
-    unifyPrinciplesVersion = '0.0.1'
-    unifyComponentsVersion = '0.0.3'
+    tkpdUrlVersion = '2.22'
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
@@ -61,6 +58,7 @@ ext {
             kotlinExtensions  : ":libraries:kotlin_extensions",
             linker            : ":libraries:linker",
             locationmanager   : ":libraries:locationmanager",
+            logger            : ":libraries:logger",
             network           : ":libraries:network",
             omsApi            : ":libraries:oms",
             pagination        : ":libraries:pagination",
@@ -89,9 +87,6 @@ ext {
             cpm              : ":libraries:cpm",
             banner            : ":libraries:unify:unify_compositions:banner",
             collapsingTabLayout: ":libraries:collapsing_tab_layout",
-            unifyIcon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
-            unifyPrinciples   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
-            unifyComponents   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
-            coachMark         : ":libraries:unify:unify_compositions:coach_mark"
+            url: ":libraries:url"
     ]
 }

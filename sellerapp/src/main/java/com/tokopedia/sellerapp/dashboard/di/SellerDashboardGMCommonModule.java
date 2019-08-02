@@ -15,6 +15,8 @@ import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.seller.shop.common.interceptor.HeaderErrorResponseInterceptor;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -68,6 +70,7 @@ public class SellerDashboardGMCommonModule {
         return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build();
     }
 
+    @Named("SellerDashboard")
     @SellerDashboardScope
     @Provides
     public GMCommonApi provideGMCommonApi(@SellerDashboardGMQualifier Retrofit retrofit) {
@@ -76,7 +79,7 @@ public class SellerDashboardGMCommonModule {
 
     @SellerDashboardScope
     @Provides
-    public GMCommonCloudDataSource provideGMCommonCloudDataSource(GMCommonApi gmCommonApi) {
+    public GMCommonCloudDataSource provideGMCommonCloudDataSource(@Named("SellerDashboard") GMCommonApi gmCommonApi) {
         return new GMCommonCloudDataSource(gmCommonApi);
     }
 

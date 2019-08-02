@@ -654,9 +654,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     if (getView().getCurrentDashboardViewModel().getFlightClass() == null) {
                                         isAvailableToSearch = false;
                                     }
-                                    if (isSearchImmediately && isAvailableToSearch) {
-                                        //TODO : search immediately is not work
-//                                        onSearchTicketButtonClicked();
+                                    if (isSearchImmediately && isAvailableToSearch && getView().isAutoSearch()) {
+                                        onSearchTicketButtonClicked();
                                     }
                                 }
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,6 +38,8 @@ import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInsta
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
+import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 
 import java.util.ArrayList;
@@ -48,7 +51,8 @@ import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RES
 public class ImagePickerActivity extends BaseSimpleActivity
         implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener,
-        ImagePickerInstagramFragment.ListenerImagePickerInstagram, ImagePickerPresenter.ImagePickerView, ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener {
+        ImagePickerInstagramFragment.ListenerImagePickerInstagram, ImagePickerPresenter.ImagePickerView,
+        ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener, VideoRecorderFragment.VideoPickerCallback {
 
     public static final String EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder";
 
@@ -654,4 +658,27 @@ public class ImagePickerActivity extends BaseSimpleActivity
         outState.putStringArrayList(SAVED_IMAGE_DESCRIPTION, imageDescriptionList);
     }
 
+    @Override
+    public void onVideoTaken(String filePath) {
+        onImageSelected(filePath, true, null);
+    }
+
+    @Override
+    public void onVideoRecorder(int state) {
+        if (state == StateRecorderType.START){
+            tabLayout.setClickable(false);
+        } else {
+            tabLayout.setClickable(true);
+        }
+    }
+
+    @Override
+    public void onVideoPreviewVisible() {
+        onPreviewCameraViewVisible();
+    }
+
+    @Override
+    public void onVideoRecorderVisible() {
+        onCameraViewVisible();
+    }
 }

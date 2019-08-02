@@ -18,6 +18,7 @@ import com.tokopedia.core.util.MethodChecker
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
 import com.tokopedia.seller.SellerModuleRouter
 import com.tokopedia.shop.open.R
+import com.tokopedia.shop.open.analytic.ShopOpenTracking
 import com.tokopedia.shop.open.di.component.DaggerShopOpenDomainComponent
 import com.tokopedia.shop.open.view.activity.ShopOpenCreateReadyActivity.Companion.ARGUMENT_DATA_SHOP_ID
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,6 +29,8 @@ class ShopOpenCreateReadyFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var trackingOpenShop: ShopOpenTracking
 
     companion object {
         fun newInstance(shopId:String) =
@@ -54,11 +57,13 @@ class ShopOpenCreateReadyFragment : BaseDaggerFragment() {
         val helloName = getString(R.string.hello_user_name, userSession.name)
         tv_user_name.text = MethodChecker.fromHtml(helloName)
         button_add_product.setOnClickListener {
+            trackingOpenShop.eventButtonAddProduct()
             val intent = ProductAddNameCategoryActivity.createInstance(activity);
             startActivity(intent)
             activity?.finish()
         }
         button_add_product_later.setOnClickListener {
+            trackingOpenShop.eventButtonAddProductLater()
             RouteManager.route(context, ApplinkConst.SHOP,arguments?.getString(ARGUMENT_DATA_SHOP_ID) ?: "" )
             activity?.finish()
         }
@@ -83,6 +88,7 @@ class ShopOpenCreateReadyFragment : BaseDaggerFragment() {
 
         spanText.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
+                trackingOpenShop.eventLinkClick()
                 RouteManager.route(context,ApplinkConst.SELLER_SHIPPING_EDITOR)
             }
             override fun updateDrawState(ds: TextPaint) {
