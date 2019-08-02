@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">dynamic_feature</string>
+    <string name="app_name">dynamic_features</string>
     <string name="install_module">Install Module</string>
     <string name="installing_x">Menginstall %1$s</string>
     <string name="downloading">Sedang melakukan proses pengunduhan</string>
