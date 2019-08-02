@@ -185,7 +185,7 @@ android {
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources true
+//            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
@@ -201,21 +201,26 @@ android {
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
 
-            if (allowSplit()) {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
+//            if (allowSplit()) {
+//                applicationVariants.all { variant ->
+//                    variant.outputs.each { output ->
+//                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+//                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
+//                    }
+//                    variant.assemble.doLast {
+//                        variant.outputs.each { output ->
+//                            if (output.zipAlign) {
+//                                archiveAPK(variant, output);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+
+            variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
                         output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
                     }
-                    variant.assemble.doLast {
-                        variant.outputs.each { output ->
-                            if (output.zipAlign) {
-                                archiveAPK(variant, output);
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -277,6 +282,9 @@ android {
             dimension "client"
         }
     }
+
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.hotelTravel]
+
 }
 
 dependencies {
@@ -309,7 +317,6 @@ dependencies {
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
-    implementation project(rootProject.ext.features.hotel)
     implementation project(rootProject.ext.features.imagePreviewSlider)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)

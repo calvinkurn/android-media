@@ -46,6 +46,9 @@ include "features:discovery:wishlist_common"
 include "features:discovery:search"
 
 include "features:fintech:mitra_toppers"
+
+include "dynamic_features:travel:hotel_travel"
+
 include "features:fintech:home_credit"
 include "features:fintech:reksa_dana"
 include "features:digital:instant_debit_bca"

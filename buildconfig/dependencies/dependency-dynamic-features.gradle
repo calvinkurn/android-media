@@ -1,0 +1,6 @@
+ext {
+
+    dynamicFeatures = [
+            hotelTravel : ":dynamic_features:travel:hotel_travel"
+    ]
+}
