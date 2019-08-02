@@ -2,7 +2,6 @@ package com.tokopedia.onboarding.fragment
 
 import android.app.Activity
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -18,7 +17,6 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.onboarding.OnboardingActivity
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
-import com.tokopedia.onboarding.listener.CustomAnimationPageTransformerDelegate
 import com.tokopedia.onboarding.listener.OnboardingVideoListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -31,17 +29,14 @@ import javax.inject.Inject
  */
 class OnboardingFragment : BaseDaggerFragment(),
         OnboardingActivity.onBoardingFirsbaseCallBack,
-        CustomAnimationPageTransformerDelegate {
+        OnboardingVideoListener {
 
     companion object {
-        val VIEW_DEFAULT = 100
-        val VIEW_ENDING = 101
 
         val ARG_TITLE = "title"
         val ARG_VIDEO_PATH = "video_path"
         val ARG_DESC = "desc"
         val ARG_BG_COLOR = "bg_color"
-        val ARG_VIEW_TYPE = "view_type"
         val ARG_POSITION = "position"
         val ARG_DESCKEY = "desc_key"
         val ARG_TTLKEY = "ttl_key"
@@ -132,21 +127,19 @@ class OnboardingFragment : BaseDaggerFragment(),
         return defaultView
     }
 
-    override fun onPageSelected() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        view.tag = this
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onPageSelected(position: Int) {
         videoView?.start()
     }
 
-    override fun onPageScrolled(page: View, position: Float) {}
-
-    override fun onPageInvisible(position: Float) {
+    override fun onPageUnSelected() {
         videoView?.pause()
     }
-
-//    override fun onPageSelected(position: Int) {
-//    }
-//
-//    override fun onPageUnSelected() {
-//    }
 
     private fun getTitleMsg(): String {
         val ttlMsg = getRemoteConfig().getString(ttlKey)
