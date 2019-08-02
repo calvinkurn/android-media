@@ -302,7 +302,7 @@ class ProductDetailTracking() {
 
                         CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
 
-                        "impression", DataLayer.listOf(
+                        "impressions", DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
                                         ID, product.productId.toString(),
                                         PRICE, removeCurrencyPrice(product.price),

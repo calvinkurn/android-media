@@ -72,7 +72,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     private lateinit var flightFilterModel: FlightFilterModel
 
-    private lateinit var performanceMonitoring: PerformanceMonitoring
+    private lateinit var performanceMonitoringP1: PerformanceMonitoring
+    private lateinit var performanceMonitoringP2: PerformanceMonitoring
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +92,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             isCombineDone = savedInstanceState.getBoolean(SAVED_IS_COMBINE_DONE, false)
         }
 
-        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_SEARCH_TRACE)
+        performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
+        performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -218,6 +220,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             isLoadingInitialData = false
         }
 
+        if (flightSearchPresenter.isDoneLoadData()) {
+            performanceMonitoringP2.stopTrace()
+        }
+
         setUpProgress()
     }
 
@@ -229,6 +235,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun onDestroyView() {
         flightSearchPresenter.unsubscribeAll()
+        stopTrace()
+        performanceMonitoringP2.stopTrace()
         super.onDestroyView()
         this.clearFindViewByIdCache()
     }
@@ -453,7 +461,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun stopTrace() {
         if (!isTraceStop) {
-            performanceMonitoring.stopTrace()
+            performanceMonitoringP1.stopTrace()
             isTraceStop = true
         }
     }
@@ -793,7 +801,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private val SAVED_IS_COMBINE_DONE = "svd_is_combine_done"
         private val DEFAULT_DIMENS_MULTIPLIER = 0.5f
         private val PADDING_SEARCH_LIST = 60
-        private val FLIGHT_SEARCH_TRACE = "tr_flight_search"
+        private val FLIGHT_SEARCH_P1_TRACE = "mp_flight_search_p1"
+        private val FLIGHT_SEARCH_P2_TRACE = "mp_flight_search_p2"
         private val MAX_DATE_ADDITION_YEAR = 1
 
         fun newInstance(passDataViewModel: FlightSearchPassDataViewModel): FlightSearchFragment {
