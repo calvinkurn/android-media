@@ -6,6 +6,5 @@ import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommen
 
 data class ProductInfoAndVariant(
         var productInfo: ProductInfo = ProductInfo(),
-        var productVariant: ProductVariant = ProductVariant(),
-        var insuranceRecommendation: InsuranceRecommendationGqlResponse = InsuranceRecommendationGqlResponse()
+        var productVariant: ProductVariant = ProductVariant()
 )

@@ -305,7 +305,7 @@
 
                 </LinearLayout>
 
-                <RelativeLayout
+                <!--<RelativeLayout
                     android:id="@+id/rl_micro_insurance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -313,7 +313,7 @@
                     android:paddingBottom="@dimen/dp_10">
 
 
-                    <CheckBox
+                    &lt;!&ndash;<CheckBox
                         android:id="@+id/cb_select_micro_insurance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -364,9 +364,9 @@
                         android:layout_marginTop="@dimen/dp_16"
                         android:textColor="@color/bg_button_green_border_outline"
                         app:typographyType="heading_6"
-                        tools:text="Pelajari" />
+                        tools:text="Pelajari" />&ndash;&gt;
 
-                </RelativeLayout>
+                </RelativeLayout>-->
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_remark"

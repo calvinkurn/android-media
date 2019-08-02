@@ -55,6 +55,8 @@ import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CART;
+
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -238,7 +240,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (getItemViewType(position) == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
             final InsuranceCartShopViewHolder insuranceCartShopViewHolder = (InsuranceCartShopViewHolder) holder;
             final InsuranceCartShops insuranceCartShops = (InsuranceCartShops) cartDataList.get(position);
-            insuranceCartShopViewHolder.bindData(insuranceCartShops, position);
+            insuranceCartShopViewHolder.bindData(insuranceCartShops, position, PAGE_TYPE_CART);
         }
     }
 
@@ -506,7 +508,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 break;
                             }
                         }
-                    } else if (item instanceof CartShopHolderData) {
+                    } /*else if (item instanceof CartShopHolderData) {
                         if (((CartShopHolderData) item).getShopGroupData() != null &&
                                 ((CartShopHolderData) item).getShopGroupData().getCartItemDataList() != null) {
                             for (CartItemHolderData cartItemHolderData : ((CartShopHolderData) item).getShopGroupData().getCartItemDataList()) {
@@ -521,7 +523,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             }
                         }
 
-                    }
+                    }*/
                 }
 
             }
@@ -600,7 +602,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return insuranceCartDigitalProductArrayList;
     }
 
-    public ArrayList<InsuranceCartDigitalProduct> getUnselectedMicroInsuranceProduct() {
+    /*public ArrayList<InsuranceCartDigitalProduct> getUnselectedMicroInsuranceProduct() {
 
         ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
 
@@ -618,7 +620,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         return insuranceCartDigitalProductArrayList;
-    }
+    }*/
 
 
     public ArrayList<InsuranceCartShops> getInsuranceCartShops() {

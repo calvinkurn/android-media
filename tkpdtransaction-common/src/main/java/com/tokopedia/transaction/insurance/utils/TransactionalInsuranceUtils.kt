@@ -41,6 +41,15 @@ val VALIDATION_TYPE_MIN_LENGTH = "minLength"
 @JvmField
 val VALIDATION_TYPE_PATTERN = "pattern"
 
+@JvmField
+val PAGE_TYPE_CART = "cart"
+
+@JvmField
+val PAGE_TYPE_CHECKOUT = "checkout"
+
+@JvmField
+val INSURANCE_RECOMMENDATION_PARAM_GQL = "digitalProducts"
+
 private val DATE_FORMAT_VIEW = "dd MMM yyyy"
 private val DATE_FORMAT_SERVER = "yyyy-MM-dd"
 

@@ -28,6 +28,7 @@ import com.tokopedia.transactiondata.insurance.entity.response.InsuranceProductA
 
 import java.util.ArrayList;
 
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CART;
 import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MAX_DATE;
 import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MAX_LENGTH;
 import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.VALIDATION_TYPE_MIN_DATE;
@@ -90,7 +91,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         tvInsuranceApplicationDetails = itemView.findViewById(R.id.insurance_appliation_details);
     }
 
-    public void bindData(InsuranceCartShops insuranceCartShops, int position) {
+    public void bindData(InsuranceCartShops insuranceCartShops, int position, String pageType) {
 
         this.insuranceCartShops = insuranceCartShops;
 
@@ -299,29 +300,38 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
             tvInsurancePrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceCartDigitalProduct.getPricePerProduct(), false));
 
-            cbSelectInsurance.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
-                insuranceItemActionlistener.onInsuranceSelectStateChanges();
-            });
+            if (pageType.equalsIgnoreCase(PAGE_TYPE_CART)) {
+                tvChangeInsuranceApplicationDetails.setVisibility(View.VISIBLE);
+                cbSelectInsurance.setVisibility(View.VISIBLE);
+                cbSelectInsurance.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
+                    insuranceItemActionlistener.onInsuranceSelectStateChanges();
+                });
 
-            /*
-             * By default need to keep this checked for cart page
-             * */
+                /*
+                 * By default need to keep this checked for cart page
+                 * */
 
-            cbSelectInsurance.setChecked(true);
+                cbSelectInsurance.setChecked(true);
+                insuranceCartDigitalProduct.setOptIn(true);
 
-            ivDeleteInsurance.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
-                    insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct);
-                    insuranceItemActionlistener.deleteMacroInsurance(insuranceCartDigitalProductArrayList, true);
-                }
-            });
+                ivDeleteInsurance.setVisibility(View.VISIBLE);
+                ivDeleteInsurance.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
+                        insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct);
+                        insuranceItemActionlistener.deleteMacroInsurance(insuranceCartDigitalProductArrayList, true);
+                    }
+                });
+            } else {
+                tvChangeInsuranceApplicationDetails.setVisibility(View.GONE);
+                cbSelectInsurance.setVisibility(View.GONE);
+                ivDeleteInsurance.setVisibility(View.GONE);
+            }
         } else {
             itemView.setVisibility(View.GONE);
         }
-
     }
 
     private void onDateViewClicked(TextView view) {

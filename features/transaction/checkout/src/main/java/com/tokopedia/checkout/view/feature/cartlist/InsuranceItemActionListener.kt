@@ -5,9 +5,9 @@ import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigi
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops
 import java.util.ArrayList
 
-interface InsuranceItemActionListener : ActionListener {
+interface InsuranceItemActionListener {
     fun deleteMacroInsurance(insuranceCartDigitalProductList: ArrayList<InsuranceCartDigitalProduct>, showconfirmationDialog: Boolean)
-    fun deleteMicroInsurance(insuranceCartDigitalProductList: ArrayList<InsuranceCartDigitalProduct>, showconfirmationDialog: Boolean)
+//    fun deleteMicroInsurance(insuranceCartDigitalProductList: ArrayList<InsuranceCartDigitalProduct>, showconfirmationDialog: Boolean)
     fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops, updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>)
     fun onInsuranceSelectStateChanges()
 }
