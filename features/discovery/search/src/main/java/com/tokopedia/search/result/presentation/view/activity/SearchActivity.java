@@ -395,6 +395,14 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+
+        handleIntent(getIntent());
+    }
+
+    @Override
     public void initiateSearchHandleResponseSearch(boolean isHasCatalog) {
         stopPerformanceMonitoring();
         loadSection();
