@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.normalcheckout.adapter
+package com.tokopedia.purchase_platform.atc_variant.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder

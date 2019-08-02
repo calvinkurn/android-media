@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.normalcheckout.view
+package com.tokopedia.purchase_platform.atc_variant.view
 
 import android.app.Activity
 import android.app.ProgressDialog
@@ -42,11 +42,11 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
-import com.tokopedia.purchase_platform.normalcheckout.di.DaggerNormalCheckoutComponent
-import com.tokopedia.purchase_platform.normalcheckout.model.ProductInfoAndVariant
-import com.tokopedia.purchase_platform.normalcheckout.presenter.NormalCheckoutViewModel
-import com.tokopedia.purchase_platform.normalcheckout.router.NormalCheckoutRouter
+import com.tokopedia.purchase_platform.atc_variant.adapter.NormalCheckoutAdapterTypeFactory
+import com.tokopedia.purchase_platform.atc_variant.di.DaggerNormalCheckoutComponent
+import com.tokopedia.purchase_platform.atc_variant.model.ProductInfoAndVariant
+import com.tokopedia.purchase_platform.atc_variant.presenter.NormalCheckoutViewModel
+import com.tokopedia.purchase_platform.atc_variant.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams

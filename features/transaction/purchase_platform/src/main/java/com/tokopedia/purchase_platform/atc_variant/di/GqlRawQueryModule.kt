@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.normalcheckout.di
+package com.tokopedia.purchase_platform.atc_variant.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

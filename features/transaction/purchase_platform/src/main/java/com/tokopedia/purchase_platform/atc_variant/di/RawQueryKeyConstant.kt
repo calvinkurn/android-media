@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.normalcheckout.di
+package com.tokopedia.purchase_platform.atc_variant.di
 
 object RawQueryKeyConstant {
     const val QUERY_PRODUCT_INFO = "query_product_info"

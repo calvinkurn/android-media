@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.normalcheckout.view
+package com.tokopedia.purchase_platform.atc_variant.view
 
 /**
  * Created by Irfan Khoirul on 04/12/18.

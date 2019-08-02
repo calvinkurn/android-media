@@ -1,10 +1,10 @@
-package com.tokopedia.purchase_platform.normalcheckout.di
+package com.tokopedia.purchase_platform.atc_variant.di
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.purchase_platform.normalcheckout.presenter.NormalCheckoutViewModel
+import com.tokopedia.purchase_platform.atc_variant.presenter.NormalCheckoutViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

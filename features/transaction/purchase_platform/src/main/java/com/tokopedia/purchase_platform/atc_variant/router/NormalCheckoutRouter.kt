@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.normalcheckout.router
+package com.tokopedia.purchase_platform.atc_variant.router
 
 import android.content.Context
 import android.content.Intent

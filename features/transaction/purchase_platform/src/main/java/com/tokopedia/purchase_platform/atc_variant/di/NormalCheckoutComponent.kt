@@ -1,7 +1,7 @@
-package com.tokopedia.purchase_platform.normalcheckout.di
+package com.tokopedia.purchase_platform.atc_variant.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.purchase_platform.normalcheckout.view.NormalCheckoutFragment
+import com.tokopedia.purchase_platform.atc_variant.view.NormalCheckoutFragment
 import dagger.Component
 
 @NormalCheckoutScope

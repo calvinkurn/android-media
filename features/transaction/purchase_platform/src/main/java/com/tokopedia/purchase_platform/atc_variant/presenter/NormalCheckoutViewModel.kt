@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.normalcheckout.presenter
+package com.tokopedia.purchase_platform.atc_variant.presenter
 
 import android.arch.lifecycle.MutableLiveData
 import android.content.res.Resources
@@ -15,8 +15,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.normalcheckout.di.RawQueryKeyConstant
-import com.tokopedia.purchase_platform.normalcheckout.model.ProductInfoAndVariant
+import com.tokopedia.purchase_platform.atc_variant.di.RawQueryKeyConstant
+import com.tokopedia.purchase_platform.atc_variant.model.ProductInfoAndVariant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN

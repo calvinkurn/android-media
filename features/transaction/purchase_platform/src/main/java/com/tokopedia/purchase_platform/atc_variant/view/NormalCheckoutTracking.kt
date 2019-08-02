@@ -1,8 +1,8 @@
-package com.tokopedia.purchase_platform.normalcheckout.view
+package com.tokopedia.purchase_platform.atc_variant.view
 
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
-import com.tokopedia.purchase_platform.normalcheckout.model.ProductInfoAndVariant
+import com.tokopedia.purchase_platform.atc_variant.model.ProductInfoAndVariant
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.track.TrackApp
 

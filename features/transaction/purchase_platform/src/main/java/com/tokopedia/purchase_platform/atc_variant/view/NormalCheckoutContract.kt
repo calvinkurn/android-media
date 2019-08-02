@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.normalcheckout.view
+package com.tokopedia.purchase_platform.atc_variant.view
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
