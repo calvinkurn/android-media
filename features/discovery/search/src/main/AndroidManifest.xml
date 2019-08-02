@@ -8,11 +8,11 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true">
-        <activity android:name=".result.presentation.view.activity.SearchActivity"
+        <activity
+            android:name=".result.presentation.view.activity.SearchActivity"
             android:screenOrientation="portrait"
             android:label="@string/image_search_title"
-            android:windowSoftInputMode="adjustNothing"
-            android:launchMode="singleTask">
+            android:windowSoftInputMode="adjustNothing">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
