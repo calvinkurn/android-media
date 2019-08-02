@@ -63,9 +63,6 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
 
             setOnClickListener {
                 accountItemListener.onProductRecommendationClicked(element.product, adapterPosition, element.widgetTitle)
-                if (element.product.isTopAds) {
-                    ImpresionTask().execute(element.product.clickUrl)
-                }
             }
 
 
