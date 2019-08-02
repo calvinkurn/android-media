@@ -5,17 +5,17 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.View
-import android.widget.*
-import com.google.android.play.core.splitinstall.SplitInstallManager
-import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import com.google.android.play.core.splitinstall.SplitInstallRequest
-import com.google.android.play.core.splitinstall.SplitInstallSessionState
-import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.google.android.play.core.tasks.Task
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.unifycomponents.Toaster
@@ -32,7 +32,8 @@ import com.tokopedia.unifycomponents.Toaster
  * This activity will install the "shop_settings_sellerapp" module with progress bar,
  * and after the module is successfully installed, it will bring the user to ShopNotesActivity
  */
-class DFInstallerActivity : BaseActivity() {
+class DFInstallerActivity : BaseSimpleActivity() {
+
     private lateinit var manager: SplitInstallManager
 
     private lateinit var progressBar: ProgressBar
@@ -158,7 +159,7 @@ class DFInstallerActivity : BaseActivity() {
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
-        hideProgress()
+        progressGroup.visibility = View.INVISIBLE
         if (launch && manager.installedModules.contains(moduleName)) {
             RouteManager.getIntentNoFallback(this, applink)?.let {
                 it.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT;
@@ -245,5 +246,8 @@ class DFInstallerActivity : BaseActivity() {
         super.onPause()
     }
 
+    override fun getNewFragment(): Fragment {
+        return Fragment()
+    }
 
 }

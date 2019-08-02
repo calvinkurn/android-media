@@ -8,7 +8,8 @@
         <activity
             android:name="com.tokopedia.dynamicfeatures.DFInstallerActivity"
             android:label="@string/install_module"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
