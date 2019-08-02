@@ -32,14 +32,11 @@ class OnboardingFragment : BaseDaggerFragment(),
         OnboardingVideoListener {
 
     companion object {
-        val VIEW_DEFAULT = 100
-        val VIEW_ENDING = 101
 
         val ARG_TITLE = "title"
         val ARG_VIDEO_PATH = "video_path"
         val ARG_DESC = "desc"
         val ARG_BG_COLOR = "bg_color"
-        val ARG_VIEW_TYPE = "view_type"
         val ARG_POSITION = "position"
         val ARG_DESCKEY = "desc_key"
         val ARG_TTLKEY = "ttl_key"
