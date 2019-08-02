@@ -42,15 +42,14 @@ object DeeplinkDFMapper {
             return null
         }
         if (GlobalConfig.isSellerApp()) {
-            when {
+            return when {
                 deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
                     getDFDeeplinkIfNotInstalled(context,
                         deeplink, MODULE_SHOP_SETTINGS_SELLERAPP,
                         context.getString(R.string.shop_settings_title))
                 }
-
+                else -> null
             }
-            return null
         } else {
             // currently cust app has no dynamic features module
             return null
@@ -58,9 +57,9 @@ object DeeplinkDFMapper {
     }
 
     private fun getDFDeeplinkIfNotInstalled(context: Context, deeplink: String,
-                                            moduleId:String, moduleName:String,
-                                            isAuto:Boolean? = true,
-                                            imageUrl:String? = ""): String?{
+                                            moduleId: String, moduleName: String,
+                                            isAuto: Boolean? = true,
+                                            imageUrl: String? = ""): String? {
         getSplitManager(context)?.let {
             if (it.installedModules.contains(moduleId)) {
                 return null
@@ -76,7 +75,7 @@ object DeeplinkDFMapper {
         } ?: return null
     }
 
-    private fun getSplitManager(context: Context): SplitInstallManager?{
+    private fun getSplitManager(context: Context): SplitInstallManager? {
         if (manager === null) {
             manager = SplitInstallManagerFactory.create(context.applicationContext)
         }
