@@ -55,7 +55,7 @@ class HotelModule {
     @HotelScope
     @Provides
     @Named("travel_calendar_holiday_query")
-    internal fun provideTravelCalendarHolidayQuery(@ApplicationContext context: Context): String {
+    fun provideTravelCalendarHolidayQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_get_travel_calendar_holiday)
     }
 

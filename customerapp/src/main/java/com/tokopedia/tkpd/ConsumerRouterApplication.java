@@ -59,11 +59,14 @@ import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
-import com.tokopedia.cod.view.CodActivity;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.logisticcart.cod.view.CodActivity;
+import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -1746,12 +1749,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     }
                 });
     }
-
-    /*@NotNull
-    @Override
-    public AddInsuranceProductUsecase addInsuranceProductToCart() {
-        return CartComponentInjector.newInstance(this).getAddInsuranceProductUsecase();
-    }*/
 
     @NotNull
     @Override
