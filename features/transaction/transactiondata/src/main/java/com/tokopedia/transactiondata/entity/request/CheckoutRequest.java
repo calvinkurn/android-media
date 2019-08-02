@@ -36,7 +36,7 @@ public class CheckoutRequest implements Parcelable {
     @SerializedName("promo_codes")
     @Expose
     public ArrayList<String> promoCodes;
-    @SerializedName("has_macro_insurance")
+    @SerializedName("has_insurance_product")
     @Expose
     public boolean hasMacroInsurance;
 
