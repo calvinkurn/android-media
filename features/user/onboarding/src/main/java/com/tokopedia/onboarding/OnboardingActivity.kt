@@ -20,6 +20,7 @@ import com.tokopedia.onboarding.adapter.OnboardingPagerAdapter
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.fragment.OnboardingFragment
+import com.tokopedia.onboarding.listener.CustomAnimationPageTransformer
 import com.tokopedia.onboarding.listener.OnboardingVideoListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -105,6 +106,7 @@ class OnboardingActivity : BaseActivity() {
 
         val fragmentList = addFragments()
 
+        viewPager?.setPageTransformer(false, CustomAnimationPageTransformer())
         viewPager?.offscreenPageLimit = 2
         pagerAdapter = OnboardingPagerAdapter(supportFragmentManager, fragmentList)
         viewPager?.adapter = pagerAdapter
@@ -130,20 +132,20 @@ class OnboardingActivity : BaseActivity() {
 
     private val pageChangeListener: ViewPager.OnPageChangeListener = (object: ViewPager.OnPageChangeListener {
 
-        var first: Boolean = true
+//        var first: Boolean = true
         override fun onPageScrollStateChanged(state: Int) {}
 
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            if (first && positionOffset == 0f && positionOffsetPixels == 0){
-                onPageSelected(0)
-                first = false
-            }
+//            if (first && positionOffset == 0f && positionOffsetPixels == 0){
+//                onPageSelected(0)
+//                first = false
+//            }
         }
 
         override fun onPageSelected(position: Int) {
-            lastFragment?.onPageUnSelected()
-
-            onFragmentSelected(position)
+//            lastFragment?.onPageUnSelected()
+//
+//            onFragmentSelected(position)
             setIndicator(position)
             currentPosition = position
             analytics.sendScreen(position)

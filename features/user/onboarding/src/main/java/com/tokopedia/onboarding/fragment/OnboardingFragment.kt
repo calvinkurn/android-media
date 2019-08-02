@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.onboarding.OnboardingActivity
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
+import com.tokopedia.onboarding.listener.CustomAnimationPageTransformerDelegate
 import com.tokopedia.onboarding.listener.OnboardingVideoListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -30,7 +31,7 @@ import javax.inject.Inject
  */
 class OnboardingFragment : BaseDaggerFragment(),
         OnboardingActivity.onBoardingFirsbaseCallBack,
-        OnboardingVideoListener {
+        CustomAnimationPageTransformerDelegate {
 
     companion object {
         val VIEW_DEFAULT = 100
@@ -131,13 +132,21 @@ class OnboardingFragment : BaseDaggerFragment(),
         return defaultView
     }
 
-    override fun onPageSelected(position: Int) {
+    override fun onPageSelected() {
         videoView?.start()
     }
 
-    override fun onPageUnSelected() {
+    override fun onPageScrolled(page: View, position: Float) {}
+
+    override fun onPageInvisible(position: Float) {
         videoView?.pause()
     }
+
+//    override fun onPageSelected(position: Int) {
+//    }
+//
+//    override fun onPageUnSelected() {
+//    }
 
     private fun getTitleMsg(): String {
         val ttlMsg = getRemoteConfig().getString(ttlKey)
