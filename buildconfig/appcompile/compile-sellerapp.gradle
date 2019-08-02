@@ -2,6 +2,7 @@
 include "features:category:tradein_common"
 include "features:category:tradein"
 
+include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
 
@@ -94,6 +95,7 @@ include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
 include "features:top_ads:top_ads_management_sourcetagging"
 
+include "features:transaction:atc_common"
 include "features:transaction:express_checkout"
 //include "features:transaction:express_checkout_no_op"
 include "features:transaction:express_checkout_common"

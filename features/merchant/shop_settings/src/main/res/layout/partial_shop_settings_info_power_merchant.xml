@@ -56,8 +56,7 @@
                 android:layout_height="@dimen/dp_24"
                 app:srcCompat="@drawable/ic_power_merchant"
                 android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
-                app:srcCompat="@drawable/ic_power_merchant" />
+                android:layout_marginRight="@dimen/dp_4" />
 
             <TextView
                 android:id="@+id/tv_shop_membership_title"
