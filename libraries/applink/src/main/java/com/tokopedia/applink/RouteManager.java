@@ -120,6 +120,7 @@ public class RouteManager {
                 intent = new Intent();
                 intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
                 intent.setData(Uri.parse(uriString));
+                context.startActivity(intent);
             }
             context.startActivity(intent);
             return;

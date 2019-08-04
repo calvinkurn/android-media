@@ -39,7 +39,7 @@ public class TimberWrapper {
                 if(dataLogConfig != null) {
                     if (dataLogConfig.isEnabled() &&
                             GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()) {
-                        Timber.plant(new TimberReportingTree());
+                        Timber.plant(new TimberReportingTree(dataLogConfig.getPriorityList()));
                     }
                 }
             }

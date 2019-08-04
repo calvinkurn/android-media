@@ -16,10 +16,12 @@ import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.design.image.SquareImageView
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.*
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder
-import com.tokopedia.topads.sdk.view.ImpressedImageView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -53,7 +55,7 @@ abstract class ProductCardView: BaseCustomView {
      */
     protected var cardViewProductCard: CardView? = null
     protected var constraintLayoutProductCard: ConstraintLayout? = null
-    protected var imageProduct: ImpressedImageView? = null
+    protected var imageProduct: SquareImageView? = null
     protected var buttonWishlist: ImageView? = null
     protected var labelPromo: Label? = null
     protected var textViewShopName: Typography? = null
@@ -239,9 +241,21 @@ abstract class ProductCardView: BaseCustomView {
     protected open fun setImageTopAdsConstraint() {
         imageTopAds?.doIfVisible { imageTopAds ->
             textViewShopLocation?.doIfVisible { textViewShopLocation ->
-                if(isTextLocationIsAtBottomOfCard()) {
-                    setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
-                }
+                configureImageTopAdsConstraintBasedOnTextLocation(imageTopAds, textViewShopLocation)
+            }
+        }
+    }
+
+    protected open fun configureImageTopAdsConstraintBasedOnTextLocation(imageTopAds: View, textViewShopLocation: View) {
+        if(isTextLocationIsAtBottomOfCard()) {
+            setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
+            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, R.dimen.dp_4)
+        }
+        else {
+            clearViewConstraint(imageTopAds.id, ConstraintSet.TOP)
+
+            imageProduct?.doIfVisible { constraintLayoutProductCard ->
+                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, constraintLayoutProductCard.id, ConstraintSet.END, R.dimen.dp_8)
             }
         }
     }
@@ -271,8 +285,8 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    open fun setImageProductViewHintListener(holder: ImpressHolder, viewHintListener: () -> Unit) {
-        imageProduct?.setViewHintListener(holder, viewHintListener)
+    open fun setImageProductViewHintListener(holder: ImpressHolder, viewHintListener: ViewHintListener) {
+        imageProduct?.addOnImpressionListener(holder, viewHintListener)
     }
 
     open fun setButtonWishlistVisible(isVisible: Boolean) {
@@ -339,6 +353,10 @@ abstract class ProductCardView: BaseCustomView {
         labelDiscount?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
+    open fun setSlashedPriceInvisible(isInvisible: Boolean) {
+        textViewSlashedPrice?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
     open fun setLabelDiscountText(discount: Int) {
         val discountText = Integer.toString(discount) + "%"
         labelDiscount?.text = discountText
@@ -387,6 +405,10 @@ abstract class ProductCardView: BaseCustomView {
         linearLayoutImageRating?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
+    open fun setImageRatingInvisible(isInvisible: Boolean) {
+        linearLayoutImageRating?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
     open fun setRating(rating: Int) {
         imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
         imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
@@ -403,6 +425,14 @@ abstract class ProductCardView: BaseCustomView {
 
     open fun setReviewCountVisible(isVisible: Boolean) {
         textViewReviewCount?.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    open fun setReviewCountInvisible(isInvisible: Boolean) {
+        textViewReviewCount?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
+    open fun setLinesProductTitle(lines: Int){
+        textViewProductName?.setLines(lines)
     }
 
     open fun setReviewCount(reviewCount: Int) {
@@ -441,6 +471,10 @@ abstract class ProductCardView: BaseCustomView {
         imageTopAds?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
+    open fun setLabelDiscountInvisible(isInvisible: Boolean){
+        labelDiscount?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
     protected open fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {
         constraintLayoutProductCard.applyConstraintSet { constraintSet ->
             val marginPixel = getDimensionPixelSize(marginDp)
@@ -458,6 +492,12 @@ abstract class ProductCardView: BaseCustomView {
         constraintLayoutProductCard.applyConstraintSet { constraintSet ->
             val marginPixel = getDimensionPixelSize(marginDp)
             constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
+        }
+    }
+
+    protected open fun clearViewConstraint(@IdRes layoutId: Int, side: Int) {
+        constraintLayoutProductCard.applyConstraintSet { constraintSet ->
+            constraintSet.clear(layoutId, side)
         }
     }
 }

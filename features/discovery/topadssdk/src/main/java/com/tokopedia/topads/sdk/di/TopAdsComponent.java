@@ -13,7 +13,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 import dagger.Component;
 
 @TopAdsScope
-@Component(modules = TopAdsModule.class, dependencies = BaseAppComponent.class)
+@Component(modules = {TopAdsModule.class, TopAdsWishlistModule.class}, dependencies = BaseAppComponent.class)
 public interface TopAdsComponent {
 
     void inject(BannerAdsPresenter bannerAdsPresenter);

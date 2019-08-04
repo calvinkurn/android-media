@@ -2,14 +2,19 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
 import android.os.Handler
 import android.support.annotation.LayoutRes
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.SpannableString
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
@@ -17,6 +22,7 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeader
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
+import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagAdapter
@@ -40,6 +46,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
+import java.net.URLEncoder
 
 /**
  * @author by milhamj on 28/11/18.
@@ -225,6 +232,7 @@ open class DynamicPostViewHolder(v: View,
     }
 
     open fun bindCaption(caption: Caption, template: TemplateBody) {
+        val tagConverter = TagConverter()
         itemView.caption.shouldShowWithAction(template.caption) {
             if (caption.text.isEmpty()) {
                 itemView.caption.visibility = View.GONE
@@ -243,18 +251,33 @@ open class DynamicPostViewHolder(v: View,
                         .plus(caption.buttonName)
                         .plus("</b></font>")
 
-                itemView.caption.text = MethodChecker.fromHtml(captionText)
+                itemView.caption.text = tagConverter.convertToLinkifyHashtag(
+                        SpannableString(MethodChecker.fromHtml(captionText)), colorLinkHashtag,
+                        this::gotoHashtagLandingPahge)
                 itemView.caption.setOnClickListener {
                     if (!TextUtils.isEmpty(caption.appLink)) {
                         listener.onCaptionClick(adapterPosition, caption.appLink)
                     } else {
-                        itemView.caption.text = caption.text
+                        itemView.caption.text = tagConverter.convertToLinkifyHashtag(SpannableString(caption.text),
+                                colorLinkHashtag, this::gotoHashtagLandingPahge)
                     }
                 }
+                itemView.caption.movementMethod = LinkMovementMethod.getInstance()
             } else {
-                itemView.caption.text = caption.text.replace(NEWLINE, " ")
+                itemView.caption.text = tagConverter
+                        .convertToLinkifyHashtag(SpannableString(caption.text.replace(NEWLINE, " ")),
+                                colorLinkHashtag, this::gotoHashtagLandingPahge)
+                itemView.caption.movementMethod = LinkMovementMethod.getInstance()
             }
         }
+    }
+
+    private val colorLinkHashtag: Int
+        get() = ContextCompat.getColor(itemView.context, R.color.tkpd_main_green)
+
+    private fun gotoHashtagLandingPahge(hashtag: String){
+        val encodeHashtag = URLEncoder.encode(hashtag)
+        RouteManager.route(itemView.context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
     }
 
     private fun hasSecondLine(caption: Caption): Boolean {
@@ -491,5 +514,7 @@ open class DynamicPostViewHolder(v: View,
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+
+        fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem)
     }
 }

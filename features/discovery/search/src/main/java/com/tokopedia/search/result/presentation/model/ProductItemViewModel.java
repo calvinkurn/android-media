@@ -8,8 +8,8 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 
 import java.util.ArrayList;
 import java.util.List;

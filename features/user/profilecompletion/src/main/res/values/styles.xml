@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MyEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="colorControlActivated">#dc8f41</item>
+    </style>
+</resources>

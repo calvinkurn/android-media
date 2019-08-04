@@ -91,8 +91,10 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
             }
             if (isSprintSale(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
-                countDownView.setVisibility(View.VISIBLE);
+                if (!DateHelper.isExpired(element.getServerTimeOffset(), expiredTime)){
+                    countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
+                    countDownView.setVisibility(View.VISIBLE);
+                }
             } else {
                 countDownView.setVisibility(View.GONE);
             }

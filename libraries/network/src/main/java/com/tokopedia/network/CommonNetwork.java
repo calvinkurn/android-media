@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -12,6 +14,7 @@ import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -25,7 +28,9 @@ public class CommonNetwork {
     /**
      method to create retrofit object for general purpose
      */
-    public static Retrofit createRetrofit(Context context, String baseUrl, NetworkRouter networkRouter, UserSession userSession, CharacterPerMinuteInterface characterPerMinuteInterface) {
+    public static Retrofit createRetrofit(Context context, String baseUrl,
+                                          NetworkRouter networkRouter, UserSession userSession,
+                                          CharacterPerMinuteInterface characterPerMinuteInterface) {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .setPrettyPrinting()
@@ -35,6 +40,14 @@ public class CommonNetwork {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession, characterPerMinuteInterface));
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+            ChuckInterceptor chuckInterceptor = new ChuckInterceptor(context);
+
+            tkpdOkHttpBuilder.addInterceptor(loggingInterceptor)
+                    .addInterceptor(chuckInterceptor);
+        }
 
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
