@@ -39,7 +39,7 @@ open class PMCancellationQuestionnaireModel() : Parcelable {
 
     data class MultipleChecklistQuestionnaire(
             val questionString: String = "",
-            val listChecklist: List<String>
+            val listChecklistOption: ArrayList<String>
     ) : PMCancellationQuestionnaireModel() {
         constructor(parcel: Parcel) : this(
                 parcel.readString(),
@@ -49,7 +49,7 @@ open class PMCancellationQuestionnaireModel() : Parcelable {
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             super.writeToParcel(parcel, flags)
             parcel.writeString(questionString)
-            parcel.writeStringList(listChecklist)
+            parcel.writeStringList(listChecklistOption)
         }
 
         override fun describeContents(): Int {

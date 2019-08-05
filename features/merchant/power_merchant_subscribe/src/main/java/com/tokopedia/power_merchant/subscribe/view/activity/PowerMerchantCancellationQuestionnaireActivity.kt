@@ -11,9 +11,6 @@ import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancell
 class PowerMerchantCancellationQuestionnaireActivity : BaseStepperActivity() {
     override fun getListFragment(): MutableList<Fragment> {
         val list = listOf(
-//                PMCancellationQuestionnaireModel.LinearScaleQuestionnaire(
-//                        "Question 1"
-//                ),
                 PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire(
                         "Question 2",
                         listOf("Ch 1","Ch 2","Ch 3")
@@ -36,8 +33,11 @@ class PowerMerchantCancellationQuestionnaireActivity : BaseStepperActivity() {
         fragmentList.add(PowerMerchantCancellationQuestionnaireIntroFragment.createInstance(
                 deactivateDate
         ))
-        list.forEach {
-            fragmentList.add(PowerMerchantCancellationQuestionnaireFragment.createInstance(it))
+        list.forEachIndexed { position, multipleChecklistQuestionnaire ->
+            fragmentList.add(PowerMerchantCancellationQuestionnaireFragment.createInstance(
+                    position,
+                    multipleChecklistQuestionnaire
+            ))
         }
         return  fragmentList
     }

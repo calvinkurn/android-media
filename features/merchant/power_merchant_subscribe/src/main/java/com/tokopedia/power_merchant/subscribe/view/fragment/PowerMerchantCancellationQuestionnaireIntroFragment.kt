@@ -58,6 +58,7 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
 
     private fun initLayout(view: View) {
         with(view) {
+            button_next.isEnabled = false
             button_next.text = if (parentActivity.isFinalPage()) {
                 getString(R.string.label_send_answer)
             } else {
@@ -77,12 +78,15 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
             questionnaire_rating.setOnClickListener {
                 (it as RatingBar).apply {
                     val rating = rating.toInt()
+                    button_next.isEnabled = isRatingNotZero(rating)
                     stepperModel?.star = rating
                     mapRatingToTextView(rating)
                 }
             }
         }
     }
+
+    private fun isRatingNotZero(rating: Int): Boolean = rating != 0
 
     private fun mapRatingToTextView(rating: Int) {
         when (rating) {

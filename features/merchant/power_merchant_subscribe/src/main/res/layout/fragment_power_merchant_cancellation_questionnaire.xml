@@ -7,32 +7,52 @@
     android:fillViewport="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16"
     tools:context=".view.fragment.PowerMerchantCancellationQuestionnaireFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/attach_product_item_checkbox"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Check here"
-            android:textColor="@color/black"
-            android:theme="@style/checkBoxStyle" />
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_10"
-            android:text=""
-            android:textColor="@color/black"
-            app:fontSize="title" />
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_18"
+                android:gravity="start"
+                android:text="Apa yang membuatmu berhenti jadi Power Merchant?"
+                android:textColor="@color/clr_f531353b"
+                app:fontSize="title"
+                app:weight="medium" />
+
+            <LinearLayout
+                android:id="@+id/checkbox_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_25"
+                android:orientation="vertical">
+
+                <!--<android.support.v7.widget.AppCompatCheckBox-->
+                <!--android:id="@+id/attach_product_item_checkbox"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="@dimen/dp_minus4"-->
+                <!--android:layout_marginLeft="@dimen/dp_minus4"-->
+                <!--android:checked="true"-->
+                <!--android:text="Option 1"-->
+                <!--android:textColor="@color/clr_f531353b"-->
+                <!--android:theme="@style/checkBoxStyle" />-->
+            </LinearLayout>
+
+        </LinearLayout>
 
         <include layout="@layout/pm_cancellation_questionnaire_button_layout" />
 
