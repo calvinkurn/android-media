@@ -23,8 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:drawableLeft="@drawable/ic_kupon"
-            android:drawableStart="@drawable/ic_kupon"
             android:gravity="center"
             android:text="@string/use_promo_code_or_coupon"
             android:textColor="@color/tkpd_main_green"

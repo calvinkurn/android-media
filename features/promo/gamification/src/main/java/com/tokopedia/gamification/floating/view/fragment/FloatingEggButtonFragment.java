@@ -222,13 +222,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (floatingEggPresenter.isUserLogin()) {
-            vgRoot.setVisibility(View.VISIBLE);
-            initDragBound();
-            initEggCoordinate();
-        } else {
-            vgRoot.setVisibility(View.GONE);
-        }
+        vgRoot.setVisibility(View.VISIBLE);
+        initDragBound();
+        initEggCoordinate();
     }
 
     private void initDragBound() {
@@ -318,9 +314,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onResume() {
         super.onResume();
-        if (floatingEggPresenter.isUserLogin()) {
-            loadEggData();
-        }
+        loadEggData();
     }
 
     @Override
@@ -341,11 +335,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     public void loadEggData() {
-        if (floatingEggPresenter.isUserLogin()) {
-            removeShowAnimationCallback();
-            floatingEggPresenter.attachView(this);
-            floatingEggPresenter.getGetTokenTokopoints();
-        }
+        removeShowAnimationCallback();
+        floatingEggPresenter.attachView(this);
+        floatingEggPresenter.getGetTokenTokopoints();
     }
 
     @Override

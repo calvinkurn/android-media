@@ -3,8 +3,6 @@ package com.tokopedia.core.app;
 import android.net.Uri;
 import android.os.Bundle;
 
-import butterknife.ButterKnife;
-
 /**
  * Created by Angga.Prasetiyo on 09/11/2015.
  */
@@ -49,7 +47,7 @@ public abstract class BasePresenterActivity<P> extends TActivity {
     protected void setupVar(Bundle savedInstanceState) { /*leave empty*/ }
 
     protected void initViews() {
-        ButterKnife.bind(this);
+
     }
 
     protected void setupVar() { /*leave empty*/ }

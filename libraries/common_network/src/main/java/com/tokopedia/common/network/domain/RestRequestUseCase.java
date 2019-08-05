@@ -36,22 +36,10 @@ public abstract class RestRequestUseCase extends UseCase<Map<Type, RestResponse>
     private Func1<Map<Type, RestResponse>, Map<Type, RestResponse>> checkForNull() {
         return responseMap -> {
             for (Map.Entry<Type, RestResponse> pair : responseMap.entrySet()) {
-                NullCheckerKt.isContainNull(pair.getValue().getData(), errorMessage -> {
-                    String message = String.format("Found %s in %s | shouldThrowException: %s",
-                            errorMessage,
-                            RestRequestUseCase.class.getSimpleName(),
-                            shouldThrowException()
-                    );
-                    ContainNullException exception = new ContainNullException(message);
-                    if (shouldThrowException()) {
-                        if (!BuildConfig.DEBUG) {
-                            Crashlytics.logException(exception);
-                        }
-                        throw exception;
-                    }
-                    return Unit.INSTANCE;
-                });
-
+                if (shouldThrowException()) {
+                    NullCheckerKt.throwIfNull(pair.getValue().getData(),
+                            RestRequestUseCase.class);
+                }
             }
             return responseMap;
         };

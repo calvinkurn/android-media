@@ -101,7 +101,7 @@ public class ActivationFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return LoginRegisterAnalytics.SCREEN_ACCOUNT_ACTIVATION;
+        return LoginRegisterAnalytics.Companion.getSCREEN_ACCOUNT_ACTIVATION();
     }
 
     @Override
@@ -339,7 +339,7 @@ public class ActivationFragment extends BaseDaggerFragment
     @Override
     public void onSuccessActivateWithUnicode(TokenViewModel pojo) {
         registerAnalytics.trackSuccessClickActivationButton();
-        Intent autoLoginIntent = LoginActivity.getAutomaticLogin(
+        Intent autoLoginIntent = LoginActivity.DeepLinkIntents.getAutomaticLogin(
                 getActivity(),
                 email,
                 password);

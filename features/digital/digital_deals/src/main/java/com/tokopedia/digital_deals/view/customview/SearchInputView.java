@@ -43,4 +43,8 @@ public class SearchInputView extends com.tokopedia.design.text.SearchInputView {
         getSearchTextView().setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
     }
 
+    public void setSearchTextColor(int textColor) {
+        getSearchTextView().setTextColor(textColor);
+    }
+
 }

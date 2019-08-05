@@ -30,4 +30,25 @@ class IrisAnalytics(context: Context) : Iris {
     override fun setDeviceId(deviceId: String) {
     }
 
+    companion object {
+
+        private val lock = Any()
+
+        @Volatile private var iris: Iris? = null
+
+        @JvmStatic
+        fun getInstance(context: Context) : Iris {
+            return iris?: synchronized(lock) {
+                IrisAnalytics(context).also {
+                    iris = it
+                }
+            }
+        }
+
+        fun deleteInstance() {
+            synchronized(lock) {
+                iris = null
+            }
+        }
+    }
 }

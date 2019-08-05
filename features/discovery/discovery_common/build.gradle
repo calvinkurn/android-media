@@ -11,4 +11,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.miscDependencies.dagger
+    implementation project(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.unifyDependencies.components
 }

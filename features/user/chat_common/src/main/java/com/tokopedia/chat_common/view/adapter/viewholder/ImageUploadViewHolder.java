@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.ImageUploadViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by stevenfredian on 11/28/17.
@@ -161,7 +162,7 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
             if (element.isDummy()) {
                 imageResource = R.drawable.ic_chat_pending;
             }
-            chatStatus.setImageResource(imageResource);
+            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),imageResource));
         } else {
             chatStatus.setVisibility(View.GONE);
         }

@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -32,7 +31,7 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
@@ -48,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
 
     implementation rootProject.ext.viewDependencies.expandableTextview
 
@@ -72,9 +72,6 @@ dependencies {
     implementation rootProject.ext.viewDependencies.appIntro
 
     implementation rootProject.ext.playServicesDependencies.maps
-
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

@@ -266,7 +266,6 @@ final class CatalogListPresenter
     @Override
     public void detachView() {
         super.detachView();
-        searchCatalogUseCase.unsubscribe();
-        getDynamicFilterUseCase.unsubscribe();
+        if(searchCatalogUseCase != null) searchCatalogUseCase.unsubscribe();
     }
 }

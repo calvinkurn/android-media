@@ -10,6 +10,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.NotEligiblePromoHolderdata;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -20,14 +21,14 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
@@ -86,6 +87,8 @@ public interface ShipmentContract {
 
         void renderCheckPromoStackCodeFromCourierSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, int itemPosition, boolean noToast);
 
+        void renderCheckPromoStackLogisticSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode);
+
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
         void renderErrorCheckPromoShipmentData(String message);
@@ -121,8 +124,6 @@ public interface ShipmentContract {
 
         void setCourierPromoApplied(int itemPosition);
 
-        void proceedCod();
-
         void showBottomSheetError(String htmlMessage);
 
         void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest);
@@ -143,20 +144,20 @@ public interface ShipmentContract {
 
         void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
 
+        void onSuccessCheckPromoFirstStepAfterClash(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode);
+
         void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel promoData);
 
         void onSuccessClearPromoStackAfterClash();
 
         void clearTotalBenefitPromoStacking();
 
-        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(String eventAction, String eventLabel);
-
         void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
+
+        void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
     }
 
     interface AnalyticsActionListener {
-        void sendAnalyticsChoosePaymentMethodSuccess();
-
         void sendAnalyticsChoosePaymentMethodFailed(String errorMessage);
 
         @Deprecated
@@ -198,6 +199,8 @@ public interface ShipmentContract {
         void sendAnalyticsOnClickEditPinPointErrorValidation(String message);
 
         void sendAnalyticsCourierNotComplete();
+
+        void sendAnalyticsPromoRedState();
 
         void sendAnalyticsDropshipperNotComplete();
 
@@ -253,7 +256,7 @@ public interface ShipmentContract {
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoStackShipment(Promo promo);
+        void checkPromoFinalStackShipment(Promo promo);
 //
 //         void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
 //
@@ -314,6 +317,8 @@ public interface ShipmentContract {
 
         void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
+        void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType);
+
         void cancelAutoApplyPromoStackLogistic(String promoCode);
 
         void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList,
@@ -361,6 +366,7 @@ public interface ShipmentContract {
 
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels);
 
+        boolean isIneligbilePromoDialogEnabled();
     }
 
 }

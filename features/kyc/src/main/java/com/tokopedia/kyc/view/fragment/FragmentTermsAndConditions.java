@@ -43,6 +43,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class FragmentTermsAndConditions extends BaseDaggerFragment implements View.OnClickListener,
         CompoundButton.OnCheckedChangeListener, GenericOperationsView<ConfirmSubmitResponse> {
@@ -189,6 +190,10 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.kyc_ids_tnc_page, container, false);
+        ((TextView)view.findViewById(R.id.ulng2)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_refresh_turqoise), null, null , null);
+        ((TextView)view.findViewById(R.id.ulng)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_refresh_turqoise), null, null , null);
         cardIdContainer = view.findViewById(R.id.cardid_container);
         cardIdContainer.setOnClickListener(this::onClick);
         selfieIdContainer = view.findViewById(R.id.selfieid_container);

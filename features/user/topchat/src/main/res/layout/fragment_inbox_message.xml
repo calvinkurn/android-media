@@ -42,9 +42,7 @@
                 style="@style/TextView.Small.Green"
                 android:layout_gravity="end"
                 android:background="@android:color/white"
-                android:drawableLeft="@drawable/ic_bm_speaker"
                 android:drawablePadding="@dimen/dp_4"
-                android:drawableStart="@drawable/ic_bm_speaker"
                 android:text="@string/option_broadcast"
                 android:visibility="gone"/>
 

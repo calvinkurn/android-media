@@ -9,8 +9,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.base.common.service.ServiceV4;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.entity.home.FavoriteSendData;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
@@ -107,7 +107,7 @@ public class AddFavoriteShopService extends IntentService {
 
     private Retrofit getWsV4Retrofit(OkHttpClient okHttpClient,
                                      Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS()).client(okHttpClient).build();
     }
 
     public Retrofit.Builder getRetrofitBuilder(GeneratedHostConverter generatedHostConverter,

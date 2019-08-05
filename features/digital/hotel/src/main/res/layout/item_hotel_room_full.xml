@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="136dp"
+    android:background="#cc52565e">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:letterSpacing="0.1"
+            android:text="@string/hotel_room_full_text_view"
+            app:fontSize="small"
+            app:textViewTheme="darkPrimary"
+            app:weight="medium" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/room_full_room_name_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:maxLines="2"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            app:fontSize="small"
+            app:textViewTheme="darkPrimary"
+            tools:text="ABDFNSJFNSKDFNSKFN SOVNSJDNFsd jsdnfjksnfkjsn dfjnsfn sdjfn" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -17,6 +18,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
+import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
+import com.tokopedia.topads.auto.view.widget.ToasterAutoAds
 import com.tokopedia.topads.common.data.util.ApplinkUtil
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter
@@ -27,6 +30,7 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment
 import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener
+import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 
 import java.util.ArrayList
 
@@ -59,7 +63,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
 
     override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
+            (application as BaseMainApplication).baseAppComponent).build()
 
     override fun onBackPressed() {
         if (isTaskRoot) {
@@ -89,7 +93,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         return TAG
     }
 
-    override fun startShowCase() {
+    override fun startShowCase(isAutoAds : Boolean) {
         val showCaseTag = TopAdsDashboardActivity::class.java.name
 
         val fragment = supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment
@@ -120,14 +124,14 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                             R.color.white, fragment.scrollView))
                 }
 
-                if (fragment.groupSummaryLabelView != null) {
+                if (fragment.groupSummaryLabelView != null && !isAutoAds) {
                     showCaseList.add(ShowCaseObject(fragment.groupSummaryLabelView,
                             getString(R.string.topads_showcase_home_title_8),
                             getString(R.string.topads_showcase_home_desc_8),
                             ShowCaseContentPosition.UNDEFINED,
                             R.color.white, fragment.scrollView))
                 }
-                if (fragment.viewGroupPromo != null) {
+                if (fragment.viewGroupPromo != null && !isAutoAds) {
                     showCaseList.add(ShowCaseObject(fragment.viewGroupPromo,
                             getString(R.string.topads_showcase_home_title_1),
                             getString(R.string.topads_showcase_home_desc_1),
@@ -136,7 +140,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                 }
             }
 
-            if (fragment.buttonAddPromo != null) {
+            if (fragment.buttonAddPromo != null && !isAutoAds) {
                 showCaseList.add(ShowCaseObject(fragment.buttonAddPromo,
                         getString(R.string.topads_showcase_home_title_6),
                         getString(R.string.topads_showcase_home_desc_6),
@@ -157,7 +161,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         } else {
             toolbar.viewTreeObserver.addOnGlobalLayoutListener(OneUseGlobalLayoutListener(
                     toolbar,
-                    OneUseGlobalLayoutListener.OnGlobalLayoutListener { startShowCase() }
+                    OneUseGlobalLayoutListener.OnGlobalLayoutListener { startShowCase(isAutoAds) }
             ))
         }
 
@@ -177,17 +181,24 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
     }
 
     object DeepLinkIntents {
-        @DeepLink(ApplinkConst.SellerApp.TOPADS_DASHBOARD)
+        @DeepLink(ApplinkConst.SellerApp.TOPADS_DASHBOARD, ApplinkConst.CustomerApp.TOPADS_DASHBOARD)
         @JvmStatic
         fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
-            if (GlobalConfig.isSellerApp()) {
-                val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-                return getCallingIntent(context)
-                        .setData(uri.build())
-                        .putExtras(extras)
-            } else {
-                return ApplinkUtil.getSellerAppApplinkIntent(context, extras)
-            }
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            return getCallingIntent(context)
+                    .setData(uri.build())
+                    .putExtras(extras)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET && resultCode == Activity.RESULT_OK) {
+            ToasterAutoAds.showClose(this, getString(R.string.toaster_inactive_success), onClick = {
+                val fragment = (supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment)
+                fragment.loadData()
+                fragment.loadAutoAds()
+            })
         }
     }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA
+import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import org.jetbrains.annotations.NotNull
@@ -53,6 +54,7 @@ class PermissionCheckerHelper {
 
     object Companion {
         const val PERMISSION_CAMERA = Manifest.permission.CAMERA
+        const val PERMISSION_READ_CONTACT = Manifest.permission.READ_CONTACTS
         const val PERMISSION_RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
         const val PERMISSION_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
         const val PERMISSION_ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
@@ -144,6 +146,7 @@ class PermissionCheckerHelper {
             PERMISSION_CAMERA -> context.getString(R.string.permission_camera)
             PERMISSION_RECORD_AUDIO -> context.getString(R.string.permission_audio)
             PERMISSION_WRITE_EXTERNAL_STORAGE -> context.getString(R.string.permission_write_storage)
+            PERMISSION_READ_CONTACT -> context.getString(R.string.permission_contacts)
             else -> ""
         }
     }
@@ -315,7 +318,7 @@ class PermissionCheckerHelper {
                 permissionText) else rationaleText
     }
 
-    private fun hasPermission(context: Context, permissions: Array<String>): Boolean {
+    fun hasPermission(context: Context, permissions: Array<String>): Boolean {
         val iterator = permissions.iterator()
         while (iterator.hasNext()) {
             val permission = iterator.next()

@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,7 +94,9 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         getRecyclerView(view).addItemDecoration(DividerItemDecoration(activity))
         card_auto_topup_status.setOnClickListener { gotoAutoTopUp() }
         selected_date.setOnClickListener { onDateClicked() }
-        app_bar_layout.addOnOffsetChangedListener { _, verticalOffset -> swipe_refresh_layout.isEnabled = (verticalOffset == 0) }
+        app_bar_layout.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                    swipe_refresh_layout.isEnabled = (verticalOffset == 0) }
+        )
         viewModel.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
 
         if (arguments?.getBoolean(PARAM_IS_FROM_SELECTION, false) == true)

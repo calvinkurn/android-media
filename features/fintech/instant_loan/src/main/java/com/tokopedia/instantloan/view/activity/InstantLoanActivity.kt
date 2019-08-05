@@ -51,7 +51,10 @@ import kotlinx.android.synthetic.main.layout_il_testimonials.*
 import kotlinx.android.synthetic.main.layout_lending_category.*
 import kotlinx.android.synthetic.main.layout_lending_partner.*
 import rx.Observable
+import rx.Subscriber
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.TimeInterval
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -85,6 +88,9 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var lendingCategoryAdpater: LendingCategoryAdapter
     private lateinit var lendingSeoAdapter: LendingSeoAdapter
+
+    private var observable: Subscription? = null
+
     private var parterDataList: ArrayList<GqlLendingPartnerData> = ArrayList()
 
     internal var instantLoanItemList: MutableList<InstantLoanItem> = ArrayList()
@@ -252,18 +258,29 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         var currentItem = 0
         il_view_pager_testimonials.setCurrentItem(currentItem)
 
-        Observable.interval(8, TimeUnit.SECONDS)
+        observable = Observable.interval(8, TimeUnit.SECONDS)
                 .timeInterval()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    currentItem++
-                    if (currentItem <= testimonialList.size - 1) {
-                        il_view_pager_testimonials.setCurrentItem(currentItem)
-                    } else {
-                        currentItem = 0
-                        il_view_pager_testimonials.setCurrentItem(currentItem)
+                .subscribe(object : Subscriber<TimeInterval<Long>>() {
+                    override fun onCompleted() {
+
                     }
-                }
+
+                    override fun onError(e: Throwable) {
+
+                    }
+
+                    override fun onNext(longTimeInterval: TimeInterval<Long>) {
+                        currentItem++
+                        if (currentItem <= testimonialList.size - 1) {
+                            il_view_pager_testimonials.setCurrentItem(currentItem)
+                        } else {
+                            currentItem = 0
+                            il_view_pager_testimonials.setCurrentItem(currentItem)
+
+                        }
+                    }
+                })
 
     }
 
@@ -450,6 +467,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun onDestroy() {
         super.onDestroy()
         mBannerPresenter.detachView()
+        if (observable != null && !observable?.isUnsubscribed!!)
+            observable?.unsubscribe()
     }
 
 

@@ -10,14 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class InboxFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -57,18 +52,21 @@ public class InboxFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     class FilterHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.tv_filter_txt)
-        TextView filterText;
-        @BindView(R2.id.iv_tick)
-        ImageView tvDayTime;
-        @BindView(R2.id.filter_item)
-        View locationDateItem;
+        private TextView filterText;
+        private ImageView tvDayTime;
+        private View locationDateItem;
 
         String valueItem;
 
         private FilterHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            findingViewsId(itemView);
+        }
+
+        private void findingViewsId(View view) {
+            filterText = view.findViewById(R.id.tv_filter_txt);
+            tvDayTime = view.findViewById(R.id.iv_tick);
+            locationDateItem = view.findViewById(R.id.filter_item);
         }
 
         private void setLocationDate(String value) {
@@ -81,9 +79,15 @@ public class InboxFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 tvDayTime.setVisibility(View.GONE);
                 filterText.setTextColor(mContext.getResources().getColor(R.color.black_70));
             }
+
+            locationDateItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickFilterItem();
+                }
+            });
         }
 
-        @OnClick(R2.id.filter_item)
         void onClickFilterItem() {
             int prevSelected = selected;
             selected = getAdapterPosition();

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="@dimen/dp_5"
+        android:layout_height="@dimen/dp_5"
+        android:tint="@color/grey_300"
+        app:srcCompat="@drawable/ic_dot_black" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/title_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_6"
+        app:fontSize="micro"
+        app:textViewTheme="lightPrimary"
+        tools:text="5.0" />
+
+</LinearLayout>

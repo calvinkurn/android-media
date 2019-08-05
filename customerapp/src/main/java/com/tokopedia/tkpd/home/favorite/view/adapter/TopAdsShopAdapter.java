@@ -2,6 +2,8 @@ package com.tokopedia.tkpd.home.favorite.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -18,12 +20,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
-import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
@@ -31,6 +30,12 @@ import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +114,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                                                        Target<GlideDrawable> target,
                                                        boolean isFromMemoryCache,
                                                        boolean isFirstResource) {
-                            if(coverUri.contains(PATH_VIEW) && !isFromMemoryCache) {
+                            if (coverUri.contains(PATH_VIEW) && !isFromMemoryCache) {
                                 new ImpresionTask().execute(coverUri);
                             }
                             return false;
@@ -152,12 +157,68 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
             @Override
             public void onClick(View view) {
                 Context context = view.getContext();
-                TopAdsUtil.clickTopAdsAction(context, item.getShopClickUrl());
+                new FireTopAdsActionAsyncTask().execute(item.getShopClickUrl());
                 eventFavoriteViewRecommendation();
                 Intent intent = ShopPageActivity.createIntent(context, item.getShopId());
                 context.startActivity(intent);
             }
         };
+    }
+
+    /**
+     * Hack solution using AsyncTask
+     * This is to handled fire and forget url to shopfavorit
+     * Previously was using Volley (TopadsUtil.clickTopAdsAction)
+     */
+    public static class FireTopAdsActionAsyncTask extends AsyncTask<String, Void, Void> {
+
+        @NonNull
+        @Override
+        protected Void doInBackground(@NonNull String... strings) {
+            URL url;
+            HttpURLConnection urlConnection;
+
+            try {
+                String stringBuilder = strings[0] +
+                        "?device=android&os_type=1&appversion=" +
+                        GlobalConfig.VERSION_CODE;
+                url = new URL(stringBuilder);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+
+                int responseCode = urlConnection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    readStream(urlConnection.getInputStream());
+                }
+
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        private void readStream(InputStream in) {
+            BufferedReader reader = null;
+            StringBuilder response = new StringBuilder();
+            try {
+                reader = new BufferedReader(new InputStreamReader(in));
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     public void eventFavoriteViewRecommendation() {

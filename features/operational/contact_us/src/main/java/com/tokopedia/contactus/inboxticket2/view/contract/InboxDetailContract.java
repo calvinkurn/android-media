@@ -48,6 +48,14 @@ public interface InboxDetailContract {
         void updateClosedStatus(String subject);
 
         String getCommentID();
+
+        void showErrorMessage(String error);
+
+        void onSuccessSubmitOfRating(int rating, int commentPosition);
+
+        void OnSucessfullTicketClose();
+
+        void showNoTicketView(List<String> messageError);
     }
 
     interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter {
@@ -74,5 +82,11 @@ public interface InboxDetailContract {
         void showImagePreview(int position, List<AttachmentItem> imagesURL);
 
         void onClickEmoji(int number);
+
+        void onClick(boolean agreed,int commentPosition, String commentId);
+
+        void closeTicket();
+
+        String getTicketStatus();
     }
 }

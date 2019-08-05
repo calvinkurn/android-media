@@ -10,7 +10,5 @@ import android.support.v4.app.FragmentActivity
  */
 interface ChangePasswordRouter {
 
-    fun getForgotPasswordIntent(context: Context, userEmail : String): Intent
-
     fun logoutToHome(activity: Activity)
 }

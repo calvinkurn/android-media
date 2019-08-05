@@ -19,12 +19,15 @@ import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPres
 
 /**
  * Created by Alifa on 10/17/2016.
+ * For navigating to this class
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal#FORGOT_PASSWORD}
+ * Please pass EMAIL
  */
 
 public class ForgotPasswordActivity extends BasePresenterActivity {
 
     private static final String TAG = "FORGOT_PASSWORD_FRAGMENT";
-    private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
+    private static final String INTENT_EXTRA_PARAM_EMAIL = "email";
     private static final String INTENT_EXTRA_AUTO_RESET = "INTENT_EXTRA_AUTO_RESET";
     private static final String INTENT_EXTRA_REMOVE_FOOTER = "INTENT_EXTRA_REMOVE_FOOTER";
 

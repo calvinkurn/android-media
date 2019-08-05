@@ -20,7 +20,7 @@ import java.lang.Exception
 class CommonErrorResponseInterceptor : Interceptor {
 
     @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response? {
+    override fun intercept(chain: Interceptor.Chain): Response {
         val response = chain.proceed(chain.request())
 
         val responseBody: ResponseBody?

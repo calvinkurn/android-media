@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 
@@ -13,10 +13,10 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
  */
 public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_PROMO = R.layout.holder_item_cart_promo;
-    private final CartAdapterActionListener actionListener;
+    private final PromoActionListener actionListener;
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
 
-    public CartVoucherPromoViewHolder(View itemView, CartAdapterActionListener actionListener) {
+    public CartVoucherPromoViewHolder(View itemView, PromoActionListener actionListener) {
         super(itemView);
         this.actionListener = actionListener;
         this.tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_cart_holder_view);

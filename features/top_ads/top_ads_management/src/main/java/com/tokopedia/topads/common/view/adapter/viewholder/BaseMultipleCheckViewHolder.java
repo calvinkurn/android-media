@@ -31,7 +31,7 @@ public abstract class BaseMultipleCheckViewHolder<T extends Visitable> extends A
 
     public abstract void setChecked(boolean checked);
 
-    public abstract void showCheckButton(boolean isInActionMode);
+    public abstract void showCheckButton(boolean isInActionMode, boolean isAutoAds);
 
     public interface CheckedCallback<T>{
         void onItemChecked(T item, boolean isChecked);
