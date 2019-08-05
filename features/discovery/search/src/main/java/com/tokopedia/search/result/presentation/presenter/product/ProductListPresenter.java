@@ -513,26 +513,55 @@ final class ProductListPresenter
 
     private void loadDataSubscriberOnNextIfViewAttached(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
         if (isViewAttached()) {
-            getView().clearLastProductItemPositionFromCache();
-
-            int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
-
-            ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
-
-            saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
-
-            if (productViewModel.getProductList().isEmpty()) {
-                getViewToShowEmptySearch();
-            } else {
-                getViewToShowProductList(productViewModel);
+            if(isSearchRedirected(searchProductModel)) {
+                getViewToRedirectSearch(searchProductModel);
             }
-
-            getView().storeTotalData(productViewModel.getTotalData());
-
-            if(isFirstTimeLoad) {
-                getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+            else {
+                getViewToProcessSearchResult(searchProductModel, isFirstTimeLoad);
             }
         }
+    }
+
+    private boolean isSearchRedirected(SearchProductModel searchProductModel) {
+        SearchProductModel.Redirection redirection = searchProductModel.getSearchProduct().getRedirection();
+
+        return redirection != null
+                && redirection.getRedirectApplink() != null
+                && redirection.getRedirectApplink().length() > 0;
+    }
+
+    private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
+        String applink = searchProductModel.getSearchProduct().getRedirection().getRedirectApplink();
+
+        getView().redirectSearchToAnotherPage(applink);
+    }
+
+    private void getViewToProcessSearchResult(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
+        ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
+
+        if (productViewModel.getProductList().isEmpty()) {
+            getViewToShowEmptySearch();
+        } else {
+            getViewToShowProductList(productViewModel);
+        }
+
+        getView().storeTotalData(productViewModel.getTotalData());
+
+        if (isFirstTimeLoad) {
+            getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+        }
+    }
+
+    private ProductViewModel createProductViewModelWithPosition(SearchProductModel searchProductModel) {
+        getView().clearLastProductItemPositionFromCache();
+
+        int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
+
+        ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
+
+        saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
+
+        return productViewModel;
     }
 
     private void getViewToShowEmptySearch() {
