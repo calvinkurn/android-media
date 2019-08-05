@@ -93,13 +93,13 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         val method = when {
             Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> "email"
             Patterns.PHONE.matcher(inputText).matches() -> "phone number"
-            else ->  "unknown"
+            else -> "unknown"
         }
 
         val hashMap = TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
-                String.format( "click on button selanjutnya - %s", method),
+                String.format("click on button selanjutnya - %s", method),
                 "click"
         )
         hashMap["user_id"] = userSession.userId
@@ -113,13 +113,13 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         val method = when {
             Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> "email"
             Patterns.PHONE.matcher(inputText).matches() -> "phone number"
-            else ->  "unknown"
+            else -> "unknown"
         }
 
         val hashMap = TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
-                String.format( "click on button selanjutnya - %s", method),
+                String.format("click on button selanjutnya - %s", method),
                 String.format("failed - %s", errorMessage)
         )
         hashMap["user_id"] = userSession.userId
@@ -132,13 +132,13 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         val method = when {
             Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> "email"
             Patterns.PHONE.matcher(inputText).matches() -> "phone number"
-            else ->  "unknown"
+            else -> "unknown"
         }
 
         val hashMap = TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
-                String.format( "click on button selanjutnya - %s", method),
+                String.format("click on button selanjutnya - %s", method),
                 "success"
         )
         hashMap["user_id"] = userSession.userId
@@ -727,6 +727,16 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
             e.printStackTrace()
         }
 
+    }
+
+    fun getLoginMethodMoengage(loginMethod: String?): String? {
+        when (loginMethod) {
+            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> return "Email"
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> return "Email"
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> return "Facebook"
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> return "Google"
+            UserSessionInterface.LOGIN_METHOD_PHONE -> return "Phone Number"
+        }
     }
 
 }

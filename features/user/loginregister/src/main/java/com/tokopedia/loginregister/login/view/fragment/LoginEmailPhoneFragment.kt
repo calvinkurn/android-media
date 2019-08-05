@@ -14,6 +14,7 @@ import android.text.TextPaint
 import android.text.TextUtils
 import android.text.format.DateFormat
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -579,6 +580,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun setTrackingUserId(userId: String) {
+        Log.d("NISNIS", "setTrackingUserId " + userSession.loginMethod)
         try {
             TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
             TrackApp.getInstance().gtm.pushUserId(userId)
@@ -615,7 +617,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     userSession.shopName,
                     userSession.shopId,
                     userSession.hasShop(),
-                    LoginRegisterAnalytics.LABEL_EMAIL
+                    analytics.getLoginMethodMoengage(userSession.loginMethod)
             )
 
         } catch (e: Exception) {
