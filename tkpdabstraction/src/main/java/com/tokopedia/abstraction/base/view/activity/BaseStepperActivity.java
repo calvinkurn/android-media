@@ -41,7 +41,13 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     protected void setupFragment(Bundle savedinstancestate) {
         if (getListFragment().size() >= currentPosition) {
             Fragment fragment = getListFragment().get(currentPosition - 1);
-            Bundle bundle = new Bundle();
+            Bundle fragmentArguments = fragment.getArguments();
+            Bundle bundle;
+            if( null == fragmentArguments){
+                bundle = new Bundle();
+            }else {
+                bundle = fragmentArguments;
+            }
             bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel);
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()

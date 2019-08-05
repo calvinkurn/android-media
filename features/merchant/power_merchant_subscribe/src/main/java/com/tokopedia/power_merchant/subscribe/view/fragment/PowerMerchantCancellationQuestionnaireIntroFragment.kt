@@ -20,12 +20,16 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
 
     private lateinit var parentActivity: PowerMerchantCancellationQuestionnaireActivity
     private var stepperModel: PMCancellationQuestionnaireStepperModel? = null
+    private var deactivateDate = ""
 
     companion object {
-        private var deactivateDate = ""
+        private const val EXTRA_DEACTIVATE_DATE = "deactivate_date"
         fun createInstance(deactivateDate: String): PowerMerchantCancellationQuestionnaireIntroFragment {
-            this.deactivateDate = deactivateDate
-            return PowerMerchantCancellationQuestionnaireIntroFragment()
+            val fragment = PowerMerchantCancellationQuestionnaireIntroFragment()
+            val bundle = Bundle()
+            bundle.putString(EXTRA_DEACTIVATE_DATE,deactivateDate)
+            fragment.arguments = bundle
+            return fragment
         }
     }
 
@@ -45,14 +49,22 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         getArgumentData()
         initLayout(view)
-        super.onViewCreated(view, savedInstanceState)
+        populateViewBasedOnModelData()
+    }
+
+    private fun populateViewBasedOnModelData() {
+        stepperModel?.let {
+            questionnaire_rating.rating = it.star.toFloat()
+        }
     }
 
     private fun getArgumentData() {
         arguments?.let {
             stepperModel = it.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
+            deactivateDate = it.getString(EXTRA_DEACTIVATE_DATE,"")
         }
     }
 
@@ -68,20 +80,17 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
                 if (parentActivity.isFinalPage()) {
                     parentActivity.finishPage()
                 } else {
-                    parentActivity.goToNextPage(null)
+                    parentActivity.goToNextPage(stepperModel)
                 }
             }
             tv_description.text = getString(
                     R.string.pm_label_cancellation_questionnaire_intro_desc,
                     deactivateDate
             )
-            questionnaire_rating.setOnClickListener {
-                (it as RatingBar).apply {
-                    val rating = rating.toInt()
-                    button_next.isEnabled = isRatingNotZero(rating)
-                    stepperModel?.star = rating
-                    mapRatingToTextView(rating)
-                }
+            questionnaire_rating.setOnRatingBarChangeListener { _, rating, _ ->
+                button_next.isEnabled = isRatingNotZero(rating.toInt())
+                stepperModel?.star = rating.toInt()
+                mapRatingToTextView(rating.toInt())
             }
         }
     }

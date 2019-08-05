@@ -38,8 +38,8 @@ open class PMCancellationQuestionnaireModel() : Parcelable {
     }
 
     data class MultipleChecklistQuestionnaire(
-            val questionString: String = "",
-            val listChecklistOption: MutableList<String>
+            val questionString: String? = "",
+            val listChecklistOption: ArrayList<String>? = ArrayList()
     ) : PMCancellationQuestionnaireModel() {
         constructor(parcel: Parcel) : this(
                 parcel.readString(),

@@ -2,10 +2,10 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 
 import android.os.Bundle
-import android.support.v7.widget.AppCompatCheckBox
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
@@ -15,25 +15,29 @@ import com.tokopedia.power_merchant.subscribe.model.PMCancellationQuestionnaireS
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantCancellationQuestionnaireActivity
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.view.*
-import kotlinx.android.synthetic.main.fragment_power_merchant_terms.*
 import kotlinx.android.synthetic.main.pm_cancellation_questionnaire_button_layout.view.*
 
-class PowerMerchantCancellationQuestionnaireFragment : BaseDaggerFragment() {
+class PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment : BaseDaggerFragment() {
 
     private lateinit var parentActivity: PowerMerchantCancellationQuestionnaireActivity
     private var stepperModel: PMCancellationQuestionnaireStepperModel? = null
+    private var modelChecklistQuestionnaire: PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire? = null
+    private var position: Int = -1
 
     companion object {
-        private var modelChecklistQuestionnaire: PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire? = null
-        private var position: Int = -1
+        private const val EXTRA_POSITION = "position"
+        private const val EXTRA_MODEL_CHECKLIST_QUESTIONNAIRE = "model_checklist_questionnaire"
+
         fun createInstance(
                 position: Int,
                 model: PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire
-        ): PowerMerchantCancellationQuestionnaireFragment {
-            val frag = PowerMerchantCancellationQuestionnaireFragment()
-            this.modelChecklistQuestionnaire = model
-            this.position = position
-            return frag
+        ): PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment {
+            val fragment = PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment()
+            val bundle = Bundle()
+            bundle.putInt(EXTRA_POSITION, position)
+            bundle.putParcelable(EXTRA_MODEL_CHECKLIST_QUESTIONNAIRE, model)
+            fragment.arguments = bundle
+            return fragment
         }
     }
 
@@ -49,9 +53,10 @@ class PowerMerchantCancellationQuestionnaireFragment : BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         getArgumentData()
         initLayout(view)
-        super.onViewCreated(view, savedInstanceState)
+        populateCheckbox(view)
     }
 
     private fun initLayout(view: View) {
@@ -67,39 +72,46 @@ class PowerMerchantCancellationQuestionnaireFragment : BaseDaggerFragment() {
 
                     parentActivity.finishPage()
                 } else {
-                    parentActivity.goToNextPage(null)
+                    parentActivity.goToNextPage(stepperModel)
                 }
             }
             tv_question.text = modelChecklistQuestionnaire?.questionString
-            populateCheckbox()
         }
     }
 
-    private fun populateCheckbox() {
+    private fun populateCheckbox(view: View) {
         modelChecklistQuestionnaire?.listChecklistOption?.forEachIndexed { index, option ->
-            val checkBox = AppCompatCheckBox(context)
-            checkBox.tag = index
-            checkbox.text = option
-            checkbox.setOnClickListener {
-                (it as AppCompatCheckBox).apply {
-                    stepperModel?.listChoice?.let { listChoice ->
+            stepperModel?.listChoice?.let { listChoice ->
+                val checkBox = LayoutInflater.from(context).inflate(
+                        R.layout.checkbox_layout,
+                        checkbox_container,
+                        false
+                ) as CheckBox
+                checkBox.tag = index
+                checkBox.text = option
+                checkBox.setOnCheckedChangeListener { compoundButton, _ ->
+                    compoundButton.apply {
                         if (isChecked) {
                             listChoice[position].add(tag as Int)
                         } else {
                             listChoice[position].remove(tag as Int)
                         }
-                        button_next.isEnabled = listChoice[position].isNotEmpty()
+                        with(view){
+                            button_next.isEnabled = listChoice[position].isNotEmpty()
+                        }
                     }
                 }
+                checkBox.isChecked = listChoice[position].contains(index)
+                checkbox_container.addView(checkBox)
             }
-            checkbox_container.addView(checkBox)
         }
-
     }
 
     private fun getArgumentData() {
         arguments?.let {
             stepperModel = it.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
+            position = it.getInt(EXTRA_POSITION)
+            modelChecklistQuestionnaire = it.getParcelable(EXTRA_MODEL_CHECKLIST_QUESTIONNAIRE)
         }
     }
 

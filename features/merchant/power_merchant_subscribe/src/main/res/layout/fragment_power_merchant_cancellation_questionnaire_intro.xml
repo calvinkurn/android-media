@@ -7,7 +7,7 @@
     android:gravity="center"
     android:fillViewport="true"
     android:orientation="vertical"
-    tools:context=".view.fragment.PowerMerchantCancellationQuestionnaireFragment">
+    tools:context=".view.fragment.PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -62,7 +62,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_5"
-                android:isIndicator="true"
                 android:numStars="5"
                 android:rating="0"
                 tools:rating="1" />
