@@ -6,14 +6,14 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
+import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
+import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailFlightPresenter
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter

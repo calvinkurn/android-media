@@ -8,11 +8,11 @@ import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
