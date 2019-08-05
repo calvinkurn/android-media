@@ -386,15 +386,16 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         return String.format(getString(R.string.flight_review_minus_discount_prefix), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(discountAmountPlain)));
     }
 
-    @Override
-    public void renderPromo() {
-        renderPromoTicker();
-    }
-
     private void renderPromoTicker() {
         promoTicker.setState(promoData.getState());
         promoTicker.setTitle(promoData.getTitle());
         promoTicker.setDesc(promoData.getDescription());
+    }
+
+    @Override
+    public void renderAutoApplyPromo(PromoData promoData) {
+        this.promoData = promoData;
+        renderPromoTicker();
     }
 
     private void resetPromoTicker() {

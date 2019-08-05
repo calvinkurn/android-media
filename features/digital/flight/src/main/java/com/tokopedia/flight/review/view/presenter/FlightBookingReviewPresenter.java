@@ -9,6 +9,7 @@ import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.data.model.FlightException;
@@ -24,6 +25,8 @@ import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -37,6 +40,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ONE;
+import static com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO;
 
 /**
  * Created by zulfikarrahman on 11/10/17.
@@ -77,13 +83,22 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
         if (reviewModel.getVoucherViewModel().isEnableVoucher()) {
             getView().showVoucherContainer();
-//
-//            if (reviewModel.getVoucherViewModel().isAutoapplySuccess()) {
-//                if (!(reviewModel.getVoucherViewModel().getIsCouponActive() == DEFAULT_IS_COUPON_ZERO &&
-//                        reviewModel.getVoucherViewModel().getIsCoupon() == DEFAULT_IS_COUPON_ONE)) {
-//                    renderCouponAndVoucher();
-//                }
-//            }
+
+            FlightBookingVoucherViewModel voucherViewModel = reviewModel.getVoucherViewModel();
+            if (voucherViewModel.isAutoapplySuccess()) {
+                if (!(voucherViewModel.getIsCouponActive() == DEFAULT_IS_COUPON_ZERO &&
+                        voucherViewModel.getIsCoupon() == DEFAULT_IS_COUPON_ONE)) {
+                    getView().renderAutoApplyPromo(new PromoData(
+                            voucherViewModel.getIsCoupon(),
+                            voucherViewModel.getCode(),
+                            voucherViewModel.getMessageSuccess(),
+                            voucherViewModel.getTitleDescription(),
+                            (int) voucherViewModel.getDiscountedAmount(),
+                            TickerCheckoutView.State.ACTIVE
+                    ));
+                }
+            }
+
         } else {
             getView().hideVoucherContainer();
         }
