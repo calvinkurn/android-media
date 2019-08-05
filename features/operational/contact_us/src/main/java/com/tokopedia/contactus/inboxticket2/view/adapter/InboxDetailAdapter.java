@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -167,13 +166,16 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvCollapsedTime.setText("");
                 tvCollapsedTime.setVisibility(View.GONE);
 
-                if(!utils.CLOSED.equalsIgnoreCase(mPresenter.getTicketStatus()) && isRoleAgent(item) &&(item.getRating()==null|| item.getRating().equals(""))){
+                if(!utils.CLOSED.equalsIgnoreCase(mPresenter.getTicketStatus()) && isRoleAgent(item)
+                        &&(item.getRating()==null|| item.getRating().isEmpty())){
                       settingRatingButtonsVisibility(View.VISIBLE);
                       ratingThumbsUp.clearColorFilter();
                       ratingThumbsDown.clearColorFilter();
                 }
 
-                if((utils.CLOSED.equalsIgnoreCase(mPresenter.getTicketStatus()) && item.getRating()!=null && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED))|| !item.getCreatedBy().getRole().equals(ROLE_TYPE_AGENT)|| item.getId()==null){
+                if((utils.CLOSED.equalsIgnoreCase(mPresenter.getTicketStatus()) && item.getRating()!=null
+                        && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED))
+                        || !isRoleAgent(item)|| item.getId()==null){
                       settingRatingButtonsVisibility(View.GONE);
                 }
                 if (searchMode) {
