@@ -8,7 +8,7 @@
             android:label="@string/shop_settings_manage_shop_info"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -37,7 +37,7 @@
             android:label="@string/shop_settings_manage_address"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -54,7 +54,7 @@
             android:label="@string/shop_settings_manage_etalase"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
-            <intent-filter android:autoVerify="true">
+            <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -63,7 +63,7 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_shop_settings_etalase"/>
-            </intent-filter>
+            </intent-filter >
         </activity>
 
         <activity
@@ -71,7 +71,7 @@
             android:label="@string/shop_settings_manage_notes"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
-            <intent-filter android:autoVerify="true">
+            <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
