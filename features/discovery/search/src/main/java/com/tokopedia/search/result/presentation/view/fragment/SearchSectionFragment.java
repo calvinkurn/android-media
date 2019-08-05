@@ -37,8 +37,11 @@ import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -56,8 +59,10 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_C
 public abstract class SearchSectionFragment
         extends BaseDaggerFragment
         implements
-        SearchSectionContract.View {
+        SearchSectionContract.View,
+        BannerAdsListener {
 
+    private static final String SHOP = "shop";
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
     public static final int REQUEST_CODE_LOGIN = 561;
 
@@ -226,23 +231,25 @@ public abstract class SearchSectionFragment
 
         switch (getAdapter().getCurrentLayoutType()) {
             case GRID_1:
-                setSpanCount(2);
-                gridLayoutManager.setSpanCount(spanCount);
-                staggeredGridLayoutManager.setSpanCount(spanCount);
-                getAdapter().changeDoubleGridView();
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
-                break;
-            case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 staggeredGridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
                 SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
-            case GRID_3:
+            case GRID_2:
                 setSpanCount(1);
+                gridLayoutManager.setSpanCount(spanCount);
+                staggeredGridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeListView();
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
+                break;
+            case GRID_3:
+                setSpanCount(2);
+                gridLayoutManager.setSpanCount(spanCount);
+                staggeredGridLayoutManager.setSpanCount(spanCount);
+                getAdapter().changeDoubleGridView();
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
         }
         refreshMenuItemGridIcon();
@@ -518,11 +525,6 @@ public abstract class SearchSectionFragment
 
     }
 
-    protected void disableSwipeRefresh() {
-        refreshLayout.setEnabled(false);
-        refreshLayout.setRefreshing(false);
-    }
-
     protected void onSwipeToRefresh() {
 
     }
@@ -629,5 +631,27 @@ public abstract class SearchSectionFragment
     @Override
     public void logDebug(String tag, String message) {
         Log.d(tag, message);
+    }
+
+    @Override
+    public void onBannerAdsClicked(int position, String applink, CpmData cpmData) {
+        if(getActivity() == null || redirectionListener == null) return;
+
+        redirectionListener.startActivityWithApplink(applink);
+
+        trackBannerAdsClicked(position, applink, cpmData);
+    }
+
+    private void trackBannerAdsClicked(int position, String applink, CpmData data) {
+        if (applink.contains(SHOP)) {
+            TopAdsGtmTracker.eventSearchResultPromoShopClick(getActivity(), data, position);
+        } else {
+            TopAdsGtmTracker.eventSearchResultPromoProductClick(getActivity(), data, position);
+        }
+    }
+
+    @Override
+    public void onBannerAdsImpressionListener(int position, CpmData data) {
+        TopAdsGtmTracker.eventSearchResultPromoView(getActivity(), data, position);
     }
 }

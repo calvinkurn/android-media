@@ -67,6 +67,7 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
@@ -100,6 +101,7 @@ public class ProductListFragment
         WishListActionListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
+    private static final String SHOP = "shop";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
@@ -561,19 +563,6 @@ public class ProductListFragment
     @Override
     public void onSuggestionClicked(String queryParams) {
         performNewProductSearch(queryParams);
-    }
-
-    @Override
-    public void onBannerAdsClicked(String appLink) {
-        if(getActivity() == null) return;
-
-        DiscoveryRouter router = ((DiscoveryRouter) getActivity().getApplicationContext());
-
-        if (router.isSupportApplink(appLink)) {
-            router.goToApplinkActivity(getActivity(), appLink);
-        } else if (!TextUtils.isEmpty(appLink)) {
-            router.actionOpenGeneralWebView(getActivity(), appLink);
-        }
     }
 
     @Override

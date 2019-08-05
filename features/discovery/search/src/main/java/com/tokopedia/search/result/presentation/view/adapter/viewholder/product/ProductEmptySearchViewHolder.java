@@ -12,6 +12,7 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.tokopedia.discovery.autocomplete.adapter.decorater.SpacingItemDecoration;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.search.R;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.topads.sdk.base.Config;
