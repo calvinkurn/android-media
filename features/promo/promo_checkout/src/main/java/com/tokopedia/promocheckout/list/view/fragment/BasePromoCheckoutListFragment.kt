@@ -14,9 +14,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
@@ -139,15 +139,16 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     override fun onErrorCheckPromo(e: Throwable) {
-        if (e is CheckPromoCodeException || e is MessageErrorException) {
-            textInputLayoutCoupon.error = e.message
-        } else {
-            NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
-        }
         if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed()
         } else {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCodeFailed()
+        }
+
+        if (e is CheckPromoCodeException || e is MessageErrorException) {
+            textInputLayoutCoupon.error = e.message
+        } else {
+            NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
         }
     }
 
