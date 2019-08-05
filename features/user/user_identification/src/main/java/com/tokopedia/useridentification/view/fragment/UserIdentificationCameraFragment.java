@@ -389,7 +389,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
     private void destroyCamera() {
         try {
-            cameraView.destroy();
+            cameraView.close();
         } catch (Throwable e) {
             // no-op
         }
