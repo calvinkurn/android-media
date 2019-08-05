@@ -32,6 +32,7 @@ class PromoCheckoutListFlightFragment : BasePromoCheckoutListFragment(), PromoCh
         super.onCreate(savedInstanceState)
         isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
         promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
+        cartID = arguments?.getString(EXTRA_CART_ID) ?: ""
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         promoCheckoutListFlightPresenter.attachView(this)
     }

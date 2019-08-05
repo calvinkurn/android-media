@@ -431,6 +431,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void onClickUsePromo() {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_FLIGHT);
         intent.putExtra("EXTRA_COUPON_ACTIVE", flightBookingReviewModel.getVoucherViewModel().getIsCouponActive());
+        intent.putExtra("EXTRA_CART_ID", flightBookingReviewModel.getId());
         startActivityForResult(intent, ConstantKt.getREQUST_CODE_PROMO_LIST());
     }
 
