@@ -12,11 +12,11 @@ open class FlightCheckVoucherMapper @Inject constructor() {
     fun mapData(data: FlightCheckVoucher): DataUiModel {
         return DataUiModel(
                 success = true,
-                message = MessageUiModel("green", "ACTIVE", data.message),
+                message = MessageUiModel("#ade3af", "green", data.message),
                 codes = listOf(data.voucherCode),
                 titleDescription = data.title,
-                discountAmount = data.discountAmount.toInt(),
-                cashbackWalletAmount = data.cashbackAmount.toInt(),
+                discountAmount = data.discountAmountPlain.toInt(),
+                cashbackWalletAmount = data.cashbackAmountPlain.toInt(),
                 isCoupon = data.isCoupon
         )
     }
