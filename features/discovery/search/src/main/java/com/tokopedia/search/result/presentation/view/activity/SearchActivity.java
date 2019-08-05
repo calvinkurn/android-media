@@ -11,8 +11,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -44,9 +42,6 @@ import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.view.fragment.CatalogListFragment;
@@ -111,8 +106,6 @@ public class SearchActivity extends BaseActivity
     private View searchNavContainer;
     private View backButton;
     private TextView searchTextView;
-    private View searchToolbarContainer;
-    private View buttonImageSearch;
     private ImageButton buttonChangeGrid;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
@@ -124,7 +117,6 @@ public class SearchActivity extends BaseActivity
     private boolean isForceSwipeToShop;
     private boolean isHasCatalog;
     private boolean isFromApplink;
-    private boolean allowImageSearch;
     private int activeTabPosition;
 
     @Inject SearchContract.Presenter searchPresenter;
@@ -134,7 +126,6 @@ public class SearchActivity extends BaseActivity
     private SearchViewComponent searchComponent;
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
-    private RemoteConfig remoteConfig;
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
@@ -157,7 +148,6 @@ public class SearchActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
         initActivityOnCreate();
-        getConfigFromFirebase();
 
         proceed();
         handleIntent(getIntent());
@@ -166,11 +156,6 @@ public class SearchActivity extends BaseActivity
     private void initActivityOnCreate() {
         GraphqlClient.init(this);
         initInjector();
-    }
-
-    private void getConfigFromFirebase() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
-        allowImageSearch = remoteConfig.getBoolean(RemoteConfigKey.SHOW_IMAGE_SEARCH, false);
     }
 
     private void initInjector() {
@@ -205,8 +190,6 @@ public class SearchActivity extends BaseActivity
         searchNavContainer = findViewById(R.id.search_nav_container);
         backButton = findViewById(R.id.action_up_btn);
         searchTextView = findViewById(R.id.searchTextView);
-        searchToolbarContainer = findViewById(R.id.searchToolbarContainer);
-        buttonImageSearch = findViewById(R.id.action_image_search_btn);
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
     }
 
@@ -228,13 +211,8 @@ public class SearchActivity extends BaseActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
-        searchToolbarContainer.setOnClickListener(v -> moveToAutoCompleteActivity());
+        searchTextView.setOnClickListener(v -> moveToAutoCompleteActivity());
         backButton.setOnClickListener(v -> onBackPressed());
-        if (allowImageSearch) {
-            buttonImageSearch.setVisibility(View.VISIBLE);
-        } else {
-            buttonImageSearch.setVisibility(View.GONE);
-        }
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
     }
 

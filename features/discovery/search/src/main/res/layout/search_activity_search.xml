@@ -32,37 +32,20 @@
                     android:tint="#4b4b4b"
                     app:srcCompat="@drawable/ic_navigation_arrow_back"/>
 
-                <LinearLayout
-                    android:id="@+id/searchToolbarContainer"
+                <TextView
+                    android:id="@+id/searchTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginStart="@dimen/dp_8"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:padding="@dimen/dp_4"
+                    android:drawablePadding="8dp"
+                    android:singleLine="true"
+                    android:textColor="#212121"
+                    android:textSize="16sp"
                     android:background="@drawable/bg_autocomplete_input"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/dp_4">
-
-                    <TextView
-                        android:id="@+id/searchTextView"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:drawablePadding="8dp"
-                        android:paddingLeft="4dp"
-                        android:paddingStart="4dp"
-                        android:singleLine="true"
-                        android:textColor="#212121"
-                        android:textSize="16sp"
-                        android:drawableLeft="@drawable/icon_magnifier"/>
-
-                    <ImageButton
-                        android:id="@+id/action_image_search_btn"
-                        style="@style/MSV_ImageButton"
-                        android:tint="@color/grey"
-                        app:srcCompat="@drawable/ic_camera_alt_black_24dp" />
-
-                </LinearLayout>
+                    android:drawableLeft="@drawable/icon_magnifier"/>
 
                 <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/search_change_grid_button"
