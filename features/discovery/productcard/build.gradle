@@ -24,6 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.unifyDependencies.components

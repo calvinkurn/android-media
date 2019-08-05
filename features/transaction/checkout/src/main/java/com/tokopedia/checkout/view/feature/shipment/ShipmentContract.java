@@ -152,8 +152,6 @@ public interface ShipmentContract {
 
         void clearTotalBenefitPromoStacking();
 
-        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(String eventAction, String eventLabel);
-
         void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
 
         void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
@@ -258,7 +256,7 @@ public interface ShipmentContract {
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoStackShipment(Promo promo);
+        void checkPromoFinalStackShipment(Promo promo);
 //
 //         void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
 //
@@ -361,8 +359,6 @@ public interface ShipmentContract {
         Token getKeroToken();
 
         boolean isShowOnboarding();
-
-        void triggerSendEnhancedEcommerceCheckoutAnalytics(String step, String eventAction, String eventLabel);
 
         void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests, String step, String eventAction, String eventLabel);
 

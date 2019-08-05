@@ -130,11 +130,13 @@ public class RemoteConfigKey {
     public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
     public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
-    
+
     public static final String ANDROID_PM_F1_ENABLED = "android_power_merchant_f1_enabled";
 
-
     //feed section
-
     public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
+
+    public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
+
+    public static final String PLAY_PIP = "android_customer_enable_play_pip";
 }

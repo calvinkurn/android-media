@@ -158,7 +158,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                     AddNewAddressAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(this,
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, 0, false, false, null,
+                            false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 } else {
                     intent = AddAddressActivity

@@ -72,7 +72,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         private val LABEL_REGISTER = "Register"
         private val LABEL_PASSWORD = "Kata Sandi"
         val LABEL_EMAIL = "Email"
-        private val LABEL_PHONE_NUMBER = "Phone Number"
         val LABEL_GPLUS = "Google Plus"
         val LABEL_FACEBOOK = "Facebook"
         private val LABEL_SAVE_PASSWORD = "Save Password"
@@ -90,18 +89,29 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     //#3
     fun trackClickOnNext(inputText: String) {
 
-        val method = when {
-            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> "email"
-            Patterns.PHONE.matcher(inputText).matches() -> "phone number"
-            else -> "unknown"
+        val hashMap : Map<String,Any>
+
+        when {
+            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "email"),
+                    "click"
+            )
+            Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    "enter login phone number",
+                    "click"
+            )
+            else -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "unknown"),
+                    "click"
+            )
         }
 
-        val hashMap = TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                String.format("click on button selanjutnya - %s", method),
-                "click"
-        )
         hashMap["user_id"] = userSession.userId
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
 
@@ -110,18 +120,29 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     //#3
     fun trackClickOnNextFail(inputText: String, errorMessage: String) {
 
-        val method = when {
-            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> "email"
-            Patterns.PHONE.matcher(inputText).matches() -> "phone number"
-            else -> "unknown"
+        val hashMap : Map<String,Any>
+
+        when {
+            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "email"),
+                    String.format("failed - %s", errorMessage)
+            )
+            Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    "enter login phone number",
+                    String.format("failed - %s", errorMessage)
+            )
+            else -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "unknown"),
+                    String.format("failed - %s", errorMessage)
+            )
         }
 
-        val hashMap = TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                String.format("click on button selanjutnya - %s", method),
-                String.format("failed - %s", errorMessage)
-        )
         hashMap["user_id"] = userSession.userId
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
     }
@@ -129,18 +150,28 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     //#3
     fun trackClickOnNextSuccess(inputText: String) {
 
-        val method = when {
-            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> "email"
-            Patterns.PHONE.matcher(inputText).matches() -> "phone number"
-            else -> "unknown"
-        }
+        val hashMap : Map<String,Any>
 
-        val hashMap = TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                String.format("click on button selanjutnya - %s", method),
-                "success"
-        )
+        when {
+            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "email"),
+                    "success"
+            )
+            Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    "enter login phone number",
+                    "success"
+            )
+            else -> hashMap = TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    CATEGORY_LOGIN_PAGE,
+                    String.format("click on button selanjutnya - %s", "unknown"),
+                    "success"
+            )
+        }
         hashMap["user_id"] = userSession.userId
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
     }
@@ -512,7 +543,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
     }
 
-    fun eventSuccessRegisterEmail(applicationContext: Context, userId: Int, name: String, email: String, phone: String) {
+    fun eventSuccessRegisterEmail(applicationContext: Context, userId: Int, name: String, email: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
@@ -521,17 +552,16 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
 
         TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), "Email")
-        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, phone)
-        sendBranchRegisterEvent(email, phone)
+        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, "")
+        sendBranchRegisterEvent(email)
 
     }
 
-    private fun sendBranchRegisterEvent(email: String, phone: String) {
+    private fun sendBranchRegisterEvent(email: String) {
         val userData = UserData()
         userData.email = email
-        userData.phoneNumber = phone
-        LinkerManager.getInstance().sendEvent(
-                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData))
+        userData.phoneNumber = ""
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData))
     }
 
     fun eventSuccessRegisterSosmed(methodName: String) {
@@ -565,8 +595,8 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     fun eventSuccessLogin(actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
         when (actionLoginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessLoginWithEmail(registerAnalytics)
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessLoginWithGoogle()
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessLoginWithFacebook()
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessLoginWithFacebook()
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessLoginWithGoogle()
             UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessLoginWithPhone(registerAnalytics)
             UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> onSuccessLoginWithSmartLock()
 
@@ -640,8 +670,8 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
         when (actionLoginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onErrorLoginWithEmail(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onErrorLoginWithGoogle(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onErrorLoginWithFacebook(errorMessage)
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onErrorLoginWithFacebook(errorMessage)
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onErrorLoginWithGoogle(errorMessage)
             UserSessionInterface.LOGIN_METHOD_PHONE -> onErrorLoginWithPhone(errorMessage)
             UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> onErrorLoginWithSmartLock(errorMessage)
 

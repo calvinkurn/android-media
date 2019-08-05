@@ -23,12 +23,18 @@ import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
 import android.widget.EditText
+import kotlin.math.abs
 
 
 /**
  * Created by fwidjaja on 2019-06-22.
  */
 object AddNewAddressUtils {
+
+    @JvmField
+    val MONAS_LAT: Double = -6.175794
+    @JvmField
+    val MONAS_LONG: Double = 106.826457
 
     @JvmStatic
     fun generateLatLng(latitude: Double?, longitude: Double?): LatLng {
@@ -100,7 +106,7 @@ object AddNewAddressUtils {
     }
 
     @JvmStatic
-    fun hideKeyboard(et : EditText, context: Context?) {
+    fun hideKeyboard(et: EditText, context: Context?) {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(et.windowToken, 0)
     }
@@ -109,5 +115,14 @@ object AddNewAddressUtils {
     fun showKeyboard(context: Context?) {
         val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    }
+
+    fun hasDefaultCoordinate(lat: Double, long: Double, exact: Boolean = false): Boolean {
+        val threshold = 0.00001
+        val diffLat = lat - MONAS_LAT
+        val diffLong = long - MONAS_LONG
+
+        return if (exact) (diffLat == 0.0 && diffLong == 0.0)
+        else (abs(diffLat) < threshold && abs(diffLong) < threshold)
     }
 }

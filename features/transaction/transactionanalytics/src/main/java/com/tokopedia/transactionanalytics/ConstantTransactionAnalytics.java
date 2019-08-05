@@ -62,6 +62,7 @@ public interface ConstantTransactionAnalytics {
     }
 
     interface EventAction {
+        String CLICK_ALL_COURIER_SELECTED = "click all courier selected";
         String CLICK_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click gunakan kode promo atau kupon";
         String CLICK_GUNAKAN_KODE_PROMO = "click gunakan kode promo";
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";

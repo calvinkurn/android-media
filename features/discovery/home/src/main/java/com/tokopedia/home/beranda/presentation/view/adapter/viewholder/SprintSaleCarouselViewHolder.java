@@ -123,7 +123,12 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             HomeTrackingUtils.homeSprintSaleImpression(context,
                     channels.getGrids(),channels.getType());
             Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
-            countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
+            if (!DateHelper.isExpired(element.getServerTimeOffset(), expiredTime)){
+                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
+                countDownView.setVisibility(View.VISIBLE);
+            } else {
+                countDownView.setVisibility(View.GONE);
+            }
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
                 seeMore.setVisibility(View.VISIBLE);
             } else {

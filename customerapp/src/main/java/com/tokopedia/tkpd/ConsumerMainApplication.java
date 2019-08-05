@@ -18,6 +18,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
 import com.google.firebase.FirebaseApp;
@@ -80,6 +81,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
 
+    CharacterPerMinuteActivityLifecycleCallbacks callback;
+
     // Used to load the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -91,7 +94,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
 
-        FirebaseApp.initializeApp(this);
+        initializeSdk();
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -145,11 +148,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
         registerActivityLifecycleCallbacks(callback);
 
-        LogWrapper.init(this);
         TimberWrapper.init(this);
     }
-
-    CharacterPerMinuteActivityLifecycleCallbacks callback;
 
     @Override
     public void onTerminate() {
@@ -180,6 +180,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             NotificationManager notificationManager = (NotificationManager) getSystemService(
                     NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(mChannel);
+        }
+    }
+
+    private void initializeSdk() {
+        try {
+            FirebaseApp.initializeApp(this);
+            FacebookSdk.sdkInitialize(this);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

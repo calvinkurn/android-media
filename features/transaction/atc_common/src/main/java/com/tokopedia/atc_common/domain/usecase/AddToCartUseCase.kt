@@ -33,6 +33,23 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         private const val PARAM_WAREHOUSE_ID = "warehouseID"
         private const val PARAM_ATC_FROM_EXTERNAL_SOURCE = "atcFromExternalSource"
         private const val PARAM_IS_SCP = "isSCP"
+
+        @JvmStatic
+        @JvmOverloads
+        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = ""): RequestParams {
+            return RequestParams.create()
+                    .apply {
+                        putObject(
+                                REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                                AddToCartRequestParams(
+                                    productId = productId.toLong(),
+                                        shopId = shopId.toInt(),
+                                        quantity = quantity,
+                                        notes = notes
+                                )
+                        )
+                    }
+        }
     }
 
     private fun getParams(addToCartRequestParams: AddToCartRequestParams): Map<String, Any> {

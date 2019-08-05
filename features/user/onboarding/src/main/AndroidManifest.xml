@@ -8,6 +8,7 @@
         <activity
             android:name=".OnboardingActivity"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
