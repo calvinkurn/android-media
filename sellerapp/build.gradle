@@ -245,6 +245,7 @@ afterEvaluate {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.cacheApi)
@@ -265,6 +266,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.shopPage)
@@ -428,4 +430,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation rootProject.ext.testDependencies.junit
+    implementation project(rootProject.ext.libraries.url)
 }

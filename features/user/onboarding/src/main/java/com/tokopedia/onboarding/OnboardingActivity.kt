@@ -202,7 +202,7 @@ class OnboardingActivity : BaseActivity() {
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB1_TTL, R.string.nonb_1_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB1_DESC, R.string.nonb_1_desc),
-                "onboard1.json",
+                R.raw.onboard1,
                 ContextCompat.getColor(applicationContext, R.color.green_nob),
                 0,
                 RemoteConfigKey.NONB1_TTL,
@@ -213,7 +213,7 @@ class OnboardingActivity : BaseActivity() {
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB2_TTL, R.string.nonb_2_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB2_DESC, R.string.nonb_2_desc),
-                "onboard2.json",
+                R.raw.onboard2,
                 ContextCompat.getColor(applicationContext, R.color.blue_nob),
                 1,
                 RemoteConfigKey.NONB2_TTL,
@@ -224,7 +224,7 @@ class OnboardingActivity : BaseActivity() {
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB3_TTL, R.string.nonb_3_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB3_DESC, R.string.nonb_3_desc),
-                "onboard3.json",
+                R.raw.onboard3,
                 ContextCompat.getColor(applicationContext, R.color.orange_nob),
                 2,
                 RemoteConfigKey.NONB3_TTL,
@@ -235,7 +235,7 @@ class OnboardingActivity : BaseActivity() {
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB4_TTL, R.string.nonb_4_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB4_DESC, R.string.nonb_4_desc),
-                "onboard4.json",
+                R.raw.onboard4,
                 ContextCompat.getColor(applicationContext, R.color.green_nob),
                 3,
                 RemoteConfigKey.NONB4_TTL,
@@ -246,7 +246,7 @@ class OnboardingActivity : BaseActivity() {
         fragmentList.add(createAndAddSlide(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB5_TTL, R.string.nonb_5_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB5_DESC, R.string.nonb_5_desc),
-                "onboard5.json",
+                R.raw.onboard5,
                 ContextCompat.getColor(applicationContext, R.color.blue_nob),
                 4,
                 RemoteConfigKey.NONB5_TTL,
@@ -281,7 +281,7 @@ class OnboardingActivity : BaseActivity() {
     }
 
     private fun createAndAddSlide(title: String, description: String,
-                                  assetName: String, bgColor: Int,
+                                  assetName: Int, bgColor: Int,
                                   position: Int,
                                   ttlKey: String,
                                   descKey: String):OnboardingFragment {

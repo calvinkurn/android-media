@@ -20,6 +20,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     public static String imageClick = "/imagesearch - p%s";
 
     private String productID;
+    private String warehouseID;
     private String productName;
     private String imageUrl;
     private String imageUrl700;
@@ -100,6 +101,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public String getProductID() {
         return productID;
+    }
+
+    public String getWarehouseID() {
+        return warehouseID;
+    }
+
+    public void setWarehouseID(String warehouseID) {
+        this.warehouseID = warehouseID;
     }
 
     public void setProductName(String productName) {
@@ -378,6 +387,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.productID);
+        dest.writeString(this.warehouseID);
         dest.writeString(this.productName);
         dest.writeString(this.imageUrl);
         dest.writeString(this.imageUrl700);
@@ -415,6 +425,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     protected ProductItemViewModel(Parcel in) {
         this.productID = in.readString();
+        this.warehouseID = in.readString();
         this.productName = in.readString();
         this.imageUrl = in.readString();
         this.imageUrl700 = in.readString();

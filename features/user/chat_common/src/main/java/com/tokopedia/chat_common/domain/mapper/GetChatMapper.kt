@@ -15,13 +15,18 @@ import javax.inject.Inject
 class GetChatMapper @Inject constructor() : Func1<Response<DataResponse<ChatItemPojo>>,
         ChatRoomViewModel> {
     override fun call(response: Response<DataResponse<ChatItemPojo>>): ChatRoomViewModel {
-        if ((response.body() != null) && (response.body().header == null ||
-                        (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                        (response.body().header != null && response.body().header.messages[0].isBlank()))) {
-            val pojo: ChatItemPojo = response.body().data
-            return mapTo(pojo)
+        val body = response.body()
+        if(body != null) {
+            if ((body.header == null ||
+                            (body.header != null && body.header.messages.isEmpty()) ||
+                            (body.header != null && body.header.messages[0].isBlank()))) {
+                val pojo: ChatItemPojo = body.data
+                return mapTo(pojo)
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 

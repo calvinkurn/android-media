@@ -142,9 +142,11 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
 
     private int hasHomeHeaderViewModel() {
         if (this.visitables != null && this.visitables.size() > 0) {
-            if (this.visitables.get(POSITION_HEADER_WITHOUT_TICKER) instanceof HeaderViewModel) {
+            if (this.visitables.size() > POSITION_HEADER_WITHOUT_TICKER &&
+                    this.visitables.get(POSITION_HEADER_WITHOUT_TICKER) instanceof HeaderViewModel) {
                 return POSITION_HEADER_WITHOUT_TICKER;
-            } else if (this.visitables.get(POSITION_HEADER_WITH_TICKER) instanceof HeaderViewModel) {
+            } else if (this.visitables.size() > POSITION_HEADER_WITH_TICKER &&
+                    this.visitables.get(POSITION_HEADER_WITH_TICKER) instanceof HeaderViewModel) {
                 return POSITION_HEADER_WITH_TICKER;
             } else {
                 return POSITION_UNDEFINED;
@@ -155,9 +157,11 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
 
     private int hasGeolocationViewModel() {
         if (this.visitables != null && this.visitables.size() > 0) {
-            if (this.visitables.get(POSITION_GEOLOCATION_WITHOUT_TICKER) instanceof GeolocationPromptViewModel) {
+            if (this.visitables.size() > POSITION_GEOLOCATION_WITHOUT_TICKER &&
+                    this.visitables.get(POSITION_GEOLOCATION_WITHOUT_TICKER) instanceof GeolocationPromptViewModel) {
                 return POSITION_GEOLOCATION_WITHOUT_TICKER;
-            } else if (this.visitables.get(POSITION_GEOLOCATION_WITH_TICKER) instanceof GeolocationPromptViewModel) {
+            } else if (this.visitables.size() > POSITION_GEOLOCATION_WITH_TICKER &&
+                    this.visitables.get(POSITION_GEOLOCATION_WITH_TICKER) instanceof GeolocationPromptViewModel) {
                 return POSITION_GEOLOCATION_WITH_TICKER;
             } else {
                 return POSITION_UNDEFINED;

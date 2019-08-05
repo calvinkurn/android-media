@@ -28,6 +28,7 @@ dependencies {
         transitive = true
     }
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.inappupdate)
