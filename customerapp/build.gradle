@@ -216,10 +216,10 @@ android {
 //                    }
 //                }
 //            }
-
-            variant.outputs.each { output ->
-                String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    output.versionCodeOverride = (getTkpdVersionCode() * 100);
+                }
             }
         }
     }
