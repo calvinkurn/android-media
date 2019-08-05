@@ -139,7 +139,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendScreen(String screenName) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Screen Event");
         pushEvent("openScreen", DataLayer.mapOf("screenName", screenName));
     }
 
@@ -148,7 +147,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(uid -> {
-                    Log.i("GAv4", "UA-9801603-15: Send Event");
                     log(getContext(), eventName, values);
                     getTagManager().getDataLayer().pushEvent(eventName, values);
                     pushIris(eventName, values);
@@ -181,20 +179,16 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public GTMAnalytics sendCampaign(Campaign campaign) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Campaign Event");
         pushEvent("campaignTrack", campaign.getCampaign());
         return this;
     }
 
     public GTMAnalytics clearCampaign(Campaign campaign) {
-        Log.i("Tag Manager", "UA-9801603-15: Clear Campaign Event " + campaign.getNullCampaignMap());
         pushGeneral(campaign.getNullCampaignMap());
         return this;
     }
 
     public GTMAnalytics eventCheckout(Checkout checkout, String paymentId) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
-        Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
 
         pushGeneral(
                 DataLayer.mapOf(
@@ -216,8 +210,6 @@ public class GTMAnalytics extends ContextAnalytics {
      * @return
      */
     public GTMAnalytics eventCheckout(Checkout checkout) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
-        Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
 
         pushGeneral(
                 DataLayer.mapOf(
@@ -303,7 +295,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendScreen(String screenName, Map<String, String> customDimension) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Screen Event");
         Map<String, Object> map = DataLayer.mapOf("screenName", screenName);
         if (customDimension != null && customDimension.size() > 0) {
             map.putAll(customDimension);
@@ -312,8 +303,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public GTMAnalytics eventAddtoCart(GTMCart cart) {
-        Log.i("Tag Manager", "UA-9801603-15: Send impression Event");
-        Log.i("Tag Manager", "UA-9801603-15: GAv4 MAP: " + cart.getCartMap().toString());
         pushEvent( "addToCart", DataLayer.mapOf("ecommerce", cart.getCartMap()));
         return this;
     }
@@ -341,7 +330,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         switch (keyEvent.toLowerCase()){
             case PRODUCTVIEW:
-                keyEvent = FirebaseAnalytics.Event.VIEW_ITEM;
+                keyEvent = FirebaseAnalytics.Event.VIEW_ITEM_LIST;
                 break;
             case PRODUCTCLICK:
                 keyEvent = FirebaseAnalytics.Event.SELECT_CONTENT;
@@ -388,7 +377,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(map -> {
-                    Log.i("GAv4", "UA-9801603-15: Send General");
                     log(getContext(), null, values);
                     TagManager.getInstance(getContext()).getDataLayer().push(values);
                     pushIris("", values);
@@ -419,8 +407,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public GTMAnalytics eventDetail(ProductDetail detail) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Deatil Event");
-        Log.i("Tag Manager", "UA-9801603-15: GAv4 MAP: " + detail.getDetailMap().toString());
         pushGeneral( DataLayer.mapOf("ecommerce", DataLayer.mapOf(
                 "detail", detail.getDetailMap()
         )));
@@ -429,7 +415,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void eventOnline(String uid) {
-        Log.d(TAG, "UA-9801603-15: Sending Push Event Online");
         pushEvent(
                 "onapps", DataLayer.mapOf("LoginId", uid));
     }

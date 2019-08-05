@@ -670,9 +670,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun addLoadMoreImpression(view:View){
+    private fun addLoadMoreImpression(){
         val impressionHolder = ImpressHolder()
-        view.addOnImpressionListener(impressionHolder, object : ViewHintListener {
+        title_product_desc_label.addOnImpressionListener(impressionHolder, object : ViewHintListener {
             override fun onViewHint() {
                 productInfoViewModel.loadMore()
             }
@@ -701,7 +701,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         if (!::productDescrView.isInitialized) {
             productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity)
-            addLoadMoreImpression(title_product_desc_label)
+            addLoadMoreImpression()
         }
 
         if (!::actionButtonView.isInitialized) {
@@ -1013,6 +1013,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
         if (productId != null || (productKey != null && shopDomain != null)) {
             productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
+            // Add new Impression after refresh for lazy load
+            addLoadMoreImpression()
         }
     }
 
