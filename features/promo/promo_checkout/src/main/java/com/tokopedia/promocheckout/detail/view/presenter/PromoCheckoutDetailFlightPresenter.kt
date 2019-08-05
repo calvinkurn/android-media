@@ -2,12 +2,13 @@ package com.tokopedia.promocheckout.detail.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.promocheckout.common.domain.model.FlightCheckVoucher
+import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import rx.Subscriber
 
@@ -22,8 +23,13 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, cartID), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
-                val checkVoucherData = objects.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
-                view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
+                val errors = objects.getError(FlightCheckVoucher.Response::class.java)
+                if (errors.isNotEmpty()) {
+                    throw MessageErrorException(errors[0].message)
+                } else {
+                    val checkVoucherData = objects.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
+                    view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
+                }
             }
 
             override fun onCompleted() {

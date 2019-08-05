@@ -18,7 +18,7 @@ class FlightCheckVoucherUseCase(private val context: Context, private val graphq
     fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         requestParams?.let {
             val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                    R.raw.promo_checkout_flight_check_voucher), FlightCheckVoucher.Response::class.java, it.parameters)
+                    R.raw.promo_checkout_flight_check_voucher), FlightCheckVoucher.Response::class.java, it.parameters, false)
             graphqlUseCase.clearRequest()
             graphqlUseCase.addRequest(graphqlRequest)
             graphqlUseCase.execute(requestParams, subscriber)
