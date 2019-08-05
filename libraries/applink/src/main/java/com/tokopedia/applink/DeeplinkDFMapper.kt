@@ -9,6 +9,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
+import com.crashlytics.android.Crashlytics;
 
 /**
  * Dynamic Feature Deeplink Mapper
@@ -62,8 +63,14 @@ object DeeplinkDFMapper {
                                             imageUrl: String? = ""): String? {
         getSplitManager(context)?.let {
             if (it.installedModules.contains(moduleId)) {
+                if (!BuildConfig.DEBUG) {
+                    Crashlytics.logException(new Exception("Open module " + moduleId));
+                }
                 return null
             } else {
+                if (!BuildConfig.DEBUG) {
+                    Crashlytics.logException(new Exception("Install module " + moduleId));
+                }
                 return UriUtil.buildUri(
                     DYNAMIC_FEATURE_INSTALL,
                     moduleId,
