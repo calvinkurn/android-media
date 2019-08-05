@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -43,6 +44,9 @@ import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.view.fragment.CatalogListFragment;
@@ -105,6 +109,11 @@ public class SearchActivity extends BaseActivity
     private View iconSort;
     private View searchNavDivider;
     private View searchNavContainer;
+    private View backButton;
+    private TextView searchTextView;
+    private View searchToolbarContainer;
+    private View buttonImageSearch;
+    private ImageButton buttonChangeGrid;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -115,6 +124,7 @@ public class SearchActivity extends BaseActivity
     private boolean isForceSwipeToShop;
     private boolean isHasCatalog;
     private boolean isFromApplink;
+    private boolean allowImageSearch;
     private int activeTabPosition;
 
     @Inject SearchContract.Presenter searchPresenter;
@@ -122,9 +132,9 @@ public class SearchActivity extends BaseActivity
     @Inject UserSessionInterface userSession;
 
     private SearchViewComponent searchComponent;
-    private MenuItem menuChangeGrid;
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
+    private RemoteConfig remoteConfig;
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
@@ -147,6 +157,7 @@ public class SearchActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
         initActivityOnCreate();
+        getConfigFromFirebase();
 
         proceed();
         handleIntent(getIntent());
@@ -155,6 +166,11 @@ public class SearchActivity extends BaseActivity
     private void initActivityOnCreate() {
         GraphqlClient.init(this);
         initInjector();
+    }
+
+    private void getConfigFromFirebase() {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
+        allowImageSearch = remoteConfig.getBoolean(RemoteConfigKey.SHOW_IMAGE_SEARCH, false);
     }
 
     private void initInjector() {
@@ -187,6 +203,11 @@ public class SearchActivity extends BaseActivity
         iconSort = findViewById(R.id.icon_sort);
         searchNavDivider = findViewById(R.id.search_nav_divider);
         searchNavContainer = findViewById(R.id.search_nav_container);
+        backButton = findViewById(R.id.action_up_btn);
+        searchTextView = findViewById(R.id.searchTextView);
+        searchToolbarContainer = findViewById(R.id.searchToolbarContainer);
+        buttonImageSearch = findViewById(R.id.action_image_search_btn);
+        buttonChangeGrid = findViewById(R.id.search_change_grid_button);
     }
 
     protected void prepareView() {
@@ -207,8 +228,14 @@ public class SearchActivity extends BaseActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
-
-        toolbar.setOnClickListener(v -> moveToAutoCompleteActivity());
+        searchToolbarContainer.setOnClickListener(v -> moveToAutoCompleteActivity());
+        backButton.setOnClickListener(v -> onBackPressed());
+        if (allowImageSearch) {
+            buttonImageSearch.setVisibility(View.VISIBLE);
+        } else {
+            buttonImageSearch.setVisibility(View.GONE);
+        }
+        buttonChangeGrid.setOnClickListener(v -> changeGrid());
     }
 
     private void moveToAutoCompleteActivity() {
@@ -543,9 +570,7 @@ public class SearchActivity extends BaseActivity
     }
 
     protected void setToolbarTitle(String query) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(query);
-        }
+        searchTextView.setText(query);
     }
 
     @Override
@@ -632,30 +657,6 @@ public class SearchActivity extends BaseActivity
         searchParameter = savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER_MODEL);
         isForceSwipeToShop = savedInstanceState.getBoolean(EXTRA_FORCE_SWIPE_TO_SHOP);
         activeTabPosition = savedInstanceState.getInt(EXTRA_ACTIVE_TAB_POSITION);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_change_grid, menu);
-        menuChangeGrid = menu.findItem(R.id.action_change_grid);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_change_grid) {
-            changeGrid();
-            return true;
-        }
-        else if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        else if (item.getItemId() == R.id.action_search) {
-            return false;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void changeGrid() {
@@ -813,9 +814,8 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
-        if (menuChangeGrid != null) {
-            menuChangeGrid.setIcon(iconResId);
-            menuChangeGrid.setTitle(titleResId);
+        if(buttonChangeGrid != null) {
+            buttonChangeGrid.setImageResource(iconResId);
         }
     }
 
