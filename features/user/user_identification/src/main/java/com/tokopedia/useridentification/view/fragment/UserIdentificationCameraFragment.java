@@ -219,6 +219,8 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             }
         };
 
+        cameraView.addCameraListener(cameraListener);
+
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
