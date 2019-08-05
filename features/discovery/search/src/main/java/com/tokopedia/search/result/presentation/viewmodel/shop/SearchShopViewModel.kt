@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.viewmodel.shop
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
@@ -12,7 +13,6 @@ import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.search.result.domain.model.SearchShopModel
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.model.ShopViewModel
-import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.presentation.viewmodel.State
 import com.tokopedia.search.result.presentation.viewmodel.State.Error
 import com.tokopedia.search.result.presentation.viewmodel.State.Success
@@ -37,8 +37,9 @@ class SearchShopViewModel(
         const val START_ROW_FIRST_TIME_LOAD = 0
     }
 
-    private val searchShopLiveData = MutableLiveData<State<List<Visitable<ShopListTypeFactory>>>>()
+    private val searchShopLiveData = MutableLiveData<State<List<Visitable<*>>>>()
     private val searchParameter = searchParameter.toMutableMap()
+    private val loadingMoreModel = LoadingMoreModel()
 
     init {
         this.searchParameter[SearchApiConst.UNIQUE_ID] = generateUniqueId()
@@ -66,10 +67,15 @@ class SearchShopViewModel(
         searchParameter[SearchApiConst.START] = startRow
     }
 
+    private fun getSearchShopLiveDataMutableList() : MutableList<Visitable<*>> {
+        return searchShopLiveData.value?.data?.toMutableList() ?: mutableListOf()
+    }
+
     fun searchShop() {
         setSearchParameterStartRow(START_ROW_FIRST_TIME_LOAD)
 
         searchShopFirstPageUseCase.unsubscribe()
+        searchShopLoadMoreUseCase.unsubscribe()
 
         val requestParams = createSearchShopParam(searchParameter)
 
@@ -97,7 +103,7 @@ class SearchShopViewModel(
     private fun createSearchShopFirstPageSubscriber(): Subscriber<SearchShopModel> {
         return object: Subscriber<SearchShopModel>() {
             override fun onNext(t: SearchShopModel?) {
-                searchShopSuccess(t)
+                searchShopFirstPageSuccess(t)
             }
 
             override fun onCompleted() {
@@ -110,34 +116,34 @@ class SearchShopViewModel(
         }
     }
 
-    private fun searchShopSuccess(searchShopModel: SearchShopModel?) {
+    private fun searchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
 
-        val visitableList = createVisitableList(searchShopModel)
+        val visitableList = createSearchShopListWithHeader(searchShopModel)
 
-        searchShopLiveData.postValue(Success(visitableList))
+        updateSearchShopLiveDataStateToSuccess(visitableList)
     }
 
-    private fun createVisitableList(searchShopModel: SearchShopModel): List<Visitable<ShopListTypeFactory>> {
+    private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
+        val visitableList = mutableListOf<Visitable<*>>()
+
         val shopHeaderViewModel = createShopHeaderViewModelAsVisitable(searchShopModel)
-        val shopViewModelList = createShopItemViewModelAsVisitableList(searchShopModel)
-
-        val visitableList = mutableListOf<Visitable<ShopListTypeFactory>>()
-
         visitableList.add(shopHeaderViewModel)
+
+        val shopViewModelList = createShopItemViewModelAsVisitableList(searchShopModel)
         visitableList.addAll(shopViewModelList)
 
         return visitableList
     }
 
-    private fun createShopHeaderViewModelAsVisitable(searchShopModel: SearchShopModel): Visitable<ShopListTypeFactory> {
+    private fun createShopHeaderViewModelAsVisitable(searchShopModel: SearchShopModel): Visitable<*> {
         val shopHeaderViewModel = shopHeaderViewModelMapper.convert(searchShopModel)
         shopHeaderViewModel.query = getSearchParameterQuery()
 
         return shopHeaderViewModel
     }
 
-    private fun createShopItemViewModelAsVisitableList(searchShopModel: SearchShopModel): List<Visitable<ShopListTypeFactory>> {
+    private fun createShopItemViewModelAsVisitableList(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val shopViewModel = shopViewModelMapper.convert(searchShopModel)
         setShopItemPosition(shopViewModel.shopItemList)
 
@@ -159,16 +165,95 @@ class SearchShopViewModel(
         }
     }
 
+    private fun updateSearchShopLiveDataStateToSuccess(visitableList: List<Visitable<*>>) {
+        val searchShopDataList = getSearchShopLiveDataMutableList()
+        searchShopDataList.addAll(visitableList)
+
+        searchShopLiveData.postValue(Success(searchShopDataList))
+    }
+
     private fun searchShopError(e: Throwable?) {
         e?.printStackTrace()
-        searchShopLiveData.postValue(Error(""))
+
+        updateSearchShopLiveDataStateToError()
+    }
+
+    private fun updateSearchShopLiveDataStateToError() {
+        val searchShopDataList = getSearchShopLiveDataMutableList()
+
+        searchShopLiveData.postValue(Error("", searchShopDataList))
+    }
+
+    fun searchMoreShop(startRow: Int) {
+        addLoadingMoreToSearchShopLiveData()
+
+        setSearchParameterStartRow(startRow)
+
+        searchShopFirstPageUseCase.unsubscribe()
+        searchShopLoadMoreUseCase.unsubscribe()
+
+        val requestParams = createSearchShopParam(searchParameter)
+
+        searchShopLoadMoreUseCase.execute(requestParams, createSearchShopLoadMoreSubscriber())
+    }
+
+    private fun addLoadingMoreToSearchShopLiveData() {
+        val searchShopDataList = getSearchShopLiveDataMutableList()
+        searchShopDataList.add(loadingMoreModel)
+
+        searchShopLiveData.postValue(Success(searchShopDataList))
+    }
+
+    private fun createSearchShopLoadMoreSubscriber(): Subscriber<SearchShopModel> {
+        return object: Subscriber<SearchShopModel>() {
+            override fun onNext(t: SearchShopModel?) {
+                searchShopLoadMoreSuccess(t)
+            }
+
+            override fun onCompleted() {
+                // Should get dynamic filter
+            }
+
+            override fun onError(e: Throwable?) {
+                searchShopError(e)
+            }
+        }
+    }
+
+    private fun searchShopLoadMoreSuccess(searchShopModel: SearchShopModel?) {
+        if(searchShopModel == null) return
+
+        val visitableList = createSearchShopList(searchShopModel)
+
+        removeLoadingMoreFromSearchShopLiveData()
+        updateSearchShopLiveDataStateToSuccess(visitableList)
+    }
+
+    private fun removeLoadingMoreFromSearchShopLiveData() {
+        val searchShopDataList = getSearchShopLiveDataMutableList()
+        searchShopDataList.remove(loadingMoreModel)
+    }
+
+    private fun createSearchShopList(searchShopModel: SearchShopModel): List<Visitable<*>> {
+        val visitableList = mutableListOf<Visitable<*>>()
+
+        val shopViewModelList = createShopItemViewModelAsVisitableList(searchShopModel)
+        visitableList.addAll(shopViewModelList)
+
+        return visitableList
     }
 
     fun getSearchParameterQuery() = (searchParameter[SearchApiConst.Q] ?: "").toString()
 
     fun getSearchParameterStartRow() = (searchParameter[SearchApiConst.START] ?: "").toString().toIntOrNull() ?: 0
 
-    fun getSearchShopLiveData(): LiveData<State<List<Visitable<ShopListTypeFactory>>>> {
+    fun getSearchShopLiveData(): LiveData<State<List<Visitable<*>>>> {
         return searchShopLiveData
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        searchShopFirstPageUseCase.unsubscribe()
+        searchShopLoadMoreUseCase.unsubscribe()
     }
 }

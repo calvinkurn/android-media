@@ -7,10 +7,10 @@ import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.domain.usecase.TestErrorUseCase
 import com.tokopedia.search.result.domain.usecase.TestUseCase
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.model.ShopViewModel
-import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.presentation.viewmodel.State
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -77,7 +77,7 @@ class SearchShopViewModelTest {
         assertSuccessSearchShopData(searchShopState)
     }
 
-    private fun assertSuccessSearchShopData(state: State<List<Visitable<ShopListTypeFactory>>>?) {
+    private fun assertSuccessSearchShopData(state: State<List<Visitable<*>>>?) {
         if(state != null) {
             assertStateIsSuccess(state)
             assertDataIsNotEmpty(state.data)
@@ -91,9 +91,9 @@ class SearchShopViewModelTest {
         }
     }
 
-    private fun assertStateIsSuccess(state: State<List<Visitable<ShopListTypeFactory>>>?) {
+    private fun assertStateIsSuccess(state: State<List<Visitable<*>>>?) {
         assert(state is State.Success) {
-            "$state is not success"
+            "$state is not State.Success"
         }
     }
 
@@ -110,10 +110,47 @@ class SearchShopViewModelTest {
     }
 
     private fun assertShopItemAtSecondIndexAndAboveOfData(data: List<Visitable<*>>) {
-        for(i in 1..data.size - 1) {
+        for(i in 1 until data.size) {
             assert(data[i] is ShopViewModel.ShopItem) {
                 "Element $i ${data[i].javaClass.kotlin.qualifiedName} is not of type ShopViewModel.ShopItem"
             }
+        }
+    }
+
+    @Test
+    fun `when searchShop() fails, validate state is error`() {
+        val exception = Exception("Mock exception for testing error")
+        val searchShopViewModel = SearchShopViewModel(
+                Dispatchers.Default,
+                searchShopParameter,
+                TestErrorUseCase(exception),
+                TestUseCase(searchShopModel),
+                shopHeaderViewModelMapper,
+                shopViewModelMapper,
+                userSession,
+                localCacheHandler
+        )
+
+        searchShopViewModel.searchShop()
+
+        val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+        assertErrorSearchShopData(searchShopState)
+    }
+
+    private fun assertErrorSearchShopData(state: State<List<Visitable<*>>>?) {
+        if(state != null) {
+            assertStateIsError(state)
+        }
+        else {
+            assert(false) {
+                "State is null"
+            }
+        }
+    }
+
+    private fun assertStateIsError(state: State<List<Visitable<*>>>?) {
+        assert(state is State.Error) {
+            "$state is not State.Error"
         }
     }
 
