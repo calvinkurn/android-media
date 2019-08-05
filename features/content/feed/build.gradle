@@ -56,6 +56,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.reactNative)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.userSession)

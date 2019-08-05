@@ -518,7 +518,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         int recentViewIndex = 0;
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
-                    item instanceof CartShopHolderData) {
+                    item instanceof CartShopHolderData ||
+                    item instanceof ShipmentSellerCashbackModel) {
                 recentViewIndex = cartDataList.indexOf(item);
             }
         }
@@ -533,6 +534,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
                     item instanceof CartShopHolderData ||
+                    item instanceof ShipmentSellerCashbackModel ||
                     item instanceof CartRecentViewHolderData) {
                 wishlistIndex = cartDataList.indexOf(item);
             }
@@ -548,6 +550,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
                     item instanceof CartShopHolderData ||
+                    item instanceof ShipmentSellerCashbackModel ||
                     item instanceof CartRecentViewHolderData ||
                     item instanceof CartWishlistHolderData ||
                     item instanceof CartRecommendationItemHolderData) {
@@ -621,14 +624,28 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void updateShipmentSellerCashback(double cashback) {
         if (cashback > 0) {
             if (shipmentSellerCashbackModel == null || cartDataList.indexOf(shipmentSellerCashbackModel) == -1) {
+                int index = 0;
+                for (Object item : cartDataList) {
+                    if (item instanceof CartShopHolderData) {
+                        index = cartDataList.indexOf(item);
+                    }
+                }
                 shipmentSellerCashbackModel = new ShipmentSellerCashbackModel();
-                cartDataList.add(shipmentSellerCashbackModel);
+                shipmentSellerCashbackModel.setVisible(true);
+                shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false));
+                cartDataList.add(++index, shipmentSellerCashbackModel);
+                notifyItemInserted(index);
+            } else {
+                shipmentSellerCashbackModel.setVisible(true);
+                shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false));
+                int index = cartDataList.indexOf(shipmentSellerCashbackModel);
+                notifyItemChanged(index);
             }
-            shipmentSellerCashbackModel.setVisible(true);
-            shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false));
         } else {
             if (shipmentSellerCashbackModel != null) {
+                int index = cartDataList.indexOf(shipmentSellerCashbackModel);
                 cartDataList.remove(shipmentSellerCashbackModel);
+                notifyItemRemoved(index);
             }
         }
 

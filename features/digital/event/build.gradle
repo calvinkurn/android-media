@@ -47,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
 
     implementation rootProject.ext.viewDependencies.expandableTextview
 

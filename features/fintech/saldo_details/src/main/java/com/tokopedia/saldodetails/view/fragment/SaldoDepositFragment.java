@@ -34,6 +34,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -382,8 +383,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
                 .setTitle(getActivity().getString(R.string.sp_alert_not_verified_yet_title))
                 .setMessage(getActivity().getString(R.string.sp_alert_not_verified_yet_body))
                 .setPositiveButton(getActivity().getString(R.string.sp_alert_not_verified_yet_positive), (dialog, which) -> {
-                    Intent intent = ((SaldoDetailsRouter) getActivity().getApplicationContext())
-                            .getProfileSettingIntent(getActivity());
+                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE);
                     startActivity(intent);
                     dialog.dismiss();
                 })
@@ -689,7 +689,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             hideSaldoPrioritasFragment();
         }
     }
-
 
     @Override
     public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {

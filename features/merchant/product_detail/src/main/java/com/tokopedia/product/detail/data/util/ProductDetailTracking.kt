@@ -37,6 +37,22 @@ class ProductDetailTracking() {
                 ProductTrackingConstant.ProductTalk.TALK)
     }
 
+    fun eventShippingClicked() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_SHIPPING,
+                "")
+    }
+
+    fun eventShippingRateEstimationClicked() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_SHIPPING_RATE_ESTIMATION,
+                "")
+    }
+
     fun eventClickBuy(productId: String, isVariant: Boolean) {
         if (productId.isEmpty()) return
         eventClickBuyOrAddToCart(productId, isVariant,
@@ -286,7 +302,7 @@ class ProductDetailTracking() {
 
                         CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
 
-                        "impression", DataLayer.listOf(
+                        "impressions", DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
                                         ID, product.productId.toString(),
                                         PRICE, removeCurrencyPrice(product.price),

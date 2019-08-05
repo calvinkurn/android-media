@@ -26,6 +26,7 @@ import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -47,6 +48,7 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -453,7 +455,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
         activity?.let {
-            doShare(url, String.format("%s %s", description, "%s"), title)
+            ShareBottomSheets().show(activity!!.supportFragmentManager,
+                    ShareBottomSheets.constructShareData("", iamgeUrl, url, description, title),
+                    object : ShareBottomSheets.OnShareItemClickListener {
+                        override fun onShareItemClicked(packageName: String) {
+
+                        }
+                    })
         }
     }
 
@@ -488,6 +496,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
+    }
+
+    override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
+                                  redirectLink: String, isSingleItem: Boolean) {
+        val model = adapter.data[positionInFeed] as? DynamicPostViewModel
+        if (!isSingleItem && model != null){
+            activity?.let { startActivity(MediaPreviewActivity.createIntent(it,
+                    model.id.toString(), contentPosition))}
+        }
     }
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {

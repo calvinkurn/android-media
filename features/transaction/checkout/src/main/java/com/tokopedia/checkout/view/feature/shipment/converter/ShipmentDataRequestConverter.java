@@ -1,11 +1,11 @@
 package com.tokopedia.checkout.view.feature.shipment.converter;
 
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -233,12 +233,12 @@ public class ShipmentDataRequestConverter {
     }
 
     private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem, ShipmentDetailData shipmentDetailData) {
-        String courierName = "";
-        String duration = "";
+        String courierId = "";
+        String serviceId = "";
         String shippingPrice = "";
         if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
-            courierName = shipmentDetailData.getSelectedCourier().getName();
-            duration = shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery();
+            courierId = String.valueOf(shipmentDetailData.getSelectedCourier().getShipperProductId());
+            serviceId = String.valueOf(shipmentDetailData.getSelectedCourier().getServiceId());
             shippingPrice = String.valueOf(shipmentDetailData.getSelectedCourier().getShipperPrice());
         }
 
@@ -263,12 +263,13 @@ public class ShipmentDataRequestConverter {
                 .promoCode(cartItem.getAnalyticsProductCheckoutData().getPromoCode())
                 .promoDetails(cartItem.getAnalyticsProductCheckoutData().getPromoDetails())
                 .buyerAddressId(cartItem.getAnalyticsProductCheckoutData().getBuyerAddressId())
-                .shippingDuration(duration)
-                .courier(courierName)
+                .shippingDuration(serviceId)
+                .courier(courierId)
                 .shippingPrice(shippingPrice)
                 .codFlag(cartItem.getAnalyticsProductCheckoutData().getCodFlag())
                 .tokopediaCornerFlag(cartItem.getAnalyticsProductCheckoutData().getTokopediaCornerFlag())
                 .isFulfillment(cartItem.getAnalyticsProductCheckoutData().getIsFulfillment())
+                .setDiscountedPrice(cartItem.getAnalyticsProductCheckoutData().isDiscountedPrice())
                 .build();
     }
 

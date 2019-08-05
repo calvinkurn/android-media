@@ -1,5 +1,5 @@
-{
-  kero_maps_autofill(latlng:"#latlng") {
+query Autofill($latlng: String!, $err: Boolean) {
+  kero_maps_autofill(latlng: $latlng, error_data: $err) {
     data {
       title
       formatted_address
@@ -16,5 +16,7 @@
         types
       }
     }
+    status
+    message_error
   }
 }
