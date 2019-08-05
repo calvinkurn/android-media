@@ -1,5 +1,4 @@
 query getProductQuery($componentID: Int!, $operatorID: String!) {
-                status
                 rechargeComponentDataCollection(data: PRODUCT, componentID: $componentID, filterData: [{ param_name: "operator", value: [$operatorID]}]){
                     data_collections {
                         id
