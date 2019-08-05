@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.listener
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -9,7 +10,6 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 import com.tokopedia.topchat.common.TopChatRouter
-import com.tokopedia.transaction.common.sharedata.AddToCartResult
 
 /**
  * @author : Steven 11/12/18
@@ -69,7 +69,7 @@ interface TopChatContract {
         fun addProductToCart(router: TopChatRouter,
                              element: ProductAttachmentViewModel,
                              onError: (Throwable) -> Unit,
-                             onSuccess: (addToCartResult: AddToCartResult) -> Unit,
+                             onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
                              shopId: Int)
 
         fun isUploading(): Boolean

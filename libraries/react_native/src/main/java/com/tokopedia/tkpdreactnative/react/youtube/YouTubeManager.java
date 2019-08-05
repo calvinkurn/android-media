@@ -2,10 +2,8 @@ package com.tokopedia.tkpdreactnative.react.youtube;
 
 import android.support.annotation.Nullable;
 
-import com.facebook.infer.annotation.Assertions;
-import com.facebook.react.common.MapBuilder;
-import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -30,7 +28,7 @@ public class YouTubeManager extends SimpleViewManager<YouTubeView> {
     }
 
     @Override
-    public Map<String,Integer> getCommandsMap() {
+    public Map<String, Integer> getCommandsMap() {
         return MapBuilder.of(
                 "seekTo",
                 COMMAND_SEEK_TO,
@@ -45,34 +43,35 @@ public class YouTubeManager extends SimpleViewManager<YouTubeView> {
 
     @Override
     public void receiveCommand(YouTubeView view, int commandType, @Nullable ReadableArray args) {
-        Assertions.assertNotNull(view);
-        Assertions.assertNotNull(args);
-        switch (commandType) {
-            case COMMAND_SEEK_TO: {
-                view.seekTo(args.getInt(0));
-                return;
+        if (view != null && args != null) {
+            switch (commandType) {
+                case COMMAND_SEEK_TO: {
+                    view.seekTo(args.getInt(0));
+                    return;
+                }
+                case COMMAND_NEXT_VIDEO: {
+                    view.nextVideo();
+                    return;
+                }
+                case COMMAND_PREVIOUS_VIDEO: {
+                    view.previousVideo();
+                    return;
+                }
+                case COMMAND_PLAY_VIDEO_AT: {
+                    view.playVideoAt(args.getInt(0));
+                    return;
+                }
+                default:
+                    throw new IllegalArgumentException(
+                            String.format("Unsupported command %d received by %s.", commandType, getClass().getSimpleName())
+                    );
             }
-            case COMMAND_NEXT_VIDEO: {
-                view.nextVideo();
-                return;
-            }
-            case COMMAND_PREVIOUS_VIDEO: {
-                view.previousVideo();
-                return;
-            }
-            case COMMAND_PLAY_VIDEO_AT: {
-                view.playVideoAt(args.getInt(0));
-                return;
-            }
-            default:
-                throw new IllegalArgumentException(
-                        String.format("Unsupported command %d received by %s.", commandType, getClass().getSimpleName())
-                );
         }
     }
 
     @Override
-    public @Nullable Map <String,Object> getExportedCustomDirectEventTypeConstants() {
+    public @Nullable
+    Map<String, Object> getExportedCustomDirectEventTypeConstants() {
         return MapBuilder.of(
                 "error",
                 (Object) MapBuilder.of("registrationName", "onYouTubeError"),

@@ -9,11 +9,10 @@ import android.webkit.WebView;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core2.R;
-import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.url.TokopediaUrl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

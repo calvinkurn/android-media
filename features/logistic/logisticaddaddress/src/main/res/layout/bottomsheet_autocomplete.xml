@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_map_search_location"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -35,7 +36,7 @@
                     android:layout_marginStart="19dp"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:src="@drawable/ic_search"
+                    app:srcCompat="@drawable/ic_search"
                     android:tint="@color/ic_grey_color"
                     android:layout_gravity="center_vertical"
                     android:layout_alignParentLeft="true"
@@ -66,7 +67,7 @@
                     android:layout_marginStart="@dimen/dp_10"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:src="@drawable/ic_close_btn"
+                    app:srcCompat="@drawable/ic_close_btn"
                     android:contentDescription="@string/title_bottomsheet_search_location"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
@@ -100,7 +101,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:contentDescription="@string/current_location"
-                android:src="@drawable/ic_current_location"/>
+                app:srcCompat="@drawable/ic_current_location"/>
 
             <TextView
                 android:id="@+id/tv_current_location"

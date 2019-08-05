@@ -1,10 +1,8 @@
 package com.tokopedia.shop.open.view.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
-import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.shop.open.data.model.response.CreateShop;
 import com.tokopedia.shop.open.data.model.response.ValidateShopDomainSuggestionHeader;
@@ -26,11 +24,9 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
         implements ShopOpenDomainPresenter {
 
     private static final int DELAY_DEBOUNCE = 700; // ms
-    public static final String SUCCESS = "1";
 
     private Subscription domainDebounceSubscription;
     private Subscription shopDebounceSubscription;
-    private boolean isHitToken;
     private GetOpenShopTokenUseCase getOpenShopTokenUseCase;
     private ShopOpenSubmitUseCase shopOpenSubmitUseCase;
     private ShopOpenCheckDomainNameUseCase shopOpenCheckDomainNameUseCase;
@@ -53,17 +49,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
         this.userSession = userSession;
 
         domainDebounceSubscription = Observable.unsafeCreate(
-                new Observable.OnSubscribe<String>() {
-                    @Override
-                    public void call(final Subscriber<? super String> subscriber) {
-                        domainListener = new ShopOpenDomainPresenterImpl.QueryListener() {
-                            @Override
-                            public void query(String string) {
-                                subscriber.onNext(string);
-                            }
-                        };
-                    }
-                })
+                (Observable.OnSubscribe<String>) subscriber -> domainListener = subscriber::onNext)
                 .debounce(DELAY_DEBOUNCE, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
@@ -83,17 +69,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
                     }
                 });
         shopDebounceSubscription = Observable.unsafeCreate(
-                new Observable.OnSubscribe<String>() {
-                    @Override
-                    public void call(final Subscriber<? super String> subscriber) {
-                        shopListener = new ShopOpenDomainPresenterImpl.QueryListener() {
-                            @Override
-                            public void query(String string) {
-                                subscriber.onNext(string);
-                            }
-                        };
-                    }
-                })
+                (Observable.OnSubscribe<String>) subscriber -> shopListener = subscriber::onNext)
                 .debounce(DELAY_DEBOUNCE, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
@@ -139,37 +115,6 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
                 getView().onSuccessCreateShop(createShop.getCreateShop().getMessage(),createShop.getCreateShop().getCreatedId());
             }
         };
-    }
-
-    public void openDistrictRecommendation(RequestParams requestParams) {
-        if (isHitToken) {
-            return;
-        }
-        isHitToken = true;
-        if (isViewAttached()) {
-            getView().showSubmitLoading();
-        }
-        getOpenShopTokenUseCase.execute(requestParams, new Subscriber<Token>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                isHitToken = false;
-                if (isViewAttached()) {
-                    getView().hideSubmitLoading();
-                    getView().onErrorReserveShop(e);
-                }
-            }
-
-            @Override
-            public void onNext(Token token) {
-                isHitToken = false;
-                getView().hideSubmitLoading();
-                getView().onSuccessGetToken(token);
-            }
-        });
     }
 
     private interface QueryListener {

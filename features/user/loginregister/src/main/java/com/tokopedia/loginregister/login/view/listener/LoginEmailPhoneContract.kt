@@ -95,7 +95,7 @@ interface LoginEmailPhoneContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun loginEmail(email: String, password: String)
+        fun loginEmail(email: String, password: String, isSmartLock : Boolean = false)
 
         fun loginGoogle(accessToken: String, email: String)
 

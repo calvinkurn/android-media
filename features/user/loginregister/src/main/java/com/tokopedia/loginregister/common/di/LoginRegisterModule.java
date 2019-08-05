@@ -18,7 +18,9 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.otp.common.network.WSErrorResponse;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,8 +38,8 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    LoginRegisterAnalytics provideLoginRegisterAnalytics() {
-        return new LoginRegisterAnalytics();
+    LoginRegisterAnalytics provideLoginRegisterAnalytics(@Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface) {
+        return new LoginRegisterAnalytics(userSessionInterface);
     }
 
     @LoginRegisterScope
