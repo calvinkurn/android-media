@@ -36,6 +36,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
                     android:imeOptions="actionDone"
+                    android:singleLine="true"
                     android:inputType="text"/>
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>

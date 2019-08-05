@@ -23,6 +23,7 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.covertContactUriToContactData
+import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
@@ -160,19 +161,26 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
+    fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
     fun processToCart() {
-        if (userSession.isLoggedIn && ::checkoutPassData.isInitialized) {
+        if (userSession.isLoggedIn) {
             navigateToCart()
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+            navigateToLoginPage()
         }
     }
 
     private fun navigateToCart() {
-        val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
-        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
-        startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        if (::checkoutPassData.isInitialized) {
+            checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
+            val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
+            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -208,7 +216,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                         }
                     }
                 } else if (requestCode == REQUEST_CODE_LOGIN) {
-                    if (userSession.isLoggedIn && ::checkoutPassData.isInitialized) {
+                    if (userSession.isLoggedIn) {
                         navigateToCart()
                     }
                 }
