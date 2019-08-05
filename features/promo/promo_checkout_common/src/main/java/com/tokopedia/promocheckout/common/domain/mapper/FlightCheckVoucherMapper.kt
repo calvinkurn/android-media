@@ -1,8 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.mapper
 
-import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigitalData
 import com.tokopedia.promocheckout.common.domain.model.FlightCheckVoucher
-import com.tokopedia.promocheckout.common.domain.model.Message
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel
 import javax.inject.Inject
