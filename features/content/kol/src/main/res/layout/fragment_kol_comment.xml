@@ -29,7 +29,8 @@
             android:paddingRight="@dimen/dp_12"
             android:paddingStart="@dimen/dp_12"
             android:textSize="@dimen/sp_14"
-            android:textStyle="normal"/>
+            android:textStyle="normal"
+            android:dropDownWidth="match_parent"/>
 
         <ImageView
             android:id="@+id/send_but"

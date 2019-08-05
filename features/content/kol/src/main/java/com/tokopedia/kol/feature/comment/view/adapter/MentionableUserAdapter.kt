@@ -3,10 +3,8 @@ package com.tokopedia.kol.feature.comment.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.TextView
+import android.widget.*
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
 import com.tokopedia.kol.R
 
@@ -34,7 +32,8 @@ class MentionableUserAdapter(
 
             holder = ViewHolder(
                     view.findViewById(R.id.tv_user_name),
-                    view.findViewById(R.id.tv_full_name)
+                    view.findViewById(R.id.tv_full_name),
+                    view.findViewById(R.id.iv_avatar)
             )
 
             view.tag = holder
@@ -42,8 +41,10 @@ class MentionableUserAdapter(
             holder = view.tag as ViewHolder
         }
 
-        holder.tvUserName.text = filteredList[position].id.toString()
+        holder.tvUserName.text = filteredList[position].userName
         holder.tvFullName.text = filteredList[position].fullName
+
+        ImageHandler.loadImageCircle2(holder.ivAvatar.context, holder.ivAvatar, filteredList[position].imageUrl)
 
         return view!!
     }
@@ -87,6 +88,7 @@ class MentionableUserAdapter(
 
     internal data class ViewHolder(
             val tvUserName: TextView,
-            val tvFullName: TextView
+            val tvFullName: TextView,
+            val ivAvatar: ImageView
     )
 }

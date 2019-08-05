@@ -1,8 +1,6 @@
 package com.tokopedia.feedcomponent.view.custom
 
-import android.annotation.TargetApi
 import android.content.Context
-import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,7 +25,7 @@ class MentionEditText : MultiAutoCompleteTextView {
 
     private var listener: MentionEditTextListener? = null
 
-    val color = ContextCompat.getColor(context, R.color.colorPrimary)
+    val color = ContextCompat.getColor(context, R.color.Green_G500)
 
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(text: Editable?) {

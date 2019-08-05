@@ -172,7 +172,14 @@ public class KolCommentFragment extends BaseDaggerFragment
         });
 
         ArrayList<MentionableUserViewModel> userList = new ArrayList<>();
-        userList.add(new MentionableUserViewModel("1123", "Radio Jaf"));
+        userList.add(
+                new MentionableUserViewModel(
+                        "1123",
+                        "radiojaf",
+                        "Radio Jaf",
+                        userSession.getProfilePicture()
+                )
+        );
         kolComment.setAdapter(new MentionableUserAdapter(userList));
     }
 

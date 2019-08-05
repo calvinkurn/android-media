@@ -8,10 +8,6 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**
- * Created by jegul on 2019-08-05.
- */
-
-/**
  * $USER_ID -> the ID of mentioned User
  * $FULL_NAME -> the full name of mentioned user
  *
@@ -93,7 +89,12 @@ object MentionTextHelper {
             val userId: String = splittedContent.first().replace(MENTION_CHAR, "")
             val fullName: String = splittedContent.last().replace(MENTION_CHAR, "")
 
-            MentionableUserViewModel(userId, fullName)
+            MentionableUserViewModel(
+                    id = userId,
+                    userName = "",
+                    fullName = fullName,
+                    imageUrl = ""
+            )
         } else null
     }
 
@@ -103,7 +104,9 @@ object MentionTextHelper {
         currentSpanList.forEach { span ->
             val spanStart = spannableStringBuilder.getSpanStart(span)
             val spanEnd = spannableStringBuilder.getSpanEnd(span)
-            spannableStringBuilder.replace(spanStart, spanEnd, span.fullText)
+            try {
+                spannableStringBuilder.replace(spanStart, spanEnd, span.fullText)
+            } catch (e: Exception) { }
         }
 
         return spannableStringBuilder.toString()
