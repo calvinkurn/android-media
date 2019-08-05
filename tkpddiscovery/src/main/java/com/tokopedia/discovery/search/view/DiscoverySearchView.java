@@ -85,6 +85,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private RelativeLayout mSuggestionView;
     private EditTextCompat mSearchSrcTextView;
     private ImageButton mBackBtn;
+    private View mCancelBtn;
     private ImageButton mVoiceBtn;
     private ImageButton mImageSearchButton;
     private ImageButton mEmptyBtn;
@@ -257,6 +258,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mSearchTopBar = (LinearLayout) mSearchLayout.findViewById(R.id.search_top_bar);
         mSearchSrcTextView = (EditTextCompat) mSearchLayout.findViewById(R.id.searchTextView);
         mBackBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_up_btn);
+        mCancelBtn = mSearchLayout.findViewById(R.id.action_cancel_button);
         mVoiceBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_voice_btn);
         mImageSearchButton = (ImageButton) mSearchLayout.findViewById(R.id.action_image_search_btn);
         mEmptyBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_empty_btn);
@@ -267,6 +269,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mVoiceBtn.setOnClickListener(mOnClickListener);
         mEmptyBtn.setOnClickListener(mOnClickListener);
         mTintView.setOnClickListener(mOnClickListener);
+        mCancelBtn.setOnClickListener(mOnClickListener);
         mImageSearchButton.setOnClickListener(mOnClickListener);
         allowVoiceSearch = true;
 
@@ -406,7 +409,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private final OnClickListener mOnClickListener = new OnClickListener() {
 
         public void onClick(View v) {
-            if (v == mBackBtn) {
+            if (v == mBackBtn || v == mCancelBtn) {
                 if (finishOnClose && activity != null) {
                     KeyboardHandler.DropKeyboard(activity, mSearchSrcTextView);
                     activity.finish();
@@ -449,10 +452,12 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         boolean hasText = !TextUtils.isEmpty(text);
         if (hasText) {
             mEmptyBtn.setVisibility(VISIBLE);
+            mCancelBtn.setVisibility(VISIBLE);
             showVoice(false);
             showImageSearch(false);
         } else {
             mEmptyBtn.setVisibility(GONE);
+            mCancelBtn.setVisibility(GONE);
             showVoice(true);
             showImageSearch(true);
         }

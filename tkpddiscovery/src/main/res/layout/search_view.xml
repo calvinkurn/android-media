@@ -33,42 +33,68 @@
                 android:tint="#4b4b4b"
                 app:srcCompat="@drawable/ic_navigation_arrow_back"/>
 
-            <com.tokopedia.design.component.EditTextCompat
-                android:id="@+id/searchTextView"
-                android:layout_weight="1"
+            <LinearLayout
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
                 android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_autocomplete_input"
                 android:layout_height="match_parent"
-                android:background="@null"
-                android:drawablePadding="8dp"
-                android:hint="@string/search_autocomplete_hint"
-                android:imeOptions="actionSearch"
-                android:inputType="textNoSuggestions"
-                android:paddingLeft="@dimen/search_view_text_padding"
-                android:paddingStart="@dimen/search_view_text_padding"
-                android:singleLine="true"
-                android:textColor="#212121"
-                android:textColorHint="@color/black_38"
-                android:textSize="16sp"
-                app:drawableLeftCompat="@drawable/icon_magnifier"/>
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_4">
 
-            <ImageButton
-                android:id="@+id/action_image_search_btn"
-                style="@style/MSV_ImageButton"
-                android:tint="@color/grey"
-                app:srcCompat="@drawable/ic_camera_alt_black_24dp" />
+                    <com.tokopedia.design.component.EditTextCompat
+                        android:id="@+id/searchTextView"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:drawablePadding="8dp"
+                        android:hint="@string/search_autocomplete_hint"
+                        android:imeOptions="actionSearch"
+                        android:inputType="textNoSuggestions"
+                        android:paddingLeft="4dp"
+                        android:paddingStart="4dp"
+                        android:singleLine="true"
+                        android:textColor="#212121"
+                        android:textColorHint="@color/black_38"
+                        android:textSize="16sp"
+                        app:drawableLeftCompat="@drawable/icon_magnifier"/>
 
-            <ImageButton
-                android:id="@+id/action_voice_btn"
-                style="@style/MSV_ImageButton"
-                android:tint="@color/grey"
-                app:srcCompat="@drawable/ic_keyboard_voice_black" />
+                    <ImageButton
+                        android:id="@+id/action_image_search_btn"
+                        style="@style/MSV_ImageButton"
+                        android:tint="@color/grey"
+                        app:srcCompat="@drawable/ic_camera_alt_black_24dp" />
 
-            <ImageButton
-                android:id="@+id/action_empty_btn"
-                style="@style/MSV_ImageButton"
-                android:tint="#4b4b4b"
+                    <ImageButton
+                        android:id="@+id/action_voice_btn"
+                        style="@style/MSV_ImageButton"
+                        android:tint="@color/grey"
+                        app:srcCompat="@drawable/ic_keyboard_voice_black" />
+
+                    <ImageButton
+                        android:id="@+id/action_empty_btn"
+                        style="@style/MSV_ImageButton"
+                        android:tint="#4b4b4b"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_clear_black" />
+
+            </LinearLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/action_cancel_button"
+                android:text="@string/search_cancel_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:textColor="@color/unify_G500"
                 android:visibility="gone"
-                app:srcCompat="@drawable/ic_clear_black" />
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"/>
+                />
+
         </LinearLayout>
 
         <RelativeLayout
