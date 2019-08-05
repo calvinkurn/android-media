@@ -730,12 +730,13 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
     fun getLoginMethodMoengage(loginMethod: String?): String? {
-        when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> return "Email"
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> return "Email"
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> return "Facebook"
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> return "Google"
-            UserSessionInterface.LOGIN_METHOD_PHONE -> return "Phone Number"
+        return when (loginMethod) {
+            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> "Email"
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> "Email"
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> "Facebook"
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> "Google"
+            UserSessionInterface.LOGIN_METHOD_PHONE -> "Phone Number"
+            else -> loginMethod
         }
     }
 
