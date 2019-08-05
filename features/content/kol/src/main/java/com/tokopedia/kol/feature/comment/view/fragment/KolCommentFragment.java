@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
@@ -24,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
@@ -32,6 +34,7 @@ import com.tokopedia.kol.feature.comment.di.KolCommentModule;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.adapter.KolCommentAdapter;
+import com.tokopedia.kol.feature.comment.view.adapter.MentionableUserAdapter;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
@@ -168,7 +171,9 @@ public class KolCommentFragment extends BaseDaggerFragment
 
         });
 
-
+        ArrayList<MentionableUserViewModel> userList = new ArrayList<>();
+        userList.add(new MentionableUserViewModel("1123", "Radio Jaf"));
+        kolComment.setAdapter(new MentionableUserAdapter(userList));
     }
 
     @Override
