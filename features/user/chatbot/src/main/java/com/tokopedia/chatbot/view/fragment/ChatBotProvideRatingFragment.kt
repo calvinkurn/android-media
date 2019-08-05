@@ -64,8 +64,8 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
         }
     }
 
-    override fun onSuccessSubmit(intent: Intent?) {
-        intent?.putExtra(BOT_OTHER_REASON, et_state.text.toString())
+    override fun onSuccessSubmit(intent: Intent) {
+        intent.putExtra(BOT_OTHER_REASON, et_state.text.toString())
         super.onSuccessSubmit(intent)
     }
 
