@@ -52,10 +52,10 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private var imageUrl: String? = null
 
     companion object {
-        private const val EXTRA_NAME = "name"
-        private const val EXTRA_APPLINK = "applink"
-        private const val EXTRA_AUTO = "auto"
-        private const val EXTRA_IMAGE = "image"
+        private const val EXTRA_NAME = "dfname"
+        private const val EXTRA_APPLINK = "dfapplink"
+        private const val EXTRA_AUTO = "dfauto"
+        private const val EXTRA_IMAGE = "dfimage"
         private const val defaultImageUrl = "https://ecs7.tokopedia.net/img/android/empty_profile/drawable-xxxhdpi/product_image_48_x_48.png"
         private const val CONFIRMATION_REQUEST_CODE = 1
     }

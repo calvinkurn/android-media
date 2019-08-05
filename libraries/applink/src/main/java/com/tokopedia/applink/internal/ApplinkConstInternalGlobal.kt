@@ -68,9 +68,9 @@ object ApplinkConstInternalGlobal {
     // imageUrl, is the placeholder for the background
     @JvmField
     val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
-        "name={moduleTranslate}&" +
-        "applink={encodedApplink}&" +
-        "auto={isAutoDownload}&" +
-        "image={imageUrl}"
+        "dfname={moduleTranslate}&" +
+        "dfapplink={encodedApplink}&" +
+        "dfauto={isAutoDownload}&" +
+        "dfimage={imageUrl}"
 
 }
