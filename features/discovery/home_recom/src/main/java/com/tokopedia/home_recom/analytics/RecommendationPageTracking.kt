@@ -57,6 +57,7 @@ class RecommendationPageTracking {
         private const val EVENT_CLICK_RECOMMENDATION = "clickRecommendation"
         private const val EVENT_LABEL_SOURCE = "source: %s"
         private const val EVENT_LABEL_SOURCE_WITH_PRODUCT_ID = "source: %s - product_id: %s"
+        private const val EVENT_VIEW_RECOMMENDAITON = "viewRecommendation"
 
         private const val EVENT_CATEGORY_PRODUCT_DETAIL_PAGE = "product detail page"
         private const val EVENT_CATEGORY_RECOMMENDATION_PAGE = "recommendation page"
@@ -762,7 +763,7 @@ class RecommendationPageTracking {
         //No 66 NEW
         fun eventUserViewRecommendationPage(ref: String){
             val data = DataLayer.mapOf(
-                    EVENT, VALUE_EMPTY,
+                    EVENT, EVENT_VIEW_RECOMMENDAITON,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_VIEW_RECOMMENDATION_PAGE,
                     EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
@@ -776,7 +777,7 @@ class RecommendationPageTracking {
                 ref: String
         ){
             val data = DataLayer.mapOf(
-                    EVENT, VALUE_EMPTY,
+                    EVENT, EVENT_VIEW_RECOMMENDAITON,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_VIEW_RECOMMENDATION_PAGE,
                     EVENT_LABEL, String.format(EVENT_LABEL_SOURCE_WITH_PRODUCT_ID, ref, productId)
