@@ -63,13 +63,13 @@ object DeeplinkDFMapper {
                                             imageUrl: String? = ""): String? {
         getSplitManager(context)?.let {
             if (it.installedModules.contains(moduleId)) {
-                if (!BuildConfig.DEBUG) {
-                    Crashlytics.logException(new Exception("Open module " + moduleId));
+                if (!GlobalConfig.DEBUG) {
+                    Crashlytics.logException(Exception("Open module " + moduleId));
                 }
                 return null
             } else {
-                if (!BuildConfig.DEBUG) {
-                    Crashlytics.logException(new Exception("Install module " + moduleId));
+                if (!GlobalConfig.DEBUG) {
+                    Crashlytics.logException(Exception("Install module " + moduleId));
                 }
                 return UriUtil.buildUri(
                     DYNAMIC_FEATURE_INSTALL,
