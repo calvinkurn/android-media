@@ -11,6 +11,7 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.model.PMCancellationQuestionnaireModel
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantCancellationQuestionnaireActivity
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.view.*
+import kotlinx.android.synthetic.main.pm_cancellation_questionnaire_button_layout.view.*
 
 class PowerMerchantCancellationQuestionnaireFragment : BaseDaggerFragment() {
 
@@ -34,7 +35,6 @@ class PowerMerchantCancellationQuestionnaireFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         parentActivity = (activity as PowerMerchantCancellationQuestionnaireActivity)
         return inflater.inflate(R.layout.fragment_power_merchant_cancellation_questionnaire, container, false)
     }
@@ -53,14 +53,14 @@ class PowerMerchantCancellationQuestionnaireFragment : BaseDaggerFragment() {
                     parentActivity.goToNextPage(null)
                 }
             }
-            arguments?.let {
-                model = it.getParcelable("model")
-                if(model is PMCancellationQuestionnaireModel.LinearScaleQuestionnaire){
-                    tv_page.text = "Linear Scale"
-                }else if(model is PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire){
-                    tv_page.text = "Multiple Checklist"
-                }
-            }
+//            arguments?.let {
+//                model = it.getParcelable("model")
+//                if(model is PMCancellationQuestionnaireModel.LinearScaleQuestionnaire){
+//                    tv_page.text = "Linear Scale"
+//                }else if(model is PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire){
+//                    tv_page.text = "Multiple Checklist"
+//                }
+//            }
         }
         super.onViewCreated(view, savedInstanceState)
     }

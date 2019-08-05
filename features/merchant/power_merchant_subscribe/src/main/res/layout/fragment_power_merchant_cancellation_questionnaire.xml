@@ -1,49 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center"
-    android:padding="@dimen/dp_16"
+    android:fillViewport="true"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:padding="@dimen/dp_16"
     tools:context=".view.fragment.PowerMerchantCancellationQuestionnaireFragment">
 
-    <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/attach_product_item_checkbox"
-        android:layout_width="wrap_content"
-        android:text="Check here"
-        android:textColor="@color/black"
-        android:checked="true"
-        android:layout_height="wrap_content"
-        android:theme="@style/checkBoxStyle"/>
-
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/tv_page"
-        android:layout_margin="@dimen/dp_10"
-        android:layout_width="wrap_content"
-        android:textColor="@color/black"
-        android:layout_height="wrap_content"
-        app:fontSize="title"
-        android:text="" />
-
-    <com.tokopedia.design.component.ButtonCompat
-        android:id="@+id/button_next"
-        style="@style/Button.Submit.Green.Full"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
-        android:text="Button Text"
-        app:buttonCompatSize="big"
-        />
-    <com.tokopedia.design.component.ButtonCompat
-        android:id="@+id/button_back"
-        style="@style/Button.Submit.Green.Full"
-        app:buttonCompatType="secondary"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="Kembali"
-        app:buttonCompatSize="big"
-        />
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/attach_product_item_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Check here"
+            android:textColor="@color/black"
+            android:theme="@style/checkBoxStyle" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_10"
+            android:text=""
+            android:textColor="@color/black"
+            app:fontSize="title" />
+
+        <include layout="@layout/pm_cancellation_questionnaire_button_layout" />
+
+    </LinearLayout>
+
+</ScrollView>
