@@ -13,19 +13,19 @@ class PowerMerchantCancellationQuestionnaireActivity : BaseStepperActivity() {
         val list = listOf(
                 PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire(
                         "Question 2",
-                        listOf("Ch 1","Ch 2","Ch 3")
+                        mutableListOf("Ch 1","Ch 2","Ch 3")
                 ),
                 PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire(
                         "Question 3",
-                        listOf("Ch 1","Ch 2","Ch 3")
+                        mutableListOf("Ch 1","Ch 2","Ch 3")
                 ),
                 PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire(
                         "Question 4",
-                        listOf("Ch 1","Ch 2","Ch 3")
+                        mutableListOf("Ch 1","Ch 2","Ch 3")
                 ),
                 PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire(
                         "Question 5",
-                        listOf("Ch 1","Ch 2","Ch 3")
+                        mutableListOf("Ch 1","Ch 2","Ch 3")
                 )
         )
         val fragmentList: ArrayList<Fragment> = ArrayList()

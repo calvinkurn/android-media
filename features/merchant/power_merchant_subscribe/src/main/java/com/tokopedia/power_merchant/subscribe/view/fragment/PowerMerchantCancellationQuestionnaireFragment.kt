@@ -58,9 +58,9 @@ class PowerMerchantCancellationQuestionnaireFragment : BaseDaggerFragment() {
         with(view) {
             button_next.isEnabled = false
             button_next.text = if (parentActivity.isFinalPage()) {
-                "Kirim Jawaban"
+                getString(R.string.label_send_answer)
             } else {
-                "Selanjutnya"
+                getString(R.string.label_next)
             }
             button_next.setOnClickListener {
                 if (parentActivity.isFinalPage()) {
