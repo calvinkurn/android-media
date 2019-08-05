@@ -148,6 +148,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
         registerActivityLifecycleCallbacks(callback);
 
+        LogWrapper.init(this);
         TimberWrapper.init(this);
     }
 

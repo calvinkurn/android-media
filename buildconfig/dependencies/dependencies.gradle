@@ -169,8 +169,7 @@ ext {
             moengagePushbase    : "com.moengage:pushbase:3.2.00",
             moengageInapp   : "com.moengage:inapp:3.2.02",
             moengageMSG: "com.moengage:addon-messaging:3.2.01",
-            branch     : "io.branch.sdk.android:library:3.0.4+",
-            rapid7     : "com.rapid7:r7insight_java:1.1.39"
+            branch     : "io.branch.sdk.android:library:3.0.4+"
     ]
 
     deeplinkDispatchDependencies = [
@@ -217,7 +216,7 @@ ext {
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
             liveData              : "android.arch.lifecycle:livedata:$lifeCycleVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.2",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.2@aar",
     ]
 
     testDependencies = [
