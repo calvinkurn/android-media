@@ -35,7 +35,6 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
@@ -60,7 +59,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_ACTIVE_TAB_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
@@ -619,7 +618,7 @@ public class SearchActivity extends BaseActivity
 
     private void handleResultFromAutoCompleteActivity(int resultCode) {
         switch(resultCode) {
-            case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY:
+            case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY:
                 finish();
                 overridePendingTransition(0, 0);
                 break;

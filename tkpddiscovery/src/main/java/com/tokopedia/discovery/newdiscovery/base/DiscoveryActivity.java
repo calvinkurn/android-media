@@ -2,7 +2,6 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.CoordinatorLayout;
@@ -30,7 +29,6 @@ import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
-import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -42,7 +40,7 @@ import com.tokopedia.track.TrackApp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
@@ -295,35 +293,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public void onBackPressed() {
         if (searchView.isSearchOpen()) {
             if (searchView.isFinishOnClose()) {
-                finishWithAnimation();
+                finish();
             } else {
                 searchView.closeSearch();
             }
-        } else {
-            finish();
-        }
-    }
-
-    private void finishWithAnimation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AnimationUtil.unreveal(root, new AnimationUtil.AnimationListener() {
-                @Override
-                public boolean onAnimationStart(View view) {
-                    return false;
-                }
-
-                @Override
-                public boolean onAnimationEnd(View view) {
-                    finish();
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-
-                @Override
-                public boolean onAnimationCancel(View view) {
-                    return false;
-                }
-            });
         } else {
             finish();
         }
@@ -348,7 +321,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private void moveToSearchPage() {
         Intent searchActivityIntent = createIntentToSearchResult();
 
-        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, searchActivityIntent);
+        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
         startActivity(searchActivityIntent);
         finish();
     }

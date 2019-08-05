@@ -136,31 +136,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
         searchView.showSearch(true, false, searchParameter);
-
-        animateEnterActivityTransition();
-    }
-
-    private void animateEnterActivityTransition() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            root.setVisibility(View.INVISIBLE);
-
-            ViewTreeObserver viewTreeObserver = root.getViewTreeObserver();
-            addOnGlobalLayoutListenerForAnimationIfAlive(viewTreeObserver, () -> AnimationUtil.reveal(root, getEmptyAnimationListener()));
-        } else {
-            root.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void addOnGlobalLayoutListenerForAnimationIfAlive(ViewTreeObserver viewTreeObserver, AnimationCallback animationCallback) {
-        if (viewTreeObserver.isAlive()) {
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    animationCallback.doAnimation();
-                    root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
-            });
-        }
     }
 
     private AnimationUtil.AnimationListener getEmptyAnimationListener() {
@@ -243,11 +218,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
     protected void onResume() {
         super.onResume();
         unregisterShake();
-    }
-
-    private void forceShowKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @Override

@@ -17,13 +17,11 @@ public interface SearchConstant {
     String GCM_ID = "gcm_id";
     String GCM_STORAGE = "GCM_STORAGE";
 
-    String TRANSITION = "transition";
-
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
 
     int AUTO_COMPLETE_ACTIVITY_REQUEST_CODE = 14332;
-    int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY = 12323;
+    int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY = 12323;
 
     interface RecyclerView {
         int VIEW_PRODUCT = 3;
