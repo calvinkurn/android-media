@@ -33,6 +33,7 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -653,7 +654,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessAddToCart(): (addToCartResult: AddToCartDataModel) -> Unit {
         return {
-            showSnackbarAddToCart(it)
+            showSnackbarAddToCartWithAction(it)
+        }
+    }
+
+    private fun showSnackbarAddToCartWithAction(it: AddToCartDataModel) {
+        if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
+            ToasterNormal.make(view,
+                    it.data.message[0].replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.chat_check_cart)) {
+                activity?.startActivity((activity!!.application as TopChatRouter)
+                        .getCartIntent(activity))
+            }.show()
+        } else {
+            ToasterError.make(view, it.errorMessage[0], ToasterNormal.LENGTH_LONG).show()
         }
     }
 
