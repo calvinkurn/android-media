@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.coroutines.domain.interactor
 
+import android.os.AsyncTask
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -41,8 +42,11 @@ open class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlReposito
             initCacheManager()
             if (graphqlQuery != null) {
                 val request = GraphqlRequest(graphqlQuery, tClass, requestParams)
-                mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(listOf(request).toString(),
-                        cacheStrategy.isSessionIncluded))
+                AsyncTask.execute {
+                    mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(
+                            request.toString(),
+                            cacheStrategy.isSessionIncluded))
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
