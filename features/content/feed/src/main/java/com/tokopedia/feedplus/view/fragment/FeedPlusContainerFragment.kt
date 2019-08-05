@@ -47,6 +47,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val viewModel by
         lazy { ViewModelProviders.of(this, viewModelFactory)[FeedPlusContainerViewModel::class.java] }
 
@@ -72,8 +73,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (!::pagerAdapter.isInitialized)
+        if (!::pagerAdapter.isInitialized) {
             pagerAdapter = FeedPlusTabAdapter(childFragmentManager, listOf(), arguments)
+        }
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
@@ -121,11 +123,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     override fun onScrollToTop() {
-        val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
-        if (fragment is FeedPlusFragment) {
-            fragment.scrollToTop()
-        } else if (fragment is ContentExploreFragment) {
-            fragment.scrollToTop()
+        if (::pagerAdapter.isInitialized) {
+            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            if (fragment is FeedPlusFragment) {
+                fragment.scrollToTop()
+            } else if (fragment is ContentExploreFragment) {
+                fragment.scrollToTop()
+            }
         }
     }
 
