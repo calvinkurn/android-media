@@ -264,7 +264,6 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
 
     fun releasePlayer() {
         playerOptions?.release()
-        debug("stevenx", "exoplayer release")
     }
 
     override fun onStop() {

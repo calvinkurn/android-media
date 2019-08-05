@@ -828,7 +828,6 @@ open class PlayViewStateImpl(
             videoHorizontalHelper.clearDataVideoHorizontal()
             youTubePlayer?.release()
             youTubePlayer = null
-            debug("stevenx", "youtube release")
         } else {
             videoVerticalHelper.stopVideo()
             setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO)
@@ -880,7 +879,6 @@ open class PlayViewStateImpl(
             videoHorizontalHelper.hideVideoAndToggle()
             youTubePlayer?.release()
             youTubePlayer = null
-            debug("stevenx", "youtube release")
         }
     }
 
@@ -1379,7 +1377,6 @@ open class PlayViewStateImpl(
 
     override fun destroy() {
         youTubePlayer?.release()
-        debug("stevenx", "youtube release")
         youtubeRunnable.removeCallbacksAndMessages(null)
         interactionAnimationHelper.destroy()
     }
