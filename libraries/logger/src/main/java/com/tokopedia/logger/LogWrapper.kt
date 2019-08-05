@@ -51,7 +51,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
             try {
                 url = URL(URL_LOGENTRIES + token)
                 urlConnection = url.openConnection() as HttpURLConnection
-                urlConnection.setRequestMethod("POST")
+                urlConnection.requestMethod = "POST"
                 urlConnection.doOutput = true
                 val wr = DataOutputStream(urlConnection.getOutputStream())
                 wr.writeBytes(truncatedMessage)
