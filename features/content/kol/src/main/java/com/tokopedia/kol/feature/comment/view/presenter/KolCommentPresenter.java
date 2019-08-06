@@ -1,6 +1,10 @@
 package com.tokopedia.kol.feature.comment.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.feedcomponent.domain.usecase.GetMentionableUserUseCase;
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
 import com.tokopedia.kol.feature.comment.domain.interactor.DeleteKolCommentUseCase;
 import com.tokopedia.kol.feature.comment.domain.interactor.GetKolCommentsUseCase;
 import com.tokopedia.kol.feature.comment.domain.interactor.SendKolCommentUseCase;
@@ -10,7 +14,11 @@ import com.tokopedia.kol.feature.comment.view.subscriber.GetKolCommentFirstTimeS
 import com.tokopedia.kol.feature.comment.view.subscriber.GetKolCommentSubscriber;
 import com.tokopedia.kol.feature.comment.view.subscriber.SendKolCommentSubscriber;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * @author by nisie on 10/31/17.
@@ -22,6 +30,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     private final GetKolCommentsUseCase getKolCommentsUseCase;
     private final SendKolCommentUseCase sendKolCommentUseCase;
     private final DeleteKolCommentUseCase deleteKolCommentUseCase;
+    private final GetMentionableUserUseCase getMentionableUserUseCase;
 
     private String cursor;
 
@@ -31,15 +40,18 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
         getKolCommentsUseCase.unsubscribe();
         sendKolCommentUseCase.unsubscribe();
         deleteKolCommentUseCase.unsubscribe();
+        getMentionableUserUseCase.unsubscribe();
     }
 
     @Inject
     public KolCommentPresenter(GetKolCommentsUseCase getKolCommentsUseCase,
                                SendKolCommentUseCase sendKolCommentUseCase,
-                               DeleteKolCommentUseCase deleteKolCommentUseCase) {
+                               DeleteKolCommentUseCase deleteKolCommentUseCase,
+                               GetMentionableUserUseCase getMentionableUserUseCase) {
         this.getKolCommentsUseCase = getKolCommentsUseCase;
         this.sendKolCommentUseCase = sendKolCommentUseCase;
         this.deleteKolCommentUseCase = deleteKolCommentUseCase;
+        this.getMentionableUserUseCase = getMentionableUserUseCase;
     }
 
     @Override
@@ -78,6 +90,32 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
             sendKolCommentUseCase.execute(
                     SendKolCommentUseCase.getParam(id, comment),
                     new SendKolCommentSubscriber(getView()));
+        }
+    }
+
+    @Override
+    public void getMentionableUserByKeyword(String keyword) {
+        if (keyword != null && !TextUtils.isEmpty(keyword)) {
+            getMentionableUserUseCase.unsubscribe();
+            getMentionableUserUseCase.execute(
+                    GetMentionableUserUseCase.Companion.getParam(keyword),
+                    new Subscriber<List<? extends MentionableUserViewModel>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<? extends MentionableUserViewModel> mentionableUserViewModels) {
+                            getView().showMentionUserSuggestionList((List<MentionableUserViewModel>) mentionableUserViewModels);
+                        }
+                    }
+            );
         }
     }
 

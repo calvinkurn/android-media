@@ -21,4 +21,10 @@ class FeedComponentModule {
         )
     }
 
+    @Provides
+    @Named("search_profile_query")
+    fun provideGetMentionableUserQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_search_profile)
+    }
+
 }

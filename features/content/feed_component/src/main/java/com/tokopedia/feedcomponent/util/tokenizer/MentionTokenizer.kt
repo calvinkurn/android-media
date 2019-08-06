@@ -1,4 +1,4 @@
-package com.tokopedia.kol.feature.comment.view.tokenizer
+package com.tokopedia.feedcomponent.util.tokenizer
 
 import android.graphics.Color
 import android.text.Spannable

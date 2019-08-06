@@ -1,22 +1,29 @@
-package com.tokopedia.kol.feature.comment.view.adapter
+package com.tokopedia.feedcomponent.view.adapter.mention
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
-import com.tokopedia.kol.R
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import kotlinx.coroutines.*
 
 /**
  * Created by jegul on 2019-08-05.
  */
 
 class MentionableUserAdapter(
-        val mentionList: List<MentionableUserViewModel>
+        val listener: MentionAdapterListener
 ) : BaseAdapter(), Filterable {
 
-    private var filteredList: List<MentionableUserViewModel> = mentionList
+    interface MentionAdapterListener {
+        fun shouldGetMentionableUser(keyword: String)
+    }
+
+    private var filteredList: List<MentionableUserViewModel> = emptyList()
 
     override fun isEmpty(): Boolean {
         return filteredList.isEmpty()
@@ -41,10 +48,17 @@ class MentionableUserAdapter(
             holder = view.tag as ViewHolder
         }
 
-        holder.tvUserName.text = filteredList[position].userName
         holder.tvFullName.text = filteredList[position].fullName
 
-        ImageHandler.loadImageCircle2(holder.ivAvatar.context, holder.ivAvatar, filteredList[position].imageUrl)
+        val userName = filteredList[position].userName
+        if (userName.isNullOrEmpty()) {
+            holder.tvUserName.gone()
+        } else {
+            holder.tvUserName.text = userName
+            holder.tvUserName.visible()
+        }
+
+        ImageHandler.loadImageCircle2(holder.ivAvatar.context, holder.ivAvatar, filteredList[position].avatarUrl)
 
         return view!!
     }
@@ -68,22 +82,22 @@ class MentionableUserAdapter(
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val constraintString = constraint.toString()
-                val filteredList = mentionList.filter {
-                    it.fullName.contains(constraintString, true)
-                }
+                if (!constraint.isNullOrEmpty()) listener.shouldGetMentionableUser(constraint.toString())
 
                 return FilterResults().apply {
-                    count = filteredList.size
-                    values = filteredList
+                    count = 0
+                    values = emptyList<MentionableUserViewModel>()
                 }
             }
 
             override fun publishResults(p0: CharSequence?, p1: FilterResults?) {
-                filteredList = (p1?.values as (List<MentionableUserViewModel>?)).orEmpty()
-                notifyDataSetChanged()
             }
         }
+    }
+
+    fun setMentionableUser(userList: List<MentionableUserViewModel>) {
+        filteredList = userList
+        notifyDataSetChanged()
     }
 
     internal data class ViewHolder(

@@ -93,7 +93,7 @@ object MentionTextHelper {
                     id = userId,
                     userName = "",
                     fullName = fullName,
-                    imageUrl = ""
+                    avatarUrl = ""
             )
         } else null
     }

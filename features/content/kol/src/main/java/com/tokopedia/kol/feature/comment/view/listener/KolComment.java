@@ -4,8 +4,11 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
+
+import java.util.List;
 
 /**
  * @author by nisie on 10/31/17.
@@ -55,6 +58,8 @@ public interface KolComment {
 
         void disableSendComment();
 
+        void showMentionUserSuggestionList(List<MentionableUserViewModel> userList);
+
         interface ViewHolder {
             void onGoToProfile(String url);
 
@@ -76,5 +81,7 @@ public interface KolComment {
         void deleteComment(String id, int adapterPosition);
 
         void sendComment(int id, String comment);
+
+        void getMentionableUserByKeyword(String keyword);
     }
 }

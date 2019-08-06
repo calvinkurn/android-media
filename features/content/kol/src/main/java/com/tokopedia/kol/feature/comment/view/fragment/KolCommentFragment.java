@@ -12,8 +12,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ProgressBar;
@@ -25,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
@@ -34,7 +33,6 @@ import com.tokopedia.kol.feature.comment.di.KolCommentModule;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.adapter.KolCommentAdapter;
-import com.tokopedia.kol.feature.comment.view.adapter.MentionableUserAdapter;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
@@ -45,17 +43,22 @@ import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.coroutines.Continuation;
 
 /**
  * @author by nisie on 10/27/17.
  */
 
 public class KolCommentFragment extends BaseDaggerFragment
-        implements KolComment.View, KolComment.View.ViewHolder {
+        implements KolComment.View, KolComment.View.ViewHolder, MentionableUserAdapter.MentionAdapterListener {
 
     public static final String ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT";
     public static final String ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG";
@@ -66,6 +69,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     private ImageView wishlist;
 
     private KolCommentAdapter adapter;
+    private MentionableUserAdapter mentionAdapter;
     private ProgressBar progressBar;
 
     private boolean isFromApplink;
@@ -171,16 +175,8 @@ public class KolCommentFragment extends BaseDaggerFragment
 
         });
 
-        ArrayList<MentionableUserViewModel> userList = new ArrayList<>();
-        userList.add(
-                new MentionableUserViewModel(
-                        "1123",
-                        "radiojaf",
-                        "Radio Jaf",
-                        userSession.getProfilePicture()
-                )
-        );
-        kolComment.setAdapter(new MentionableUserAdapter(userList));
+        mentionAdapter = new MentionableUserAdapter(this);
+        kolComment.setAdapter(mentionAdapter);
     }
 
     @Override
@@ -367,6 +363,16 @@ public class KolCommentFragment extends BaseDaggerFragment
     @Override
     public void disableSendComment() {
         sendButton.setClickable(false);
+    }
+
+    @Override
+    public void shouldGetMentionableUser(@NotNull String keyword) {
+        presenter.getMentionableUserByKeyword(keyword);
+    }
+
+    @Override
+    public void showMentionUserSuggestionList(List<MentionableUserViewModel> userList) {
+        mentionAdapter.setMentionableUser(userList);
     }
 
     private boolean isInfluencer() {

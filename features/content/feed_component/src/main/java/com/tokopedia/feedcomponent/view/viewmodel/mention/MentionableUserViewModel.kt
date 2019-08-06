@@ -6,9 +6,9 @@ package com.tokopedia.feedcomponent.view.viewmodel.mention
 
 data class MentionableUserViewModel(
         val id: String,
-        val userName: String,
+        val userName: String?,
         val fullName: String,
-        val imageUrl: String
+        val avatarUrl: String?
 ) {
 
     override fun toString(): String {
