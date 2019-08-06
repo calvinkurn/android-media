@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
+import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_MSISDN
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_OTP_CODE
@@ -20,11 +21,13 @@ import javax.inject.Inject
 
 class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: GraphqlUseCase<AddPhonePojo>,
                                             private val checkMsisdnGraphQlUseCase: GraphqlUseCase<CheckPhonePojo>,
+                                            private val userValidateGraphQlUseCase: GraphqlUseCase<UserValidatePojo>,
                                             private val rawQueries: Map<String, String>,
                                             val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val mutateAddPhoneResponse = MutableLiveData<Result<AddPhoneResult>>()
     val mutateCheckPhoneResponse = MutableLiveData<Result<CheckPhonePojo>>()
+    val mutateUserValidateResponse = MutableLiveData<Result<UserValidatePojo>>()
 
 
     fun mutateAddPhone(msisdn: String, otp : String) {
@@ -106,6 +109,42 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
         }
     }
 
+    fun userProfileCompletionValidate(msisdn: String){
+        rawQueries[ProfileCompletionQueriesConstant.MUTATION_USER_VALIDATE]?.let { query ->
 
+            val params = mapOf(PARAM_PHONE to msisdn)
 
+            userValidateGraphQlUseCase.setTypeClass(UserValidatePojo::class.java)
+            userValidateGraphQlUseCase.setRequestParams(params)
+            userValidateGraphQlUseCase.setGraphqlQuery(query)
+
+            userValidateGraphQlUseCase.execute(
+                    onSuccessUserValidatePojo(),
+                    onErrorUserValidatePojo()
+            )
+        }
+    }
+
+    private fun onErrorUserValidatePojo(): (Throwable) -> Unit {
+        return {
+            it.printStackTrace()
+            mutateUserValidateResponse.value = Fail(it)
+        }
+    }
+
+    private fun onSuccessUserValidatePojo(): (UserValidatePojo) -> Unit {
+        return {
+            val errorMessage = it.userProfileCompletionValidate.msisdnMessage
+            val isValid = it.userProfileCompletionValidate.isValid
+
+            if (errorMessage.isBlank() && isValid) {
+                mutateUserValidateResponse.value = Success(it)
+            } else if (!errorMessage.isBlank()) {
+                mutateUserValidateResponse.value = Fail(MessageErrorException(errorMessage,
+                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+            } else {
+                mutateUserValidateResponse.value = Fail(RuntimeException())
+            }
+        }
+    }
 }

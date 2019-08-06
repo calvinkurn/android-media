@@ -455,11 +455,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun goToAddBod() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD_TITLE, getString(R.string.title_add_bod))
         startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
     }
 
     private fun goToChangeBod(bod: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD_TITLE, getString(R.string.title_change_bod))
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD, bod)
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
