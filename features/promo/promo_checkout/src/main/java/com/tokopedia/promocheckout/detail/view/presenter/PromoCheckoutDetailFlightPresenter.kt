@@ -24,7 +24,7 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
                 val errors = objects.getError(FlightCheckVoucher.Response::class.java)
-                if (errors.isNotEmpty()) {
+                if (!errors.isNullOrEmpty()) {
                     throw MessageErrorException(errors[0].message)
                 } else {
                     val checkVoucherData = objects.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
