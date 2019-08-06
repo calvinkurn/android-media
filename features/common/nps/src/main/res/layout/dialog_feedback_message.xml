@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialog_container"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -53,7 +54,16 @@
         android:paddingBottom="11dp"
         android:background="@drawable/rounded_button">
 
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/send_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:progressBarStyleSmall"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/button_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/message_feedback_send_button_label"

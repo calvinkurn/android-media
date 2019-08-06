@@ -32,14 +32,11 @@ class OnboardingFragment : BaseDaggerFragment(),
         OnboardingVideoListener {
 
     companion object {
-        val VIEW_DEFAULT = 100
-        val VIEW_ENDING = 101
 
         val ARG_TITLE = "title"
         val ARG_VIDEO_PATH = "video_path"
         val ARG_DESC = "desc"
         val ARG_BG_COLOR = "bg_color"
-        val ARG_VIEW_TYPE = "view_type"
         val ARG_POSITION = "position"
         val ARG_DESCKEY = "desc_key"
         val ARG_TTLKEY = "ttl_key"
@@ -122,7 +119,7 @@ class OnboardingFragment : BaseDaggerFragment(),
 
         videoView?.setZOrderOnTop(true)
         videoView?.setVideoURI(Uri.parse(videoPath))
-        videoView?.setOnErrorListener { p0, p1, p2 -> true }
+        videoView?.setOnErrorListener { _, _, _ -> true }
         videoView?.setOnPreparedListener {
             it.isLooping = true
         }
@@ -137,11 +134,11 @@ class OnboardingFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
-        playAnimationTitleDesc()
+        videoView?.start()
     }
 
-    private fun playAnimationTitleDesc() {
-        videoView?.start()
+    override fun onPageUnSelected() {
+        videoView?.pause()
     }
 
     private fun getTitleMsg(): String {

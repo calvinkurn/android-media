@@ -171,12 +171,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun onErrorAddPhone(throwable: Throwable) {
         dismissLoading()
-        view?.run {
-            Toaster.showError(
-                    this,
-                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
-                    Snackbar.LENGTH_LONG)
-        }
+        setErrorText(ErrorHandlerSession.getErrorMessage(throwable, context, false))
     }
 
     private fun onSuccessAddPhone(result: AddPhoneResult) {
