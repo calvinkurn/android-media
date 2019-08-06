@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -58,9 +59,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private static final int QTY_MAX = 10000;
     private static final int MAX_SHOWING_NOTES_CHAR = 20;
 
-    private final Context context;
-    private final CartItemAdapter.ActionListener actionListener;
+    private Context context;
+    private CartItemAdapter.ActionListener actionListener;
     private ViewHolderListener viewHolderListener;
+    private CompositeSubscription compositeSubscription;
 
     private LinearLayout llWarningAndError;
     private FrameLayout flCartItemContainer;
@@ -102,6 +104,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
     private int parentPosition;
     private int dataSize;
+    private Subscription quantityDebounceSubscription;
+    private Subscription noteDebounceSubscription;
 
     @SuppressLint("ClickableViewAccessibility")
     public CartItemViewHolder(View itemView, CompositeSubscription cadapterCmpositeSubscription,
@@ -109,6 +113,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.actionListener = actionListener;
         this.context = itemView.getContext();
+        compositeSubscription = cadapterCmpositeSubscription;
 
         this.llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
         this.flCartItemContainer = itemView.findViewById(R.id.fl_cart_item_container);
@@ -163,8 +168,16 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         initTextwatcherDebouncer(cadapterCmpositeSubscription);
     }
 
+    public void clear() {
+        context = null;
+        actionListener = null;
+        viewHolderListener = null;
+        compositeSubscription.remove(quantityDebounceSubscription);
+        compositeSubscription.remove(noteDebounceSubscription);
+    }
+
     private void initTextwatcherDebouncer(CompositeSubscription compositeSubscription) {
-        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<QuantityWrapper>() {
+        quantityDebounceSubscription = Observable.create(new Observable.OnSubscribe<QuantityWrapper>() {
             @Override
             public void call(final Subscriber<? super QuantityWrapper> subscriber) {
                 quantityTextwatcherListener = new QuantityTextWatcher.QuantityTextwatcherListener() {
@@ -192,9 +205,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     public void onNext(QuantityWrapper quantity) {
                         itemQuantityTextWatcherAction(quantity);
                     }
-                }));
+                });
+        compositeSubscription.add(quantityDebounceSubscription);
 
-        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<Editable>() {
+        noteDebounceSubscription = Observable.create(new Observable.OnSubscribe<Editable>() {
             @Override
             public void call(final Subscriber<? super Editable> subscriber) {
                 noteTextwatcherListener = new NoteTextWatcher.NoteTextwatcherListener() {
@@ -222,7 +236,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     public void onNext(Editable editable) {
                         itemNoteTextWatcherAction(editable);
                     }
-                }));
+                });
+        compositeSubscription.add(noteDebounceSubscription);
     }
 
     public void bindData(final CartItemHolderData data, int parentPosition, ViewHolderListener viewHolderListener, int dataSize) {
