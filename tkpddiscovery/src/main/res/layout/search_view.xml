@@ -27,12 +27,12 @@
             android:gravity="center_vertical"
             android:background="@android:color/white">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/action_up_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                app:srcCompat="@drawable/discovery_ic_back"/>
+                android:src="@drawable/discovery_ic_back"/>
 
             <RelativeLayout
                 android:layout_marginLeft="@dimen/dp_16"
@@ -43,8 +43,7 @@
 
                     <com.tokopedia.design.component.EditTextCompat
                         android:id="@+id/searchTextView"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:gravity="center_vertical"
@@ -62,16 +61,16 @@
                         android:textSize="14sp"
                         app:drawableLeftCompat="@drawable/discovery_ic_search"/>
 
-                    <ImageButton
+                    <ImageView
                         android:id="@+id/action_image_search_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="4dp"
-                        app:srcCompat="@drawable/discovery_ic_camera" />
+                        android:src="@drawable/discovery_ic_camera" />
 
-                    <ImageButton
+                    <ImageView
                         android:id="@+id/action_empty_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -79,17 +78,17 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="4dp"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/discovery_ic_clear" />
+                        android:src="@drawable/discovery_ic_clear" />
 
             </RelativeLayout>
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/action_voice_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                app:srcCompat="@drawable/discovery_ic_audio" />
+                android:src="@drawable/discovery_ic_audio" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/action_cancel_button"
