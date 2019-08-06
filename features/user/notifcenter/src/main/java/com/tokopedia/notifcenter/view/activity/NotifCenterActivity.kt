@@ -21,10 +21,6 @@ class NotifCenterActivity : BaseSimpleActivity() {
     }
 
     object DeeplinkIntent {
-        @DeepLink(ApplinkConst.BUYER_INFO)
-        @JvmStatic
-        fun createIntent(context: Context, extras: Bundle) = Companion.createIntent(context)
-
         @DeepLink(ApplinkConst.BUYER_INFO_WITH_ID)
         @JvmStatic
         fun createIntentDetail(context: Context, extras: Bundle): Intent {
