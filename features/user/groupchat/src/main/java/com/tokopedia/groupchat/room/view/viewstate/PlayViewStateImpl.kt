@@ -826,6 +826,8 @@ open class PlayViewStateImpl(
             sponsorHelper.assignVideoVertical(true)
             setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITH_VIDEO)
             videoHorizontalHelper.clearDataVideoHorizontal()
+            youTubePlayer?.release()
+            youTubePlayer = null
         } else {
             videoVerticalHelper.stopVideo()
             setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO)
@@ -860,6 +862,7 @@ open class PlayViewStateImpl(
     private fun initVideoFragment(videoId: String, isVideoLive: Boolean) {
         videoHorizontalHelper.hideVideoAndToggle()
         if(!videoId.isNullOrBlank()){
+            videoVerticalHelper.releasePlayer()
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
                 videoHorizontalHelper.showVideoOnly(isVideoLive)
@@ -874,6 +877,8 @@ open class PlayViewStateImpl(
         } else {
             setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITHOUT_VIDEO)
             videoHorizontalHelper.hideVideoAndToggle()
+            youTubePlayer?.release()
+            youTubePlayer = null
         }
     }
 
@@ -1309,8 +1314,6 @@ open class PlayViewStateImpl(
             if(it) {
                 videoHorizontalHelper.hideVideoAndToggle()
                 sponsorHelper.hideSponsor()
-                youTubePlayer?.release()
-                youTubePlayer = null
                 setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITH_VIDEO)
             } else {
                 sponsorHelper.setSponsor()
