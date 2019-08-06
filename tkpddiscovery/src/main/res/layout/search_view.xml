@@ -50,7 +50,7 @@
                         android:background="@null"
                         android:paddingTop="6dp"
                         android:paddingBottom="6dp"
-                        android:paddingLeft="4dp"
+                        android:paddingLeft="28dp"
                         android:paddingRight="32dp"
                         android:hint="@string/search_autocomplete_hint"
                         android:imeOptions="actionSearch"
@@ -58,8 +58,13 @@
                         android:lines="1"
                         android:textColor="#ae31353b"
                         android:textColorHint="#7031353b"
-                        android:textSize="14sp"
-                        android:drawableLeft="@drawable/discovery_ic_search"/>
+                        android:textSize="14sp"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/discovery_ic_search" />
 
                     <ImageView
                         android:id="@+id/action_image_search_btn"
