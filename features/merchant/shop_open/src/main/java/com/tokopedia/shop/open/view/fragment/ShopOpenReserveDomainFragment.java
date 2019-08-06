@@ -322,6 +322,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public void onErrorCheckShopName(String message) {
         textInputShopName.setError(message);
         editTextInputDomainName.setText("");
+        textInputDomainName.resetCounter();
         textInputDomainName.setSuccess("");
         trackingOpenShop.eventOpenShopBiodataNameError(message);
     }
