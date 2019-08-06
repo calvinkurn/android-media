@@ -18,6 +18,7 @@ import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import javax.annotation.RegEx
 
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
     companion object{
@@ -71,8 +72,9 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     }
 
     override fun getNewFragment(): Fragment {
-        return if(intent.data != null && intent?.data?.pathSegments?.size ?: 0 > 1 ){
-            RecommendationFragment.newInstance(intent?.data?.lastPathSegment ?: "", intent?.data?.getQueryParameter(REF) ?: "")
+        return if(intent.data != null && intent?.data?.pathSegments?.isNotEmpty() == true){
+            val isNumber = intent?.data?.lastPathSegment?.matches("-?\\d+(\\.\\d+)?".toRegex()) ?: false
+            RecommendationFragment.newInstance(if(isNumber) intent?.data?.lastPathSegment ?: "" else "", intent?.data?.getQueryParameter(REF) ?: "")
         } else if (intent.hasExtra(PRODUCT_ID) && intent.hasExtra(REF)) {
             RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID), intent.getStringExtra(REF))
         } else {
