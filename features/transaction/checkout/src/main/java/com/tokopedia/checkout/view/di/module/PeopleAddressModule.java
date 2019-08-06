@@ -4,7 +4,6 @@ import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepositoryImpl;
 import com.tokopedia.checkout.domain.usecase.GetAddressWithCornerUseCase;
-import com.tokopedia.checkout.view.common.utils.PagingHandler;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 
 import dagger.Module;
@@ -16,11 +15,6 @@ import dagger.Provides;
 
 @Module
 public class PeopleAddressModule {
-
-    @Provides
-    PagingHandler providePagingHandler() {
-        return new PagingHandler();
-    }
 
     @Provides
     AddressModelMapper providePeopleAddressMapper() {
