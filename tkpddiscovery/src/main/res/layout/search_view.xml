@@ -59,7 +59,7 @@
                         android:textColor="#ae31353b"
                         android:textColorHint="#7031353b"
                         android:textSize="14sp"
-                        app:drawableLeftCompat="@drawable/discovery_ic_search"/>
+                        android:drawableLeft="@drawable/discovery_ic_search"/>
 
                     <ImageView
                         android:id="@+id/action_image_search_btn"
