@@ -145,7 +145,7 @@ public class DistrictRecommendationFragment
             if (!TextUtils.isEmpty(searchInputView.getSearchText()) &&
                     searchInputView.getSearchText().length() >= MINIMUM_SEARCH_KEYWORD_CHAR) {
                 if (mToken != null) {
-                    presenter.loadData(searchInputView.getSearchText(), mToken, page);
+                    presenter.loadData(searchInputView.getSearchText(), page, mToken);
                 } else {
                     presenter.loadData(searchInputView.getSearchText(), page);
 

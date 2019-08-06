@@ -27,7 +27,7 @@ interface DiscomContract {
 
         fun loadData(query: String, page: Int)
 
-        fun loadData(query: String, token: Token, page: Int)
+        fun loadData(query: String, page: Int, token: Token)
 
     }
 

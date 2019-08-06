@@ -56,7 +56,7 @@ constructor(private val restUsecase: GetDistrictRequestUseCase,
                 })
     }
 
-    override fun loadData(query: String, token: Token, page: Int) {
+    override fun loadData(query: String, page: Int, token: Token) {
         view?.let {
             it.showLoading()
             val params = RequestParams.create().apply {
