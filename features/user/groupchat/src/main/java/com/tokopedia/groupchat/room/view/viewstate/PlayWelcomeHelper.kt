@@ -29,8 +29,8 @@ class PlayWelcomeHelper constructor(
     private lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
 
     fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
-                            onDismiss: () -> Unit,
-                            userIsLoggedIn: Boolean) {
+                            userIsLoggedIn: Boolean,
+                            onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
             welcomeInfoDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         }
