@@ -648,6 +648,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void hideWithdrawTicker() {
+        layoutTicker.setVisibility(View.GONE);
+    }
+
+    @Override
     public boolean isSellerEnabled() {
         return isSellerEnabled;
     }

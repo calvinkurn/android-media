@@ -192,6 +192,10 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             @Override
             public void onError(Throwable e) {
 
+                if (!isViewAttached()) {
+                    return;
+                }
+                getView().hideWithdrawTicker();
             }
 
             @Override
@@ -200,7 +204,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                     GqlMclLateCountResponse gqlMclLateCountResponse = graphqlResponse.getData(GqlMclLateCountResponse.class);
                     if (gqlMclLateCountResponse != null) {
                         getView().setLateCount(gqlMclLateCountResponse.getMclGetLatedetails().getLateCount());
-                    }
+                    } else
+                        getView().hideWithdrawTicker();
                 }
             }
         });
