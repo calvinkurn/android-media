@@ -24,9 +24,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import android.media.MediaPlayer
 
-
-
-
 /**
  * @author by stevenfredian on 14/05/19.
  */
