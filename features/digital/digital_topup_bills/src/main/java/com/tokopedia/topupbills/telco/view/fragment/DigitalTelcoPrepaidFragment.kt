@@ -62,7 +62,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var selectedProductId = ""
     private var selectedCategoryId = 0
     private var selectedOperatorName: String = ""
-d
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
