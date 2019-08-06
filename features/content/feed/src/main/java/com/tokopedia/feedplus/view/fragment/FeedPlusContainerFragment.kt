@@ -46,7 +46,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private val pagerAdapter : FeedPlusTabAdapter by lazy {
-        FeedPlusTabAdapter(childFragmentManager, listOf(), arguments)
+        FeedPlusTabAdapter(childFragmentManager, emptyList(), arguments)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
