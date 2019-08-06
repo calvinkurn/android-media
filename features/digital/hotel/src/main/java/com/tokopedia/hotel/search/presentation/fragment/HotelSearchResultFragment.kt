@@ -133,7 +133,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         val recyclerView = getRecyclerView(view)
         recyclerView.removeItemDecorationAt(0)
         context?.let {
-            recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.dp_12),
+            recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12),
                     LinearLayoutManager.VERTICAL))
         }
         bottom_action_view.setButton1OnClickListener {
