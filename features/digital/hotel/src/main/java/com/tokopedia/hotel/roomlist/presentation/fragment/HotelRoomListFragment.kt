@@ -170,7 +170,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         filter_recycler_view.listener = this
         filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_room_list_filter_free_breakfast),
                 getString(R.string.hotel_room_list_filter_free_cancelable)),
-                R.color.snackbar_border_normal)
+                com.tokopedia.design.R.color.snackbar_border_normal)
 
         recycler_view.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

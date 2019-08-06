@@ -21,7 +21,7 @@ class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFa
         val recyclerView = getRecyclerView(view) as VerticalRecyclerView
         recyclerView.clearItemDecoration()
         recyclerView.setPadding(0, 0,0,
-                resources.getDimension(R.dimen.dp_16).toInt())
+                resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt())
         recyclerView.clipToPadding = false
         recyclerView.isFocusable = false
     }

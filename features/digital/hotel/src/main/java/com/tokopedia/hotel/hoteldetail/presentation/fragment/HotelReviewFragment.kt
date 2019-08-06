@@ -99,7 +99,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_review_filter_first_rank),
                 getString(R.string.hotel_review_filter_second_rank),
                 getString(R.string.hotel_review_filter_third_rank)),
-                R.color.snackbar_border_normal)
+                com.tokopedia.design.R.color.snackbar_border_normal)
         filter_recycler_view.selectOnlyOneChip(true)
 
         //initially select recent search chip
