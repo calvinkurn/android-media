@@ -201,38 +201,33 @@ android {
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
 
-//            if (allowSplit()) {
-//                applicationVariants.all { variant ->
-//                    variant.outputs.each { output ->
-//                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-//                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
-//                    }
-//                    variant.assemble.doLast {
-//                        variant.outputs.each { output ->
-//                            if (output.zipAlign) {
-//                                archiveAPK(variant, output);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    output.versionCodeOverride = (getTkpdVersionCode() * 100);
+            if (allowSplit()) {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
+                    }
+                    variant.assemble.doLast {
+                        variant.outputs.each { output ->
+                            if (output.zipAlign) {
+                                archiveAPK(variant, output);
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
-    splits {
-        density {
-            enable allowSplit()
-            reset()
-            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
-            compatibleScreens 'small', 'normal', 'large', 'xlarge'
-        }
-
-    }
+//    splits {
+//        density {
+//            enable allowSplit()
+//            reset()
+//            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
+//            compatibleScreens 'small', 'normal', 'large', 'xlarge'
+//        }
+//
+//    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
