@@ -1648,7 +1648,7 @@ class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol,
         val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
         val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
 
-        fun newInstance(bundle: Bundle): FeedPlusFragment {
+        fun newInstance(bundle: Bundle?): FeedPlusFragment {
             val fragment = FeedPlusFragment()
             fragment.arguments = bundle
             return fragment
