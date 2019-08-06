@@ -408,7 +408,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_KIRIM_ULANG,
-                LABEL_SUCCESS + failedMessage
+                LABEL_FAILED + failedMessage
         ))
     }
 
@@ -479,13 +479,6 @@ class RegisterAnalytics @Inject constructor() {
                 ACTION_CLICK_ON_BUTTON_FACEBOOK,
                 LABEL_REGISTER_FAILED + errorMessage
         ))
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_PAGE,
-                ACTION_CLICK_ON_BUTTON_FACEBOOK,
-                LABEL_REGISTER_FAILED + errorMessage
-        ))
     }
 
     private fun onErrorRegisterGoogle(errorMessage: String) {
@@ -549,6 +542,12 @@ class RegisterAnalytics @Inject constructor() {
     }
 
     private fun onSuccessRegisterPhone() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_SUCCESS
+        ))
 
     }
 

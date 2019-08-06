@@ -61,8 +61,6 @@ interface LoginEmailPhoneContract {
 
         fun onGoToCreatePassword(): Function2<String, String, Unit>
 
-        fun onGoToPhoneVerification(): Function0<Unit>
-
         fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
 
         fun onGoToSecurityQuestion(email: String): Function0<Unit>
@@ -95,7 +93,7 @@ interface LoginEmailPhoneContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun loginEmail(email: String, password: String)
+        fun loginEmail(email: String, password: String, isSmartLock : Boolean = false)
 
         fun loginGoogle(accessToken: String, email: String)
 

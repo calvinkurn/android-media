@@ -35,7 +35,7 @@ class TopAdsDashboardDataSourceCloud(private val topAdsDashboardApi: TopAdsDashb
     internal inner class TopAdsResponseMapper<E> : Func1<Response<DataResponse<E>>, E> {
 
         override fun call(dataResponseResponse: Response<DataResponse<E>>): E {
-            return dataResponseResponse.body().data
+            return dataResponseResponse.body()!!.data
         }
     }
 }

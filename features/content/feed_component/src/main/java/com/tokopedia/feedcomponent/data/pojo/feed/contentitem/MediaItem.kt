@@ -40,7 +40,7 @@ data class MediaItem(
         val percentage: String = "",
 
         @SerializedName("isSelected")
-        val isSelected: Boolean = false,
+        var isSelected: Boolean = false,
 
         @SerializedName("position")
         @Expose
@@ -48,5 +48,17 @@ data class MediaItem(
 
         @SerializedName("tracking")
         @Expose
-        val tracking: List<Tracking> = ArrayList()
+        val tracking: List<Tracking> = ArrayList(),
+
+        @SerializedName("videos")
+        @Expose
+        val videos: List<Video> = ArrayList(),
+
+        @SerializedName("isCanPlayVideo")
+        @Expose
+        var isCanPlayVideo: Boolean = false,
+
+        @SerializedName("positionInFeed")
+        @Expose
+        var positionInFeed: Int = 0
 )

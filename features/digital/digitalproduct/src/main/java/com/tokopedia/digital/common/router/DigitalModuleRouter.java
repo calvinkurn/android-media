@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData;
 
 import rx.Observable;
@@ -22,8 +24,7 @@ public interface DigitalModuleRouter {
 
     Intent instanceIntentDigitalCategoryList();
 
-    void showAdvancedAppRatingDialog(Activity activity,
-                                     DialogInterface.OnDismissListener dismissListener);
+    void showAppFeedbackRatingDialog(FragmentManager fragmentManager, BottomSheets.BottomSheetDismissListener listener);
 
     String getBranchAutoApply(Activity activity);
 

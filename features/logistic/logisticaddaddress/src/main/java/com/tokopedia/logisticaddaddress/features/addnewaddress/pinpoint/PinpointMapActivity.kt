@@ -27,7 +27,7 @@ class PinpointMapActivity : BaseSimpleActivity() {
 
     companion object {
         @JvmStatic
-        fun newInstance(context: Context, lat: Double?, long: Double?, isShowAutoComplete: Boolean, token: Token?, isPolygon: Boolean, districtId: Int?,
+        fun newInstance(context: Context, lat: Double?, long: Double?, isShowAutoComplete: Boolean, token: Token?, isPolygon: Boolean,
                         isMismatchSolved: Boolean, isMismatch: Boolean, saveAddressDataModel: SaveAddressDataModel?, isChangesRequested: Boolean): Intent =
                 Intent(context, PinpointMapActivity::class.java).apply {
                     putExtra(KERO_TOKEN, token)
@@ -35,7 +35,6 @@ class PinpointMapActivity : BaseSimpleActivity() {
                     putExtra(EXTRA_LONG, long)
                     putExtra(EXTRA_SHOW_AUTOCOMPLETE, isShowAutoComplete)
                     putExtra(EXTRA_IS_POLYGON, isPolygon)
-                    putExtra(EXTRA_DISTRICT_ID, districtId)
                     putExtra(EXTRA_IS_MISMATCH, isMismatch)
                     putExtra(EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
                     putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)

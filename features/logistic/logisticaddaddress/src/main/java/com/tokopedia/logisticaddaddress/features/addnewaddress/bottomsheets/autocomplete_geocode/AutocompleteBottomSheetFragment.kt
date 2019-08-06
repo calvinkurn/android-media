@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
@@ -9,6 +10,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.view.inputmethod.InputMethodManager.SHOW_FORCED
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -40,6 +42,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private lateinit var llPoi: LinearLayout
     private lateinit var llLoading: LinearLayout
     private lateinit var llSubtitle: LinearLayout
+    private lateinit var mDisabledGps: View
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private lateinit var actionListener: ActionListener
@@ -112,6 +115,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         llPoi = view.findViewById(R.id.ll_poi)
         llLoading = view.findViewById(R.id.ll_loading)
         llSubtitle = view.findViewById(R.id.ll_subtitle_poi)
+        mDisabledGps = view.findViewById(R.id.layout_gps_disabled)
         etSearch = view.findViewById(R.id.et_search)
         icCloseBtn = view.findViewById(R.id.ic_close)
 
@@ -132,14 +136,11 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 requestFocus()
                 setListenerClearBtn()
                 setSelection(etSearch.text.length)
-                showKeyboard(etSearch)
             }
             currentSearch?.let {
                 loadAutocomplete(it)
             }
         } else {
-            etSearch.requestFocus()
-            showKeyboard(etSearch)
             icCloseBtn.visibility = View.GONE
 
             if (currentLat != 0.0 && currentLong != 0.0) {
@@ -157,8 +158,10 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                         }
                         doLoadAutocompleteGeocode()
                     } else {
+                        // When user does not enable location
+                        showGpsDisabledNotification()
                         rlCurrentLocation.setOnClickListener {
-                            hideKeyboard(etSearch)
+                            AddNewAddressUtils.hideKeyboard(etSearch, context)
                             showLocationInfoBottomSheet()
                         }
                     }
@@ -167,7 +170,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
 
         etSearch.run {
-            isFocusableInTouchMode = true
             setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldCariLokasi()
             }
@@ -193,10 +195,15 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 override fun afterTextChanged(s: Editable) {
                 }
             })
+
+            isFocusableInTouchMode = true
+            isFocusable = true
+            requestFocus()
+            AddNewAddressUtils.showKeyboard(context)
         }
 
         rlCurrentLocation.setOnClickListener {
-            hideKeyboard(etSearch)
+            AddNewAddressUtils.hideKeyboard(etSearch, context)
             actionListener.useCurrentLocation()
             dismiss()
         }
@@ -223,7 +230,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnInputAddress()
             onCloseButtonClick()
-            hideKeyboard(etSearch)
+            AddNewAddressUtils.hideKeyboard(etSearch, context)
         }
     }
 
@@ -261,6 +268,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
     override fun onSuccessGetAutocompleteGeocode(responseAutocompleteGeocodeDataUiModel: AutocompleteGeocodeDataUiModel) {
         llLoading.visibility = View.GONE
+        rvPoiList.visibility = View.VISIBLE
+        mDisabledGps.visibility = View.GONE
         if (responseAutocompleteGeocodeDataUiModel.results.isNotEmpty()) {
             llSubtitle.visibility = View.VISIBLE
             llPoi.visibility = View.VISIBLE
@@ -273,6 +282,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
         llLoading.visibility = View.GONE
         llSubtitle.visibility = View.GONE
+        rvPoiList.visibility = View.VISIBLE
+        mDisabledGps.visibility = View.GONE
         if (dataUiModel.listPredictions.isNotEmpty()) {
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = false
@@ -282,29 +293,22 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     override fun onPoiListClicked(placeId: String) {
-        context?.let {
-            placeId.run {
-                hideKeyboard(etSearch)
-                actionListener.onGetPlaceId(placeId)
-                dismiss()
-            }
+        placeId.run {
+            AddNewAddressUtils.hideKeyboard(etSearch, context)
+            actionListener.onGetPlaceId(placeId)
+            dismiss()
         }
         AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList()
-    }
-
-    private fun hideKeyboard(et : EditText) {
-        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
-        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(et.windowToken, 0)
-    }
-
-    private fun showKeyboard(et: EditText) {
-        val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(et, 0)
     }
 
     private fun showLocationInfoBottomSheet() {
         val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
         locationInfoBottomSheetFragment.show(fragmentManager, "")
         dismiss()
+    }
+
+    private fun showGpsDisabledNotification()  {
+        mDisabledGps.visibility = View.VISIBLE
+        rvPoiList.visibility = View.GONE
     }
 }

@@ -107,7 +107,7 @@ public class EventSearchMapper {
                 itemDomain.setLikes(eventItem.getLikes());
                 itemDomain.setLiked(eventItem.isLiked());
                 itemDomain.setShortDesc(eventItem.getShortDesc());
-
+                itemDomain.setCustomText1(eventItem.getCustomText1());
                 eventsItemDomains.add(itemDomain);
             }
             target.setEvents(eventsItemDomains);

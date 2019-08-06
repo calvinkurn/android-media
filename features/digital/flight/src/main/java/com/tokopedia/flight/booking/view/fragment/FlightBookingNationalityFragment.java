@@ -9,11 +9,11 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.common.travel.presentation.presenter.PhoneCodePickerPresenterImpl;
+import com.tokopedia.common.travel.presentation.presenter.PhoneCodePickerView;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingNationalityAdapterTypeFactory;
-import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
-import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodeView;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 
 import javax.inject.Inject;
@@ -22,13 +22,13 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingNationalityFragment extends BaseSearchListFragment<FlightBookingPhoneCodeViewModel, FlightBookingNationalityAdapterTypeFactory> implements FlightBookingPhoneCodeView {
+public class FlightBookingNationalityFragment extends BaseSearchListFragment<CountryPhoneCode, FlightBookingNationalityAdapterTypeFactory> implements PhoneCodePickerView {
 
     public static final String EXTRA_SELECTED_COUNTRY = "EXTRA_SELECTED_COUNTRY";
     public static final String EXTRA_SEARCH_HINT = "EXTRA_SEARCH_HINT";
 
     @Inject
-    FlightBookingPhoneCodePresenterImpl flightBookingPhoneCodePresenter;
+    PhoneCodePickerPresenterImpl flightBookingPhoneCodePresenter;
 
     public static FlightBookingNationalityFragment createInstance(String searchHint) {
         FlightBookingNationalityFragment fragment = new FlightBookingNationalityFragment();
@@ -68,9 +68,9 @@ public class FlightBookingNationalityFragment extends BaseSearchListFragment<Fli
     }
 
     @Override
-    public void onItemClicked(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
+    public void onItemClicked(CountryPhoneCode phoneCode) {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_SELECTED_COUNTRY, flightBookingPhoneCodeViewModel);
+        intent.putExtra(EXTRA_SELECTED_COUNTRY, phoneCode);
         KeyboardHandler.hideSoftKeyboard(getActivity());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();

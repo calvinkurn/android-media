@@ -18,14 +18,18 @@ import javax.inject.Inject
  */
 class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyChatItemPojo>>, ReplyChatViewModel> {
     override fun call(response: Response<DataResponse<ReplyChatItemPojo>>): ReplyChatViewModel {
-
-        if ((response.body() != null) && (response.body().header == null ||
-                        (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                        (response.body().header != null && response.body().header.messages[0].isBlank()))) {
-            val pojo: ReplyChatItemPojo = response.body().data
-            return map(pojo)
+        val body = response.body()
+        if (body != null) {
+            if ((body.header == null ||
+                            (body.header != null && body.header.messages.isEmpty()) ||
+                            (body.header != null && body.header.messages[0].isBlank()))) {
+                val pojo: ReplyChatItemPojo = body.data
+                return map(pojo)
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 

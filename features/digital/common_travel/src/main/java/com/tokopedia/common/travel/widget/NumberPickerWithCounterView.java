@@ -66,11 +66,15 @@ public class NumberPickerWithCounterView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_number_picker_with_counter_view, this);
+        View view = inflate(getContext(), R.layout.widget_travel_number_picker_with_counter_view, this);
 
         numberInputView = (AppCompatTextView) view.findViewById(R.id.decimal_input_view);
         plusImageButton = (AppCompatImageButton) view.findViewById(R.id.image_button_plus);
         minusImageButton = (AppCompatImageButton) view.findViewById(R.id.image_button_minus);
+
+        plusImageButton.setImageDrawable(getResources().getDrawable(R.drawable.bg_animated_action_counter_plus_24));
+        minusImageButton.setImageDrawable(getResources().getDrawable(R.drawable.bg_animated_action_counter_minus_24));
+
         numberInputView.setEnabled(false);
     }
 

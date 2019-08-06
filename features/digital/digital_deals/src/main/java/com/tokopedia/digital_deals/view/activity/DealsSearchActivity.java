@@ -323,10 +323,10 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             int itemCount = Utils.getScreenWidth() / (int) (getResources().getDimension(R.dimen.dp_66) + getResources().getDimension(R.dimen.dp_8));//Divide by item width including margin
             int maxBrands = Math.min(brandList.size(), itemCount);
 
+            dealsAnalytics.sendBrandsSuggestionImpressionEvent(brandList, searchText);
             ImageView imageViewBrandItem;
             TextView brandName;
             for (int index = 0; index < maxBrands; index++) {
-                dealsAnalytics.sendBrandsSuggestionImpressionEvent(brandList.get(index), index);
                 LayoutInflater inflater = getLayoutInflater();
                 view = inflater.inflate(R.layout.item_brand_home, brandLayout, false);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();

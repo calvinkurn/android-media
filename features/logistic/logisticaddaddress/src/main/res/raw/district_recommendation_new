@@ -7,6 +7,7 @@ query GetDistrictRecommendation($query: String, $page: String){
       city_name
       province_id
       province_name
+      zip_code
     }
     next_available
   }

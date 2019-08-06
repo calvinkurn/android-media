@@ -6,13 +6,7 @@
             android:name="com.tokopedia.officialstore.activity.ReactNativeBrandListOsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.officialstore.activity.ReactNativeOfficialStoreActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.officialstore.activity.ReactNativeOfficialStoreCategoryActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.officialstore.activity.OldReactNativeOfficialStoreActivity"
             android:screenOrientation="portrait" />
     </application>
 

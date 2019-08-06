@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -45,6 +47,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     private TextView mTxtFeedbackQuestion;
     private TextView mTxtFinished;
     private ProgressDialog progress;
+    private TextView mBackButton;
     public static final String CLICKED_EMOJI = "clicked_emoji";
     public static final String PARAM_COMMENT_ID = "comment_id";
     public static final String PARAM_OPTIONS_CSAT = "options_csat";
@@ -177,8 +180,8 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
 
     @Override
     public void setFilterList(List<BadCsatReasonListItem> filterList) {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
-        mFilterReview.updateLayoutManager(gridLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mFilterReview.updateLayoutManager(linearLayoutManager);
         List<QuickFilterItem> filterItems = new ArrayList<>();
         CustomViewQuickFilterItem finishFilter = null;
         for(BadCsatReasonListItem filter:filterList) {
@@ -258,6 +261,16 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
         }
     }
 
+    @Override
+    public void hideSubmitButton() {
+        mTxtFinished.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showSubmitButton() {
+        mTxtFinished.setVisibility(View.VISIBLE);
+    }
+
     private void initView(View view) {
         mTxtHelpTitle = view.findViewById(R.id.txt_help_title);
         mSmileLayout = view.findViewById(R.id.smile_layout);
@@ -265,10 +278,27 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
         mTxtFeedbackQuestion = view.findViewById(R.id.txt_feedback_question);
         mTxtFinished = view.findViewById(R.id.txt_finished);
         mFilterReview = view.findViewById(R.id.filter_review);
+        mBackButton = view.findViewById(R.id.toolbar_textview);
         mTxtFinished.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onSubmitClick();
+            }
+        });
+
+        mBackButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() <= (mBackButton.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())+mBackButton.getPaddingLeft()) {
+                        getActivity().finish();
+
+                        return true;
+                    }
+                }
+                return true;
             }
         });
     }

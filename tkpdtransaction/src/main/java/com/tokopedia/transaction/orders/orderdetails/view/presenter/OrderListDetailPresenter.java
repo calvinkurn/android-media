@@ -2,6 +2,7 @@ package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -51,7 +53,6 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import kotlin.jvm.functions.Function0;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -288,6 +289,30 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
     }
 
+    @Override
+    public void assignInvoiceDataTo(Intent intent) {
+        if (orderDetails == null) return;
+        String id = orderDetails.getInvoiceId();
+        String invoiceCode = orderDetails.getInvoiceCode();
+        String productName = orderDetails.getProductName();
+        String date = orderDetails.getBoughtDate();
+        String imageUrl = orderDetails.getProductImageUrl();
+        String invoiceUrl = orderDetails.getInvoiceUrl();
+        String statusId = orderDetails.getStatusId();
+        String status = orderDetails.getStatusInfo();
+        String totalPriceAmount = orderDetails.getTotalPriceAmount();
+
+        intent.putExtra(ApplinkConst.Chat.INVOICE_ID, id);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, date);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, imageUrl);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, status);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, totalPriceAmount);
+    }
+
     private void setDetailsData(OrderDetails details) {
         if (getView() == null || getView().getAppContext() == null)
             return;
@@ -503,7 +528,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (isdownloadable(uri)) {
             getView().askPermission();
         } else {
-            ((UnifiedOrderListRouter) getView().getAppContext().getApplicationContext()).actionOpenGeneralWebView((Activity) getView().getAppContext(), uri);
+            if (getView() != null && getView().getAppContext() != null && getView().getAppContext().getApplicationContext() != null && getView().getActivity() != null) {
+                ((UnifiedOrderListRouter) getView().getAppContext().getApplicationContext()).actionOpenGeneralWebView((Activity) getView().getActivity(), uri);
+            }
         }
     }
 
@@ -523,7 +550,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
         if ("true".equalsIgnoreCase(this.fromPayment)) {
-            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), orderId);
+            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId);
         }
     }
 

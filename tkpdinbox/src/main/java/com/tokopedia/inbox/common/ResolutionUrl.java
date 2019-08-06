@@ -1,13 +1,13 @@
 package com.tokopedia.inbox.common;
 
-import com.tokopedia.inbox.BuildConfig;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by meta on 21/02/19.
  */
 public class ResolutionUrl {
 
-    public static String HOSTNAME =  "https://m.tokopedia.com/";
+    public static String HOSTNAME = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
     private static final String MOBILE =  "/mobile";
 
     public static final String RESO_CREATE = "resolution-center/create/%s" + MOBILE;

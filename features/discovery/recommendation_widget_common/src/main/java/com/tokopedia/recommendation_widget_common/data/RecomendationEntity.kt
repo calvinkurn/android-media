@@ -43,14 +43,12 @@ class RecomendationEntity {
         var clickUrl: String? = ""
         @SerializedName("wishlistUrl")
         var wishlistUrl: String? = ""
-
         @SerializedName("discountPercentage")
         var discountPercentage: Int = 0
         @SerializedName("slashedPrice")
         var slashedPrice: String? = ""
         @SerializedName("slashedPriceInt")
         var slashedPriceInt: Int = 0
-
         @SerializedName("trackerImageUrl")
         var trackerImageUrl: String? = ""
         @SerializedName("imageUrl")
@@ -73,6 +71,8 @@ class RecomendationEntity {
         var stock: Int = 0
         @SerializedName("isTopads")
         var isIsTopads: Boolean = false
+        @SerializedName("isWishlist")
+        var isWishlist: Boolean = false
         @SerializedName("labels")
         var labels: List<*>? = listOf<Any>()
         @SerializedName("badges")

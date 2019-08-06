@@ -43,6 +43,7 @@ public class EventDetailsViewModelMapper {
         target.setSeatMapImage(source.getSeatMapImage());
         target.setForms(source.getForms());
         target.setCityName(source.getCityName());
+        target.setCustomText1(source.getCustomText1());
         String dateRange = "";
         if (source.getMinStartDate() != 0) {
             if (source.getMinStartDate() == source.getMaxEndDate()) {

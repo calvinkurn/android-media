@@ -1,6 +1,6 @@
 query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
   get_home_recommendation{
-    recommendation_product(recomID:$recomID, count:$count, page:$page){
+    recommendation_product(recomID:$recomID, count:$count, page:$page, type:"banner,position"){
       product{
         id
           name
@@ -37,6 +37,19 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
             title
             image_url
           }
+      }
+      banner {
+            id
+            name
+            image_url
+            url
+            applink
+            bu_attribution
+            creative_name
+            target
+      }
+      position {
+            type
       }
       has_next_page
     }

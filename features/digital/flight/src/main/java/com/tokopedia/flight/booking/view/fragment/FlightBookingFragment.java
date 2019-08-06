@@ -28,6 +28,8 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity;
+import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
@@ -39,7 +41,6 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
-import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
@@ -51,7 +52,7 @@ import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.FlightInsuranceView;
@@ -214,7 +215,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         tvPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(FlightBookingPhoneCodeActivity.getCallingIntent(getActivity()), REQUEST_CODEP_PHONE_CODE);
+                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(getActivity()), REQUEST_CODEP_PHONE_CODE);
             }
         });
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -323,8 +324,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 break;
             case REQUEST_CODEP_PHONE_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    FlightBookingPhoneCodeViewModel phoneCodeViewModel = data.getParcelableExtra(FLightBookingPhoneCodeFragment.EXTRA_SELECTED_PHONE_CODE);
-                    presenter.onPhoneCodeResultReceived(phoneCodeViewModel);
+                    CountryPhoneCode phoneCode = data.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE);
+                    presenter.onPhoneCodeResultReceived(phoneCode);
                 }
                 break;
             case REQUEST_CODE_NEW_PRICE_DIALOG:

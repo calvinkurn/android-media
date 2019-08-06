@@ -103,5 +103,6 @@
     <string name="af_label_post">Post</string>
     <string name="af_warning_over_char">Caption tidak boleh melebihi %1$s karakter.</string>
     <string name="af_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="af_title_edit_post">Edit Post</string>
 
 </resources>
