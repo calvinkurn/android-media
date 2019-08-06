@@ -24,59 +24,72 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:gravity="center_vertical"
             android:background="@android:color/white">
 
             <ImageButton
                 android:id="@+id/action_up_btn"
-                style="@style/MSV_ImageButton"
-                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 app:srcCompat="@drawable/discovery_ic_back"/>
 
-            <LinearLayout
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_8"
+            <RelativeLayout
+                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bg_autocomplete_input"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:padding="@dimen/dp_4">
+                android:background="@drawable/bg_autocomplete_input">
 
                     <com.tokopedia.design.component.EditTextCompat
                         android:id="@+id/searchTextView"
                         android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
                         android:background="@null"
-                        android:drawablePadding="8dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="32dp"
                         android:hint="@string/search_autocomplete_hint"
                         android:imeOptions="actionSearch"
                         android:inputType="textNoSuggestions"
-                        android:paddingLeft="4dp"
-                        android:paddingStart="4dp"
-                        android:singleLine="true"
-                        android:textColor="#212121"
-                        android:textColorHint="@color/black_38"
-                        android:textSize="16sp"
+                        android:lines="1"
+                        android:textColor="#ae31353b"
+                        android:textColorHint="#7031353b"
+                        android:textSize="14sp"
                         app:drawableLeftCompat="@drawable/discovery_ic_search"/>
 
                     <ImageButton
                         android:id="@+id/action_image_search_btn"
-                        style="@style/MSV_ImageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="4dp"
                         app:srcCompat="@drawable/discovery_ic_camera" />
 
                     <ImageButton
-                        android:id="@+id/action_voice_btn"
-                        style="@style/MSV_ImageButton"
-                        app:srcCompat="@drawable/discovery_ic_audio" />
-
-                    <ImageButton
                         android:id="@+id/action_empty_btn"
-                        style="@style/MSV_ImageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="4dp"
                         android:visibility="gone"
                         app:srcCompat="@drawable/discovery_ic_clear" />
 
-            </LinearLayout>
+            </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/action_voice_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                app:srcCompat="@drawable/discovery_ic_audio" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/action_cancel_button"
@@ -89,7 +102,6 @@
                 android:visibility="gone"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"/>
-                />
 
         </LinearLayout>
 
