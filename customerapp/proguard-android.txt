@@ -214,3 +214,6 @@ public protected *;
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 -keep class com.github.anrwatchdog.** { *; }
+
+-keep class com.scottyab.rootbeer.** { *; }
+-dontwarn com.scottyab.rootbeer.**
