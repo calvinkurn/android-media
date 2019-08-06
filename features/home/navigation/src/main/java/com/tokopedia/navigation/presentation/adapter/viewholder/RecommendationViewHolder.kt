@@ -22,40 +22,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
  */
 class RecommendationViewHolder(itemView: View, private val recommendationListener: RecommendationListener) : AbstractViewHolder<Recommendation>(itemView){
     private val productCardView by lazy { itemView.findViewById<ProductCardView>(R.id.productCardView) }
-//
-//    private fun onImpressionTopAds(item: RecommendationItem) {
-//        val product = Product()
-//        val pos = (adapterPosition - listener.getStartProductPosition())
-//        product.id = item.productId.toString()
-//        product.name = item.name
-//        product.priceFormat = item.price
-//        product.category = Category(item.departmentId)
-//        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, pos, item.recommendationType)
-//    }
-//
-//    private fun onImpressionOrganic(item: RecommendationItem) {
-//        val pos = (adapterPosition - listener.getStartProductPosition())
-//        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, pos)
-//    }
-//
-//    private fun onClickTopAds(item: RecommendationItem) {
-//        val product = Product()
-//        val pos = (adapterPosition - listener.getStartProductPosition())
-//        product.id = item.productId.toString()
-//        product.name = item.name
-//        product.priceFormat = item.price
-//        product.category = Category(item.departmentId)
-//        context?.run {
-//            TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, pos, item.recommendationType)
-//        }
-//    }
-//
-//    private fun onClickOrganic(item: RecommendationItem) {
-//        val pos = (adapterPosition - listener.getStartProductPosition())
-//        context?.run {
-//            InboxGtmTracker.getInstance().eventInboxProductClick(context, item, pos)
-//        }
-//    }
 
     override fun bind(element: Recommendation) {
         productCardView.run {
