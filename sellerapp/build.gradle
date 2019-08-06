@@ -185,10 +185,7 @@ android {
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
-        packagingOptions {
-            exclude "lib/arm64-v8a/libgnustl_shared.so"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
 
