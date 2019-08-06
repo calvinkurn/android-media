@@ -16,4 +16,5 @@
     <string name="open_shop_logout_confirm">Apakah Anda ingin keluar?</string>
     <string name="open_shop_logout_button">Keluar</string>
     <string name="open_shop_cancel">Batal</string>
+    <string name="open_shop_null_zip_code">Alamat tidak didukung oleh kurir pengiriman</string>
 </resources>
