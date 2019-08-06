@@ -7,19 +7,21 @@ import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.domain.model.SearchShopModel
-import com.tokopedia.search.result.domain.usecase.TestErrorUseCase
-import com.tokopedia.search.result.domain.usecase.TestUseCase
+import com.tokopedia.search.result.domain.usecase.TestErrorSearchUseCase
+import com.tokopedia.search.result.domain.usecase.TestSearchUseCase
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.viewmodel.State
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when` as mockitoWhen
+import org.mockito.Mockito.`when` as whenever
 
+@ExperimentalCoroutinesApi
 class SearchShopViewModelTest {
 
     @get:Rule
@@ -42,29 +44,29 @@ class SearchShopViewModelTest {
     )
 
     private val shopHeaderViewModelMapper = mock(MockShopHeaderViewModelMapper::class.java).also {
-        mockitoWhen(it.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
+        whenever(it.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
     }
 
     private val shopViewModelMapper = mock(MockShopViewModelMapper::class.java).also {
-        mockitoWhen(it.convert(searchShopModel)).thenReturn(shopViewModel)
+        whenever(it.convert(searchShopModel)).thenReturn(shopViewModel)
     }
 
     private val userSession = mock(UserSessionInterface::class.java).also {
-        mockitoWhen(it.isLoggedIn).thenReturn(true)
-        mockitoWhen(it.userId).thenReturn("123456")
+        whenever(it.isLoggedIn).thenReturn(true)
+        whenever(it.userId).thenReturn("123456")
     }
 
     private val localCacheHandler = mock(LocalCacheHandler::class.java).also {
-        mockitoWhen(it.getString(SearchConstant.GCM_ID, "")).thenReturn("MOCK_GCM_ID")
+        whenever(it.getString(SearchConstant.GCM_ID, "")).thenReturn("MOCK_GCM_ID")
     }
 
     @Test
     fun `when searchShop() is successful, validate data is correct`() {
         val searchShopViewModel = SearchShopViewModel(
-                Dispatchers.Default,
+                Dispatchers.Unconfined,
                 searchShopParameter,
-                TestUseCase(searchShopModel),
-                TestUseCase(searchShopModel),
+                TestSearchUseCase(searchShopModel),
+                TestSearchUseCase(searchShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -121,10 +123,10 @@ class SearchShopViewModelTest {
     fun `when searchShop() fails, validate state is error`() {
         val exception = Exception("Mock exception for testing error")
         val searchShopViewModel = SearchShopViewModel(
-                Dispatchers.Default,
+                Dispatchers.Unconfined,
                 searchShopParameter,
-                TestErrorUseCase(exception),
-                TestUseCase(searchShopModel),
+                TestErrorSearchUseCase(exception),
+                TestSearchUseCase(searchShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -152,6 +154,26 @@ class SearchShopViewModelTest {
         assert(state is State.Error) {
             "$state is not State.Error"
         }
+    }
+
+    @Test
+    fun `when searchMoreShop() is successful, validate data is correct`() {
+        val searchShopViewModel = SearchShopViewModel(
+                Dispatchers.Unconfined,
+                searchShopParameter,
+                TestSearchUseCase(searchShopModel),
+                TestSearchUseCase(searchShopModel),
+                shopHeaderViewModelMapper,
+                shopViewModelMapper,
+                userSession,
+                localCacheHandler
+        )
+
+        searchShopViewModel.searchShop()
+        searchShopViewModel.searchMoreShop()
+
+        val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+        assertSuccessSearchShopData(searchShopState)
     }
 
     @After

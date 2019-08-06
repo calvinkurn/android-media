@@ -11,22 +11,22 @@ import com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.viewmodel.State
 import com.tokopedia.search.result.presentation.viewmodel.State.Error
 import com.tokopedia.search.result.presentation.viewmodel.State.Success
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import rx.Subscriber
+import kotlinx.coroutines.launch
 
 class SearchShopViewModel(
         dispatcher: CoroutineDispatcher,
         searchParameter: Map<String, Any>,
-        private val searchShopFirstPageUseCase: UseCase<SearchShopModel>,
-        private val searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
+        private val searchShopFirstPageUseCase: SearchUseCase<SearchShopModel>,
+        private val searchShopLoadMoreUseCase: SearchUseCase<SearchShopModel>,
         private val shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val userSession: UserSessionInterface,
@@ -72,14 +72,25 @@ class SearchShopViewModel(
     }
 
     fun searchShop() {
+        launch {
+            try {
+                trySearchShop()
+            }
+            catch(e: Throwable) {
+                catchSearchShopError(e)
+            }
+        }
+    }
+
+    private suspend fun trySearchShop() {
         setSearchParameterStartRow(START_ROW_FIRST_TIME_LOAD)
 
-        searchShopFirstPageUseCase.unsubscribe()
-        searchShopLoadMoreUseCase.unsubscribe()
-
         val requestParams = createSearchShopParam(searchParameter)
+        searchShopFirstPageUseCase.setRequestParams(requestParams.parameters)
 
-        searchShopFirstPageUseCase.execute(requestParams, createSearchShopFirstPageSubscriber())
+        val searchShopModel = searchShopFirstPageUseCase.executeOnBackground()
+
+        searchShopFirstPageSuccess(searchShopModel)
     }
 
     private fun createSearchShopParam(searchParameter: Map<String, Any>): RequestParams {
@@ -98,22 +109,6 @@ class SearchShopViewModel(
         requestParams.putString(SearchApiConst.ROWS, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS)
         requestParams.putString(SearchApiConst.IMAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE)
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE)
-    }
-
-    private fun createSearchShopFirstPageSubscriber(): Subscriber<SearchShopModel> {
-        return object: Subscriber<SearchShopModel>() {
-            override fun onNext(t: SearchShopModel?) {
-                searchShopFirstPageSuccess(t)
-            }
-
-            override fun onCompleted() {
-                // Should get dynamic filter
-            }
-
-            override fun onError(e: Throwable?) {
-                searchShopError(e)
-            }
-        }
     }
 
     private fun searchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
@@ -172,7 +167,7 @@ class SearchShopViewModel(
         searchShopLiveData.postValue(Success(searchShopDataList))
     }
 
-    private fun searchShopError(e: Throwable?) {
+    private fun catchSearchShopError(e: Throwable?) {
         e?.printStackTrace()
 
         updateSearchShopLiveDataStateToError()
@@ -184,17 +179,29 @@ class SearchShopViewModel(
         searchShopLiveData.postValue(Error("", searchShopDataList))
     }
 
-    fun searchMoreShop(startRow: Int) {
+    fun searchMoreShop() {
+        launch {
+            try {
+                trySearchMoreShop()
+            }
+            catch(e: Throwable) {
+                catchSearchShopError(e)
+            }
+        }
+    }
+
+    private suspend fun trySearchMoreShop() {
         addLoadingMoreToSearchShopLiveData()
 
+        val startRow = getNextSearchShopStartRow()
         setSearchParameterStartRow(startRow)
 
-        searchShopFirstPageUseCase.unsubscribe()
-        searchShopLoadMoreUseCase.unsubscribe()
-
         val requestParams = createSearchShopParam(searchParameter)
+        searchShopLoadMoreUseCase.setRequestParams(requestParams.parameters)
 
-        searchShopLoadMoreUseCase.execute(requestParams, createSearchShopLoadMoreSubscriber())
+        val searchShopModel = searchShopLoadMoreUseCase.executeOnBackground()
+
+        searchShopLoadMoreSuccess(searchShopModel)
     }
 
     private fun addLoadingMoreToSearchShopLiveData() {
@@ -204,20 +211,12 @@ class SearchShopViewModel(
         searchShopLiveData.postValue(Success(searchShopDataList))
     }
 
-    private fun createSearchShopLoadMoreSubscriber(): Subscriber<SearchShopModel> {
-        return object: Subscriber<SearchShopModel>() {
-            override fun onNext(t: SearchShopModel?) {
-                searchShopLoadMoreSuccess(t)
-            }
+    private fun getNextSearchShopStartRow(): Int {
+        return getTotalShopItemCount() + 1
+    }
 
-            override fun onCompleted() {
-                // Should get dynamic filter
-            }
-
-            override fun onError(e: Throwable?) {
-                searchShopError(e)
-            }
-        }
+    private fun getTotalShopItemCount(): Int {
+        return searchShopLiveData.value?.data?.count { it is ShopViewModel.ShopItem } ?: 0
     }
 
     private fun searchShopLoadMoreSuccess(searchShopModel: SearchShopModel?) {
@@ -253,7 +252,6 @@ class SearchShopViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        searchShopFirstPageUseCase.unsubscribe()
-        searchShopLoadMoreUseCase.unsubscribe()
+        clear()
     }
 }
