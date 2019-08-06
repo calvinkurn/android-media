@@ -42,6 +42,8 @@ public class OrderListAnalytics {
     private static final String KEY_SHOP_ID = "shop_id";
     private static final String KEY_SHOP_TYPE= "shop_type";
     private static final String KEY_SHOP_NAME= "shop_name";
+    private static final String KEY_DIMENSION_45 = "dimension45";
+    private static final String KEY_DIMENSION_40 = "dimension40";
     private static final String ACTION = "view purchase attempt";
     private static final String LABEL = "purchase attempt status";
     private static final String CURRENCY_CODE = "currencyCode";
@@ -58,7 +60,7 @@ public class OrderListAnalytics {
     private static final String KEY_PURCHASE = "purchase";
     private static final String KEY_ACTION_FIELD = "actionField";
     private static final String SCREEN_NAME = "/digital/deals/thanks";
-    private static final String NONE = "none";
+    private static final String NONE = "none/other";
 
 
     @Inject
@@ -131,18 +133,14 @@ public class OrderListAnalytics {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(SCREEN_NAME);
     }
 
-    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo) {
+    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, String cartId) {
         ArrayList<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> add = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
 
         for (Items item : items) {
-            MetaDataInfo metaDataInfo = null;
-
-            if (item.getMetaData() != null) {
-                Gson gson = new Gson();
-                metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
-            }
+            Gson gson = new Gson();
+            MetaDataInfo metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             HashMap<String, Object> product = new HashMap<>();
             product.put(ID, String.valueOf(item.getId()));
             product.put(NAME, metaDataInfo != null && metaDataInfo.getEntityProductName() != null
@@ -155,6 +153,8 @@ public class OrderListAnalytics {
             product.put(KEY_CATEGORY_ID, item.getCategoryID());
             product.put(KEY_SHOP_ID, shopInfo.getShopId());
             product.put(KEY_SHOP_NAME, shopInfo.getShopName());
+            product.put(KEY_DIMENSION_45, cartId);
+            product.put(KEY_DIMENSION_40, NONE);
             products.add(product);
         }
 

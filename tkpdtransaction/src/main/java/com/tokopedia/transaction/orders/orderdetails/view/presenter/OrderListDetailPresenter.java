@@ -45,7 +45,6 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,34 +211,30 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public static final String SHOP_ID = "shop_id";
 
 
-    private JsonArray generateInputQueryBuyAgain(OrderDetails data) {
-        List<Items> orderDetailItemData = data.getItems();
+    private JsonArray generateInputQueryBuyAgain(List<Items> items) {
         JsonArray jsonArray = new JsonArray();
-        for (Items item : orderDetailItemData) {
-            jsonArray.add(generateInputQueryBuyAgainForItem(item, data));
+        for (Items item : items) {
+            JsonObject passenger = new JsonObject();
+
+            int productId = 0;
+            int quantity = 0;
+            int shopId = 0;
+            String notes = "";
+            try {
+                productId = item.getId();
+                quantity = item.getQuantity();
+                shopId = orderDetails.getShopInfo().getShopId();
+                notes = item.getDescription();
+            } catch (Exception e) {
+                Log.e("error parse", e.getMessage());
+            }
+            passenger.addProperty(PRODUCT_ID, productId);
+            passenger.addProperty(QUANTITY, quantity);
+            passenger.addProperty(NOTES, notes);
+            passenger.addProperty(SHOP_ID, shopId);
+            jsonArray.add(passenger);
         }
         return jsonArray;
-    }
-
-    private JsonObject generateInputQueryBuyAgainForItem(Items item, OrderDetails data) {
-        JsonObject passenger = new JsonObject();
-        int productId = 0;
-        int quantity = 0;
-        int shopId = 0;
-        String notes = "";
-        try {
-            productId = item.getId();
-            quantity = item.getQuantity();
-            shopId = data.getShopInfo().getShopId();
-            notes = item.getDescription();
-        } catch (Exception e) {
-            Log.e("error parse", e.getMessage());
-        }
-        passenger.addProperty(PRODUCT_ID, productId);
-        passenger.addProperty(QUANTITY, quantity);
-        passenger.addProperty(NOTES, notes);
-        passenger.addProperty(SHOP_ID, shopId);
-        return passenger;
     }
 
     @Override
@@ -247,18 +242,19 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return actionButtonList;
     }
 
+    @Override
+    public void onBuyAgain(Resources resources) {
+        onBuyAgainSingleItem(resources, orderDetails.getItems());
+    }
+
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
-    public void onBuyAgain(Resources resources, Items item) {
+    public void onBuyAgainSingleItem(Resources resources, List<Items> items) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
+        variables.put(PARAM, generateInputQueryBuyAgain(items));
 
-        if (item != null) {
-            variables.put(PARAM, generateInputQueryBuyAgainForItem(item, orderDetails));
-        } else {
-            variables.put(PARAM, generateInputQueryBuyAgain(orderDetails));
-        }
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.buy_again), ResponseBuyAgain.class, variables, false);
@@ -286,18 +282,15 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 if (getView() != null && getView().getAppContext() != null) {
                     getView().hideProgressBar();
                     ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
+                    //TODO change implementation from backend for getting cartId
+                    String cartId = responseBuyAgain != null && responseBuyAgain.getAddToCartMulti().getData().getData().size() > 0
+                            ? String.valueOf(responseBuyAgain.getAddToCartMulti().getData().getData().get(0).getCartId()) : "none";
                     if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
                         getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
-                    if (item != null) {
-                        List<Items> itemsList = new ArrayList<>();
-                        itemsList.add(item);
-                        orderListAnalytics.sendBuyAgainEvent(itemsList, orderDetails.getShopInfo());
-                    } else {
-                        orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo());
-                    }
+                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), cartId);
                 }
 
             }

@@ -503,7 +503,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgain(getAppContext().getResources(), null);
+                        presenter.onBuyAgain(getAppContext().getResources());
                     }
                 });
             } else {
