@@ -65,4 +65,8 @@ class MentionEditText : MultiAutoCompleteTextView {
     fun setListener(listener: MentionEditTextListener) {
         this.listener = listener
     }
+
+    fun getRawText(): String {
+        return MentionTextHelper.deSpanMentionTag(text)
+    }
 }

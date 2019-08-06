@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -24,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter;
+import com.tokopedia.feedcomponent.view.custom.MentionEditText;
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
@@ -51,8 +51,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import kotlin.coroutines.Continuation;
-
 /**
  * @author by nisie on 10/27/17.
  */
@@ -64,7 +62,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     public static final String ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG";
 
     private RecyclerView listComment;
-    private MultiAutoCompleteTextView kolComment;
+    private MentionEditText kolComment;
     private ImageView sendButton;
     private ImageView wishlist;
 
@@ -167,7 +165,7 @@ public class KolCommentFragment extends BaseDaggerFragment
             if (userSession != null && userSession.isLoggedIn()) {
                 presenter.sendComment(
                         getArguments().getInt(KolCommentActivity.ARGS_ID),
-                        kolComment.getText().toString()
+                        kolComment.getRawText()
                 );
             } else {
                 RouteManager.route(getActivity(), ApplinkConst.LOGIN);
