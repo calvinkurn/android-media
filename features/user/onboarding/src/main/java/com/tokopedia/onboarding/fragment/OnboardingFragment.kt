@@ -22,6 +22,9 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import android.media.MediaPlayer
+
+
 
 
 /**
@@ -120,8 +123,16 @@ class OnboardingFragment : BaseDaggerFragment(),
         videoView?.setZOrderOnTop(true)
         videoView?.setVideoURI(Uri.parse(videoPath))
         videoView?.setOnErrorListener { _, _, _ -> true }
-        videoView?.setOnPreparedListener {
-            it.isLooping = true
+        videoView?.setOnPreparedListener {mp ->
+            mp?.isLooping = true
+        }
+
+        videoView?.setOnCompletionListener { mp ->
+            if (mp != null) {
+                mp.setDisplay(null)
+                mp.reset()
+                mp.setDisplay(videoView?.holder)
+            }
         }
 
         return defaultView
