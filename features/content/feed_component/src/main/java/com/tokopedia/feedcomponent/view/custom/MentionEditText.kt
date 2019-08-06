@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.custom
 
 import android.content.Context
+import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,6 +17,12 @@ import com.tokopedia.feedcomponent.util.MentionTextHelper
 //{@user_id|display name@}
 class MentionEditText : MultiAutoCompleteTextView {
 
+    companion object {
+        @ColorInt fun getMentionColor(context: Context): Int {
+            return ContextCompat.getColor(context, R.color.Green_G500)
+        }
+    }
+
     interface MentionEditTextListener {
         fun onTextChanged(spannedText: CharSequence, fullText: String)
     }
@@ -25,7 +32,7 @@ class MentionEditText : MultiAutoCompleteTextView {
 
     private var listener: MentionEditTextListener? = null
 
-    val color = ContextCompat.getColor(context, R.color.Green_G500)
+    val color = getMentionColor(context)
 
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(text: Editable?) {
@@ -34,7 +41,7 @@ class MentionEditText : MultiAutoCompleteTextView {
 
             val distanceFromEnd = length() - selectionEnd //calculate cursor distance from text end
 
-            val spannedText = MentionTextHelper.spanText(text, color)
+            val spannedText = MentionTextHelper.spanText(text, color, true)
             val allMentionSpan = MentionTextHelper.getAllMentionSpansFromText(spannedText).toList()
             val newText = MentionTextHelper.stripInvalidMentionFromText(spannedText, allMentionSpan)
 

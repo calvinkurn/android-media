@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.util
 
+import android.support.annotation.ColorInt
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import com.tokopedia.feedcomponent.view.span.MentionSpan
@@ -26,9 +27,16 @@ object MentionTextHelper {
 
     private const val ALLOWED_CHARS_REGEX = "[A-Za-z0-9-_ ]"
     private const val TOKENIZER_FULL_EDIT_REGEX = "($MENTION_CHAR$OPENING_MENTION_TAG\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?\\}$CLOSING_MENTION_TAG)"
-    private const val TOKENIZER_CONTENT_ONLY_REGEX = "(?<=($MENTION_CHAR)?$OPENING_MENTION_TAG\\{)(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)(?=\\}$CLOSING_MENTION_TAG)"
-    private val tokenizerFullPattern = Pattern.compile(TOKENIZER_FULL_EDIT_REGEX)
+    private const val TOKENIZER_CONTENT_ONLY_REGEX = "(?<=($MENTION_CHAR)?$OPENING_MENTION_TAG\\{)(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?(?=\\}$CLOSING_MENTION_TAG)"
+
+    private const val READ_FULL_REGEX = "(\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?\\})"
+    private const val READ_CONTENT_ONLY_REGEX = "(?<=\\{)(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?(?=\\})"
+
+    private val tokenizerFullEditPattern = Pattern.compile(TOKENIZER_FULL_EDIT_REGEX)
     private val tokenizerContentOnlyPattern = Pattern.compile(TOKENIZER_CONTENT_ONLY_REGEX)
+
+    private val readFullPattern = Pattern.compile(READ_FULL_REGEX)
+    private val readContentOnlyPattern = Pattern.compile(READ_CONTENT_ONLY_REGEX)
 
     /**
      * Create mention tag with format <mention>$params</mention>
@@ -38,22 +46,36 @@ object MentionTextHelper {
         return "$OPENING_MENTION_TAG$mentioned$CLOSING_MENTION_TAG"
     }
 
-    fun spanText(text: CharSequence, mentionColor: Int): Spannable {
+    fun spanText(text: CharSequence, @ColorInt mentionColor: Int, isFromEdit: Boolean): Spannable {
         val spannableString = SpannableStringBuilder(text)
-        val matcher = tokenizerFullPattern.matcher(text)
+        val matcher = if (isFromEdit) tokenizerFullEditPattern.matcher(text) else readFullPattern.matcher(text)
         while (matcher.find()) {
-            val mentionSpan = getMentionSpanFromTag(matcher.group(), mentionColor)
+            val mentionSpan = getMentionSpanFromTag(matcher.group(), mentionColor, isFromEdit)
             if (mentionSpan != null) {
                 spannableString.setSpan(mentionSpan, matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spannableString.replace(matcher.start() + 1, matcher.end(), mentionSpan.fullName)
+
+                if (isFromEdit) {
+                    spannableString.replace(
+                            matcher.start() + 1,
+                            matcher.end(),
+                            mentionSpan.fullName)
+                }
+                else {
+                    spannableString.replace(
+                            matcher.start(),
+                            matcher.end(),
+                            "$MENTION_CHAR${mentionSpan.fullName}"
+                    )
+                }
+
             }
         }
 
         return spannableString
     }
 
-    private fun getMentionSpanFromTag(tag: String, mentionColor: Int): MentionSpan? {
-        val user = getMentionableUserViewModelFromTokenizerText(tag)
+    private fun getMentionSpanFromTag(tag: String, mentionColor: Int, isFromEdit: Boolean): MentionSpan? {
+        val user = getMentionableUserViewModelFromTokenizerText(tag, isFromEdit)
         return user?.let {
             MentionSpan(
                     color = mentionColor,
@@ -81,8 +103,8 @@ object MentionTextHelper {
         return spannableStringBuilder
     }
 
-    private fun getMentionableUserViewModelFromTokenizerText(text: String): MentionableUserViewModel? {
-        val contentMatcher: Matcher = tokenizerContentOnlyPattern.matcher(text)
+    private fun getMentionableUserViewModelFromTokenizerText(text: String, isFromEdit: Boolean): MentionableUserViewModel? {
+        val contentMatcher: Matcher = if (isFromEdit) tokenizerContentOnlyPattern.matcher(text) else readContentOnlyPattern.matcher(text)
         return if (contentMatcher.find()) {
             val content = contentMatcher.group()
             val splittedContent = content.split(ID_NAME_DELIMITER)

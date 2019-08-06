@@ -8,6 +8,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.feedcomponent.util.MentionTextHelper;
+import com.tokopedia.feedcomponent.view.custom.MentionEditText;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
@@ -57,7 +59,12 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
             comment.setText(MethodChecker.fromHtml(SPACE + getCommentText(element)));
         } else {
             badge.setVisibility(View.GONE);
-            comment.setText(MethodChecker.fromHtml(getCommentText(element)));
+            comment.setText(
+                    MentionTextHelper.INSTANCE.spanText(
+                            MethodChecker.fromHtml(getCommentText(element)),
+                            MentionEditText.Companion.getMentionColor(mainView.getContext()),
+                            false)
+            );
         }
 
         mainView.setOnLongClickListener(new View.OnLongClickListener() {
