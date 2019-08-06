@@ -108,7 +108,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
             trackingQueue = TrackingQueue(it)
         }
         if(productId.isEmpty()) RecommendationPageTracking.eventUserViewRecommendationPage(ref)
-        else RecommendationPageTracking.eventUserViewRecommendationPageWithProductId(ref, productId)
+        else RecommendationPageTracking.eventUserViewRecommendationPageWithProductId(productId, ref)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
