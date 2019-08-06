@@ -23,30 +23,35 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
 
                 <ImageButton
                     android:id="@+id/action_up_btn"
-                    style="@style/MSV_ImageButton"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@drawable/discovery_ic_back"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    app:srcCompat="@drawable/discovery_ic_back"
+                    />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/searchTextView"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:padding="@dimen/dp_4"
-                    android:drawablePadding="8dp"
-                    android:singleLine="true"
-                    android:textColor="#212121"
-                    android:textSize="16sp"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="10dp"
+                    android:lines="1"
+                    android:textColor="ae31353b"
                     android:background="@drawable/bg_autocomplete_input"
+                    app:typographyType="body_2"
+                    app:typographyWeight="reguler"
                     android:drawableLeft="@drawable/discovery_ic_search"/>
 
-                <android.support.v7.widget.AppCompatImageButton
+                <ImageView
                     android:id="@+id/search_change_grid_button"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
