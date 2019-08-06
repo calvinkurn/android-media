@@ -28,6 +28,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightItemViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,7 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
 
     private static class SpotlightItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView title;
+        private Typography title;
         private TextView tag;
         private TextView description;
         private ImageView background;
