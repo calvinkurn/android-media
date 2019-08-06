@@ -29,7 +29,7 @@ public class GetDistrictRecommendationSubscriber extends Subscriber<AddressRespo
     public void onError(Throwable e) {
         e.printStackTrace();
         if (view != null) {
-            view.hideLoading();
+            view.setLoadingState(false);
             view.showGetListError(e);
         }
     }
@@ -37,12 +37,12 @@ public class GetDistrictRecommendationSubscriber extends Subscriber<AddressRespo
     @Override
     public void onNext(AddressResponse addressResponse) {
         if (view != null) {
-            view.hideLoading();
+            view.setLoadingState(false);
             if (addressResponse.getAddresses() != null && addressResponse.getAddresses().size() > 0) {
                 view.renderList(addressViewModelMapper.transformToViewModel(addressResponse),
                         addressResponse.isNextAvailable());
             } else {
-                view.showNoResultMessage();
+                view.showEmpty();
             }
         }
     }

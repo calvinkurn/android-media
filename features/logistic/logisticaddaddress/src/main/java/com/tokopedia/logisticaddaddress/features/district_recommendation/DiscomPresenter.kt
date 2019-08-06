@@ -28,7 +28,7 @@ constructor(private val restUsecase: GetDistrictRequestUseCase,
 
     override fun loadData(query: String, page: Int) {
         gqlUsecase.execute(query, page)
-                .doOnSubscribe { view?.showLoading() }
+                .doOnSubscribe { view?.setLoadingState(true) }
                 .subscribe(object : Subscriber<AddressResponse>() {
                     override fun onCompleted() {
 
@@ -37,19 +37,19 @@ constructor(private val restUsecase: GetDistrictRequestUseCase,
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
                         view?.let {
-                            it.hideLoading()
+                            it.setLoadingState(false)
                             it.showGetListError(e)
                         }
                     }
 
                     override fun onNext(addressResponse: AddressResponse) {
                         view?.let {
-                            it.hideLoading()
+                            it.setLoadingState(false)
                             if (!addressResponse.addresses.isNullOrEmpty()) {
                                 it.renderList(mapper.transformToViewModel(addressResponse),
                                         addressResponse.isNextAvailable)
                             } else {
-                                it.showNoResultMessage()
+                                it.showEmpty()
                             }
                         }
                     }
@@ -58,7 +58,7 @@ constructor(private val restUsecase: GetDistrictRequestUseCase,
 
     override fun loadData(query: String, page: Int, token: Token) {
         view?.let {
-            it.showLoading()
+            it.setLoadingState(true)
             val params = RequestParams.create().apply {
                 putString(GetDistrictRequestUseCase.PARAM_QUERY, query)
                 putString(GetDistrictRequestUseCase.PARAM_PAGE, page.toString())

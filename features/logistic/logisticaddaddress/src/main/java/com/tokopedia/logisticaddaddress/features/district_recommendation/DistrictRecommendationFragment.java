@@ -148,7 +148,6 @@ public class DistrictRecommendationFragment
                     presenter.loadData(searchInputView.getSearchText(), page, mToken);
                 } else {
                     presenter.loadData(searchInputView.getSearchText(), page);
-
                 }
             } else {
                 showInitialLoadMessage();
@@ -208,25 +207,19 @@ public class DistrictRecommendationFragment
     }
 
     @Override
-    public void showLoading() {
+    public void setLoadingState(boolean active) {
         setMessageSection(false);
-        super.showLoading();
+        if (active) super.showLoading();
+        else super.hideLoading();
     }
 
     @Override
-    public void hideLoading() {
-        setMessageSection(false);
-        super.hideLoading();
-    }
-
-    @Override
-    public void showNoResultMessage() {
+    public void showEmpty() {
         tvMessage.setText(getString(R.string.message_search_address_no_result));
         setMessageSection(true);
     }
 
-    @Override
-    public void showInitialLoadMessage() {
+    private void showInitialLoadMessage() {
         tvMessage.setText(getString(R.string.message_advice_search_address));
         setMessageSection(true);
     }
