@@ -151,7 +151,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
                 }
         )
 
-        viewModel.mutateUserValidateResponse.observe(
+        viewModel.userValidateResponse.observe(
                 this,
                 Observer {
                     when (it) {

@@ -1,5 +1,6 @@
 package com.tokopedia.profilecompletion.addphone.viewmodel
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
@@ -12,6 +13,7 @@ import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_MSISDN
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_OTP_CODE
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_PHONE
+import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -27,7 +29,9 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
 
     val mutateAddPhoneResponse = MutableLiveData<Result<AddPhoneResult>>()
     val mutateCheckPhoneResponse = MutableLiveData<Result<CheckPhonePojo>>()
-    val mutateUserValidateResponse = MutableLiveData<Result<UserValidatePojo>>()
+    private val mutableUserValidateResponse = MutableLiveData<Result<UserValidatePojo>>()
+    val userValidateResponse: LiveData<Result<UserValidatePojo>>
+        get() = mutableUserValidateResponse
 
 
     fun mutateAddPhone(msisdn: String, otp : String) {
@@ -128,7 +132,7 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
     private fun onErrorUserValidatePojo(): (Throwable) -> Unit {
         return {
             it.printStackTrace()
-            mutateUserValidateResponse.value = Fail(it)
+            mutableUserValidateResponse.postValue(Fail(it))
         }
     }
 
@@ -138,12 +142,12 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
             val isValid = it.userProfileCompletionValidate.isValid
 
             if (errorMessage.isBlank() && isValid) {
-                mutateUserValidateResponse.value = Success(it)
+                mutableUserValidateResponse.postValue(Success(it))
             } else if (!errorMessage.isBlank()) {
-                mutateUserValidateResponse.value = Fail(MessageErrorException(errorMessage,
-                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+                mutableUserValidateResponse.postValue(Fail(MessageErrorException(errorMessage,
+                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString())))
             } else {
-                mutateUserValidateResponse.value = Fail(RuntimeException())
+                mutableUserValidateResponse.postValue(Fail(RuntimeException()))
             }
         }
     }
