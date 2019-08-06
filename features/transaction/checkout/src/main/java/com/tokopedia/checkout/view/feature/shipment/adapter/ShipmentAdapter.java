@@ -486,15 +486,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private long calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange, long basisAmount) {
 
-        long buyEgoldValue = 0;
+        if (valueTOCheck == 0 || basisAmount == 0) {
+            return 0;
+        }
 
+        long buyEgoldValue = 0;
         for (int i = minRange; i <= maxRange; i++) {
             if ((valueTOCheck + i) % basisAmount == 0) {
                 buyEgoldValue = i;
                 break;
             }
         }
-
         return buyEgoldValue;
     }
 

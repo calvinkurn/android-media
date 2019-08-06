@@ -1,6 +1,53 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+kapt {
+    correctErrorTypes = true
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        vectorDrawables.useSupportLibrary=vectorDrawable.toBoolean()
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+    }
+    buildTypes {
+        debug{
+            testCoverageEnabled true
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
+}
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
 
 buildscript {
     repositories {
@@ -14,4 +61,8 @@ buildscript {
 
 dependencies {
 
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation 'org.assertj:assertj-core:3.8.0'
 }

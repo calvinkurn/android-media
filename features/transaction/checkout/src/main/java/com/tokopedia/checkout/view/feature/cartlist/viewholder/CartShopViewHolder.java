@@ -4,7 +4,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -21,6 +25,8 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifyprinciples.Typography;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -36,17 +42,16 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private FrameLayout flShopItemContainer;
     private LinearLayout llShopContainer;
     private CheckBox cbSelectShop;
-    private TextView tvShopName;
+    private Typography tvShopName;
     private ImageView imgShopBadge;
     private ImageView imgFulfillment;
-    private TextView tvFulfillDistrict;
+    private Typography tvFulfillDistrict;
     private RecyclerView rvCartItem;
+
     private LinearLayout layoutError;
-    private TextView tvErrorTitle;
-    private TextView tvErrorDescription;
+    private Ticker tickerError;
     private LinearLayout layoutWarning;
-    private TextView tvWarningTitle;
-    private TextView tvWarningDescription;
+    private Ticker tickerWarning;
 
     private ActionListener actionListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
@@ -69,12 +74,12 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         rvCartItem = itemView.findViewById(R.id.rv_cart_item);
+
         layoutError = itemView.findViewById(R.id.layout_error);
-        tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
-        tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
+        tickerError = itemView.findViewById(R.id.ticker_error);
         layoutWarning = itemView.findViewById(R.id.layout_warning);
-        tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
-        tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
+        tickerWarning = itemView.findViewById(R.id.ticker_warning);
+
         imgFulfillment = itemView.findViewById(R.id.img_shop_fulfill);
         tvFulfillDistrict = itemView.findViewById(R.id.tv_fulfill_district);
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
@@ -96,7 +101,16 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         renderErrorItemHeader(cartShopHolderData);
         renderWarningItemHeader(cartShopHolderData);
 
-        tvShopName.setText(cartShopHolderData.getShopGroupData().getShopName());
+        String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko) + " ";
+        int startLabelShop = labelShop.length();
+        String shopName = cartShopHolderData.getShopGroupData().getShopName();
+
+        SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
+        completeLabelShop.append(labelShop);
+        completeLabelShop.append(shopName);
+        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvShopName.setText(completeLabelShop);
         tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(cartShopHolderData));
 
         if (cartShopHolderData.getShopGroupData().isOfficialStore() || cartShopHolderData.getShopGroupData().isGoldMerchant()) {
@@ -237,20 +251,26 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             cbSelectShop.setEnabled(false);
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_disabled_item));
             llShopContainer.setBackgroundResource(R.drawable.bg_error_shop);
-            tvErrorTitle.setText(data.getShopGroupData().getErrorTitle());
+
             String errorDescription = data.getShopGroupData().getErrorDescription();
             if (!TextUtils.isEmpty(errorDescription)) {
-                tvErrorDescription.setText(errorDescription);
-                tvErrorDescription.setVisibility(View.VISIBLE);
+                tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
+                tickerError.setTextDescription(errorDescription);
             } else {
-                tvErrorDescription.setVisibility(View.GONE);
+                tickerError.setTextDescription(data.getShopGroupData().getErrorTitle());
             }
+            tickerError.setTickerType(Ticker.TYPE_ERROR);
+            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerError.setCloseButtonVisibility(View.GONE);
+            tickerError.setVisibility(View.VISIBLE);
             layoutError.setVisibility(View.VISIBLE);
+
             renderPromoMerchant(data, false);
         } else {
             cbSelectShop.setEnabled(true);
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_enabled_item));
             llShopContainer.setBackgroundColor(llShopContainer.getContext().getResources().getColor(R.color.white));
+
             layoutError.setVisibility(View.GONE);
             renderPromoMerchant(data, true);
         }
@@ -258,16 +278,20 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWarningItemHeader(CartShopHolderData data) {
         if (data.getShopGroupData().isWarning()) {
-            tvWarningTitle.setText(data.getShopGroupData().getWarningTitle());
             String warningDescription = data.getShopGroupData().getWarningDescription();
             if (!TextUtils.isEmpty(warningDescription)) {
-                tvWarningDescription.setText(warningDescription);
-                tvWarningDescription.setVisibility(View.VISIBLE);
+                tickerWarning.setTickerTitle(data.getShopGroupData().getWarningTitle());
+                tickerWarning.setTextDescription(warningDescription);
             } else {
-                tvWarningDescription.setVisibility(View.GONE);
+                tickerWarning.setTextDescription(data.getShopGroupData().getWarningTitle());
             }
+            tickerWarning.setTickerType(Ticker.TYPE_WARNING);
+            tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerWarning.setCloseButtonVisibility(View.GONE);
+            tickerWarning.setVisibility(View.VISIBLE);
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
+            tickerWarning.setVisibility(View.GONE);
             layoutWarning.setVisibility(View.GONE);
         }
     }

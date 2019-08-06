@@ -2,8 +2,8 @@ package com.tokopedia.tkpdreactnative.react;
 
 import android.content.Context;
 
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.base.common.service.CommonService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
@@ -47,7 +47,7 @@ public class ReactNetworkDependencies {
     }
 
     private Retrofit provideRetrofitNoAuth() {
-        return RetrofitFactory.createBasicRetrofit(TkpdBaseURL.BASE_DOMAIN)
+        return RetrofitFactory.createBasicRetrofit(TokopediaUrl.Companion.getInstance().getWS())
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(provideOkHttpRetryPolicy())
                         .buildClientNoAuth())
@@ -55,7 +55,7 @@ public class ReactNetworkDependencies {
     }
 
     private Retrofit provideRetrofitDefaultAuth() {
-        return RetrofitFactory.createBasicRetrofit(TkpdBaseURL.BASE_DOMAIN)
+        return RetrofitFactory.createBasicRetrofit(TokopediaUrl.Companion.getInstance().getWS())
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(provideOkHttpRetryPolicy())
                         .buildClientDefaultAuth())
@@ -63,7 +63,7 @@ public class ReactNetworkDependencies {
     }
 
     private Retrofit provideRetrofitAuth() {
-        return RetrofitFactory.createBasicRetrofit(TkpdBaseURL.BASE_DOMAIN)
+        return RetrofitFactory.createBasicRetrofit(TokopediaUrl.Companion.getInstance().getWS())
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(provideOkHttpRetryPolicy())
                         .buildClientDynamicAuth())

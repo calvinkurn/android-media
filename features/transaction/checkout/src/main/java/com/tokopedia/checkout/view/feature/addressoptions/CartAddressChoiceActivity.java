@@ -211,7 +211,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
-    public void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult) {
+    public void finishAndSendResult(RecipientAddressModel selectedAddressResult) {
         Intent resultIntent;
         switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:

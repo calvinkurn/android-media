@@ -27,6 +27,17 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     public abstract String getModuleName();
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (reactRootView == null) {
+            reactRootView = new ReactRootView(getActivity());
+        }
+        if (reactInstanceManager == null && getActivity() != null) {
+            reactInstanceManager = ((ReactApplication) getActivity().getApplication()).getReactNativeHost().getReactInstanceManager();
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
 
@@ -58,7 +69,7 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
         super.onDestroyView();
 
         ReactUtils.stopTracing();
-        if(reactRootView != null) {
+        if (reactRootView != null) {
             reactRootView.unmountReactApplication();
             reactRootView = null;
         }
@@ -71,18 +82,8 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (reactRootView == null)
-            reactRootView = new ReactRootView(context);
-        if (reactInstanceManager == null && getActivity() != null)
-            reactInstanceManager = ((ReactApplication) getActivity().getApplication()).getReactNativeHost().getReactInstanceManager();
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        reactRootView.startReactApplication(reactInstanceManager, getModuleName(), getInitialBundle());
     }
 
     protected abstract Bundle getInitialBundle();
@@ -90,6 +91,7 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        reactRootView.startReactApplication(reactInstanceManager, getModuleName(), getInitialBundle());
         return reactRootView;
     }
 }

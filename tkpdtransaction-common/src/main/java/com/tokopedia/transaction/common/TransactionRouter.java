@@ -4,11 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
-import com.tokopedia.transaction.common.sharedata.AddToCartResult;
-
-import rx.Observable;
-
 /**
  * Created by kris on 7/21/17. Tokopedia
  */
@@ -26,8 +21,6 @@ public interface TransactionRouter {
     Intent getShopPageIntent(Context context, String shopId);
 
     boolean getEnableFingerprintPayment();
-
-    Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment);
 
     interface CartNotificationListener {
         void onDataReady();

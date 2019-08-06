@@ -31,6 +31,7 @@ import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -191,7 +192,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_PIN:
                     accountAnalytics.eventClickPinSetting();
-                    String PIN_ADDRESS = String.format("%s%s", TkpdBaseURL.MOBILE_DOMAIN, "user/pin");
+                    String PIN_ADDRESS = String.format("%s%s", TokopediaUrl.getInstance().getMOBILEWEB(),"user/pin");
                     RouteManager.route(getActivity(),
                             String.format("%s?url=%s", ApplinkConst.WEBVIEW, PIN_ADDRESS));
                     break;

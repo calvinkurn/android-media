@@ -123,8 +123,8 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_back_to_top"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
