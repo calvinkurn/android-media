@@ -64,6 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="4dp"
                         android:src="@drawable/discovery_ic_search" />
 
                     <ImageView
