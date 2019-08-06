@@ -320,7 +320,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         viewPager.offscreenPageLimit = 3
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
-        setCustomFont()
 
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
@@ -335,29 +334,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
             }
         })
-    }
-
-    private fun setCustomFont() {
-
-        val vg = tabLayout.getChildAt(0) as ViewGroup
-        val tabsCount = vg.childCount
-
-        for (j in 0 until tabsCount) {
-            val vgTab = vg.getChildAt(j) as ViewGroup
-
-            val tabChildsCount = vgTab.childCount
-
-            for (i in 0 until tabChildsCount) {
-                val tabViewChild = vgTab.getChildAt(i)
-                if (tabViewChild is TextView) {
-                    context?.run {
-                        tabViewChild.typeface = Typeface.createFromAsset(this.assets,
-                                TAB_FONT_NUNITO_SANS)
-                    }
-
-                }
-            }
-        }
     }
 
     private fun setTabFromProductSelected() {
