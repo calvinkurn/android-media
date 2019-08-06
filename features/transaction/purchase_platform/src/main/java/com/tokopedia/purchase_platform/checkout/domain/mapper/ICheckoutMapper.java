@@ -1,0 +1,13 @@
+package com.tokopedia.purchase_platform.checkout.domain.mapper;
+
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
+import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataResponse;
+
+/**
+ * @author anggaprasetiyo on 05/03/18.
+ */
+
+public interface ICheckoutMapper {
+
+    CheckoutData convertCheckoutData(CheckoutDataResponse checkoutDataResponse);
+}

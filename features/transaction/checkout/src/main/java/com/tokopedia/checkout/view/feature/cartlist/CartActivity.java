@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
+import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 
 /**
  * @author anggaprasetiyo on 18/01/18.

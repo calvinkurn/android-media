@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.data.mapper.AddressModelMapper;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
-import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
+import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.feature.cornerlist.CornerListFragment;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;

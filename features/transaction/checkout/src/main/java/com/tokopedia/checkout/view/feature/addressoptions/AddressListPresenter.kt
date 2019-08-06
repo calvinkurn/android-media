@@ -1,9 +1,8 @@
 package com.tokopedia.checkout.view.feature.addressoptions
 
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
 import com.tokopedia.checkout.domain.datamodel.newaddresscorner.AddressListModel
-import com.tokopedia.checkout.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress
 import rx.Subscriber

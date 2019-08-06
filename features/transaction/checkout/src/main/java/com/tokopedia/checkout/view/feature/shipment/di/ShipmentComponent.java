@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.di;
 
-import com.tokopedia.checkout.view.di.component.CartComponent;
+import com.tokopedia.purchase_platform.common.di.component.CartComponent;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
 
 import dagger.Component;

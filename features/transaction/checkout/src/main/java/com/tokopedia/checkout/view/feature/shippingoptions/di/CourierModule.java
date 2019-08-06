@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.view.feature.shippingoptions.di;
 
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
-import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.shippingoptions.CourierAdapter;
 import com.tokopedia.checkout.view.feature.shippingoptions.CourierContract;
 import com.tokopedia.checkout.view.feature.shippingoptions.CourierPresenter;

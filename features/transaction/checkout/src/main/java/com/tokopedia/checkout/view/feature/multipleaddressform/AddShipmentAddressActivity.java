@@ -10,7 +10,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
-import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
+import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 
 import java.util.ArrayList;
 
