@@ -60,14 +60,16 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
             getSupportActionBar().setElevation(0);
             toolbar.setNavigationIcon(R.drawable.ic_close);
         }
-
-        Token token = getIntent().getParcelableExtra(ARGUMENT_DATA_TOKEN);
-        initFragment(token);
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return null;
+        Token  token = getIntent().getParcelableExtra(ARGUMENT_DATA_TOKEN);
+        if (token == null) {
+            return DistrictRecommendationFragment.newInstance();
+        } else {
+            return DistrictRecommendationFragment.newInstance(token);
+        }
     }
 
     @Override
@@ -94,14 +96,6 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
     @Override
     public void sendAnalyticsOnClearTextDistrictRecommendationInput() {
         checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress();
-    }
-
-    private void initFragment(Token token) {
-        Fragment fragment = (token != null) ? DistrictRecommendationFragment.newInstance(token) :
-                DistrictRecommendationFragment.newInstance();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.parent_view, fragment, getTagFragment())
-                .commit();
     }
 
 }
