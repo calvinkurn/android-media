@@ -62,7 +62,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var selectedProductId = ""
     private var selectedCategoryId = 0
     private var selectedOperatorName: String = ""
-
+d
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
@@ -443,7 +443,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         private const val CACHE_CATEGORY_ID = "cache_category_id"
 
         private const val EXTRA_PARAM = "extra_param"
-        const val TAB_FONT_NUNITO_SANS = "fonts/NunitoSans-ExtraBold.ttf"
 
         fun newInstance(telcoExtraParam: DigitalTelcoExtraParam): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
