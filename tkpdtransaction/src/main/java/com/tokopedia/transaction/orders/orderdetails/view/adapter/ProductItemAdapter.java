@@ -128,7 +128,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 buyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        presenter.onBuyAgain(context.getResources());
+                        presenter.onBuyAgain(context.getResources(), items);
                     }
                 });
             }

@@ -1,13 +1,18 @@
 package com.tokopedia.transaction.orders.orderdetails.view;
 
 import javax.inject.Inject;
+
+import com.google.gson.Gson;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.transaction.orders.orderdetails.data.Items;
+import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class OrderListAnalytics {
@@ -20,6 +25,7 @@ public class OrderListAnalytics {
     private static final String SEARCH_EVENT_ACTION = "submit search";
     private static final String INVOICE_EVENT_ACTION = "click view invoice";
     private static final String LOAD_MORE_EVENT_ACTION = "scroll load more";
+    private static final String EVENT_ADD_TO_CART = "addToCart";
 
     private static final String ID = "id";
     private static final String CATEGORY = "deals";
@@ -27,6 +33,15 @@ public class OrderListAnalytics {
     private static final String PRICE = "price";
     private static final String EVENT_TRANSACTION = "transaction";
     private static final String EVENT_CARTEGORY = "digital-deals";
+    private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list detail - mp";
+    private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi";
+    private static final String EVENT_LABEL_BUY_AGAIN = "success";
+    private static final String KEY_ADD = "add";
+    private static final String KEY_CATEGORY = "category";
+    private static final String KEY_CATEGORY_ID = "category_id";
+    private static final String KEY_SHOP_ID = "shop_id";
+    private static final String KEY_SHOP_TYPE= "shop_type";
+    private static final String KEY_SHOP_NAME= "shop_name";
     private static final String ACTION = "view purchase attempt";
     private static final String LABEL = "purchase attempt status";
     private static final String CURRENCY_CODE = "currencyCode";
@@ -43,7 +58,7 @@ public class OrderListAnalytics {
     private static final String KEY_PURCHASE = "purchase";
     private static final String KEY_ACTION_FIELD = "actionField";
     private static final String SCREEN_NAME = "/digital/deals/thanks";
-
+    private static final String NONE = "none";
 
 
     @Inject
@@ -114,5 +129,47 @@ public class OrderListAnalytics {
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(SCREEN_NAME);
+    }
+
+    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo) {
+        ArrayList<Map<String, Object>> products = new ArrayList<>();
+        Map<String, Object> add = new HashMap<>();
+        Map<String, Object> ecommerce = new HashMap<>();
+
+        for (Items item : items) {
+            MetaDataInfo metaDataInfo = null;
+
+            if (item.getMetaData() != null) {
+                Gson gson = new Gson();
+                metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
+            }
+            HashMap<String, Object> product = new HashMap<>();
+            product.put(ID, String.valueOf(item.getId()));
+            product.put(NAME, metaDataInfo != null && metaDataInfo.getEntityProductName() != null
+                    ? metaDataInfo.getEntityProductName() : item.getTitle());
+            product.put(PRICE, item.getTotalPrice());
+            product.put(KEY_CATEGORY, item.getCategory());
+            product.put(QUANTITY, item.getQuantity());
+            product.put(BRAND, metaDataInfo != null && metaDataInfo.getEntityBrandName() != null ? metaDataInfo.getEntityBrandName() : NONE);
+            product.put(VARIANT, NONE);
+            product.put(KEY_CATEGORY_ID, item.getCategoryID());
+            product.put(KEY_SHOP_ID, shopInfo.getShopId());
+            product.put(KEY_SHOP_NAME, shopInfo.getShopName());
+            products.add(product);
+        }
+
+        add.put(KEY_PRODUCTS, products);
+
+        ecommerce.put(CURRENCY_CODE, IDR);
+        ecommerce.put(KEY_ADD, add);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("event", EVENT_ADD_TO_CART);
+        map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
+        map.put("eventAction", EVENT_ACTION_BUY_AGAIN);
+        map.put("eventLabel", EVENT_LABEL_BUY_AGAIN);
+        map.put("ecommerce", ecommerce);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
+
     }
 }

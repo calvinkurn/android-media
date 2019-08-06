@@ -45,6 +45,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -215,27 +216,30 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         List<Items> orderDetailItemData = data.getItems();
         JsonArray jsonArray = new JsonArray();
         for (Items item : orderDetailItemData) {
-            JsonObject passenger = new JsonObject();
-
-            int productId = 0;
-            int quantity = 0;
-            int shopId = 0;
-            String notes = "";
-            try {
-                productId = item.getId();
-                quantity = item.getQuantity();
-                shopId = data.getShopInfo().getShopId();
-                notes = item.getDescription();
-            } catch (Exception e) {
-                Log.e("error parse", e.getMessage());
-            }
-            passenger.addProperty(PRODUCT_ID, productId);
-            passenger.addProperty(QUANTITY, quantity);
-            passenger.addProperty(NOTES, notes);
-            passenger.addProperty(SHOP_ID, shopId);
-            jsonArray.add(passenger);
+            jsonArray.add(generateInputQueryBuyAgainForItem(item, data));
         }
         return jsonArray;
+    }
+
+    private JsonObject generateInputQueryBuyAgainForItem(Items item, OrderDetails data) {
+        JsonObject passenger = new JsonObject();
+        int productId = 0;
+        int quantity = 0;
+        int shopId = 0;
+        String notes = "";
+        try {
+            productId = item.getId();
+            quantity = item.getQuantity();
+            shopId = data.getShopInfo().getShopId();
+            notes = item.getDescription();
+        } catch (Exception e) {
+            Log.e("error parse", e.getMessage());
+        }
+        passenger.addProperty(PRODUCT_ID, productId);
+        passenger.addProperty(QUANTITY, quantity);
+        passenger.addProperty(NOTES, notes);
+        passenger.addProperty(SHOP_ID, shopId);
+        return passenger;
     }
 
     @Override
@@ -246,11 +250,15 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
-    public void onBuyAgain(Resources resources) {
+    public void onBuyAgain(Resources resources, Items item) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
 
-        variables.put(PARAM, generateInputQueryBuyAgain(orderDetails));
+        if (item != null) {
+            variables.put(PARAM, generateInputQueryBuyAgainForItem(item, orderDetails));
+        } else {
+            variables.put(PARAM, generateInputQueryBuyAgain(orderDetails));
+        }
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.buy_again), ResponseBuyAgain.class, variables, false);
@@ -282,6 +290,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                         getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                    }
+                    if (item != null) {
+                        List<Items> itemsList = new ArrayList<>();
+                        itemsList.add(item);
+                        orderListAnalytics.sendBuyAgainEvent(itemsList, orderDetails.getShopInfo());
+                    } else {
+                        orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo());
                     }
                 }
 
