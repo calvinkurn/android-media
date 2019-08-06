@@ -64,6 +64,9 @@ public interface UserSessionInterface {
 
     String getAutofillUserData();
 
+    /**
+     * @return method name from this class
+     */
     String getLoginMethod();
 
         /**
