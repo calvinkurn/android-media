@@ -89,6 +89,9 @@ public class CMNotificationFactory {
                 case CMConstant.NotificationType.PRODUCT_NOTIIFICATION:
                     return new ProductNotification(context.getApplicationContext(), baseNotificationModel);
 
+                case CMConstant.NotificationType.BIG_IMAGE_BANNER:
+                    return new BannerNotification(context.getApplicationContext(), baseNotificationModel);
+
                 case CMConstant.NotificationType.DELETE_NOTIFICATION:
                     cancelNotification(context, baseNotificationModel.getNotificationId());
                     return null;

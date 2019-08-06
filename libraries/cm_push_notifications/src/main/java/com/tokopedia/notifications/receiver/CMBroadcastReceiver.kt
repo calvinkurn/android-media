@@ -41,6 +41,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
 
+                    CMConstant.ReceiverAction.ACTION_BANNER_CLICK -> {
+                        handleNotificationClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
+                    }
+
                     CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
                         handleNotificationClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,  baseNotificationModel, CMConstant.NotificationType.GENERAL)

@@ -24,6 +24,7 @@ public interface CMConstant {
     interface NotificationType {
         String GENERAL = "General";
         String GRID_NOTIFICATION = "Grid";
+        String BIG_IMAGE_BANNER = "Banner";
         String BIG_IMAGE = "Image";
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
@@ -123,6 +124,7 @@ public interface CMConstant {
         String ACTION_PRODUCT_CAROUSEL_LEFT_CLICK = "com.tokopedia.notification.product_carousel_left_click";
         String ACTION_PRODUCT_CAROUSEL_RIGHT_CLICK = "com.tokopedia.notification.product_carousel_right_click";
 
+        String ACTION_BANNER_CLICK ="com.tokopedia.notification.ACTION_BANNER_CLICK";
         String ACTION_NOTIFICATION_BLANK = "com.tokopedia.notification.action_notification_blank";
     }
 
