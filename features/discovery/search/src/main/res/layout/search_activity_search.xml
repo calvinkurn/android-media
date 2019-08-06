@@ -29,8 +29,7 @@
                     android:id="@+id/action_up_btn"
                     style="@style/MSV_ImageButton"
                     android:layout_gravity="center_vertical"
-                    android:tint="#4b4b4b"
-                    app:srcCompat="@drawable/ic_navigation_arrow_back"/>
+                    app:srcCompat="@drawable/discovery_ic_back"/>
 
                 <TextView
                     android:id="@+id/searchTextView"
@@ -45,7 +44,7 @@
                     android:textColor="#212121"
                     android:textSize="16sp"
                     android:background="@drawable/bg_autocomplete_input"
-                    android:drawableLeft="@drawable/icon_magnifier"/>
+                    android:drawableLeft="@drawable/discovery_ic_search"/>
 
                 <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/search_change_grid_button"
