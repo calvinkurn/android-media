@@ -50,7 +50,7 @@ object MentionTextHelper {
         val spannableString = SpannableStringBuilder(text)
         val matcher = if (isFromEdit) tokenizerFullEditPattern.matcher(text) else readFullPattern.matcher(text)
         while (matcher.find()) {
-            val mentionSpan = getMentionSpanFromTag(matcher.group(), mentionColor, isFromEdit)
+            val mentionSpan = getMentionSpanFromTag(matcher.group(), mentionColor, matcher.start(), isFromEdit)
             if (mentionSpan != null) {
                 spannableString.setSpan(mentionSpan, matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
@@ -74,14 +74,15 @@ object MentionTextHelper {
         return spannableString
     }
 
-    private fun getMentionSpanFromTag(tag: String, mentionColor: Int, isFromEdit: Boolean): MentionSpan? {
+    private fun getMentionSpanFromTag(tag: String, mentionColor: Int, start: Int, isFromEdit: Boolean): MentionSpan? {
         val user = getMentionableUserViewModelFromTokenizerText(tag, isFromEdit)
         return user?.let {
             MentionSpan(
                     color = mentionColor,
                     fullText = user.toString(),
                     fullName = user.fullName,
-                    userId = user.id
+                    userId = user.id,
+                    start = start
             )
         }
     }

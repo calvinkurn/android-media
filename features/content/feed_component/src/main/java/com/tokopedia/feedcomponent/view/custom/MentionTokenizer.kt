@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.custom
 
+import android.text.SpannableString
 import android.widget.MultiAutoCompleteTextView
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 
@@ -35,7 +36,15 @@ class MentionTokenizer : MultiAutoCompleteTextView.Tokenizer {
             movingTempCursor--
         }
 
-        return if (movingTempCursor < 1 || text[movingTempCursor - 1] != '@') cursor
+        val spannableString = SpannableString(text)
+        val allMentionSpans = MentionTextHelper.getAllMentionSpansFromText(spannableString)
+        val isPreviousAlreadySpanned = allMentionSpans.any { (movingTempCursor - 1) >= it.start && (movingTempCursor - 1) <= it.end }
+
+        return if (
+                movingTempCursor < 1
+                || text[movingTempCursor - 1] != '@'
+                || isPreviousAlreadySpanned
+        ) cursor
         else movingTempCursor
     }
 

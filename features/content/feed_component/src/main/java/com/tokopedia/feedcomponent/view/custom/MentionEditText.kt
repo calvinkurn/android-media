@@ -9,6 +9,8 @@ import android.util.AttributeSet
 import android.widget.MultiAutoCompleteTextView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.MentionTextHelper
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Created by jegul on 2019-08-05.
@@ -40,6 +42,7 @@ class MentionEditText : MultiAutoCompleteTextView {
             removeTextChangedListener(this)
 
             val distanceFromEnd = length() - selectionEnd //calculate cursor distance from text end
+            val distanceFromStart = selectionEnd
 
             val spannedText = MentionTextHelper.spanText(text, color, true)
             val allMentionSpan = MentionTextHelper.getAllMentionSpansFromText(spannedText).toList()
@@ -47,7 +50,12 @@ class MentionEditText : MultiAutoCompleteTextView {
 
             text.replace(0, text.length, newText)
 
-            setSelection(length() - distanceFromEnd) //move cursor to distance from text end to mimic previous cursor place
+            /**
+             * Cursor positioning
+             */
+            val expectedCursorFromEnd = max(length() - distanceFromEnd, 0)
+            val expectedCursorFromStart = if (distanceFromStart > length()) 0 else distanceFromStart
+            setSelection(if (expectedCursorFromEnd < expectedCursorFromStart) expectedCursorFromStart else expectedCursorFromEnd) //move cursor to distance from text end to mimic previous cursor place
 
             addTextChangedListener(this)
 

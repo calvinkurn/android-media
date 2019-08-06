@@ -14,10 +14,13 @@ class MentionSpan(
         @ColorInt private val color: Int,
         val fullText: String,
         val userId: String,
-        val fullName: String
+        val fullName: String,
+        val start: Int
 ) : ClickableSpan() {
 
     val length = fullName.length
+
+    val end = start + length
 
     override fun onClick(p0: View) {
 
