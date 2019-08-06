@@ -28,6 +28,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -433,7 +434,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 // Notes is empty after click add notes button or has value after use click change notes button
                 this.tvLabelFormRemark.setVisibility(View.VISIBLE);
                 this.tvRemark.setVisibility(View.GONE);
-                this.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
+                this.etRemark.setText(Utils.getHtmlFormat(data.getCartItemData().getUpdatedData().getRemark()));
                 this.etRemark.setVisibility(View.VISIBLE);
                 this.etRemark.setSelection(etRemark.length());
                 this.tvLabelRemarkOption.setVisibility(View.GONE);
@@ -443,7 +444,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 // Has notes from pdp
                 this.tvLabelFormRemark.setVisibility(View.GONE);
                 this.etRemark.setVisibility(View.GONE);
-                this.tvRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
+                this.tvRemark.setText(Utils.getHtmlFormat(data.getCartItemData().getUpdatedData().getRemark()));
                 this.tvRemark.setVisibility(View.VISIBLE);
                 this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
                 this.tvNoteCharCounter.setVisibility(View.GONE);
