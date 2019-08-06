@@ -26,7 +26,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationContract.Constant.INTENT_DISTRICT_RECOMMENDATION_ADDRESS;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.INTENT_DISTRICT_RECOMMENDATION_ADDRESS;
 
 /**
  * Created by Irfan Khoirul on 17/11/18.
@@ -34,7 +34,7 @@ import static com.tokopedia.logisticaddaddress.features.district_recommendation.
 
 public class DistrictRecommendationFragment
         extends BaseSearchListFragment<AddressViewModel, DistrictRecommendationTypeFactory>
-        implements DistrictRecommendationContract.View {
+        implements DiscomContract.View {
 
     private static final String ARGUMENT_DATA_TOKEN = "token";
     private static final long DEBOUNCE_DELAY_IN_MILIS = 700;
@@ -61,7 +61,7 @@ public class DistrictRecommendationFragment
     AddressMapper addressMapper;
 
     @Inject
-    DistrictRecommendationContract.Presenter presenter;
+    DiscomContract.Presenter presenter;
 
     public static DistrictRecommendationFragment newInstance() {
         return new DistrictRecommendationFragment();
@@ -86,7 +86,7 @@ public class DistrictRecommendationFragment
                         .baseAppComponent(appComponent)
                         .build();
         districtRecommendationComponent.inject(this);
-        presenter.attachView(this);
+        presenter.attach(this);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class DistrictRecommendationFragment
     @Override
     public void onDestroy() {
         if (presenter != null) {
-            presenter.detachView();
+            presenter.detach();
         }
         super.onDestroy();
     }

@@ -20,8 +20,8 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecomToken;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.AddressViewModelMapper;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationContract;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationPresenter;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomPresenter;
 import com.tokopedia.logisticdata.data.converter.GeneratedHostConverter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
@@ -206,10 +206,10 @@ public class DistrictRecommendationModule {
 
     @Provides
     @DistrictRecommendationScope
-    DistrictRecommendationContract.Presenter provideDistrictRecommendationPresenter(
+    DiscomContract.Presenter provideDistrictRecommendationPresenter(
             GetDistrictRequestUseCase getDistrictRequestUseCase, GetDistrictRecommendation getDistrictRecommendation,
             AddressViewModelMapper addressViewModelMapper) {
-        return new DistrictRecommendationPresenter(getDistrictRequestUseCase, getDistrictRecommendation, addressViewModelMapper);
+        return new DiscomPresenter(getDistrictRequestUseCase, getDistrictRecommendation, addressViewModelMapper);
     }
 
 }

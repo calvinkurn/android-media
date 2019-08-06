@@ -11,12 +11,12 @@ import rx.Subscriber;
 
 public class GetDistrictRecommendationSubscriber extends Subscriber<AddressResponse> {
 
-    private final DistrictRecommendationContract.View view;
-    private final DistrictRecommendationContract.Presenter presenter;
+    private final DiscomContract.View view;
+    private final DiscomContract.Presenter presenter;
     private final AddressViewModelMapper addressViewModelMapper;
 
-    public GetDistrictRecommendationSubscriber(DistrictRecommendationContract.View view,
-                                               DistrictRecommendationContract.Presenter presenter,
+    public GetDistrictRecommendationSubscriber(DiscomContract.View view,
+                                               DiscomContract.Presenter presenter,
                                                AddressViewModelMapper addressViewModelMapper) {
         this.view = view;
         this.presenter = presenter;
