@@ -24,6 +24,8 @@ class PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment : BaseDagge
     private var modelChecklistQuestionnaire: PMCancellationQuestionnaireModel.MultipleChecklistQuestionnaire? = null
     private var position: Int = -1
 
+//    private lateinit var viewMd: ViewMd
+
     companion object {
         private const val EXTRA_POSITION = "position"
         private const val EXTRA_MODEL_CHECKLIST_QUESTIONNAIRE = "model_checklist_questionnaire"
@@ -44,6 +46,7 @@ class PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment : BaseDagge
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
+        //todo init dagger here
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -69,8 +72,8 @@ class PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment : BaseDagge
             }
             button_next.setOnClickListener {
                 if (parentActivity.isFinalPage()) {
-
-                    parentActivity.finishPage()
+//                    viewMd.sendAnswer()
+//                    parentActivity.finishPage()
                 } else {
                     parentActivity.goToNextPage(stepperModel)
                 }
