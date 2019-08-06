@@ -64,9 +64,9 @@ public class MoengageAnalytics extends ContextAnalytics {
         setUserData(value, "LOGIN");
 
         Map<String, Object> value2 = new HashMap<>();
-        value.put(AppEventTracking.MOENGAGE.USER_ID, userId);
-        value.put(AppEventTracking.MOENGAGE.MEDIUM, loginMethod);
-        value.put(AppEventTracking.MOENGAGE.EMAIL, email);
+        value2.put(AppEventTracking.MOENGAGE.USER_ID, userId);
+        value2.put(AppEventTracking.MOENGAGE.MEDIUM, loginMethod);
+        value2.put(AppEventTracking.MOENGAGE.EMAIL, email);
         sendTrackEvent(value2, AppEventTracking.EventMoEngage.LOGIN);
     }
 
