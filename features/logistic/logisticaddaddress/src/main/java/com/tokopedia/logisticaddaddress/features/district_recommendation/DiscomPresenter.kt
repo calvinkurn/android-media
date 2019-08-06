@@ -36,20 +36,20 @@ constructor(private val restUsecase: GetDistrictRequestUseCase,
 
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
-                        if (view != null) {
-                            view?.hideLoading()
-                            view?.showGetListError(e)
+                        view?.let {
+                            it.hideLoading()
+                            it.showGetListError(e)
                         }
                     }
 
                     override fun onNext(addressResponse: AddressResponse) {
-                        if (view != null) {
-                            view?.hideLoading()
-                            if (addressResponse.addresses != null && addressResponse.addresses.size > 0) {
-                                view?.renderList(mapper.transformToViewModel(addressResponse),
+                        view?.let {
+                            it.hideLoading()
+                            if (!addressResponse.addresses.isNullOrEmpty()) {
+                                it.renderList(mapper.transformToViewModel(addressResponse),
                                         addressResponse.isNextAvailable)
                             } else {
-                                view?.showNoResultMessage()
+                                it.showNoResultMessage()
                             }
                         }
                     }
@@ -65,8 +65,7 @@ constructor(private val restUsecase: GetDistrictRequestUseCase,
                 putString(GetDistrictRequestUseCase.PARAM_TOKEN, token.districtRecommendation)
                 putString(GetDistrictRequestUseCase.PARAM_UT, token.ut.toString())
             }
-            restUsecase.execute(params, GetDistrictRecommendationSubscriber(
-                    it, this, mapper))
+            restUsecase.execute(params, GetDistrictRecommendationSubscriber(it, mapper))
         }
     }
 
