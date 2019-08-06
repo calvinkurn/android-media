@@ -115,7 +115,6 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
         private View container;
         private Context context;
         private HomeCategoryListener listener;
-        private Typeface titleTypeface;
 
         public SpotlightItemViewHolder(View itemView, HomeCategoryListener listener) {
             super(itemView);
@@ -126,11 +125,9 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
             background = itemView.findViewById(R.id.spotlightBackground);
             container = itemView.findViewById(R.id.spotlightContainer);
             this.listener = listener;
-            titleTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
         }
 
         public void bind(SpotlightItemViewModel model, final int position) {
-            title.setTypeface(titleTypeface);
             title.setText(model.getTitle());
             if (!TextUtils.isEmpty(model.getTagName())) {
                 tag.setText(model.getTagName().toUpperCase());
