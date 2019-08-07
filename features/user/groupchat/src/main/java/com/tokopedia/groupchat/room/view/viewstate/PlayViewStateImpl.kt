@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Build
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
-import android.support.constraint.ConstraintSet
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.FragmentActivity
@@ -63,7 +62,6 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -495,7 +493,7 @@ open class PlayViewStateImpl(
      * show overlay behind channel info
      */
     private fun showBottomSheetFirstTime(it: ChannelInfoViewModel) {
-        welcomeHelper.showInfoBottomSheet(it) {
+        welcomeHelper.showInfoBottomSheet(it, userSession.isLoggedIn) {
             if (it.overlayViewModel != null
                     && it.overlayViewModel.interuptViewModel != null
                     && !it.overlayViewModel.interuptViewModel!!.btnLink!!.isBlank())
@@ -826,6 +824,8 @@ open class PlayViewStateImpl(
             sponsorHelper.assignVideoVertical(true)
             setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITH_VIDEO)
             videoHorizontalHelper.clearDataVideoHorizontal()
+            youTubePlayer?.release()
+            youTubePlayer = null
         } else {
             videoVerticalHelper.stopVideo()
             setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO)
@@ -860,6 +860,7 @@ open class PlayViewStateImpl(
     private fun initVideoFragment(videoId: String, isVideoLive: Boolean) {
         videoHorizontalHelper.hideVideoAndToggle()
         if(!videoId.isNullOrBlank()){
+            videoVerticalHelper.releasePlayer()
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
                 videoHorizontalHelper.showVideoOnly(isVideoLive)
@@ -874,6 +875,8 @@ open class PlayViewStateImpl(
         } else {
             setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITHOUT_VIDEO)
             videoHorizontalHelper.hideVideoAndToggle()
+            youTubePlayer?.release()
+            youTubePlayer = null
         }
     }
 
@@ -1309,8 +1312,6 @@ open class PlayViewStateImpl(
             if(it) {
                 videoHorizontalHelper.hideVideoAndToggle()
                 sponsorHelper.hideSponsor()
-                youTubePlayer?.release()
-                youTubePlayer = null
                 setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITH_VIDEO)
             } else {
                 sponsorHelper.setSponsor()

@@ -47,6 +47,8 @@ interface TopChatContract {
         fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>)
 
         fun notifyAttachmentsSent()
+
+        fun sendAnalyticAttachmentSent(attachment: PreviewViewModel)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
