@@ -22,9 +22,9 @@ import static com.tokopedia.logisticaddaddress.features.district_recommendation.
  */
 
 public class DistrictRecommendationActivity extends BaseSimpleActivity
-        implements HasComponent, ITransactionAnalyticsDistrictRecommendation {
+        implements HasComponent, DiscomAnalytics {
 
-    private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+    private CheckoutAnalyticsChangeAddress analytics;
 
     public static Intent createInstanceIntent(Activity activity, com.tokopedia.logisticaddaddress.domain.model.Token token) {
         return newInstance(activity, new TokenMapper().convertTokenModel(token));
@@ -39,7 +39,7 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
+        analytics = new CheckoutAnalyticsChangeAddress();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setElevation(0);
             toolbar.setNavigationIcon(R.drawable.ic_close);
@@ -69,17 +69,17 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
 
     @Override
     public void sendAnalyticsOnBackPressClicked() {
-        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickXPojokKiriKotaAtauKecamatanPadaTambahAddress();
+        analytics.eventClickShippingCartChangeAddressClickXPojokKiriKotaAtauKecamatanPadaTambahAddress();
     }
 
     @Override
     public void sendAnalyticsOnDistrictDropdownSelectionItemClicked(String districtName) {
-        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickChecklistKotaAtauKecamatanPadaTambahAddress(districtName);
+        analytics.eventClickShippingCartChangeAddressClickChecklistKotaAtauKecamatanPadaTambahAddress(districtName);
     }
 
     @Override
     public void sendAnalyticsOnClearTextDistrictRecommendationInput() {
-        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress();
+        analytics.eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress();
     }
 
 }

@@ -47,7 +47,7 @@ public class DistrictRecommendationFragment
     private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "province_name";
     private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "zipcodes";
 
-    private ITransactionAnalyticsDistrictRecommendation transactionAnalyticsDistrictRecommendation;
+    private DiscomAnalytics analytics;
 
     private TextView tvMessage;
     private SwipeToRefresh swipeRefreshLayout;
@@ -88,7 +88,7 @@ public class DistrictRecommendationFragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        transactionAnalyticsDistrictRecommendation = (ITransactionAnalyticsDistrictRecommendation) context;
+        analytics = (DiscomAnalytics) context;
     }
 
     @Override
@@ -116,14 +116,14 @@ public class DistrictRecommendationFragment
         searchInputView.setDelayTextChanged(DEBOUNCE_DELAY_IN_MILIS);
         searchInputView.getCloseImageButton().setOnClickListener(v -> {
             searchInputView.setSearchText("");
-            transactionAnalyticsDistrictRecommendation.sendAnalyticsOnClearTextDistrictRecommendationInput();
+            analytics.sendAnalyticsOnClearTextDistrictRecommendationInput();
         });
         swipeRefreshLayout.setEnabled(false);
     }
 
     @Override
     public void onDetach() {
-        transactionAnalyticsDistrictRecommendation = null;
+        analytics = null;
         super.onDetach();
     }
 
@@ -159,7 +159,7 @@ public class DistrictRecommendationFragment
     @Override
     public void onItemClicked(AddressViewModel addressViewModel) {
         if (getActivity() != null) {
-            transactionAnalyticsDistrictRecommendation.sendAnalyticsOnDistrictDropdownSelectionItemClicked(addressViewModel.getAddress().getDistrictName());
+            analytics.sendAnalyticsOnDistrictDropdownSelectionItemClicked(addressViewModel.getAddress().getDistrictName());
             Intent resultIntent = new Intent();
             resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(addressViewModel.getAddress()));
 
