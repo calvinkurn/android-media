@@ -23,7 +23,7 @@ class MentionSpan(
     val end = start + length
 
     override fun onClick(p0: View) {
-
+        toString()
     }
 
     override fun updateDrawState(ds: TextPaint) {

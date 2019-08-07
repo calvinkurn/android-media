@@ -50,20 +50,24 @@ object MentionTextHelper {
         val spannableString = SpannableStringBuilder(text)
         val matcher = if (isFromEdit) tokenizerFullEditPattern.matcher(text) else readFullPattern.matcher(text)
         while (matcher.find()) {
-            val mentionSpan = getMentionSpanFromTag(matcher.group(), mentionColor, matcher.start(), isFromEdit)
+            val textToBeReplaced = matcher.group()
+            val mentionSpan = getMentionSpanFromTag(textToBeReplaced, mentionColor, matcher.start(), isFromEdit)
             if (mentionSpan != null) {
-                spannableString.setSpan(mentionSpan, matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val startIndex = spannableString.indexOf(textToBeReplaced)
+                val endIndex = startIndex + textToBeReplaced.length
+
+                spannableString.setSpan(mentionSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 if (isFromEdit) {
                     spannableString.replace(
-                            matcher.start() + 1,
-                            matcher.end(),
+                            startIndex + 1,
+                            endIndex,
                             mentionSpan.fullName)
                 }
                 else {
                     spannableString.replace(
-                            matcher.start(),
-                            matcher.end(),
+                            startIndex,
+                            endIndex,
                             "$MENTION_CHAR${mentionSpan.fullName}"
                     )
                 }

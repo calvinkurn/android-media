@@ -42,7 +42,6 @@ class MentionEditText : MultiAutoCompleteTextView {
             removeTextChangedListener(this)
 
             val distanceFromEnd = length() - selectionEnd //calculate cursor distance from text end
-            val distanceFromStart = selectionEnd
 
             val spannedText = MentionTextHelper.spanText(text, color, true)
             val allMentionSpan = MentionTextHelper.getAllMentionSpansFromText(spannedText).toList()
@@ -54,8 +53,7 @@ class MentionEditText : MultiAutoCompleteTextView {
              * Cursor positioning
              */
             val expectedCursorFromEnd = max(length() - distanceFromEnd, 0)
-            val expectedCursorFromStart = if (distanceFromStart > length()) 0 else distanceFromStart
-            setSelection(if (expectedCursorFromEnd < expectedCursorFromStart) expectedCursorFromStart else expectedCursorFromEnd) //move cursor to distance from text end to mimic previous cursor place
+            setSelection(expectedCursorFromEnd) //move cursor to distance from text end to mimic previous cursor place
 
             addTextChangedListener(this)
 

@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.comment.view.adapter.viewholder;
 
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -54,6 +55,7 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
             }
         });
 
+        comment.setMovementMethod(LinkMovementMethod.getInstance());
         if (element.isOfficial()) {
             badge.setVisibility(View.VISIBLE);
             comment.setText(MethodChecker.fromHtml(SPACE + getCommentText(element)));
