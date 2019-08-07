@@ -106,6 +106,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     fun takeScreenshot() {
         val bitmap = getScreenBitmap()
         shareImageUri(saveImage(bitmap))
+        container_root.scrollTo(0,0)
     }
 
     private fun getScreenBitmap(): Bitmap? {
