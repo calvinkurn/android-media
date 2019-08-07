@@ -31,6 +31,7 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -168,9 +169,26 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneral(map);
     }
 
+    private static void log(Context context, String eventName, Bundle bundle) {
+        log(context, eventName, bundleToMap(bundle));
+    }
+
     private static void log(Context context, String eventName, Map<String, Object> values) {
         String name = eventName == null ? (String) values.get("event") : eventName;
         GtmLogger.getInstance(context).save(name, values);
+    }
+
+    private static Map<String, Object> bundleToMap(Bundle extras) {
+        Map<String, Object> map = new HashMap<>();
+
+        Set<String> ks = extras.keySet();
+        for (String key : ks) {
+            Object object = extras.getString(key);
+            if (object != null) {
+                map.put(key, object);
+            }
+        }
+        return map;
     }
 
     public GTMAnalytics sendCampaign(Campaign campaign) {
@@ -341,17 +359,19 @@ public class GTMAnalytics extends ContextAnalytics {
 
         }
         logEvent(keyEvent, bundle, context);
+        log(getContext(), keyEvent, bundle);
     }
 
     public void pushGeneralGtmV5(Map<String, Object> params){
         sendGeneralEvent(params);
 
         Bundle bundle = new Bundle();
-        bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY)+"");
-        bundle.putString(KEY_ACTION, params.get(KEY_ACTION)+"");
-        bundle.putString(KEY_LABEL, params.get(KEY_LABEL)+"");
+        bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
+        bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
+        bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
 
-        logEvent(params.get(KEY_EVENT)+"", bundle, context);
+        logEvent(params.get(KEY_EVENT) + "", bundle, context);
+        log(getContext(), params.get(KEY_EVENT) + "", bundle);
     }
 
     public void pushGeneralGtmV5(String event, String category, String action, String label){
@@ -363,6 +383,7 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_LABEL, label);
 
         logEvent(event, bundle, context);
+        log(getContext(), event, bundle);
     }
 
     public static void logEvent(String eventName, Bundle bundle,Context context){
