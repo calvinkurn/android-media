@@ -104,9 +104,9 @@ public interface OrderListDetailContract {
 
         List<ActionButton> getActionList();
 
-        void onBuyAgain(Resources resources);
+        void onBuyAgainAllItems();
 
-        void onBuyAgainSingleItem(Resources resources, List<Items> item);
+        void onBuyAgainItems(List<Items> item);
 
         void assignInvoiceDataTo(Intent intent);
     }

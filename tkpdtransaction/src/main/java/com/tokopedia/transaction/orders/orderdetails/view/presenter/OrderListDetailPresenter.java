@@ -3,7 +3,6 @@ package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -243,20 +242,20 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void onBuyAgain(Resources resources) {
-        onBuyAgainSingleItem(resources, orderDetails.getItems());
+    public void onBuyAgainAllItems() {
+        onBuyAgainItems(orderDetails.getItems());
     }
 
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
-    public void onBuyAgainSingleItem(Resources resources, List<Items> items) {
+    public void onBuyAgainItems(List<Items> items) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
         variables.put(PARAM, generateInputQueryBuyAgain(items));
 
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.buy_again), ResponseBuyAgain.class, variables, false);
 
         buyAgainUseCase = new GraphqlUseCase();
@@ -282,15 +281,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 if (getView() != null && getView().getAppContext() != null) {
                     getView().hideProgressBar();
                     ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
-                    //TODO change implementation from backend for getting cartId
-                    String cartId = responseBuyAgain != null && responseBuyAgain.getAddToCartMulti().getData().getData().size() > 0
-                            ? String.valueOf(responseBuyAgain.getAddToCartMulti().getData().getData().get(0).getCartId()) : "none";
                     if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
                         getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
-                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), cartId);
+                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1);
                 }
 
             }

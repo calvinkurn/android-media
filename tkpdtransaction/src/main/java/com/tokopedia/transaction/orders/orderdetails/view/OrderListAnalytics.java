@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import com.google.gson.Gson;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
@@ -35,7 +36,8 @@ public class OrderListAnalytics {
     private static final String EVENT_CARTEGORY = "digital-deals";
     private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list detail - mp";
     private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi";
-    private static final String EVENT_LABEL_BUY_AGAIN = "success";
+    private static final String EVENT_LABEL_BUY_AGAIN_SUCCESS = "success";
+    private static final String EVENT_LABEL_BUY_AGAIN_FAILURE = "failure";
     private static final String KEY_ADD = "add";
     private static final String KEY_CATEGORY = "category";
     private static final String KEY_CATEGORY_ID = "category_id";
@@ -133,13 +135,13 @@ public class OrderListAnalytics {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(SCREEN_NAME);
     }
 
-    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, String cartId) {
+    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess) {
         ArrayList<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> add = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
+        Gson gson = new Gson();
 
         for (Items item : items) {
-            Gson gson = new Gson();
             MetaDataInfo metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             HashMap<String, Object> product = new HashMap<>();
             product.put(ID, String.valueOf(item.getId()));
@@ -153,6 +155,12 @@ public class OrderListAnalytics {
             product.put(KEY_CATEGORY_ID, item.getCategoryID());
             product.put(KEY_SHOP_ID, shopInfo.getShopId());
             product.put(KEY_SHOP_NAME, shopInfo.getShopName());
+            String cartId = NONE;
+            for(Datum datum : responseBuyAgainList)
+                if (datum.getProductId() == item.getId()) {
+                    cartId = String.valueOf(datum.getCartId());
+                    break;
+                }
             product.put(KEY_DIMENSION_45, cartId);
             product.put(KEY_DIMENSION_40, NONE);
             products.add(product);
@@ -167,7 +175,7 @@ public class OrderListAnalytics {
         map.put("event", EVENT_ADD_TO_CART);
         map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
         map.put("eventAction", EVENT_ACTION_BUY_AGAIN);
-        map.put("eventLabel", EVENT_LABEL_BUY_AGAIN);
+        map.put("eventLabel", isSuccess ? EVENT_LABEL_BUY_AGAIN_SUCCESS : EVENT_LABEL_BUY_AGAIN_FAILURE);
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
 
