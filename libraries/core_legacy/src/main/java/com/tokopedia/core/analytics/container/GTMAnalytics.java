@@ -3,8 +3,8 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -15,14 +15,11 @@ import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.PurchaseTracking;
-import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.iris.Iris;
@@ -33,7 +30,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +38,6 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class GTMAnalytics extends ContextAnalytics {
     private static final String TAG = GTMAnalytics.class.getSimpleName();
@@ -315,18 +310,23 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushClickEECommerce(Bundle bundle){
         // replace list
-        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
-        bundle.remove("list");
+        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))) {
+            bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
+            bundle.remove("list");
+        }
         logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle, context);
     }
 
     private static final String PRODUCTVIEW = "productview";
     private static final String PRODUCTCLICK = "productclick";
+    private static final String VIEWPRODUCT = "viewproduct";
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
         // replace list
-        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
-        bundle.remove("list");
+        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))) {
+            bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
+            bundle.remove("list");
+        }
 
         switch (keyEvent.toLowerCase()){
             case PRODUCTVIEW:
@@ -334,6 +334,9 @@ public class GTMAnalytics extends ContextAnalytics {
                 break;
             case PRODUCTCLICK:
                 keyEvent = FirebaseAnalytics.Event.SELECT_CONTENT;
+                break;
+            case VIEWPRODUCT:
+                keyEvent = FirebaseAnalytics.Event.VIEW_ITEM;
                 break;
 
         }
@@ -360,8 +363,6 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_LABEL, label);
 
         logEvent(event, bundle, context);
-
-
     }
 
     public static void logEvent(String eventName, Bundle bundle,Context context){

@@ -18,16 +18,18 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
+import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
-class ProductDetailTracking() {
+class ProductDetailTracking @Inject constructor(private val trackingQueue: TrackingQueue) {
 
-    val currencyLable = "IDR"
+    private val currencyLable = "IDR"
+    private val screenName = PRODUCT_DETAIL_SCREEN_NAME
 
     fun sendScreen(shopID: String, shopType: String, productId: String) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(
-            PRODUCT_DETAIL_SCREEN_NAME,
-            shopID, shopType, "/product", productId)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, shopID,
+                shopType, "/product", productId)
     }
 
     fun eventTalkClicked() {
@@ -269,7 +271,7 @@ class ProductDetailTracking() {
         )
     }
 
-    fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String, trackingQueue: TrackingQueue) {
+    fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
         val listValue = LIST_DEFAULT + pageName  +
                 (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
@@ -313,6 +315,10 @@ class ProductDetailTracking() {
         ))
         )
         trackingQueue.putEETracking(enhanceEcommerceData as HashMap<String, Any>?)
+    }
+
+    fun sendAllQueue() {
+        trackingQueue.sendAll()
     }
 
     fun eventClickWishlistOnAffiliate(userId: String,
@@ -439,14 +445,16 @@ class ProductDetailTracking() {
         return ""
     }
 
-    fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?,
-                                           isTradeIn : Boolean, isDiagnosed : Boolean, multiOrigin: Boolean) {
-            val dimension55 = if(isTradeIn && isDiagnosed)
-                "true diagnostic"
-            else if(isTradeIn && !isDiagnosed)
-                "true non diagnostic"
-            else
-                "false"
+    fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?,
+                                           shopInfo: ShopInfo?, trackerAttribution: String?,
+                                           isTradeIn: Boolean, isDiagnosed: Boolean,
+                                           multiOrigin: Boolean) {
+        val dimension55 = if (isTradeIn && isDiagnosed)
+            "true diagnostic"
+        else if (isTradeIn && !isDiagnosed)
+            "true non diagnostic"
+        else
+            "false"
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 "event", "viewProduct",
@@ -465,7 +473,7 @@ class ProductDetailTracking() {
                         "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                         "variant", "none / other",
                         "dimension38", trackerAttribution ?: "none / other",
-                        "dimension55",dimension55,
+                        "dimension55", dimension55,
                         "dimension54", getMultiOriginAttribution(multiOrigin)
                 ))).apply {
             if (trackerListName?.isNotEmpty() == true) {
@@ -484,6 +492,50 @@ class ProductDetailTracking() {
         ))
     }
 
+    fun eventEnhanceEcommerceProductDetailV5(trackerListName: String?, productInfo: ProductInfo?,
+                                             shopInfo: ShopInfo?, trackerAttribution: String?,
+                                             isTradeIn: Boolean, isDiagnosed: Boolean,
+                                             multiOrigin: Boolean) {
+        val dimension55 = if (isTradeIn && isDiagnosed)
+            "true diagnostic"
+        else if (isTradeIn && !isDiagnosed)
+            "true non diagnostic"
+        else
+            "false"
+
+        val ecommerce = Bundle().apply {
+            putString(FirebaseAnalytics.Param.ITEM_ID, productInfo?.basic?.id.toString())
+            putString(FirebaseAnalytics.Param.ITEM_NAME, productInfo?.basic?.name)
+            putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other")
+            putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getEnhanceCategoryFormatted(productInfo?.category?.detail))
+            putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other")
+            putDouble(FirebaseAnalytics.Param.PRICE, productInfo?.basic?.price?.toDouble() ?: 0.toDouble())
+            putLong(FirebaseAnalytics.Param.INDEX, 1)
+            putString("dimension38", trackerAttribution ?: "none / other")
+            putString("dimension54", getMultiOriginAttribution(multiOrigin))
+            putString("dimension55", dimension55)
+        }
+
+        val list = ArrayList<Bundle>().apply {
+            add(ecommerce)
+        }
+
+        val event = Bundle().apply {
+            putString("event", "viewProduct")
+            putString("eventCategory", "product page")
+            putString("eventAction", "view product page")
+            putString("eventLabel", getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.basic?.name)
+            putString(FirebaseAnalytics.Param.ITEM_LIST, trackerListName ?: "")
+            putString("screenName", screenName)
+            putString("shopId", productInfo?.basic?.shopID.toString())
+            putString("shopName", shopInfo?.shopCore?.name)
+            putString("shopType", getEnhanceShopType(shopInfo?.goldOS))
+            putString("categoryId", productInfo?.category?.id)
+            putParcelableArrayList("items", list)
+        }
+
+        TrackApp.getInstance().gtm.pushEECommerce("viewProduct", event)
+    }
 
     ///////////////////////////////////////////////////////////////
     //BRANCH START
