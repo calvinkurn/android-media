@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <Space
+    <View
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:background="@color/product_separator_color"/>
