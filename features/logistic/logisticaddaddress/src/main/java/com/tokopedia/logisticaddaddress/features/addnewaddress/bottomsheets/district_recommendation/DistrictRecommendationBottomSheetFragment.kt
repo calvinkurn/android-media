@@ -200,6 +200,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     }
 
     private fun showClearBtn() {
+        icCloseBtn.visibility = View.VISIBLE
         icCloseBtn.setOnClickListener {
             etSearch.setText("")
             llListDistrict.visibility = View.GONE
