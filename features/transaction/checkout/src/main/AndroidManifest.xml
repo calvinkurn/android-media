@@ -8,7 +8,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".view.feature.cartlist.CartActivity"
+            android:name="com.tokopedia.purchase_platform.cart.view.CartActivity"
             android:label="@string/checkout_module_title_activity_cart"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
@@ -25,7 +25,7 @@
 
         </activity>
         <activity
-            android:name=".view.feature.addressoptions.CartAddressChoiceActivity"
+            android:name="com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.CartAddressChoiceActivity"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
@@ -52,7 +52,7 @@
             android:theme="@style/Theme.White" />
 
         <service
-            android:name=".view.feature.cartlist.UpdateCartIntentService"
+            android:name="com.tokopedia.purchase_platform.cart.view.UpdateCartIntentService"
             android:exported="false" />
 
     </application>

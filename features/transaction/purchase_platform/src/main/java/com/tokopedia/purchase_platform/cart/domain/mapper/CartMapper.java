@@ -18,7 +18,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promost
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.base.IMapperUtil;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.purchase_platform.cart.view.viewmodel.CartItemHolderData;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;

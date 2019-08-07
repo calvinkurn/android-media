@@ -6,10 +6,10 @@ import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.r
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.usecase.GetCornerList;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.purchase_platform.common.di.scope.ShipmentAddressListScope;
-import com.tokopedia.checkout.view.feature.addressoptions.AddressListContract;
-import com.tokopedia.checkout.view.feature.addressoptions.AddressListPresenter;
-import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListFragment;
-import com.tokopedia.checkout.view.feature.addressoptions.recyclerview.ShipmentAddressListAdapter;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.AddressListContract;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.AddressListPresenter;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.ShipmentAddressListFragment;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.feature.cornerlist.CornerListPresenter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;

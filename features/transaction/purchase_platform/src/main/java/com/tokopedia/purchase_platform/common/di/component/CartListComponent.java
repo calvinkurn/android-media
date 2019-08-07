@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.common.di.component;
 
 import com.tokopedia.purchase_platform.common.di.module.CartListModule;
 import com.tokopedia.purchase_platform.common.di.scope.CartListScope;
-import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
+import com.tokopedia.purchase_platform.cart.view.CartFragment;
 
 import dagger.Component;
 

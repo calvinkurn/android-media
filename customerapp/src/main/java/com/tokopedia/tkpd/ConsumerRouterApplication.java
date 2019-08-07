@@ -52,7 +52,7 @@ import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
-//import com.tokopedia.checkout.CartConstant;
+//import com.tokopedia.checkout.view.CartConstant;
 //import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
 //import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 //import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
