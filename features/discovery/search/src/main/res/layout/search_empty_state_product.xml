@@ -59,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/button_add_promo"
+            android:gravity="center"
             android:layout_below="@id/no_result_image"
             android:background="@drawable/search_button_green_rounded_background"
             app:typographyType="heading_6"
