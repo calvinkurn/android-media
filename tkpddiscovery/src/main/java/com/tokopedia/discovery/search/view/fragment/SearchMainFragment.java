@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.discovery.R;
@@ -217,7 +216,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     private void startActivityFromAutoComplete(String applink) {
         if(getActivity() == null) return;
 
-        RouteManager.route(getActivity(), applink);
+//        RouteManager.route(getActivity(), applink);
         getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
         getActivity().finish();
     }
