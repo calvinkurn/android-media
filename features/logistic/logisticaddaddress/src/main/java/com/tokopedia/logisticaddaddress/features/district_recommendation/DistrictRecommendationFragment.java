@@ -20,7 +20,6 @@ import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.di.DistrictRecommendationComponent;
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -53,9 +52,6 @@ public class DistrictRecommendationFragment
     private TextView tvMessage;
     private SwipeToRefresh swipeRefreshLayout;
     private Token mToken;
-
-    @Inject
-    UserSessionInterface userSession;
 
     @Inject
     AddressMapper addressMapper;
