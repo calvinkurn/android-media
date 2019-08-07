@@ -49,6 +49,10 @@ class StickyTextView : FrameLayout {
         layoutContainer.setOnClickListener(listener)
     }
 
+    fun setOnDismissListener(listener: OnClickListener?) {
+        imageViewRight.setOnClickListener(listener)
+    }
+
     private fun inflateLayout() {
         val layout: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = layout.inflate(R.layout.widget_sticky_login_text, this, true)
@@ -61,13 +65,11 @@ class StickyTextView : FrameLayout {
 
     private fun initView() {
         textContent.text = spannable
-        imageViewRight.setOnClickListener { dismiss() }
     }
 
     private fun initAttributeSet(attributeSet: AttributeSet) {
         val styleable = context!!.obtainStyledAttributes(attributeSet, R.styleable.StickyTextView, 0, 0)
         try {
-
             var text = styleable.getString(R.styleable.StickyTextView_sticky_text)
             val textHighlight = styleable.getString(R.styleable.StickyTextView_sticky_text_highlight)
             val highlightColor = styleable.getColor(R.styleable.StickyTextView_sticky_highlight_color, -1)

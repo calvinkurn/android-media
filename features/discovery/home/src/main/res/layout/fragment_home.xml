@@ -48,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#E6EBFFEF"
-        app:sticky_highlight_color="#03ac0e"
+        app:sticky_highlight_color="@color/g_500"
         app:sticky_left_icon="@drawable/ic_toped_widget_login"
         app:sticky_text="Mau akses semua fitur ?"
         app:sticky_text_highlight="Masuk yuk" />
