@@ -63,10 +63,6 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
-import com.tokopedia.logisticcart.cod.view.CodActivity;
-import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -219,6 +215,7 @@ import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitial
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationActivity;
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
+import com.tokopedia.logisticcart.cod.view.CodActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
