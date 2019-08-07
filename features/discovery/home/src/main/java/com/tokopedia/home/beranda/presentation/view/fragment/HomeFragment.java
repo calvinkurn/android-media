@@ -410,6 +410,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (activityStateListener != null) {
             activityStateListener.onResume();
         }
+
+        updateStickyState();
     }
 
     @Override
