@@ -52,13 +52,7 @@
                 android:textColor="#666666"
                 android:textSize="12sp"
                 tool:text="11:11 am" />
-            <!--
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@color/transparent"
-                            android:src="@drawable/live10_notification_icon_check" />-->
-        </LinearLayout>
+         </LinearLayout>
 
         <TextView
             android:id="@+id/push_title"
