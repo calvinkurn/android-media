@@ -298,24 +298,24 @@ class HotelHomepageFragment : HotelBaseFragment(),
         showPromoContainer()
         if (!::promoAdapter.isInitialized) {
             promoAdapter = HotelPromoAdapter(promoDataList)
-        }
-        promoAdapter.promoClickListener = this
+            promoAdapter.promoClickListener = this
 
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        rv_hotel_homepage_promo.layoutManager = layoutManager
-        rv_hotel_homepage_promo.setHasFixedSize(true)
-        rv_hotel_homepage_promo.isNestedScrollingEnabled = false
-        rv_hotel_homepage_promo.adapter = promoAdapter
-        rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                    trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId
-                            ?: "")
+            val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            rv_hotel_homepage_promo.layoutManager = layoutManager
+            rv_hotel_homepage_promo.setHasFixedSize(true)
+            rv_hotel_homepage_promo.isNestedScrollingEnabled = false
+            rv_hotel_homepage_promo.adapter = promoAdapter
+            rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                        trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId
+                                ?: "")
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
