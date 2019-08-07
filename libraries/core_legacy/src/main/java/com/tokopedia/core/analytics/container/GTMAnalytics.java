@@ -29,7 +29,9 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -183,12 +185,27 @@ public class GTMAnalytics extends ContextAnalytics {
 
         Set<String> ks = extras.keySet();
         for (String key : ks) {
-            Object object = extras.getString(key);
+            Object object = extras.get(key);
             if (object != null) {
+                if (object instanceof ArrayList) {
+                    object = convertAllBundleToMap((ArrayList) object);
+                }
                 map.put(key, object);
             }
         }
         return map;
+    }
+
+    private static List<Object> convertAllBundleToMap(ArrayList list) {
+        List<Object> newList = new ArrayList<>();
+        for (Object object : list) {
+            if (object instanceof Bundle) {
+                newList.add(bundleToMap((Bundle) object));
+            } else {
+                newList.add(object);
+            }
+        }
+        return newList;
     }
 
     public GTMAnalytics sendCampaign(Campaign campaign) {
