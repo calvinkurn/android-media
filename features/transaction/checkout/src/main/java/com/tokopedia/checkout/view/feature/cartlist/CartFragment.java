@@ -885,7 +885,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
-        dPresenter.processUpdateCartDataPromoStacking(getSelectedCartDataList(), dataGlobal, GO_TO_DETAIL);
+        List<CartItemData> cartItemData = getSelectedCartDataList();
+        if (cartItemData != null && cartItemData.size() > 0) {
+            trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
+            dPresenter.processUpdateCartDataPromoStacking(cartItemData, dataGlobal, GO_TO_DETAIL);
+        }
     }
 
     @Override

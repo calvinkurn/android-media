@@ -635,14 +635,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     private fun setUpCombinationAirport() {
         val departureAirportCode: String? = getDepartureAirport().airportCode
         val departureAirportList: List<String> = if (departureAirportCode == null || departureAirportCode == "") {
-            getDepartureAirport().cityAirports.toList()
+            arrayListOf(getDepartureAirport().cityCode)
         } else {
             arrayListOf(departureAirportCode)
         }
 
         val arrivalAirportCode: String? = getArrivalAirport().airportCode
         val arrivalAirportList: List<String> = if (arrivalAirportCode == null || arrivalAirportCode == "") {
-            getArrivalAirport().cityAirports.toList()
+            arrayListOf(getArrivalAirport().cityCode)
         } else {
             arrayListOf(arrivalAirportCode)
         }
