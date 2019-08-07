@@ -31,10 +31,6 @@ import javax.inject.Inject
 class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener,
         SearchInputView.ResetListener {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var destinationViewModel: HotelDestinationViewModel
-
     var isSearching: Boolean = false
 
     private var searchTemp = ""
@@ -57,11 +53,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
         initInjector()
         initView()
-
-        run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
-        }
     }
 
     fun initView() {
