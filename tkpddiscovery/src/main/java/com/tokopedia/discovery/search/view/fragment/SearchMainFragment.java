@@ -217,8 +217,8 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     private void startActivityFromAutoComplete(String applink) {
         if(getActivity() == null) return;
 
-        getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
         RouteManager.route(getActivity(), applink);
+        getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
         getActivity().finish();
     }
 

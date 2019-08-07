@@ -311,9 +311,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     protected void onSearchingStart(String keyword) {
-        searchView.closeSearch();
-        showLoadingView(true);
-        showContainer(false);
         setToolbarTitle(keyword);
         setLastQuerySearchView(keyword);
     }
@@ -321,8 +318,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private void moveToSearchPage() {
         Intent searchActivityIntent = createIntentToSearchResult();
 
-        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
         startActivity(searchActivityIntent);
+        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
         finish();
     }
 
