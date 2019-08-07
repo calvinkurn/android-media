@@ -7,6 +7,7 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,6 +101,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 countDownView.setVisibility(View.GONE);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             Crashlytics.log(0, TAG, e.getLocalizedMessage());
         }
     }

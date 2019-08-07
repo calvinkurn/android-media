@@ -10,6 +10,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerOrganicViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelHeroViewHolder;
@@ -168,6 +169,9 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             return ThreeGridChannelViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SprintSaleCarouselViewHolder.LAYOUT;
+        } else if (DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC.equals(dynamicChannelViewModel.getChannel().getLayout())
+                || DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+            return BannerOrganicViewHolder.Companion.getLAYOUT();
         } else {
             return EmptyBlankViewHolder.LAYOUT;
         }
@@ -225,6 +229,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new HomeRecommendationFeedViewHolder(view, listener);
         else if (type == GeolocationPromptViewHolder.Companion.getLAYOUT())
             viewHolder = new GeolocationPromptViewHolder(view, listener);
+        else if (type == BannerOrganicViewHolder.Companion.getLAYOUT())
+            viewHolder = new BannerOrganicViewHolder(view, listener);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

@@ -140,6 +140,14 @@ public class DynamicHomeChannel {
             this.position = position;
         }
 
+        public Banner getBanner() {
+            return banner;
+        }
+
+        public void setBanner(Banner banner) {
+            this.banner = banner;
+        }
+
         public Map<String, Object> getEnhanceImpressionSprintSaleHomePage() {
             List<Object> list = convertProductEnhanceSprintSaleDataLayer(getGrids());
             return DataLayer.mapOf(
@@ -174,6 +182,31 @@ public class DynamicHomeChannel {
                                     "category", "none / other",
                                     "variant", "none / other",
                                     "list", "/ - p1 - sprint sale",
+                                    "position", String.valueOf(i + 1)
+                            )
+                    );
+                }
+            }
+            return list;
+        }
+
+        private List<Object> convertProductEnhanceProductMixDataLayer(Grid[] grids, String headerName, String type) {
+            List<Object> list = new ArrayList<>();
+
+            if (grids != null) {
+                for (int i = 0; i < grids.length; i++) {
+                    Grid grid = grids[i];
+                    list.add(
+                            DataLayer.mapOf(
+                                    "name", grid.getName(),
+                                    "id", grid.getId(),
+                                    "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                            grid.getPrice()
+                                    )),
+                                    "brand", "none / other",
+                                    "category", "none / other",
+                                    "variant", "none / other",
+                                    "list", "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
                                     "position", String.valueOf(i + 1)
                             )
                     );
@@ -469,6 +502,21 @@ public class DynamicHomeChannel {
             return list;
         }
 
+        private List<Object> convertPromoEnhanceBannerChannelMix() {
+            List<Object> list = new ArrayList<>();
+
+            list.add(
+                    DataLayer.mapOf(
+                            "id", getBanner().getId(),
+                            "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().name,
+                            "creative", "Waiting backend to return this value..",
+                            "creative_url", getBanner().getImageUrl(),
+                            "position", String.valueOf(position)
+                    )
+            );
+            return list;
+        }
+
         public Map<String, Object> getEnhanceClickDynamicChannelHomePage(Hero hero, int position) {
             return DataLayer.mapOf(
                     "event", "promoClick",
@@ -556,6 +604,123 @@ public class DynamicHomeChannel {
                             )
                     ),
                     "attribution", getHomeAttribution(position, grid.getAttribution())
+            );
+        }
+
+        public Map<String, Object> getEnhanceClickProductChannelMix(int gridPosition) {
+            return DataLayer.mapOf(
+                    "event", "productClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "click on product dynamic channel mix",
+                    "eventLabel", getHeader().name,
+                    "channelId", id,
+                    "ecommerce", DataLayer.mapOf(
+                            "currencyCode", "IDR",
+                            "click", DataLayer.mapOf(
+                                    "actionField", DataLayer.mapOf("list", "/ - p1 - dynamic channel mix - product - "+getHeader().name),
+                                    "products", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "name", getGrids()[gridPosition].getName(),
+                                                    "id", getGrids()[gridPosition].getId(),
+                                                    "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                                            getGrids()[gridPosition].getPrice()
+                                                    )),
+                                                    "brand", "none / other",
+                                                    "category", "none / other",
+                                                    "variant", "none / other",
+                                                    "position", String.valueOf(gridPosition+1),
+                                                    "attribution", getHomeAttribution(gridPosition + 1, getGrids()[gridPosition].getId())
+                                            )
+                                    )
+                            )
+                    ));
+        }
+
+        public Map<String, Object> getEnhanceImpressionProductChannelMix() {
+            String type = "";
+            if (layout.equals(LAYOUT_BANNER_ORGANIC)) {
+                type = "non carousel";
+            } else if (layout.equals(LAYOUT_BANNER_CAROUSEL)) {
+                type = "carousel";
+            }
+            List<Object> list = convertProductEnhanceProductMixDataLayer(getGrids(), getHeader().name, type);
+            return DataLayer.mapOf(
+                    "event", "productView",
+                    "eventCategory", "homepage",
+                    "eventAction", "impression on product dynamic channel mix",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "currencyCode", "IDR",
+                            "impressions", DataLayer.listOf(
+                                    list.toArray(new Object[list.size()])
+
+                            ))
+            );
+        }
+
+        public Map<String, Object> getEnhanceClickBannerChannelMix() {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "click on banner dynamic channel mix",
+                    "eventLabel", getHeader().name,
+                    "channelId", id,
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", banner.getId(),
+                                                    "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().getName(),
+                                                    "creative", banner.getTitle(),
+                                                    "creative_url", banner.getImageUrl(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    )
+            );
+        }
+
+        public Map<String, Object> getEnhanceClickBannerButtonChannelMix() {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "click "+getBanner().getCta().getText()+" on dynamic channel mix",
+                    "eventLabel", getHeader().name,
+                    "channelId", id,
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", banner.getId(),
+                                                    "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().getName(),
+                                                    "creative", banner.getTitle(),
+                                                    "creative_url", banner.getImageUrl(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    )
+            );
+        }
+
+        public Map<String, Object> getEnhanceImpressionBannerChannelMix() {
+            List<Object> list = convertPromoEnhanceBannerChannelMix();
+            return DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "homepage",
+                    "eventAction", "impression on banner dynamic channel mix",
+                    "eventLabel", "",
+                    "channelId", id,
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                            list.toArray(new Object[list.size()])
+                                    )
+                            )
+
+                    ),
+                    "attribution", getHomeAttribution(position, getHeader().getName())
             );
         }
 
