@@ -55,7 +55,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     private ImageView noResultImage;
     private TextView emptyTitleTextView;
     private TextView emptyContentTextView;
-    private Button emptyButtonItemButton;
+    private TextView emptyButtonItemButton;
     protected final EmptyStateListener emptyStateListener;
     private final BannerAdsListener bannerAdsListener;
     private TopAdsBannerView topAdsBannerView;
@@ -72,7 +72,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         noResultImage = (ImageView) view.findViewById(R.id.no_result_image);
         emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
         emptyContentTextView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
-        emptyButtonItemButton = (Button) view.findViewById(R.id.button_add_promo);
+        emptyButtonItemButton = view.findViewById(R.id.button_add_promo);
         this.emptyStateListener = emptyStateListener;
         this.bannerAdsListener = bannerAdsListener;
         context = itemView.getContext();

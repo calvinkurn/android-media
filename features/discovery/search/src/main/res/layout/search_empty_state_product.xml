@@ -55,18 +55,17 @@
             android:layout_marginTop="8dp"
             />
 
-        <Button
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/button_add_promo"
-            style="@style/Button.Submit.Green"
             android:layout_below="@id/no_result_image"
+            android:background="@drawable/search_button_green_rounded_background"
+            app:typographyType="heading_6"
+            android:textColor="#ffffff"
             android:layout_marginTop="16dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginBottom="0dp"
-            android:paddingTop="11dp"
-            android:paddingBottom="11dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:paddingLeft="21dp"
             android:paddingRight="21dp"/>
 
