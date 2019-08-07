@@ -361,8 +361,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             filters = filters.substring(0, filters.length - 1)
         }
         input.reason = filters
-        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT)
-        input.score = data?.extras?.getInt(EMOJI_STATE)
+        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
+        input.score = data?.extras?.getInt(EMOJI_STATE) ?: 0
         input.timestamp = mCsatResponse.message?.timestampUnix.toString()
         input.triggerRuleType = attributes?.triggerRuleType
 

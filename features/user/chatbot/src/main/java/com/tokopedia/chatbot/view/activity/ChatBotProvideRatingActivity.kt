@@ -27,33 +27,40 @@ class ChatBotProvideRatingActivity: BaseProvideRatingActivity() {
         val IS_SHOW_OTHER_REASON = "is_show_other_reason"
 
         fun getInstance(context: Context, clickEmoji: Int, mCsatResponse: WebSocketCsatResponse): Intent {
-            var webSocketCsatattribute = mCsatResponse.attachment?.attributes
+            val webSocketCsatattribute = mCsatResponse.attachment?.attributes
             val intent = Intent(context, ChatBotProvideRatingActivity::class.java)
             intent.putExtra(CLICKED_EMOJI, clickEmoji)
             val list = ArrayList<BadCsatReasonListItem>()
             var id = MESSAGE_ID
-            for(message in webSocketCsatattribute?.reasons!!){
-                val badCsatReasonListItem = BadCsatReasonListItem()
-                badCsatReasonListItem.id = id
-                badCsatReasonListItem.message = message
-                list.add(badCsatReasonListItem)
-                id++
+            webSocketCsatattribute?.reasons?.let {
+                for(message in it){
+                    val badCsatReasonListItem = BadCsatReasonListItem()
+                    badCsatReasonListItem.id = id
+                    badCsatReasonListItem.message = message
+                    list.add(badCsatReasonListItem)
+                    id++
+                }
             }
+
             intent.putParcelableArrayListExtra(PARAM_OPTIONS_CSAT, list)
             intent.putExtra(BOT_OTHER_REASON, true)
+
             val captionList = ArrayList<String>()
-            for(point in webSocketCsatattribute.points!!){
-                captionList.add(point?.caption!!)
-            }
-
             val questionList = ArrayList<String>()
-            for(point in webSocketCsatattribute.points!!){
-                questionList.add(point?.description!!)
+            webSocketCsatattribute?.points?.let {
+                for(point in it){
+                    point?.caption?.let {
+                        captionList.add(it)
+                    }
+                    point?.description?.let {
+                        questionList.add(it)
+                    }
+                }
             }
 
-            intent.putExtra(IS_SHOW_OTHER_REASON,webSocketCsatattribute.showOtherReason)
-            intent.putExtra(CSAT_TITLE,webSocketCsatattribute.title)
-            intent.putExtra(OTHER_REASON_TITLE,webSocketCsatattribute.reasonTitle)
+            intent.putExtra(IS_SHOW_OTHER_REASON,webSocketCsatattribute?.showOtherReason)
+            intent.putExtra(CSAT_TITLE,webSocketCsatattribute?.title)
+            intent.putExtra(OTHER_REASON_TITLE,webSocketCsatattribute?.reasonTitle)
             intent.putStringArrayListExtra(CAPTION_LIST,captionList)
             intent.putStringArrayListExtra(QUESTION_LIST,questionList)
             return intent

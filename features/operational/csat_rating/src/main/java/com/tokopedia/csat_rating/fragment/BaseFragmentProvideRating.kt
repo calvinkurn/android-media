@@ -3,9 +3,7 @@ package com.tokopedia.csat_rating.fragment
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -72,7 +70,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
         initView(view)
         presenter = component.provideRatingPresenter
         presenter.attachView(this)
-        mTxtHelpTitle.text = arguments?.getString(CSAT_TITLE)
+        mTxtHelpTitle.text = arguments?.getString(CSAT_TITLE) ?: ""
         disableSubmitButton()
     }
 
@@ -106,8 +104,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     }
 
     override fun setMessageColor(color: Int) {
-//        mTxtSmileSelected.setTextColor(Color.parseColor(color))
-        mTxtSmileSelected.setTextColor(ContextCompat.getColor(context!!,color))
+       mTxtSmileSelected.setTextColor(MethodChecker.getColor(context,color))
     }
 
     override fun setQuestion(question: String){
@@ -133,8 +130,8 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
         mSmileLayout.removeAllViews()
     }
 
-    override fun showErrorMessage(o: String) {
-        ToasterError.make(view, o).show()
+    override fun showErrorMessage(errorMessage: String) {
+        ToasterError.make(view, errorMessage).show()
     }
 
 
@@ -155,7 +152,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
         for (filter in filterList) {
             finishFilter = CustomViewQuickFilterItem()
             finishFilter.name = filter.message
-            finishFilter.type = filter.id.toString() + ""
+            finishFilter.type = filter.id.toString()
             finishFilter.setColorBorder(R.color.tkpd_main_green)
             filterItems.add(finishFilter)
         }

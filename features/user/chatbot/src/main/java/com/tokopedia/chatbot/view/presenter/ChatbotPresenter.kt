@@ -362,6 +362,7 @@ class ChatbotPresenter @Inject constructor(
         getExistingChatUseCase.unsubscribe()
         sendChatRatingUseCase.unsubscribe()
         sendRatingReasonUseCase.unsubscribe()
+        submitCsatRatingUseCase.unsubscribe()
         super.detachView()
     }
 

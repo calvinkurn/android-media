@@ -11,7 +11,6 @@ class SubmitCsatRatingSubscriber(val onErrorSubmitRating: (Throwable) -> Unit,
     : Subscriber<GraphqlResponse>() {
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
-        val pojo = graphqlResponse.getData<SubmitCsatGqlResponse>(SubmitCsatGqlResponse::class.java)
         handleError(graphqlResponse, SubmitCsatGqlResponse::class.java,
                 routingOnNext(graphqlResponse), onErrorSubmitRating)
     }

@@ -21,7 +21,7 @@ interface ProvideRatingContract {
         fun setQuestion(question: String)
         fun getSelectedEmoji(): Int
         fun clearEmoji()
-        fun showErrorMessage(o: String)
+        fun showErrorMessage(errorMessage: String)
         fun setFilterList(filterList: List<BadCsatReasonListItem>)
         fun getSelectedItem(): String
         fun getReasonList(): ArrayList<BadCsatReasonListItem>

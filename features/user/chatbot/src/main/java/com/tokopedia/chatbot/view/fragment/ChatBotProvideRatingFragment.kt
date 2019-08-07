@@ -35,7 +35,7 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            if (!(it.getBoolean(IS_SHOW_OTHER_REASON))) {
+            if (!((it.getBoolean(IS_SHOW_OTHER_REASON))?:false)) {
                 top_bot_reason_layout.hide()
             } else {
                 bot_reason_text.text = it.getString(OTHER_REASON_TITLE)

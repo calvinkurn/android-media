@@ -68,28 +68,28 @@ class BaseProvideRatingFragmentPresenter : BaseDaggerPresenter<ProvideRatingCont
 
 
     override fun onFirstEmojiClick() {
-        emojiState = 1
+        emojiState = FIRST_EMOJI
         updateScreenState()
 
     }
 
     override fun onSecondEmojiClick() {
-        emojiState = 2
+        emojiState = SECOND_EMOJI
         updateScreenState()
     }
 
     override fun onThirdEmojiClick() {
-        emojiState = 3
+        emojiState = THIRD_EMOJI
         updateScreenState()
     }
 
     override fun onFourthEmojiClick() {
-        emojiState = 4
+        emojiState = FOURTH_EMOJI
         updateScreenState()
     }
 
     override fun onFifthEmojiClick() {
-        emojiState = 5
+        emojiState = FIFTH_EMOJI
         updateScreenState()
     }
 
