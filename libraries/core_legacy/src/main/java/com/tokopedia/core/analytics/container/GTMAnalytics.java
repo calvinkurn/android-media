@@ -189,6 +189,8 @@ public class GTMAnalytics extends ContextAnalytics {
             if (object != null) {
                 if (object instanceof ArrayList) {
                     object = convertAllBundleToMap((ArrayList) object);
+                } else if (object instanceof Bundle) {
+                    object = bundleToMap((Bundle) object);
                 }
                 map.put(key, object);
             }
