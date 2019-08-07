@@ -4,11 +4,8 @@ package com.tokopedia.iris
  * @author okasurya on 10/18/18.
  */
 
-//const val STAGING = "https://merlin-staging.tokopedia.com/"
-//const val LIVE = "https://merlin.tokopedia.com/"
-
 const val LIVE = "https://hub.tokopedia.com/"
-const val STAGING = "http://hub-staging.tokopedia.com/"
+const val STAGING = "https://hub-staging.tokopedia.com/"
 
 const val VERSION = "iris/v1/"
 
@@ -42,5 +39,7 @@ const val MAX_ROW = "MAX_ROW"
 const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT = "default_app"
 
+const val DEFAULT_CONFIG = "{\"row_limit\":25,\"interval\":2}"
+const val JOB_IRIS_ID = 1500
 const val DEFAULT_SERVICE_TIME: Long = 15
 const val DEFAULT_MAX_ROW = 50

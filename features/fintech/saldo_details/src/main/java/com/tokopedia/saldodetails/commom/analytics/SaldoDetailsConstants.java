@@ -9,7 +9,6 @@ public class SaldoDetailsConstants {
 
     interface Event {
         String EVENT_CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
-        String EVENT_VIEW_FINTECH_MICROSITE = "viewFintechMicrosite";
     }
 
     interface Category {

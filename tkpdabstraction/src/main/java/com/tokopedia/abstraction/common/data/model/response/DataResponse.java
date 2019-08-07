@@ -1,5 +1,7 @@
 package com.tokopedia.abstraction.common.data.model.response;
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -14,7 +16,8 @@ public class DataResponse<T> {
     private Header header = new Header();
     @SerializedName(value="data")
     @Expose
-    private T data;
+    private @Nullable
+    T data;
 
     public Header getHeader() {
         return header;

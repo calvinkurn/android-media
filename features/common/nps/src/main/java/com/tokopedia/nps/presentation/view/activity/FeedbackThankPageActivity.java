@@ -8,8 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.nps.NpsConstant;
 import com.tokopedia.nps.R;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
 import com.tokopedia.nps.presentation.view.dialog.AppRatingDialog;
 
 /**
@@ -41,7 +41,7 @@ public class FeedbackThankPageActivity extends BaseSimpleActivity {
         String message = getString(R.string.fb_thank_desc);
         String action = getString(R.string.fb_close);
 
-        if (rating > AdvancedAppRatingDialog.MIN_RATING) {
+        if (rating > NpsConstant.Feedback.GOOD_RATING_THRESHOLD) {
             message = getString(R.string.fb_thank_desc_1);
             action = getString(R.string.fb_give_rating);
         }
@@ -50,7 +50,7 @@ public class FeedbackThankPageActivity extends BaseSimpleActivity {
         btnClose.setText(action);
 
         btnClose.setOnClickListener(v -> {
-            if (rating > AdvancedAppRatingDialog.MIN_RATING) {
+            if (rating > NpsConstant.Feedback.GOOD_RATING_THRESHOLD) {
                 AppRatingDialog.openPlayStore(FeedbackThankPageActivity.this);
             }
             FeedbackThankPageActivity.this.finish();

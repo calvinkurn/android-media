@@ -23,7 +23,7 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                optionList = FilterDbHelper.loadLocationFilterOptions();
+                optionList = FilterDbHelper.loadLocationFilterOptions(DynamicFilterLocationActivity.this);
                 subscriber.onNext(true);
             }
         });
@@ -51,7 +51,7 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                FilterDbHelper.storeLocationFilterOptions(optionList);
+                FilterDbHelper.storeLocationFilterOptions(DynamicFilterLocationActivity.this, optionList);
                 subscriber.onNext(true);
             }
         }).subscribeOn(Schedulers.newThread())

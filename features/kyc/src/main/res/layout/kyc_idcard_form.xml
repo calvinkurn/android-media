@@ -37,12 +37,34 @@
                 android:textSize="@dimen/sp_14" />
 
             <TextView
+                android:id="@+id/pre_register_warning"
+                android:paddingTop="@dimen/dp_10"
+                android:background="#fff7e8"
+                android:paddingBottom="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_6"
+                android:paddingRight="@dimen/dp_6"
+                android:layout_below="@+id/retake_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginRight="@dimen/dp_30"
+                android:textSize="@dimen/sp_14"
+                android:textColor="#cd8d00"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_centerInParent="true"
+                android:lineSpacingExtra="4sp"
+                android:text="Pastikan nomor kartu identitas Anda belum pernah terdaftar di OVO"
+                android:drawableLeft="@drawable/ic_info_kyc"
+                android:drawablePadding="@dimen/dp_10"
+                />
+
+            <TextView
                 android:id="@+id/txtv_select_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/retake_photo"
+                android:layout_below="@+id/pre_register_warning"
                 android:layout_marginLeft="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_35"
+                android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_30"
                 android:text="@string/slct_id_typ"
                 android:textColor="@color/clr_6b767e"

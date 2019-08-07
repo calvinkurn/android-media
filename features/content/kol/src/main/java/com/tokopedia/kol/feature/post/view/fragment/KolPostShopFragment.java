@@ -15,6 +15,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
+import com.tokopedia.kol.feature.createpost.view.activity.CreatePostActivity;
+import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
@@ -141,8 +143,14 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
 
     private void goToCreatePost() {
         if (getActivity() != null) {
+            Intent intent;
+            if (RouteManager.isSupportApplink(getActivity(), ApplinkConst.CONTENT_CREATE_POST)) {
+                intent = RouteManager.getIntent(getActivity(), ApplinkConst.CONTENT_CREATE_POST);
+            } else {
+                intent = CreatePostImagePickerActivity.getInstance(getActivity(), createPostUrl);
+            }
             startActivityForResult(
-                    RouteManager.getIntent(getActivity(), ApplinkConst.CONTENT_CREATE_POST),
+                    intent,
                     CREATE_POST
             );
         }

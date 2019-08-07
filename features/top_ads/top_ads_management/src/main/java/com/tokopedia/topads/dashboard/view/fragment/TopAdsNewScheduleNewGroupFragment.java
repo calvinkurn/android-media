@@ -11,6 +11,7 @@ import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
@@ -86,13 +87,13 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
     }
 
     @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) {
-        /* just deal with abstraction */
+    public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {
+
     }
 
     @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-        /* just deal with abstraction */
+    public void onBidInfoError(@Nullable Throwable t) {
+
     }
 
     private void trackingNewScheduleTopads() {

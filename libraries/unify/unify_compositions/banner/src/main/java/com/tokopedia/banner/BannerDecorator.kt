@@ -17,7 +17,7 @@ class BannerDecorator(val leftFirst: Int,
 
     override fun getItemOffsets(outRect: Rect, view: View,
                                 parent: RecyclerView, state: RecyclerView.State) {
-        if (parent.layoutManager.getPosition(view) == 0) {
+        if (parent.layoutManager?.getPosition(view) == 0) {
             outRect.left = leftFirst
         }
     }

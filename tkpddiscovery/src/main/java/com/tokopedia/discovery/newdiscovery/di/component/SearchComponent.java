@@ -9,13 +9,7 @@ import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductL
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryCatalogFragment;
 import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListPresenterImpl;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListPresenterImpl;
 
 import dagger.Component;
 
@@ -26,29 +20,18 @@ import dagger.Component;
 @SearchScope
 @Component(modules = SearchModule.class, dependencies = AppComponent.class)
 public interface SearchComponent {
-    void inject(SearchActivity searchActivity);
 
     void inject(AutoCompleteActivity autoCompleteActivity);
 
     void inject(ImageSearchActivity imageSearchActiviy);
 
-    void inject(ProductListFragment productListFragment);
-
     void inject(ImageSearchProductListFragment imageProductListFragment);
 
-    void inject(ProductListPresenterImpl presenter);
-
     void inject(ImageProductListPresenterImpl imageProductListPresenter);
-
-    void inject(CatalogFragment catalogFragment);
 
     void inject(CategoryCatalogFragment catalogFragment);
 
     void inject(CatalogPresenter presenter);
-
-    void inject(ShopListFragment shopListFragment);
-
-    void inject(ShopListPresenterImpl presenter);
 
     void inject(ImageSearchPresenter imageSearchPresenter);
 }

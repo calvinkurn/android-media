@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.SslErrorHandler;
+import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -34,20 +35,18 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.payment.fingerprint.di.FingerprintModule;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment;
 import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister;
-import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.payment.presenter.TopPayContract;
 import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -422,19 +421,19 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
             } else if (url.contains(HCI_CAMERA_KTP)) {
                 view.stopLoading();
                 mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_KTP), HCI_CAMERA_REQUEST_CODE);
+                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                 return true;
             } else if (url.contains(HCI_CAMERA_SELFIE)) {
                 view.stopLoading();
                 mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_SELFIE), HCI_CAMERA_REQUEST_CODE);
+                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                 return true;
             } else {
                 if (ApplinkConst.PAYMENT_BACK_TO_DEFAULT.equalsIgnoreCase(url)) {
                     if (isEndThanksPage()) callbackPaymentSucceed();
                     else callbackPaymentCanceled();
                     return true;
-                } else if (RouteManager.isSupportApplink(TopPayActivity.this, url)) {
+                } else if (RouteManager.isSupportApplink(TopPayActivity.this, url) && !URLUtil.isNetworkUrl(url)) {
                     //  RouteManager.route(TopPayActivity.this, url);
                     Intent intent = RouteManager.getIntent(TopPayActivity.this, url);
                     intent.setData(Uri.parse(url));

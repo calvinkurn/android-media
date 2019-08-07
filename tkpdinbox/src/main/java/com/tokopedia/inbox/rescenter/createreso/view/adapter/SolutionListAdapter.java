@@ -15,6 +15,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.Solution
 
 import java.util.ArrayList;
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by yoasfs on 25/08/17.
@@ -61,6 +62,7 @@ public class SolutionListAdapter extends RecyclerView.Adapter<SolutionListAdapte
             cardView = (CardView) itemView.findViewById(R.id.card);
             tvSolution = (TextView) itemView.findViewById(R.id.tv_solution);
             ivCheck = (ImageView) itemView.findViewById(R.id.iv_check);
+            ivCheck.setBackground(MethodChecker.getDrawable(ivCheck.getContext(), R.drawable.ic_check));
         }
     }
 }

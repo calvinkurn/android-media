@@ -43,6 +43,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -50,7 +54,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
     api rootProject.ext.miscDependencies.coroutineCore
-    implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha10"
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 
@@ -61,6 +64,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.retrofit
 
     implementation rootProject.ext.miscDependencies.gson
+    implementation project(rootProject.ext.libraries.config)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.listener;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
+import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 
 /**
@@ -18,7 +19,7 @@ public interface TopAdsDetailEditView extends TopAdsGetProductDetailView {
 
     void onSaveAdError(String errorMessage);
 
-    void onSuggestionSuccess(GetSuggestionResponse s);
+    void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo);
 
-    void onSuggestionError(@Nullable Throwable t);
+    void onBidInfoError(@Nullable Throwable t);
 }

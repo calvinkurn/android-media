@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
@@ -29,7 +30,7 @@
             android:id="@+id/very_bad_rating"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
-            android:src="@drawable/ic_very_bad_rating" />
+            app:srcCompat="@drawable/ic_very_bad_rating" />
 
 
         <ImageView
@@ -37,7 +38,7 @@
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_16"
-            android:src="@drawable/ic_bad_rating" />
+            app:srcCompat="@drawable/ic_bad_rating" />
 
 
         <ImageView
@@ -45,7 +46,7 @@
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_16"
-            android:src="@drawable/ic_average_rating" />
+            app:srcCompat="@drawable/ic_average_rating" />
 
 
         <ImageView
@@ -54,14 +55,14 @@
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_16"
             android:tint="@color/tkpd_survey_icon_gray"
-            android:src="@drawable/ic_good_rating" />
+            app:srcCompat="@drawable/ic_good_rating" />
 
         <ImageView
             android:id="@+id/very_good_rating"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_16"
-            android:src="@drawable/ic_very_good_rating" />
+            app:srcCompat="@drawable/ic_very_good_rating" />
     </LinearLayout>
 
     <TextView

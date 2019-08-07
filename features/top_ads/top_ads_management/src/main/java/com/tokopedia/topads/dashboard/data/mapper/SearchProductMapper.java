@@ -26,8 +26,8 @@ public class SearchProductMapper implements Func1<Response<DataResponse<List<Pro
             productDomain.setImageUrl(product.getImageUrl());
             productDomain.setName(product.getName());
             productDomain.setPromoted(product.isPromoted());
+            productDomain.setGroupId(product.getGroupId());
             productDomain.setGroupName(product.getGroupName());
-
             productDomains.add(productDomain);
         }
 

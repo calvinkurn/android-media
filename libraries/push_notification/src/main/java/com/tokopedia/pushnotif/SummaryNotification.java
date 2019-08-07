@@ -17,7 +17,7 @@ public class SummaryNotification {
     public static SummaryNotificationModel generateSummaryNotificationModel(Context context, int notificationType) {
         SummaryNotificationModel summaryNotificationModel = new SummaryNotificationModel();
         summaryNotificationModel.setHistoryString(
-                convertHistoryToString(HistoryNotification.getListHistoryNotification(notificationType))
+                convertHistoryToString(HistoryNotification.getListHistoryNotification(context, notificationType))
         );
         summaryNotificationModel.setSummaryText(generateSummaryText(notificationType,
                 summaryNotificationModel.getTotalHistory()));

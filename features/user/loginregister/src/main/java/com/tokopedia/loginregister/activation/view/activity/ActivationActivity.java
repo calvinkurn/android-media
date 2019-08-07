@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.loginregister.activation.di.DaggerActivationComponent;
 import com.tokopedia.loginregister.activation.view.fragment.ActivationFragment;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
@@ -34,6 +35,9 @@ public class ActivationActivity extends BaseSimpleActivity implements HasCompone
 
     @Inject
     LoginRegisterAnalytics analytics;
+
+    @Inject
+    RegisterAnalytics registerAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +64,7 @@ public class ActivationActivity extends BaseSimpleActivity implements HasCompone
     @Override
     protected void onStart() {
         super.onStart();
-        analytics.trackScreen(this, LoginRegisterAnalytics.SCREEN_ACCOUNT_ACTIVATION);
+        analytics.trackScreen(this, LoginRegisterAnalytics.Companion.getSCREEN_ACCOUNT_ACTIVATION());
     }
 
     public static Intent getCallingIntent(Context context, String email, String pw) {
@@ -73,7 +77,7 @@ public class ActivationActivity extends BaseSimpleActivity implements HasCompone
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        analytics.eventClickBackEmailActivation();
+        registerAnalytics.trackClickOnBackButtonActivation();
     }
 
     @Override

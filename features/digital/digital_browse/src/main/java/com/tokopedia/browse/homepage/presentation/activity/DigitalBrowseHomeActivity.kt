@@ -24,11 +24,13 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.browse.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
+import com.tokopedia.navigation_common.category.CategoryNavigationConfig
 import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
-
-    @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
+    @Inject
+    lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
     private var fragmentDigital: Fragment? = null
 
@@ -79,7 +81,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        getMenuInflater().inflate(R.menu.menu_search, menu)
+        getMenuInflater().inflate(R.menu.menu_digital_browse_search, menu)
         return true
     }
 
@@ -136,26 +138,43 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun getScreenName(): String =
-        if(Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN){
-             LAYANAN_SCREEN
-        } else {
-            DEFAULT_SCREEN
+            if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
+                LAYANAN_SCREEN
+            } else {
+                DEFAULT_SCREEN
+            }
+
+    object DeepLinkIntents {
+        lateinit var intent: Intent
+
+        @JvmStatic
+        @DeepLink(ApplinkConstant.DIGITAL_BROWSE)
+        fun getCallingIntent(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            intent = Intent(context, DigitalBrowseHomeActivity::class.java)
+
+            if (!extras.containsKey(EXTRA_TITLE)) {
+                if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_BELANJA) {
+                    extras.putString(EXTRA_TITLE, TITLE_BELANJA)
+                    return CategoryNavigationConfig.updateCategoryConfig(context, ::openNewBelanja, ::openOldBelanja)
+                } else if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_LAYANAN) {
+                    intent = Intent(context, DigitalBrowseHomeActivity::class.java)
+                    extras.putString(EXTRA_TITLE, TITLE_LAYANAN)
+                }
+            }
+
+            return intent.setData(uri.build()).putExtras(extras)
         }
 
-}
-
-@DeepLink(ApplinkConstant.DIGITAL_BROWSE)
-fun getCallingIntent(context: Context, extras: Bundle): Intent {
-    val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-    val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
-
-    if (!extras.containsKey(DigitalBrowseHomeActivity.EXTRA_TITLE)) {
-        if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_BELANJA) {
-            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)
-        } else if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_LAYANAN) {
-            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_LAYANAN)
+        fun openNewBelanja(context: Context): Intent {
+            return BaseCategoryBrowseActivity.newIntent(context)
         }
+
+        fun openOldBelanja(context: Context): Intent {
+            return intent
+        }
+
     }
 
-    return intent.setData(uri.build()).putExtras(extras)
+
 }

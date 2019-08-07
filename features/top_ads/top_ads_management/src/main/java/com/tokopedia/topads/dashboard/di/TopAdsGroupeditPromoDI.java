@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.di;
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.common.util.TopAdsSourceTaggingUseCaseUtil;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsProductAdFactory;
@@ -23,11 +24,13 @@ import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsShopAdsRepository;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenterImpl;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by zulfikarrahman on 3/1/17.
@@ -63,9 +66,10 @@ public class TopAdsGroupeditPromoDI {
         TopAdsMoveProductGroupToExistGroupUseCase topAdsMoveProductGroupToExistGroupUseCase =
                 new TopAdsMoveProductGroupToExistGroupUseCase(topAdsProductAdsRepository);
         TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase = TopAdsSourceTaggingUseCaseUtil.getTopAdsGetSourceTaggingUseCase(context);
-
+        TopAdsMinimumBidUseCase topAdsMinimumBidUseCase = new TopAdsMinimumBidUseCase(new GraphqlUseCase(), context);
         return new TopAdsGroupEditPromoPresenterImpl(topAdsSearchGroupAdsNameUseCase,
                 topAdsCheckExistGroupUseCase, topAdsEditProductGroupToNewGroupUseCase,
-                topAdsMoveProductGroupToExistGroupUseCase,  topAdsGetSourceTaggingUseCase);
+                topAdsMoveProductGroupToExistGroupUseCase,  topAdsGetSourceTaggingUseCase,
+                topAdsMinimumBidUseCase, new UserSession(context));
     }
 }

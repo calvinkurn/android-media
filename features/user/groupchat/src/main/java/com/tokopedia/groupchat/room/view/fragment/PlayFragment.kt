@@ -12,10 +12,12 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
@@ -36,7 +38,9 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
@@ -56,7 +60,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener,
         ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
         ChatroomContract.ChatItem.SprintSaleViewHolderListener,
-        ChatroomContract.ChatItem.GroupChatPointsViewHolderListener {
+        ChatroomContract.ChatItem.GroupChatPointsViewHolderListener,
+        ChatroomContract.DynamicButtonItem.DynamicButtonListener,
+        ChatroomContract.DynamicButtonItem.InteractiveButtonListener{
 
     private var snackBarWebSocket: Snackbar? = null
 
@@ -74,6 +80,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
             fragment.arguments = bundle
             return fragment
         }
+
+        var DEFAULT_ICON_LIST = arrayListOf(
+                R.drawable.ic_green,
+                R.drawable.ic_blue,
+                R.drawable.ic_yellow,
+                R.drawable.ic_pink
+        )
+
     }
 
     @Inject
@@ -149,13 +163,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 it.itemId == android.R.id.home -> {
                     backPress()
                     true
-                }
-                it.itemId == R.id.action_info -> {
-                    onInfoClicked()
+                }it.itemId == R.id.action_share -> {
+                    shareChannel()
                     true
                 }
-                it.itemId == R.id.action_share -> {
-                    shareChannel()
+                it.itemId == R.id.action_overflow -> {
+                    onOverflowMenuClicked()
                     true
                 }
                 else -> super.onOptionsItemSelected(item)
@@ -167,8 +180,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.action_info).isEnabled = optionsMenuEnable
         menu.findItem(R.id.action_share).isEnabled = optionsMenuEnable
+        menu.findItem(R.id.action_overflow).isEnabled = optionsMenuEnable
     }
 
     private fun onGetNotif(data: Bundle) {
@@ -183,9 +196,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onInfoClicked() {
+    private fun onOverflowMenuClicked() {
         if (::viewState.isInitialized) {
-            viewState.onInfoMenuClicked()
+            viewState.onOverflowMenuClicked()
         }
     }
 
@@ -245,7 +258,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
+    private fun onSuccessGetInfoFirstTime(): (ChannelInfoViewModel) -> Unit {
         return {
             performanceMonitoring.stopTrace()
             onToolbarEnabled(true)
@@ -254,13 +267,40 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     onErrorGetDynamicButtons())
             presenter.getStickyComponents(channelInfoViewModel.channelId,
                     onSuccessGetStickyComponent(), onErrorGetStickyComponent())
-
+            presenter.getVideoStream(channelInfoViewModel.channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
             viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
             saveGCTokenToCache(it.groupChatToken)
             channelInfoViewModel = it
-            presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
+            presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat, false)
             setExitDialog(it.exitMessage)
 
+        }
+    }
+
+    private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
+        return {
+            presenter.getDynamicButtons(channelInfoViewModel.channelId, onSuccessGetDynamicButtons(),
+                    onErrorGetDynamicButtons())
+            presenter.getStickyComponents(channelInfoViewModel.channelId,
+                    onSuccessGetStickyComponent(), onErrorGetStickyComponent())
+            presenter.getVideoStream(channelInfoViewModel.channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
+            viewState.onSuccessGetInfo(it)
+            saveGCTokenToCache(it.groupChatToken)
+            channelInfoViewModel = it
+            setExitDialog(it.exitMessage)
+        }
+    }
+
+
+    private fun onSuccessGetVideoStream(): (VideoStreamViewModel) -> Unit {
+        return {
+            viewState.onVideoVerticalUpdated(it)
+        }
+    }
+
+    private fun onErrorGetVideoStream(): (Throwable) -> Unit {
+        return {
+            viewState.onErrorVideoVertical()
         }
     }
 
@@ -294,7 +334,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onRetryGetInfo() {
-        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo(), onNoInternetConnection())
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfoFirstTime(), onErrorGetInfo(), onNoInternetConnection())
     }
 
     private fun setExitDialog(exitMessage: ExitMessage?) {
@@ -332,8 +372,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun initView(view: View) {
         activity?.let {
             viewState = PlayViewStateImpl(userSession, analytics, view,
-                    it, this, this, this, this,
-                    this, this, sendMessage())
+                    it, this, childFragmentManager,this, this, this,
+                    this, this, sendMessage(), this, this)
         }
         setToolbarView()
     }
@@ -368,7 +408,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     fun backPress() {
-        if (exitDialog != null) {
+        if (exitDialog != null && !viewState.errorViewShown()) {
             exitDialog!!.show()
         } else {
             activity?.finish()
@@ -444,8 +484,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return (activity?.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(activity)
     }
 
-    override fun onOpenWebSocket() {
+    override fun onOpenWebSocket(needRefreshInfo: Boolean) {
         snackBarWebSocket?.dismiss()
+        if(needRefreshInfo) {
+            refreshInfo()
+        }
     }
 
     override fun onTotalViewChanged(participantViewModel: ParticipantViewModel) {
@@ -488,7 +531,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onVideoUpdated(it: VideoViewModel) {
-        viewState.onVideoUpdated(it, childFragmentManager)
+        viewState.onVideoHorizontalUpdated(it)
+    }
+
+    override fun onVideoStreamUpdated(it: VideoStreamViewModel) {
+        if(isInPipMode() == true) {
+            activity?.finish()
+        } else {
+            viewState.onVideoVerticalUpdated(it)
+        }
     }
 
     override fun handleEvent(it: EventGroupChatViewModel) {
@@ -556,7 +607,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                                 userSession,
                                 channelInfo.channelId,
                                 channelInfo.groupChatToken,
-                                channelInfo.settingGroupChat
+                                channelInfo.settingGroupChat,
+                                true
                         )
                         setSnackBarConnectingWebSocket()
                     }
@@ -573,6 +625,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun loadFirstTime() {
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfoFirstTime(), onErrorGetInfo(), onNoInternetConnection())
+    }
+
+    private fun refreshInfo() {
         presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo(), onNoInternetConnection())
     }
 
@@ -596,7 +652,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun sendMessage(): (PendingChatViewModel) -> Unit {
         return {
-            analytics.eventClickSendChat(channelInfoViewModel.channelId)
             presenter.sendMessage(it, ::afterSendMessage, ::onSuccessSendMessage, ::onErrorSendMessage)
         }
     }
@@ -614,16 +669,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
     }
 
-    override fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button) {
-        analytics.eventClickDynamicButtons(channelInfoViewModel, it)
-        when (it.contentType) {
-            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.contentLinkUrl)
-            DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
-            DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
-        }
-    }
-
-    override fun onFloatingIconClicked(it: DynamicButtonsViewModel.Button, applink: String) {
+    override fun onFloatingIconClicked(it: DynamicButton, applink: String) {
         when (it.contentType) {
             DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(applink)
             DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
@@ -634,15 +680,18 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun onPause() {
         super.onPause()
         timeStampAfterPause = System.currentTimeMillis()
-        presenter.destroyWebSocket()
-        if (canPause()) {
-            notifReceiver?.let {
-                tempNotifReceiver ->
-                context?.let {
-                    LocalBroadcastManager.getInstance(it).unregisterReceiver(tempNotifReceiver)
-                }
+        notifReceiver?.let { tempNotifReceiver ->
+            context?.let {
+                LocalBroadcastManager.getInstance(it).unregisterReceiver(tempNotifReceiver)
             }
-            timeStampAfterPause = System.currentTimeMillis()
+        }
+        timeStampAfterPause = System.currentTimeMillis()
+
+        if(isInPipMode() == true) {
+            snackBarWebSocket?.dismiss()
+            dismissDialog()
+        } else {
+            presenter.destroyWebSocket()
         }
     }
 
@@ -650,55 +699,38 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         super.onResume()
         viewState.setBottomView()
         kickIfIdleForTooLong()
-        if (canResume()) {
 
-            viewState.autoAddSprintSale()
+        viewState.autoAddSprintSale()
 
-            viewState.getChannelInfo()?.let {
-                presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
-            }
-
-            viewState.autoPlayVideo()
-
-            if (notifReceiver == null) {
-                notifReceiver = object : BroadcastReceiver() {
-                    override fun onReceive(context: Context, intent: Intent) {
-                        if (intent.extras != null) {
-                            onGetNotif(intent.extras!!)
-                        }
-                    }
-                }
-            }
-
-            notifReceiver?.let {
-                temp ->
-                activity?.applicationContext?.let {
-                    try {
-                        LocalBroadcastManager.getInstance(it).registerReceiver(temp, IntentFilter
-                        (TkpdState.LOYALTY_GROUP_CHAT))
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-
-
-            timeStampAfterResume = System.currentTimeMillis()
+        viewState.getChannelInfo()?.let {
+            presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat, true)
         }
-    }
 
-    private fun canResume(): Boolean {
-//        return timeStampAfterResume == 0L || timeStampAfterResume > 0
-//                && System.currentTimeMillis() - timeStampAfterResume > PAUSE_RESUME_TRESHOLD_TIME
-        return true
-    }
+        viewState.autoPlayVideo()
 
-    private fun canPause(): Boolean {
-//        return (timeStampAfterPause == 0L || (timeStampAfterPause > 0
-//                && System.currentTimeMillis() - timeStampAfterPause > PAUSE_RESUME_TRESHOLD_TIME
-//                && canResume()))
+        if (notifReceiver == null) {
+            notifReceiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    if (intent.extras != null) {
+                        onGetNotif(intent.extras!!)
+                    }
+                }
+            }
+        }
 
-        return true
+        notifReceiver?.let { temp ->
+            activity?.applicationContext?.let {
+                try {
+                    LocalBroadcastManager.getInstance(it).registerReceiver(temp, IntentFilter
+                    (TkpdState.LOYALTY_GROUP_CHAT))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+
+        timeStampAfterResume = System.currentTimeMillis()
     }
 
     private fun kickIfIdleForTooLong() {
@@ -734,6 +766,23 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    override fun onDynamicButtonClicked(it: DynamicButton) {
+        analytics.eventClickDynamicButtons(channelInfoViewModel, it)
+        when (it.contentType) {
+            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.contentLinkUrl)
+            DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
+            DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
+        }
+    }
+
+    override fun onInteractiveButtonClicked(anchorView: LottieAnimationView) {
+        viewState.onInteractiveButtonClicked(anchorView)
+    }
+
+    override fun onInteractiveButtonViewed(anchorView: LottieAnimationView) {
+        viewState.onInteractiveButtonViewed(anchorView)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_LOGIN) {
@@ -743,7 +792,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onDestroy() {
-        viewState?.destroy()
+
+        if(::viewState.isInitialized){
+            viewState?.destroy()
+        }
         presenter.detachView()
         super.onDestroy()
     }
@@ -776,4 +828,24 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return ""
     }
 
+    fun dismissDialog() {
+        exitDialog?.dismiss()
+        viewState.dismissAllBottomSheet()
+    }
+
+    override fun hasVideoVertical(): Boolean {
+        return viewState?.verticalVideoShown()
+    }
+
+    fun isChannelActive(): Boolean {
+        return viewState?.isChannelActive()
+    }
+
+    private fun isInPipMode(): Boolean? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            activity?.isInPictureInPictureMode
+        } else {
+            false
+        }
+    }
 }

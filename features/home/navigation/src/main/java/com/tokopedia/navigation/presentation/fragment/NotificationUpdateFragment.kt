@@ -1,7 +1,7 @@
 package com.tokopedia.navigation.presentation.fragment
 
-import android.content.Context
 import android.animation.LayoutTransition
+import android.content.Context
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -27,6 +27,7 @@ import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
+import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterTypeFactoryImpl
@@ -49,6 +50,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private var cursor = ""
     private var lastItem = 0
+    private var markAllReadCounter = 0L
 
     private lateinit var filterViewModel: ArrayList<NotificationUpdateFilterItemViewModel>
     private val selectedItemList = HashMap<Int, Int>()
@@ -65,6 +67,17 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     @Inject
     lateinit var analytics: NotificationUpdateAnalytics
 
+    private var notificationUpdateListener: NotificationUpdateListener? = null
+
+    interface NotificationUpdateListener {
+        fun onSuccessLoadNotifUpdate()
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is NotificationUpdateListener) {
+            notificationUpdateListener = context
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notification_update, container, false)
@@ -74,6 +87,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         super.onViewCreated(view, savedInstanceState)
 
         presenter.getFilter(onSuccessGetFilter())
+        presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())
 
         bottomActionView = view.findViewById(R.id.filterBtn)
         val recyclerView = super.getRecyclerView(view)
@@ -89,15 +103,13 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
 
         bottomActionView.setButton2OnClickListener {
-            analytics.trackMarkAllAsRead()
-            updateCounterTitle()
-            bottomActionView.hideBav2()
+            analytics.trackMarkAllAsRead(markAllReadCounter.toString())
             presenter.markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate())
         }
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy < 0) { // going up
                     if (adapter.dataSize > 0) {
@@ -108,7 +120,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 }
             }
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == SCROLL_STATE_IDLE) {
                     val layoutManager = (recyclerView?.layoutManager)
@@ -126,7 +138,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun onSuccessMarkAllReadNotificationUpdate(): () -> Unit {
         return {
             (adapter as NotificationUpdateAdapter).markAllAsRead()
-            updateCounterTitle()
+            if (activity != null && activity is NotificationActivityContract.View) {
+                (activity as NotificationActivityContract.View).resetCounterNotificationUpdate()
+            }
+            markAllReadCounter = 0L
+            notifyBottomActionView()
         }
     }
 
@@ -201,9 +217,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         return labelFormat
     }
 
-    override fun notifyBottomActionView(updateCounter: Long) {
+    private fun notifyBottomActionView() {
         bottomActionView?.let {
-            if (updateCounter == 0L) {
+            if (markAllReadCounter == 0L) {
                 it.hideBav2()
             } else {
                 it.showBav2()
@@ -268,7 +284,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private fun onErrorInitiateData(): (Throwable) -> Unit {
         return {
-            SnackbarManager.make(activity, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_LONG).show()
+            if(activity != null) {
+                SnackbarManager.make(activity, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -277,6 +295,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             var canLoadMore = it.paging.hasNext
             if (canLoadMore && !it.list.isEmpty()) {
                 cursor = (it.list.last().notificationId)
+            }
+            if (swipeToRefresh.isRefreshing) {
+                notificationUpdateListener?.onSuccessLoadNotifUpdate()
             }
             renderList(it.list, canLoadMore)
         }
@@ -306,30 +327,19 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         analytics.trackClickNotifList(templateKey)
         presenter.markReadNotif(notifId)
         if (needToResetCounter) {
-            updateCounterTitleManual()
+            updateMarkAllReadCounter()
+            notifyBottomActionView()
         }
     }
 
-    private fun updateCounterTitle() {
-        activity?.let {
-            if (it is NotificationActivityContract.View) {
-                (it as NotificationActivityContract.View).updateTotalUnreadCounter().invoke()
-            }
-        }
-    }
-
-    private fun updateCounterTitleManual() {
-        activity?.let {
-            if (it is NotificationActivityContract.View) {
-                (it as NotificationActivityContract.View).updateTotalUnreadCounterManual()
-            }
-        }
+    private fun updateMarkAllReadCounter() {
+        markAllReadCounter -= 1
     }
 
     override fun onSwipeRefresh() {
         cursor = ""
+        presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())
         super.onSwipeRefresh()
-        updateCounterTitle()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -338,7 +348,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     class SpacingItemDecoration(private val dimen: Int, val size: Int) : RecyclerView.ItemDecoration() {
 
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
             if (parent.getChildAdapterPosition(view) == 0) {
                 outRect.top = this.dimen
                 outRect.bottom = this.dimen / 2
@@ -369,5 +379,12 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private fun sendAnalyticsScrollBottom() {
         if(lastItem > 0) analytics.trackScrollBottom(lastItem.toString())
+    }
+
+    private fun onSuccessGetTotalUnreadCounter(): (NotificationUpdateTotalUnread) -> Unit {
+        return {
+            markAllReadCounter = it.pojo.notifUnreadInt
+            notifyBottomActionView()
+        }
     }
 }

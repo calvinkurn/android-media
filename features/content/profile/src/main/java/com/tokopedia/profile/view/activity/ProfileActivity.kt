@@ -65,7 +65,14 @@ class ProfileActivity : BaseSimpleActivity() {
         }
     }
 
-     fun hideToolbar(){
+    fun hideToolbar(){
         toolbar.hide()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (GlobalConfig.isCustomerApp()) {
+            hideToolbar()
+        }
     }
 }

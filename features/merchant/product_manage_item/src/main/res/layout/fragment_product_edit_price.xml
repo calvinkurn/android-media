@@ -43,7 +43,7 @@
             android:id="@+id/imageViewEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_edit_product"
+            app:srcCompat="@drawable/ic_edit_product"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_gravity="center_vertical"/>
 

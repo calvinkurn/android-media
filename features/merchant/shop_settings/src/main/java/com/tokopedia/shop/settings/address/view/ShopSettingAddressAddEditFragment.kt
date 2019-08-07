@@ -5,21 +5,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.shop.common.router.ShopSettingRouter
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
-import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.address.presenter.ShopSettingAddressAddEditPresenter
 import com.tokopedia.shop.settings.address.view.listener.ShopSettingAddressAddEditView
-import javax.inject.Inject
-
+import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import kotlinx.android.synthetic.main.fragment_shop_address_add.*
+import javax.inject.Inject
 
 class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddressAddEditView {
 
@@ -38,13 +40,13 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     companion object {
         private const val DISTRICT_RECOMMENDATION_REQUEST_CODE = 1
 
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID = "district_recommendation_address_district_id"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME = "district_recommendation_address_district_name"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID = "district_recommendation_address_city_id"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME = "district_recommendation_address_city_name"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID = "district_recommendation_address_province_id"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "district_recommendation_address_province_name"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "district_recommendation_address_zipcodes"
+        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID = "district_id"
+        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME = "district_name"
+        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID = "city_id"
+        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME = "city_name"
+        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID = "province_id"
+        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "province_name"
+        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "zipcodes"
 
         private const val PARAM_EXTRA_SHOP_ADDRESS = "shop_address"
         private const val PARAM_EXTRA_IS_ADD_NEW = "is_add_new"
@@ -145,9 +147,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     }
 
     private fun gotoDistrictActivity() {
-        if (activity != null && activity!!.application is ShopSettingRouter){
-            startActivityForResult((activity!!.application as ShopSettingRouter).getDistrictRecommendationIntent(activity!!),
-                    DISTRICT_RECOMMENDATION_REQUEST_CODE)
+        if (activity != null){
+            startActivityForResult(RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS),
+                DISTRICT_RECOMMENDATION_REQUEST_CODE)
         }
     }
 

@@ -61,7 +61,7 @@ public class ImagePickerCatalogModule {
     public OkHttpClient provideOkHttpClient(@ApplicationContext Context context) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
-        builder.addInterceptor(new CacheApiInterceptor(new CacheApiTKPDResponseValidator<>(HeaderErrorListResponse.class)));
+        builder.addInterceptor(new CacheApiInterceptor(context, new CacheApiTKPDResponseValidator<>(HeaderErrorListResponse.class)));
         if(GlobalConfig.isAllowDebuggingTools()){
             builder.addInterceptor(new HttpLoggingInterceptor());
             builder.addInterceptor(new ChuckInterceptor(context));

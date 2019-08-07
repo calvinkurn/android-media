@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,9 @@ import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,8 +84,13 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
             executeStartUpgrade();
         }
         else if(v.getId() == R.id.ovo_tncpage_link){
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+            String ovotncUrl = remoteConfig.getString(RemoteConfigKey.OVO_TNC_LINK);
+            if(TextUtils.isEmpty(ovotncUrl)){
+                ovotncUrl = Constants.URLs.OVO_TNC_PAGE;
+            }
             ((KYCRouter)getContext().getApplicationContext()).actionOpenGeneralWebView(getActivity(),
-                    Constants.URLs.OVO_TNC_PAGE);
+                    ovotncUrl);
         }
     }
 

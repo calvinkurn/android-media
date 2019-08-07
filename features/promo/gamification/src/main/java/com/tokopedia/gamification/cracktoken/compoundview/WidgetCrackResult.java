@@ -56,14 +56,12 @@ public class WidgetCrackResult extends RelativeLayout {
     private static final String TEXT_SIZE_REWARD_MEDIUM = "medium";
     private static final String TEXT_SIZE_REWARD_SMALL = "small";
     private static final int DURATION_ROTATION_CRACK_RESULT = 15000;
-    private static final int DURATION_ANIM_BG_CRACK_RESULT = 800;
     private static final int DURATION_ALPHA_ANIM = 800;
     private static final int DURATION_ALPHA_ANIM_TEXT = 500;
     private static final long SLIDE_INFO_LEFT_TO_RIGHT_DURATION = 250;
     private static final long SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY = 100;
     private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION = 250;
     private static final long COUNTER_ANIMATION_DURATION = 500;
-    private static final long COUNTER_ANIMATION_START_DELAY = 200;
     private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET = 500;
 
     private ImageView imageViewBgCrackResult;

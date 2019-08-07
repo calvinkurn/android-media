@@ -18,6 +18,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
+import com.tokopedia.topads.dashboard.data.model.request.MinimumBidRequest;
 import com.tokopedia.topads.dashboard.di.TopAdsAddPromoPoductDI;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsManageGroupPromoView;
@@ -25,8 +27,11 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsManageGroupPromoPrese
 import com.tokopedia.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView;
 import com.tokopedia.topads.dashboard.view.widget.TopAdsCustomRadioGroup;
 import com.tokopedia.topads.dashboard.view.widget.TopAdsRadioExpandView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**

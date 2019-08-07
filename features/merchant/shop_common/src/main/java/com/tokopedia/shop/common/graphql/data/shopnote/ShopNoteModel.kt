@@ -22,6 +22,12 @@ data class ShopNoteModel(@SerializedName("id")
                          @SerializedName("isTerms")
                          @Expose
                          val terms: Boolean = false,
+                         @SerializedName("position")
+                         @Expose
+                         val position: Int = 0,
+                         @SerializedName("url")
+                         @Expose
+                         val url: String = "",
                          @SerializedName("updateTime")
                          @Expose
                          val updateTime: String? = null) {

@@ -272,7 +272,7 @@
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_16"
-        app:srcCompat="@drawable/ic_pdp_order_prioritas"
+        app:srcCompat="@drawable/empty_photo"
         android:visibility="gone"
         tools:visibility="visible"
         app:layout_goneMarginTop="0dp"

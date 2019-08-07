@@ -18,6 +18,8 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -31,6 +33,7 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
 
     private GraphqlCacheManager mCacheManager;
     private FingerprintManager mFingerprintManager;
+    private Subscription cacheSubscription;
 
     @Inject
     public GraphqlUseCase() {
@@ -78,18 +81,32 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
     }
 
     public void clearCache() {
-        Observable.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                initCacheManager();
-                if (mRequests != null && !mRequests.isEmpty() && mCacheStrategy != null) {
-                    mCacheManager.delete(mFingerprintManager.generateFingerPrint(mRequests.toString(),
-                            mCacheStrategy.isSessionIncluded()));
-                    return true;
-                }
-                return false;
+        cacheSubscription = Observable.fromCallable(() -> {
+            initCacheManager();
+            if (mRequests != null && !mRequests.isEmpty() && mCacheStrategy != null) {
+                mCacheManager.delete(mFingerprintManager.generateFingerPrint(mRequests.toString(),
+                        mCacheStrategy.isSessionIncluded()));
+                return true;
             }
-        }).subscribeOn(Schedulers.io()).subscribe();
+            return false;
+        }).subscribeOn(Schedulers.io()).subscribe(
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable ignored) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean ignored) {
+
+                    }
+                }
+        );
     }
 
     private void initCacheManager() {
@@ -107,5 +124,13 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
             throw new RuntimeException("Please set valid request parameter before executing the use-case");
         }
         return graphqlRepository.getResponse(mRequests, mCacheStrategy);
+    }
+
+    @Override
+    public void unsubscribe() {
+        super.unsubscribe();
+        if(cacheSubscription != null && !cacheSubscription.isUnsubscribed()) {
+            cacheSubscription.unsubscribe();
+        }
     }
 }

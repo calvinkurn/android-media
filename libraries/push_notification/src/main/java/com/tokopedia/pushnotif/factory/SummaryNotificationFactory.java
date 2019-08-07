@@ -37,11 +37,11 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
-        HistoryNotification.storeNotification(applinkNotificationModel.getFullName(),
+        HistoryNotification.storeNotification(context, applinkNotificationModel.getFullName(),
                 applinkNotificationModel.getSummary(), notificationType,
                 ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks()));
 
-        listHistoryNotification = HistoryNotification.getListHistoryNotification(notificationType);
+        listHistoryNotification = HistoryNotification.getListHistoryNotification(context, notificationType);
 
         for (HistoryNotificationDB history : listHistoryNotification) {
             inboxStyle.addLine(genarateContentText(history));

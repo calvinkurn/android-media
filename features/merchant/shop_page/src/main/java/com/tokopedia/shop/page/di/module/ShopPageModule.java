@@ -21,43 +21,43 @@ import dagger.Module;
 import dagger.Provides;
 
 @ShopPageScope
-@Module
+@Module(includes = ShopViewModelModule.class)
 public class ShopPageModule {
 
     @ShopPageScope
     @Provides
-    public DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase() {
-        return new DeleteShopInfoCacheUseCase();
+    public DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase(@ApplicationContext Context context) {
+        return new DeleteShopInfoCacheUseCase(context);
     }
 
     @ShopPageScope
     @Provides
-    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase() {
-        return new DeleteShopProductAceUseCase();
+    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase(@ApplicationContext Context context) {
+        return new DeleteShopProductAceUseCase(context);
     }
 
     @ShopPageScope
     @Provides
-    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase() {
-        return new DeleteShopProductTomeUseCase();
+    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase(@ApplicationContext Context context) {
+        return new DeleteShopProductTomeUseCase(context);
     }
 
     @ShopPageScope
     @Provides
-    public DeleteShopProductUseCase provideDeleteShopProductUseCase() {
-        return new DeleteShopProductUseCase(provideDeleteShopProductAceUseCase(), provideDeleteShopProductTomeUseCase());
+    public DeleteShopProductUseCase provideDeleteShopProductUseCase(@ApplicationContext Context context) {
+        return new DeleteShopProductUseCase(provideDeleteShopProductAceUseCase(context), provideDeleteShopProductTomeUseCase(context));
     }
 
     @ShopPageScope
     @Provides
-    public DeleteShopNoteUseCase provideDeleteShopNoteUseCase() {
-        return new DeleteShopNoteUseCase();
+    public DeleteShopNoteUseCase provideDeleteShopNoteUseCase(@ApplicationContext Context context) {
+        return new DeleteShopNoteUseCase(context);
     }
 
     @ShopPageScope
     @Provides
-    public DeleteReputationSpeedDailyCacheUseCase provideDeleteReputationSpeedDailyCacheUseCase() {
-        return new DeleteReputationSpeedDailyCacheUseCase();
+    public DeleteReputationSpeedDailyCacheUseCase provideDeleteReputationSpeedDailyCacheUseCase(@ApplicationContext Context context) {
+        return new DeleteReputationSpeedDailyCacheUseCase(context);
     }
 
     @ShopPageScope

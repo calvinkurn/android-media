@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.hansel.preprocessor.module'
@@ -16,11 +15,6 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-
-kapt {
-    correctErrorTypes = true
-}
-
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 

@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+/*
+ * Use {com.tokopedia.network.utils.ErrorHandler} instead of this class
+ */
+@Deprecated
 public class ErrorHandler {
 
     public static String getErrorMessage(final Context context, Throwable e) {

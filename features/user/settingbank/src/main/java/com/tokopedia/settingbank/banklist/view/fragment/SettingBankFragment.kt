@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -20,7 +21,6 @@ import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
 import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
-import com.tokopedia.settingbank.banklist.di.SettingBankDependencyInjector
 import com.tokopedia.settingbank.banklist.view.adapter.BankAccountAdapter
 import com.tokopedia.settingbank.banklist.view.adapter.BankAccountTypeFactoryImpl
 import com.tokopedia.settingbank.banklist.view.listener.BankAccountPopupListener
@@ -29,7 +29,9 @@ import com.tokopedia.settingbank.banklist.view.listener.SettingBankContract
 import com.tokopedia.settingbank.banklist.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
+import com.tokopedia.settingbank.banklist.di.DaggerSettingBankComponent
 import kotlinx.android.synthetic.main.fragment_setting_bank.*
+import javax.inject.Inject
 
 /**
  * @author by nisie on 6/7/18.
@@ -42,8 +44,9 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     private val REQUEST_EDIT_BANK: Int = 102
     private val REQUEST_PHONE_VERIFICATION: Int = 103
 
-
+    @Inject
     lateinit var presenter: SettingBankPresenter
+
     lateinit var adapter: BankAccountAdapter
     lateinit var alertDialog: Dialog
     lateinit var linearLayoutManager: LinearLayoutManager
@@ -65,8 +68,14 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
     override fun initInjector() {
-        presenter = SettingBankDependencyInjector.Companion.inject(activity!!.applicationContext)
-        presenter.attachView(this)
+        if (activity != null && (activity as Activity).application != null) {
+            val addSettingBankComponent = DaggerSettingBankComponent.builder().baseAppComponent(
+                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .build()
+
+            addSettingBankComponent.inject(this)
+            presenter.attachView(this)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,7 +114,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
         add_account_button.setOnClickListener { addNewAccount() }
         account_list_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val index = linearLayoutManager.findLastVisibleItemPosition()
                 if (adapter.checkLoadMore(index)) {

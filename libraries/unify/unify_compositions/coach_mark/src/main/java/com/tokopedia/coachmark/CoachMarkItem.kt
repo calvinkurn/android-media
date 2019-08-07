@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Created by Hendy on 4/13/2017
+ * Created by Hendry on 4/13/2017
  * Edited by Meyta
  */
 
@@ -22,12 +22,16 @@ package com.tokopedia.coachmark
 import android.view.View
 import android.view.ViewGroup
 
-class CoachMarkItem @JvmOverloads constructor(val view: View?, val title: String?,
-                                              val description: String, val coachMarkContentPosition: CoachMarkContentPosition = CoachMarkContentPosition.UNDEFINED,
-                                              val tintBackgroundColor: Int = 0, val scrollView: ViewGroup? = null) {
+class CoachMarkItem @JvmOverloads constructor(val view: View?,
+                                val title: String?,
+                                val description: String,
+                                val coachMarkContentPosition: CoachMarkContentPosition = CoachMarkContentPosition.UNDEFINED,
+                                val tintBackgroundColor: Int = 0,
+                                val scrollView: ViewGroup? = null) {
 
     var location: IntArray? = null
         private set
+
     var radius: Int = 0
         private set
 

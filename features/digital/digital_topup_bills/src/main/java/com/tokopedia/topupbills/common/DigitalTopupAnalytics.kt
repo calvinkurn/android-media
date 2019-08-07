@@ -1,0 +1,324 @@
+package com.tokopedia.topupbills.common
+
+import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
+import com.tokopedia.topupbills.telco.data.TelcoPromo
+import com.tokopedia.topupbills.telco.data.TelcoRecommendation
+import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+
+
+/**
+ * @author by resakemal on 05/07/19.
+ */
+
+class DigitalTopupAnalytics {
+
+    fun eventInputNumberManual(categoryId: Int, operatorName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.INPUT_MANUAL_NUMBER,
+                "${getCategoryName(categoryId)} - $operatorName"
+        ))
+    }
+
+    fun eventInputNumberContactPicker(categoryId: Int, operatorName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.INPUT_FROM_CONTACT,
+                "${getCategoryName(categoryId)} - $operatorName"
+        ))
+    }
+
+    fun eventClickOnContactPickerHomepage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_ON_CONTACT,
+                ""
+        ))
+    }
+
+    //not yet
+    fun eventInputNumberWidget(categoryId: Int, operatorName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.INPUT_FROM_WIDGET,
+                "${getCategoryName(categoryId)} - $operatorName"
+        ))
+    }
+
+    fun eventInputNumberFavorites(categoryId: Int, operatorName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.INPUT_FROM_FAVORITE_NUMBER,
+                "${getCategoryName(categoryId)} - $operatorName"
+        ))
+    }
+
+    fun eventClearInputNumber() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLEAR_INPUT_NUMBER,
+                ""
+        ))
+    }
+
+    fun eventClickBackButton(categoryId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_BACK_BUTTON,
+                getCategoryName(categoryId)
+        ))
+    }
+
+    fun eventClickSeeMore(categoryId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_SEE_MORE,
+                getCategoryName(categoryId)
+        ))
+    }
+
+    fun eventCloseDetailProduct(categoryId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLOSE_DETAIL_PRODUCT,
+                getCategoryName(categoryId)
+        ))
+    }
+
+    fun eventClickCopyPromoCode(promoName: String, position: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.PROMO_CLICK,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.COPY_PROMO_DIGITAL,
+                "$promoName - $position"
+        ))
+    }
+
+    fun eventClickTelcoPrepaidCategory(categoryName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_TELCO_CATEGORY,
+                "Prabayar - $categoryName"
+        ))
+    }
+
+    fun eventClickTelcoTab(headerTab: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_TELCO_TAB,
+                "$headerTab"
+        ))
+    }
+
+    fun impressionEnhanceCommerceProduct(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>) {
+        val productTelcoList = ArrayList<Any>()
+        for (i in 0 until digitalTrackProductTelcoList.size) {
+            val product = digitalTrackProductTelcoList[i]
+            productTelcoList.add(DataLayer.mapOf(
+                    DigitalTopupEventTracking.EnhanceEccomerce.NAME, product.itemProduct.product.attributes.desc,
+                    DigitalTopupEventTracking.EnhanceEccomerce.ID, product.itemProduct.product.id,
+                    DigitalTopupEventTracking.EnhanceEccomerce.PRICE, product.itemProduct.product.attributes.price,
+                    DigitalTopupEventTracking.EnhanceEccomerce.BRAND, "none",
+                    DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(product.itemProduct.product.attributes.categoryId),
+                    DigitalTopupEventTracking.EnhanceEccomerce.LIST, "${getCategoryName(product.itemProduct.product.attributes.categoryId)} - product ${product.position} - " +
+                    "${product.itemProduct.product.attributes.desc}",
+                    DigitalTopupEventTracking.EnhanceEccomerce.POSITION, product.position))
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", DigitalTopupEventTracking.Event.PRODUCT_VIEW,
+                        "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                        "eventAction", DigitalTopupEventTracking.Action.PRODUCT_CARD_IMPRESSION,
+                        "eventLabel", getCategoryName(digitalTrackProductTelcoList[0].itemProduct.product.attributes.categoryId),
+                        "ecommerce", DataLayer.mapOf(
+                        "impressions", DataLayer.mapOf(
+                        "products", productTelcoList.toArray()
+                )
+                )
+                )
+        )
+
+    }
+
+    fun clickEnhanceCommerceProduct(itemProduct: TelcoProductDataCollection, position: Int,
+                                    operatorName: String) {
+        val productTelcoList = ArrayList<Any>()
+        productTelcoList.add(DataLayer.mapOf(
+                DigitalTopupEventTracking.EnhanceEccomerce.NAME, itemProduct.product.attributes.desc,
+                DigitalTopupEventTracking.EnhanceEccomerce.ID, itemProduct.product.id,
+                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemProduct.product.attributes.price,
+                DigitalTopupEventTracking.EnhanceEccomerce.BRAND, operatorName,
+                DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(itemProduct.product.attributes.categoryId),
+                DigitalTopupEventTracking.EnhanceEccomerce.POSITION, position))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", DigitalTopupEventTracking.Event.PRODUCT_CLICK,
+                        "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                        "eventAction", DigitalTopupEventTracking.Action.CLICK_PRODUCT_CARD,
+                        "eventLabel", getCategoryName(itemProduct.product.attributes.categoryId),
+                        "ecommerce", DataLayer.mapOf(
+                        "click", DataLayer.mapOf(
+                        "actionField", DataLayer.mapOf(
+                        "list", "${getCategoryName(itemProduct.product.attributes.categoryId)} - id product ${itemProduct.product.id} - " +
+                        "position $position - ${itemProduct.product.attributes.desc}"
+                ),
+                        "products", productTelcoList.toArray()
+                )
+                )
+                )
+        )
+    }
+
+    fun impressionEnhanceCommerceRecentTransaction(digitalTrackRecentTelco: List<DigitalTrackRecentTransactionTelco>) {
+        val recentList = ArrayList<Any>()
+        for (i in 0 until digitalTrackRecentTelco.size) {
+            val recentItem = digitalTrackRecentTelco[i]
+            recentList.add(DataLayer.mapOf(
+                    DigitalTopupEventTracking.EnhanceEccomerce.NAME, recentItem.itemRecent.clientNumber,
+                    DigitalTopupEventTracking.EnhanceEccomerce.ID, "none",
+                    DigitalTopupEventTracking.EnhanceEccomerce.PRICE, "0",
+                    DigitalTopupEventTracking.EnhanceEccomerce.BRAND, "none",
+                    DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(recentItem.categoryId),
+                    DigitalTopupEventTracking.EnhanceEccomerce.LIST, "category ${getCategoryName(recentItem.categoryId)} - " +
+                    "product ${recentItem.position} - " +
+                    "${recentItem.itemRecent.clientNumber} - ${recentItem.itemRecent.title}",
+                    DigitalTopupEventTracking.EnhanceEccomerce.POSITION, recentItem.position))
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", DigitalTopupEventTracking.Event.PRODUCT_VIEW,
+                        "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                        "eventAction", DigitalTopupEventTracking.Action.RECENT_ICON_IMPRESSION,
+                        "eventLabel", "none",
+                        "ecommerce", DataLayer.mapOf(
+                        "impressions", DataLayer.mapOf(
+                        "products", recentList.toArray()
+                )
+                )
+                )
+        )
+
+    }
+
+    fun clickEnhanceCommerceRecentTransaction(itemRecent: TelcoRecommendation,
+                                              operatorName: String, position: Int) {
+        val recentList = ArrayList<Any>()
+        recentList.add(DataLayer.mapOf(
+                DigitalTopupEventTracking.EnhanceEccomerce.NAME, itemRecent.clientNumber,
+                DigitalTopupEventTracking.EnhanceEccomerce.ID, "none",
+                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, "0",
+                DigitalTopupEventTracking.EnhanceEccomerce.BRAND, operatorName,
+                DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(itemRecent.categoryId),
+                DigitalTopupEventTracking.EnhanceEccomerce.POSITION, position))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", DigitalTopupEventTracking.Event.PRODUCT_CLICK,
+                        "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                        "eventAction", DigitalTopupEventTracking.Action.CLICK_RECENT_ICON,
+                        "eventLabel", "${getCategoryName(itemRecent.categoryId)} - $position",
+                        "ecommerce", DataLayer.mapOf(
+                        "click", DataLayer.mapOf(
+                        "actionField", DataLayer.mapOf(
+                        "list", "category id ${itemRecent.categoryId} - " +
+                        "product $position - " +
+                        "${itemRecent.clientNumber} - ${itemRecent.title}"
+                ),
+                        "products", recentList.toArray()
+                )
+                )
+                )
+        )
+    }
+
+    fun impressionEnhanceCommercePromoList(digitalTrackPromoList: List<DigitalTrackPromoTelco>) {
+        val promoList = ArrayList<Any>()
+        for (i in 0 until digitalTrackPromoList.size) {
+            val promo = digitalTrackPromoList[i]
+            promoList.add(DataLayer.mapOf(
+                    DigitalTopupEventTracking.EnhanceEccomerce.ID, promo.promoItem.id,
+                    DigitalTopupEventTracking.EnhanceEccomerce.NAME, "/deals-popular suggestion",
+                    DigitalTopupEventTracking.EnhanceEccomerce.POSITION, promo.position,
+                    DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE, promo.promoItem.title,
+                    DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, "none",
+                    DigitalTopupEventTracking.EnhanceEccomerce.PROMO_ID, promo.promoItem.id,
+                    DigitalTopupEventTracking.EnhanceEccomerce.PROMO_CODE, promo.promoItem.promoCode))
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", DigitalTopupEventTracking.Event.PROMO_VIEW,
+                        "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                        "eventAction", DigitalTopupEventTracking.Action.PROMO_DIGITAL_IMPRESSION,
+                        "eventLabel", "none",
+                        "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                        "promotions", promoList.toArray()
+                )
+                )
+                )
+        )
+
+    }
+
+    fun clickEnhanceCommercePromo(telcoPromo: TelcoPromo, position: Int) {
+        val promoList = ArrayList<Any>()
+        promoList.add(DataLayer.mapOf(
+                DigitalTopupEventTracking.EnhanceEccomerce.ID, telcoPromo.id,
+                DigitalTopupEventTracking.EnhanceEccomerce.NAME, "/deals-popular suggestion",
+                DigitalTopupEventTracking.EnhanceEccomerce.POSITION, position,
+                DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE, telcoPromo.title,
+                DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_URL, "none",
+                DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, "none",
+                DigitalTopupEventTracking.EnhanceEccomerce.PROMO_ID, telcoPromo.id,
+                DigitalTopupEventTracking.EnhanceEccomerce.PROMO_CODE, telcoPromo.promoCode))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", DigitalTopupEventTracking.Event.PROMO_CLICK,
+                        "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                        "eventAction", DigitalTopupEventTracking.Action.CLICK_PROMO_DIGITAL,
+                        "eventLabel", telcoPromo.promoCode,
+                        "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                        "promotions", promoList.toArray()
+                )
+                )
+                )
+        )
+    }
+
+    fun trackScreenNameTelco(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    private fun getCategoryName(categoryId: Int): String {
+        return when (categoryId) {
+            TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA.toLowerCase()
+            TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA.toLowerCase()
+            TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING.toLowerCase()
+            else -> TelcoComponentName.PRODUCT_PULSA.toLowerCase()
+        }
+    }
+}

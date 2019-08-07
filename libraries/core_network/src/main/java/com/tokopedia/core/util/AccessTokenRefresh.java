@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsBasicApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -69,7 +69,13 @@ public class AccessTokenRefresh {
         TokenModel model = null;
         if (tokenResponse != null) {
             model = new GsonBuilder().create().fromJson(tokenResponse, TokenModel.class);
-            userSession.setToken(model.getAccessToken(), model.getTokenType());
+            if(model.getAccessToken()!= null && !model.getAccessToken().trim().isEmpty()) {
+                userSession.setToken(model.getAccessToken(), model.getTokenType());
+            }
+
+            if(model.getRefreshToken()!= null && !model.getRefreshToken().trim().isEmpty()) {
+                userSession.setRefreshToken(model.getRefreshToken());
+            }
         }
 
         if (model != null) {
@@ -82,7 +88,7 @@ public class AccessTokenRefresh {
     private Retrofit getRetrofit() {
         Gson gson = new Gson();
         return new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
+                .baseUrl(TokopediaUrl.Companion.getInstance().getACCOUNTS())
                 .addConverterFactory(new StringResponseConverter())
                 .client(OkHttpFactory.create().buildBasicAuth())
                 .build();

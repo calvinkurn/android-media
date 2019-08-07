@@ -1,0 +1,13 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:color="@color/medium_green"
+        android:state_checked="true"
+        android:fontFamily="sans-serif-medium" />
+    <item
+        android:color="@color/black_54"
+        android:state_checked="false"
+        android:fontFamily="sans-serif"/>
+    <item
+        android:color="@color/black_54"
+        android:fontFamily="sans-serif"/>
+</selector>

@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.Courier;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ProvinceCitiesDistrict;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;

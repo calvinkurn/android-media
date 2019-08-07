@@ -10,17 +10,26 @@ public interface ShopOpenDomainView extends CustomerView {
 
     boolean isShopNameInValidRange();
 
-    void onSuccessCheckShopName(boolean existed);
+    void onSuccessCheckShopName(boolean existed,String domainSuggestion);
 
-    void onErrorCheckShopName(Throwable t);
+    void onErrorCheckShopName(String message);
 
     boolean isShopDomainInValidRange();
 
     void onSuccessCheckShopDomain(boolean existed);
 
-    void onErrorCheckShopDomain(Throwable t);
+    void onErrorCheckShopDomain(String message);
 
     void onSuccessReserveShop(String shopName);
 
     void onErrorReserveShop(Throwable t);
+
+    void showSubmitLoading();
+
+    void hideSubmitLoading();
+
+    void onSuccessCreateShop(String message, String shopId);
+
+    void onErrorCreateShop(String message);
+
 }

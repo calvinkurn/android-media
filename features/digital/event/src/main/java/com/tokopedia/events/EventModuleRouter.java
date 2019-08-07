@@ -18,6 +18,7 @@ public interface EventModuleRouter {
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
+    void shareEvent(Context context, String uri, String name, String imageUrl);
 
     Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(Context context, String platform, String category, String defaultSelectedTab);
 

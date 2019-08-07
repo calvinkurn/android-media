@@ -19,6 +19,11 @@ mutation get_promo_stack_first($params: PromoStackRequest) {
       invoice_description
       gateway_id
       is_coupon
+      tracking_details {
+        product_id
+        promo_codes_tracking
+        promo_details_tracking
+      }
       coupon_description
       clashing_info_detail {
           clash_message

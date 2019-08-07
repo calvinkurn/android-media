@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_manual_ads"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/card_top_rounded_bg"
+    android:gravity="center|top"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/dp_48"
+    android:padding="@dimen/dp_16">
+
+    <RelativeLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/btn_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_autoads_close" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_200"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ilustration_empty_setting_ads" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Nonaktifkan Iklan Otomatis"
+        style="@style/TextView.TitleBig.Bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:gravity="center"
+        style="@style/TextView.Micro.FontMedium.Black40"
+        android:text="@string/kamu_yakin_mau_menghapus_kemudahan_dari_fitur_iklan_otomatis" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/card_ads_manual_bg"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="4dp"
+        android:paddingTop="12dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/tanpa_ribet" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/buat_iklan_tanpa_ribet"
+                style="@style/TextView.Small.Bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cukup_dengan_atur_anggaran_harian_dan_iklanmu_akan_segera_aktif"
+                style="@style/TextView.Micro.FontMedium.Black40"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btn_nonactive_ads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        style="@style/Button.Submit.White.Border.Full"
+        android:text="@string/nonatifkan_iklan_otomatis"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_active_ads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/gunakan_iklan_otomatis"
+        style="@style/Button.Submit.Green.Full"
+        android:textAllCaps="false" />
+
+
+</LinearLayout>

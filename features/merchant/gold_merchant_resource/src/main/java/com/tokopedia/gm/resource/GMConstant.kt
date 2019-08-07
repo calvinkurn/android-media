@@ -3,8 +3,6 @@ package com.tokopedia.gm.resource
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import java.util.*
 
 object GMConstant {
     const val BASE_SELLER_URL = "https://seller.tokopedia.com/"

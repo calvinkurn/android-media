@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_shipment_recipient_address_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipment_address"
-            style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/checkout_module_title_shipping_dest"
-            android:textStyle="bold" />
+            app:typographyType="heading_3"
+            android:text="@string/checkout_module_title_shipping_dest_new" />
 
         <View
             android:id="@+id/separator"
@@ -66,7 +66,7 @@
                 <ImageView
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
-                    android:src="@drawable/ic_info_trade_in" />
+                    app:srcCompat="@drawable/ic_info_trade_in" />
 
                 <TextView
                     android:id="@+id/tv_trade_in_info"
@@ -87,45 +87,48 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_image_address_container"
             android:background="@color/white"
+            android:layout_marginBottom="@dimen/dp_16"
             android:orientation="horizontal">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_send_to_multiple_address"
-                style="@style/TextSmallMediumBlack54"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_6"
                 android:layout_weight="1"
-                android:background="@drawable/bg_grey_round_address"
+                android:background="@drawable/bg_green_round_address"
                 android:foreground="?selectableItemBackground"
                 android:gravity="center"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_12"
+                android:textColor="@color/address_green"
                 android:text="@string/label_button_send_to_multiple_address"
-                android:textSize="10sp" />
+                app:typographyType="heading_6"
+                app:typographyWeight="bold"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_change_recipient_address"
-                style="@style/TextSmallMediumBlack54"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginLeft="@dimen/dp_12"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_6"
                 android:layout_weight="1"
-                android:background="@drawable/bg_grey_round_address"
+                android:background="@drawable/bg_green_round_address"
                 android:foreground="?selectableItemBackground"
+                android:paddingTop="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_12"
                 android:gravity="center"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"
+                android:textColor="@color/address_green"
                 android:text="@string/label_button_change_address_new"
-                android:textSize="10sp" />
+                app:typographyType="heading_6"
+                app:typographyWeight="bold" />
 
         </LinearLayout>
 

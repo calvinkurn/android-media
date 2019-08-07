@@ -2,8 +2,9 @@ package com.tokopedia.abstraction.common.utils;
 
 /**
  * Created by ricoharisin on 11/21/16.
+ * user Globalconfig on com.tokopedia.config.GlobalConfig
  */
-
+@Deprecated
 public class GlobalConfig {
 
     public static final int SELLER_APPLICATION = 2;

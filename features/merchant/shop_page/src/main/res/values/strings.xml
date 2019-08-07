@@ -36,6 +36,7 @@
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
+    <string name="shop_info_title_tab_home">Home</string>
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
@@ -149,5 +150,10 @@
     <string name="search_keyword_at_tokopedia">Cari \"%1$s\" di Tokopedia</string>
     <string name="tablayout_new_text">Baru</string>
     <string name="x_product">%1$s Produk</string>
+
+    <string name="string_btn_whitelist">Buat Post</string>
+    <string name="empty_feed_title">Tingkatkan Penjualanmu</string>
+    <string name="empty_feed_subtitle">Yuk, post promo dan update dari Tokomu \nsupaya makin banyak yang belanja!</string>
+    <string name="empty_feed_btn">Post Sekarang</string>
 
 </resources>

@@ -10,30 +10,9 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <activity
-            android:name=".purchase.activity.ConfirmPaymentActivity"
-            android:label="@string/title_change_payment"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".purchase.activity.TxConfirmationDetailActivity"
-            android:label="@string/title_activity_transaction_payment_confirmation_detail"
+        <activity android:name=".orders.orderdetails.view.activity.OrderListwebViewActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".purchase.activity.TxVerDetailActivity"
-            android:label="@string/title_payment_verification"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".purchase.activity.TxDetailActivity"
-            android:label="@string/title_activity_people_tx_details"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".purchase.activity.TxHistoryActivity"
-            android:label="@string/title_activity_order_history_view"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".purchase.activity.PurchaseActivity"
-            android:label="@string/title_purchase" />
+            android:theme="@style/Theme.White"/>
         <activity
             android:name=".orders.orderlist.view.activity.OrderListActivity"
             android:label="@string/title_order_list"
@@ -52,45 +31,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".wallet.WalletActivity"
-            android:label="@string/toko_cash_info" />
-        <activity
-            android:name=".insurance.view.InsuranceTnCActivity"
-            android:label="@string/title_term_and_condition" />
-        <activity
-            android:name=".purchase.detail.activity.OrderDetailActivity"
-            android:label="@string/title_activity_people_tx_details"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".purchase.detail.activity.OrderHistoryActivity"
-            android:label="@string/transaction_title_activity_order_history" />
-        <activity
-            android:name=".purchase.activity.PaymentProcedureActivity"
-            android:label="@string/title_payment_procedure"
-            android:theme="@style/Toolbar.White" />
-        <activity
-            android:name=".purchase.detail.activity.CustomScannerBarcodeActivity"
-            android:label="@string/title_scan_awb" />
-        <activity
-            android:name=".pickuppoint.view.activity.PickupPointActivity"
-            android:label="@string/title_send_to_pick_up_booth"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".pickuppoint.view.activity.PickupPointMapActivity"
-            android:label="@string/title_send_to_pick_up_booth" />
-        <activity
-            android:name=".purchase.detail.activity.BookingCodeActivity"
-            android:label="@string/title_booking_code_detail"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".orders.orderlist.common.SaveDateBottomSheetActivity"
             android:theme="@style/Theme.AppCompat.Translucent" />
-
-        <service
-            android:name=".purchase.services.TxActionIntentService"
-            android:exported="false" />
-
-        <activity android:name=".orders.orderdetails.view.activity.RequestCancelActivity"
+        <activity
+            android:name=".orders.orderdetails.view.activity.RequestCancelActivity"
             android:label="@string/title_activity_people_reason"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />

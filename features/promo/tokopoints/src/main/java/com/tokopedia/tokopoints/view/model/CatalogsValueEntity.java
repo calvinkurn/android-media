@@ -2,11 +2,12 @@ package com.tokopedia.tokopoints.view.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.library.baseadapter.BaseItem;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class CatalogsValueEntity implements Serializable {
+public class CatalogsValueEntity extends BaseItem implements Serializable {
     @Expose
     @SerializedName("baseCode")
     private String baseCode;

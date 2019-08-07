@@ -6,7 +6,7 @@ interface InitiateSearchListener {
 
     fun onHandleApplink(applink: String)
 
-    fun onHandleResponseError()
-
     fun onHandleResponseUnknown()
+
+    fun onHandleResponseError()
 }

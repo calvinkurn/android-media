@@ -5,6 +5,8 @@ object DeeplinkConstant {
     const val SCHEME_TOKOPEDIA = "tokopedia"
     const val SCHEME_SELLERAPP = "sellerapp"
 
+    const val SCHEME_TOKOPEDIA_SLASH = "$SCHEME_TOKOPEDIA://"
+
     /**
      * This constant is used to store deeplink started with scheme "tokopedia-android-internal".
      * Since it is for android internal only, if the applink is shared between iOS or site,

@@ -29,7 +29,6 @@
             android:layout_width="@dimen/dp_30"
             android:layout_height="@dimen/dp_30"
             android:layout_marginRight="@dimen/dp_16"
-            android:background="@drawable/ic_winner_badge"
             android:gravity="center_horizontal"
             android:textSize="@dimen/sp_12"
             android:visibility="gone"

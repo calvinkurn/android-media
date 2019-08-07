@@ -48,6 +48,12 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               thumbnail
               thumbnailLarge
             }
+            tracking {
+              clickURL
+              viewURL
+              type
+              source
+            }
           }
         }
         cardbanner {
@@ -75,6 +81,12 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               webLink
               thumbnail
               thumbnailLarge
+              tracking {
+                clickURL
+                viewURL
+                type
+                source
+              }
             }
           }
         }
@@ -135,6 +147,9 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                 percentage
                 isSelected
                 position
+                videos {
+                    url
+                }
                 tracking {
                 	clickURL
                 	viewURL
@@ -158,7 +173,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                 url
               }
             }
-						postTag {
+            postTag {
               id
               type
               appLink
@@ -197,6 +212,14 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                     hex
                     opacity
                   }
+                }
+                buttonCTA {
+                  text
+                  textDisabled
+                  isDisabled
+                }
+                shop {
+                    shopID
                 }
               }
               isVoted

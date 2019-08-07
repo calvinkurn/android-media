@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/dp_4"
+        android:theme="@style/Toolbar.White"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:subtitleTextAppearance="@style/SubTitleTextAppearance"
+        app:titleTextAppearance="@style/TitleTextAppearance" />
+
+    <TextView
+        android:id="@+id/tv_dob_warning"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:lineHeight="@dimen/sp_22"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/ar_text_dob_warning"
+        android:textColor="@color/clr_ae31353b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/ed_edit_dob"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_32"
+        android:background="?attr/selectableItemBackground"
+        android:lineHeight="@dimen/sp_20"
+        android:text="Pilih Tanggal"
+        android:textColor="@color/black_36"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toStartOf="@+id/iv_arrow_down"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_dob_warning"
+        app:layout_constraintStart_toStartOf="@+id/tv_dob_warning"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dob_warning" />
+
+    <ImageView
+        android:id="@+id/iv_arrow_down"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="?attr/selectableItemBackground"
+        app:srcCompat="@drawable/ic_arrow_down_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ed_edit_dob"
+        app:layout_constraintTop_toTopOf="@+id/ed_edit_dob" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_4"
+        android:background="@color/dividerColor"
+        app:layout_constraintEnd_toEndOf="@+id/iv_arrow_down"
+        app:layout_constraintStart_toStartOf="@+id/ed_edit_dob"
+        app:layout_constraintTop_toBottomOf="@+id/ed_edit_dob" />
+
+    <TextView
+        android:id="@+id/tv_update_dob"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_44"
+        android:background="@drawable/bg_green_rounded_tradein"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:text="@string/label_save"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_dob_warning"
+        app:layout_constraintStart_toStartOf="@+id/tv_dob_warning"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="tv_dob_warning,
+        ed_edit_dob,iv_arrow_down,divider,tv_update_dob" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

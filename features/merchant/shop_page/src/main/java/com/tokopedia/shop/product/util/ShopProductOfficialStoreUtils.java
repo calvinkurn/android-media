@@ -13,6 +13,7 @@ import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.product.view.activity.SimpleWebViewActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -152,8 +153,6 @@ public class ShopProductOfficialStoreUtils {
 
     private static void openWebView(Activity activity, String url) {
         CommonUtils.dumper(url);
-        if (activity.getApplication() instanceof ShopModuleRouter) {
-            ((ShopModuleRouter) activity.getApplication()).goToWebview(activity, url);
-        }
+        activity.startActivity(SimpleWebViewActivity.createIntent(activity, url));
     }
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_4"
+    android:background="@color/transparent"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="1." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_promo_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        tools:text="Promo sudah habis Promo sudah habis Promo sudah habis Promo sudah habis Promo sudah habis Promo sudah habis Promo sudah habis " />
+
+</LinearLayout>

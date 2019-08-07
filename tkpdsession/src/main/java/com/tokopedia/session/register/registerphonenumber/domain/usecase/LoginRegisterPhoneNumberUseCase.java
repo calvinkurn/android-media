@@ -18,8 +18,9 @@ import rx.functions.Func1;
 
 /**
  * @author by yfsx on 13/03/18.
+ * Deprecated, no longer used
  */
-
+@Deprecated
 public class LoginRegisterPhoneNumberUseCase extends UseCase<LoginRegisterPhoneNumberModel> {
     private RegisterPhoneNumberUseCase registerPhoneNumberUseCase;
     private GetUserInfoUseCase getUserInfoUseCase;

@@ -41,6 +41,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private RelativeLayout mRlTotalPromo;
     private TextView mTvTotalPromoStackAmount;
     private TextView mTvTotalPromoStackLabel;
+    private TextView mTvOrderPrioritasLabel;
+    private TextView mTvOrderPrioritasFee;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -70,6 +72,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mRlTotalPromo = itemView.findViewById(R.id.rl_total_promo);
         mTvTotalPromoStackAmount = itemView.findViewById(R.id.tv_total_promo_amount);
         mTvTotalPromoStackLabel = itemView.findViewById(R.id.tv_total_promo_label);
+        mTvOrderPrioritasLabel = itemView.findViewById(R.id.tv_order_prioritas_label);
+        mTvOrderPrioritasFee = itemView.findViewById(R.id.tv_order_prioritas_price);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
@@ -83,6 +87,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
         mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
+        mTvOrderPrioritasFee.setText(getPriceFormat(mTvOrderPrioritasLabel,mTvOrderPrioritasFee,shipmentCost.getPriorityFee()));
         mTvPurchaseProtectionLabel.setText(getTotalPurchaseProtectionItemLabel(mTvPurchaseProtectionLabel.getContext(), shipmentCost.getTotalPurchaseProtectionItem()));
         mTvPurchaseProtectionFee.setText(getPriceFormat(mTvPurchaseProtectionLabel, mTvPurchaseProtectionFee, shipmentCost.getPurchaseProtectionFee()));
         mTvPromoDiscount.setText(String.format(mTvPromoDiscount.getContext().getString(R.string.promo_format),

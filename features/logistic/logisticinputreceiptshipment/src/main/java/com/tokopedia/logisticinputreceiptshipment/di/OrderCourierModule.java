@@ -2,9 +2,8 @@ package com.tokopedia.logisticinputreceiptshipment.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
+import com.tokopedia.logisticdata.data.analytics.SalesShippingAnalytics;
 import com.tokopedia.logisticdata.data.apiservice.MyShopOrderActApi;
 import com.tokopedia.logisticdata.data.apiservice.MyShopOrderApi;
 import com.tokopedia.logisticdata.data.apiservice.OrderDetailApi;
@@ -23,10 +22,6 @@ import com.tokopedia.user.session.UserSession;
 import dagger.Module;
 import dagger.Provides;
 import rx.subscriptions.CompositeSubscription;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by kris on 1/3/18. Tokopedia

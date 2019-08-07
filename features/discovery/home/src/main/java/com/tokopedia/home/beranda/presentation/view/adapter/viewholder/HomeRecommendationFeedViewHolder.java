@@ -71,6 +71,7 @@ implements HomeTabFeedListener {
 
         if (homeFeedPagerAdapter == null || homeRecommendationFeedViewModel.isNewData()) {
             initViewPagerAndTablayout();
+            homeRecommendationFeedViewModel.setNewData(false);
         }
     }
 
@@ -88,12 +89,14 @@ implements HomeTabFeedListener {
         homeFeedsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                FeedTabModel selectedFeedTabModel =
-                        feedTabModelList.get(tab.getPosition());
-                HomePageTracking.eventClickOnHomePageRecommendationTab(
-                        context,
-                        selectedFeedTabModel
-                );
+                if(tab.getPosition() < feedTabModelList.size()) {
+                    FeedTabModel selectedFeedTabModel =
+                            feedTabModelList.get(tab.getPosition());
+                    HomePageTracking.eventClickOnHomePageRecommendationTab(
+                            context,
+                            selectedFeedTabModel
+                    );
+                }
             }
 
             @Override

@@ -5,8 +5,8 @@ import android.os.Bundle;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentView;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ProductContract {
 
-    public interface View extends SearchSectionFragmentView {
+    public interface View extends BrowseSectionFragmentView {
 
         String getDepartmentId();
 
@@ -65,7 +65,7 @@ public class ProductContract {
 
     }
 
-    public interface Presenter extends SearchSectionFragmentPresenter<View> {
+    public interface Presenter extends BrowseSectionFragmentPresenter<View> {
 
 
         void loadDataProduct(SearchParameter searchParameter, CategoryHeaderModel categoryHeaderModel);

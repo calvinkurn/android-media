@@ -16,9 +16,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
-import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
@@ -26,14 +26,14 @@ import com.tokopedia.navigation.presentation.fragment.NotificationFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
-import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import javax.inject.Inject
 
 /**
  * Created by meta on 20/06/18.
  */
-@DeepLink(ApplinkConst.NOTIFICATION)
-class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View {
+
+class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View,
+        NotificationUpdateFragment.NotificationUpdateListener {
 
     @Inject
     lateinit var presenter: NotificationActivityPresenter
@@ -60,11 +60,14 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     }
 
     private fun initView() {
-        initTabLayout()
-        presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())
+        var initialIndexPage = getParamInt(Intent.EXTRA_TITLE, intent.extras, null, INDEX_NOTIFICATION_ACTIVITY)
+        initTabLayout(initialIndexPage)
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
     }
 
+    override fun onSuccessLoadNotifUpdate() {
+        clearNotifCounter(INDEX_NOTIFICATION_UPDATE)
+    }
 
     private fun onSuccessGetUpdateUnreadCounter(): (NotificationUpdateUnread) -> Unit {
         return {
@@ -72,10 +75,12 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
                 var notif = tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView?.findViewById<View>(R.id.circle)
                 notif?.visibility = View.VISIBLE
             }
+            updateCounter = it.pojo.notifUnreadInt
+            setCounterNotificationUpdate()
         }
     }
 
-    private fun initTabLayout() {
+    private fun initTabLayout(initialIndexPage: Int) {
         for (i in 0 until tabList.size) {
             tabLayout.addTab(tabLayout.newTab())
         }
@@ -105,27 +110,31 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager.setCurrentItem(tab.position, true)
                 sendAnalytics(tab.position)
+                clearNotifCounter(tab.position)
                 setTabSelectedView(tab.customView)
                 resetCircle(tab.customView)
-                presenter.clearNotifCounter()
-                if (tab.position == INDEX_NOTIFICATION_UPDATE) {
-                    notifyNotificationUpdateBottomAction(updateCounter)
-                }
             }
         })
+
+        val tab = tabLayout.getTabAt(initialIndexPage)
+        tab?.select()
     }
 
-    private fun notifyNotificationUpdateBottomAction(updateCounter: Long) {
-        val notifUpdateFragment = fragmentAdapter?.getItem(INDEX_NOTIFICATION_UPDATE)
-        notifUpdateFragment?.let {
-            if (it is NotificationUpdateContract.View) {
-                it.notifyBottomActionView(updateCounter)
-            }
+    private fun clearNotifCounter(position: Int) {
+        if(position == INDEX_NOTIFICATION_UPDATE) {
+            presenter.clearNotifCounter()
+            resetCounterNotificationUpdate()
         }
     }
 
+
+    override fun resetCounterNotificationUpdate() {
+        updateCounter = 0
+        setCounterNotificationUpdate()
+    }
+
     private fun sendAnalytics(position: Int) {
-        if(position == 1) {
+        if(position == INDEX_NOTIFICATION_UPDATE) {
             analytics.trackClickNewestInfo()
         }
     }
@@ -171,30 +180,13 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         return (application as BaseMainApplication).baseAppComponent
     }
 
-    override fun updateTotalUnreadCounter(): () -> Unit {
-        return { presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter()) }
-    }
-
-    override fun updateTotalUnreadCounterManual() {
-        updateCounter -= 1
-        setTotalCounterNotificationUpdate()
-        notifyNotificationUpdateBottomAction(updateCounter)
-    }
-
-    private fun onSuccessGetTotalUnreadCounter(): (NotificationUpdateTotalUnread) -> Unit {
-        return {
-            updateCounter = it.pojo.notifUnreadInt
-            setTotalCounterNotificationUpdate()
-            notifyNotificationUpdateBottomAction(updateCounter)
-        }
-    }
-
-    private fun setTotalCounterNotificationUpdate() {
+    private fun setCounterNotificationUpdate() {
         val defaultTitle = getString(R.string.title_notification_update)
-        var counter: String = ""
-
+        var counter = ""
         if (updateCounter > 0) {
             counter = getString(R.string.title_counter_update_notification, updateCounter.toString())
+        } else if (updateCounter > 99) {
+            counter = getString(R.string.title_counter_update_notification, getString(R.string.exceed_ninety_nine))
         }
         val titleView: TextView? = tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView?.findViewById(R.id.title)
         titleView?.let {
@@ -207,6 +199,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         presenter.detachView()
     }
 
+
     companion object {
 
         var INDEX_NOTIFICATION_ACTIVITY = 0
@@ -215,5 +208,23 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         fun start(context: Context): Intent {
             return Intent(context, NotificationActivity::class.java)
         }
+
+        fun createIntentUpdate(context: Context): Intent {
+            var intent = Intent(context, NotificationActivity::class.java)
+            var bundle = Bundle()
+            bundle.putInt(Intent.EXTRA_TITLE, INDEX_NOTIFICATION_UPDATE)
+            intent.putExtras(bundle)
+            return intent
+        }
+    }
+
+    object DeeplinkIntent {
+        @DeepLink(ApplinkConst.NOTIFICATION)
+        @JvmStatic
+        fun createIntent(context: Context, extras: Bundle) = Companion.start(context)
+
+        @DeepLink(ApplinkConst.BUYER_INFO)
+        @JvmStatic
+        fun createIntentUpdate(context: Context, extras: Bundle) = Companion.createIntentUpdate(context)
     }
 }

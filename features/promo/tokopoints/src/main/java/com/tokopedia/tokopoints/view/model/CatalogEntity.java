@@ -11,12 +11,23 @@ public class CatalogEntity {
     @SerializedName("catalogs")
     private ArrayList<CatalogsValueEntity> catalogs;
 
+    @SerializedName("pageInfo")
+    private TokopointPaging paging;
+
     public ArrayList<CatalogsValueEntity> getCatalogs() {
         return catalogs;
     }
 
     public void setCatalogs(ArrayList<CatalogsValueEntity> catalogs) {
         this.catalogs = catalogs;
+    }
+
+    public TokopointPaging getPaging() {
+        return paging;
+    }
+
+    public void setPaging(TokopointPaging paging) {
+        this.paging = paging;
     }
 
     @Override

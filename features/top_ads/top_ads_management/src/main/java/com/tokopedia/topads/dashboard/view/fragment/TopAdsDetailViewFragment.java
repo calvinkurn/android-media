@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.R;
@@ -100,6 +100,20 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     @Override
     public void onAdLoaded(V ad) {
         super.onAdLoaded(ad);
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onAutoAdsActive() {
+        super.onAutoAdsActive();
+        setStatusSwitchEnabled(false);
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onAutoAdsInactive() {
+        super.onAutoAdsInactive();
+        setStatusSwitchEnabled(true);
         getActivity().invalidateOptionsMenu();
     }
 
@@ -200,6 +214,10 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
         status.setListenerValue(null);
         status.setChecked(checked);
         status.setListenerValue(this);
+    }
+
+    protected void setStatusSwitchEnabled(boolean enable){
+        status.setSwitchEnabled(enable);
     }
 
     private void setResultAdDeleted() {

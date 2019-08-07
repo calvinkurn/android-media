@@ -34,6 +34,8 @@
     <string name="topads_showcase_detail_promo_desc_1">Untuk mengubah atau menghapus iklan.</string>
     <string name="topads_showcase_detail_promo_title_2">Pengaturan Status</string>
     <string name="topads_showcase_detail_promo_desc_2">Mengubah status aktif dan tidak aktif iklan.</string>
+    <string name="topads_showcase_detail_statistic_title">Ringkasan Statistic</string>
+    <string name="topads_showcase_detail_statistic_desc">Melihat ringkasan statistic iklan.</string>
 
     <!-- TOP ADS KEYWORD DETAIL -->
     <string name="topads_showcase_detail_keyword_title_1">Pengaturan</string>

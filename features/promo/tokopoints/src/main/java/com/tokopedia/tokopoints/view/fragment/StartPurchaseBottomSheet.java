@@ -17,6 +17,7 @@ import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LobItem;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class StartPurchaseBottomSheet extends BottomSheets {
 
@@ -69,7 +70,7 @@ public class StartPurchaseBottomSheet extends BottomSheets {
 
                 ImageView icon = itemView.findViewById(R.id.img_lob);
                 if (item.getText().equalsIgnoreCase("Beli")) {
-                    icon.setImageResource(R.drawable.ic_tp_buy);
+                    icon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_tp_buy));
 
                     AnalyticsTrackerUtil.sendEvent(view.getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
@@ -77,7 +78,7 @@ public class StartPurchaseBottomSheet extends BottomSheets {
                             AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_BELI,
                             "");
                 } else if (item.getText().equalsIgnoreCase("Kereta")) {
-                    icon.setImageResource(R.drawable.ic_tp_train);
+                    icon.setImageDrawable(MethodChecker.getDrawable(getActivity(),(R.drawable.ic_tp_train)));
 
                     AnalyticsTrackerUtil.sendEvent(view.getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
@@ -85,7 +86,7 @@ public class StartPurchaseBottomSheet extends BottomSheets {
                             AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_KARETA,
                             "");
                 } else if (item.getText().equalsIgnoreCase("Pesawat")) {
-                    icon.setImageResource(R.drawable.ic_tp_pesawat);
+                    icon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_tp_pesawat));
 
                     AnalyticsTrackerUtil.sendEvent(view.getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
@@ -93,7 +94,7 @@ public class StartPurchaseBottomSheet extends BottomSheets {
                             AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_PESAWAT,
                             "");
                 } else if (item.getText().equalsIgnoreCase("Bayar")) {
-                    icon.setImageResource(R.drawable.ic_tp_bayar);
+                    icon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_tp_bayar));
 
                     AnalyticsTrackerUtil.sendEvent(view.getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,

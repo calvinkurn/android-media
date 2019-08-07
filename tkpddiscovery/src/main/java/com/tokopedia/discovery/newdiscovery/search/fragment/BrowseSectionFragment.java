@@ -51,7 +51,7 @@ import static com.tokopedia.core.home.helper.ProductFeedHelper.PORTRAIT_COLUMN_M
  */
 
 public abstract class BrowseSectionFragment extends BaseDaggerFragment
-        implements SearchSectionFragmentView {
+        implements BrowseSectionFragmentView {
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
 
@@ -81,7 +81,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private HashMap<String, String> selectedFilter;
+    protected HashMap<String, String> selectedFilter;
     private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
 
@@ -304,7 +304,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
                 } else {
                     SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }
-                clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
                 reloadData();
@@ -452,10 +451,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
     }
 
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        redirectionListener.performNewProductSearch(query, forceSearch);
-    }
-
     public void showSearchInputView() {
         redirectionListener.showSearchInputView();
     }
@@ -500,9 +495,9 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
     protected abstract AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener();
 
-    protected abstract SearchSectionGeneralAdapter getAdapter();
+    protected abstract BrowseSectionGeneralAdapter getAdapter();
 
-    protected abstract SearchSectionFragmentPresenter getPresenter();
+    protected abstract BrowseSectionFragmentPresenter getPresenter();
 
     protected abstract GridLayoutManager.SpanSizeLookup onSpanSizeLookup();
 
@@ -592,5 +587,10 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
     protected String removeValue(String mapValue, String removedValue) {
         return mapValue.replace(removedValue, "").replace(",,", ",");
+    }
+
+    @Override
+    public void setOfficialSelected(Boolean officialSelectedFlag) {
+
     }
 }

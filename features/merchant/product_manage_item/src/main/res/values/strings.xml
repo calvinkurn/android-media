@@ -14,6 +14,12 @@
     <string name="label_choose">Pilih</string>
     <string name="label_next">Selanjutnya</string>
     <string name="label_always_available">Selalu Tersedia</string>
+    <string name="courier_option">Atur Layanan Kurir</string>
+    <string name="product_option">Lihat Produk</string>
+    <string name="popup_label_static">Produk pertamamu siap</string>
+    <string name="popup_label_tips_trick">Masih bingung? Cek tip &amp; trik penjual</string>
+    <string name="popup_tips_trick_clickable">baru di sini.</string>
+
 
     <string name="product_add_tag_video_recommendation">rekomendasi</string>
     <string name="product_add_information_video_recommendation">Pilih rekomendasi video untuk menjelaskan dan mendemokan produk Anda.</string>

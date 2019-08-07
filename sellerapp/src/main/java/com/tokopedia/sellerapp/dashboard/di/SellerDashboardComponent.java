@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.dashboard.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
 
 import dagger.Component;
@@ -12,4 +13,5 @@ import dagger.Component;
 @Component(modules = SellerDashboardModule.class, dependencies = AppComponent.class)
 public interface SellerDashboardComponent {
     void inject(DashboardFragment dashboardFragment);
+    void inject(DashboardActivity dashboardActivity);
 }

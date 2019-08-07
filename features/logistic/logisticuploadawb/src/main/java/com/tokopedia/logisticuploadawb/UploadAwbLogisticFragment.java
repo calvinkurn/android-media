@@ -1,6 +1,7 @@
 package com.tokopedia.logisticuploadawb;
 
 import android.os.Bundle;
+import android.webkit.URLUtil;
 import android.webkit.WebView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
@@ -21,7 +22,7 @@ public class UploadAwbLogisticFragment extends BaseSessionWebViewFragment {
 
     @Override
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        if(RouteManager.isSupportApplink(getActivity(), url)){
+        if(!URLUtil.isNetworkUrl(url) && RouteManager.isSupportApplink(getActivity(), url)){
             RouteManager.route(getActivity(), url);
             return true;
         }

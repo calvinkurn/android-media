@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainContent"
     android:layout_width="match_parent"
@@ -19,7 +20,7 @@
             android:layout_gravity="center_vertical"
             android:background="@null"
             android:layout_marginLeft="@dimen/dp_16"
-            android:src="@drawable/ic_close_default" />
+            app:srcCompat="@drawable/ic_close_default" />
 
         <TextView
             android:id="@+id/location_bottomsheet_title"
