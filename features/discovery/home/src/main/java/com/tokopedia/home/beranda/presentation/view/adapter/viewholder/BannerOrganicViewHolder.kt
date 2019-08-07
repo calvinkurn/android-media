@@ -79,7 +79,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             seeAllText.visibility = View.GONE
         }
         seeAllText.setOnClickListener {
-            HomePageTracking.eventClickSeeAllBannerMixChannel(itemView.context, element.channel.id)
+            HomePageTracking.eventClickSeeAllBannerMixChannel(itemView.context, element.channel.id, element.channel.header.name)
             homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(
                     element.channel.header
             ), element.channel.homeAttribution)
