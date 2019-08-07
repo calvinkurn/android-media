@@ -54,6 +54,7 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
+import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
@@ -91,6 +92,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        UIBlockDebugger.init(this);
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
 
@@ -148,7 +150,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
         registerActivityLifecycleCallbacks(callback);
 
-        LogWrapper.init(this);
         TimberWrapper.init(this);
     }
 

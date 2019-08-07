@@ -962,7 +962,11 @@ public class MainParentActivity extends BaseActivity implements
         if (osMenu == null) {
             initOsMenu();
         }
-        lottieOsDrawable.setMaxProgress(OS_STATE_SELECTED); // important! to reset maxProgress
+        if (lottieOsDrawable.isAnimating()) {
+            lottieOsDrawable.setMaxProgress(OS_STATE_ANIMATED);
+        } else {
+            lottieOsDrawable.setMaxProgress(OS_STATE_SELECTED); // important! to reset maxProgress
+        }
         lottieOsDrawable.setProgress(progress);
     }
 }

@@ -46,8 +46,10 @@
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
-                        android:padding="4dp"
+                        android:padding="@dimen/dp_4"
+                        android:layout_margin="@dimen/dp_2"
                         app:srcCompat="@drawable/ic_edit_pencil_photo"
+                        android:elevation="@dimen/dp_2"
                         android:background="@drawable/rounded_bg_icon_with_shadow"/>
                 </RelativeLayout>
             </RelativeLayout>
