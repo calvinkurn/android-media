@@ -140,7 +140,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         setLastQuerySearchView(keyword);
     }
 
-    private void initToolbar() {
+    protected void initToolbar() {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
