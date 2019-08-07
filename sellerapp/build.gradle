@@ -160,11 +160,6 @@ android {
 //                    }
 //                }
 //            } else {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
-                    }
-                }
 //            }
         }
     }
