@@ -46,7 +46,7 @@ constructor(private val restUsecase: GetDistrictRequestUseCase,
                         view?.let {
                             it.setLoadingState(false)
                             if (!addressResponse.addresses.isNullOrEmpty()) {
-                                it.renderList(mapper.transformToViewModel(addressResponse),
+                                it.renderData(mapper.transformToViewModel(addressResponse),
                                         addressResponse.isNextAvailable)
                             } else {
                                 it.showEmpty()

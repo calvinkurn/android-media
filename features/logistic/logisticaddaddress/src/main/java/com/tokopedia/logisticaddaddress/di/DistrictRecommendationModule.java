@@ -60,6 +60,12 @@ public class DistrictRecommendationModule {
 
     @Provides
     @DistrictRecommendationScope
+    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @Provides
+    @DistrictRecommendationScope
     OkHttpRetryPolicy provideOkHttpRetryPolicy() {
         return new OkHttpRetryPolicy(
                 NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY

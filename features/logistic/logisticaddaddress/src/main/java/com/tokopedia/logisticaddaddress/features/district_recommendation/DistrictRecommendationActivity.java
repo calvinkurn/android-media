@@ -50,9 +50,9 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
     protected Fragment getNewFragment() {
         Token  token = getIntent().getParcelableExtra(ARGUMENT_DATA_TOKEN);
         if (token == null) {
-            return DistrictRecommendationFragment.newInstance();
+            return DiscomFragment.newInstance();
         } else {
-            return DistrictRecommendationFragment.newInstance(token);
+            return DiscomFragment.newInstance(token);
         }
     }
 

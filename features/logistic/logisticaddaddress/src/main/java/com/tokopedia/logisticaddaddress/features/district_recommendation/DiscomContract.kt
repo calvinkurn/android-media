@@ -6,7 +6,9 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 
 interface DiscomContract {
 
-    interface View : BaseListViewListener<AddressViewModel> {
+    interface View {
+        fun renderData(list: List<AddressViewModel>, hasNextPage: Boolean)
+        fun showGetListError(throwable: Throwable)
         fun setLoadingState(active: Boolean)
         fun showEmpty()
     }

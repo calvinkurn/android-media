@@ -39,7 +39,7 @@ public class GetDistrictRecommendationSubscriber extends Subscriber<AddressRespo
         if (view != null) {
             view.setLoadingState(false);
             if (addressResponse.getAddresses() != null && addressResponse.getAddresses().size() > 0) {
-                view.renderList(addressViewModelMapper.transformToViewModel(addressResponse),
+                view.renderData(addressViewModelMapper.transformToViewModel(addressResponse),
                         addressResponse.isNextAvailable());
             } else {
                 view.showEmpty();
