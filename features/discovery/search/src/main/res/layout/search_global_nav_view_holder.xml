@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.search.result.presentation.view.widget.GlobalNavWidget
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/globalNavWidget"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    />
+    android:orientation="vertical">
+
+    <com.tokopedia.search.result.presentation.view.widget.GlobalNavWidget
+        android:id="@+id/globalNavWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/product_separator_color"/>
+
+</LinearLayout>
