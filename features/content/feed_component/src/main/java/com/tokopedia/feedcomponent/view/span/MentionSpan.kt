@@ -15,15 +15,20 @@ class MentionSpan(
         val fullText: String,
         val userId: String,
         val fullName: String,
-        val start: Int
+        val start: Int,
+        val onClickListener: OnClickListener
 ) : ClickableSpan() {
+
+    interface OnClickListener {
+        fun onClick(userId: String)
+    }
 
     val length = fullName.length
 
     val end = start + length
 
     override fun onClick(p0: View) {
-        toString()
+        onClickListener.onClick(userId)
     }
 
     override fun updateDrawState(ds: TextPaint) {

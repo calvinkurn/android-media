@@ -63,6 +63,8 @@ public interface KolComment {
         interface ViewHolder {
             void onGoToProfile(String url);
 
+            void onClickMentionedProfile(String id);
+
             boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition);
         }
 

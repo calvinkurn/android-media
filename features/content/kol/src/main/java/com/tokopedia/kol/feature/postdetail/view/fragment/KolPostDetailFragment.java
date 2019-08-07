@@ -252,6 +252,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             trackImpression(dynamicPostViewModel);
         }
         setFooter(postDetailViewModel);
+        recyclerView.clearOnScrollListeners();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -472,6 +473,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onGoToProfile(String url) {
         onGoToLink(url);
+    }
+
+    @Override
+    public void onClickMentionedProfile(String id) {
+        onGoToLink(ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, id));
     }
 
     @Override

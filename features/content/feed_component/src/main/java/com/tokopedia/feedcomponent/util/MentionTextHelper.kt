@@ -46,12 +46,12 @@ object MentionTextHelper {
         return "$OPENING_MENTION_TAG$mentioned$CLOSING_MENTION_TAG"
     }
 
-    fun spanText(text: CharSequence, @ColorInt mentionColor: Int, isFromEdit: Boolean): Spannable {
+    fun spanText(text: CharSequence, @ColorInt mentionColor: Int, onMentionClicked: MentionSpan.OnClickListener, isFromEdit: Boolean): Spannable {
         val spannableString = SpannableStringBuilder(text)
         val matcher = if (isFromEdit) tokenizerFullEditPattern.matcher(text) else readFullPattern.matcher(text)
         while (matcher.find()) {
             val textToBeReplaced = matcher.group()
-            val mentionSpan = getMentionSpanFromTag(textToBeReplaced, mentionColor, matcher.start(), isFromEdit)
+            val mentionSpan = getMentionSpanFromTag(textToBeReplaced, mentionColor, matcher.start(), onMentionClicked, isFromEdit)
             if (mentionSpan != null) {
                 val startIndex = spannableString.indexOf(textToBeReplaced)
                 val endIndex = startIndex + textToBeReplaced.length
@@ -78,7 +78,7 @@ object MentionTextHelper {
         return spannableString
     }
 
-    private fun getMentionSpanFromTag(tag: String, mentionColor: Int, start: Int, isFromEdit: Boolean): MentionSpan? {
+    private fun getMentionSpanFromTag(tag: String, mentionColor: Int, start: Int, onMentionClicked: MentionSpan.OnClickListener, isFromEdit: Boolean): MentionSpan? {
         val user = getMentionableUserViewModelFromTokenizerText(tag, isFromEdit)
         return user?.let {
             MentionSpan(
@@ -86,7 +86,8 @@ object MentionTextHelper {
                     fullText = user.toString(),
                     fullName = user.fullName,
                     userId = user.id,
-                    start = start
+                    start = start,
+                    onClickListener = onMentionClicked
             )
         }
     }

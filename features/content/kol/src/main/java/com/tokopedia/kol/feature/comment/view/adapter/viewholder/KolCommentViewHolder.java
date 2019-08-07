@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.comment.view.adapter.viewholder;
 
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -56,18 +57,23 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
         });
 
         comment.setMovementMethod(LinkMovementMethod.getInstance());
+
+        Spanned commentText;
         if (element.isOfficial()) {
             badge.setVisibility(View.VISIBLE);
-            comment.setText(MethodChecker.fromHtml(SPACE + getCommentText(element)));
+            commentText = MethodChecker.fromHtml(SPACE + getCommentText(element));
         } else {
             badge.setVisibility(View.GONE);
-            comment.setText(
-                    MentionTextHelper.INSTANCE.spanText(
-                            MethodChecker.fromHtml(getCommentText(element)),
-                            MentionEditText.Companion.getMentionColor(mainView.getContext()),
-                            false)
-            );
+            commentText = MethodChecker.fromHtml(getCommentText(element));
         }
+
+        comment.setText(
+                MentionTextHelper.INSTANCE.spanText(
+                        commentText,
+                        MentionEditText.Companion.getMentionColor(mainView.getContext()),
+                        viewListener::onClickMentionedProfile,
+                        false)
+        );
 
         mainView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

@@ -188,6 +188,14 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onClickMentionedProfile(String id) {
+        RouteManager.route(
+                getContext(),
+                ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, id)
+        );
+    }
+
+    @Override
     public void showLoading() {
         adapter.showLoading();
     }

@@ -39,7 +39,7 @@ class GetMentionableUserUseCase @Inject constructor(
         private const val PARAM_ROWS = "rows"
 
         @JvmOverloads
-        fun getParam(query: String, rows: Int = 10): RequestParams {
+        fun getParam(query: String, rows: Int = 30): RequestParams {
             val params = RequestParams.create()
             params.putString(PARAMS,
                     mapOf(
