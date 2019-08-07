@@ -102,6 +102,9 @@ buildscript {
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
+        maven {
+            url 'https://jitpack.io'
+        }
         flatDir {
             dirs project(rootProject.ext.libraries.inappupdate).file('libs')
         }
@@ -572,6 +575,7 @@ dependencies {
     implementation (rootProject.ext.debugToolsDependencies.timber){
         exclude group: 'org.jetbrains', module: 'annotations'
     }
+    devImplementation project.ext.debugToolsDependencies.blockCanary
     implementation project(rootProject.ext.features.navigationCommon)
     implementation 'com.facebook.soloader:soloader:0.6.0'
 
