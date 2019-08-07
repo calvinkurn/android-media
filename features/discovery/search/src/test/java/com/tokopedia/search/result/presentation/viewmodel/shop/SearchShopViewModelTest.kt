@@ -31,12 +31,28 @@ class SearchShopViewModelTest {
     private abstract class MockShopViewModelMapper : Mapper<SearchShopModel, ShopViewModel>
 
     private val searchShopModel = SearchShopModel()
+    private val searchMoreShopModel = SearchShopModel()
     private val shopHeaderViewModel = ShopHeaderViewModel()
     private val shopItemViewModelList = mutableListOf<ShopViewModel.ShopItem>().also {
         it.add(ShopViewModel.ShopItem())
+        it.add(ShopViewModel.ShopItem())
+        it.add(ShopViewModel.ShopItem())
+        it.add(ShopViewModel.ShopItem())
     }
+
+    private val moreShopItemViewModelList = mutableListOf<ShopViewModel.ShopItem>().also {
+        it.add(ShopViewModel.ShopItem())
+        it.add(ShopViewModel.ShopItem())
+        it.add(ShopViewModel.ShopItem())
+        it.add(ShopViewModel.ShopItem())
+    }
+
     private val shopViewModel = ShopViewModel(
             shopItemList = shopItemViewModelList
+    )
+
+    private val moreShopViewModel = ShopViewModel(
+            shopItemList = moreShopItemViewModelList
     )
 
     private val searchShopParameter = mapOf(
@@ -49,6 +65,7 @@ class SearchShopViewModelTest {
 
     private val shopViewModelMapper = mock(MockShopViewModelMapper::class.java).also {
         whenever(it.convert(searchShopModel)).thenReturn(shopViewModel)
+        whenever(it.convert(searchMoreShopModel)).thenReturn(moreShopViewModel)
     }
 
     private val userSession = mock(UserSessionInterface::class.java).also {
@@ -66,7 +83,7 @@ class SearchShopViewModelTest {
                 Dispatchers.Unconfined,
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
-                TestSearchUseCase(searchShopModel),
+                TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -113,9 +130,20 @@ class SearchShopViewModelTest {
 
     private fun assertShopItemAtSecondIndexAndAboveOfData(data: List<Visitable<*>>) {
         for(i in 1 until data.size) {
-            assert(data[i] is ShopViewModel.ShopItem) {
-                "Element $i ${data[i].javaClass.kotlin.qualifiedName} is not of type ShopViewModel.ShopItem"
-            }
+            assertShopItemType(i, data[i])
+            assertShopItemPosition(i, data[i] as ShopViewModel.ShopItem)
+        }
+    }
+
+    private fun assertShopItemType(index: Int, shopItem: Visitable<*>) {
+        assert(shopItem is ShopViewModel.ShopItem) {
+            "Element $index ${shopItem.javaClass.kotlin.qualifiedName} is not of type ShopViewModel.ShopItem"
+        }
+    }
+
+    private fun assertShopItemPosition(index: Int, shopItem: ShopViewModel.ShopItem) {
+        assert(shopItem.position == index) {
+            "Element $index of ShopViewModel.ShopItem position is ${shopItem.position}, expected $index"
         }
     }
 
@@ -126,7 +154,7 @@ class SearchShopViewModelTest {
                 Dispatchers.Unconfined,
                 searchShopParameter,
                 TestErrorSearchUseCase(exception),
-                TestSearchUseCase(searchShopModel),
+                TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -162,7 +190,7 @@ class SearchShopViewModelTest {
                 Dispatchers.Unconfined,
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
-                TestSearchUseCase(searchShopModel),
+                TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,

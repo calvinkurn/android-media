@@ -67,10 +67,6 @@ class SearchShopViewModel(
         searchParameter[SearchApiConst.START] = startRow
     }
 
-    private fun getSearchShopLiveDataMutableList() : MutableList<Visitable<*>> {
-        return searchShopLiveData.value?.data?.toMutableList() ?: mutableListOf()
-    }
-
     fun searchShop() {
         launch {
             try {
@@ -115,7 +111,6 @@ class SearchShopViewModel(
         if(searchShopModel == null) return
 
         val visitableList = createSearchShopListWithHeader(searchShopModel)
-
         updateSearchShopLiveDataStateToSuccess(visitableList)
     }
 
@@ -162,9 +157,14 @@ class SearchShopViewModel(
 
     private fun updateSearchShopLiveDataStateToSuccess(visitableList: List<Visitable<*>>) {
         val searchShopDataList = getSearchShopLiveDataMutableList()
+        searchShopDataList.remove(loadingMoreModel)
         searchShopDataList.addAll(visitableList)
 
         searchShopLiveData.postValue(Success(searchShopDataList))
+    }
+
+    private fun getSearchShopLiveDataMutableList() : MutableList<Visitable<*>> {
+        return searchShopLiveData.value?.data?.toMutableList() ?: mutableListOf()
     }
 
     private fun catchSearchShopError(e: Throwable?) {
@@ -193,7 +193,7 @@ class SearchShopViewModel(
     private suspend fun trySearchMoreShop() {
         addLoadingMoreToSearchShopLiveData()
 
-        val startRow = getNextSearchShopStartRow()
+        val startRow = getTotalShopItemCount()
         setSearchParameterStartRow(startRow)
 
         val requestParams = createSearchShopParam(searchParameter)
@@ -211,10 +211,6 @@ class SearchShopViewModel(
         searchShopLiveData.postValue(Success(searchShopDataList))
     }
 
-    private fun getNextSearchShopStartRow(): Int {
-        return getTotalShopItemCount() + 1
-    }
-
     private fun getTotalShopItemCount(): Int {
         return searchShopLiveData.value?.data?.count { it is ShopViewModel.ShopItem } ?: 0
     }
@@ -223,14 +219,7 @@ class SearchShopViewModel(
         if(searchShopModel == null) return
 
         val visitableList = createSearchShopList(searchShopModel)
-
-        removeLoadingMoreFromSearchShopLiveData()
         updateSearchShopLiveDataStateToSuccess(visitableList)
-    }
-
-    private fun removeLoadingMoreFromSearchShopLiveData() {
-        val searchShopDataList = getSearchShopLiveDataMutableList()
-        searchShopDataList.remove(loadingMoreModel)
     }
 
     private fun createSearchShopList(searchShopModel: SearchShopModel): List<Visitable<*>> {
