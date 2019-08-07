@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.repository;
 
-import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
-import com.tokopedia.checkout.domain.datamodel.addresscorner.GqlKeroWithAddressResponse;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.AddressCornerResponse;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.GqlKeroWithAddressResponse;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.usecase.GetAddressWithCornerUseCase;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;

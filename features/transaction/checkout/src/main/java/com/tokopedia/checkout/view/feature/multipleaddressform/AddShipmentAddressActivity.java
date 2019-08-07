@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
-import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
+import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 
 import java.util.ArrayList;

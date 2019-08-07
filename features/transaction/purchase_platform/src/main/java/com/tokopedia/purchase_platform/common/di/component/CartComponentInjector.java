@@ -3,12 +3,9 @@ package com.tokopedia.purchase_platform.common.di.component;
 import android.app.Application;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
+import com.tokopedia.purchase_platform.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.EditAddressUseCase;
-import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
-import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.purchase_platform.common.di.module.CartUseCaseModule;
 import com.tokopedia.purchase_platform.common.di.module.CheckoutRouterModule;
@@ -33,12 +30,6 @@ public class CartComponentInjector {
     CheckoutUseCase checkoutUseCase;
     @Inject
     CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
-    @Inject
-    CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase;
-    @Inject
-    GetCouponListCartMarketPlaceUseCase getCouponListCartMarketPlaceUseCase;
-    @Inject
-    GetMarketPlaceCartCounterUseCase getMarketPlaceCartCounterUseCase;
     @Inject
     EditAddressUseCase editAddressUseCase;
     @Inject
@@ -89,18 +80,6 @@ public class CartComponentInjector {
 
     public CheckPromoCodeCartListUseCase getCheckPromoCodeCartListUseCase() {
         return checkPromoCodeCartListUseCase;
-    }
-
-    public CheckPromoCodeCartShipmentUseCase getCheckPromoCodeCartShipmentUseCase() {
-        return checkPromoCodeCartShipmentUseCase;
-    }
-
-    public GetCouponListCartMarketPlaceUseCase getGetCouponListCartMarketPlaceUseCase() {
-        return getCouponListCartMarketPlaceUseCase;
-    }
-
-    public GetMarketPlaceCartCounterUseCase getGetMarketPlaceCartCounterUseCase() {
-        return getMarketPlaceCartCounterUseCase;
     }
 
     public UserSessionInterface getUserSession() {

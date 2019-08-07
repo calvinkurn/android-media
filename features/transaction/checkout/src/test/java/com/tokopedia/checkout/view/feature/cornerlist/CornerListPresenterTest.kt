@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.cornerlist
 
-import com.tokopedia.checkout.domain.datamodel.newaddresscorner.AddressListModel
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.model.AddressListModel
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.usecase.GetCornerList
 import com.tokopedia.checkout.helper.AddressDummyDataProvider
 import org.junit.Before

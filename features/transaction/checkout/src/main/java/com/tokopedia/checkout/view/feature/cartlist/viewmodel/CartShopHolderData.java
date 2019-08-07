@@ -3,7 +3,7 @@ package com.tokopedia.checkout.view.feature.cartlist.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.ShopGroupData;
 
 /**
  * Created by Irfan Khoirul on 21/08/18.

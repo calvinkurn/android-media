@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.cartlist.subscriber
 
-import com.tokopedia.checkout.domain.datamodel.recentview.GqlRecentViewResponse
+import com.tokopedia.purchase_platform.cart.data.model.recentview.GqlRecentViewResponse
 import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView
 import com.tokopedia.graphql.data.model.GraphqlResponse

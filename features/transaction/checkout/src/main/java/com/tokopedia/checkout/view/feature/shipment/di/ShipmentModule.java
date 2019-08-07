@@ -3,24 +3,20 @@ package com.tokopedia.checkout.view.feature.shipment.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.purchase_platform.cart.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.purchase_platform.checkout.data.AddressRepository;
 import com.tokopedia.purchase_platform.checkout.domain.mapper.ICheckoutMapper;
-import com.tokopedia.checkout.domain.mapper.IMapperUtil;
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
-import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.checkout.domain.mapper.MapperUtil;
+import com.tokopedia.purchase_platform.common.base.IMapperUtil;
+import com.tokopedia.purchase_platform.checkout.domain.mapper.IShipmentMapper;
+import com.tokopedia.purchase_platform.common.base.MapperUtil;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.CancelAutoApplyCouponUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.ChangeShippingAddressUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
+import com.tokopedia.purchase_platform.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.CodCheckoutUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.EditAddressUseCase;
-import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.GetShipmentAddressFormUseCase;
-import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.PromoActionListener;
@@ -50,7 +46,6 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -106,22 +101,8 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
-    GetThanksToppayUseCase provideGetThanksToppayUseCase(ITopPayRepository topPayRepository,
-                                                         ITopPayMapper topPayMapper) {
-        return new GetThanksToppayUseCase(topPayRepository, topPayMapper);
-    }
-
-    @Provides
-    @ShipmentScope
     EditAddressUseCase provideEditAddressUseCase(AddressRepository addressRepository) {
         return new EditAddressUseCase(addressRepository);
-    }
-
-    @Provides
-    @ShipmentScope
-    CheckPromoCodeCartShipmentUseCase provideCheckPromoCodeCartShipmentUseCase(
-            ICartRepository cartRepository, IVoucherCouponMapper voucherCouponMapper) {
-        return new CheckPromoCodeCartShipmentUseCase(cartRepository, voucherCouponMapper);
     }
 
     @Provides
@@ -184,7 +165,7 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
-    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context){
+    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context) {
         return new CheckPromoStackingCodeUseCase(context.getResources());
     }
 
@@ -195,31 +176,29 @@ public class ShipmentModule {
                                                         CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                                                         CompositeSubscription compositeSubscription,
                                                         CheckoutUseCase checkoutUseCase,
-                                                        GetThanksToppayUseCase getThanksToppayUseCase,
                                                         GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
                                                         GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase,
                                                         EditAddressUseCase editAddressUseCase,
                                                         CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                         ChangeShippingAddressUseCase changeShippingAddressUseCase,
                                                         SaveShipmentStateUseCase saveShipmentStateUseCase,
-                                                        GetRatesUseCase getRatesUseCase,
                                                         CodCheckoutUseCase codCheckoutUseCase,
                                                         GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                                                         ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                                                         ShippingCourierConverter shippingCourierConverter,
                                                         UserSessionInterface userSessionInterface,
-                                                        IVoucherCouponMapper voucherCouponMapper,
                                                         CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                                                         CodAnalytics codAnalytics,
-                                                        CheckoutAnalyticsCourierSelection checkoutAnalytics) {return new ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
-            checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
-            checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,
-            getShipmentAddressFormOneClickShipementUseCase,
+                                                        CheckoutAnalyticsCourierSelection checkoutAnalytics) {
+        return new ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
+                checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                checkoutUseCase, getShipmentAddressFormUseCase,
+                getShipmentAddressFormOneClickShipementUseCase,
                 editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
-                saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
-               codCheckoutUseCase, clearCacheAutoApplyStackUseCase, shippingCourierConverter,
-            shipmentAnalyticsActionListener, voucherCouponMapper, userSessionInterface,
-            analyticsPurchaseProtection, codAnalytics, checkoutAnalytics);
+                saveShipmentStateUseCase, getCourierRecommendationUseCase,
+                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, shippingCourierConverter,
+                shipmentAnalyticsActionListener, userSessionInterface,
+                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics);
     }
 
     @Provides

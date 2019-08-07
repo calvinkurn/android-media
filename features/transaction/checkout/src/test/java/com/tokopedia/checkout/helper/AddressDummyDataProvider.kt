@@ -1,9 +1,9 @@
 package com.tokopedia.checkout.helper
 
 import com.google.gson.Gson
-import com.tokopedia.checkout.domain.datamodel.newaddresscorner.AddressListModel
-import com.tokopedia.checkout.domain.datamodel.newaddresscorner.NewAddressCornerResponse
-import com.tokopedia.checkout.domain.mapper.AddressCornerMapper
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.model.AddressListModel
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.NewAddressCornerResponse
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.AddressCornerMapper
 
 object AddressDummyDataProvider {
 

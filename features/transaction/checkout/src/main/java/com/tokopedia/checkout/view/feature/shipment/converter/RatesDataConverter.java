@@ -2,9 +2,9 @@ package com.tokopedia.checkout.view.feature.shipment.converter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.GroupShop;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.Product;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.UserAddress;
 import com.tokopedia.logisticdata.data.entity.rates.Attribute;
 import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
@@ -115,8 +115,8 @@ public class RatesDataConverter {
         return TextUtils.join(",", categoryIds);
     }
 
-    private boolean isForceInsurance(List<com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product> products) {
-        for (com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product product : products) {
+    private boolean isForceInsurance(List<com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.Product> products) {
+        for (com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.Product product : products) {
             if (product.isProductFinsurance()) {
                 return true;
             }

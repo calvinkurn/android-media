@@ -4,11 +4,10 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.purchase_platform.common.feature.promo.domain.CancelAutoApplyCouponUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.purchase_platform.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.GetCartListUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.purchase_platform.common.di.scope.CartListScope;
@@ -34,7 +33,6 @@ public class TestCartListModule {
     private DeleteCartListUseCase deleteCartListUseCase;
     private UpdateCartUseCase updateCartUseCase;
     private ResetCartGetCartListUseCase resetCartGetCartListUseCase;
-    private ResetCartUseCase resetCartUseCase;
     private CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;

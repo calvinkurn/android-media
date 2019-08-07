@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.common
 
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 
 /**

@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.checkout.domain.usecase;
 
-import com.tokopedia.checkout.domain.datamodel.saveshipmentstate.SaveShipmentStateData;
+import com.tokopedia.purchase_platform.checkout.domain.model.saveshipmentstate.SaveShipmentStateData;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.entity.response.saveshipmentstate.SaveShipmentStateResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;

@@ -3,9 +3,9 @@ package com.tokopedia.purchase_platform.cart.domain.usecase;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.UpdateAndRefreshCartListData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.cart.domain.mapper.ICartMapper;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;

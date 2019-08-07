@@ -4,20 +4,15 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.purchase_platform.cart.domain.mapper.ICartMapper;
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.purchase_platform.checkout.domain.mapper.IShipmentMapper;
+import com.tokopedia.purchase_platform.cart.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.CancelAutoApplyCouponUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
+import com.tokopedia.purchase_platform.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.DeleteCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartUpdateCartUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.GetCartListUseCase;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.usecase.GetCartMultipleAddressListUseCase;
-import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
-import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
@@ -45,23 +40,6 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase(ICartRepository cartRepository,
-                                                                        IVoucherCouponMapper voucherCouponMapper) {
-        return new CheckPromoCodeCartShipmentUseCase(cartRepository, voucherCouponMapper);
-    }
-
-    @Provides
-    GetCouponListCartMarketPlaceUseCase getCouponListCartMarketPlaceUseCase(ICartRepository cartRepository,
-                                                                            IVoucherCouponMapper voucherCouponMapper) {
-        return new GetCouponListCartMarketPlaceUseCase(cartRepository, voucherCouponMapper);
-    }
-
-    @Provides
-    GetMarketPlaceCartCounterUseCase getMarketPlaceCartCounterUseCase(ICartRepository cartRepository) {
-        return new GetMarketPlaceCartCounterUseCase(cartRepository);
-    }
-
-    @Provides
     GetCartListUseCase getCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper) {
         return new GetCartListUseCase(context, cartRepository, mapper);
     }
@@ -69,11 +47,6 @@ public class CartUseCaseModule {
     @Provides
     GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper) {
         return new GetCartMultipleAddressListUseCase(context, cartRepository, mapper);
-    }
-
-    @Provides
-    DeleteCartUpdateCartUseCase deleteCartUpdateCartUseCase(ICartRepository cartRepository, ICartMapper mapper) {
-        return new DeleteCartUpdateCartUseCase(cartRepository, mapper);
     }
 
     @Provides
@@ -107,13 +80,6 @@ public class CartUseCaseModule {
             Context context, ICartRepository cartRepository, ICartMapper cartMapper
     ) {
         return new UpdateAndReloadCartUseCase(context, cartRepository, cartMapper);
-    }
-
-    @Provides
-    ResetCartUseCase resetCartGetShipmentFormUseCase(
-            ICartRepository cartRepository, ICartMapper cartMapper
-    ) {
-        return new ResetCartUseCase(cartRepository, cartMapper);
     }
 
     @Provides

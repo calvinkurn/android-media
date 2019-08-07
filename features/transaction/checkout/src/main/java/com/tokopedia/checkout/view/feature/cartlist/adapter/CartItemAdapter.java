@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartItemViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 

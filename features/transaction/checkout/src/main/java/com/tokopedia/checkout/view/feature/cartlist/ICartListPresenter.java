@@ -1,9 +1,9 @@
 package com.tokopedia.checkout.view.feature.cartlist;
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartItemData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.ShopGroupData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;

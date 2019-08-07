@@ -30,13 +30,12 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
-import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
-import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.AutoApplyStackData;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
@@ -742,26 +741,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsChoosePaymentMethodCourierNotComplete() {
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickPilihMetodePembayaranCourierNotComplete();
-    }
-
-    @Deprecated
-    @Override
-    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
-        setAppliedPromoCodeData(promoCodeCartListData);
-    }
-
-    @Deprecated
-    private void setAppliedPromoCodeData(PromoCodeCartListData promoCodeCartListData) {
-    }
-
-    @Override
-    public void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData,
-                                                       int itemPosition, boolean noToast) {
-        if (!noToast && !shipmentAdapter.isCourierPromoStillExist()) {
-            showToastNormal(promoCodeCartListData.getDataVoucher().getMessageSuccess());
-        }
-        setAppliedPromoCodeData(promoCodeCartListData);
-        setCourierPromoApplied(itemPosition);
     }
 
     @Override
@@ -2287,11 +2266,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                     boolean useCourierRecommendation) {
         if (shopShipmentList != null && shopShipmentList.size() > 0) {
             shipmentDetailData.setTradein(isTradeIn());
-            if (useCourierRecommendation) {
-                shipmentPresenter.processGetCourierRecommendation(shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel, shopShipmentList, true);
-            } else {
-                shipmentPresenter.processGetRates(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
-            }
+            shipmentPresenter.processGetCourierRecommendation(shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel, shopShipmentList, true);
         }
     }
 

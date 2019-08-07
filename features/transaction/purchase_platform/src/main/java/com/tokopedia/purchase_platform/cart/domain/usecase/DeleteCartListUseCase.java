@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.cart.domain.usecase;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
+import com.tokopedia.purchase_platform.cart.domain.model.DeleteAndRefreshCartListData;
 import com.tokopedia.purchase_platform.cart.domain.mapper.ICartMapper;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;

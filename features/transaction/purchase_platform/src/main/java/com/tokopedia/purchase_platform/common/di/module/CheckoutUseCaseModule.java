@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.common.di.module;
 import com.tokopedia.purchase_platform.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
-import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
@@ -22,8 +21,4 @@ public class CheckoutUseCaseModule {
         return new CheckoutUseCase(cartRepository, checkoutMapper, checkoutModuleRouter);
     }
 
-    @Provides
-    GetThanksToppayUseCase provideGetThanksToppayUseCase(ITopPayRepository topPayRepository, ITopPayMapper topPayMapper) {
-        return new GetThanksToppayUseCase(topPayRepository, topPayMapper);
-    }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.dom
 
 import android.content.Context;
 
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.cart.domain.mapper.ICartMapper;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;

@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.purchase_platform.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.GetCartListUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.GetRecentViewUseCase;

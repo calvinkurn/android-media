@@ -5,10 +5,9 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.NotEligiblePromoHolderdata;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
@@ -80,10 +79,6 @@ public interface ShipmentContract {
         void renderCheckoutCartSuccess(CheckoutData checkoutData);
 
         void renderCheckoutCartError(String message);
-
-        void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
-
-        void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData, int itemPosition, boolean noToast);
 
         void renderCheckPromoStackCodeFromCourierSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, int itemPosition, boolean noToast);
 
@@ -254,8 +249,6 @@ public interface ShipmentContract {
 
         void processCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
-        void processVerifyPayment(String transactionId);
-
         void checkPromoFinalStackShipment(Promo promo);
 //
 //         void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
@@ -269,9 +262,6 @@ public interface ShipmentContract {
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 
         void processSaveShipmentState();
-
-        void processGetRates(int shipperId, int spId, int itemPosition,
-                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
 
         void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
                                              ShipmentDetailData shipmentDetailData,

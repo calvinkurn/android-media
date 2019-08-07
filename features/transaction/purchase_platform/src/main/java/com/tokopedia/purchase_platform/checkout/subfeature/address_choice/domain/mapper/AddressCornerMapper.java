@@ -2,12 +2,9 @@ package com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domai
 
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
-import com.tokopedia.checkout.domain.datamodel.addresscorner.CornerBranch;
-import com.tokopedia.checkout.domain.datamodel.addresscorner.Datum;
-import com.tokopedia.checkout.domain.datamodel.addresscorner.TokopediaCornerDatum;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.AddressCornerResponse;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.Datum;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.model.addressoptions.PeopleAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;

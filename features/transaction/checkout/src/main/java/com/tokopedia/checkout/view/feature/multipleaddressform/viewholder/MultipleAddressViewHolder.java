@@ -11,19 +11,18 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
+
 import com.google.android.flexbox.FlexboxLayout;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
+import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressAdapter;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressItemAdapter;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;

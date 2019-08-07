@@ -12,28 +12,23 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
-import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.CancelAutoApplyCouponUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.CodCheckoutUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.EditAddressUseCase;
-import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.GetShipmentAddressFormUseCase;
-import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearShipmentCacheAutoApplySubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
-import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormReloadFromMultipleAddressSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
@@ -132,20 +127,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
     private final CheckoutUseCase checkoutUseCase;
     private final CompositeSubscription compositeSubscription;
-    private final GetThanksToppayUseCase getThanksToppayUseCase;
     private final GetShipmentAddressFormUseCase getShipmentAddressFormUseCase;
     private final GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase;
     private final EditAddressUseCase editAddressUseCase;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
     private final SaveShipmentStateUseCase saveShipmentStateUseCase;
-    private final GetRatesUseCase getRatesUseCase;
     private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
     private final CodCheckoutUseCase codCheckoutUseCase;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
-    private final IVoucherCouponMapper voucherCouponMapper;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
@@ -184,20 +176,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                              CompositeSubscription compositeSubscription,
                              CheckoutUseCase checkoutUseCase,
-                             GetThanksToppayUseCase getThanksToppayUseCase,
                              GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
                              GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase,
                              EditAddressUseCase editAddressUseCase,
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                              ChangeShippingAddressUseCase changeShippingAddressUseCase,
                              SaveShipmentStateUseCase saveShipmentStateUseCase,
-                             GetRatesUseCase getRatesUseCase,
                              GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                              CodCheckoutUseCase codCheckoutUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                              ShippingCourierConverter shippingCourierConverter,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
-                             IVoucherCouponMapper voucherCouponMapper,
                              UserSessionInterface userSessionInterface,
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CodAnalytics codAnalytics,
@@ -207,18 +196,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
-        this.getThanksToppayUseCase = getThanksToppayUseCase;
         this.getShipmentAddressFormUseCase = getShipmentAddressFormUseCase;
         this.getShipmentAddressFormOneClickShipementUseCase = getShipmentAddressFormOneClickShipementUseCase;
         this.editAddressUseCase = editAddressUseCase;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
         this.saveShipmentStateUseCase = saveShipmentStateUseCase;
-        this.getRatesUseCase = getRatesUseCase;
         this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.shippingCourierConverter = shippingCourierConverter;
-        this.voucherCouponMapper = voucherCouponMapper;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
         this.codCheckoutUseCase = codCheckoutUseCase;
         this.mTrackerPurchaseProtection = analyticsPurchaseProtection;
@@ -807,22 +793,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return false;
     }
 
-    @Deprecated
-    @Override
-    public void processVerifyPayment(String transactionId) {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(GetThanksToppayUseCase.PARAM_TRANSACTION_ID, transactionId);
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putAllString(param);
-        compositeSubscription.add(
-                getThanksToppayUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberThanksTopPay())
-        );
-    }
-
     @Override
     public void checkPromoFinalStackShipment(Promo promo) {
         TokopediaCornerData cornerData = null;
@@ -881,29 +851,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         }
                     }
                 });
-    }
-
-    @NonNull
-    private Subscriber<ThanksTopPayData> getSubscriberThanksTopPay() {
-        return new Subscriber<ThanksTopPayData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                getView().hideLoading();
-                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
-            }
-
-            @Override
-            public void onNext(ThanksTopPayData thanksTopPayData) {
-                getView().hideLoading();
-                getView().renderThanksTopPaySuccess(getView().getActivityContext().getString(R.string.message_payment_success));
-            }
-        };
     }
 
     @NonNull
@@ -1251,18 +1198,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(new SaveShipmentStateSubscriber(getView())));
-    }
-
-    @Override
-    public void processGetRates(int shipperId, int spId, int itemPosition,
-                                ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList) {
-        getRatesUseCase.setShipmentDetailData(shipmentDetailData);
-        getRatesUseCase.setShopShipmentList(shopShipmentList);
-        compositeSubscription.add(getRatesUseCase.createObservable(getRatesUseCase.getParams())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new GetRatesSubscriber(getView(), shipperId, spId, itemPosition)));
     }
 
     private JsonArray getShipmentItemSaveStateData(List<ShipmentCartItemModel> shipmentCartItemModels) {

@@ -7,10 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartItemData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartTickerErrorData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.ShopGroupData;
 import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;

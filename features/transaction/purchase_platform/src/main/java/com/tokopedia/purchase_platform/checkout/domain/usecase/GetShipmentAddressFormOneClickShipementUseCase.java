@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.checkout.domain.usecase;
 
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
+import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.purchase_platform.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;

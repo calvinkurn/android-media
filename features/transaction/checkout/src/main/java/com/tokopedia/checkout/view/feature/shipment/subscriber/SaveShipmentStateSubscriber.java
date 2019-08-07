@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.subscriber;
 
-import com.tokopedia.checkout.domain.datamodel.saveshipmentstate.SaveShipmentStateData;
+import com.tokopedia.purchase_platform.checkout.domain.model.saveshipmentstate.SaveShipmentStateData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 
 import rx.Subscriber;

@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.checkout.domain.mapper;
 
-import com.tokopedia.checkout.domain.mapper.IMapperUtil;
+import com.tokopedia.purchase_platform.common.base.IMapperUtil;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataResponse;
 

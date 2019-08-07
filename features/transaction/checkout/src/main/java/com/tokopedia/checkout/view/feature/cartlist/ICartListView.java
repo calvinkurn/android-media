@@ -3,11 +3,11 @@ package com.tokopedia.checkout.view.feature.cartlist;
 import android.app.Activity;
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
-import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartItemData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.cart.domain.model.cartlist.ShopGroupData;
+import com.tokopedia.purchase_platform.cart.data.model.recentview.RecentView;
+import com.tokopedia.purchase_platform.cart.domain.model.voucher.PromoCodeCartListData;
 import com.tokopedia.purchase_platform.common.base.IBaseView;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
