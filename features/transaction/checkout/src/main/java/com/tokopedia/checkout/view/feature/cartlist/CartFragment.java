@@ -378,10 +378,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
-                    return 1;
+                if (position != RecyclerView.NO_POSITION) {
+                    if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
+                        return 1;
+                    }
+                    return 2;
                 }
-                return 2;
+                return 0;
             }
         });
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
