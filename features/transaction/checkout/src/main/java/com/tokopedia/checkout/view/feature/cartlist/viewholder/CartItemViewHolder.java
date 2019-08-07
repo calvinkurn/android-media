@@ -28,9 +28,11 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -56,9 +59,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private static final int QTY_MAX = 10000;
     private static final int MAX_SHOWING_NOTES_CHAR = 20;
 
-    private final Context context;
-    private final CartItemAdapter.ActionListener actionListener;
+    private Context context;
+    private CartItemAdapter.ActionListener actionListener;
     private ViewHolderListener viewHolderListener;
+    private CompositeSubscription compositeSubscription;
 
     private LinearLayout llWarningAndError;
     private FrameLayout flCartItemContainer;
@@ -78,12 +82,12 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView btnDelete;
     private TextView tvErrorFormValidation;
     private TextView tvErrorFormRemarkValidation;
+
     private LinearLayout layoutError;
-    private TextView tvErrorTitle;
-    private TextView tvErrorDescription;
+    private Ticker tickerError;
     private LinearLayout layoutWarning;
-    private TextView tvWarningTitle;
-    private TextView tvWarningDescription;
+    private Ticker tickerWarning;
+
     private TextView tvNoteCharCounter;
     private FlexboxLayout productProperties;
     private TextView tvRemark;
@@ -100,6 +104,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
     private int parentPosition;
     private int dataSize;
+    private Subscription quantityDebounceSubscription;
+    private Subscription noteDebounceSubscription;
 
     @SuppressLint("ClickableViewAccessibility")
     public CartItemViewHolder(View itemView, CompositeSubscription cadapterCmpositeSubscription,
@@ -107,6 +113,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.actionListener = actionListener;
         this.context = itemView.getContext();
+        compositeSubscription = cadapterCmpositeSubscription;
 
         this.llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
         this.flCartItemContainer = itemView.findViewById(R.id.fl_cart_item_container);
@@ -126,12 +133,12 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option);
         this.etRemark = itemView.findViewById(R.id.et_remark);
         this.btnDelete = itemView.findViewById(R.id.btn_delete_cart);
+
         this.layoutError = itemView.findViewById(R.id.layout_error);
-        this.tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
-        this.tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
+        this.tickerError = itemView.findViewById(R.id.ticker_error);
         this.layoutWarning = itemView.findViewById(R.id.layout_warning);
-        this.tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
-        this.tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
+        this.tickerWarning = itemView.findViewById(R.id.ticker_warning);
+
         this.tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
         this.productProperties = itemView.findViewById(R.id.product_properties);
         this.tvRemark = itemView.findViewById(R.id.tv_remark);
@@ -161,8 +168,16 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         initTextwatcherDebouncer(cadapterCmpositeSubscription);
     }
 
+    public void clear() {
+        context = null;
+        actionListener = null;
+        viewHolderListener = null;
+        compositeSubscription.remove(quantityDebounceSubscription);
+        compositeSubscription.remove(noteDebounceSubscription);
+    }
+
     private void initTextwatcherDebouncer(CompositeSubscription compositeSubscription) {
-        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<QuantityWrapper>() {
+        quantityDebounceSubscription = Observable.create(new Observable.OnSubscribe<QuantityWrapper>() {
             @Override
             public void call(final Subscriber<? super QuantityWrapper> subscriber) {
                 quantityTextwatcherListener = new QuantityTextWatcher.QuantityTextwatcherListener() {
@@ -190,9 +205,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     public void onNext(QuantityWrapper quantity) {
                         itemQuantityTextWatcherAction(quantity);
                     }
-                }));
+                });
+        compositeSubscription.add(quantityDebounceSubscription);
 
-        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<Editable>() {
+        noteDebounceSubscription = Observable.create(new Observable.OnSubscribe<Editable>() {
             @Override
             public void call(final Subscriber<? super Editable> subscriber) {
                 noteTextwatcherListener = new NoteTextWatcher.NoteTextwatcherListener() {
@@ -220,7 +236,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     public void onNext(Editable editable) {
                         itemNoteTextWatcherAction(editable);
                     }
-                }));
+                });
+        compositeSubscription.add(noteDebounceSubscription);
     }
 
     public void bindData(final CartItemHolderData data, int parentPosition, ViewHolderListener viewHolderListener, int dataSize) {
@@ -432,7 +449,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 // Notes is empty after click add notes button or has value after use click change notes button
                 this.tvLabelFormRemark.setVisibility(View.VISIBLE);
                 this.tvRemark.setVisibility(View.GONE);
-                this.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
+                this.etRemark.setText(Utils.getHtmlFormat(data.getCartItemData().getUpdatedData().getRemark()));
                 this.etRemark.setVisibility(View.VISIBLE);
                 this.etRemark.setSelection(etRemark.length());
                 this.tvLabelRemarkOption.setVisibility(View.GONE);
@@ -442,7 +459,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 // Has notes from pdp
                 this.tvLabelFormRemark.setVisibility(View.GONE);
                 this.etRemark.setVisibility(View.GONE);
-                this.tvRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
+                this.tvRemark.setText(Utils.getHtmlFormat(data.getCartItemData().getUpdatedData().getRemark()));
                 this.tvRemark.setVisibility(View.VISIBLE);
                 this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
                 this.tvNoteCharCounter.setVisibility(View.GONE);
@@ -612,15 +629,20 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if (data.getCartItemData().isError()) {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
-            tvErrorTitle.setText(data.getCartItemData().getErrorMessageTitle());
+
             String errorDescription = data.getCartItemData().getErrorMessageDescription();
             if (!TextUtils.isEmpty(errorDescription)) {
-                tvErrorDescription.setText(errorDescription);
-                tvErrorDescription.setVisibility(View.VISIBLE);
+                tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
+                tickerError.setTextDescription(errorDescription);
             } else {
-                tvErrorDescription.setVisibility(View.GONE);
+                tickerError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
             }
+            tickerError.setTickerType(Ticker.TYPE_ERROR);
+            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerError.setCloseButtonVisibility(View.GONE);
+            tickerError.setVisibility(View.VISIBLE);
             layoutError.setVisibility(View.VISIBLE);
+
         } else {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart);
@@ -630,16 +652,20 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWarningItemHeader(CartItemHolderData data) {
         if (data.getCartItemData().isWarning()) {
-            tvWarningTitle.setText(data.getCartItemData().getWarningMessageTitle());
             String warningDescription = data.getCartItemData().getWarningMessageDescription();
             if (!TextUtils.isEmpty(warningDescription)) {
-                tvWarningDescription.setText(warningDescription);
-                tvWarningDescription.setVisibility(View.VISIBLE);
+                tickerWarning.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
+                tickerWarning.setTextDescription(warningDescription);
             } else {
-                tvWarningDescription.setVisibility(View.GONE);
+                tickerWarning.setTextDescription(data.getCartItemData().getErrorMessageTitle());
             }
+            tickerWarning.setTickerType(Ticker.TYPE_WARNING);
+            tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerWarning.setCloseButtonVisibility(View.GONE);
+            tickerWarning.setVisibility(View.VISIBLE);
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
+            tickerWarning.setVisibility(View.GONE);
             layoutWarning.setVisibility(View.GONE);
         }
     }
@@ -650,24 +676,24 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                         qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue()))) {
             btnQtyMinus.setEnabled(false);
             btnQtyPlus.setEnabled(false);
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_disabled));
+            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_checkout_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_checkout_disabled));
         } else if (qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) {
             btnQtyMinus.setEnabled(false);
             btnQtyPlus.setEnabled(true);
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus));
+            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_checkout_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_checkout));
         } else if (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
                 qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue())) {
             btnQtyPlus.setEnabled(false);
             btnQtyMinus.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_disabled));
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_checkout_disabled));
+            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_checkout));
         } else {
             btnQtyPlus.setEnabled(true);
             btnQtyMinus.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus));
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_checkout));
+            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_checkout));
         }
     }
 

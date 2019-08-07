@@ -46,13 +46,15 @@ object AddNewAddressAnalytics {
     private const val CLICK_FIELD_KOTA_KECAMATAN = "click field kota/kecamatan"
     private const val CLICK_CHIPS_KOTA_KECAMATAN = "click chips kota/kecamatan"
     private const val CLICK_SUGGESTION_KOTA_KECAMATAN = "click suggestion kota/kecamatan"
+    private const val CLICK_PILIH_LOKASI_UNNAMED_ROAD = "click pilih lokasi unnamed road"
     private const val CLICK_FIELD_KODE_POS = "click field kode pos"
     private const val CLICK_CHIPS_KODE_POS = "click chips kode pos"
     private const val CLICK_FIELD_ALAMAT = "click field alamat"
     private const val CLICK_BACK_ARROW_ON_NEGATIVE_PAGE = "click back arrow on negative page"
-    private const val VIEW_TOASTER_PILIH_KOTA_DAN_KODE_POS_TERLEBIH_DAHULU = "click field no ponsel"
+    private const val VIEW_TOASTER_PILIH_KOTA_DAN_KODE_POS_TERLEBIH_DAHULU = "view toaster pilih kota dan kode pos terlebih dahulu"
     private const val VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA = "view toaster alamat tidak sesuai dengan peta"
 
+    @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
@@ -152,6 +154,10 @@ object AddNewAddressAnalytics {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BUTTON_UBAH_PIN_POINT)
     }
 
+    fun eventClickButtonUnnamedRoad() {
+        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS, CLICK_PILIH_LOKASI_UNNAMED_ROAD)
+    }
+
     fun eventClickBackArrowOnPositivePageChangeAddressPositive() {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BACK_ARROW_ON_POSITIVE_PAGE)
     }
@@ -229,7 +235,7 @@ object AddNewAddressAnalytics {
     }
 
     fun eventClickButtonSimpanNegativeSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_SIMPAN, NEGATIVE_SUCCESS)
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, NEGATIVE_SUCCESS)
     }
 
     fun eventClickButtonSimpanNegativeNotSuccess(errorField: String) {

@@ -16,12 +16,12 @@ constructor(private val flightApi: FlightApi, private val flightOrderDataCacheSo
 
     fun getOrders(maps: Map<String, Any>): Observable<List<OrderEntity>> {
         return flightApi.getOrders(maps)
-                .map { dataResponseResponse -> dataResponseResponse.body().data }
+                .map { dataResponseResponse -> dataResponseResponse.body()!!.data }
     }
 
     fun getOrder(id: String): Observable<OrderEntity> {
         return flightApi.getOrder(id)
-                .map { dataResponseResponse -> dataResponseResponse.body().data }
+                .map { dataResponseResponse -> dataResponseResponse.body()!!.data }
                 .flatMap { orderEntity ->
                     flightOrderDataCacheSource.saveCache(orderEntity)
                     return@flatMap Observable.just(orderEntity)

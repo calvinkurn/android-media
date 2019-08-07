@@ -3,9 +3,11 @@ package com.tokopedia.tkpd.timber;
 import android.app.Application;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.BuildConfig;
@@ -29,18 +31,6 @@ public class TimberWrapper {
         boolean isDebug = BuildConfig.DEBUG;
         if (isDebug) {
             Timber.plant(new TimberDebugTree());
-        } else {
-            String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
-            if (!TextUtils.isEmpty(logConfigString)) {
-                DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString,
-                        DataLogConfig.class);
-                if(dataLogConfig != null) {
-                    if (dataLogConfig.isEnabled() &&
-                            GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()) {
-                        Timber.plant(new TimberReportingTree());
-                    }
-                }
-            }
         }
     }
 }

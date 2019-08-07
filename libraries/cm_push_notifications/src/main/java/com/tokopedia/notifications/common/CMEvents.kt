@@ -27,18 +27,19 @@ object PersistentEvent {
 }
 
 object IrisAnalyticsEvents {
-    private const val PUSH_RECEIVED = "pushReceived"
+    const val PUSH_RECEIVED = "pushReceived"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
 
-    fun sendPushReceiveEvent(context: Context, baseNotificationModel: BaseNotificationModel) {
-        val irisAnalytics = IrisAnalytics(context)
-        if (irisAnalytics != null) {
-            val values = addBaseValues(context, PUSH_RECEIVED, baseNotificationModel)
-            irisAnalytics.sendEvent(values)
-        }
-
-    }
+    private const val EVENT_NAME = "event"
+    private const val EVENT_TIME = "event_time"
+    private const val CAMPAIGN_ID = "campaign_id"
+    private const val NOTIFICATION_ID = "notification_id"
+    private const val SOURCE = "source"
+    private const val PARENT_ID = "parent_id"
+    private const val PUSH_TYPE = "push_type"
+    private const val IS_SILENT = "is_silent"
+    private const val CLICKED_ELEMENT_ID="clicked_element_id"
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         val irisAnalytics = IrisAnalytics(context)
@@ -46,7 +47,6 @@ object IrisAnalyticsEvents {
             val values = addBaseValues(context, eventName, baseNotificationModel)
             irisAnalytics.saveEvent(values)
         }
-
     }
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, elementID: String?) {
@@ -54,7 +54,7 @@ object IrisAnalyticsEvents {
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, baseNotificationModel)
             if (elementID != null) {
-                values["clicked_element_id"] = elementID
+                values[CLICKED_ELEMENT_ID] = elementID
 
             }
             irisAnalytics.saveEvent(values)
@@ -64,16 +64,16 @@ object IrisAnalyticsEvents {
 
     fun addBaseValues(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel): HashMap<String, Any> {
         val values = HashMap<String, Any>()
-        values["event"] = eventName
-        values["event_time"] = CMNotificationUtils.currentLocalTimeStamp
-        values["campaign_id"] = baseNotificationModel.campaignId.toString()
-        values["notification_id"] = baseNotificationModel.notificationId.toString()
-        values["source"] = CMNotificationUtils.getApplicationName(context)
-        values["parent_id"] = baseNotificationModel.parentId.toString()
-        values["push_type"] = baseNotificationModel.type.let { baseNotificationModel.type }
+        values[EVENT_NAME] = eventName
+        values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp
+        values[CAMPAIGN_ID] = baseNotificationModel.campaignId.toString()
+        values[NOTIFICATION_ID] = baseNotificationModel.notificationId.toString()
+        values[SOURCE] = CMNotificationUtils.getApplicationName(context)
+        values[PARENT_ID] = baseNotificationModel.parentId.toString()
+        values[PUSH_TYPE] = baseNotificationModel.type.let { baseNotificationModel.type }
                 ?: ""
         if (CMConstant.NotificationType.SILENT_PUSH != baseNotificationModel.type) {
-            values["is_silent"] = false
+            values[IS_SILENT] = false
         }
 
         return values

@@ -1,19 +1,14 @@
 package com.tokopedia.tkpdreactnative.react;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.microsoft.codepush.react.CodePush;
-import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.Arrays;
@@ -27,14 +22,17 @@ public class ReactNativeHostFactory {
     private static ReactNativeHostFactory instance;
     private static SharedPreferences sharedPreferences;
 
+    private static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
+    private static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
+
     protected ReactNativeHostFactory() {}
 
     public static ReactNativeHost init(Application application) {
         if(instance == null) instance = new ReactNativeHostFactory();
 
-        sharedPreferences = application.getSharedPreferences(DeveloperOptions.SP_REACT_DEVELOPMENT_MODE, Context.MODE_PRIVATE);
-        if (sharedPreferences.contains(DeveloperOptions.IS_RELEASE_MODE)){
-            boolean isReleaseMode = sharedPreferences.getBoolean(DeveloperOptions.IS_RELEASE_MODE, true);
+        sharedPreferences = application.getSharedPreferences(SP_REACT_DEVELOPMENT_MODE, Context.MODE_PRIVATE);
+        if (sharedPreferences.contains(IS_RELEASE_MODE)){
+            boolean isReleaseMode = sharedPreferences.getBoolean(IS_RELEASE_MODE, true);
             if (isReleaseMode){
                 return instance.createReactNativeHost(application);
             } else {

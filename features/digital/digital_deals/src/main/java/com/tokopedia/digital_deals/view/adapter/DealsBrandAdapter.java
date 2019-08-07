@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
+import com.tokopedia.digital_deals.view.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Brand> brandItems;
+    private List<Brand> itemsForGA = new ArrayList<>();
     private Context context;
     private int MAX_BRANDS = 8;
 
@@ -36,6 +39,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     DealsAnalytics dealsAnalytics;
     private boolean fromSearchResult;
     private boolean isBrandNative;
+    private String pageType;
 
 
     public DealsBrandAdapter(List<Brand> brandItems, int itemViewType) {
@@ -53,17 +57,21 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 holder1.setShown(false);
             if (!holder1.isShown()) {
                 holder1.setShown(true);
-
-                if (isPopularBrands) {
-                    dealsAnalytics.sendEcommerceBrand(brandItems.get(holder1.getIndex()).getId(),
+                itemsForGA.add(brandItems.get(holder1.getIndex()));
+                int  itemsToSend = (brandItems.size() - 1) - holder1.getAdapterPosition();
+                if (isPopularBrands && itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
+                    dealsAnalytics.sendEcommerceBrand(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_HOME, DealsAnalytics.DEALS_HOME_PAGE);
-
+                    itemsForGA.clear();
                 } else if (isBrandNative) {
-                    dealsAnalytics.sendBrandImpressionEvent(brandItems.get(holder1.getIndex()).getId(),
+                    dealsAnalytics.sendBrandImpressionEvent(brandItems,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_ALL, DealsAnalytics.DEALS_HOME_PAGE);
-                } else {
-                    dealsAnalytics.sendEcommerceBrand(brandItems.get(holder1.getIndex()).getId(),
+                    itemsForGA.clear();
+                } else if (!TextUtils.isEmpty(pageType) && pageType.equalsIgnoreCase("category")){
+                    if (itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA))
+                    dealsAnalytics.sendEcommerceBrand(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_CATEGORY, DealsAnalytics.DEALS_HOME_PAGE);
+                    itemsForGA.clear();
                 }
             }
         }
@@ -82,6 +90,10 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void setBrandNativePage(boolean isBrandNative) {
         this.isBrandNative = isBrandNative;
+    }
+
+    public void setPageType(String pageType) {
+        this.pageType = pageType;
     }
 
 

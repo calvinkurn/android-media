@@ -38,6 +38,7 @@ import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddr
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.shop.open.R;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
+import com.tokopedia.shop.open.analytic.ShopOpenTrackingConstant;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.util.ShopErrorHandler;
 import com.tokopedia.shop.open.view.activity.ShopOpenCreateReadyActivity;
@@ -51,6 +52,8 @@ import com.tokopedia.shop.open.view.watcher.AfterTextWatcher;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -168,6 +171,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                     String domainInputStr = editTextInputDomainName.getTextWithoutPrefix();
                     if (TextUtils.isEmpty(domainInputStr)) {
                         textInputDomainName.setError(getString(R.string.shop_open_error_domain_name_must_be_filled));
+                        textInputDomainName.resetCounter();
                     } else if (domainInputStr.length() < MIN_SHOP_DOMAIN_LENGTH) {
                         textInputDomainName.setError(getString(R.string.shop_open_error_domain_name_min_char));
                     } else if (s.toString().length() <= textInputDomainName.getCounterMaxLength()) {
@@ -305,6 +309,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public void onErrorCheckShopName(String message) {
         textInputShopName.setError(message);
         editTextInputDomainName.setText("");
+        textInputDomainName.resetCounter();
         textInputDomainName.setSuccess("");
         trackingOpenShop.eventOpenShopBiodataNameError(message);
     }
@@ -336,10 +341,10 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         snackbarRetry.showRetrySnackbar();
     }
 
-    private void onErrorSelectPostalCode() {
-        String errorMessage = getString(R.string.open_shop_choose_city);
-        ToasterError.make(getView(), errorMessage, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(R.string.title_ok, v -> { })
+    private void errorToast(String message) {
+        ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
+                .setAction(R.string.title_ok, v -> {
+                })
                 .show();
     }
 
@@ -358,7 +363,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public void navigateToPostalChooser() {
         // Users have to select district first before select postal code
         if (!isDistrictChoosen) {
-            onErrorSelectPostalCode();
+            errorToast(getString(R.string.open_shop_choose_city));
         } else {
             if (getActivity() != null) {
                 Intent intent = ShopOpenPostalCodeChooserActivity.Companion.createNewInstance(getActivity(), openShopAddressViewHolder.getPostalCode());
@@ -405,11 +410,21 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public void onSuccessCreateShop(String message, String shopId) {
         hideSubmitLoading();
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
+        trackingOpenShop.eventShopCreatedSuccessfully(setUserData(shopId));
         if (getActivity() != null) {
             Intent intent = ShopOpenCreateReadyActivity.Companion.newInstance(getActivity(), shopId);
             startActivity(intent);
             getActivity().finish();
         }
+    }
+
+    private HashMap<String, Object> setUserData(String shopId){
+        HashMap<String, Object> dataMap = new HashMap<>();
+        dataMap.put(ShopOpenTrackingConstant.Keys.PHONE, userSession.getPhoneNumber());
+        dataMap.put(ShopOpenTrackingConstant.Keys.SHOPID, shopId);
+        dataMap.put(ShopOpenTrackingConstant.Keys.USEREMAIL, userSession.getEmail());
+        dataMap.put(ShopOpenTrackingConstant.Keys.USERID, userSession.getUserId());
+        return dataMap;
     }
 
     @Override
@@ -429,7 +444,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         switch (requestCode) {
             case REQUEST_CODE_POSTAL_CODE:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    postalCode = data.getStringExtra(ShopOpenPostalCodeChooserFragment.Companion.getINTENT_DATA_POSTAL_CODE());
+                    postalCode = data.getStringExtra(ShopOpenPostalCodeChooserFragment.INTENT_DATA_POSTAL_CODE);
                     if (postalCode != null) {
                         isPostalCodeChoosen = true;
                         openShopAddressViewHolder.updatePostalCodeView(postalCode);
@@ -439,6 +454,10 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     DistrictRecommendationAddress address = data.getParcelableExtra(EXTRA_DISTRICTRECOMMENDATION);
                     if (address != null) {
+                        if (address.getZipCodes() == null) {
+                            errorToast(getString(R.string.open_shop_null_zip_code));
+                            break;
+                        }
                         isDistrictChoosen = true;
                         clearFocus();
                         openShopAddressViewHolder.setDistrictId(address.getDistrictId());

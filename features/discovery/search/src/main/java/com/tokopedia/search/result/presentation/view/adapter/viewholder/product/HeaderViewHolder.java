@@ -29,7 +29,6 @@ import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListen
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.widget.GlobalNavWidget;
-import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
@@ -40,8 +39,7 @@ import java.util.List;
 public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.search__header_layout;
-    private static final String SHOP = "shop";
+    public static final int LAYOUT = R.layout.search_result_product_header_layout;
     private LinearLayout suggestionContainer;
     private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
@@ -80,18 +78,15 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
             if (bannerAdsListener != null) {
-                bannerAdsListener.onBannerAdsClicked(applink);
-            }
-            if (applink.contains(SHOP)) {
-                TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
-            } else {
-                TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, position);
+                bannerAdsListener.onBannerAdsClicked(position, applink, data);
             }
         });
         adsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionHeadlineAdsItem(int position, CpmData data) {
-                TopAdsGtmTracker.eventSearchResultPromoView(context, data, position);
+                if(bannerAdsListener != null) {
+                    bannerAdsListener.onBannerAdsImpressionListener(position, data);
+                }
             }
         });
     }
@@ -216,7 +211,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             if (viewType == TYPE_ITEM_QUICK_FILTER) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_filter_item, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_quick_filter_item, parent, false);
                 return new QuickFilterItemViewHolder(view, quickFilterListener);
             } else if (viewType == TYPE_HEADER_PRODUCT_COUNT) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_result_count_item, parent, false);
@@ -255,15 +250,21 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     private static class QuickFilterItemViewHolder extends RecyclerView.ViewHolder {
         private TextView quickFilterText;
+        private View itemContainer;
+        private View filterNewIcon;
         private final QuickFilterListener quickFilterListener;
 
         QuickFilterItemViewHolder(View itemView, QuickFilterListener quickFilterListener) {
             super(itemView);
             quickFilterText = itemView.findViewById(R.id.quick_filter_text);
+            itemContainer = itemView.findViewById(R.id.filter_item_container);
+            filterNewIcon = itemView.findViewById(R.id.filter_new_icon);
             this.quickFilterListener = quickFilterListener;
         }
 
         public void bind(final Option option) {
+            bindFilterNewIcon(option);
+
             quickFilterText.setText(option.getName());
 
             setBackgroundResource(option);
@@ -278,11 +279,19 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             });
         }
 
+        private void bindFilterNewIcon(Option option) {
+            if (option.isNew()) {
+                filterNewIcon.setVisibility(View.VISIBLE);
+            } else {
+                filterNewIcon.setVisibility(View.GONE);
+            }
+        }
+
         private void setBackgroundResource(Option option) {
             if (quickFilterListener != null && quickFilterListener.isQuickFilterSelected(option)) {
-                quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
+                itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
             } else {
-                quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
+                itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
             }
         }
     }

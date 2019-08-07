@@ -304,7 +304,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
                 } else {
                     SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }
-                clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
                 reloadData();
@@ -588,5 +587,10 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
     protected String removeValue(String mapValue, String removedValue) {
         return mapValue.replace(removedValue, "").replace(",,", ",");
+    }
+
+    @Override
+    public void setOfficialSelected(Boolean officialSelectedFlag) {
+
     }
 }

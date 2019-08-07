@@ -192,8 +192,13 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
      * Step 4 : If name contains blocked word, go to add name
      * Step 5 : Proceed to home
      */
-    override fun loginEmail(email: String, password: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
+    override fun loginEmail(email: String, password: String, isSmartLock : Boolean) {
+        if(isSmartLock){
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
+        }else{
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
+        }
+
         view.resetError()
         if (isValid(email, password)) {
             view.showLoadingLogin()
@@ -246,8 +251,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 view.onSuccessGetUserInfo(),
                 view.onErrorGetUserInfo(),
-                view.onGoToCreatePassword(),
-                view.onGoToPhoneVerification()))
+                view.onGoToCreatePassword()))
     }
 
     override fun getTickerInfo(){
