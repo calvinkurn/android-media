@@ -1546,11 +1546,19 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             showToastMessage(getString(R.string.default_request_error_unknown));
             sendAnalyticsScreenName(getScreenName());
             refreshHandler.setRefreshing(true);
-            renderInitialGetCartListDataSuccess(cartListData);
+            if (cartListData != null) {
+                renderInitialGetCartListDataSuccess(cartListData);
+            } else {
+                dPresenter.processInitialGetCartData(getCartId(), false, false);
+            }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             sendAnalyticsScreenName(getScreenName());
             refreshHandler.setRefreshing(true);
-            renderInitialGetCartListDataSuccess(cartListData);
+            if (cartListData != null) {
+                renderInitialGetCartListDataSuccess(cartListData);
+            } else {
+                dPresenter.processInitialGetCartData(getCartId(), false, false);
+            }
         } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
             refreshHandler.setRefreshing(true);
             dPresenter.processInitialGetCartData(getCartId(), false, false);
