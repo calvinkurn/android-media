@@ -157,6 +157,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
     public static final String ARG_AUTO_APPLY_PROMO_CODE_APPLIED = "ARG_AUTO_APPLY_PROMO_CODE_APPLIED";
     public static final String ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT";
+    public static final String ARG_CHECKOUT_LEASING_ID = "ARG_CHECKOUT_LEASING_ID";
     private static final String NO_PINPOINT_ETD = "Belum Pinpoint";
     private static final String EXTRA_STATE_SHIPMENT_SELECTION = "EXTRA_STATE_SHIPMENT_SELECTION";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
@@ -220,6 +221,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static ShipmentFragment newInstance(String defaultSelectedTabPromo,
                                                boolean isAutoApplyPromoCodeApplied,
                                                boolean isOneClickShipment,
+                                               String leasingId,
                                                Bundle bundle) {
         if (bundle == null) {
             bundle = new Bundle();
@@ -227,6 +229,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         bundle.putString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, defaultSelectedTabPromo);
         bundle.putBoolean(ARG_AUTO_APPLY_PROMO_CODE_APPLIED, isAutoApplyPromoCodeApplied);
         bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
+        bundle.putString(ARG_CHECKOUT_LEASING_ID, leasingId);
         ShipmentFragment shipmentFragment = new ShipmentFragment();
         shipmentFragment.setArguments(bundle);
 
@@ -336,7 +339,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
-            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), true, null, getDeviceId());
+            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), true, null, getDeviceId(), getCheckoutLeasingId());
         } else {
             shipmentPresenter.setShipmentCartItemModelList(savedShipmentCartItemModelList);
             shipmentPresenter.setCartPromoSuggestion(savedCartPromoSuggestion);
@@ -394,6 +397,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private boolean isOneClickShipment() {
         return getArguments() != null && getArguments().getBoolean(ARG_IS_ONE_CLICK_SHIPMENT);
+    }
+
+    private String getCheckoutLeasingId() {
+        return getArguments().getString(ARG_CHECKOUT_LEASING_ID);
     }
 
     private boolean isTradeIn() {
@@ -590,7 +597,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     public void onRetryClicked() {
                         llNetworkErrorView.setVisibility(View.GONE);
                         rvShipment.setVisibility(View.VISIBLE);
-                        shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), true, null, getDeviceId());
+                        shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), true, null, getDeviceId(), getCheckoutLeasingId());
                     }
                 });
 
@@ -1131,7 +1138,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updateSelectedAddress(selectedAddress);
         courierBottomsheet = null;
         onCartDataDisableToCheckout(null);
-        shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId());
+        shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId(), getCheckoutLeasingId());
     }
 
     @Override
@@ -1178,7 +1185,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     public void onResultFromEditAddress() {
-        shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, null, getDeviceId());
+        shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, null, getDeviceId(), getCheckoutLeasingId());
     }
 
     private void onResultFromMultipleAddress(int resultCode, Intent data) {
@@ -1200,7 +1207,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             );
         } else {
             shipmentSelectionStateDataHashSet.clear();
-            shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, null, getDeviceId());
+            shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, null, getDeviceId(), getCheckoutLeasingId());
         }
     }
 
@@ -1221,7 +1228,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void onResultFromPayment(int resultCode) {
         if (getActivity() != null) {
             if (resultCode == TopPayActivity.PAYMENT_CANCELLED || resultCode == TopPayActivity.PAYMENT_FAILED) {
-                shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, null, getDeviceId());
+                shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, null, getDeviceId(), getCheckoutLeasingId());
             } else {
                 getActivity().setResult(TopPayActivity.PAYMENT_SUCCESS);
                 getActivity().finish();
@@ -1308,7 +1315,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 break;
 
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS:
-                shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), false, null, getDeviceId());
+                shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), false, null, getDeviceId(), getCheckoutLeasingId());
                 break;
 
             case Activity.RESULT_CANCELED:

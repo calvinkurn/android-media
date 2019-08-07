@@ -241,7 +241,7 @@ public interface ShipmentContract {
 
         void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                             boolean isTradeIn, boolean skipUpdateOnboardingState,
-                                            String cornerId, String deviceId);
+                                            String cornerId, String deviceId, String leasingId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoStackingData promoStackingData,
                                                           CartPromoSuggestion cartPromoSuggestion,
