@@ -18,7 +18,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.discovery.R;
@@ -301,6 +300,13 @@ public class AutoCompleteActivity extends DiscoveryActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return false;
+    }
+
+    @Override
+    protected void initToolbar() {
+        //Overridden and left empty to avoid toolbar click listener get called
+        //Autocomplete activity don't need toolbar anymore
+        //cause it only need to launch discoverySearchView
     }
 
     private interface AnimationCallback {
