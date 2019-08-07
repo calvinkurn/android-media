@@ -110,6 +110,7 @@ import java.util.ArrayList
 import javax.inject.Inject
 
 import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.kol.common.util.createBottomMenu
@@ -122,7 +123,25 @@ import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_
  * @author by nisie on 5/15/17.
  */
 
-class FeedPlusFragment : BaseDaggerFragment(), FeedPlus.View, FeedPlus.View.Kol, FeedPlus.View.Polling, SwipeRefreshLayout.OnRefreshListener, TopAdsItemClickListener, TopAdsInfoClickListener, KolPostListener.View.ViewHolder, BannerAdapter.BannerItemListener, RecommendationCardAdapter.RecommendationCardListener, TopadsShopViewHolder.TopadsShopListener, CardTitleView.CardTitleListener, DynamicPostViewHolder.DynamicPostListener, ImagePostViewHolder.ImagePostListener, YoutubeViewHolder.YoutubePostListener, PollAdapter.PollOptionListener, GridPostAdapter.GridItemListener, VideoViewHolder.VideoViewListener, FeedMultipleImageView.FeedMultipleImageViewListener {
+class FeedPlusFragment : BaseDaggerFragment(),
+        FeedPlus.View,
+        FeedPlus.View.Kol,
+        FeedPlus.View.Polling,
+        SwipeRefreshLayout.OnRefreshListener,
+        TopAdsItemClickListener, TopAdsInfoClickListener,
+        KolPostListener.View.ViewHolder,
+        BannerAdapter.BannerItemListener,
+        RecommendationCardAdapter.RecommendationCardListener,
+        TopadsShopViewHolder.TopadsShopListener,
+        CardTitleView.CardTitleListener,
+        DynamicPostViewHolder.DynamicPostListener,
+        ImagePostViewHolder.ImagePostListener,
+        YoutubeViewHolder.YoutubePostListener,
+        PollAdapter.PollOptionListener,
+        GridPostAdapter.GridItemListener,
+        VideoViewHolder.VideoViewListener,
+        FeedMultipleImageView.FeedMultipleImageViewListener,
+        HighlightAdapter.HighlightListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.data.pojo.FeedTabs;
+import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.List;
@@ -22,6 +23,8 @@ import java.util.List;
 public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
     private static final String TYPE_FEEDS = "feeds";
     private static final String TYPE_EXPLORE = "explore";
+    private static final String TYPE_CUSTOM = "custom";
+    private static final String KEY_TRENDING = "trending";
 
     private List<FeedTabs.FeedData> itemList;
     private Bundle bundle;
@@ -40,6 +43,8 @@ public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
             return FeedPlusFragment.Companion.newInstance(bundle);
         } else if (data.getType().equals(TYPE_EXPLORE)){
             return ContentExploreFragment.newInstance(bundle);
+        } else if (data.getType().equals(TYPE_CUSTOM) && data.getKey().equals(KEY_TRENDING)) {
+            return DynamicFeedFragment.Companion.newInstance(data.getKey());
         } else {
             /* Will be override for next to handle custom tab */
             return new Fragment();

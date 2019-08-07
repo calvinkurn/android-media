@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -13,6 +14,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
@@ -57,6 +59,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final GridPostAdapter.GridItemListener gridItemListener;
     private final VideoViewHolder.VideoViewListener videoViewListener;
     private final FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener;
+    private final HighlightAdapter.HighlightListener highlightListener;
     private final KolComment.View.SeeAll seeAll;
     private final UserSessionInterface userSession;
     private final KolPostDetailContract.View mainView;
@@ -72,6 +75,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         GridPostAdapter.GridItemListener gridItemListener,
                                         VideoViewHolder.VideoViewListener videoViewListener,
                                         FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener,
+                                        HighlightAdapter.HighlightListener highlightListener,
                                         UserSessionInterface userSession) {
         this.mainView = mainView;
         this.kolCommentListener = kolCommentListener;
@@ -84,6 +88,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         this.gridItemListener = gridItemListener;
         this.videoViewListener = videoViewListener;
         this.feedMultipleImageViewListener = feedMultipleImageViewListener;
+        this.highlightListener = highlightListener;
         this.userSession = userSession;
     }
 
@@ -145,6 +150,11 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public int type(EntryPointViewModel entryPointViewModel) {
         throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
                 + EntryPointViewModel.class.getSimpleName());
+    }
+
+    @Override
+    public int type(@NotNull HighlightViewModel highlightViewModel) {
+        return 0;
     }
 
     @Override

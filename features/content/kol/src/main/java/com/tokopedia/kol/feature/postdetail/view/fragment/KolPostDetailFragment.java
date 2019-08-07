@@ -36,6 +36,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
 import com.tokopedia.feedcomponent.util.FeedScrollListener;
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -100,7 +101,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
-        FeedMultipleImageView.FeedMultipleImageViewListener{
+        FeedMultipleImageView.FeedMultipleImageViewListener,
+        HighlightAdapter.HighlightListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -188,7 +190,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         swipeToRefresh.setOnRefreshListener(this);
 
         KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this
-                , this, this, this, this, userSession);
+                , this, this, this, this, this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
 
@@ -941,4 +943,5 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             }
         }
     }
+
 }

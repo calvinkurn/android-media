@@ -1,0 +1,106 @@
+package com.tokopedia.feedplus.view.presenter
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedplus.FeedPlusConstant.NON_LOGIN_USER_ID
+import com.tokopedia.feedplus.view.listener.DynamicFeedContract
+import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.user.session.UserSessionInterface
+import rx.Subscriber
+import java.util.ArrayList
+import javax.inject.Inject
+
+/**
+ * @author by yoasfs on 2019-08-06
+ */
+class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInterface,
+                                               val getDynamicFeedUseCase: GetDynamicFeedUseCase):
+        BaseDaggerPresenter<DynamicFeedContract.View>(),
+        DynamicFeedContract.Presenter {
+
+
+    override var cursor: String = ""
+
+    override fun getFeedFirstPage(isPullToRefresh: Boolean) {
+
+        getDynamicFeedUseCase.execute(
+                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
+                object : Subscriber<DynamicFeedDomainModel>() {
+                    override fun onNext(t: DynamicFeedDomainModel?) {
+                        t?.let {
+                            view.onSuccessGetFeed(t.postList, t.cursor)
+                        }
+                    }
+
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        if (isViewAttached) {
+                            if (GlobalConfig.isAllowDebuggingTools()) {
+                                e?.printStackTrace()
+                            }
+                            view.showGetListError(e)
+                        }
+                    }
+                }
+        )
+    }
+
+    override fun getFeed() {
+        getDynamicFeedUseCase.execute(
+                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
+                object : Subscriber<DynamicFeedDomainModel>() {
+                    override fun onNext(t: DynamicFeedDomainModel?) {
+                        t?.let {
+                            view.onSuccessGetFeed(t.postList, t.cursor)
+                        }
+                    }
+
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        if (isViewAttached) {
+                            if (GlobalConfig.isAllowDebuggingTools()) {
+                                e?.printStackTrace()
+                            }
+                            view.showGetListError(e)
+                        }
+                    }
+                }
+        )
+    }
+
+    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun trackPostClick(uniqueTrackingId: String, redirectLink: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun trackPostClickUrl(url: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun attachView(view: DynamicFeedContract.View?) {
+        super.attachView(view)
+    }
+
+    override fun detachView() {
+        super.detachView()
+        getDynamicFeedUseCase.unsubscribe()
+    }
+
+    private fun getUserId(): String {
+        return if (userSession.isLoggedIn()) userSession.getUserId() else NON_LOGIN_USER_ID
+    }
+}

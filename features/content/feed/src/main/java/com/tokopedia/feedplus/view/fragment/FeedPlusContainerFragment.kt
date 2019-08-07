@@ -96,7 +96,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
-        val feedData = data.feedData.filter { it.type == TYPE_FEEDS || it.type == TYPE_EXPLORE }
+        val feedData = data.feedData.filter { it.type == TYPE_FEEDS || it.type == TYPE_EXPLORE || (it.type == TYPE_CUSTOM && it.key == KEY_TRENDING)}
         val adapter = FeedPlusTabAdapter(childFragmentManager, feedData, arguments)
         view_pager.adapter = adapter
         pagerAdapter = adapter
@@ -239,6 +239,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     companion object {
         private const val TYPE_FEEDS = "feeds"
         private const val TYPE_EXPLORE = "explore"
+        private const val TYPE_CUSTOM = "custom"
+        private const val KEY_TRENDING = "trending"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
