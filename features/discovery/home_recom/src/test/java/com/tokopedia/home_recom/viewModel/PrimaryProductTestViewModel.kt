@@ -5,6 +5,7 @@ import android.content.Context
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -50,12 +51,15 @@ class PrimaryProductTestViewModel {
     @Mock
     lateinit var addWishListUseCase: AddWishListUseCase
 
+    @Mock
+    lateinit var addToCartUseCase: AddToCartUseCase
+
     private val productId = "316960043"
     private val defaultErrorMessage = "ERROR_MESSAGE"
 
     @Before
     fun setup(){
-        viewModel = PrimaryProductViewModel(mock(), mock(), addWishListUseCase, removeWishListUseCase, Dispatchers.Unconfined)
+        viewModel = PrimaryProductViewModel(mock(), mock(), addWishListUseCase, removeWishListUseCase, addToCartUseCase, Dispatchers.Unconfined)
     }
 
     @Test

@@ -66,6 +66,9 @@ public interface UserSessionInterface {
   
     String getAutofillUserData();
 
+    /**
+     * @return method name from this class
+     */
     String getLoginMethod();
 
     /**
@@ -112,6 +115,8 @@ public interface UserSessionInterface {
 
     void setToken(String accessToken, String tokenType, String refreshToken);
 
+    void setRefreshToken(String refreshToken);
+
     void setLoginSession(boolean isLogin, String userId, String fullName, String shopId,
                          boolean isMsisdnVerified, String shopName, String email, boolean
                                  shopIsGold, String phoneNumber);
@@ -135,4 +140,5 @@ public interface UserSessionInterface {
     void setAutofillUserData(String autofillUserData);
 
     void setLoginMethod(@NotNull String loginMethod);
+
 }
