@@ -400,7 +400,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private String getCheckoutLeasingId() {
-        return getArguments().getString(ARG_CHECKOUT_LEASING_ID);
+        String leasingId = "0";
+        if (getArguments() != null && getArguments().getString(ARG_CHECKOUT_LEASING_ID) != null) {
+            leasingId = getArguments().getString(ARG_CHECKOUT_LEASING_ID);
+        }
+        return leasingId;
     }
 
     private boolean isTradeIn() {
@@ -509,7 +513,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 dataCheckoutRequests,
                 EnhancedECommerceActionField.STEP_2,
                 ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
-                ConstantTransactionAnalytics.EventLabel.SUCCESS);
+                ConstantTransactionAnalytics.EventLabel.SUCCESS,
+                getCheckoutLeasingId());
     }
 
     @Override
@@ -636,7 +641,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderCheckShipmentPrepareCheckoutSuccess() {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
-        shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
+        shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
     }
 
     @Override
@@ -1640,7 +1645,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 dataCheckoutRequests,
                 EnhancedECommerceActionField.STEP_3,
                 ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
-                "");
+                "",
+                getCheckoutLeasingId());
     }
 
     @Override
@@ -1847,10 +1853,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         switch (requestCode) {
             case REQUEST_CODE_NORMAL_CHECKOUT:
                 shipmentPresenter.processSaveShipmentState();
-                shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
+                shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
                 break;
             case REQUEST_CODE_COD:
-                shipmentPresenter.proceedCodCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
+                shipmentPresenter.proceedCodCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
         }
     }
 
@@ -2513,7 +2519,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 dataCheckoutRequests,
                 EnhancedECommerceActionField.STEP_4,
                 ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                ConstantTransactionAnalytics.EventLabel.SUCCESS);
+                ConstantTransactionAnalytics.EventLabel.SUCCESS,
+                getCheckoutLeasingId());
     }
 
     @Override
