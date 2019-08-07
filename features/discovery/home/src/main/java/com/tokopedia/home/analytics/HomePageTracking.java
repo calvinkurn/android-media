@@ -946,11 +946,13 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickProductChannelMix(Context context, DynamicHomeChannel.Channels bannerChannel) {
+    public static void eventClickProductChannelMix(Context context,
+                                                   DynamicHomeChannel.Channels bannerChannel,
+                                                   int gridPosition) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceClickProductChannelMix()
+                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition)
             );
         }
     }

@@ -209,7 +209,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 realignLayout()
 
                 setOnClickListener {
-                    HomePageTracking.eventClickProductChannelMix(context, channel)
+                    HomePageTracking.eventClickProductChannelMix(context, channel, position)
 
                     homeCategoryListener.onSectionItemClicked(gridItem.applink)
                 }
