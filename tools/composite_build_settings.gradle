@@ -43,7 +43,6 @@ pathComposite.each{ file ->
     }
     List <tupleComposite>  tupleComposite = new ArrayList<>()
     listModule.each{ module ->
-        //println module
         def groupId
         def artifactId
         new File("${file.pathComposite}/$module/build.gradle").eachLine {
@@ -58,18 +57,9 @@ pathComposite.each{ file ->
     }
     file.setList(tupleComposite)
 }
-pathComposite.each { file ->
-    println file.pathComposite
-    file.listModuleComposite.each{
-        println "wkwkwk ${it.module} - ${it.project}"
-    }
-}
-
-println "apalah"
 
 pathComposite.each { file ->
     if("$rootDir"!=file.pathComposite){
-        println file.pathComposite.replace("$rootDir/","").replace("\"","").trim()
         if (new File("${file.pathComposite}/.composite-enable").exists()) {
             includeBuild("${file.pathComposite.replace("$rootDir/", "").trim()}") {
                 dependencySubstitution {
