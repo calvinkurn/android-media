@@ -29,44 +29,53 @@ constructor(private val restUsecase: GetDistrictRequestUseCase,
     override fun loadData(query: String, page: Int) {
         gqlUsecase.execute(query, page)
                 .doOnSubscribe { view?.setLoadingState(true) }
-                .subscribe(object : Subscriber<AddressResponse>() {
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable) {
-                        e.printStackTrace()
-                        view?.let {
-                            it.setLoadingState(false)
-                            it.showGetListError(e)
-                        }
-                    }
-
-                    override fun onNext(addressResponse: AddressResponse) {
-                        view?.let {
-                            it.setLoadingState(false)
-                            if (!addressResponse.addresses.isNullOrEmpty()) {
-                                it.renderData(mapper.transformToViewModel(addressResponse),
-                                        addressResponse.isNextAvailable)
-                            } else {
-                                it.showEmpty()
+                .subscribe(
+                        { response: AddressResponse ->
+                            view?.let {
+                                it.setLoadingState(false)
+                                if (!response.addresses.isNullOrEmpty()) {
+                                    it.renderData(mapper.transform(response), response.isNextAvailable)
+                                } else {
+                                    it.showEmpty()
+                                }
                             }
-                        }
-                    }
-                })
+                        },
+                        { error: Throwable ->
+                            view?.let {
+                                it.setLoadingState(false)
+                                it.showGetListError(error)
+                            }
+                        }, {})
     }
 
     override fun loadData(query: String, page: Int, token: Token) {
-        view?.let {
-            it.setLoadingState(true)
-            val params = RequestParams.create().apply {
-                putString(GetDistrictRequestUseCase.PARAM_QUERY, query)
-                putString(GetDistrictRequestUseCase.PARAM_PAGE, page.toString())
-                putString(GetDistrictRequestUseCase.PARAM_TOKEN, token.districtRecommendation)
-                putString(GetDistrictRequestUseCase.PARAM_UT, token.ut.toString())
-            }
-            restUsecase.execute(params, GetDistrictRecommendationSubscriber(it, mapper))
+        view?.setLoadingState(true)
+        val params = RequestParams.create().apply {
+            putString(GetDistrictRequestUseCase.PARAM_QUERY, query)
+            putString(GetDistrictRequestUseCase.PARAM_PAGE, page.toString())
+            putString(GetDistrictRequestUseCase.PARAM_TOKEN, token.districtRecommendation)
+            putString(GetDistrictRequestUseCase.PARAM_UT, token.ut.toString())
         }
+        restUsecase.execute(params, object : Subscriber<AddressResponse>() {
+            override fun onNext(response: AddressResponse?) {
+                view?.let {
+                    it.setLoadingState(false)
+                    if (!response?.addresses.isNullOrEmpty()) {
+                        it.renderData(mapper.transform(response), response!!.isNextAvailable)
+                    } else {
+                        it.showEmpty()
+                    }
+                }
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+                view?.setLoadingState(false)
+                view?.showGetListError(e?: Throwable())
+            }
+
+            override fun onCompleted() {}
+        })
     }
 
 }

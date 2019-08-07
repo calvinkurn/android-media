@@ -19,15 +19,13 @@ public class AddressViewModelMapper {
     public AddressViewModelMapper() {
     }
 
-    public List<AddressViewModel> transformToViewModel(AddressResponse addressResponse) {
+    public List<AddressViewModel> transform(AddressResponse addressResponse) {
         List<AddressViewModel> viewModels = new ArrayList<>();
         for (Address address : addressResponse.getAddresses()) {
             AddressViewModel addressViewModel = new AddressViewModel();
             addressViewModel.setAddress(address);
-
             viewModels.add(addressViewModel);
         }
-
         return viewModels;
     }
 }

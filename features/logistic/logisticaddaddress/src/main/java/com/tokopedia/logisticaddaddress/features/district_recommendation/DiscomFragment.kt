@@ -168,17 +168,17 @@ class DiscomFragment : BaseSearchListFragment<AddressViewModel, DistrictRecommen
 
     companion object {
 
-        private val ARGUMENT_DATA_TOKEN = "token"
-        private val DEBOUNCE_DELAY_IN_MILIS: Long = 700
-        private val MINIMUM_SEARCH_KEYWORD_CHAR = 3
+        const val ARGUMENT_DATA_TOKEN = "token"
+        const val DEBOUNCE_DELAY_IN_MILIS: Long = 700
+        const val MINIMUM_SEARCH_KEYWORD_CHAR = 3
 
-        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID = "district_id"
-        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME = "district_name"
-        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID = "city_id"
-        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME = "city_name"
-        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID = "province_id"
-        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "province_name"
-        private val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "zipcodes"
+        const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID = "district_id"
+        const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME = "district_name"
+        const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID = "city_id"
+        const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME = "city_name"
+        const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID = "province_id"
+        const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "province_name"
+        const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "zipcodes"
 
         @JvmStatic
         fun newInstance(): DiscomFragment = DiscomFragment()
