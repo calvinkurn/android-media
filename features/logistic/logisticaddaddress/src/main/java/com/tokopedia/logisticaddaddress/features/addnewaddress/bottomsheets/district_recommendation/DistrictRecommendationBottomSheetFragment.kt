@@ -64,29 +64,14 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     @Inject
     lateinit var presenter: DistrictRecommendationBottomSheetPresenter
 
-    interface ActionListener {
-        fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel)
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(): DistrictRecommendationBottomSheetFragment {
-            return DistrictRecommendationBottomSheetFragment()
-        }
-    }
-
     override fun getLayoutResourceId(): Int {
         return R.layout.bottomsheet_district_recommendation
     }
 
     override fun initView(view: View) {
         prepareLayout(view)
-        if (activity != null) {
-            initInjector()
-        }
-
-        val staticDimen8dp = view.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
-        setViewListener(staticDimen8dp)
+        initInjector()
+        setViewListener()
     }
 
     private fun prepareLayout(view: View) {
@@ -99,8 +84,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         llListDistrict = view.findViewById(R.id.ll_list_district)
         llListDistrict.visibility = View.GONE
 
-        val res: Resources = resources
-        val cityList = res.getStringArray(R.array.cityList)
+        val cityList = resources.getStringArray(R.array.cityList)
         val chipsLayoutManager = ChipsLayoutManager.newBuilder(view.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
@@ -111,8 +95,10 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         popularCityAdapter.cityList = cityList.toMutableList()
 
         rvChips.apply {
+            val dist = context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
             layoutManager = chipsLayoutManager
             adapter = popularCityAdapter
+            addItemDecoration(ChipsItemDecoration(dist))
         }
 
         listDistrictAdapter = DistrictRecommendationBottomSheetAdapter(this)
@@ -124,19 +110,10 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         etSearch.setSelection(etSearch.text.length)
     }
 
-    fun setActionListener(actionListener: ActionListener) {
-        this.actionListener = actionListener
-    }
-
-    fun initInjector() {
-        activity?.run {
-            DaggerAddNewAddressComponent.builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .addNewAddressModule(AddNewAddressModule())
-                    .build()
-                    .inject(this@DistrictRecommendationBottomSheetFragment)
-            presenter.attachView(this@DistrictRecommendationBottomSheetFragment)
-        }
+    override fun onDetach() {
+        super.onDetach()
+        presenter.detachView()
+        mCompositeSubs.unsubscribe()
     }
 
     override fun title(): String {
@@ -153,45 +130,6 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnNegativePage()
             onCloseButtonClick()
-        }
-    }
-
-    override fun onCityChipClicked(city: String) {
-        etSearch.setText(city)
-        AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative()
-    }
-
-    private fun setViewListener(staticDimen8dp: Int?) {
-        etSearch.apply {
-            isFocusableInTouchMode = true
-            requestFocus()
-        }
-        watchTextRx(etSearch)
-                .subscribe { s ->
-                    if (s.isNotEmpty()) {
-                        input = s
-                        showClearBtn()
-                        mIsInitialLoading = true
-                        handler.postDelayed({
-                            presenter.clearCacheDistrictRecommendation()
-                            presenter.getDistrictRecommendation(input, 1)
-                        }, 200)
-                    } else icCloseBtn.visibility = View.GONE
-                }.toCompositeSubs()
-
-        staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) }?.let { rvChips.addItemDecoration(it) }
-
-        rvListDistrict.addOnScrollListener(mEndlessListener)
-    }
-
-    private fun showClearBtn() {
-        icCloseBtn.visibility = View.VISIBLE
-        icCloseBtn.setOnClickListener {
-            etSearch.setText("")
-            llListDistrict.visibility = View.GONE
-            llPopularCity.visibility = View.VISIBLE
-            popularCityAdapter.notifyDataSetChanged()
-            icCloseBtn.visibility = View.GONE
         }
     }
 
@@ -212,6 +150,59 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         }
     }
 
+    override fun onCityChipClicked(city: String) {
+        etSearch.setText(city)
+        etSearch.setSelection(city.length)
+        AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative()
+    }
+
+    fun setActionListener(actionListener: ActionListener) {
+        this.actionListener = actionListener
+    }
+
+    private fun initInjector() {
+        activity?.run {
+            DaggerAddNewAddressComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .addNewAddressModule(AddNewAddressModule())
+                    .build()
+                    .inject(this@DistrictRecommendationBottomSheetFragment)
+            presenter.attachView(this@DistrictRecommendationBottomSheetFragment)
+        }
+    }
+
+    private fun setViewListener() {
+        etSearch.apply {
+            isFocusableInTouchMode = true
+            requestFocus()
+        }
+        watchTextRx(etSearch)
+                .subscribe { s ->
+                    if (s.isNotEmpty()) {
+                        input = s
+                        showClearBtn()
+                        mIsInitialLoading = true
+                        handler.postDelayed({
+                            presenter.clearCacheDistrictRecommendation()
+                            presenter.getDistrictRecommendation(input, 1)
+                        }, 200)
+                    } else icCloseBtn.visibility = View.GONE
+                }.toCompositeSubs()
+
+        rvListDistrict.addOnScrollListener(mEndlessListener)
+    }
+
+    private fun showClearBtn() {
+        icCloseBtn.visibility = View.VISIBLE
+        icCloseBtn.setOnClickListener {
+            etSearch.setText("")
+            llListDistrict.visibility = View.GONE
+            llPopularCity.visibility = View.VISIBLE
+            popularCityAdapter.notifyDataSetChanged()
+            icCloseBtn.visibility = View.GONE
+        }
+    }
+
     override fun onDistrictItemClicked(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
         context?.let {
             districtRecommendationItemUiModel.run {
@@ -220,12 +211,6 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
                 dismiss()
             }
         }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        presenter.detachView()
-        mCompositeSubs.unsubscribe()
     }
 
     private fun watchTextRx(view: EditText): Observable<String> {
@@ -249,5 +234,16 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
 
     private fun Subscription.toCompositeSubs() {
         mCompositeSubs.add(this)
+    }
+
+    interface ActionListener {
+        fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(): DistrictRecommendationBottomSheetFragment {
+            return DistrictRecommendationBottomSheetFragment()
+        }
     }
 }
