@@ -30,6 +30,7 @@ import com.crashlytics.android.Crashlytics;
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
     private val MODULE_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
+    private val MODULE_HOTEL_TRAVEL = "hotel_travel"
 
     private var manager: SplitInstallManager? = null
 
@@ -52,8 +53,14 @@ object DeeplinkDFMapper {
                 else -> null
             }
         } else {
-            // currently cust app has no dynamic features module
-            return null
+            return when {
+                deeplink.startsWith(ApplinkConst.HOTEL) -> {
+                    getDFDeeplinkIfNotInstalled(context,
+                            deeplink, MODULE_HOTEL_TRAVEL,
+                            context.getString(R.string.title_hotel))
+                }
+                else -> null
+            }
         }
     }
 
