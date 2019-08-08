@@ -30,7 +30,7 @@ public class Comment {
     @SerializedName("comment")
     @Expose
     private String comment;
-    @SerializedName("userBadges")
+    @SerializedName("userBadge")
     @Expose
     private String userBadges;
 
