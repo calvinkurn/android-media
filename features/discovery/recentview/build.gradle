@@ -24,13 +24,13 @@ project.ext {
 
 dependencies {
 
-    implementation project(rootProject.ext.libraries.url)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.network)
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
 
