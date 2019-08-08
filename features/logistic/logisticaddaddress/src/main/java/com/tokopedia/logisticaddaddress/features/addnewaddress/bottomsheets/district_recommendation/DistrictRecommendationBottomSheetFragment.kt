@@ -22,6 +22,13 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecorati
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationResponseUiModel
+import rx.Emitter
+import rx.Observable
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import rx.subscriptions.CompositeSubscription
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -50,6 +57,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         }
     }
     private var mIsInitialLoading: Boolean = false
+    private val mCompositeSubs: CompositeSubscription = CompositeSubscription()
     val handler = Handler()
     private lateinit var actionListener: ActionListener
 
@@ -157,31 +165,19 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         etSearch.apply {
             isFocusableInTouchMode = true
             requestFocus()
-            addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
-                                               after: Int) {
-                }
-
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int,
-                                           count: Int) {
+        }
+        watchTextRx(etSearch)
+                .subscribe { s ->
                     if (s.isNotEmpty()) {
-                        input = "$s"
+                        input = s
                         showClearBtn()
                         mIsInitialLoading = true
                         handler.postDelayed({
                             presenter.clearCacheDistrictRecommendation()
                             presenter.getDistrictRecommendation(input, 1)
-                        }, 500)
-
-                    } else {
-                        icCloseBtn.visibility = View.GONE
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable) {
-                }
-            })
-        }
+                        }, 200)
+                    } else icCloseBtn.visibility = View.GONE
+                }.toCompositeSubs()
 
         staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) }?.let { rvChips.addItemDecoration(it) }
 
@@ -229,5 +225,29 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     override fun onDetach() {
         super.onDetach()
         presenter.detachView()
+        mCompositeSubs.unsubscribe()
+    }
+
+    private fun watchTextRx(view: EditText): Observable<String> {
+        return Observable
+                .create({ emitter: Emitter<String> ->
+                    view.addTextChangedListener(object : TextWatcher {
+                        override fun afterTextChanged(editable: Editable?) {
+                            emitter.onNext(editable.toString())
+                        }
+
+                        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                    })
+                }, Emitter.BackpressureMode.NONE)
+                .filter { t -> t.isEmpty() || t.length > 2 }
+                .debounce(700, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    private fun Subscription.toCompositeSubs() {
+        mCompositeSubs.add(this)
     }
 }
