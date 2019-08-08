@@ -124,7 +124,7 @@
                     android:layout_marginTop="@dimen/dp_12"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:text="@string/product_info_label"
+                    android:text="@string/detail_label_digital"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
                     android:visibility="gone" />
@@ -153,7 +153,7 @@
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:text="@string/detail_label"
+                    android:text="@string/detail_label_digital"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
 

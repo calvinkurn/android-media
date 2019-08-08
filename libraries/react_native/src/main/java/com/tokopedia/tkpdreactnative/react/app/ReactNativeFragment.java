@@ -1,7 +1,12 @@
 package com.tokopedia.tkpdreactnative.react.app;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +16,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,10 +27,18 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class ReactNativeFragment extends Fragment implements DefaultHardwareBackBtnHandler {
 
+    public static final int OVERLAY_PERMISSION_REQ_CODE = 1080;
+
     protected ReactRootView reactRootView;
     protected ReactInstanceManager reactInstanceManager;
 
     public abstract String getModuleName();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initPermissionReactNativeDev();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -93,5 +107,20 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
         super.onCreateView(inflater, container, savedInstanceState);
         reactRootView.startReactApplication(reactInstanceManager, getModuleName(), getInitialBundle());
         return reactRootView;
+    }
+
+    private void initPermissionReactNativeDev() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (getContext() == null)
+                    return;
+
+                if (!Settings.canDrawOverlays(getContext())) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + getContext().getPackageName()));
+                    startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+                }
+            }
+        }
     }
 }

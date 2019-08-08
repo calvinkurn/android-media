@@ -95,7 +95,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
 
     @Override
     protected void onHelpOptionClicked() {
-        adapterInteractionListener.onHelpOptionClicked(item.getId(), item.getStatus());
+        adapterInteractionListener.onHelpOptionClicked(item.getContactUsUrl());
     }
 
     private void onCancelOptionClicked() {

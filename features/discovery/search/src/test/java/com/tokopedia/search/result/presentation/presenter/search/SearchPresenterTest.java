@@ -125,7 +125,7 @@ public class SearchPresenterTest {
 
         searchPresenter.initiateSearch(new HashMap<>());
 
-        verify(searchView).initiateSearchHandleResponseSearch(false);
+        verify(searchView).initiateSearchHandleResponseSearch();
     }
 
     @Test
@@ -142,7 +142,7 @@ public class SearchPresenterTest {
 
         searchPresenter.initiateSearch(new HashMap<>());
 
-        verify(searchView).initiateSearchHandleResponseSearch(true);
+        verify(searchView).initiateSearchHandleResponseSearch();
     }
 
     @Test

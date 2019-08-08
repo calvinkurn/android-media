@@ -60,7 +60,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 if (count == 0) {
                     listener.onClearAutoComplete()
                     imgOperator.visibility = View.GONE
+                    btnClear.visibility = View.GONE
+                } else {
+                    btnClear.visibility = View.VISIBLE
                 }
+
                 when {
                     count in 1..9 -> setErrorInputNumber(context.getString(R.string.digital_telco_error_min_phone_number))
                     count in 10..14 -> {
@@ -68,7 +72,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                         imgOperator.visibility = View.VISIBLE
                         hideErrorInputNumber()
                     }
-                    count >14 -> setErrorInputNumber(context.getString(R.string.digital_telco_error_max_phone_number))
+                    count > 14 -> setErrorInputNumber(context.getString(R.string.digital_telco_error_max_phone_number))
                 }
             }
         })
