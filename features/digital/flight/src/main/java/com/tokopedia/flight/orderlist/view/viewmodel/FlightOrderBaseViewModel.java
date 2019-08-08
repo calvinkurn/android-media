@@ -14,6 +14,7 @@ public class FlightOrderBaseViewModel {
     protected String createTime;
     protected int status;
     protected List<FlightOrderJourney> orderJourney;
+    protected String contactUsUrl;
 
     protected String getId() {
         return id;
@@ -55,4 +56,7 @@ public class FlightOrderBaseViewModel {
         this.title = title;
     }
 
+    protected String getContactUsUrl() { return contactUsUrl; }
+
+    protected void setContactUsUrl(String contactUsUrl) { this.contactUsUrl = contactUsUrl; }
 }

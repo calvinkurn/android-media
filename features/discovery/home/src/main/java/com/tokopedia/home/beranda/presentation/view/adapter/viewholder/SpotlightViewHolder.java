@@ -28,6 +28,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightItemViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,14 +109,13 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
 
     private static class SpotlightItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView title;
+        private Typography title;
         private TextView tag;
         private TextView description;
         private ImageView background;
         private View container;
         private Context context;
         private HomeCategoryListener listener;
-        private Typeface titleTypeface;
 
         public SpotlightItemViewHolder(View itemView, HomeCategoryListener listener) {
             super(itemView);
@@ -126,11 +126,9 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
             background = itemView.findViewById(R.id.spotlightBackground);
             container = itemView.findViewById(R.id.spotlightContainer);
             this.listener = listener;
-            titleTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
         }
 
         public void bind(SpotlightItemViewModel model, final int position) {
-            title.setTypeface(titleTypeface);
             title.setText(model.getTitle());
             if (!TextUtils.isEmpty(model.getTagName())) {
                 tag.setText(model.getTagName().toUpperCase());

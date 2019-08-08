@@ -522,7 +522,7 @@ final class ProductListPresenter
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
             if (productViewModel.getProductList().isEmpty()) {
-                getViewToShowEmptySearch();
+                getViewToShowEmptySearch(productViewModel);
             } else {
                 getViewToShowProductList(productViewModel);
             }
@@ -535,9 +535,11 @@ final class ProductListPresenter
         }
     }
 
-    private void getViewToShowEmptySearch() {
+    private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
+        boolean isGlobalNavWidgetAvailable
+                = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
         getView().removeLoading();
-        getView().setEmptyProduct();
+        getView().setEmptyProduct(isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null);
         getView().setTotalSearchResultCount("0");
     }
 
@@ -560,7 +562,7 @@ final class ProductListPresenter
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
         if (isGlobalNavWidgetAvailable) {
-            headerViewModel.setGlobalNavViewModel(productViewModel.getGlobalNavViewModel());
+            list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
         if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable) {
