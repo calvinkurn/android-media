@@ -5,7 +5,7 @@ project.ext {
     artifactId = 'user_session'
     groupId = 'com.tokopedia.user.session'
     versionName = "1"
-    artifactName = "user_session-release"
+    artifactName = "user_session"
 }
 
 apply from: '../publish_local.gradle'
