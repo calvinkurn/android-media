@@ -134,6 +134,8 @@
     <string name="validate_kode_pos_length">Kode Pos minimal 5 karakter</string>
     <string name="validate_alamat">Alamat harus diisi</string>
     <string name="validate_alamat_length">Alamat minimal 5 karakter</string>
+    <string name="disabled_location_notif_title">Lokasi Anda Belum Terisi</string>
+    <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

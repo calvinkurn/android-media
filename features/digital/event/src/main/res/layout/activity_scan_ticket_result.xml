@@ -290,7 +290,7 @@
                                 android:background="@drawable/rounded_rectangle_green_solid"
                                 android:gravity="center"
                                 android:padding="@dimen/dp_16"
-                                android:text="@string/btn_redeem_ticket"
+                                android:text="@string/scan_btn_redeem_ticket"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/sp_13"
                                 android:visibility="visible" />

@@ -330,7 +330,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         switch (keyEvent.toLowerCase()){
             case PRODUCTVIEW:
-                keyEvent = FirebaseAnalytics.Event.VIEW_ITEM;
+                keyEvent = FirebaseAnalytics.Event.VIEW_ITEM_LIST;
                 break;
             case PRODUCTCLICK:
                 keyEvent = FirebaseAnalytics.Event.SELECT_CONTENT;

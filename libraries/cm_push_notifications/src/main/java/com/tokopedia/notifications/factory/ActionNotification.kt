@@ -48,7 +48,7 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                     expandedView.setViewVisibility(R.id.img_big, View.VISIBLE)
                     expandedView.setImageViewBitmap(R.id.img_big,
                             CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality))
-                    baseNotificationModel.actionButton.let { buttonList ->
+                    baseNotificationModel.actionButton?.let { buttonList ->
                         if (buttonList.isNotEmpty()) {
                             expandedView.setViewVisibility(R.id.layout_collapsed, View.GONE)
                         }
