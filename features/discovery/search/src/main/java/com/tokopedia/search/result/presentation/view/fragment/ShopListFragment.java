@@ -1,22 +1,20 @@
 package com.tokopedia.search.result.presentation.view.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
@@ -35,9 +33,12 @@ import com.tokopedia.search.result.presentation.view.listener.ShopListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactoryImpl;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT;
 
 public class ShopListFragment
         extends SearchSectionFragment
@@ -49,9 +50,6 @@ public class ShopListFragment
         BannerAdsListener {
 
     public static final String SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab";
-    private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
-    private static final int REQUEST_CODE_GOTO_SHOP_DETAIL = 125;
-    private static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_ACTIVITY_SORT_SHOP = 1235;
     private static final int REQUEST_ACTIVITY_FILTER_SHOP = 4322;
     private static final String SEARCH_SHOP_TRACE = "search_shop_trace";
@@ -65,11 +63,9 @@ public class ShopListFragment
     UserSessionInterface userSession;
 
     private int loadShopRow = START_ROW_FIRST_TIME_LOAD;
-    private int lastSelectedItemPosition = -1;
     private boolean isLoadingData;
     private boolean isNextPageAvailable = true;
 
-    private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
@@ -129,6 +125,7 @@ public class ShopListFragment
 
     private void bindView(View rootView) {
         if(getContext() == null || getContext().getResources() == null) return;
+        setSpanCountToOne();
 
         adapter = new ShopListAdapter(this,
                 new ShopListTypeFactoryImpl(this, this, this));
@@ -137,10 +134,10 @@ public class ShopListFragment
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_2),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_2),
-                        -(getContext().getResources().getDimensionPixelSize(R.dimen.dp_1)),
-                        0
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)
                 )
         );
 
@@ -150,47 +147,21 @@ public class ShopListFragment
         adapter.addLoading();
     }
 
+    private void setSpanCountToOne() {
+        setSpanCount(1);
+        getGridLayoutManager().setSpanCount(1);
+    }
+
     private void initListener() {
         gridLayoutLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(getGridLayoutManager()) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
                     loadShopRow = totalItemsCount - 1;
-                    loadMoreShop();
+                    loadShop();
                 }
             }
         };
-
-        linearLayoutLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(getLinearLayoutManager()) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                if (isAllowLoadMore()) {
-                    loadShopRow = totalItemsCount - 1;
-                    loadMoreShop();
-                }
-            }
-        };
-    }
-
-    public void updateScrollListenerState(boolean hasNextPage){
-        if(getAdapter() == null) return;
-
-        switch (getAdapter().getCurrentLayoutType()) {
-            case GRID_1: // List
-                if (linearLayoutLoadMoreTriggerListener != null) {
-                    linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
-                    linearLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
-                }
-                break;
-            case GRID_2: // Grid 2x2
-            case GRID_3: // Grid 1x1
-                if (gridLayoutLoadMoreTriggerListener != null) {
-                    gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
-                    gridLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
-                }
-                break;
-        }
-
     }
 
     private boolean isAllowLoadMore() {
@@ -204,58 +175,20 @@ public class ShopListFragment
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
 
         loadShopRow = START_ROW_FIRST_TIME_LOAD;
-        loadMoreShop();
+        loadShop();
     }
 
-    private void loadMoreShop() {
+    private void loadShop() {
         if(getSearchParameter() == null) return;
 
-        generateLoadMoreParameter(loadShopRow);
+        generateLoadShopParameter(loadShopRow);
 
         isLoadingData = true;
-        presenter.loadShop(getSearchParameter().getSearchParameterMap());
+
+        loadDataFromPresenter();
     }
 
-    @Override
-    public void onSearchShopSuccess(List<ShopViewModel.ShopViewItem> shopItemList, boolean isHasNextPage) {
-        if(adapter == null) return;
-
-        if (shopItemList.isEmpty()) {
-            handleEmptySearchResult();
-        } else {
-            if (performanceMonitoring != null) {
-                performanceMonitoring.stopTrace();
-                performanceMonitoring = null;
-            }
-            handleSearchResult(shopItemList, isHasNextPage, loadShopRow);
-        }
-
-        stopLoadingAndHideRefreshLayout();
-    }
-
-    @Override
-    public void onSearchShopFailed() {
-        if(adapter == null) return;
-
-        adapter.removeLoading();
-
-        NetworkErrorHelper.RetryClickedListener retryClickedListener = this::loadMoreShop;
-
-        if (adapter.isListEmpty()) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(), retryClickedListener).showRetrySnackbar();
-        }
-
-        stopLoadingAndHideRefreshLayout();
-    }
-
-    private void stopLoadingAndHideRefreshLayout() {
-        isLoadingData = false;
-        hideRefreshLayout();
-    }
-
-    private void generateLoadMoreParameter(int startRow) {
+    private void generateLoadShopParameter(int startRow) {
         if(getSearchParameter() == null) return;
 
         getSearchParameter().set(SearchApiConst.UNIQUE_ID, generateUniqueId());
@@ -277,13 +210,69 @@ public class ShopListFragment
                 AuthUtil.md5(getRegistrationId());
     }
 
-    private void handleSearchResult(List<ShopViewModel.ShopViewItem> shopViewItemList, boolean isHasNextPage, int startRow) {
-        isListEmpty = false;
+    private void loadDataFromPresenter() {
+        if(loadShopRow == START_ROW_FIRST_TIME_LOAD) {
+            presenter.loadData(getSearchParameter().getSearchParameterMap(), loadShopRow);
+        }
+        else {
+            presenter.loadMoreData(getSearchParameter().getSearchParameterMap(), loadShopRow);
+        }
+    }
 
-        enrichPositionData(shopViewItemList, startRow);
+    @Override
+    public void onSearchShopSuccessWithData(List<Visitable> shopItemList, boolean isHasNextPage) {
+        if(adapter == null) return;
+
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+            performanceMonitoring = null;
+        }
+
+        sendShopImpressionTrackingEvent(shopItemList);
+        handleSearchResult(shopItemList, isHasNextPage);
+        stopLoadingAndHideRefreshLayout();
+    }
+
+    private void sendShopImpressionTrackingEvent(List<Visitable> list) {
+        List<Object> dataLayerShopItemList = new ArrayList<>();
+        List<Object> dataLayerShopItemProductList = new ArrayList<>();
+
+        for (Visitable object : list) {
+            if (object instanceof ShopViewModel.ShopItem) {
+                ShopViewModel.ShopItem item = (ShopViewModel.ShopItem) object;
+
+                dataLayerShopItemList.add(item.getShopAsObjectDataLayer());
+                dataLayerShopItemProductList.addAll(createShopProductPreviewDataLayerObjectList(item));
+            }
+        }
+
+        searchTracking.trackImpressionSearchResultShop(dataLayerShopItemList, getQueryKey());
+        searchTracking.trackImpressionSearchResultShopProductPreview(dataLayerShopItemProductList, getQueryKey());
+    }
+
+    private List<Object> createShopProductPreviewDataLayerObjectList(ShopViewModel.ShopItem shopItem) {
+        List<Object> dataLayerShopItemProductList = new ArrayList<>();
+
+        int maxProductCount = getProductPreviewItemMaxCount(shopItem.getProductList());
+
+        for(int i = 0; i < maxProductCount; i++) {
+            ShopViewModel.ShopItem.ShopItemProduct product = shopItem.getProductList().get(i);
+            dataLayerShopItemProductList.add(product.getShopProductPreviewAsObjectDataLayerList());
+        }
+
+        return dataLayerShopItemProductList;
+    }
+
+    private int getProductPreviewItemMaxCount(List<ShopViewModel.ShopItem.ShopItemProduct> shopItemProductList) {
+        return shopItemProductList.size() > SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT
+                ? SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT : shopItemProductList.size();
+    }
+
+    private void handleSearchResult(List<Visitable> shopItemList, boolean isHasNextPage) {
+        isListEmpty = false;
         isNextPageAvailable = isHasNextPage;
         adapter.removeLoading();
-        adapter.appendItems(shopViewItemList);
+        adapter.appendItems(shopItemList);
 
         updateScrollListenerState(isHasNextPage);
 
@@ -292,12 +281,20 @@ public class ShopListFragment
         }
     }
 
-    private void enrichPositionData(List<ShopViewModel.ShopViewItem> shopViewItemList, int startRow) {
-        int position = startRow;
-        for (ShopViewModel.ShopViewItem shopItem : shopViewItemList) {
-            position++;
-            shopItem.setPosition(position);
-        }
+    public void updateScrollListenerState(boolean hasNextPage){
+        if(getAdapter() == null) return;
+
+        gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+        gridLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
+    }
+
+    @Override
+    public void onSearchShopSuccessEmptyResult() {
+        if(adapter == null) return;
+
+        handleEmptySearchResult();
+
+        stopLoadingAndHideRefreshLayout();
     }
 
     private void handleEmptySearchResult() {
@@ -308,6 +305,28 @@ public class ShopListFragment
             adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.shop_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
         }
+    }
+
+    @Override
+    public void onSearchShopFailed() {
+        if(adapter == null) return;
+
+        adapter.removeLoading();
+
+        NetworkErrorHelper.RetryClickedListener retryClickedListener = this::loadShop;
+
+        if (adapter.isListEmpty()) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), retryClickedListener).showRetrySnackbar();
+        }
+
+        stopLoadingAndHideRefreshLayout();
+    }
+
+    private void stopLoadingAndHideRefreshLayout() {
+        isLoadingData = false;
+        hideRefreshLayout();
     }
 
     @Override
@@ -335,27 +354,41 @@ public class ShopListFragment
     }
 
     @Override
-    public void onItemClicked(ShopViewModel.ShopViewItem shopItem, int adapterPosition) {
-        if(getActivity() == null) return;
+    public void onItemClicked(@NonNull ShopViewModel.ShopItem shopItem) {
+        if (redirectionListener == null) return;
 
-        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
-        lastSelectedItemPosition = adapterPosition;
-        SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
-                shopItem.getPage(), shopItem.getPosition());
-        startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
+        trackShopItemClick(shopItem);
+
+        redirectIfApplinkNotEmpty(shopItem.getApplink());
+    }
+
+    private void trackShopItemClick(@NonNull ShopViewModel.ShopItem shopItem) {
+        searchTracking.trackSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), getQueryKey());
+
+        if(isShopNotActive(shopItem)) {
+            searchTracking.trackSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), getQueryKey());
+        }
+    }
+
+    private boolean isShopNotActive(@NonNull ShopViewModel.ShopItem shopItem) {
+        return shopItem.isClosed()
+                || shopItem.isModerated()
+                || shopItem.isInactive();
+    }
+
+    private void redirectIfApplinkNotEmpty(@Nullable String applink) {
+        if (!TextUtils.isEmpty(applink)) {
+            redirectionListener.startActivityWithApplink(applink);
+        }
     }
 
     @Override
-    public void onFavoriteButtonClicked(ShopViewModel.ShopViewItem shopItem,
-                                        int adapterPosition) {
-        SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
-                shopItem.getPage(), shopItem.getPosition());
-        presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
-    }
+    public void onProductItemClicked(@NonNull ShopViewModel.ShopItem.ShopItemProduct shopItemProduct) {
+        if (redirectionListener == null) return;
 
-    @Override
-    public void onBannerAdsClicked(String appLink) {
+        searchTracking.trackSearchResultShopProductPreviewClick(shopItemProduct.getShopProductPreviewAsObjectDataLayer(), getQueryKey());
 
+        redirectIfApplinkNotEmpty(shopItemProduct.getApplink());
     }
 
     @Override
@@ -402,33 +435,12 @@ public class ShopListFragment
     protected boolean isSortEnabled() {
         return false;
     }
-
-    @Override
-    public boolean isUserHasLogin() {
-        if(userSession == null) return false;
-
-        return userSession.isLoggedIn();
-    }
-
+    
     @Override
     public String getUserId() {
         if(userSession == null) return "0";
 
         return userSession.getUserId();
-    }
-
-    @Override
-    public void disableFavoriteButton(int adapterPosition) {
-        if(adapter == null) return;
-
-        adapter.setFavoriteButtonEnabled(adapterPosition, false);
-    }
-
-    @Override
-    public void enableFavoriteButton(int adapterPosition) {
-        if(adapter == null) return;
-
-        adapter.setFavoriteButtonEnabled(adapterPosition, true);
     }
 
     private String getQueryKey() {
@@ -438,67 +450,8 @@ public class ShopListFragment
     }
 
     @Override
-    public void onErrorToggleFavorite(Throwable e, int adapterPosition) {
-        if(getContext() == null) return;
-
-        enableFavoriteButton(adapterPosition);
-        NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
-    }
-
-    @Override
-    public void onErrorToggleFavorite(int adapterPosition) {
-        if(getContext() == null) return;
-
-        enableFavoriteButton(adapterPosition);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
-    }
-
-    @Override
-    public void onSuccessToggleFavorite(int adapterPosition, boolean targetFavoritedStatus) {
-        adapter.updateFavoritedStatus(targetFavoritedStatus, adapterPosition);
-        enableFavoriteButton(adapterPosition);
-        if (targetFavoritedStatus) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.message_success_people_fav));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.message_success_people_unfav));
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data != null && requestCode == REQUEST_CODE_GOTO_SHOP_DETAIL && resultCode == Activity.RESULT_OK) {
-            boolean isFavorited = data.getBooleanExtra(SHOP_STATUS_FAVOURITE, false);
-            if (lastSelectedItemPosition != -1) {
-                updateFavoriteStatusFromShopDetailPage(lastSelectedItemPosition, isFavorited);
-            }
-        }
-    }
-
-    private void updateFavoriteStatusFromShopDetailPage(int position, boolean isFavorited) {
-        if (adapter != null && adapter.isShopItem(position)) {
-            adapter.updateFavoritedStatus(isFavorited, position);
-        }
-    }
-
-    @Override
     protected void switchLayoutType() {
-        super.switchLayoutType();
 
-        if (!getUserVisibleHint() || getAdapter() == null) {
-            return;
-        }
-        recyclerView.clearOnScrollListeners();
-
-        switch (getAdapter().getCurrentLayoutType()) {
-            case GRID_1: // List
-                recyclerView.addOnScrollListener(linearLayoutLoadMoreTriggerListener);
-                break;
-            case GRID_2: // Grid 2x2
-            case GRID_3: // Grid 1x1
-                recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
-                break;
-        }
     }
 
     @Override
@@ -506,7 +459,7 @@ public class ShopListFragment
         adapter.clearData();
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
         loadShopRow = START_ROW_FIRST_TIME_LOAD;
-        loadMoreShop();
+        loadShop();
     }
 
     @Override
@@ -532,17 +485,14 @@ public class ShopListFragment
 
     @Override
     public void onChangeList() {
-        recyclerView.setLayoutManager(getLinearLayoutManager());
     }
 
     @Override
     public void onChangeDoubleGrid() {
-        recyclerView.setLayoutManager(getGridLayoutManager());
     }
 
     @Override
     public void onChangeSingleGrid() {
-        recyclerView.setLayoutManager(getGridLayoutManager());
     }
 
     public void backToTop() {
@@ -564,21 +514,5 @@ public class ShopListFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
-    }
-
-    @Override
-    public void launchLoginActivity(String shopId) {
-        Bundle extras = new Bundle();
-        extras.putString("shop_id", shopId);
-
-        if (getActivity() == null) return;
-
-        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
-
-        if (router != null) {
-            Intent intent = router.getLoginIntent(getActivity());
-            intent.putExtras(extras);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN);
-        }
     }
 }

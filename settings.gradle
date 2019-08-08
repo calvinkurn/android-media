@@ -1,4 +1,4 @@
-ext.isCiServer = System.getenv().containsKey("CI")
+ext.isCiServer = System.getenv().containsKey("CI") 
 
 buildCache {
     local {
