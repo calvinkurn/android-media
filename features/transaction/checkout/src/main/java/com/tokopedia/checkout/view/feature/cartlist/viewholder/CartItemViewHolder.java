@@ -98,11 +98,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPriceChanges;
     private TextView tvInvenageText;
     private RelativeLayout rlInvenageText;
-    /*private RelativeLayout rlMicroInsurance;
-    private CheckBox cbSelectMicroInsurance;
-    private TextView tvMicroInsuranceTitle;
-    private TextView tvMicroInsuranceSubTitle;
-    private TextView tvMicroInsuranceInfo;*/
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -154,11 +149,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.tvPriceChanges = itemView.findViewById(R.id.tv_price_changes);
         this.tvInvenageText = itemView.findViewById(R.id.tv_invenage_text);
         this.rlInvenageText = itemView.findViewById(R.id.rl_invenage_text);
-        /*this.rlMicroInsurance = itemView.findViewById(R.id.rl_micro_insurance);
-        this.cbSelectMicroInsurance = itemView.findViewById(R.id.cb_select_micro_insurance);
-        this.tvMicroInsuranceTitle = itemView.findViewById(R.id.micro_insurance_title);
-        this.tvMicroInsuranceSubTitle = itemView.findViewById(R.id.tv_micro_insurance_sub_title);
-        this.tvMicroInsuranceInfo = itemView.findViewById(R.id.tv_micro_insurance_info);*/
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -263,7 +253,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         renderWarningAndError(data);
         renderWishlist(data);
         renderSelection(data, parentPosition);
-//        renderInsuranceData(data, parentPosition);
     }
 
     private void renderSelection(CartItemHolderData data, int parentPosition) {
@@ -279,18 +268,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                         viewHolderListener.onNeedToRefreshAllShop();
                     }
                 }
-
-                /*if (!isChecked) {
-                    data.getCartItemData().getMicroInsuranceData().setOptIn(isChecked);
-                    cbSelectMicroInsurance.setChecked(isChecked);
-                    cbSelectMicroInsurance.setVisibility(View.GONE);
-                    cbSelectMicroInsurance.setEnabled(false);
-                    cbSelectMicroInsurance.setClickable(false);
-                } else {
-                    cbSelectMicroInsurance.setVisibility(View.VISIBLE);
-                    cbSelectMicroInsurance.setEnabled(true);
-                    cbSelectMicroInsurance.setClickable(true);
-                }*/
             }
         });
     }
@@ -426,47 +403,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             this.rlInvenageText.setVisibility(View.GONE);
         }
     }
-
-    /*private void renderInsuranceData(CartItemHolderData data, int parentPosition) {
-        if (data != null &&
-                data.getCartItemData() != null &&
-                data.getCartItemData().getMicroInsuranceData() != null &&
-                data.getCartItemData().getMicroInsuranceData().getProductInfo() != null) {
-
-            tvMicroInsuranceTitle.setText(data.getCartItemData().getMicroInsuranceData().getProductInfo().getTitle());
-            tvMicroInsuranceSubTitle.setText(data.getCartItemData().getMicroInsuranceData().getProductInfo().getSubTitle());
-            tvMicroInsuranceInfo.setText(data.getCartItemData().getMicroInsuranceData().getProductInfo().getLinkName());
-
-            tvMicroInsuranceInfo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openBottomSheetWebView(tvMicroInsuranceInfo.getContext(),
-                            data.getCartItemData().getMicroInsuranceData().getProductInfo().getAppLinkUrl(),
-                            data.getCartItemData().getMicroInsuranceData().getProductInfo().getDetailInfoTitle());
-                }
-            });
-
-            cbSelectMicroInsurance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    data.getCartItemData().getMicroInsuranceData().setOptIn(isChecked);
-                    cbSelectMicroInsurance.setChecked(isChecked);
-                    actionListener.onMicroInsuranceCheckChange(isChecked, data);
-                }
-            });
-
-            if (cbSelectItem.isChecked()) {
-                cbSelectMicroInsurance.setChecked(data.getCartItemData().getMicroInsuranceData().getOptIn());
-            } else {
-                cbSelectMicroInsurance.setChecked(false);
-                cbSelectMicroInsurance.setEnabled(false);
-            }
-
-
-        } else {
-            rlMicroInsurance.setVisibility(View.GONE);
-        }
-    }*/
 
     private void renderRemark(CartItemHolderData data, int parentPosition, ViewHolderListener viewHolderListener) {
         this.etRemark.setOnEditorActionListener(new TextView.OnEditorActionListener() {

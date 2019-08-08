@@ -25,7 +25,6 @@ public class CartItemData implements Parcelable {
     private boolean isDisableAllProducts;
     private boolean isFulfillment;
 
-
     public boolean isFulfillment() {
         return isFulfillment;
     }
@@ -411,17 +410,13 @@ public class CartItemData implements Parcelable {
             return priceChangesState;
         }
 
-        public void setPriceChangesState(int priceChangesState) {
-            this.priceChangesState = priceChangesState;
-        }
+        public void setPriceChangesState(int priceChangesState) { this.priceChangesState = priceChangesState; }
 
         public String getPriceChangesDesc() {
             return priceChangesDesc;
         }
 
-        public void setPriceChangesDesc(String priceChangesDesc) {
-            this.priceChangesDesc = priceChangesDesc;
-        }
+        public void setPriceChangesDesc(String priceChangesDesc) { this.priceChangesDesc = priceChangesDesc; }
 
         public int getProductInvenageByUserInCart() {
             return productInvenageByUserInCart;

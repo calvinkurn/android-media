@@ -525,22 +525,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 break;
                             }
                         }
-                    } /*else if (item instanceof CartShopHolderData) {
-                        if (((CartShopHolderData) item).getShopGroupData() != null &&
-                                ((CartShopHolderData) item).getShopGroupData().getCartItemDataList() != null) {
-                            for (CartItemHolderData cartItemHolderData : ((CartShopHolderData) item).getShopGroupData().getCartItemDataList()) {
-                                if (cartItemHolderData.getCartItemData() != null &&
-                                        cartItemHolderData.getCartItemData().getOriginData() != null) {
-                                    if (String.valueOf(productId).equalsIgnoreCase(cartItemHolderData.getCartItemData().getOriginData().getProductId())) {
-                                        cartItemHolderData.getCartItemData().setMicroInsuranceData(null);
-                                        notifyDataSetChanged();
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                    }*/
+                    }
                 }
 
             }
@@ -618,27 +603,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         return insuranceCartDigitalProductArrayList;
     }
-
-    /*public ArrayList<InsuranceCartDigitalProduct> getUnselectedMicroInsuranceProduct() {
-
-        ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
-
-        List<CartItemData> cartItemDataList = getAllCartItemData();
-        if (cartItemDataList != null && !cartItemDataList.isEmpty()) {
-
-            for (CartItemData cartItemData : cartItemDataList) {
-
-                if (cartItemData.getMicroInsuranceData() != null &&
-                        !cartItemData.getMicroInsuranceData().getOptIn()) {
-                    InsuranceCartDigitalProduct insuranceCartDigitalProduct = cartItemData.getMicroInsuranceData();
-                    insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct);
-                }
-            }
-        }
-
-        return insuranceCartDigitalProductArrayList;
-    }*/
-
 
     public ArrayList<InsuranceCartShops> getInsuranceCartShops() {
         return allInsuranceProductsList;

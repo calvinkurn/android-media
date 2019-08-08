@@ -43,8 +43,6 @@ public class CartComponentInjector {
     EditAddressUseCase editAddressUseCase;
     @Inject
     UserSessionInterface userSession;
-    /*@Inject
-    AddInsuranceProductUsecase addInsuranceProductUsecase;*/
 
     private CartComponent cartApiServiceComponent;
 
@@ -80,10 +78,6 @@ public class CartComponentInjector {
         }
         return this;
     }
-
-    /*public AddInsuranceProductUsecase getAddInsuranceProductUsecase() {
-        return addInsuranceProductUsecase;
-    }*/
 
     public CheckoutUseCase getCheckoutUseCase() {
         return checkoutUseCase;

@@ -532,14 +532,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (message == null || message.equals("")) {
                 ArrayList<InsuranceCartDigitalProduct> insuranceCartShopsArrayList = cartAdapter.isInsuranceCartProductUnSelected();
 
-//                ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = cartAdapter.getUnselectedMicroInsuranceProduct();
-//                insuranceCartShopsArrayList.addAll(insuranceCartDigitalProductArrayList);
-
                 if (!insuranceCartShopsArrayList.isEmpty()) {
-//                    deleteMicroInsurance(insuranceCartShopsArrayList, false);
                     deleteMacroInsurance(insuranceCartShopsArrayList, false);
                 }
-
 
                 dPresenter.processToUpdateCartData(getSelectedCartDataList(), cartAdapter.getSelectedCartShopHolderData());
             } else {
@@ -1997,12 +1992,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
                                     if (!insuranceCartDigitalProduct.isProductLevel()) {
                                         cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
-                                    } /*else {
-                                        cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
-                                    }*/
-
+                                    }
                                 }
-
                             }
                         }
                     }
@@ -2160,13 +2151,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                                            ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
         dPresenter.updateInsuranceProductData(insuranceCartShops, updateInsuranceProductApplicationDetailsArrayList);
     }
-
-
-    /*@Override
-    public void deleteMicroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartShops, boolean showConfirmationDialog) {
-        dPresenter.processDeleteCartMicroInsurance(insuranceCartShops, showConfirmationDialog);
-    }*/
-
 
     @Override
     public void deleteMacroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList, boolean showConfirmationDialog) {

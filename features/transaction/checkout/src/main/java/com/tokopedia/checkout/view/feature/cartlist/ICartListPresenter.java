@@ -86,8 +86,6 @@ public interface ICartListPresenter {
 
     void processDeleteCartInsurance(ArrayList<InsuranceCartDigitalProduct> insuranceCartShops, boolean showToaster);
 
-//    void processDeleteCartMicroInsurance(ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList, boolean showToaster);
-
     void updateInsuranceProductData(InsuranceCartShops insuranceCartShops, ArrayList<UpdateInsuranceProductApplicationDetails> list);
 
     void setAllInsuranceProductsChecked(ArrayList<InsuranceCartShops> insuranceCartShops, boolean isChecked);

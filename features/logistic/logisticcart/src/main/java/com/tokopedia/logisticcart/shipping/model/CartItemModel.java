@@ -60,9 +60,6 @@ public class CartItemModel implements Parcelable {
     private int newDevicePrice;
     private int oldDevicePrice;
 
-    //Micro Insurance
-//    private InsuranceCartDigitalProduct insuranceCartDigitalProduct;
-
     public String getPreOrderInfo() {
         return preOrderInfo;
     }

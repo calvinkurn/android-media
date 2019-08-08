@@ -322,44 +322,6 @@ public class CartListPresenter implements ICartListPresenter {
         }
     }
 
-
-    /*@Override
-    public void processDeleteCartMicroInsurance(ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList, boolean showToaster) {
-        if (insuranceCartDigitalProductArrayList != null &&
-                !insuranceCartDigitalProductArrayList.isEmpty()) {
-
-            view.showProgressLoading();
-            ArrayList<String> cartIdList = new ArrayList<>();
-            ArrayList<RemoveInsuranceData> removeInsuranceDataArrayList = new ArrayList<>();
-            List<Long> productIdArrayList = new ArrayList<>();
-            for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartDigitalProductArrayList) {
-                long shopid;
-                long productId;
-                try {
-                    shopid = Long.parseLong(insuranceCartDigitalProduct.getShopId());
-                } catch (Exception e) {
-                    shopid = 0;
-                }
-
-                try {
-                    productId = Long.parseLong(insuranceCartDigitalProduct.getProductId());
-                } catch (Exception e) {
-                    productId = 0;
-                }
-
-                Long cartId = insuranceCartDigitalProduct.getCartItemId();
-                cartIdList.add(String.valueOf(cartId));
-                RemoveInsuranceData removeInsuranceData = new RemoveInsuranceData(cartId, shopid, productId);
-                removeInsuranceDataArrayList.add(removeInsuranceData);
-                productIdArrayList.add(productId);
-            }
-
-
-            removeInsuranceProductUsecase.setRequestParams(removeInsuranceDataArrayList, "cart", String.valueOf(Build.VERSION.SDK_INT), cartIdList);
-            removeInsuranceProductUsecase.execute(new GetRemoveMicroInsuranceProductSubscriber(view, productIdArrayList, showToaster));
-        }
-    }*/
-
     @Override
     public void updateInsuranceProductData(InsuranceCartShops insuranceCartShops,
                                            ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
@@ -790,11 +752,6 @@ public class CartListPresenter implements ICartListPresenter {
                         }
                     }
                 }
-
-                /*if (data.getCartItemData().getMicroInsuranceData() != null &&
-                        data.getCartItemData().getMicroInsuranceData().getOptIn()) {
-                    totalPrice = totalPrice + (data.getCartItemData().getUpdatedData().getQuantity() * data.getCartItemData().getMicroInsuranceData().getPricePerProduct());
-                }*/
             }
         }
 
@@ -990,15 +947,6 @@ public class CartListPresenter implements ICartListPresenter {
                             view.onDeleteCartDataSuccess(toBeDeletedCartIds);
                         }
 
-                        /*ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
-                        for (CartItemData cartItemData : removedCartItems) {
-
-                            if (cartItemData.getMicroInsuranceData() != null) {
-                                insuranceCartDigitalProductArrayList.add(cartItemData.getMicroInsuranceData());
-                            }
-
-                        }
-                        processDeleteCartMicroInsurance(insuranceCartDigitalProductArrayList, false);*/
                     } else {
                         view.showToastMessageRed(
                                 deleteAndRefreshCartListData.getDeleteCartData().getMessage()
