@@ -186,10 +186,6 @@ class NormalCheckoutTracking {
             putString("dimension54", getMultiOriginAttribution(multiOrigin))
         }
 
-        val list = ArrayList<Bundle>().apply {
-            add(ecommerce)
-        }
-
         val event = Bundle().apply {
             putString("event", "addToCart")
             putString("eventCategory", category)
@@ -201,10 +197,10 @@ class NormalCheckoutTracking {
             putString("shopName", shopName ?: NONE_OTHER)
             putString("shopType", shopType ?: NONE_OTHER)
             putString("categoryId", selectedProductInfo.category.id)
-            putParcelableArrayList("items", list)
+            putBundle("items", ecommerce)
         }
 
-        TrackApp.getInstance().gtm.pushEECommerce("viewProduct", event)
+        TrackApp.getInstance().gtm.pushEECommerce("addToCart", event)
         isTrackTradeIn = false
     }
 

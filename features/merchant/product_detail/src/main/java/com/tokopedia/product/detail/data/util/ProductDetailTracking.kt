@@ -516,10 +516,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             putString("dimension55", dimension55)
         }
 
-        val list = ArrayList<Bundle>().apply {
-            add(ecommerce)
-        }
-
         val event = Bundle().apply {
             putString("event", "viewProduct")
             putString("eventCategory", "product page")
@@ -531,7 +527,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             putString("shopName", shopInfo?.shopCore?.name)
             putString("shopType", getEnhanceShopType(shopInfo?.goldOS))
             putString("categoryId", productInfo?.category?.id)
-            putParcelableArrayList("items", list)
+            putBundle("items", ecommerce)
         }
 
         TrackApp.getInstance().gtm.pushEECommerce("viewProduct", event)
