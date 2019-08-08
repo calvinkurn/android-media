@@ -261,7 +261,15 @@ class SearchShopViewModelTest {
     }
 
     @Test
-    fun `searchShop() should clear all previously loaded data first`() {
+    fun `searchShop() should not do anything if searchShopLiveData has value`() {
+        whenever(shopViewModelMapper.convert(searchShopModel))
+                .thenReturn(shopViewModel)
+                .thenReturn(ShopViewModel())
+
+        whenever(shopHeaderViewModelMapper.convert(searchShopModel))
+                .thenReturn(shopHeaderViewModel)
+                .thenReturn(ShopHeaderViewModel())
+
         val searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
@@ -273,16 +281,11 @@ class SearchShopViewModelTest {
                 localCacheHandler
         )
 
-        `search shop, search more, then search again`(searchShopViewModel)
+        searchShopViewModel.searchShop()
+        searchShopViewModel.searchShop()
 
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchShopData(searchShopState)
-    }
-
-    private fun `search shop, search more, then search again`(searchShopViewModel: SearchShopViewModel) {
-        searchShopViewModel.searchShop()
-        searchShopViewModel.searchMoreShop()
-        searchShopViewModel.searchShop()
     }
 
     @Test
