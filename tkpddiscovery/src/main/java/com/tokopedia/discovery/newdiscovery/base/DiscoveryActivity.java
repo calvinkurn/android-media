@@ -172,7 +172,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
         handleQueryTextSubmitBasedOnCurrentTab();
 
-        return false;
+        return true;
     }
 
     private void handleQueryTextSubmitBasedOnCurrentTab() throws RuntimeException {
