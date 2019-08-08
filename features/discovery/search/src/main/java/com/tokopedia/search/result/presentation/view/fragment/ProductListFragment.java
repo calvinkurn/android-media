@@ -328,13 +328,12 @@ public class ProductListFragment
     public void setProductList(List<Visitable> list) {
         adapter.clearDataBeforeSet();
 
+        stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
 
         if (similarSearchManager.isSimilarSearchEnable()){
             startShowCase();
         }
-
-        stopSearchResultPagePerformanceMonitoring();
     }
 
     private void stopSearchResultPagePerformanceMonitoring() {

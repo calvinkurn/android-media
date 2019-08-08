@@ -412,7 +412,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         showLoadingView(false);
         showContainer(true);
-        NetworkErrorHelper.showEmptyState(this, container, this::moveToSearchPage);
+        NetworkErrorHelper.showEmptyState(this, container, null);
     }
 
     @Override
