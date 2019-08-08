@@ -26,8 +26,8 @@ project.ext {
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.userSession)
-    implementation project(rootProject.ext.libraries.network)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation project(rootProject.ext.features.logisticdata)
