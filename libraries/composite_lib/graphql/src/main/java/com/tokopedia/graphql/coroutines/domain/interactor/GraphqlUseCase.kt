@@ -57,6 +57,18 @@ open class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlReposito
 
     }
 
+
+    /**
+     * @author by milhamj on 2019-08-06.
+     */
+    fun Observable<*>.subscribeIgnoreError() {
+        this.subscribe({
+            //no op
+        }, {
+            //ignore error
+        })
+    }
+
     private fun initCacheManager() {
         if (mCacheManager == null) {
             mCacheManager = GraphqlCacheManager()
