@@ -132,6 +132,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            shopType: String? = "",
                            shopName: String? = "",
                            isOneClickShipment: Boolean,
+                           isNeedRefresh: Boolean,
                            tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
@@ -147,6 +148,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopType ?: "")
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName ?: "")
                     putBoolean(ApplinkConst.Transaction.EXTRA_OCS, isOneClickShipment)
+                    putBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, isNeedRefresh)
                     putParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
             }
@@ -488,6 +490,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
 
         super.onCreate(savedInstanceState)
+        viewModel.parseDataFrom(arguments)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
