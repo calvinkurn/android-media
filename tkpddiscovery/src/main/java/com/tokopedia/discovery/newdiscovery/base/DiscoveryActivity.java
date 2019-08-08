@@ -194,12 +194,34 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     protected void onProductQuerySubmit() {
         setForceSwipeToShop(false);
-        performRequestProduct();
+        moveToSearchPage();
     }
 
     private void onShopQuerySubmit() {
         setForceSwipeToShop(true);
-        performRequestProduct();
+        moveToSearchPage();
+    }
+
+    private void moveToSearchPage() {
+        Intent searchActivityIntent = createIntentToSearchResult();
+
+        startActivity(searchActivityIntent);
+        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
+        finish();
+    }
+
+    private Intent createIntentToSearchResult() {
+        Intent intent = RouteManager.getIntent(this, createSearchResultApplink());
+
+        intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
+
+        return intent;
+    }
+
+    private String createSearchResultApplink() {
+        return ApplinkConstInternalDiscovery.SEARCH_RESULT
+                + "?"
+                + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
     }
 
     private void sendSearchProductGTM(String keyword) {
@@ -302,41 +324,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    protected void performRequestProduct() {
-        String searchQuery = this.searchParameter.getSearchQuery();
-
-        onSearchingStart(searchQuery);
-
-        moveToSearchPage();
-    }
-
-    protected void onSearchingStart(String keyword) {
-        setToolbarTitle(keyword);
-        setLastQuerySearchView(keyword);
-    }
-
-    private void moveToSearchPage() {
-        Intent searchActivityIntent = createIntentToSearchResult();
-
-        startActivity(searchActivityIntent);
-        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
-        finish();
-    }
-
-    private Intent createIntentToSearchResult() {
-        Intent intent = RouteManager.getIntent(this, createSearchResultApplink());
-
-        intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
-
-        return intent;
-    }
-
-    private String createSearchResultApplink() {
-        return ApplinkConstInternalDiscovery.SEARCH_RESULT
-                + "?"
-                + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
-    }
-
     public void deleteAllRecentSearch() {
         searchView.getSuggestionFragment().deleteAllRecentSearch();
     }
@@ -418,7 +405,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         showLoadingView(false);
         showContainer(true);
-        NetworkErrorHelper.showEmptyState(this, container, this::performRequestProduct);
+        NetworkErrorHelper.showEmptyState(this, container, this::moveToSearchPage);
     }
 
     @Override
