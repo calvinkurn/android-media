@@ -261,7 +261,7 @@ class SearchShopViewModelTest {
     }
 
     @Test
-    fun `searchShop() should not do anything if searchShopLiveData has value`() {
+    fun `searchShop() should not do anything if searchShopLiveData already has value`() {
         whenever(shopViewModelMapper.convert(searchShopModel))
                 .thenReturn(shopViewModel)
                 .thenReturn(ShopViewModel())
@@ -285,7 +285,22 @@ class SearchShopViewModelTest {
         searchShopViewModel.searchShop()
 
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
-        assertSuccessSearchShopData(searchShopState)
+        assertSuccessSearchShopDataOnlyOnce(searchShopState)
+    }
+
+    private fun assertSuccessSearchShopDataOnlyOnce(state: State<List<Visitable<*>>>?) {
+        if(state != null) {
+            assertStateIsSuccess(state)
+            assertDataIsNotEmpty(state.data)
+            assertShopHeaderAtFirstIndexOfData(state.data!!)
+            assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
+            assertShopItemCountDoesNotIncrease(state.data!!, shopItemViewModelList.size)
+        }
+        else {
+            assert(false) {
+                "State is null"
+            }
+        }
     }
 
     @Test
@@ -325,6 +340,10 @@ class SearchShopViewModelTest {
 
     @Test
     fun `searchMoreShop() should not do anything if hasNextPage is false after searchMoreShop()`() {
+        whenever(shopViewModelMapper.convert(searchMoreShopModelWithoutNextPage))
+                .thenReturn(moreShopViewModel)
+                .thenReturn(ShopViewModel(shopItemList = shopItemViewModelList.map { it.copy() }.toList()))
+
         val searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
@@ -338,13 +357,6 @@ class SearchShopViewModelTest {
 
         searchShopViewModel.searchShop()
         searchShopViewModel.searchMoreShop()
-
-        whenever(shopViewModelMapper.convert(searchMoreShopModelWithoutNextPage)).thenReturn(
-            ShopViewModel(
-                    shopItemList = shopItemViewModelList.map { it.copy() }.toList()
-            )
-        )
-
         searchShopViewModel.searchMoreShop()
 
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value

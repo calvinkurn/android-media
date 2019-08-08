@@ -79,20 +79,26 @@ class SearchShopViewModel(
     }
 
     private suspend fun trySearchShop() {
+        if (searchShopLiveData.value != null) return
+
         updateSearchShopLiveDataStateToLoading()
 
-        setSearchParameterStartRow(START_ROW_FIRST_TIME_LOAD)
-
-        val requestParams = createSearchShopParam(searchParameter)
-        searchShopFirstPageUseCase.setRequestParams(requestParams.parameters)
-
-        val searchShopModel = searchShopFirstPageUseCase.executeOnBackground()
+        val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
 
         searchShopFirstPageSuccess(searchShopModel)
     }
 
     private fun updateSearchShopLiveDataStateToLoading() {
         searchShopLiveData.postValue(Loading())
+    }
+
+    private suspend fun requestSearchShopModel(startRow: Int, searchShopUseCase: SearchUseCase<SearchShopModel>): SearchShopModel? {
+        setSearchParameterStartRow(startRow)
+
+        val requestParams = createSearchShopParam(searchParameter)
+        searchShopUseCase.setRequestParams(requestParams.parameters)
+
+        return searchShopUseCase.executeOnBackground()
     }
 
     private fun createSearchShopParam(searchParameter: Map<String, Any>): RequestParams {
@@ -208,12 +214,7 @@ class SearchShopViewModel(
 
         addLoadingMoreToSearchShopLiveData()
 
-        setSearchParameterStartRow(getTotalShopItemCount())
-
-        val requestParams = createSearchShopParam(searchParameter)
-        searchShopLoadMoreUseCase.setRequestParams(requestParams.parameters)
-
-        val searchShopModel = searchShopLoadMoreUseCase.executeOnBackground()
+        val searchShopModel = requestSearchShopModel(getTotalShopItemCount(), searchShopLoadMoreUseCase)
 
         searchShopLoadMoreSuccess(searchShopModel)
     }
