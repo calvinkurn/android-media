@@ -19,7 +19,6 @@ import com.tokopedia.logisticaddaddress.data.source.ShopAddressDataSource;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecomToken;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomPresenter;
 import com.tokopedia.logisticdata.data.converter.GeneratedHostConverter;
@@ -162,12 +161,6 @@ public class DistrictRecommendationModule {
 
     @Provides
     @DistrictRecommendationScope
-    AddressViewModelMapper provideViewModelMapper() {
-        return new AddressViewModelMapper();
-    }
-
-    @Provides
-    @DistrictRecommendationScope
     DistrictRecommendationRepository provideDistrictRecommendationRepository(
             DistrictRecommendationDataStore districtRecommendationDataStore,
             DistrictRecommendationEntityMapper districtRecommendationEntityMapper
@@ -207,9 +200,8 @@ public class DistrictRecommendationModule {
     @Provides
     @DistrictRecommendationScope
     DiscomContract.Presenter provideDistrictRecommendationPresenter(
-            GetDistrictRequestUseCase getDistrictRequestUseCase, GetDistrictRecommendation getDistrictRecommendation,
-            AddressViewModelMapper addressViewModelMapper) {
-        return new DiscomPresenter(getDistrictRequestUseCase, getDistrictRecommendation, addressViewModelMapper);
+            GetDistrictRequestUseCase getDistrictRequestUseCase, GetDistrictRecommendation getDistrictRecommendation) {
+        return new DiscomPresenter(getDistrictRequestUseCase, getDistrictRecommendation);
     }
 
 }

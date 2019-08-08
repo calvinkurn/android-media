@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.logisticaddaddress.domain.model.Address;
 
 /**
  * Created by Irfan Khoirul on 16/11/18.
@@ -15,7 +16,7 @@ public class DistrictRecommendationAdapterTypeFactory extends BaseAdapterTypeFac
     }
 
     @Override
-    public int type(AddressViewModel addressViewModel) {
+    public int type(Address addressViewModel) {
         return DistrictRecommendationViewHolder.LAYOUT;
     }
 

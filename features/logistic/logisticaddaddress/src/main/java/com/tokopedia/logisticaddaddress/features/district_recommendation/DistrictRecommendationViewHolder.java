@@ -11,7 +11,7 @@ import com.tokopedia.logisticaddaddress.domain.model.Address;
  * Created by Irfan Khoirul on 17/11/18.
  */
 
-public class DistrictRecommendationViewHolder extends AbstractViewHolder<AddressViewModel> {
+public class DistrictRecommendationViewHolder extends AbstractViewHolder<Address> {
 
     public static final int LAYOUT = R.layout.listview_district_recomendation;
 
@@ -24,8 +24,7 @@ public class DistrictRecommendationViewHolder extends AbstractViewHolder<Address
     }
 
     @Override
-    public void bind(AddressViewModel addressViewModel) {
-        Address address = addressViewModel.getAddress();
+    public void bind(Address address) {
 
         String completeAddress = address.getProvinceName() +
                 ", " +

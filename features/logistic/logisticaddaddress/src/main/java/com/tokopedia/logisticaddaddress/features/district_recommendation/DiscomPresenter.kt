@@ -8,11 +8,9 @@ import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject
 
-class DiscomPresenter @Inject
-constructor(private val restUsecase: GetDistrictRequestUseCase,
-            private val gqlUsecase: GetDistrictRecommendation,
-            private val mapper: AddressViewModelMapper)
-    : DiscomContract.Presenter {
+class DiscomPresenter @Inject constructor(
+        private val restUsecase: GetDistrictRequestUseCase,
+        private val gqlUsecase: GetDistrictRecommendation) : DiscomContract.Presenter {
 
     private var view: DiscomContract.View? = null
 
@@ -29,23 +27,7 @@ constructor(private val restUsecase: GetDistrictRequestUseCase,
     override fun loadData(query: String, page: Int) {
         gqlUsecase.execute(query, page)
                 .doOnSubscribe { view?.setLoadingState(true) }
-                .subscribe(
-                        { response: AddressResponse ->
-                            view?.let {
-                                it.setLoadingState(false)
-                                if (!response.addresses.isNullOrEmpty()) {
-                                    it.renderData(mapper.transform(response), response.isNextAvailable)
-                                } else {
-                                    it.showEmpty()
-                                }
-                            }
-                        },
-                        { error: Throwable ->
-                            view?.let {
-                                it.setLoadingState(false)
-                                it.showGetListError(error)
-                            }
-                        }, {})
+                .subscribe(getLoadDataObserver())
     }
 
     override fun loadData(query: String, page: Int, token: Token) {
@@ -56,26 +38,28 @@ constructor(private val restUsecase: GetDistrictRequestUseCase,
             putString(GetDistrictRequestUseCase.PARAM_TOKEN, token.districtRecommendation)
             putString(GetDistrictRequestUseCase.PARAM_UT, token.ut.toString())
         }
-        restUsecase.execute(params, object : Subscriber<AddressResponse>() {
-            override fun onNext(response: AddressResponse?) {
-                view?.let {
-                    it.setLoadingState(false)
-                    if (!response?.addresses.isNullOrEmpty()) {
-                        it.renderData(mapper.transform(response), response!!.isNextAvailable)
-                    } else {
-                        it.showEmpty()
-                    }
+        restUsecase.execute(params, getLoadDataObserver())
+    }
+
+    private fun getLoadDataObserver() = object : Subscriber<AddressResponse>() {
+        override fun onNext(response: AddressResponse?) {
+            view?.let {
+                it.setLoadingState(false)
+                if (!response?.addresses.isNullOrEmpty()) {
+                    it.renderData(response!!.addresses, response!!.isNextAvailable)
+                } else {
+                    it.showEmpty()
                 }
             }
+        }
 
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-                view?.setLoadingState(false)
-                view?.showGetListError(e?: Throwable())
-            }
+        override fun onError(e: Throwable?) {
+            e?.printStackTrace()
+            view?.setLoadingState(false)
+            view?.showGetListError(e ?: Throwable())
+        }
 
-            override fun onCompleted() {}
-        })
+        override fun onCompleted() {}
     }
 
 }

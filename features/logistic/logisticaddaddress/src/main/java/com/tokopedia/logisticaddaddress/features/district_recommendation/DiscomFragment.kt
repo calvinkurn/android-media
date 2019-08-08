@@ -16,13 +16,14 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper
+import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticdata.data.entity.address.Token
 
 import javax.inject.Inject
 
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 
-class DiscomFragment : BaseSearchListFragment<AddressViewModel, DistrictRecommendationTypeFactory>(), DiscomContract.View {
+class DiscomFragment : BaseSearchListFragment<Address, DistrictRecommendationTypeFactory>(), DiscomContract.View {
 
     private var mToken: Token? = null
     private var swipeRefreshLayout: SwipeToRefresh? = null
@@ -104,19 +105,19 @@ class DiscomFragment : BaseSearchListFragment<AddressViewModel, DistrictRecommen
         return DistrictRecommendationAdapterTypeFactory()
     }
 
-    override fun onItemClicked(addressViewModel: AddressViewModel) {
-        analytics?.sendAnalyticsOnDistrictDropdownSelectionItemClicked(addressViewModel.address.districtName)
+    override fun onItemClicked(address: Address) {
+        analytics?.sendAnalyticsOnDistrictDropdownSelectionItemClicked(address.districtName)
         activity?.let {
             val resultIntent = Intent().apply {
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(addressViewModel.address))
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(address))
 
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, addressViewModel.address.districtId)
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, addressViewModel.address.districtName)
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, addressViewModel.address.cityId)
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, addressViewModel.address.cityName)
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, addressViewModel.address.provinceId)
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, addressViewModel.address.provinceName)
-                putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, addressViewModel.address.zipCodes)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, address.districtId)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, address.districtName)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, address.cityId)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, address.cityName)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, address.provinceId)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, address.provinceName)
+                putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, address.zipCodes)
             }
             it.setResult(Activity.RESULT_OK, resultIntent)
             it.finish()
@@ -135,7 +136,7 @@ class DiscomFragment : BaseSearchListFragment<AddressViewModel, DistrictRecommen
         loadData(defaultInitialPage)
     }
 
-    override fun renderData(list: List<AddressViewModel>, hasNextPage: Boolean) {
+    override fun renderData(list: List<Address>, hasNextPage: Boolean) {
         super.renderList(list, hasNextPage)
         if (currentPage == defaultInitialPage && hasNextPage) {
             val page = currentPage + defaultInitialPage
