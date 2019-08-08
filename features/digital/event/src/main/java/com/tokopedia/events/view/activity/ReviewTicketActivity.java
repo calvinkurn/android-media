@@ -89,6 +89,9 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     public static final int PAYMENT_REQUEST_CODE = 65000;
     public static final int PAYMENT_SUCCESS = 5;
     public static final int PROMO_CODE_CHECK = 4096;
+
+    private TextView dateRangeName, cityName;
+    private ImageView dateImageView, cityImageView;
     private ImageTextViewHolder timeHolder;
     private ImageTextViewHolder addressHolder;
     private EventsAnalytics eventsAnalytics;
@@ -171,6 +174,12 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         sectionDiscount = findViewById(R.id.rl_section_discount);
         tvDiscount = findViewById(R.id.tv_discount);
 
+        dateRangeName = findViewById(R.id.event_time_tv).findViewById(R.id.textview_holder_small);
+        dateImageView = findViewById(R.id.event_time_tv).findViewById(R.id.image_holder_small);
+
+        cityName = findViewById(R.id.event_address_tv).findViewById(R.id.textview_holder_small);
+        cityImageView = findViewById(R.id.event_address_tv).findViewById(R.id.image_holder_small);
+
         btnGoToPayment.setOnClickListener(this);
         infoEmail.setOnClickListener(this);
         infoMoreinfo.setOnClickListener(this);
@@ -201,15 +210,15 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
-        timeHolder = new ImageTextViewHolder(this);
-        addressHolder = new ImageTextViewHolder(this);
         eventNameTv.setText(packageViewModel.getDisplayName());
         if (timerange == null || timerange.length() == 0) {
             eventTimeTv.setVisibility(View.GONE);
         } else {
-            setHolder(R.drawable.ic_time, timerange, timeHolder);
+            dateImageView.setImageResource(R.drawable.ic_time);
+            dateRangeName.setText(timerange);
         }
-        setHolder(R.drawable.ic_skyline, packageViewModel.getAddress(), addressHolder);
+        cityName.setText(packageViewModel.getAddress());
+        cityImageView.setImageResource(R.drawable.ic_placeholder);
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
 
