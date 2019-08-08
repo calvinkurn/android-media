@@ -18,7 +18,6 @@ class DistrictRecommendationBottomSheetAdapter(private var actionListener: Actio
 
     interface ActionListener {
         fun onDistrictItemClicked(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel)
-        fun onSuccessGetDistrictRecommendation(getDistrictRecommendationResponseUiModel: DistrictRecommendationResponseUiModel, numPage: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -45,12 +44,14 @@ class DistrictRecommendationBottomSheetAdapter(private var actionListener: Actio
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    fun loadDistrictRecommendation(listDistrict: MutableList<DistrictRecommendationItemUiModel>) {
+    fun setData(listDistrict: MutableList<DistrictRecommendationItemUiModel>) {
         listDistrictRecommendation.clear()
         listDistrictRecommendation.addAll(listDistrict)
+        notifyDataSetChanged()
     }
 
-    fun loadDistrictRecommendationNextPage(listDistrict: MutableList<DistrictRecommendationItemUiModel>) {
+    fun appendData(listDistrict: MutableList<DistrictRecommendationItemUiModel>) {
         listDistrictRecommendation.addAll(listDistrict)
+        notifyDataSetChanged()
     }
 }

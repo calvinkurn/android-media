@@ -13,12 +13,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
-import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationResponseUiModel
@@ -43,8 +43,13 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     private lateinit var icCloseBtn: ImageView
     private var isLoading: Boolean = false
     private var input: String = ""
-    private var numPage: Int = 1
-    private val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+    private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+    private val mEndlessListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
+        override fun onLoadMore(page: Int, totalItemsCount: Int) {
+            presenter.getDistrictRecommendation(input, page + 1)
+        }
+    }
+    private var mIsInitialLoading: Boolean = false
     val handler = Handler()
     private lateinit var actionListener: ActionListener
 
@@ -104,14 +109,14 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
 
         listDistrictAdapter = DistrictRecommendationBottomSheetAdapter(this)
         rvListDistrict.apply {
-            layoutManager = linearLayoutManager
+            layoutManager = mLayoutManager
             adapter = listDistrictAdapter
         }
 
         etSearch.setSelection(etSearch.text.length)
     }
 
-    fun setActionListener(actionListener: AddEditAddressFragment) {
+    fun setActionListener(actionListener: ActionListener) {
         this.actionListener = actionListener
     }
 
@@ -162,9 +167,10 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
                     if (s.isNotEmpty()) {
                         input = "$s"
                         showClearBtn()
+                        mIsInitialLoading = true
                         handler.postDelayed({
                             presenter.clearCacheDistrictRecommendation()
-                            presenter.getDistrictRecommendation(input, "1")
+                            presenter.getDistrictRecommendation(input, 1)
                         }, 500)
 
                     } else {
@@ -179,24 +185,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
 
         staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) }?.let { rvChips.addItemDecoration(it) }
 
-        var visibleItemCount: Int
-        var totalItemCount: Int
-        var pastVisibleItem: Int
-        rvListDistrict.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                visibleItemCount = linearLayoutManager.childCount
-                totalItemCount = linearLayoutManager.itemCount
-                pastVisibleItem = linearLayoutManager.findFirstVisibleItemPosition()
-                if ((visibleItemCount + pastVisibleItem) >= totalItemCount && !isLoading) {
-                    isLoading = true
-                    numPage += 1
-                    presenter.clearCacheDistrictRecommendation()
-                    presenter.getDistrictRecommendation(input, numPage.toString())
-                }
-            }
-        })
+        rvListDistrict.addOnScrollListener(mEndlessListener)
     }
 
     private fun showClearBtn() {
@@ -210,17 +199,20 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         }
     }
 
-    override fun onSuccessGetDistrictRecommendation(getDistrictRecommendationResponseUiModel: DistrictRecommendationResponseUiModel, numPage: String) {
-        if (getDistrictRecommendationResponseUiModel.listDistrict.isNotEmpty()) {
+    override fun showData(model: DistrictRecommendationResponseUiModel, hasNext: Boolean) {
+        if (model.listDistrict.isNotEmpty()) {
             isLoading = false
             llPopularCity.visibility = View.GONE
             llListDistrict.visibility = View.VISIBLE
-            if (numPage == "1") {
-                listDistrictAdapter.loadDistrictRecommendation(getDistrictRecommendationResponseUiModel.listDistrict.toMutableList())
+            if (mIsInitialLoading) {
+                listDistrictAdapter.setData(model.listDistrict.toMutableList())
+                mEndlessListener.resetState()
+                mIsInitialLoading = false
             } else {
-                listDistrictAdapter.loadDistrictRecommendationNextPage(getDistrictRecommendationResponseUiModel.listDistrict.toMutableList())
+                listDistrictAdapter.appendData(model.listDistrict.toMutableList())
+                mEndlessListener.updateStateAfterGetData()
             }
-            listDistrictAdapter.notifyDataSetChanged()
+            mEndlessListener.setHasNextPage(hasNext)
         }
     }
 

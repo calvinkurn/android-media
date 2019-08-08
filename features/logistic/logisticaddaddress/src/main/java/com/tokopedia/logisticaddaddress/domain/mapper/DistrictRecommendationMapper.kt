@@ -16,14 +16,15 @@ import javax.inject.Inject
 class DistrictRecommendationMapper @Inject constructor() {
 
     fun map(response: GraphqlResponse?): DistrictRecommendationResponseUiModel {
-        var listDistrict = mutableListOf<DistrictRecommendationItemUiModel>()
+        val listDistrict = mutableListOf<DistrictRecommendationItemUiModel>()
         val responseDistrictRecommendation: DistrictRecommendationResponse? = response?.getData(DistrictRecommendationResponse::class.java)
         responseDistrictRecommendation?.keroDistrictRecommendation?.let { keroDistrictRecommendation ->
             keroDistrictRecommendation.district.forEach {
                 mapDistrictItem(it).let(listDistrict::add)
             }
         }
-        return DistrictRecommendationResponseUiModel(listDistrict)
+        return DistrictRecommendationResponseUiModel(listDistrict, responseDistrictRecommendation?.keroDistrictRecommendation?.nextAvailable
+                ?: true)
     }
 
     fun transform(response: DistrictRecommendationResponse): DistrictRecommendationResponseUiModel {
