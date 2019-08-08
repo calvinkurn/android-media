@@ -2,11 +2,10 @@ package com.tokopedia.search.result.presentation.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,14 +29,12 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.discovery.DiscoveryRouter;
-import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
@@ -62,12 +59,9 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
-import static com.tokopedia.discovery.common.constants.SearchConstant.DEEP_LINK_URI;
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_ACTIVE_TAB_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
-import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
-import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_IS_FROM_APPLINK;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
@@ -80,13 +74,21 @@ public class SearchActivity extends BaseActivity
         SearchNavigationListener,
         HasComponent<BaseAppComponent> {
 
-    public static Intent newInstance(Context context) {
-        return new Intent(context, SearchActivity.class);
-    }
-
     private static final int TAB_FIRST_POSITION = 0;
-    private static final int TAB_THIRD_POSITION = 2;
     private static final int TAB_SECOND_POSITION = 1;
+    private static final int TAB_THIRD_POSITION = 2;
+
+    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
+    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
+        Uri uri = Uri.parse(bundle.getString(DeepLink.URI));
+
+        if(uri == null) return new Intent();
+
+        return RouteManager.getIntent(
+                context,
+                ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + uri.getEncodedQuery()
+        );
+    }
 
     private ProductListFragment productListFragment;
     private CatalogListFragment catalogListFragment;
@@ -116,8 +118,6 @@ public class SearchActivity extends BaseActivity
     private String shopTabTitle;
     private String profileTabTitle;
     private boolean isForceSwipeToShop;
-    private boolean isHasCatalog;
-    private boolean isFromApplink;
     private int activeTabPosition;
 
     @Inject SearchContract.Presenter searchPresenter;
@@ -128,28 +128,11 @@ public class SearchActivity extends BaseActivity
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
 
-    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
-    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        SearchParameter searchParameter = createSearchParameterFromBundle(bundle);
-
-        Intent intent = newInstance(context);
-        intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
-        intent.putExtra(EXTRA_IS_FROM_APPLINK, true);
-
-        return intent;
-    }
-
-    private static SearchParameter createSearchParameterFromBundle(Bundle bundle) {
-        String deepLinkURI = bundle.getString(DEEP_LINK_URI);
-        return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
         initActivityOnCreate();
-
         proceed();
         handleIntent(getIntent());
     }
@@ -196,11 +179,9 @@ public class SearchActivity extends BaseActivity
 
     protected void prepareView() {
         initToolbar();
-
         initViewPager();
         initBottomSheetListener();
         initSearchNavigationListener();
-
         bottomSheetFilterView.initFilterBottomSheet();
     }
 
@@ -212,35 +193,16 @@ public class SearchActivity extends BaseActivity
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(false);
         }
+
         searchTextView.setOnClickListener(v -> moveToAutoCompleteActivity());
         backButton.setOnClickListener(v -> onBackPressed());
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
     }
 
     private void moveToAutoCompleteActivity() {
-        ActivityCompat.startActivityForResult(
-                this,
-                getAutoCompleteIntent(),
-                AUTO_COMPLETE_ACTIVITY_REQUEST_CODE,
-                getOptionsForTransitionAnimation().toBundle());
-    }
+        String query = searchParameter.getSearchQuery();
 
-    private Intent getAutoCompleteIntent() {
-        SearchParameter autoCompleteSearchParameter = new SearchParameter();
-        autoCompleteSearchParameter.setSearchQuery(searchParameter.getSearchQuery());
-
-        Intent intent = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
-        intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, autoCompleteSearchParameter);
-
-        return intent;
-    }
-
-    private ActivityOptionsCompat getOptionsForTransitionAnimation() {
-        return ActivityOptionsCompat.makeSceneTransitionAnimation(this, toolbar, SearchConstant.TRANSITION);
-    }
-
-    private void showLoadingView(boolean visible) {
-        loadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + query);
     }
 
     private void initViewPager() {
@@ -313,6 +275,15 @@ public class SearchActivity extends BaseActivity
         selectedFragment.reloadData();
     }
 
+    @Override
+    public void hideBottomNavigation() {
+        searchNavContainer.setVisibility(View.GONE);
+    }
+
+    public void showBottomNavigation() {
+        searchNavContainer.setVisibility(View.VISIBLE);
+    }
+
     private void sendBottomSheetHideEventForProductList() {
         SearchSectionFragment selectedFragment
                 = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
@@ -349,68 +320,13 @@ public class SearchActivity extends BaseActivity
         initPresenter();
         initResources();
         getExtrasFromIntent(intent);
-
-        if (isFromApplink) {
-            performProductSearch("");
-        } else {
-            onSearchingStart();
-            loadSection();
-        }
+        performProductSearch();
         setToolbarTitle(searchParameter.getSearchQuery());
     }
 
     private void initPresenter() {
         searchPresenter.attachView(this);
         searchPresenter.initInjector(this);
-    }
-
-    protected void stopPerformanceMonitoring() {
-        if (performanceMonitoring != null) {
-            performanceMonitoring.stopTrace();
-        }
-    }
-
-    private void moveToSearchActivity(boolean isHasCatalog) {
-        if(getApplication() instanceof DiscoveryRouter) {
-            DiscoveryRouter router = (DiscoveryRouter)getApplication();
-            Intent searchActivityIntent = getSearchActivityIntent(router, isHasCatalog);
-            startActivity(searchActivityIntent);
-        }
-    }
-
-    private Intent getSearchActivityIntent(DiscoveryRouter router, boolean isHasCatalog) {
-        Intent searchActivityIntent = router.gotoSearchPage(this);
-        searchActivityIntent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
-        searchActivityIntent.putExtra(EXTRA_HAS_CATALOG, isHasCatalog);
-        searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop);
-
-        return searchActivityIntent;
-    }
-
-    public void moveWithApplink(String applink) {
-        if(getApplication() instanceof DiscoveryRouter) {
-            DiscoveryRouter router = (DiscoveryRouter)getApplication();
-
-            if (router.isSupportApplink(applink)) {
-                openApplink(router, applink);
-            } else {
-                openWebViewURL(router, applink, this);
-            }
-        }
-
-        finish();
-    }
-
-    public void openApplink(DiscoveryRouter router, String applink) {
-        if (!TextUtils.isEmpty(applink)) {
-            router.goToApplinkActivity(this, applink);
-        }
-    }
-
-    public void openWebViewURL(DiscoveryRouter router, String url, Context context) {
-        if (!TextUtils.isEmpty(url) && context != null) {
-            router.actionOpenGeneralWebView(this, url);
-        }
     }
 
     private void initResources() {
@@ -421,17 +337,75 @@ public class SearchActivity extends BaseActivity
     }
 
     private void getExtrasFromIntent(Intent intent) {
-        searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
+        searchParameter = getSearchParameterFromIntentUri(intent);
         isForceSwipeToShop = intent.getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
-        isHasCatalog = intent.getBooleanExtra(EXTRA_HAS_CATALOG, false);
-        isFromApplink = intent.getBooleanExtra(EXTRA_IS_FROM_APPLINK, false);
-
-        createNewSearchParameterIfNull();
     }
 
-    private void createNewSearchParameterIfNull() {
-        if(searchParameter == null) {
-            searchParameter = new SearchParameter();
+    private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
+        Uri uri = intent.getData();
+
+        return (uri == null) ? new SearchParameter() : new SearchParameter(uri.toString());
+    }
+
+    private void performProductSearch() {
+        updateSearchParameterBeforeSearch();
+        onSearchingStart();
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
+
+        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap());
+    }
+
+    private void updateSearchParameterBeforeSearch() {
+        setSearchParameterUniqueId();
+        setSearchParameterUserIdIfLoggedIn();
+    }
+
+    private void setSearchParameterUniqueId() {
+        String uniqueId = userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
+                AuthUtil.md5(getRegistrationId(this));
+
+        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
+    }
+
+    private String getRegistrationId(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        return cache.getString(GCM_ID, "");
+    }
+
+    private void setSearchParameterUserIdIfLoggedIn() {
+        if(userSession.isLoggedIn()) {
+            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
+        }
+    }
+
+    protected void onSearchingStart() {
+        showLoadingView(true);
+        showContainer(false);
+        hideBottomNavigation();
+    }
+
+    private void showLoadingView(boolean visible) {
+        loadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    private void showContainer(boolean visible) {
+        container.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    protected void setToolbarTitle(String query) {
+        searchTextView.setText(query);
+    }
+
+    @Override
+    public void initiateSearchHandleResponseSearch() {
+        stopPerformanceMonitoring();
+        loadSection();
+    }
+
+    protected void stopPerformanceMonitoring() {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
         }
     }
 
@@ -450,13 +424,12 @@ public class SearchActivity extends BaseActivity
     private void populateTab(List<SearchSectionItem> searchSectionItemList) {
         initFragments();
         addFragmentsToList(searchSectionItemList);
-
         initTabLayout();
     }
 
     private void initFragments() {
         productListFragment = getProductFragment();
-        if(isHasCatalog) catalogListFragment = getCatalogFragment();
+        catalogListFragment = getCatalogFragment();
         shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment();
     }
@@ -479,7 +452,7 @@ public class SearchActivity extends BaseActivity
 
     private void addFragmentsToList(List<SearchSectionItem> searchSectionItemList) {
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        if(isHasCatalog) searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogListFragment));
+        searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
         searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
     }
@@ -505,11 +478,10 @@ public class SearchActivity extends BaseActivity
                 productListFragment.backToTop();
                 break;
             case TAB_SECOND_POSITION:
-                if(isHasCatalog) catalogListFragment.backToTop();
-                else shopListFragment.backToTop();
+                catalogListFragment.backToTop();
                 break;
             case TAB_THIRD_POSITION:
-                if(isHasCatalog) shopListFragment.backToTop();
+                shopListFragment.backToTop();
                 break;
         }
     }
@@ -520,11 +492,10 @@ public class SearchActivity extends BaseActivity
                 SearchTracking.eventSearchResultTabClick(this, productTabTitle);
                 break;
             case TAB_SECOND_POSITION:
-                if(isHasCatalog) SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
-                else SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
+                SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
                 break;
             case TAB_THIRD_POSITION:
-                if(isHasCatalog) SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
+                SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
                 break;
         }
     }
@@ -540,29 +511,80 @@ public class SearchActivity extends BaseActivity
     }
 
     private int getViewPagerCurrentItem() {
-        if(isForceSwipeToShop) return getShopTabPosition();
+        if(isForceSwipeToShop) return TAB_SECOND_POSITION;
         else return activeTabPosition;
     }
 
-    private int getShopTabPosition() {
-        return isHasCatalog ? 2 : 1;
+    @Override
+    public void initiateSearchHandleApplink(@NonNull String applink) {
+        moveWithApplink(applink);
     }
 
-    protected void setToolbarTitle(String query) {
-        searchTextView.setText(query);
+    public void moveWithApplink(String applink) {
+        startActivityWithApplink(applink);
+        finish();
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
+    public void startActivityWithApplink(String applink, String... parameter) {
+        finishCurrentActivityIfRedirectedToSearch(applink);
 
-        restartActivityWithoutAnimation(intent);
+        Intent intent = RouteManager.getIntent(this, applink, parameter);
+        int startActivityForResultRequestCode = getStartActivityForResultRequestCode(applink);
+
+        startActivityForResult(intent, startActivityForResultRequestCode);
     }
 
-    private void restartActivityWithoutAnimation(Intent intent) {
-        startActivity(intent);
-        finish();
-        overridePendingTransition(0, 0);
+    private void finishCurrentActivityIfRedirectedToSearch(String applink) {
+        if(isApplinkToSearchActivity(applink)) {
+            finish();
+        }
+    }
+
+    private boolean isApplinkToSearchActivity(String applink) {
+        if(TextUtils.isEmpty(applink)) return false;
+
+        Uri uri = Uri.parse(applink);
+        String applinkTarget = constructApplinkTarget(uri);
+
+        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH)
+                || applinkTarget.equals(ApplinkConstInternalDiscovery.SEARCH_RESULT);
+    }
+
+    private String constructApplinkTarget(@NonNull Uri uri) {
+        String scheme = uri.getScheme();
+        String host = uri.getHost();
+        String path = uri.getEncodedPath();
+
+        return scheme + "://" + host + path;
+    }
+
+    private int getStartActivityForResultRequestCode(String applink) {
+        if(isApplinkToAutoCompleteActivity(applink)) {
+            return AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
+        }
+
+        return -1;
+    }
+
+    private boolean isApplinkToAutoCompleteActivity(String applink) {
+        Uri uri = Uri.parse(applink);
+        String applinkTarget = constructApplinkTarget(uri);
+
+        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+    }
+
+    @Override
+    public void initiateSearchHandleResponseError() {
+        NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
+            if(searchParameter == null) return;
+            SearchActivity.this.performProductSearch();
+        });
+    }
+
+    @Override
+    public void initiateSearchHandleResponseUnknown() {
+        throw new RuntimeException("Not yet handle unknown response");
     }
 
     @Override
@@ -579,12 +601,19 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
+    protected void onDestroy() {
+        searchPresenter.onDestroy();
+        searchPresenter.detachView();
+        super.onDestroy();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch(requestCode) {
             case AUTO_COMPLETE_ACTIVITY_REQUEST_CODE:
-                handleResultFromAutoCompleteActivity(resultCode, data);
+                handleResultFromAutoCompleteActivity(resultCode);
                 break;
             default:
                 handleDefaultActivityResult(requestCode, resultCode, data);
@@ -592,11 +621,10 @@ public class SearchActivity extends BaseActivity
         }
     }
 
-    private void handleResultFromAutoCompleteActivity(int resultCode, Intent data) {
+    private void handleResultFromAutoCompleteActivity(int resultCode) {
         switch(resultCode) {
-            case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY:
+            case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY:
                 finish();
-                startActivity(data);
                 overridePendingTransition(0, 0);
                 break;
         }
@@ -604,13 +632,6 @@ public class SearchActivity extends BaseActivity
 
     private void handleDefaultActivityResult(int requestCode, int resultCode, Intent data) {
         bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onDestroy() {
-        searchPresenter.onDestroy();
-        searchPresenter.detachView();
-        super.onDestroy();
     }
 
     @Override
@@ -645,92 +666,10 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void performNewProductSearch(String queryParams) {
-        this.searchParameter = new SearchParameter();
-        this.isForceSwipeToShop = false;
-        performProductSearch(queryParams);
-    }
-
-    private void performProductSearch(String queryParams) {
-        updateSearchParameterBeforeSearch(queryParams);
-        onSearchingStart();
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
-
-        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap());
-    }
-
-    private void updateSearchParameterBeforeSearch(String queryParams) {
-        searchParameter.getSearchParameterHashMap().putAll(NetworkParamHelper.getParamMap(queryParams));
-        setSearchParameterUniqueId();
-        setSearchParameterUserIdIfLoggedIn();
-    }
-
-    private void setSearchParameterUniqueId() {
-        String uniqueId = userSession.isLoggedIn() ?
-                AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(getRegistrationId(this));
-
-        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
-    }
-
-    private String getRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
-    }
-
-    private void setSearchParameterUserIdIfLoggedIn() {
-        if(userSession.isLoggedIn()) {
-            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
-        }
-    }
-
-    protected void onSearchingStart() {
-        showLoadingView(true);
-        showContainer(false);
-        hideBottomNavigation();
-    }
-
-    @Override
     public void onProductLoadingFinished() {
         showLoadingView(false);
         showContainer(true);
         showBottomNavigation();
-    }
-
-    private void showContainer(boolean visible) {
-        container.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    @Override
-    public void initiateSearchHandleResponseSearch(boolean isHasCatalog) {
-        stopPerformanceMonitoring();
-        if (isTabInitialized()) {
-            moveToSearchActivity(isHasCatalog);
-        } else {
-            loadSection();
-        }
-    }
-
-    private boolean isTabInitialized() {
-        return searchSectionPagerAdapter != null;
-    }
-
-    @Override
-    public void initiateSearchHandleApplink(@NonNull String applink) {
-        moveWithApplink(applink);
-    }
-
-    @Override
-    public void initiateSearchHandleResponseError() {
-        NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
-            if(searchParameter == null) return;
-            SearchActivity.this.performProductSearch("");
-        });
-    }
-
-    @Override
-    public void initiateSearchHandleResponseUnknown() {
-        throw new RuntimeException("Not yet handle unknown response");
     }
 
     @Override
@@ -782,15 +721,6 @@ public class SearchActivity extends BaseActivity
         this.searchNavigationClickListener = clickListener;
     }
 
-    public void showBottomNavigation() {
-        searchNavContainer.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideBottomNavigation() {
-        searchNavContainer.setVisibility(View.GONE);
-    }
-
     @Override
     public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
         if(buttonChangeGrid != null) {
@@ -801,41 +731,6 @@ public class SearchActivity extends BaseActivity
     @Override
     public BaseAppComponent getComponent() {
         return getBaseAppComponent();
-    }
-
-    @Override
-    public void startActivityWithApplink(String applink, String... parameter) {
-        finishCurrentActivityIfRedirectedToSearch(applink);
-
-        Intent intent = RouteManager.getIntent(this, applink, parameter);
-        int startActivityForResultRequestCode = getStartActivityForResultRequestCode(applink);
-
-        startActivityForResult(intent, startActivityForResultRequestCode);
-    }
-
-    private void finishCurrentActivityIfRedirectedToSearch(String applink) {
-        if(isApplinkToSearchActivity(applink)) {
-            setIntent(new Intent());
-            finish();
-        }
-    }
-
-    private boolean isApplinkToSearchActivity(String applink) {
-        return !TextUtils.isEmpty(applink)
-                && applink.startsWith(ApplinkConst.DISCOVERY_SEARCH + "?");
-    }
-
-    private int getStartActivityForResultRequestCode(String applink) {
-        if(isApplinkToAutoCompleteActivity(applink)) {
-            return AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
-        }
-
-        return -1;
-    }
-
-    private boolean isApplinkToAutoCompleteActivity(String applink) {
-        return !TextUtils.isEmpty(applink)
-                && applink.startsWith(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?");
     }
 
     @Override

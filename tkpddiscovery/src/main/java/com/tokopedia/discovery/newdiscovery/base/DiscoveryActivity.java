@@ -2,10 +2,8 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -21,31 +19,29 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchImagePickerActivity;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
-import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
@@ -76,8 +72,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private TkpdProgressDialog tkpdProgressDialog;
     private boolean isFromCamera = false;
     private String imagePath;
-    private UserSessionInterface userSession;
-    private PerformanceMonitoring performanceMonitoring;
     protected View root;
 
     protected SearchParameter searchParameter;
@@ -86,7 +80,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
-        userSession = new UserSession(this);
         proceed();
     }
 
@@ -126,18 +119,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     protected void showContainer(boolean visible) {
         container.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
-
-    public AHBottomNavigation getBottomNavigation() {
-        return bottomNavigation;
-    }
-
-    protected void onSearchingStart(String keyword) {
-        searchView.closeSearch();
-        showLoadingView(true);
-        showContainer(false);
-        setToolbarTitle(keyword);
-        setLastQuerySearchView(keyword);
     }
 
     protected void initToolbar() {
@@ -211,18 +192,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    @Override
     protected void onProductQuerySubmit() {
         setForceSwipeToShop(false);
-        setRequestOfficialStoreBanner(true);
-
         performRequestProduct();
     }
 
     private void onShopQuerySubmit() {
         setForceSwipeToShop(true);
-        setRequestOfficialStoreBanner(true);
-
         performRequestProduct();
     }
 
@@ -317,7 +293,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public void onBackPressed() {
         if (searchView.isSearchOpen()) {
             if (searchView.isFinishOnClose()) {
-                finishWithAnimation();
+                finish();
             } else {
                 searchView.closeSearch();
             }
@@ -326,111 +302,39 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    private void finishWithAnimation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AnimationUtil.unreveal(root, new AnimationUtil.AnimationListener() {
-                @Override
-                public boolean onAnimationStart(View view) {
-                    return false;
-                }
-
-                @Override
-                public boolean onAnimationEnd(View view) {
-                    finish();
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-
-                @Override
-                public boolean onAnimationCancel(View view) {
-                    return false;
-                }
-            });
-        } else {
-            finish();
-        }
-    }
-
     protected void performRequestProduct() {
-        performRequestProduct("");
-    }
-
-    protected void performRequestProduct(String keyword) {
-        performRequestProduct(keyword, "");
-    }
-
-    protected void performRequestProduct(String searchQuery, String categoryId) {
-        updateSearchParameterBeforeSearchIfNotEmpty(searchQuery, categoryId);
-
-        searchQuery = this.searchParameter.getSearchQuery();
+        String searchQuery = this.searchParameter.getSearchQuery();
 
         onSearchingStart(searchQuery);
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        getPresenter().initiateSearch(searchParameter, getInitiateSearchListener());
+        moveToSearchPage();
     }
 
-    private InitiateSearchListener getInitiateSearchListener() {
-        return new InitiateSearchListener() {
-            @Override
-            public void onHandleResponseSearch(boolean isHasCatalog) {
-                ProductViewModel model = new ProductViewModel();
-                model.setSearchParameter(searchParameter);
-                model.setHasCatalog(isHasCatalog);
-
-                DiscoveryActivity.this.onHandleResponseSearch(model);
-            }
-
-            @Override
-            public void onHandleApplink(@NonNull String applink) {
-                DiscoveryActivity.this.onHandleApplink(applink);
-            }
-
-            @Override
-            public void onHandleResponseError() {
-                DiscoveryActivity.this.onHandleResponseError();
-            }
-
-            @Override
-            public void onHandleResponseUnknown() {
-                DiscoveryActivity.this.onHandleResponseUnknown();
-            }
-        };
+    protected void onSearchingStart(String keyword) {
+        setToolbarTitle(keyword);
+        setLastQuerySearchView(keyword);
     }
 
-    private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {
-        if(searchParameter == null) searchParameter = new SearchParameter();
+    private void moveToSearchPage() {
+        Intent searchActivityIntent = createIntentToSearchResult();
 
-        setSearchParameterQueryIfNotEmpty(searchQuery);
-        setSearchParameterUniqueId();
-        setSearchParameterUserIdIfLoggedIn();
-        setSearchParameterCategoryIdIfNotEmpty(categoryId);
+        startActivity(searchActivityIntent);
+        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
+        finish();
     }
 
-    private void setSearchParameterQueryIfNotEmpty(String searchQuery) {
-        if(!TextUtils.isEmpty(searchQuery)) {
-            searchParameter.setSearchQuery(searchQuery);
-        }
+    private Intent createIntentToSearchResult() {
+        Intent intent = RouteManager.getIntent(this, createSearchResultApplink());
+
+        intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
+
+        return intent;
     }
 
-    private void setSearchParameterUniqueId() {
-        String uniqueId = userSession.isLoggedIn() ?
-                AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(gcmHandler.getRegistrationId());
-
-        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
-    }
-
-    private void setSearchParameterUserIdIfLoggedIn() {
-        if(userSession.isLoggedIn()) {
-            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
-        }
-    }
-
-    private void setSearchParameterCategoryIdIfNotEmpty(String categoryId) {
-        if(!TextUtils.isEmpty(categoryId)) {
-            searchParameter.set(SearchApiConst.SC, categoryId);
-        }
+    private String createSearchResultApplink() {
+        return ApplinkConstInternalDiscovery.SEARCH_RESULT
+                + "?"
+                + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
     }
 
     public void deleteAllRecentSearch() {
@@ -693,17 +597,5 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public String getImagePath() {
         return imagePath;
-    }
-
-    @Override
-    public void onHandleResponseSearch(ProductViewModel productViewModel) {
-        super.onHandleResponseSearch(productViewModel);
-        stopPerformanceMonitoring();
-    }
-
-    protected void stopPerformanceMonitoring() {
-        if (performanceMonitoring != null) {
-            performanceMonitoring.stopTrace();
-        }
     }
 }
