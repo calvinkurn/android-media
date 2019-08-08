@@ -268,6 +268,7 @@ public interface ApplinkConst {
         String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
+        String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
     }
 
     interface Query {

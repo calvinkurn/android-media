@@ -48,6 +48,7 @@ ext {
             commonNetwork     : ":libraries:common_network",
             coreNetwork       : ":libraries:core_network",
             datePickerRange   : ":libraries:date_picker_range",
+            dynamicFeatures   : ":libraries:dynamic_features",
             fingerprint       : ":libraries:fingerprint",
             config            : ":libraries:global_config",
             graphql           : ":libraries:graphql",

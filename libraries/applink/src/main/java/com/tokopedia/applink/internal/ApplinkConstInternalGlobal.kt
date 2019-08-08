@@ -119,4 +119,19 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-profile-phone-verification"
 
+    @JvmField
+    val DYNAMIC_FEATURE_INSTALL_BASE= "$INTERNAL_GLOBAL/dynamic-features-install/"
+
+    // DFInstallerActivity
+    // tokopedia-android-internal://global/dynamic-features-install/hotel/?
+    // auto = true will download when activity is open
+    // applink, if provided will launch the applink after the module is installed
+    // imageUrl, is the placeholder for the background
+    @JvmField
+    val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
+        "dfname={moduleTranslate}&" +
+        "dfapplink={encodedApplink}&" +
+        "dfauto={isAutoDownload}&" +
+        "dfimage={imageUrl}"
+
 }
