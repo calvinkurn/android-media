@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.home.R;
@@ -103,9 +102,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 countDownView.setVisibility(View.GONE);
             }
         } catch (Exception e) {
-            if (!GlobalConfig.DEBUG) {
-                Crashlytics.log(0, TAG, e.getLocalizedMessage());
-            }
+            Crashlytics.log(0, TAG, e.getLocalizedMessage());
         }
     }
     private void setupClickListeners(final DynamicHomeChannel.Channels channel) {
