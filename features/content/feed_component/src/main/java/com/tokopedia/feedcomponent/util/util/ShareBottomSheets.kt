@@ -110,11 +110,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     override fun title(): String {
-        var title = ""
-        if (::data.isInitialized) {
-            title = data.ogTitle ?: getString(R.string.title_share)
-        }
-        return title
+        return if (::data.isInitialized) data.ogTitle ?: getString(R.string.title_share) else ""
     }
 
     override fun configView(parentView: View) {
