@@ -180,6 +180,7 @@ class NormalCheckoutTracking {
             putString(FirebaseAnalytics.Param.ITEM_VARIANT, productVariantString)
             putDouble(FirebaseAnalytics.Param.PRICE, selectedProductInfo.basic.price.toDouble())
             putLong(FirebaseAnalytics.Param.INDEX, 1)
+            putLong(FirebaseAnalytics.Param.QUANTITY, qty.toLong())
             putString("dimension38", trackerAttribution ?: NONE_OTHER)
             putString("dimension45", cartId ?: NONE_OTHER)
             putString("dimension54", getMultiOriginAttribution(multiOrigin))
