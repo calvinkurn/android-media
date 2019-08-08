@@ -170,9 +170,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         String query = searchParameter.getSearchQuery();
         AutoCompleteTracking.eventClickSubmit(this, query);
 
+        clearFocusSearchView();
         handleQueryTextSubmitBasedOnCurrentTab();
 
         return true;
+    }
+
+    private void clearFocusSearchView() {
+        if(searchView != null) {
+            searchView.clearFocus();
+        }
     }
 
     private void handleQueryTextSubmitBasedOnCurrentTab() throws RuntimeException {
