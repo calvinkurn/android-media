@@ -30,8 +30,17 @@ class SearchShopViewModelTest {
     private abstract class MockShopHeaderViewModelMapper : Mapper<SearchShopModel, ShopHeaderViewModel>
     private abstract class MockShopViewModelMapper : Mapper<SearchShopModel, ShopViewModel>
 
-    private val searchShopModel = SearchShopModel()
-    private val searchMoreShopModel = SearchShopModel()
+    private val aceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
+            paging = SearchShopModel.AceSearchShop.Paging(uriNext = "Some random string indicating has next page")
+    )
+    private val aceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
+            paging = SearchShopModel.AceSearchShop.Paging(uriNext = "")
+    )
+    private val searchShopModel = SearchShopModel(aceSearchShopWithNextPage)
+    private val searchMoreShopModel = SearchShopModel(aceSearchShopWithNextPage)
+    private val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage)
+    private val searchMoreShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage)
+
     private val shopHeaderViewModel = ShopHeaderViewModel()
     private val shopItemViewModelList = mutableListOf<ShopViewModel.ShopItem>().also {
         it.add(ShopViewModel.ShopItem())
@@ -61,11 +70,14 @@ class SearchShopViewModelTest {
 
     private val shopHeaderViewModelMapper = mock(MockShopHeaderViewModelMapper::class.java).also {
         whenever(it.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
+        whenever(it.convert(searchShopModelWithoutNextPage)).thenReturn(shopHeaderViewModel)
     }
 
     private val shopViewModelMapper = mock(MockShopViewModelMapper::class.java).also {
         whenever(it.convert(searchShopModel)).thenReturn(shopViewModel)
+        whenever(it.convert(searchShopModelWithoutNextPage)).thenReturn(shopViewModel)
         whenever(it.convert(searchMoreShopModel)).thenReturn(moreShopViewModel)
+        whenever(it.convert(searchMoreShopModelWithoutNextPage)).thenReturn(moreShopViewModel)
     }
 
     private val userSession = mock(UserSessionInterface::class.java).also {
@@ -202,6 +214,153 @@ class SearchShopViewModelTest {
 
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchShopData(searchShopState)
+    }
+
+    @Test
+    fun `when searchMoreShop() is fails, validate previous data still exists with state error`() {
+        val exception = Exception("Mock exception for testing error")
+        val searchShopViewModel = SearchShopViewModel(
+                Dispatchers.Unconfined,
+                searchShopParameter,
+                TestSearchUseCase(searchShopModel),
+                TestErrorSearchUseCase(exception),
+                shopHeaderViewModelMapper,
+                shopViewModelMapper,
+                userSession,
+                localCacheHandler
+        )
+
+        searchShopViewModel.searchShop()
+        searchShopViewModel.searchMoreShop()
+
+        val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+        assertErrorSearchMoreShopData(searchShopState)
+    }
+
+    private fun assertErrorSearchMoreShopData(state: State<List<Visitable<*>>>?) {
+        if (state != null) {
+            assertStateIsError(state)
+            assertDataIsNotEmpty(state.data)
+            assertShopHeaderAtFirstIndexOfData(state.data!!)
+            assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
+            assertShopItemCountDoesNotIncrease(state.data!!, shopItemViewModelList.size)
+        }
+        else {
+            assert (false) {
+                "State is null"
+            }
+        }
+    }
+
+    private fun assertShopItemCountDoesNotIncrease(data: List<Visitable<*>>, expectedShopItemCount: Int) {
+        val actualShopItemCount = data.count { it is ShopViewModel.ShopItem }
+
+        assert(actualShopItemCount == expectedShopItemCount) {
+            "Actual shop item count is $actualShopItemCount, expected shop item count is $expectedShopItemCount"
+        }
+    }
+
+    @Test
+    fun `searchShop() should clear all previously loaded data first`() {
+        val searchShopViewModel = SearchShopViewModel(
+                Dispatchers.Unconfined,
+                searchShopParameter,
+                TestSearchUseCase(searchShopModel),
+                TestSearchUseCase(searchMoreShopModel),
+                shopHeaderViewModelMapper,
+                shopViewModelMapper,
+                userSession,
+                localCacheHandler
+        )
+
+        `search shop, search more, then search again`(searchShopViewModel)
+
+        val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+        assertSuccessSearchShopData(searchShopState)
+    }
+
+    private fun `search shop, search more, then search again`(searchShopViewModel: SearchShopViewModel) {
+        searchShopViewModel.searchShop()
+        searchShopViewModel.searchMoreShop()
+        searchShopViewModel.searchShop()
+    }
+
+    @Test
+    fun `searchMoreShop() should not do anything if hasNextPage is false after searchShop()`() {
+        val searchShopViewModel = SearchShopViewModel(
+                Dispatchers.Unconfined,
+                searchShopParameter,
+                TestSearchUseCase(searchShopModelWithoutNextPage),
+                TestSearchUseCase(searchMoreShopModel),
+                shopHeaderViewModelMapper,
+                shopViewModelMapper,
+                userSession,
+                localCacheHandler
+        )
+
+        searchShopViewModel.searchShop()
+        searchShopViewModel.searchMoreShop()
+
+        val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+        assertSuccessSearchShopWithoutNextPage(searchShopState)
+    }
+
+    private fun assertSuccessSearchShopWithoutNextPage(state: State<List<Visitable<*>>>?) {
+        if (state != null) {
+            assertStateIsSuccess(state)
+            assertDataIsNotEmpty(state.data)
+            assertShopHeaderAtFirstIndexOfData(state.data!!)
+            assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
+            assertShopItemCountDoesNotIncrease(state.data!!, shopItemViewModelList.size)
+        }
+        else {
+            assert (false) {
+                "State is null"
+            }
+        }
+    }
+
+    @Test
+    fun `searchMoreShop() should not do anything if hasNextPage is false after searchMoreShop()`() {
+        val searchShopViewModel = SearchShopViewModel(
+                Dispatchers.Unconfined,
+                searchShopParameter,
+                TestSearchUseCase(searchShopModel),
+                TestSearchUseCase(searchMoreShopModelWithoutNextPage),
+                shopHeaderViewModelMapper,
+                shopViewModelMapper,
+                userSession,
+                localCacheHandler
+        )
+
+        searchShopViewModel.searchShop()
+        searchShopViewModel.searchMoreShop()
+
+        whenever(shopViewModelMapper.convert(searchMoreShopModelWithoutNextPage)).thenReturn(
+            ShopViewModel(
+                    shopItemList = shopItemViewModelList.map { it.copy() }.toList()
+            )
+        )
+
+        searchShopViewModel.searchMoreShop()
+
+        val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+        assertSuccessSearchMoreShopWithoutNextPage(searchShopState)
+    }
+
+    private fun assertSuccessSearchMoreShopWithoutNextPage(state: State<List<Visitable<*>>>?) {
+        if (state != null) {
+            assertStateIsSuccess(state)
+            assertDataIsNotEmpty(state.data)
+            assertShopHeaderAtFirstIndexOfData(state.data!!)
+            assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
+            assertShopItemCountDoesNotIncrease(state.data!!, shopItemViewModelList.size * 2)
+        }
+        else {
+            assert (false) {
+                "State is null"
+            }
+        }
     }
 
     @After

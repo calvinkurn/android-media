@@ -15,8 +15,7 @@ import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.viewmodel.State
-import com.tokopedia.search.result.presentation.viewmodel.State.Error
-import com.tokopedia.search.result.presentation.viewmodel.State.Success
+import com.tokopedia.search.result.presentation.viewmodel.State.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -40,6 +39,7 @@ class SearchShopViewModel(
     private val searchShopLiveData = MutableLiveData<State<List<Visitable<*>>>>()
     private val searchParameter = searchParameter.toMutableMap()
     private val loadingMoreModel = LoadingMoreModel()
+    private var isHasNextPage = false
 
     init {
         this.searchParameter[SearchApiConst.UNIQUE_ID] = generateUniqueId()
@@ -79,6 +79,8 @@ class SearchShopViewModel(
     }
 
     private suspend fun trySearchShop() {
+        updateSearchShopLiveDataStateToLoading()
+
         setSearchParameterStartRow(START_ROW_FIRST_TIME_LOAD)
 
         val requestParams = createSearchShopParam(searchParameter)
@@ -87,6 +89,10 @@ class SearchShopViewModel(
         val searchShopModel = searchShopFirstPageUseCase.executeOnBackground()
 
         searchShopFirstPageSuccess(searchShopModel)
+    }
+
+    private fun updateSearchShopLiveDataStateToLoading() {
+        searchShopLiveData.postValue(Loading())
     }
 
     private fun createSearchShopParam(searchParameter: Map<String, Any>): RequestParams {
@@ -110,8 +116,14 @@ class SearchShopViewModel(
     private fun searchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
 
+        updateIsHasNextPage(searchShopModel)
+
         val visitableList = createSearchShopListWithHeader(searchShopModel)
         updateSearchShopLiveDataStateToSuccess(visitableList)
+    }
+
+    private fun updateIsHasNextPage(searchShopModel: SearchShopModel) {
+        isHasNextPage = searchShopModel.aceSearchShop.paging.uriNext.isNotEmpty()
     }
 
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
@@ -175,6 +187,7 @@ class SearchShopViewModel(
 
     private fun updateSearchShopLiveDataStateToError() {
         val searchShopDataList = getSearchShopLiveDataMutableList()
+        searchShopDataList.remove(loadingMoreModel)
 
         searchShopLiveData.postValue(Error("", searchShopDataList))
     }
@@ -191,10 +204,11 @@ class SearchShopViewModel(
     }
 
     private suspend fun trySearchMoreShop() {
+        if(!isHasNextPage) return
+
         addLoadingMoreToSearchShopLiveData()
 
-        val startRow = getTotalShopItemCount()
-        setSearchParameterStartRow(startRow)
+        setSearchParameterStartRow(getTotalShopItemCount())
 
         val requestParams = createSearchShopParam(searchParameter)
         searchShopLoadMoreUseCase.setRequestParams(requestParams.parameters)
@@ -217,6 +231,8 @@ class SearchShopViewModel(
 
     private fun searchShopLoadMoreSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
+
+        updateIsHasNextPage(searchShopModel)
 
         val visitableList = createSearchShopList(searchShopModel)
         updateSearchShopLiveDataStateToSuccess(visitableList)
