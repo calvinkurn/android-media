@@ -3,7 +3,9 @@
     package="com.tokopedia.travel.homepage">
 
     <application>
-        <activity android:name=".presentation.activity.TravelHomepageActivity"></activity>
+        <activity android:name=".presentation.activity.TravelHomepageActivity"
+            android:theme="@style/Theme.White"
+            />
     </application>
 
 </manifest>

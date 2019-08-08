@@ -1,13 +1,17 @@
 package com.tokopedia.travel.homepage.presentation.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.travel.homepage.TravelHomepageComponentInstance
 import com.tokopedia.travel.homepage.di.TravelHomepageComponent
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment
 
-class TravelHomepageActivity : BaseSimpleActivity() {
+class TravelHomepageActivity : BaseSimpleActivity(), HasComponent<TravelHomepageComponent> {
 
     private lateinit var travelHomepageComponent: TravelHomepageComponent
 
@@ -19,18 +23,19 @@ class TravelHomepageActivity : BaseSimpleActivity() {
     }
 
     private fun  initInjector() {
-        getComponent().inject(this)
+        component.inject(this)
     }
 
-    override fun getNewFragment(): Fragment {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getNewFragment(): Fragment = TravelHomepageFragment.getInstance()
 
-    private fun getComponent(): TravelHomepageComponent {
+    override fun getComponent(): TravelHomepageComponent {
         if (!::travelHomepageComponent.isInitialized) {
             travelHomepageComponent = TravelHomepageComponentInstance.getTravelHomepageComponent(application)
         }
         return travelHomepageComponent
     }
 
+    companion object {
+        fun getCallingIntent(context: Context): Intent = Intent(context, TravelHomepageActivity::class.java)
+    }
 }

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="travel_homepage_banner_background_height">150dp</dimen>
+
+    <dimen name="banner_margin_top">8dp</dimen>
 </resources>
