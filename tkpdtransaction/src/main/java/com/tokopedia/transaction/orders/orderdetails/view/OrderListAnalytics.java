@@ -46,6 +46,7 @@ public class OrderListAnalytics {
     private static final String KEY_SHOP_NAME= "shop_name";
     private static final String KEY_DIMENSION_45 = "dimension45";
     private static final String KEY_DIMENSION_40 = "dimension40";
+    private static final String KEY_DIMENSION_38 = "dimension38";
     private static final String ACTION = "view purchase attempt";
     private static final String LABEL = "purchase attempt status";
     private static final String CURRENCY_CODE = "currencyCode";
@@ -155,6 +156,7 @@ public class OrderListAnalytics {
             product.put(KEY_CATEGORY_ID, item.getCategoryID());
             product.put(KEY_SHOP_ID, shopInfo.getShopId());
             product.put(KEY_SHOP_NAME, shopInfo.getShopName());
+            product.put(KEY_SHOP_TYPE, NONE);
             String cartId = NONE;
             for(Datum datum : responseBuyAgainList)
                 if (datum.getProductId() == item.getId()) {
@@ -163,6 +165,7 @@ public class OrderListAnalytics {
                 }
             product.put(KEY_DIMENSION_45, cartId);
             product.put(KEY_DIMENSION_40, NONE);
+            product.put(KEY_DIMENSION_38, NONE);
             products.add(product);
         }
 
