@@ -223,7 +223,7 @@ android {
             dimension "client"
         }
     }
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettingsSellerapp]
+    dynamicFeatures = [rootProject.ext.dynamicFeaturesSellerapp.shopSettings]
 }
 
 repositories {
