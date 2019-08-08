@@ -9,6 +9,7 @@ import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
+import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -33,15 +34,20 @@ abstract class ProfileCompletionViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(AddPhoneViewModel::class)
-    internal abstract fun AddPhoneViewModel(viewModel: AddPhoneViewModel): ViewModel
+    internal abstract fun addPhoneViewModel(viewModel: AddPhoneViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(AddBodViewModel::class)
-    internal abstract fun AddBodViewModel(viewModel: AddBodViewModel): ViewModel
+    internal abstract fun addBodViewModel(viewModel: AddBodViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(ProfileInfoViewModel::class)
-    internal abstract fun AddProfileInfoViewModel(viewModel: ProfileInfoViewModel): ViewModel
+    internal abstract fun profileInfoViewModel(viewModel: ProfileInfoViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProfileRoleViewModel::class)
+    internal abstract fun profileRoleViewModel(viewModel: ProfileRoleViewModel): ViewModel
 }

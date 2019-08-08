@@ -20,6 +20,8 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_BOD = "bod"
     @JvmField
+    val PARAM_BOD_TITLE = "bodTitle"
+    @JvmField
     val PARAM_CIPF_USER_ID = "userId"
     @JvmField
     val PARAM_CIPF_OLD_PHONE = "oldPhone"
