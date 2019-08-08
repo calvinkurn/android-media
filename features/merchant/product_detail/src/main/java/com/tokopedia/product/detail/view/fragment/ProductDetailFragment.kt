@@ -121,6 +121,7 @@ import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
@@ -175,6 +176,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationThirdView: PartialRecommendationThirdView
     lateinit var recommendationFourthView: PartialRecommendationFourthView
     lateinit var valuePropositionView: PartialValuePropositionView
+    lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -320,10 +322,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
             productWarehouseViewModel = viewModelProvider.get(ProductWarehouseViewModel::class.java)
             remoteConfig = FirebaseRemoteConfigImpl(this)
+            trackingQueue = TrackingQueue(this)
             if (!remoteConfig.getBoolean(ENABLE_VARIANT))
                 useVariant = false
         }
         setHasOptionsMenu(true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::trackingQueue.isInitialized) { trackingQueue?.run { sendAll() }}
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -729,19 +737,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
 
         if (!::recommendationSecondView.isInitialized) {
-            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this)
+            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this, trackingQueue)
         }
 
         if (!::recommendationFirstView.isInitialized) {
-            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this)
+            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this, trackingQueue)
         }
 
         if (!::recommendationThirdView.isInitialized) {
-            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this)
+            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this, trackingQueue)
         }
 
         if (!::recommendationFourthView.isInitialized) {
-            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this)
+            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this, trackingQueue)
         }
 
         if (!::valuePropositionView.isInitialized) {
