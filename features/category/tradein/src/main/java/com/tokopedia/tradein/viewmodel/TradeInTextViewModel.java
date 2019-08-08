@@ -1,5 +1,7 @@
 package com.tokopedia.tradein.viewmodel;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Intent;
@@ -24,12 +26,11 @@ import com.tokopedia.tradein.model.ValidateTradePDP;
 import rx.Subscriber;
 import com.tokopedia.tradein.view.customview.TradeInTextView;
 
-public class TradeInTextViewModel extends ViewModel implements ITradeInParamReceiver {
+public class TradeInTextViewModel extends AndroidViewModel implements ITradeInParamReceiver {
     private MutableLiveData<ValidateTradeInResponse> responseData;
-    private WeakReference<FragmentActivity> activityWeakReference;
 
-    public TradeInTextViewModel(FragmentActivity activity) {
-        activityWeakReference = new WeakReference<>(activity);
+    public TradeInTextViewModel(Application activity) {
+        super(activity);
         responseData = new MutableLiveData<>();
     }
 

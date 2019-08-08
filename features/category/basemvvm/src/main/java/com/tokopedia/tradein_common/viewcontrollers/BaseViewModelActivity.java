@@ -86,6 +86,18 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
                 }
             }
         });
+        bVM.getErrorMessage().observe(this, (message) -> {
+            hideProgressBar();
+            if (!TextUtils.isEmpty(message)) {
+                try {
+                    Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+                            message,
+                            Snackbar.LENGTH_LONG, getString(R.string.close),(v)->{});
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void setViewModel() {

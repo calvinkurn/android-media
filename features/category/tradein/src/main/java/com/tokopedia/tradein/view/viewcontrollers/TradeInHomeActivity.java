@@ -1,15 +1,19 @@
 package com.tokopedia.tradein.view.viewcontrollers;
 
+import android.Manifest;
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -19,16 +23,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
+import com.tokopedia.tradein_common.Constants;
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 
 import org.json.JSONException;
-import org.json.JSONObject;
+
+import timber.log.Timber;
+
+import static com.tokopedia.tradein.viewmodel.TradeInHomeViewModel.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE;
 
 public class TradeInHomeActivity extends BaseTradeInActivity {
+
 
     private TextView mTvPriceElligible;
     private ImageView mButtonRemove;
@@ -40,13 +50,45 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
     private TextView tvIndicateive;
     private TradeInHomeViewModel tradeInHomeViewModel;
     private boolean isAlreadySet = false;
-    public static final int TRADEIN_HOME_REQUEST = 22345;
-    private static final int APP_SETTINGS = 9988;
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            tradeInHomeViewModel.processMessage(intent);
+        }
+    };
+
+    private BroadcastReceiver mBackReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent. DO BACK TO PARENT
+            Timber.d("Do back action to parent");
+        }
+    };
+
+    private BroadcastReceiver laku6GTMReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && "laku6-gtm".equals(intent.getAction())) {
+                String page = intent.getStringExtra("page");
+                String action = intent.getStringExtra("action");
+                String value = intent.getStringExtra("value");
+                if ("cek fisik".equals(page)) {
+                    if ("click salin".equals(action) || "click social share".equals(action))
+                        sendGeneralEvent("clickTradeIn", "cek fisik trade in", action, value);
+                } else if ("cek fungsi trade in".equals(page)) {
+                    sendGeneralEvent("clickTradeIn", "cek fungsi trade in", action, value);
+                } else if ("cek fisik result trade in".equals(page)) {
+                    sendGeneralEvent("viewTradeIn", "cek fisik result trade in", action, value);
+                }
+            }
+        }
+    };
+    private Laku6TradeIn laku6TradeIn;
 
     public static Intent getIntent(Context context) {
         return new Intent(context, TradeInHomeActivity.class);
     }
-
 
     @Override
     protected void initView() {
@@ -73,45 +115,71 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getPriceFromSDK(this);
+    }
+
+    private void getPriceFromSDK(Context context) {
+        String campaignId = Constants.CAMPAIGN_ID_PROD;
+        if (Constants.LAKU6_BASEURL.equals(Constants.LAKU6_BASEURL_STAGING))
+            campaignId = Constants.CAMPAIGN_ID_STAGING;
+        laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
+                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL);
+        requestPermission();
+    }
+
+    public void requestPermission() {
+        if (!laku6TradeIn.permissionGranted()) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA},
+                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+        } else {
+            laku6TradeIn
+            tradeInHomeViewModel.getMaxPrice();
+        }
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
-        tradeInHomeViewModel.getMinPriceData().observe(this, new Observer<JSONObject>() {
-            @Override
-            public void onChanged(JSONObject jsonObject) {
-                if (!isAlreadySet) {
-                    try {
-                        hideProgressBar();
-                        mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
-                        mTvGoToProductDetails.setOnClickListener(v -> {
-                            tradeInHomeViewModel.startGUITest();
-                            sendGeneralEvent("clickTradeIn",
-                                    "trade in start page",
-                                    "click mulai cek fungsi",
-                                    "");
+        tradeInHomeViewModel.getMinPriceData().observe(this, jsonObject -> {
+            if (!isAlreadySet) {
+                try {
+                    hideProgressBar();
+                    mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
+                    mTvGoToProductDetails.setOnClickListener(v -> {
+                        tradeInHomeViewModel.startGUITest();
+                        sendGeneralEvent("clickTradeIn",
+                                "trade in start page",
+                                "click mulai cek fungsi",
+                                "");
 
-                        });
-                        int maxPrice = jsonObject.getInt("max_price");
-                        int minPrice = jsonObject.getInt("min_price");
-                        TradeInParams tradeInParams = tradeInHomeViewModel.getTradeInParams();
-                        int diagnosedPrice = tradeInParams.getUsedPrice();
-                        if (tradeInParams != null && diagnosedPrice > 0)
-                            minPrice = diagnosedPrice;
-                        if (!errorPriceNotElligible(minPrice)) {
-                            mTvNotUpto.setVisibility(View.VISIBLE);
-                            if (diagnosedPrice <= 0)
-                                mTvInitialPrice.setText(String.format("%1$s - %2$s",
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
-                            else
-                                mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true));
-                        } else {
-                            mTvNotUpto.setVisibility(View.GONE);
-                            mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true));
-                        }
-                        isAlreadySet = true;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    });
+                    int maxPrice = jsonObject.getInt("max_price");
+                    int minPrice = jsonObject.getInt("min_price");
+                    TradeInParams tradeInParams = tradeInHomeViewModel.getTradeInParams();
+                    int diagnosedPrice = tradeInParams.getUsedPrice();
+                    if (diagnosedPrice > 0)
+                        minPrice = diagnosedPrice;
+                    if (!errorPriceNotElligible(minPrice)) {
+                        mTvNotUpto.setVisibility(View.VISIBLE);
+                        if (diagnosedPrice <= 0)
+                            mTvInitialPrice.setText(String.format("%1$s - %2$s",
+                                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
+                                    CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
+                        else
+                            mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true));
+                    } else {
+                        mTvNotUpto.setVisibility(View.GONE);
+                        mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true));
                     }
+                    isAlreadySet = true;
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -137,7 +205,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
                 e.printStackTrace();
             }
         });
-
         tradeInHomeViewModel.getInsertResult().observe(this, price -> {
             try {
                 if (price != null && price > 0) {
@@ -149,6 +216,30 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
                 e.printStackTrace();
             }
         });
+        tradeInHomeViewModel.getFinalPriceData().observe(this, tradeInParams -> {
+            Intent finalPriceIntent = new Intent(this, FinalPriceActivity.class);
+            finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), tradeInParams);
+            navigateToActivityRequest(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
+            tradeInHomeViewModel.getFinalPriceData().removeObservers(this);
+        });
+
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+        localBroadcastManager.registerReceiver(mMessageReceiver, new IntentFilter("laku6-test-end"));
+        localBroadcastManager.registerReceiver(mBackReceiver, new IntentFilter("laku6-back-action"));
+        localBroadcastManager.registerReceiver(laku6GTMReceiver, new IntentFilter("laku6-gtm"));
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isFinishing()) {
+            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+            localBroadcastManager.unregisterReceiver(mMessageReceiver);
+            localBroadcastManager.unregisterReceiver(mBackReceiver);
+            localBroadcastManager.unregisterReceiver(laku6GTMReceiver);
+        }
     }
 
     @Override
@@ -183,7 +274,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if (requestCode == TradeInHomeViewModel.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
             if (grantResults.length > 0 && permissions.length == grantResults.length) {
                 for (int i = 0; i < permissions.length; i++) {
                     int result = grantResults[i];

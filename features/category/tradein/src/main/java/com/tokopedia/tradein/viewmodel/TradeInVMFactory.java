@@ -1,23 +1,37 @@
 package com.tokopedia.tradein.viewmodel;
 
+import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 
-import java.lang.ref.WeakReference;
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.InvocationTargetException;
 
-public class TradeInVMFactory extends ViewModelProvider.NewInstanceFactory {
+public class TradeInVMFactory extends ViewModelProvider.AndroidViewModelFactory {
+    private static TradeInVMFactory sInstance;
+    private Application application;
+    private Intent intent;
 
-    private WeakReference<FragmentActivity> activityWeakReference;
-
-    public static TradeInVMFactory getInstance(FragmentActivity activity) {
-        return new TradeInVMFactory(activity);
+    /**
+     * Creates a {@code AndroidViewModelFactory}
+     *
+     * @param application an application to pass in {@link AndroidViewModel}
+     */
+    private TradeInVMFactory(@NonNull Application application, Intent intent) {
+        super(application);
+        this.application = application;
+        this.intent = intent;
     }
 
-    private TradeInVMFactory(FragmentActivity activity) {
-        activityWeakReference = new WeakReference<>(activity);
+    @NotNull
+    public static TradeInVMFactory getInstance(@NotNull Application application, Intent intent) {
+        if (sInstance == null)
+            sInstance = new TradeInVMFactory(application);
+        return sInstance;
     }
 
     @NonNull
@@ -26,7 +40,7 @@ public class TradeInVMFactory extends ViewModelProvider.NewInstanceFactory {
         //noinspection TryWithIdenticalCatches
         if (TradeInTextViewModel.class.isAssignableFrom(modelClass)) {
             try {
-                return modelClass.getConstructor(FragmentActivity.class).newInstance(activityWeakReference.get());
+                return modelClass.getConstructor(Application.class).newInstance(application);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("Cannot create an instance of " + modelClass, e);
             } catch (InstantiationException e) {
@@ -38,7 +52,7 @@ public class TradeInVMFactory extends ViewModelProvider.NewInstanceFactory {
             }
         } else if (TradeInHomeViewModel.class.isAssignableFrom(modelClass)) {
             try {
-                return modelClass.getConstructor(FragmentActivity.class).newInstance(activityWeakReference.get());
+                return modelClass.getConstructor(Application.class, Intent.class).newInstance(application, intent);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("Cannot create an instance of " + modelClass, e);
             } catch (InstantiationException e) {
