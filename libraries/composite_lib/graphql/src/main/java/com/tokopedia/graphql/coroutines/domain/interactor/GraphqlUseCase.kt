@@ -7,7 +7,6 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.subscribeIgnoreError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import rx.Observable
