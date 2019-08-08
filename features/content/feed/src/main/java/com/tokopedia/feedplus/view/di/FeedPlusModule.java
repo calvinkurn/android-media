@@ -19,6 +19,7 @@ import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.presenter.DynamicFeedPresenter;
 import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
@@ -123,8 +124,9 @@ public class FeedPlusModule {
     @FeedPlusScope
     @Provides
     DynamicFeedContract.Presenter provideDynamicFeedPresenter(UserSessionInterface userSession,
-                                                              GetDynamicFeedUseCase getDynamicFeedUseCase) {
-        return new DynamicFeedPresenter(userSession, getDynamicFeedUseCase);
+                                                              GetDynamicFeedUseCase getDynamicFeedUseCase,
+                                                              LikeKolPostUseCase likeKolPostUseCase) {
+        return new DynamicFeedPresenter(userSession, getDynamicFeedUseCase, likeKolPostUseCase);
     }
 
     //SHOP COMMON

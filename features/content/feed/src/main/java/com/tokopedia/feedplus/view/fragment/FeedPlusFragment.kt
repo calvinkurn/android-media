@@ -749,6 +749,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onUnlikeKolClicked(adapterPosition, id, false, "")
     }
 
+    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+    }
+
+    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
+    }
+
     override fun onGoToKolComment(rowNumber: Int, id: Int) {
         onGoToKolComment(rowNumber, id, false, "")
     }
@@ -1342,6 +1348,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 presenter.trackAffiliate(track.viewURL)
             }
         }
+    }
+
+    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+
     }
 
     override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {

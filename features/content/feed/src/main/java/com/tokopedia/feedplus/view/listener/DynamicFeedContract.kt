@@ -19,9 +19,13 @@ interface DynamicFeedContract {
 
         fun onSuccessDeletePost(rowNumber: Int)
 
-        fun getUserSession(): UserSession
-
         fun onEmptyFeedButtonClicked()
+
+        fun onSuccessLike(rowNumber: Int, columnNumber: Int)
+
+        fun onSuccessUnlike(rowNumber: Int, columnNumber: Int)
+
+        fun onErrorLikeUnlike(err: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -31,9 +35,9 @@ interface DynamicFeedContract {
 
         fun getFeed()
 
-        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+        fun likeKol(id: Int, rowNumber: Int, columnNumber: Int)
 
-        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+        fun unlikeKol(id: Int, rowNumber: Int, columnNumber: Int)
 
         fun trackPostClick(uniqueTrackingId: String, redirectLink: String)
 

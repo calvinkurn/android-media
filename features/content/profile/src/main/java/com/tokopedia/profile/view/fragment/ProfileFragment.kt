@@ -657,6 +657,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+    }
+
+    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
+    }
+
     override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
         val intent = KolCommentActivity.getCallingIntent(
@@ -969,6 +975,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 presenter.trackPostClickUrl(tracking.viewURL)
             }
         }
+    }
+
+    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+
     }
 
     override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {

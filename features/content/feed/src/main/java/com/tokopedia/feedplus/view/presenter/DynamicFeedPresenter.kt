@@ -7,7 +7,9 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.FeedPlusConstant.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.listener.DynamicFeedContract
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import java.util.ArrayList
@@ -17,7 +19,8 @@ import javax.inject.Inject
  * @author by yoasfs on 2019-08-06
  */
 class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInterface,
-                                               val getDynamicFeedUseCase: GetDynamicFeedUseCase):
+                                               val getDynamicFeedUseCase: GetDynamicFeedUseCase,
+                                               val likeKolPostUseCase: LikeKolPostUseCase):
         BaseDaggerPresenter<DynamicFeedContract.View>(),
         DynamicFeedContract.Presenter {
 
@@ -75,12 +78,45 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
         )
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun likeKol(id: Int, rowNumber: Int, columnNumber: Int) {
+        likeKolPostUseCase.execute(
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+                object : Subscriber<Boolean>() {
+                    override fun onNext(t: Boolean?) {
+                        t?.let {
+                            view.onSuccessLike(rowNumber, columnNumber)
+                        }
+                    }
+
+                    override fun onCompleted() {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onError(e: Throwable) {
+                        view.onErrorLikeUnlike(e.localizedMessage)
+                    }
+                }
+        )
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun unlikeKol(id: Int, rowNumber: Int, columnNumber: Int) {
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+                object : Subscriber<Boolean>() {
+                    override fun onNext(t: Boolean?) {
+                        t?.let {
+                            view.onSuccessUnlike(rowNumber, columnNumber)
+                        }
+                    }
+
+                    override fun onCompleted() {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onError(e: Throwable) {
+                        view.onErrorLikeUnlike(e.localizedMessage)
+                    }
+                }
+        )
     }
 
     override fun trackPostClick(uniqueTrackingId: String, redirectLink: String) {

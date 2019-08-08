@@ -784,6 +784,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onLikeClick(int positionInFeed, int columnNumber, int id, boolean isLiked) {
+
+    }
+
+    @Override
+    public void onCommentClick(int positionInFeed, int columnNumber, int id) {
+
+    }
+
+    @Override
     public void onShareClick(int positionInFeed, int id, @NotNull String title,
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
@@ -868,6 +878,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 presenter.trackAffiliate(track.getViewURL());
             }
         }
+    }
+
+    @Override
+    public void onHighlightItemClicked(int positionInFeed, @NotNull String redirectUrl) {
+
     }
 
     @Override

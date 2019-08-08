@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
@@ -42,11 +41,22 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         holder.bind(list[p1], p1)
     }
 
-    class Holder(v: View, highlightListener: HighlightListener): RecyclerView.ViewHolder(v) {
+    class Holder(v: View, val highlightListener: HighlightListener): RecyclerView.ViewHolder(v) {
 
         fun bind(item: HighlightCardViewModel, positionInAdapter: Int) {
             initView(item)
-            ImageHandler.loadImageFit2(itemView.context, itemView.productImage, item.thumbnail)
+            initViewListener(item, positionInAdapter)
+
+        }
+
+        private fun initViewListener(item: HighlightCardViewModel, positionInAdapter: Int) {
+            itemView.likeIcon.setOnClickListener{highlightListener.onLikeClick(item.positionInFeed, positionInAdapter, item.postId, item.footer.like.isChecked)}
+            itemView.likeText.setOnClickListener{highlightListener.onLikeClick(positionInAdapter, positionInAdapter, item.postId, item.footer.like.isChecked)}
+            itemView.commentIcon.setOnClickListener{highlightListener.onCommentClick(item.positionInFeed, positionInAdapter, item.postId)}
+            itemView.commentText.setOnClickListener{highlightListener.onCommentClick(item.positionInFeed, positionInAdapter, item.postId)}
+            itemView.userImage.setOnClickListener {highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink) }
+            itemView.userName.setOnClickListener {highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink) }
+            itemView.productImage.setOnClickListener { highlightListener.onHighlightItemClicked(item.positionInFeed, item.applink) }
         }
 
         private fun initView(item: HighlightCardViewModel) {
@@ -122,13 +132,15 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
     interface HighlightListener {
         fun onAvatarClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean)
+        fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean)
 
-        fun onCommentClick(positionInFeed: Int, id: Int)
+        fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int)
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+
+        fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String)
     }
 
 }

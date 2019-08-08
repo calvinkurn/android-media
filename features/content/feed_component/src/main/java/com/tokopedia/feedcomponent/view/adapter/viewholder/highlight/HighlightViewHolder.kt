@@ -6,13 +6,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
@@ -33,12 +32,18 @@ class HighlightViewHolder(val v: View,
 
 
     companion object {
+        const val PAYLOAD_UPDATE_LIKE = 1121
+        const val PAYLOAD_UPDATE_COMMENT = 1122
         @LayoutRes
         val LAYOUT = R.layout.item_feed_highlight
     }
 
 
-    override fun bind(element: HighlightViewModel) {
+    override fun bind(element: HighlightViewModel?) {
+        if (element == null) {
+            itemView.hide()
+            return
+        }
         highlightRv = itemView.findViewById(R.id.highlightRv)
         text = itemView.findViewById(R.id.text)
         badge = itemView.findViewById(R.id.badge)
@@ -48,6 +53,19 @@ class HighlightViewHolder(val v: View,
         highlightRv.adapter = adapter
         highlightRv.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         bindTitle(element.title, element.template.cardhighlight.title)
+    }
+
+    override fun bind(element: HighlightViewModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        if (element == null || payloads.isEmpty() || payloads[0] !is Int) {
+            return
+        }
+        val columnNumber = payloads[1] as Int
+        when (payloads[0] as Int) {
+            PAYLOAD_UPDATE_LIKE -> adapter.notifyItemChanged(columnNumber)
+            PAYLOAD_UPDATE_COMMENT -> adapter.notifyItemChanged(columnNumber)
+            else -> bind(element)
+        }
     }
 
     private fun bindTitle(title: Title, template: TemplateTitle) {
