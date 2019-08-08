@@ -288,7 +288,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
-import com.tokopedia.search.result.presentation.view.activity.SearchActivity;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -2459,11 +2458,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent gotoSearchAutoCompletePage(Context context) {
         return AutoCompleteActivity.newInstance(context);
-    }
-
-    @Override
-    public Intent gotoSearchPage(Context context) {
-        return SearchActivity.newInstance(context);
     }
 
     @Override

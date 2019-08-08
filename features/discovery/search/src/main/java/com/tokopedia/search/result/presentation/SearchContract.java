@@ -11,7 +11,7 @@ public interface SearchContract {
     interface View extends CustomerView {
         BaseAppComponent getBaseAppComponent();
 
-        void initiateSearchHandleResponseSearch(boolean isHasCatalog);
+        void initiateSearchHandleResponseSearch();
 
         void initiateSearchHandleApplink(String applink);
 
