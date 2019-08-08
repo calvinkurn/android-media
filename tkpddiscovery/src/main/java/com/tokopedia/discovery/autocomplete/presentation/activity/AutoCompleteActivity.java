@@ -277,8 +277,4 @@ public class AutoCompleteActivity extends DiscoveryActivity
         //Autocomplete activity don't need toolbar anymore
         //cause it only need to launch discoverySearchView
     }
-
-    private interface AnimationCallback {
-        void doAnimation();
-    }
 }

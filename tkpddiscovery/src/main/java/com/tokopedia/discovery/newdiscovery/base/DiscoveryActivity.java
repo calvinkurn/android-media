@@ -121,7 +121,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         container.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    private void initToolbar() {
+    protected void initToolbar() {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
