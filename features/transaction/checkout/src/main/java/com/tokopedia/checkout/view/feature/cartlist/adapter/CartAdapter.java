@@ -49,7 +49,6 @@ import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShop
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -69,8 +68,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Object> cartDataList;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private CompositeSubscription compositeSubscription;
-    private RecyclerView.RecycledViewPool viewPool;
-    private Map<Integer, Boolean> checkedItemState;
     private ArrayList<InsuranceCartShops> allInsuranceProductsList = new ArrayList<>();
 
     private ArrayList<InsuranceCartShops> insuranceRecommendationList = new ArrayList<>();
@@ -527,11 +524,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         }
                     }
                 }
-
             }
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

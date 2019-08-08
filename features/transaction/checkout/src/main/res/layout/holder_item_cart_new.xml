@@ -305,69 +305,6 @@
 
                 </LinearLayout>
 
-                <!--<RelativeLayout
-                    android:id="@+id/rl_micro_insurance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/dp_10">
-
-
-                    &lt;!&ndash;<CheckBox
-                        android:id="@+id/cb_select_micro_insurance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginTop="@dimen/dp_12"
-                        android:theme="@style/TransactionCheckbox" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/micro_insurance_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_8"
-                        android:layout_marginLeft="@dimen/dp_8"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:layout_toEndOf="@+id/cb_select_micro_insurance"
-                        android:layout_toRightOf="@+id/cb_select_micro_insurance"
-                        android:lineSpacingExtra="@dimen/sp_2"
-                        android:textColor="@color/default_dark_bg"
-                        app:typographyType="heading_6"
-                        tools:text="Proteksi Gadget" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_micro_insurance_sub_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/micro_insurance_title"
-                        android:layout_marginStart="@dimen/dp_8"
-                        android:layout_marginLeft="@dimen/dp_8"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:layout_marginEnd="@dimen/dp_12"
-                        android:layout_marginRight="@dimen/dp_12"
-                        android:layout_toStartOf="@+id/tv_micro_insurance_info"
-                        android:layout_toLeftOf="@+id/tv_micro_insurance_info"
-                        android:layout_toEndOf="@+id/cb_select_micro_insurance"
-                        android:layout_toRightOf="@+id/cb_select_micro_insurance"
-                        android:ellipsize="end"
-                        android:maxLines="2"
-                        app:typographyType="heading_6"
-                        tools:text="Rp 50.000 / barang" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_micro_insurance_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:textColor="@color/bg_button_green_border_outline"
-                        app:typographyType="heading_6"
-                        tools:text="Pelajari" />&ndash;&gt;
-
-                </RelativeLayout>-->
-
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_remark"
                     android:layout_width="match_parent"
