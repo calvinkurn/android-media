@@ -53,6 +53,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_MERCHANT;
 
 /**
  * @author okasurya on 7/26/18.
@@ -459,4 +461,14 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void sendProductWishlistClickTracking(boolean wishlistStatus) {
         accountAnalytics.eventClickWishlistButton(wishlistStatus);
     }
+    @Override
+    public void onPowerMerchantSettingClicked(){
+        sendTracking(
+                PENJUAL,
+                SECTION_OTHER_FEATURE,
+                ITEM_POWER_MERCHANT
+        );
+        RouteManager.route(getActivity(), ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
+    }
+
 }

@@ -129,6 +129,10 @@ public class AccountConstants {
         public static final String VALUE_PRODUCT_RECOMMENDATION_LIST = "/user - rekomendasi untuk anda - %s";
         public static final String VALUE_PRODUCT_TOPADS = " - product topads";
         public static final String VALUE_WISHLIST_PRODUCT = "%s - wishlist on product recommendation";
+
+        public static final String SECTION_OTHER_FEATURE = "Fitur Lainnya";
+        public static final String ITEM_POWER_MERCHANT = "Power Merchant";
+
     }
 
     public interface VccStatus {

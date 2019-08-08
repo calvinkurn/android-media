@@ -1,7 +1,5 @@
 package com.tokopedia.shop.product.view.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
@@ -13,10 +11,8 @@ import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductFeaturedWithAttributeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
-import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
-import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -215,24 +211,6 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
                         getView().onSuccessGetProductFeature(shopProductViewModels);
                     }
                 });
-    }
-
-    public void loadProductPromoModel(String promotionWebViewUrl) {
-        if (!TextUtils.isEmpty(promotionWebViewUrl)) {
-            String url = promotionWebViewUrl;
-            if (userSession.isLoggedIn()) {
-                url = ShopProductOfficialStoreUtils.getLogInUrl(url, userSession.getDeviceId(), userSession.getUserId());
-            }
-            ShopProductPromoViewModel shopProductPromoViewModel = new ShopProductPromoViewModel(
-                    url,
-                    userSession.getUserId(),
-                    userSession.getAccessToken(),
-                    userSession.isLoggedIn()
-            );
-            getView().renderShopProductPromo(shopProductPromoViewModel);
-        } else {
-            getView().renderShopProductPromo(null);
-        }
     }
 
     public void addToWishList(final String productId) {

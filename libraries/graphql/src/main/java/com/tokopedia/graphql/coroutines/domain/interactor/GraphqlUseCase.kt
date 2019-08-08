@@ -7,8 +7,11 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.subscribeIgnoreError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
+import rx.Observable
+import rx.schedulers.Schedulers
 
 open class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlRepository): UseCase<T>() {
 
@@ -38,12 +41,16 @@ open class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlReposito
 
     fun clearCache(){
         try {
-            initCacheManager()
-            if (graphqlQuery != null) {
-                val request = GraphqlRequest(graphqlQuery, tClass, requestParams)
-                mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(listOf(request).toString(),
-                        cacheStrategy.isSessionIncluded))
-            }
+            Observable.fromCallable {
+                initCacheManager()
+                if (graphqlQuery != null) {
+                    val request = GraphqlRequest(graphqlQuery, tClass, requestParams)
+                    mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(
+                            request.toString(),
+                            cacheStrategy.isSessionIncluded))
+
+                }
+            }.subscribeOn(Schedulers.io()).subscribeIgnoreError()
         } catch (e: Exception) {
             e.printStackTrace()
         }

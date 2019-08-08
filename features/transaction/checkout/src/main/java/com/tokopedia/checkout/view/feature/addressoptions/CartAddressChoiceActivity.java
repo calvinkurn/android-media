@@ -19,7 +19,7 @@ import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -158,7 +158,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                     AddNewAddressAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(this,
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, 0, false, false, null,
+                            false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 } else {
                     intent = AddAddressActivity

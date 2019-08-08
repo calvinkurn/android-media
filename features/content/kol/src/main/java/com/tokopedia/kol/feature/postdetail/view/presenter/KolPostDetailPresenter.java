@@ -263,7 +263,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
     }
 
     @Override
-    public void addPostTagItemToCart(PostTagItem postTagItem) {
+    public void addPostTagItemToCart(int positionInFeed, PostTagItem postTagItem) {
         boolean isShopEmpty = postTagItem.getShop().isEmpty();
         if (!isShopEmpty) {
             atcUseCase.execute(
@@ -284,7 +284,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                             if (addToCartDataModel.getData().getSuccess() == 0) {
                                 getView().onAddToCartFailed(postTagItem.getApplink());
                             } else {
-                                getView().onAddToCartSuccess();
+                                getView().onAddToCartSuccess(positionInFeed, postTagItem);
                             }
                         }
                     }
