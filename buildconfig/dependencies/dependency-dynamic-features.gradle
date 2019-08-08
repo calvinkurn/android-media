@@ -1,7 +1,7 @@
 ext {
 
     dynamicFeatures = [
-            shopSettingsSellerapp           : ":dynamic-features:merchant:shop_settings_sellerapp"
-            hotelTravel                     : ":dynamic_features:travel:hotel_travel"
+            shopSettingsSellerapp           : ":dynamic-features:merchant:shop_settings_sellerapp",
+            hotelTravel                     : ":dynamic-features:travel:hotel_travel"
     ]
 }

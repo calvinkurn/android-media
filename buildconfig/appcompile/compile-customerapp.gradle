@@ -47,7 +47,7 @@ include "features:discovery:search"
 
 include "features:fintech:mitra_toppers"
 
-include "dynamic_features:travel:hotel_travel"
+include "dynamic-features:travel:hotel_travel"
 
 include "features:fintech:home_credit"
 include "features:fintech:reksa_dana"
