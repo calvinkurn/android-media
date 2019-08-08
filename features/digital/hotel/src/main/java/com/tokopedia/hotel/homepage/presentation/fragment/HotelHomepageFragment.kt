@@ -315,6 +315,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     }
                 }
             })
+        } else {
+            promoAdapter.updateItem(promoDataList)
         }
     }
 
