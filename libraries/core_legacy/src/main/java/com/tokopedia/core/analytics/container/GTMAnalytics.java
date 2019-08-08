@@ -357,6 +357,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String PRODUCTVIEW = "productview";
     private static final String PRODUCTCLICK = "productclick";
     private static final String VIEWPRODUCT = "viewproduct";
+    private static final String ADDTOCART = "addtocart";
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
         // replace list
@@ -374,6 +375,9 @@ public class GTMAnalytics extends ContextAnalytics {
                 break;
             case VIEWPRODUCT:
                 keyEvent = FirebaseAnalytics.Event.VIEW_ITEM;
+                break;
+            case ADDTOCART:
+                keyEvent = FirebaseAnalytics.Event.ADD_TO_CART;
                 break;
 
         }
