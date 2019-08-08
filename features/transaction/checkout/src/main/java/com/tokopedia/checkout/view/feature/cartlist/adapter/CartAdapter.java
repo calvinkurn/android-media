@@ -775,7 +775,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void removeCartLoadingData() {
+        int index = cartDataList.indexOf(cartLoadingHolderData);
         cartDataList.remove(cartLoadingHolderData);
+        notifyItemRemoved(index);
     }
 
     public void removeCartItemById(List<Integer> cartIds) {
