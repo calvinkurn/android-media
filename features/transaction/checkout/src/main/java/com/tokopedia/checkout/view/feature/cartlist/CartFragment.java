@@ -1450,7 +1450,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onDeleteCartDataSuccess(List<Integer> deletedCartIds) {
-        cartAdapter.removeCartItemById(deletedCartIds);
+        cartAdapter.removeCartItemById(deletedCartIds, getContext());
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         notifyBottomCartParent();
     }
