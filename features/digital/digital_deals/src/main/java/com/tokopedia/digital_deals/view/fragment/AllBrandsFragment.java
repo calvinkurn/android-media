@@ -212,8 +212,19 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-        if (location != null)
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        if (location != null) {
+            if (!TextUtils.isEmpty(location.getCityName())) {
+                requestParams.putInt(Utils.LOCATION_CITY_ID, location.getCityId());
+            } else {
+                requestParams.putInt(Utils.LOCATION_ID_PARAM, location.getId());
+            }
+            if (!TextUtils.isEmpty(location.getCoordinates())) {
+                requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+            }
+            if (!TextUtils.isEmpty(location.getLocType())) {
+                requestParams.putString(Utils.LOCATION_TYPE, location.getLocType());
+            }
+        }
         if (categoriesModel.getPosition() != 0) {
             requestParams.putInt(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
         }

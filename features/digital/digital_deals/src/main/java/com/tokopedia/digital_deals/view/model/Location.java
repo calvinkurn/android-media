@@ -55,6 +55,12 @@ public class Location extends BaseItem implements Parcelable {
     @SerializedName("coordinates")
     @Expose
     private String coordinates;
+    @SerializedName("city_id")
+    @Expose
+    private int cityId;
+    @SerializedName("city_name")
+    @Expose
+    private String cityName;
 
 
     public final static Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
@@ -89,6 +95,8 @@ public class Location extends BaseItem implements Parcelable {
         this.address = in.readString();
         this.locType = in.readString();
         this.coordinates = in.readString();
+        this.cityId = in.readInt();
+        this.cityName = in.readString();
     }
 
     public Location() {
@@ -214,6 +222,23 @@ public class Location extends BaseItem implements Parcelable {
         this.coordinates = coordinates;
     }
 
+
+    public int getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(int cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeInt(id);
@@ -231,6 +256,8 @@ public class Location extends BaseItem implements Parcelable {
         dest.writeString(address);
         dest.writeString(locType);
         dest.writeString(coordinates);
+        dest.writeInt(cityId);
+        dest.writeString(cityName);
     }
 
     public int describeContents() {

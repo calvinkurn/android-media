@@ -215,6 +215,9 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     private void loadMoreItems() {
         isLoading = true;
 
+        if (getView() == null)
+            return;
+        getView().addFooter();
         getNextCategoryPageUseCase.setRequestParams(searchNextParams);
         getNextCategoryPageUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -290,7 +293,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
                                 loadMoreItems();
                             }
                         } else
-                            getView().addFooter();
+                            getView().removeFooter();
                     }
                 });
     }

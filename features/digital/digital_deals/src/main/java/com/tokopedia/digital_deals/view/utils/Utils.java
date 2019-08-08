@@ -59,8 +59,9 @@ public class Utils {
     private static Utils singleInstance;
     private static Location location;
     public static String LOCATION_NAME_PARAM = "location_name";
-    public static String LOCATION_ID_PARAM = "location_id";
-    public static String LOCATION_TYPE = "location_type";
+    public static String LOCATION_ID_PARAM = "id";
+    public static String LOCATION_TYPE = "type";
+    public static String LOCATION_CITY_ID = "city_id";
     public static String LOCATION_COORDINATES = "coordinates";
     public static String BRAND_QUERY_PARAM_TREE = "tree";
     public static String BRAND_QUERY_TAGS = "tags";
