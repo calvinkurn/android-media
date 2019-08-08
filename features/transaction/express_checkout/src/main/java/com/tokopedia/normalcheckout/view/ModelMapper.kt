@@ -23,7 +23,6 @@ object ModelMapper {
     fun convertVariantToModels(productInfo: ProductInfo,
                                multiorigin: MultiOriginWarehouse?,
                                productVariant: ProductVariant?,
-            /*insuranceRecommendation: InsuranceRecommendationGqlResponse?,*/
                                noteString: String?, quantity: Int = 0): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
         dataList.add(convertToProductViewModel(productInfo, multiorigin))

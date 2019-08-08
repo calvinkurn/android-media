@@ -145,16 +145,10 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
         addToInsuranceCartUseCase.setRequestParams(addInsuranceProductToCartRequest, addMarketPlaceToCartRequest)
         addToInsuranceCartUseCase.execute(object : Subscriber<GraphqlResponse>() {
             override fun onNext(graphqlResponse: GraphqlResponse?) {
-//                hideLoadingDialog()
-
-
                 graphqlResponse?.run {
 
                     if (graphqlResponse.getSuccessData<AddInsuranceProductToCartGqlResponse>() != null) {
-
                         val addInsuranceResponse = graphqlResponse.getData<AddInsuranceProductToCartGqlResponse>(AddInsuranceProductToCartGqlResponse::class.java)
-
-
                         if (addInsuranceResponse != null &&
                                 addInsuranceResponse.addToCartTransactional.addCart.successData.success == 1) {
 
