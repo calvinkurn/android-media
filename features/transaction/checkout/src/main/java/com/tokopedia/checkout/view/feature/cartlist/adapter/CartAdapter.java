@@ -828,9 +828,11 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
 
             if (errorItemCount > 0) {
-                cartItemTickerErrorHolderData.getCartTickerErrorData().setErrorInfo(
-                        String.format(context.getString(R.string.cart_error_message), errorItemCount)
-                );
+                if (context != null) {
+                    cartItemTickerErrorHolderData.getCartTickerErrorData().setErrorInfo(
+                            String.format(context.getString(R.string.cart_error_message), errorItemCount)
+                    );
+                }
             } else {
                 cartDataList.remove(cartItemTickerErrorHolderData);
             }
