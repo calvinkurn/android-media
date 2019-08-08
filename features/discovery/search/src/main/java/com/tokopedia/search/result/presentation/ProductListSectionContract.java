@@ -42,7 +42,7 @@ public interface ProductListSectionContract {
 
         String getQueryKey();
 
-        void setEmptyProduct();
+        void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
 
         void backToTop();
 

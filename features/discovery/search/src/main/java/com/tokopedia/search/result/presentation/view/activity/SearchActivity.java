@@ -10,11 +10,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -108,6 +107,9 @@ public class SearchActivity extends BaseActivity
     private View iconSort;
     private View searchNavDivider;
     private View searchNavContainer;
+    private View backButton;
+    private TextView searchTextView;
+    private ImageView buttonChangeGrid;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -121,7 +123,6 @@ public class SearchActivity extends BaseActivity
     @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
 
-    private MenuItem menuChangeGrid;
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
 
@@ -176,6 +177,9 @@ public class SearchActivity extends BaseActivity
         iconSort = findViewById(R.id.icon_sort);
         searchNavDivider = findViewById(R.id.search_nav_divider);
         searchNavContainer = findViewById(R.id.search_nav_container);
+        backButton = findViewById(R.id.action_up_btn);
+        searchTextView = findViewById(R.id.searchTextView);
+        buttonChangeGrid = findViewById(R.id.search_change_grid_button);
     }
 
     protected void prepareView() {
@@ -190,12 +194,14 @@ public class SearchActivity extends BaseActivity
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setHomeButtonEnabled(false);
         }
 
-        toolbar.setOnClickListener(v -> moveToAutoCompleteActivity());
+        searchTextView.setOnClickListener(v -> moveToAutoCompleteActivity());
+        backButton.setOnClickListener(v -> onBackPressed());
+        buttonChangeGrid.setOnClickListener(v -> changeGrid());
     }
 
     private void moveToAutoCompleteActivity() {
@@ -385,9 +391,7 @@ public class SearchActivity extends BaseActivity
     }
 
     protected void setToolbarTitle(String query) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(query);
-        }
+        searchTextView.setText(query);
     }
 
     private void loadSection() {
@@ -603,30 +607,6 @@ public class SearchActivity extends BaseActivity
         activeTabPosition = savedInstanceState.getInt(EXTRA_ACTIVE_TAB_POSITION);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_change_grid, menu);
-        menuChangeGrid = menu.findItem(R.id.action_change_grid);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_change_grid) {
-            changeGrid();
-            return true;
-        }
-        else if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        else if (item.getItemId() == R.id.action_search) {
-            return false;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     private void changeGrid() {
         if (searchNavigationClickListener != null) {
             searchNavigationClickListener.onChangeGridClick();
@@ -691,9 +671,8 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
-        if (menuChangeGrid != null) {
-            menuChangeGrid.setIcon(iconResId);
-            menuChangeGrid.setTitle(titleResId);
+        if(buttonChangeGrid != null) {
+            buttonChangeGrid.setImageResource(iconResId);
         }
     }
 

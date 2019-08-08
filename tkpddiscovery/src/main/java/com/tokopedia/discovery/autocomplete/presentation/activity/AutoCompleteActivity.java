@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
@@ -259,7 +261,20 @@ public class AutoCompleteActivity extends DiscoveryActivity
         permissionCheckerHelper.onRequestPermissionsResult(getActivityContext(), requestCode, permissions, grantResults);
     }
 
-    private interface AnimationCallback {
-        void doAnimation();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
+    }
+
+    @Override
+    protected void initToolbar() {
+        //Overridden and left empty to avoid toolbar click listener get called
+        //Autocomplete activity don't need toolbar anymore
+        //cause it only need to launch discoverySearchView
     }
 }

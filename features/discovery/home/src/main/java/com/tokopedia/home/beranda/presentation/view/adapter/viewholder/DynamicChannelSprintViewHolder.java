@@ -27,6 +27,7 @@ import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.Date;
 
@@ -40,7 +41,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     @LayoutRes
     public static final int LAYOUT = R.layout.home_channel_3_image;
     private static final String TAG = DynamicChannelSprintViewHolder.class.getSimpleName();
-    private TextView homeChannelTitle;
+    private Typography homeChannelTitle;
     private TextView seeAllButton;
     private HomeCategoryListener listener;
     private CountDownView countDownView;
@@ -82,8 +83,6 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
             itemAdapter.setChannel(channel);
-            Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
-            homeChannelTitle.setTypeface(typeface);
             homeChannelTitle.setText(channel.getHeader().getName());
 
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
@@ -106,7 +105,6 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             Crashlytics.log(0, TAG, e.getLocalizedMessage());
         }
     }
-
     private void setupClickListeners(final DynamicHomeChannel.Channels channel) {
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override

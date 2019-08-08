@@ -59,4 +59,8 @@ public class FlightOrderInProcessViewModel extends FlightOrderBaseViewModel impl
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public void setContactUsUrl(String contactUsUrl) { this.contactUsUrl = contactUsUrl; }
+
+    public String getContactUsUrl() { return contactUsUrl; }
 }

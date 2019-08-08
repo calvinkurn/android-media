@@ -720,8 +720,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void setEmptyProduct() {
+    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel) {
         isListEmpty = true;
+        adapter.setGlobalNavViewModel(globalNavViewModel);
         adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
         SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
     }
