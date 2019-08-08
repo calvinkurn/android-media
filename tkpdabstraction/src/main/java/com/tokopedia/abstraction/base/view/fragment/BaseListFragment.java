@@ -123,7 +123,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     public RecyclerView getRecyclerView(View view) {
-        return (RecyclerView) view.findViewById(R.id.recycler_view);
+        return (RecyclerView) view.findViewById(com.tokopedia.abstraction.R.id.recycler_view);
     }
 
     @Nullable
