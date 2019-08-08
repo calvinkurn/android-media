@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:src="@drawable/discovery_ic_back"/>
+                app:srcCompat="@drawable/discovery_ic_back"/>
 
             <RelativeLayout
                 android:layout_marginLeft="@dimen/dp_16"
@@ -48,8 +48,8 @@
                         android:layout_centerVertical="true"
                         android:gravity="center_vertical"
                         android:background="@null"
-                        android:paddingTop="@dimen/dp_8"
-                        android:paddingBottom="@dimen/dp_8"
+                        android:paddingTop="@dimen/dp_6"
+                        android:paddingBottom="@dimen/dp_6"
                         android:paddingLeft="28dp"
                         android:paddingRight="32dp"
                         android:hint="@string/search_autocomplete_hint"
@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
-                        android:src="@drawable/discovery_ic_search" />
+                        app:srcCompat="@drawable/discovery_ic_search" />
 
                     <ImageView
                         android:id="@+id/action_image_search_btn"
@@ -74,7 +74,7 @@
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="4dp"
-                        android:src="@drawable/discovery_ic_camera" />
+                        app:srcCompat="@drawable/discovery_ic_camera" />
 
                     <ImageView
                         android:id="@+id/action_empty_btn"
@@ -84,7 +84,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="4dp"
                         android:visibility="gone"
-                        android:src="@drawable/discovery_ic_clear" />
+                        app:srcCompat="@drawable/discovery_ic_clear" />
 
             </RelativeLayout>
 
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:src="@drawable/discovery_ic_audio" />
+                app:srcCompat="@drawable/discovery_ic_audio" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/action_cancel_button"
