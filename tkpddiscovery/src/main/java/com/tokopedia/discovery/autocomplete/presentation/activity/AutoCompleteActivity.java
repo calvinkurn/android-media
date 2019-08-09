@@ -7,12 +7,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -136,31 +135,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
         searchView.showSearch(true, false, searchParameter);
-
-        animateEnterActivityTransition();
-    }
-
-    private void animateEnterActivityTransition() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            root.setVisibility(View.INVISIBLE);
-
-            ViewTreeObserver viewTreeObserver = root.getViewTreeObserver();
-            addOnGlobalLayoutListenerForAnimationIfAlive(viewTreeObserver, () -> AnimationUtil.reveal(root, getEmptyAnimationListener()));
-        } else {
-            root.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void addOnGlobalLayoutListenerForAnimationIfAlive(ViewTreeObserver viewTreeObserver, AnimationCallback animationCallback) {
-        if (viewTreeObserver.isAlive()) {
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    animationCallback.doAnimation();
-                    root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
-            });
-        }
     }
 
     private AnimationUtil.AnimationListener getEmptyAnimationListener() {
@@ -245,11 +219,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
         unregisterShake();
     }
 
-    private void forceShowKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-    }
-
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_auto_complete;
@@ -289,7 +258,20 @@ public class AutoCompleteActivity extends DiscoveryActivity
         permissionCheckerHelper.onRequestPermissionsResult(getActivityContext(), requestCode, permissions, grantResults);
     }
 
-    private interface AnimationCallback {
-        void doAnimation();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
+    }
+
+    @Override
+    protected void initToolbar() {
+        //Overridden and left empty to avoid toolbar click listener get called
+        //Autocomplete activity don't need toolbar anymore
+        //cause it only need to launch discoverySearchView
     }
 }

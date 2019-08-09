@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.search.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -217,8 +218,10 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     private void startActivityFromAutoComplete(String applink) {
         if(getActivity() == null) return;
 
-        getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY);
-        RouteManager.route(getActivity(), applink);
+        Intent intent = RouteManager.getIntent(getActivity(), applink);
+
+        getActivity().startActivity(intent);
+        getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
         getActivity().finish();
     }
 

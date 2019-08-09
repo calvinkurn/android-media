@@ -2,7 +2,6 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.CoordinatorLayout;
@@ -30,7 +29,6 @@ import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
-import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -42,7 +40,7 @@ import com.tokopedia.track.TrackApp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
@@ -123,7 +121,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         container.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    private void initToolbar() {
+    protected void initToolbar() {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -172,9 +170,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         String query = searchParameter.getSearchQuery();
         AutoCompleteTracking.eventClickSubmit(this, query);
 
+        clearFocusSearchView();
         handleQueryTextSubmitBasedOnCurrentTab();
 
-        return false;
+        return true;
+    }
+
+    private void clearFocusSearchView() {
+        if(searchView != null) {
+            searchView.clearFocus();
+        }
     }
 
     private void handleQueryTextSubmitBasedOnCurrentTab() throws RuntimeException {
@@ -196,12 +201,34 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     protected void onProductQuerySubmit() {
         setForceSwipeToShop(false);
-        performRequestProduct();
+        moveToSearchPage();
     }
 
     private void onShopQuerySubmit() {
         setForceSwipeToShop(true);
-        performRequestProduct();
+        moveToSearchPage();
+    }
+
+    private void moveToSearchPage() {
+        Intent searchActivityIntent = createIntentToSearchResult();
+
+        startActivity(searchActivityIntent);
+        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
+        finish();
+    }
+
+    private Intent createIntentToSearchResult() {
+        Intent intent = RouteManager.getIntent(this, createSearchResultApplink());
+
+        intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
+
+        return intent;
+    }
+
+    private String createSearchResultApplink() {
+        return ApplinkConstInternalDiscovery.SEARCH_RESULT
+                + "?"
+                + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
     }
 
     private void sendSearchProductGTM(String keyword) {
@@ -295,76 +322,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public void onBackPressed() {
         if (searchView.isSearchOpen()) {
             if (searchView.isFinishOnClose()) {
-                finishWithAnimation();
+                finish();
             } else {
                 searchView.closeSearch();
             }
         } else {
             finish();
         }
-    }
-
-    private void finishWithAnimation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AnimationUtil.unreveal(root, new AnimationUtil.AnimationListener() {
-                @Override
-                public boolean onAnimationStart(View view) {
-                    return false;
-                }
-
-                @Override
-                public boolean onAnimationEnd(View view) {
-                    finish();
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-
-                @Override
-                public boolean onAnimationCancel(View view) {
-                    return false;
-                }
-            });
-        } else {
-            finish();
-        }
-    }
-
-    protected void performRequestProduct() {
-        String searchQuery = this.searchParameter.getSearchQuery();
-
-        onSearchingStart(searchQuery);
-
-        moveToSearchPage();
-    }
-
-    protected void onSearchingStart(String keyword) {
-        searchView.closeSearch();
-        showLoadingView(true);
-        showContainer(false);
-        setToolbarTitle(keyword);
-        setLastQuerySearchView(keyword);
-    }
-
-    private void moveToSearchPage() {
-        Intent searchActivityIntent = createIntentToSearchResult();
-
-        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, searchActivityIntent);
-        startActivity(searchActivityIntent);
-        finish();
-    }
-
-    private Intent createIntentToSearchResult() {
-        Intent intent = RouteManager.getIntent(this, createSearchResultApplink());
-
-        intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
-
-        return intent;
-    }
-
-    private String createSearchResultApplink() {
-        return ApplinkConstInternalDiscovery.SEARCH_RESULT
-                + "?"
-                + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
     }
 
     public void deleteAllRecentSearch() {
@@ -448,7 +412,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         showLoadingView(false);
         showContainer(true);
-        NetworkErrorHelper.showEmptyState(this, container, this::performRequestProduct);
+        NetworkErrorHelper.showEmptyState(this, container, null);
     }
 
     @Override

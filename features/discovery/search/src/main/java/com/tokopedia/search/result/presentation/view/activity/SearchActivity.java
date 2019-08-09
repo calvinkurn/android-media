@@ -2,19 +2,20 @@ package com.tokopedia.search.result.presentation.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -24,7 +25,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
@@ -35,7 +35,6 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
@@ -50,6 +49,7 @@ import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragm
 import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_ACTIVE_TAB_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
@@ -73,6 +73,7 @@ public class SearchActivity extends BaseActivity
         RedirectionListener,
         BottomSheetListener,
         SearchNavigationListener,
+        SearchPerformanceMonitoringListener,
         HasComponent<BaseAppComponent> {
 
     private static final int TAB_FIRST_POSITION = 0;
@@ -108,6 +109,9 @@ public class SearchActivity extends BaseActivity
     private View iconSort;
     private View searchNavDivider;
     private View searchNavContainer;
+    private View backButton;
+    private TextView searchTextView;
+    private ImageView buttonChangeGrid;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -118,22 +122,27 @@ public class SearchActivity extends BaseActivity
     private boolean isForceSwipeToShop;
     private int activeTabPosition;
 
-    @Inject SearchContract.Presenter searchPresenter;
     @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
 
-    private SearchViewComponent searchComponent;
-    private MenuItem menuChangeGrid;
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        startPerformanceMonitoring();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
+
         initActivityOnCreate();
         proceed();
         handleIntent(getIntent());
+    }
+
+    @Override
+    public void startPerformanceMonitoring() {
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
     }
 
     private void initActivityOnCreate() {
@@ -142,10 +151,9 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initInjector() {
-        searchComponent =
-                DaggerSearchViewComponent.builder()
-                        .baseAppComponent(getBaseAppComponent())
-                        .build();
+        SearchViewComponent searchComponent = DaggerSearchViewComponent.builder()
+                .baseAppComponent(getBaseAppComponent())
+                .build();
         searchComponent.inject(this);
     }
 
@@ -171,6 +179,9 @@ public class SearchActivity extends BaseActivity
         iconSort = findViewById(R.id.icon_sort);
         searchNavDivider = findViewById(R.id.search_nav_divider);
         searchNavContainer = findViewById(R.id.search_nav_container);
+        backButton = findViewById(R.id.action_up_btn);
+        searchTextView = findViewById(R.id.searchTextView);
+        buttonChangeGrid = findViewById(R.id.search_change_grid_button);
     }
 
     protected void prepareView() {
@@ -182,15 +193,30 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initToolbar() {
+        configureSupportActionBar();
+        setSearchTextViewDrawableLeft();
+        configureToolbarOnClickListener();
+    }
+
+    private void configureSupportActionBar() {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setHomeButtonEnabled(false);
         }
+    }
 
-        toolbar.setOnClickListener(v -> moveToAutoCompleteActivity());
+    private void setSearchTextViewDrawableLeft() {
+        Drawable iconSearch = AppCompatResources.getDrawable(this, com.tokopedia.discovery.R.drawable.discovery_ic_search);
+        searchTextView.setCompoundDrawablesWithIntrinsicBounds(iconSearch, null, null, null);
+    }
+
+    private void configureToolbarOnClickListener() {
+        searchTextView.setOnClickListener(v -> moveToAutoCompleteActivity());
+        backButton.setOnClickListener(v -> onBackPressed());
+        buttonChangeGrid.setOnClickListener(v -> changeGrid());
     }
 
     private void moveToAutoCompleteActivity() {
@@ -311,16 +337,10 @@ public class SearchActivity extends BaseActivity
     }
 
     private void handleIntent(Intent intent) {
-        initPresenter();
         initResources();
         getExtrasFromIntent(intent);
         performProductSearch();
         setToolbarTitle(searchParameter.getSearchQuery());
-    }
-
-    private void initPresenter() {
-        searchPresenter.attachView(this);
-        searchPresenter.initInjector(this);
     }
 
     private void initResources() {
@@ -344,9 +364,7 @@ public class SearchActivity extends BaseActivity
     private void performProductSearch() {
         updateSearchParameterBeforeSearch();
         onSearchingStart();
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
-
-        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap());
+        loadSection();
     }
 
     private void updateSearchParameterBeforeSearch() {
@@ -388,21 +406,7 @@ public class SearchActivity extends BaseActivity
     }
 
     protected void setToolbarTitle(String query) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(query);
-        }
-    }
-
-    @Override
-    public void initiateSearchHandleResponseSearch() {
-        stopPerformanceMonitoring();
-        loadSection();
-    }
-
-    protected void stopPerformanceMonitoring() {
-        if (performanceMonitoring != null) {
-            performanceMonitoring.stopTrace();
-        }
+        searchTextView.setText(query);
     }
 
     private void loadSection() {
@@ -512,16 +516,6 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void initiateSearchHandleApplink(@NonNull String applink) {
-        moveWithApplink(applink);
-    }
-
-    public void moveWithApplink(String applink) {
-        startActivityWithApplink(applink);
-        finish();
-    }
-
-    @Override
     public void startActivityWithApplink(String applink, String... parameter) {
         finishCurrentActivityIfRedirectedToSearch(applink);
 
@@ -571,36 +565,9 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void initiateSearchHandleResponseError() {
-        NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
-            if(searchParameter == null) return;
-            SearchActivity.this.performProductSearch();
-        });
-    }
-
-    @Override
-    public void initiateSearchHandleResponseUnknown() {
-        throw new RuntimeException("Not yet handle unknown response");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        searchPresenter.onPause();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        searchPresenter.onResume();
         unregisterShake();
-    }
-
-    @Override
-    protected void onDestroy() {
-        searchPresenter.onDestroy();
-        searchPresenter.detachView();
-        super.onDestroy();
     }
 
     @Override
@@ -619,7 +586,7 @@ public class SearchActivity extends BaseActivity
 
     private void handleResultFromAutoCompleteActivity(int resultCode) {
         switch(resultCode) {
-            case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY:
+            case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY:
                 finish();
                 overridePendingTransition(0, 0);
                 break;
@@ -653,30 +620,6 @@ public class SearchActivity extends BaseActivity
         searchParameter = savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER_MODEL);
         isForceSwipeToShop = savedInstanceState.getBoolean(EXTRA_FORCE_SWIPE_TO_SHOP);
         activeTabPosition = savedInstanceState.getInt(EXTRA_ACTIVE_TAB_POSITION);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_change_grid, menu);
-        menuChangeGrid = menu.findItem(R.id.action_change_grid);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_change_grid) {
-            changeGrid();
-            return true;
-        }
-        else if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        else if (item.getItemId() == R.id.action_search) {
-            return false;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void changeGrid() {
@@ -743,9 +686,8 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
-        if (menuChangeGrid != null) {
-            menuChangeGrid.setIcon(iconResId);
-            menuChangeGrid.setTitle(titleResId);
+        if(buttonChangeGrid != null) {
+            buttonChangeGrid.setImageResource(iconResId);
         }
     }
 
@@ -757,5 +699,13 @@ public class SearchActivity extends BaseActivity
     @Override
     public void startActivityWithUrl(String url, String... parameter) {
         RouteManager.route(this, url, parameter);
+    }
+
+    @Override
+    public void stopPerformanceMonitoring() {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+            performanceMonitoring = null;
+        }
     }
 }

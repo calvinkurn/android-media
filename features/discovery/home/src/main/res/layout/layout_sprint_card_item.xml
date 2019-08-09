@@ -23,7 +23,8 @@
         android:paddingRight="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="heading_3"
             android:id="@+id/channel_title"
             android:layout_width="0dp"
             style="@style/TextView.Title"
