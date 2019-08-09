@@ -73,6 +73,7 @@ include "features:merchant:shop_etalase_picker"
 include "features:operational:contact_us"
 //include "features:operational:contact_us_no_op"
 
+include "features:payment:common_payment"
 include "features:payment:payment"
 //include "features:payment:payment_no_op"
 include "features:payment:withdraw"

@@ -28,15 +28,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
-    <com.tokopedia.design.component.UnifyButton
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="@dimen/dp_64"
         android:textAllCaps="false"
-        app:btnSize="micro"
-        app:buttonType="transaction"
-        app:buttonVariant="filled"
+        app:unifyButtonSize="micro"
+        app:unifyButtonType="transaction"
+        app:unifyButtonVariant="filled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"

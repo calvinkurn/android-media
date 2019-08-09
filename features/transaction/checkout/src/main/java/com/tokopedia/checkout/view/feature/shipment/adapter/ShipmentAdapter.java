@@ -21,7 +21,7 @@ import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListene
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
-import com.tokopedia.checkout.view.feature.shipment.util.Utils;
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
