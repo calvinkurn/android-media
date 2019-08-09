@@ -1,7 +1,9 @@
 package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
@@ -54,9 +56,21 @@ public class OrderListContract {
         void showSuccessMessage(String message);
 
         void showFailureMessage(String message);
+
+        void addRecommendationData(List<Visitable> data);
+
+        void displayLoadMore(boolean isLoadMore);
+
+        void initAdapterWithData(List<Visitable> data);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
         void getAllOrderData(Context context, String orderCategory, int typeRequest, int page, int orerId);
+
+        void processGetRecommendationData(int page, boolean isFirstTime);
+
+        void onRefresh();
+
+        void initDataInstance();
     }
 }

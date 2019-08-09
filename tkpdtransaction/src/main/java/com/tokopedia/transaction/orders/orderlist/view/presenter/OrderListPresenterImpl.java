@@ -1,8 +1,11 @@
 package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -11,6 +14,9 @@ import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Data;
 import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
@@ -19,6 +25,9 @@ import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.CheckBOMSur
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.InsertBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.CheckSurveyResponse;
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.InsertSurveyResponse;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomTitleViewModel;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,13 +49,69 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private static final int PER_PAGE_COUNT = 10;
     private static final String SOURCE = "1";
     private static final String DEVICE_TYPE = "android";
+    private static final String XSOURCE = "recom_widget";
+    private static final String PAGE_NAME = "bom_empty";
     GraphqlUseCase getOrderListUseCase;
     GraphqlUseCase checkBomSurveyUseCase;
     GraphqlUseCase insertBomSurveyUseCase;
+    private final GetRecommendationUseCase getRecommendationUseCase;
+    private List<Visitable> data = new ArrayList<>();
 
     @Inject
-    public OrderListPresenterImpl() {
+    public OrderListPresenterImpl(GetRecommendationUseCase getRecommendationUseCase) {
+        this.getRecommendationUseCase = getRecommendationUseCase;
+    }
 
+    @Override
+    public void initDataInstance() {
+        getView().initAdapterWithData(data);
+    }
+
+    @Override
+    public void processGetRecommendationData(int page, boolean isFirstTime) {
+        getView().displayLoadMore(true);
+        RequestParams requestParam = getRecommendationUseCase.getRecomParams(
+                page, XSOURCE, PAGE_NAME, new ArrayList<>());
+        getRecommendationUseCase.execute(requestParam, new Subscriber<List<? extends RecommendationWidget>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().displayLoadMore(false);
+            }
+            @Override
+            public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
+                getView().displayLoadMore(false);
+                RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
+                List<Visitable> visitables = new ArrayList<>();
+                if (isFirstTime && recommendationWidgets.size() > 0) {
+                    visitables.add(new OrderListRecomTitleViewModel(
+                            !TextUtils.isEmpty(recommendationWidget.getTitle())
+                                    ? recommendationWidget.getTitle()
+                                    : getView().getAppContext().getResources().getString(R.string.order_list_title_recommendation)));
+                }
+                visitables.addAll(getRecommendationVisitables(recommendationWidget));
+                getView().addRecommendationData(visitables);
+            }
+        });
+    }
+
+    @Override
+    public void onRefresh() {
+        data.clear();
+        getView().displayLoadMore(false);
+    }
+
+    @NonNull
+    private List<Visitable> getRecommendationVisitables(RecommendationWidget recommendationWidget) {
+        List<Visitable> recommendationList = new ArrayList<>();
+        for (RecommendationItem item : recommendationWidget.getRecommendationItemList()) {
+            recommendationList.add(new OrderListRecomViewModel(item));
+        }
+        return recommendationList;
     }
 
     @Override
@@ -153,6 +218,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         }
         if (insertBomSurveyUseCase != null) {
             insertBomSurveyUseCase.unsubscribe();
+        }
+        if (getRecommendationUseCase != null) {
+            getRecommendationUseCase.unsubscribe();
         }
         super.detachView();
     }

@@ -74,6 +74,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.webview)
     implementation rootProject.ext.unifyDependencies.components
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
+    implementation project(rootProject.ext.features.productCard)
 }
 
 apply from: '../publish_local.gradle'
