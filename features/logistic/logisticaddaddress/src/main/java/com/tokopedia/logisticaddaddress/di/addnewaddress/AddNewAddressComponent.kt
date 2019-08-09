@@ -2,9 +2,8 @@ package com.tokopedia.logisticaddaddress.di.addnewaddress
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapFragment
 import dagger.Component
 
 /**

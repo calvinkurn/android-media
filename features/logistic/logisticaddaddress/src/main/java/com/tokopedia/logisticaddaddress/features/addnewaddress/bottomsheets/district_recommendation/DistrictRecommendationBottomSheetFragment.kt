@@ -61,7 +61,8 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     val handler = Handler()
     private lateinit var actionListener: ActionListener
 
-    @Inject lateinit var presenter: DiscomContract.Presenter
+    @Inject
+    lateinit var presenter: DiscomContract.Presenter
 
     override fun getLayoutResourceId(): Int {
         return R.layout.bottomsheet_district_recommendation
@@ -80,6 +81,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         llPopularCity = view.findViewById(R.id.ll_popular_city)
         rvListDistrict = view.findViewById(R.id.rv_list_district)
         icCloseBtn = view.findViewById(R.id.ic_close)
+        mProgressbar = view.findViewById(R.id.progress_bar)
         llListDistrict = view.findViewById(R.id.ll_list_district)
         llListDistrict.visibility = View.GONE
 
@@ -152,7 +154,17 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     }
 
     override fun setLoadingState(active: Boolean) {
-        icCloseBtn.visibility = if (active) View.INVISIBLE else View.VISIBLE
+        if (active) icCloseBtn.visibility = View.INVISIBLE
+        else {
+            icCloseBtn.visibility = View.VISIBLE
+            icCloseBtn.setOnClickListener {
+                etSearch.setText("")
+                llListDistrict.visibility = View.GONE
+                llPopularCity.visibility = View.VISIBLE
+                popularCityAdapter.notifyDataSetChanged()
+                icCloseBtn.visibility = View.GONE
+            }
+        }
         mProgressbar.visibility = if (active) View.VISIBLE else View.INVISIBLE
     }
 
@@ -186,7 +198,6 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
                 .subscribe { s ->
                     if (s.isNotEmpty()) {
                         input = s
-                        showClearBtn()
                         mIsInitialLoading = true
                         handler.postDelayed({
                             presenter.loadData(input, 1)
@@ -195,17 +206,6 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
                 }.toCompositeSubs()
 
         rvListDistrict.addOnScrollListener(mEndlessListener)
-    }
-
-    private fun showClearBtn() {
-        icCloseBtn.visibility = View.VISIBLE
-        icCloseBtn.setOnClickListener {
-            etSearch.setText("")
-            llListDistrict.visibility = View.GONE
-            llPopularCity.visibility = View.VISIBLE
-            popularCityAdapter.notifyDataSetChanged()
-            icCloseBtn.visibility = View.GONE
-        }
     }
 
     override fun onDistrictItemClicked(districtModel: Address) {

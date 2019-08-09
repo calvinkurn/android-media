@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment;
 
@@ -13,5 +14,5 @@ import dagger.Component;
 @Component(modules = DistrictRecommendationModule.class, dependencies = BaseAppComponent.class)
 public interface DistrictRecommendationComponent {
     void inject(DiscomFragment discomFragment);
-    void inject(DiscomContract.View view);
+    void inject(DistrictRecommendationBottomSheetFragment fragment);
 }
