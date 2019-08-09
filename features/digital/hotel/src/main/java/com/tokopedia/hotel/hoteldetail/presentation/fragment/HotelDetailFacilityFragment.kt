@@ -1,10 +1,10 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityData
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityAdapterTypeFactory
 
@@ -15,12 +15,16 @@ class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFa
 
     lateinit var connector: Connector
 
+    override fun getRecyclerView(view: View): RecyclerView {
+        return view.findViewById<View>(com.tokopedia.abstraction.R.id.recycler_view) as RecyclerView
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = getRecyclerView(view) as VerticalRecyclerView
         recyclerView.clearItemDecoration()
-        recyclerView.setPadding(0, 0,0,
+        recyclerView.setPadding(0, 0, 0,
                 resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt())
         recyclerView.clipToPadding = false
         recyclerView.isFocusable = false

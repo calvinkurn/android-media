@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -127,6 +128,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun hasInitialSwipeRefresh(): Boolean = true
+
+    override fun getRecyclerView(view: View): RecyclerView {
+        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
