@@ -239,7 +239,16 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (shopGroupData.isError()) {
                 cartShopHolderData.setAllSelected(false);
             } else {
-                cartShopHolderData.setAllSelected(shopGroupData.isChecked());
+                if (shopGroupData.isChecked()) {
+                    cartShopHolderData.setAllSelected(true);
+                } else if (shopGroupData.getCartItemDataList() != null && shopGroupData.getCartItemDataList().size() > 1) {
+                    for (CartItemHolderData cartItemHolderData : shopGroupData.getCartItemDataList()) {
+                        if (cartItemHolderData.isSelected()) {
+                            cartShopHolderData.setPartialSelected(true);
+                            break;
+                        }
+                    }
+                }
             }
             cartShopHolderData.setShopGroupData(shopGroupData);
             cartDataList.add(cartShopHolderData);
