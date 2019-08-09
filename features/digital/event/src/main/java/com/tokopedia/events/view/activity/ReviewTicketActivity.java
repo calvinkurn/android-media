@@ -174,8 +174,9 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         sectionDiscount = findViewById(R.id.rl_section_discount);
         tvDiscount = findViewById(R.id.tv_discount);
 
-        dateRangeName = findViewById(R.id.event_time_tv).findViewById(R.id.textview_holder_small);
-        dateImageView = findViewById(R.id.event_time_tv).findViewById(R.id.image_holder_small);
+        View view = findViewById(R.id.event_time_tv);
+        dateRangeName = view.findViewById(R.id.textview_holder_small);
+        dateImageView = view.findViewById(R.id.image_holder_small);
 
         cityName = findViewById(R.id.event_address_tv).findViewById(R.id.textview_holder_small);
         cityImageView = findViewById(R.id.event_address_tv).findViewById(R.id.image_holder_small);
