@@ -54,7 +54,7 @@
                     android:background="@drawable/bg_autocomplete_input"
                     app:typographyType="body_2"
                     app:typographyWeight="reguler"
-                    android:drawableLeft="@drawable/discovery_ic_search"/>
+                    app:drawableLeftCompat="@drawable/discovery_ic_search" />
 
                 <ImageView
                     android:id="@+id/search_change_grid_button"
