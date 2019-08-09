@@ -22,6 +22,7 @@ public class CartItemData implements Parcelable {
     private String warningMessageDescription;
     private String errorMessageTitle;
     private String errorMessageDescription;
+    private String similarProductUrl;
     private boolean isDisableAllProducts;
     private boolean isFulfillment;
 
@@ -87,6 +88,14 @@ public class CartItemData implements Parcelable {
 
     public void setErrorMessageDescription(String errorMessageDescription) {
         this.errorMessageDescription = errorMessageDescription;
+    }
+
+    public String getSimilarProductUrl() {
+        return similarProductUrl;
+    }
+
+    public void setSimilarProductUrl(String similarProductUrl) {
+        this.similarProductUrl = similarProductUrl;
     }
 
     public OriginData getOriginData() {

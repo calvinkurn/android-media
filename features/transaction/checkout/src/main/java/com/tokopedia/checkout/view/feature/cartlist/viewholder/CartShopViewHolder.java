@@ -5,7 +5,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
@@ -15,7 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
@@ -26,6 +25,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
 
 import rx.subscriptions.CompositeSubscription;
@@ -252,19 +252,36 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_disabled_item));
             llShopContainer.setBackgroundResource(R.drawable.bg_error_shop);
 
-            String errorDescription = data.getShopGroupData().getErrorDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
+            String similarProductUrl = data.getShopGroupData().getSimilarProductUrl();
+            if (!TextUtils.isEmpty(similarProductUrl)) {
                 tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
-                tickerError.setTextDescription(errorDescription);
+                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
+                tickerError.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(CharSequence charSequence) {
+                        Toast.makeText(itemView.getContext(), "SIMILAR PRODUCT", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
             } else {
-                tickerError.setTextDescription(data.getShopGroupData().getErrorTitle());
+                String errorDescription = data.getShopGroupData().getErrorDescription();
+                if (!TextUtils.isEmpty(errorDescription)) {
+                    tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
+                    tickerError.setTextDescription(errorDescription);
+                } else {
+                    tickerError.setTextDescription(data.getShopGroupData().getErrorTitle());
+                }
             }
             tickerError.setTickerType(Ticker.TYPE_ERROR);
             tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerError.setCloseButtonVisibility(View.GONE);
             tickerError.setVisibility(View.VISIBLE);
             layoutError.setVisibility(View.VISIBLE);
-
+            tickerError.requestLayout();
             renderPromoMerchant(data, false);
         } else {
             cbSelectShop.setEnabled(true);
@@ -290,6 +307,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
             layoutWarning.setVisibility(View.VISIBLE);
+            tickerWarning.requestLayout();
         } else {
             tickerWarning.setVisibility(View.GONE);
             layoutWarning.setVisibility(View.GONE);
