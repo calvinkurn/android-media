@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation
+package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 import kotlinx.android.synthetic.main.bottomsheet_district_recommendation_item.view.*
 
 /**
@@ -18,7 +17,7 @@ class DiscomNewAdapter(private var listener: ActionListener) : RecyclerView.Adap
     private var mData = mutableListOf<Address>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(com.tokopedia.logisticaddaddress.R.layout.bottomsheet_district_recommendation_item, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bottomsheet_district_recommendation_item, parent, false))
     }
 
     override fun getItemCount(): Int = mData.size

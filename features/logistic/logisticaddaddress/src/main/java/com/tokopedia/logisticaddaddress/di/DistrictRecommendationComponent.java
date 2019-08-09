@@ -1,8 +1,7 @@
 package com.tokopedia.logisticaddaddress.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationBottomSheetFragment;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment;
 
 import dagger.Component;

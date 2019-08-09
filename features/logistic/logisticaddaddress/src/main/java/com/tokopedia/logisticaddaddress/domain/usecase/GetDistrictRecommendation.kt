@@ -25,7 +25,7 @@ class GetDistrictRecommendation @Inject constructor(
                 "query" to query,
                 "page" to page.toString()
         )
-        val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.district_recommendation_new)
+        val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.district_recommendation)
         val gqlRequest = GraphqlRequest(gqlQuery, DistrictRecommendationResponse::class.java, param)
 
         gql.clearRequest()
@@ -38,7 +38,7 @@ class GetDistrictRecommendation @Inject constructor(
                             gqlResponse.getError(DistrictRecommendationResponse::class.java)[0].message
                     )
                 }
-                .map { mapper.transformViewModel(it) }
+                .map { mapper.transform(it) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }

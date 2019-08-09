@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation
+package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import android.os.Handler
 import android.support.v4.view.ViewCompat
@@ -17,7 +17,6 @@ import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract
 import com.tokopedia.network.utils.ErrorHandler
 import rx.Emitter
 import rx.Observable

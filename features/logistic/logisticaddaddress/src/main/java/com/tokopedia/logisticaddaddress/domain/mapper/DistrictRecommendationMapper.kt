@@ -1,12 +1,9 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictItem
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationResponseUiModel
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -15,26 +12,7 @@ import javax.inject.Inject
  */
 class DistrictRecommendationMapper @Inject constructor() {
 
-    fun map(response: GraphqlResponse?): DistrictRecommendationResponseUiModel {
-        val listDistrict = mutableListOf<DistrictRecommendationItemUiModel>()
-        val responseDistrictRecommendation: DistrictRecommendationResponse? = response?.getData(DistrictRecommendationResponse::class.java)
-        responseDistrictRecommendation?.keroDistrictRecommendation?.let { keroDistrictRecommendation ->
-            keroDistrictRecommendation.district.forEach {
-                mapDistrictItem(it).let(listDistrict::add)
-            }
-        }
-        return DistrictRecommendationResponseUiModel(listDistrict, responseDistrictRecommendation?.keroDistrictRecommendation?.nextAvailable
-                ?: true)
-    }
-
-    fun transform(response: DistrictRecommendationResponse): DistrictRecommendationResponseUiModel {
-        return DistrictRecommendationResponseUiModel().apply {
-            listDistrict = response.keroDistrictRecommendation.district.map { mapDistrictItem(it) }
-            hasNext = response.keroDistrictRecommendation.nextAvailable
-        }
-    }
-
-    fun transformViewModel(response: DistrictRecommendationResponse): AddressResponse {
+    fun transform(response: DistrictRecommendationResponse): AddressResponse {
         return AddressResponse().apply {
             addresses = response.keroDistrictRecommendation.district
                     .map { mapDistrictToAddress(it) }
@@ -55,15 +33,4 @@ class DistrictRecommendationMapper @Inject constructor() {
         }
     }
 
-    private fun mapDistrictItem(district: DistrictItem): DistrictRecommendationItemUiModel {
-        return DistrictRecommendationItemUiModel(
-                districtId = district.districtId,
-                cityId = district.cityId,
-                cityName = district.cityName,
-                provinceId = district.provinceId,
-                provinceName = district.provinceName,
-                zipCodes = district.zipCode,
-                districtName = district.districtName
-        )
-    }
 }
