@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.events.EventModuleRouter;
@@ -27,13 +28,11 @@ import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
-import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
 import java.util.List;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView, View.OnClickListener, View.OnFocusChangeListener {
@@ -88,12 +87,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     public static final int PAYMENT_REQUEST_CODE = 65000;
     public static final int PAYMENT_SUCCESS = 5;
-    public static final int PROMO_CODE_CHECK = 4096;
-
     private TextView dateRangeName, cityName;
     private ImageView dateImageView, cityImageView;
-    private ImageTextViewHolder timeHolder;
-    private ImageTextViewHolder addressHolder;
     private EventsAnalytics eventsAnalytics;
 
     @Override
@@ -424,10 +419,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         super.onResume();
     }
 
-    public void setHolder(int resID, String label, ImageTextViewHolder holder) {
-        holder.setImage(resID);
-        holder.setTextView(label);
-    }
 
     private void showDiscountSection(long discount, boolean show) {
         if (show) {
