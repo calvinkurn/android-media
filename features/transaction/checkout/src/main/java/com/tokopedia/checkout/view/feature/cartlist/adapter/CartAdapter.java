@@ -116,7 +116,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (cartDataList.get(position) instanceof CartLoadingHolderData) {
             return CartLoadingViewHolder.Companion.getLAYOUT();
         } else if (cartDataList.get(position) instanceof InsuranceCartShops) {
-            return InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP;
+            return InsuranceCartShopViewHolder.Companion.getTYPE_VIEW_INSURANCE_CART_SHOP();
         } else {
             return super.getItemViewType(position);
         }
@@ -173,9 +173,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartLoadingViewHolder.Companion.getLAYOUT(), parent, false);
             return new CartLoadingViewHolder(view);
-        } else if (viewType == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
+        } else if (viewType == InsuranceCartShopViewHolder.Companion.getTYPE_VIEW_INSURANCE_CART_SHOP()) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP, parent, false);
+                    .inflate(InsuranceCartShopViewHolder.Companion.getTYPE_VIEW_INSURANCE_CART_SHOP(), parent, false);
             return new InsuranceCartShopViewHolder(view, insuranceItemActionlistener);
         }
 
@@ -234,7 +234,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final CartLoadingViewHolder holderView = (CartLoadingViewHolder) holder;
             final CartLoadingHolderData data = (CartLoadingHolderData) cartDataList.get(position);
             holderView.bind(data);
-        } else if (getItemViewType(position) == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
+        } else if (getItemViewType(position) == InsuranceCartShopViewHolder.Companion.getTYPE_VIEW_INSURANCE_CART_SHOP()) {
             final InsuranceCartShopViewHolder insuranceCartShopViewHolder = (InsuranceCartShopViewHolder) holder;
             final InsuranceCartShops insuranceCartShops = (InsuranceCartShops) cartDataList.get(position);
             insuranceCartShopViewHolder.bindData(insuranceCartShops, position, PAGE_TYPE_CART);
