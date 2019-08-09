@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
@@ -33,6 +34,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -630,19 +632,36 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
 
-            String errorDescription = data.getCartItemData().getErrorMessageDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
+            String similarProductUrl = data.getCartItemData().getSimilarProductUrl();
+            if (!TextUtils.isEmpty(similarProductUrl)) {
                 tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
-                tickerError.setTextDescription(errorDescription);
+                tickerError.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(CharSequence charSequence) {
+                        RouteManager.route(itemView.getContext(), charSequence.toString());
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
+                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
             } else {
-                tickerError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                String errorDescription = data.getCartItemData().getErrorMessageDescription();
+                if (!TextUtils.isEmpty(errorDescription)) {
+                    tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
+                    tickerError.setTextDescription(errorDescription);
+                } else {
+                    tickerError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                }
             }
             tickerError.setTickerType(Ticker.TYPE_ERROR);
             tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerError.setCloseButtonVisibility(View.GONE);
             tickerError.setVisibility(View.VISIBLE);
             layoutError.setVisibility(View.VISIBLE);
-
+            tickerError.requestLayout();
         } else {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart);
@@ -664,6 +683,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
             layoutWarning.setVisibility(View.VISIBLE);
+            tickerWarning.requestLayout();
         } else {
             tickerWarning.setVisibility(View.GONE);
             layoutWarning.setVisibility(View.GONE);

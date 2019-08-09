@@ -14,9 +14,9 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.feature.cartlist.ActionListener;
@@ -255,11 +255,10 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             String similarProductUrl = data.getShopGroupData().getSimilarProductUrl();
             if (!TextUtils.isEmpty(similarProductUrl)) {
                 tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
-                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
                 tickerError.setDescriptionClickEvent(new TickerCallback() {
                     @Override
                     public void onDescriptionViewClick(CharSequence charSequence) {
-                        Toast.makeText(itemView.getContext(), "SIMILAR PRODUCT", Toast.LENGTH_SHORT).show();
+                        RouteManager.route(itemView.getContext(), charSequence.toString());
                     }
 
                     @Override
@@ -267,6 +266,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
                     }
                 });
+                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
             } else {
                 String errorDescription = data.getShopGroupData().getErrorDescription();
                 if (!TextUtils.isEmpty(errorDescription)) {
@@ -332,6 +332,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
                         if (cartItemHolderData.getCartItemData().isError() && cartItemHolderData.getCartItemData().isSingleChild()) {
                             isAllSelected = false;
+                            break;
                         }
                     }
                     cartShopHolderData.setAllSelected(isAllSelected);
