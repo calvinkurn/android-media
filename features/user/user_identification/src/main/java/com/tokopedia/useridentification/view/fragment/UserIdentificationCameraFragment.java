@@ -56,6 +56,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private TextView title;
     private TextView subtitle;
     private View focusedFaceView;
+//    private View focusedFaceKtpView;
     private View focusedKtpView;
     private View shutterButton;
     private View loading;
@@ -126,6 +127,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         subtitle = view.findViewById(R.id.subtitle);
         imagePreview = view.findViewById(R.id.full_image_preview);
         focusedFaceView = view.findViewById(R.id.focused_view_face);
+//        focusedFaceKtpView = view.findViewById(R.id.focused_view_face_ktp);
         focusedKtpView = view.findViewById(R.id.focused_view_ktp);
         shutterButton = view.findViewById(R.id.image_button_shutter);
         switchCamera = view.findViewById(R.id.image_button_flip);
@@ -427,12 +429,14 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             case PARAM_VIEW_MODE_KTP:
                 focusedKtpView.setVisibility(View.VISIBLE);
                 focusedFaceView.setVisibility(View.GONE);
+//                focusedFaceKtpView.setVisibility(View.GONE);
                 title.setText(R.string.camera_ktp_title);
                 subtitle.setText(R.string.camera_ktp_subtitle);
                 break;
             case PARAM_VIEW_MODE_FACE:
                 focusedKtpView.setVisibility(View.GONE);
                 focusedFaceView.setVisibility(View.VISIBLE);
+//                focusedFaceKtpView.setVisibility(View.VISIBLE);
                 title.setText(R.string.camera_face_title);
                 subtitle.setText(R.string.camera_face_subtitle);
                 toggleCamera();

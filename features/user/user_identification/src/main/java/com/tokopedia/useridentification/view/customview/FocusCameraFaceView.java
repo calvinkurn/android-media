@@ -16,12 +16,17 @@ import android.view.View;
 
 public class FocusCameraFaceView extends View{
 
-    private final static int LEFT_DIMEN_DIVIDER = 20;
-    private final static double TOP_DIMEN_DIVIDER = 3.55;
-    private final static int RIGHT_DIMEN_DIVIDER = 20;
-    private final static double BOTTOM_DIMEN_DIVIDER = 4.73;
+    private final static float LEFT_DIMEN_DIVIDER = 1.4f;
+    private final static double TOP_DIMEN_DIVIDER = 1.3;
+    private final static float RIGHT_DIMEN_DIVIDER = 1.4f;
+    private final static double BOTTOM_DIMEN_DIVIDER = 2.5;
     private final static int CONST_RADIUS = 20;
     private final static int CONST_STROKE_WIDTH = 10;
+
+    private float LEFT_OVAL_DIMEN_DIVIDER = 1.4f;
+    private double TOP_OVAL_DIMEN_DIVIDER = 1.8;
+    private float RIGHT_OVAL_DIMEN_DIVIDER = 1.4f;
+    private double BOTTOM_OVAL_DIMEN_DIVIDER = 1.3;
 
     private Paint mTransparentPaint;
     private Paint mSemiBlackPaint;
@@ -43,6 +48,7 @@ public class FocusCameraFaceView extends View{
     }
 
     private void initPaints() {
+
         mTransparentPaint = new Paint();
         mTransparentPaint.setColor(Color.TRANSPARENT);
         mTransparentPaint.setStrokeWidth(CONST_STROKE_WIDTH);
@@ -74,6 +80,12 @@ public class FocusCameraFaceView extends View{
                     CONST_RADIUS,
                     Path.Direction.CW
             );
+
+            mPath.addOval( getLeft() + (getRight() - getLeft()) / LEFT_OVAL_DIMEN_DIVIDER,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_OVAL_DIMEN_DIVIDER),
+                     getRight() - (getRight() - getLeft()) / RIGHT_OVAL_DIMEN_DIVIDER,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_OVAL_DIMEN_DIVIDER),
+                    Path.Direction.CW);
         }
         mPath.setFillType(Path.FillType.INVERSE_EVEN_ODD);
 
@@ -90,6 +102,12 @@ public class FocusCameraFaceView extends View{
                     (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
                     CONST_RADIUS,
                     CONST_RADIUS,
+                    mTransparentPaint);
+
+            canvas.drawOval(getLeft() + (getRight() - getLeft()) / LEFT_OVAL_DIMEN_DIVIDER,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_OVAL_DIMEN_DIVIDER),
+                    getRight() - (getRight() - getLeft()) / RIGHT_OVAL_DIMEN_DIVIDER,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_OVAL_DIMEN_DIVIDER),
                     mTransparentPaint);
         }
 
