@@ -111,6 +111,10 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         }
     }
 
+    override fun getRecyclerView(view: View): RecyclerView {
+        return view.findViewById<View>(com.tokopedia.hotel.R.id.recycler_view) as RecyclerView
+    }
+
     fun initCurrentLocationTextView(view: View) {
 
         currentLocationTextView = view.findViewById(R.id.current_location_tv)

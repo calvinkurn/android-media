@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,6 +52,10 @@ class HotelDetailPolicyFragment : BaseListFragment<PropertyPolicyData, HotelDeta
     override fun getScreenName(): String = ""
 
     override fun initInjector() {}
+
+    override fun getRecyclerView(view: View): RecyclerView {
+        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
+    }
 
     override fun loadData(page: Int) {
         if (::connector.isInitialized) {
