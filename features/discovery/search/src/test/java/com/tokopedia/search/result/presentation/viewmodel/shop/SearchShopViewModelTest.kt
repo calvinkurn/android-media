@@ -11,7 +11,7 @@ import com.tokopedia.search.result.domain.usecase.TestErrorSearchUseCase
 import com.tokopedia.search.result.domain.usecase.TestSearchUseCase
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.model.ShopViewModel
-import com.tokopedia.search.result.presentation.viewmodel.State
+import com.tokopedia.search.utils.State
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -52,8 +52,6 @@ class SearchShopViewModelTest {
     private val moreShopItemViewModelList = mutableListOf<ShopViewModel.ShopItem>().also {
         it.add(ShopViewModel.ShopItem())
         it.add(ShopViewModel.ShopItem())
-        it.add(ShopViewModel.ShopItem())
-        it.add(ShopViewModel.ShopItem())
     }
 
     private val shopViewModel = ShopViewModel(
@@ -68,17 +66,9 @@ class SearchShopViewModelTest {
             SearchApiConst.Q to "samsung"
     )
 
-    private val shopHeaderViewModelMapper = mock(MockShopHeaderViewModelMapper::class.java).also {
-        whenever(it.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
-        whenever(it.convert(searchShopModelWithoutNextPage)).thenReturn(shopHeaderViewModel)
-    }
+    private val shopHeaderViewModelMapper = mock(MockShopHeaderViewModelMapper::class.java)
 
-    private val shopViewModelMapper = mock(MockShopViewModelMapper::class.java).also {
-        whenever(it.convert(searchShopModel)).thenReturn(shopViewModel)
-        whenever(it.convert(searchShopModelWithoutNextPage)).thenReturn(shopViewModel)
-        whenever(it.convert(searchMoreShopModel)).thenReturn(moreShopViewModel)
-        whenever(it.convert(searchMoreShopModelWithoutNextPage)).thenReturn(moreShopViewModel)
-    }
+    private val shopViewModelMapper = mock(MockShopViewModelMapper::class.java)
 
     private val userSession = mock(UserSessionInterface::class.java).also {
         whenever(it.isLoggedIn).thenReturn(true)
@@ -91,6 +81,9 @@ class SearchShopViewModelTest {
 
     @Test
     fun `when searchShop() is successful, validate data is correct`() {
+        whenever(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
+        whenever(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
+
         val searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
@@ -198,6 +191,10 @@ class SearchShopViewModelTest {
 
     @Test
     fun `when searchMoreShop() is successful, validate data is correct`() {
+        whenever(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
+        whenever(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
+        whenever(shopViewModelMapper.convert(searchMoreShopModel)).thenReturn(moreShopViewModel)
+
         val searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
@@ -218,6 +215,9 @@ class SearchShopViewModelTest {
 
     @Test
     fun `when searchMoreShop() is fails, validate previous data still exists with state error`() {
+        whenever(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
+        whenever(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
+
         val exception = Exception("Mock exception for testing error")
         val searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
@@ -262,13 +262,13 @@ class SearchShopViewModelTest {
 
     @Test
     fun `searchShop() should not do anything if searchShopLiveData already has value`() {
-        whenever(shopViewModelMapper.convert(searchShopModel))
-                .thenReturn(shopViewModel)
-                .thenReturn(ShopViewModel())
-
         whenever(shopHeaderViewModelMapper.convert(searchShopModel))
                 .thenReturn(shopHeaderViewModel)
                 .thenReturn(ShopHeaderViewModel())
+
+        whenever(shopViewModelMapper.convert(searchShopModel))
+                .thenReturn(shopViewModel)
+                .thenReturn(ShopViewModel())
 
         val searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
@@ -305,6 +305,10 @@ class SearchShopViewModelTest {
 
     @Test
     fun `searchMoreShop() should not do anything if hasNextPage is false after searchShop()`() {
+        whenever(shopHeaderViewModelMapper.convert(searchShopModelWithoutNextPage)).thenReturn(shopHeaderViewModel)
+        whenever(shopViewModelMapper.convert(searchShopModelWithoutNextPage)).thenReturn(shopViewModel)
+        whenever(shopViewModelMapper.convert(searchMoreShopModel)).thenReturn(moreShopViewModel)
+
         val searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
@@ -340,9 +344,11 @@ class SearchShopViewModelTest {
 
     @Test
     fun `searchMoreShop() should not do anything if hasNextPage is false after searchMoreShop()`() {
+        whenever(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
+        whenever(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
         whenever(shopViewModelMapper.convert(searchMoreShopModelWithoutNextPage))
                 .thenReturn(moreShopViewModel)
-                .thenReturn(ShopViewModel(shopItemList = shopItemViewModelList.map { it.copy() }.toList()))
+                .thenReturn(ShopViewModel(shopItemList = moreShopItemViewModelList.map { it.copy() }.toList()))
 
         val searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
@@ -365,11 +371,13 @@ class SearchShopViewModelTest {
 
     private fun assertSuccessSearchMoreShopWithoutNextPage(state: State<List<Visitable<*>>>?) {
         if (state != null) {
+            val expectedShopItemCount = shopItemViewModelList.size + moreShopItemViewModelList.size
+
             assertStateIsSuccess(state)
             assertDataIsNotEmpty(state.data)
             assertShopHeaderAtFirstIndexOfData(state.data!!)
             assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
-            assertShopItemCountDoesNotIncrease(state.data!!, shopItemViewModelList.size * 2)
+            assertShopItemCountDoesNotIncrease(state.data!!, expectedShopItemCount)
         }
         else {
             assert (false) {

@@ -43,27 +43,4 @@ class SearchShopViewModelFactory(
                 localCacheHandler
         )
     }
-
-//    private fun provideSearchShopFirstPageUseCase(): SearchUseCase<SearchShopModel> {
-//        val graphqlUseCase = createGraphqlUseCase(R.raw.gql_search_shop_first_page)
-//
-//        return SearchShopFirstPageUseCase(graphqlUseCase)
-//    }
-//
-//    private fun provideSearchShopLoadMoreUseCase(): SearchUseCase<SearchShopModel> {
-//        val graphqlUseCase = createGraphqlUseCase(R.raw.gql_search_shop_load_more)
-//
-//        return SearchShopLoadMoreUseCase(graphqlUseCase)
-//    }
-//
-//    private fun createGraphqlUseCase(@RawRes rawQueryRes: Int): GraphqlUseCase<SearchShopModel> {
-//        val query = GraphqlHelper.loadRawString(context.resources, rawQueryRes)
-//        val repository = GraphqlInteractor.getInstance().graphqlRepository
-//
-//        val useCase = GraphqlUseCase<SearchShopModel>(repository)
-//        useCase.setTypeClass(SearchShopModel::class.java)
-//        useCase.setGraphqlQuery(query)
-//
-//        return useCase
-//    }
 }

@@ -14,8 +14,8 @@ import com.tokopedia.search.result.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.model.ShopViewModel
-import com.tokopedia.search.result.presentation.viewmodel.State
-import com.tokopedia.search.result.presentation.viewmodel.State.*
+import com.tokopedia.search.utils.State
+import com.tokopedia.search.utils.State.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
