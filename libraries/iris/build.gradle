@@ -64,7 +64,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.retrofit
 
     implementation rootProject.ext.miscDependencies.gson
-    implementation project(rootProject.ext.libraries.config)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
