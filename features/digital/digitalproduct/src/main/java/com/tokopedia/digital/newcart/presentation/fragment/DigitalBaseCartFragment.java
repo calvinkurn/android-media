@@ -50,6 +50,8 @@ import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.interfaces.AFAdsIDCallback;
 
 import java.util.List;
 import java.util.Map;
@@ -86,6 +88,17 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        TrackApp.getInstance().getAppsFlyer().getAdsID(new AFAdsIDCallback() {
+            @Override
+            public void onGetAFAdsID(String string) {
+                // do nothing
+            }
+
+            @Override
+            public void onErrorAFAdsID() {
+                //do nothing
+            }
+        });
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
