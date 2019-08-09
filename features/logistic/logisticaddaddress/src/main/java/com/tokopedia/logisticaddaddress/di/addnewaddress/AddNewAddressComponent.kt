@@ -16,5 +16,4 @@ interface AddNewAddressComponent {
     fun inject(pinpointMapFragment: PinpointMapFragment)
     fun inject(autoCompleteBottomSheetFragment: AutocompleteBottomSheetFragment)
     fun inject(addEditAddressFragment: AddEditAddressFragment)
-    fun inject(districtRecommendationBottomSheetFragment: DistrictRecommendationBottomSheetFragment)
 }

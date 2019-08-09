@@ -1,6 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation
 
-import android.content.res.Resources
 import android.os.Handler
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -11,17 +10,17 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
-import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
+import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationResponseUiModel
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract
 import rx.Emitter
 import rx.Observable
 import rx.Subscription
@@ -36,24 +35,25 @@ import javax.inject.Inject
  */
 class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         PopularCityRecommendationBottomSheetAdapter.ActionListener,
-        DistrictRecommendationBottomSheetListener,
-        DistrictRecommendationBottomSheetAdapter.ActionListener {
+        DiscomContract.View,
+        DiscomNewAdapter.ActionListener {
 
     private var bottomSheetView: View? = null
     private lateinit var popularCityAdapter: PopularCityRecommendationBottomSheetAdapter
-    private lateinit var listDistrictAdapter: DistrictRecommendationBottomSheetAdapter
+    private lateinit var listDistrictAdapter: DiscomNewAdapter
     private lateinit var rvChips: RecyclerView
     private lateinit var etSearch: EditText
     private lateinit var llListDistrict: LinearLayout
     private lateinit var llPopularCity: LinearLayout
     private lateinit var rvListDistrict: RecyclerView
     private lateinit var icCloseBtn: ImageView
+    private lateinit var mProgressbar: ProgressBar
     private var isLoading: Boolean = false
     private var input: String = ""
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     private val mEndlessListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
-            presenter.getDistrictRecommendation(input, page + 1)
+            presenter.loadData(input, page + 1)
         }
     }
     private var mIsInitialLoading: Boolean = false
@@ -61,8 +61,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     val handler = Handler()
     private lateinit var actionListener: ActionListener
 
-    @Inject
-    lateinit var presenter: DistrictRecommendationBottomSheetPresenter
+    @Inject lateinit var presenter: DiscomContract.Presenter
 
     override fun getLayoutResourceId(): Int {
         return R.layout.bottomsheet_district_recommendation
@@ -101,7 +100,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
             addItemDecoration(ChipsItemDecoration(dist))
         }
 
-        listDistrictAdapter = DistrictRecommendationBottomSheetAdapter(this)
+        listDistrictAdapter = DiscomNewAdapter(this)
         rvListDistrict.apply {
             layoutManager = mLayoutManager
             adapter = listDistrictAdapter
@@ -112,7 +111,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
 
     override fun onDetach() {
         super.onDetach()
-        presenter.detachView()
+        presenter.detach()
         mCompositeSubs.unsubscribe()
     }
 
@@ -133,21 +132,32 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         }
     }
 
-    override fun showData(model: DistrictRecommendationResponseUiModel, hasNext: Boolean) {
-        if (model.listDistrict.isNotEmpty()) {
-            isLoading = false
-            llPopularCity.visibility = View.GONE
-            llListDistrict.visibility = View.VISIBLE
-            if (mIsInitialLoading) {
-                listDistrictAdapter.setData(model.listDistrict.toMutableList())
-                mEndlessListener.resetState()
-                mIsInitialLoading = false
-            } else {
-                listDistrictAdapter.appendData(model.listDistrict.toMutableList())
-                mEndlessListener.updateStateAfterGetData()
-            }
-            mEndlessListener.setHasNextPage(hasNext)
+    override fun renderData(list: List<Address>, hasNextPage: Boolean) {
+        isLoading = false
+        llPopularCity.visibility = View.GONE
+        llListDistrict.visibility = View.VISIBLE
+        if (mIsInitialLoading) {
+            listDistrictAdapter.setData(list)
+            mEndlessListener.resetState()
+            mIsInitialLoading = false
+        } else {
+            listDistrictAdapter.appendData(list)
+            mEndlessListener.updateStateAfterGetData()
         }
+        mEndlessListener.setHasNextPage(hasNextPage)
+    }
+
+    override fun showGetListError(throwable: Throwable) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun setLoadingState(active: Boolean) {
+        icCloseBtn.visibility = if (active) View.INVISIBLE else View.VISIBLE
+        mProgressbar.visibility = if (active) View.VISIBLE else View.INVISIBLE
+    }
+
+    override fun showEmpty() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onCityChipClicked(city: String) {
@@ -161,14 +171,10 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     }
 
     private fun initInjector() {
-        activity?.run {
-            DaggerAddNewAddressComponent.builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .addNewAddressModule(AddNewAddressModule())
-                    .build()
-                    .inject(this@DistrictRecommendationBottomSheetFragment)
-            presenter.attachView(this@DistrictRecommendationBottomSheetFragment)
-        }
+        DaggerDistrictRecommendationComponent.builder()
+                .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
+        presenter.attach(this)
     }
 
     private fun setViewListener() {
@@ -183,8 +189,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
                         showClearBtn()
                         mIsInitialLoading = true
                         handler.postDelayed({
-                            presenter.clearCacheDistrictRecommendation()
-                            presenter.getDistrictRecommendation(input, 1)
+                            presenter.loadData(input, 1)
                         }, 200)
                     } else icCloseBtn.visibility = View.GONE
                 }.toCompositeSubs()
@@ -203,10 +208,10 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         }
     }
 
-    override fun onDistrictItemClicked(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
+    override fun onDistrictItemClicked(districtModel: Address) {
         context?.let {
-            districtRecommendationItemUiModel.run {
-                actionListener.onGetDistrict(districtRecommendationItemUiModel)
+            districtModel.run {
+                actionListener.onGetDistrict(districtModel)
                 AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative()
                 dismiss()
             }
@@ -237,7 +242,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     }
 
     interface ActionListener {
-        fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel)
+        fun onGetDistrict(districtAddress: Address)
     }
 
     companion object {

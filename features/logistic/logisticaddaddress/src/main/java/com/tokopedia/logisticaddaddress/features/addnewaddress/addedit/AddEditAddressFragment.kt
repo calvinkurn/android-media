@@ -33,6 +33,7 @@ import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
@@ -46,7 +47,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocompl
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
@@ -915,20 +915,20 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun onConnectionFailed(p0: ConnectionResult) {
     }
 
-    override fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
-        val provinceName = districtRecommendationItemUiModel.provinceName
-        val cityName = districtRecommendationItemUiModel.cityName
-        val districtName = districtRecommendationItemUiModel.districtName
+    override fun onGetDistrict(districtAddress: Address) {
+        val provinceName = districtAddress.provinceName
+        val cityName = districtAddress.cityName
+        val districtName = districtAddress.districtName
         val districtSelected = "$provinceName, $cityName, $districtName"
 
         et_kota_kecamatan_mismatch.setText(districtSelected)
         saveAddressDataModel?.selectedDistrict = districtSelected
-        saveAddressDataModel?.cityId = districtRecommendationItemUiModel.cityId
-        saveAddressDataModel?.provinceId = districtRecommendationItemUiModel.provinceId
-        saveAddressDataModel?.districtId = districtRecommendationItemUiModel.districtId
+        saveAddressDataModel?.cityId = districtAddress.cityId
+        saveAddressDataModel?.provinceId = districtAddress.provinceId
+        saveAddressDataModel?.districtId = districtAddress.districtId
         saveAddressDataModel?.latitude = ""
         saveAddressDataModel?.longitude = ""
-        saveAddressDataModel?.zipCodes = districtRecommendationItemUiModel.zipCodes
+        saveAddressDataModel?.zipCodes = districtAddress.zipCodes
         autoCompletePresenter.getAutocomplete(districtName)
     }
 
