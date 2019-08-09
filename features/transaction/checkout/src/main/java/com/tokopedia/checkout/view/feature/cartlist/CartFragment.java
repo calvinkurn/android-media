@@ -2138,10 +2138,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
             recommendationList = cartRecommendationItemHolderDataList;
 
-            boolean isEmptyCart = false;
-            if (cartListData.getShopGroupDataList().isEmpty()) isEmptyCart = true;
             sendAnalyticsOnViewProductRecommendationOnCart(
-                    dPresenter.generateRecommendationDataAnalytics(recommendationList, isEmptyCart)
+                    dPresenter.generateRecommendationDataAnalytics(recommendationList, FLAG_IS_CART_EMPTY)
             );
         }
     }
