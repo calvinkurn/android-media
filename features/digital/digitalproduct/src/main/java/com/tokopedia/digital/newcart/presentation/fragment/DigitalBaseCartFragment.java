@@ -17,6 +17,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -44,7 +45,6 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -298,7 +298,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                         presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
                         break;
                     }
-                    default: { }
+                    default: {
+                    }
                 }
             }
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
@@ -309,10 +310,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
                         ((DigitalModuleRouter) getActivity().getApplicationContext())
                                 .showAppFeedbackRatingDialog(
-                                        manager,
-                                        () -> {
-                                            getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
-                                            closeView();
+                                        manager, () -> {
+                                            if (getActivity() != null) {
+                                                getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
+                                                closeView();
+                                            }
                                         }
                                 );
                     }
