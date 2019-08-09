@@ -46,7 +46,7 @@ public class InboxChatActivity extends BaseSimpleActivity
     @Inject
     TopChatAnalytics analytics;
 
-    @DeepLink(ApplinkConst.TOPCHAT_IDLESS)
+//    @DeepLink(ApplinkConst.TOPCHAT_IDLESS)
     public static Intent getCallingIntentTopchatWithoutId(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
 

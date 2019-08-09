@@ -112,4 +112,8 @@ yang ditemukan</string>
 
     <string name="title_understand">Mengerti</string>
     <string name="title_save">Simpan</string>
+    <string name="title_official">Official</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

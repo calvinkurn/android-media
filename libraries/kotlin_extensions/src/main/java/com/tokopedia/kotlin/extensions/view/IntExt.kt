@@ -15,3 +15,8 @@ fun Int.clamp(min: Int, max: Int): Int {
 fun Int.dpToPx(displayMetrics: DisplayMetrics): Int = (this * displayMetrics.density).toInt()
 
 fun Int.pxToDp(displayMetrics: DisplayMetrics): Int = (this / displayMetrics.density).toInt()
+
+
+fun Int?.toZeroIfNull():Int {
+    return this?:0
+}
