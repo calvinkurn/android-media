@@ -1838,16 +1838,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendAnalyticsOnClickAtcOnEmptyCart(Map<String, Object> eeDataLayerCart) {
-
-    }
-
-    @Override
-    public void sendAnalyticsOnClickAtcOnCart(Map<String, Object> eeDataLayerCart) {
-
-    }
-
-    @Override
     public void sendAnalyticsOnViewPromoAutoApply() {
         cartPageAnalytics.eventViewPromoAutoApply();
     }
