@@ -35,8 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    app:srcCompat="@drawable/discovery_ic_back"
-                    />
+                    app:srcCompat="@drawable/discovery_ic_back" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/searchTextView"
@@ -53,8 +52,7 @@
                     android:textColor="#ae31353b"
                     android:background="@drawable/bg_autocomplete_input"
                     app:typographyType="body_2"
-                    app:typographyWeight="reguler"
-                    app:drawableLeftCompat="@drawable/discovery_ic_search" />
+                    app:typographyWeight="reguler" />
 
                 <ImageView
                     android:id="@+id/search_change_grid_button"

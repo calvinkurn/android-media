@@ -2,12 +2,14 @@ package com.tokopedia.search.result.presentation.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -191,6 +193,12 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initToolbar() {
+        configureSupportActionBar();
+        setSearchTextViewDrawableLeft();
+        configureToolbarOnClickListener();
+    }
+
+    private void configureSupportActionBar() {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -198,7 +206,14 @@ public class SearchActivity extends BaseActivity
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(false);
         }
+    }
 
+    private void setSearchTextViewDrawableLeft() {
+        Drawable iconSearch = AppCompatResources.getDrawable(this, com.tokopedia.discovery.R.drawable.discovery_ic_search);
+        searchTextView.setCompoundDrawablesWithIntrinsicBounds(iconSearch, null, null, null);
+    }
+
+    private void configureToolbarOnClickListener() {
         searchTextView.setOnClickListener(v -> moveToAutoCompleteActivity());
         backButton.setOnClickListener(v -> onBackPressed());
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
