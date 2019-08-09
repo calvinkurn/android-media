@@ -178,8 +178,9 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         dateRangeName = view.findViewById(R.id.textview_holder_small);
         dateImageView = view.findViewById(R.id.image_holder_small);
 
-        cityName = findViewById(R.id.event_address_tv).findViewById(R.id.textview_holder_small);
-        cityImageView = findViewById(R.id.event_address_tv).findViewById(R.id.image_holder_small);
+        View cityView = findViewById(R.id.event_address_tv);
+        cityName = cityView.findViewById(R.id.textview_holder_small);
+        cityImageView = cityView.findViewById(R.id.image_holder_small);
 
         btnGoToPayment.setOnClickListener(this);
         infoEmail.setOnClickListener(this);
