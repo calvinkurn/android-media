@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -42,8 +43,9 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
     private TextView titletext, popularCityTitle, popularLocationTitle;
     private SearchInputView searchInputView;
     private ImageView crossIcon;
-    private RelativeLayout linearLayout;
+    private RelativeLayout mainContent;
     private NestedScrollView nestedScrollView;
+    private LinearLayout shimmerLayout;
     private String selectedLocation;
     private ConstraintLayout noLocationLayout;
     private SelectedLocationListener selectedLocationListener;
@@ -81,7 +83,8 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         searchInputView.setFocusChangeListener(this);
         searchInputView.setResetListener(this);
         searchInputView.setSearchHint(getContext().getResources().getString(R.string.location_search_hint));
-        linearLayout = locationView.findViewById(R.id.mainContent);
+        mainContent = locationView.findViewById(R.id.mainContent);
+        shimmerLayout = locationView.findViewById(R.id.shimmer_layout);
 
 
         titletext.setText(getContext().getResources().getString(R.string.select_location_bottomsheet_title));
@@ -102,6 +105,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
                 }
             }
         });
+        mPresenter.attachView(this);
         return locationView;
     }
 
@@ -113,7 +117,18 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
 
     @Override
     public View getRootView() {
-        return linearLayout;
+        return mainContent;
+    }
+
+    @Override
+    public void showProgressBar(boolean showProgressBar) {
+        if (showProgressBar) {
+            shimmerLayout.setVisibility(View.VISIBLE);
+            mainContent.setVisibility(View.GONE);
+        } else {
+            shimmerLayout.setVisibility(View.GONE);
+            mainContent.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -164,7 +179,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
     @Override
     protected void initInjector() {
         getComponent(DealsComponent.class).inject(this);
-        mPresenter.attachView(this);
+//        mPresenter.attachView(this);
     }
 
     @Override

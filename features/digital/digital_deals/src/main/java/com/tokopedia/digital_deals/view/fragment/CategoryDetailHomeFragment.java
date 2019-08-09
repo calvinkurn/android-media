@@ -48,7 +48,6 @@ import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
-import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
@@ -274,6 +273,10 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             dealsAdapter.setDealType(DealsAnalytics.CATEGORY_DEALS);
             dealsAdapter.notifyDataSetChanged();
             recyclerViewDeals.setVisibility(View.VISIBLE);
+            if (deals != null && deals.size() > 1) {
+                recyclerViewDeals.setClipToPadding(false);
+                recyclerViewDeals.setPadding(0, getContext().getResources().getDimensionPixelOffset(R.dimen.dp_16), 0, getContext().getResources().getDimensionPixelOffset(R.dimen.dp_100));
+            }
             recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
         } else {

@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -76,7 +77,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
         private TextView locationName;
         private ImageView locImage;
         private View itemView;
-        private LinearLayout mainContent;
+        private ConstraintLayout mainContent;
         private int index;
         private String name;
 

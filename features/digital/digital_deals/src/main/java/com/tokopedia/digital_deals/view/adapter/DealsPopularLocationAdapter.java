@@ -81,6 +81,7 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
                     clear();
                 }
                 loadCompleted(locationResponse.getLocations(), locationResponse);
+                locations.addAll(locationResponse.getLocations());
                 if (locationResponse.getPage() == null || !URLUtil.isValidUrl(locationResponse.getPage().getUriNext())) {
                     setLastPage(true);
                 } else {
@@ -117,11 +118,12 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
             locAddress = itemView.findViewById(R.id.location_address);
             locType = itemView.findViewById(R.id.location_type);
             locImage = itemView.findViewById(R.id.popular_loc_img);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void bindView(Location item, int position) {
-            bindData(item);
+            bindData(item, position);
         }
 
         public void setIndex(int position) {
@@ -132,7 +134,8 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
             return this.index;
         }
 
-        void bindData(Location location) {
+        void bindData(Location location, int position) {
+            this.index = position;
             locationName.setText(location.getName());
             locAddress.setText(location.getAddress());
             if (!TextUtils.isEmpty(location.getLocType())) {

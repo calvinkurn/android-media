@@ -25,16 +25,12 @@ public class DealsLocationContract {
 
         android.view.View getRootView();
 
+        void showProgressBar(boolean showProgressBar);
+
     }
 
     public interface Presenter extends CustomerPresenter<DealsLocationContract.View> {
 
-        void getLocationListBySearch(String searchText);
-
         void onDestroy();
-
-        void searchTextChanged(String searchText);
-
-        void searchSubmitted(String searchText);
     }
 }
