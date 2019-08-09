@@ -107,8 +107,22 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         activity?.let {
             trackingQueue = TrackingQueue(it)
         }
-        if(productId.isEmpty()) RecommendationPageTracking.eventUserViewRecommendationPage(ref)
-        else RecommendationPageTracking.eventUserViewRecommendationPageWithProductId(productId, ref)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if(productId.isEmpty()) {
+            RecommendationPageTracking.sendScreenRecommendationPage(
+                    "/rekomendasi",
+                    null,
+                    ref)
+        }
+        else {
+            RecommendationPageTracking.sendScreenRecommendationPage(
+                    "/rekomendasi",
+                    productId,
+                    ref)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

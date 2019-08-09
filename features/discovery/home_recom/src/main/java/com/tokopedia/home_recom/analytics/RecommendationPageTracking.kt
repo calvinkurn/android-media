@@ -91,6 +91,9 @@ class RecommendationPageTracking {
         private const val ACTION_FIELD_LIST_CLICK_HEADER = "/recommendation - non login - %s - rekomendasi untuk anda - %s"
         private const val ACTION_FIELD_LIST_CLICK_HEADER_TOP_ADS = "/recommendation - non login - %s - rekomendasi untuk anda - %s - product topads"
 
+        private const val CUSTOM_DIMENSION_PAGE_SOURCE = "pageSource"
+        private const val CUSTOM_DIMENSION_PRODUCT_ID = "productId"
+
         fun getTracker(): ContextAnalytics {
             return TrackApp.getInstance().gtm
         }
@@ -760,29 +763,18 @@ class RecommendationPageTracking {
             tracker.sendEnhanceEcommerceEvent(data)
         }
 
-        //No 66 NEW
-        fun eventUserViewRecommendationPage(ref: String){
-            val data = DataLayer.mapOf(
-                    EVENT, EVENT_VIEW_RECOMMENDAITON,
-                    EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
-                    EVENT_ACTION, EVENT_ACTION_VIEW_RECOMMENDATION_PAGE,
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
-            )
-            getTracker().sendEnhanceEcommerceEvent(data)
-        }
-
-        //No 67 NEW
-        fun eventUserViewRecommendationPageWithProductId(
-                productId: String,
-                ref: String
+        // No 90 Done
+        fun sendScreenRecommendationPage(
+                screenName: String,
+                productId: String?,
+                pageSource: String
         ){
-            val data = DataLayer.mapOf(
-                    EVENT, EVENT_VIEW_RECOMMENDAITON,
-                    EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
-                    EVENT_ACTION, EVENT_ACTION_VIEW_RECOMMENDATION_PAGE,
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE_WITH_PRODUCT_ID, ref, productId)
-            )
-            getTracker().sendEnhanceEcommerceEvent(data)
+            val customDimension= DataLayer.mapOf(
+                    CUSTOM_DIMENSION_PAGE_SOURCE, pageSource,
+                    CUSTOM_DIMENSION_PRODUCT_ID, productId
+            ) as MutableMap<String, String>
+
+            getTracker().sendScreenAuthenticated(screenName, customDimension)
         }
     }
 }
