@@ -47,10 +47,10 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_10"
-                android:visibility="invisible"
                 android:layout_marginEnd="19dp"
                 android:layout_marginRight="19dp"
                 android:contentDescription="@string/kota_kecamatan"
+                android:visibility="invisible"
                 app:srcCompat="@drawable/ic_close_btn" />
 
             <ProgressBar
@@ -61,11 +61,11 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_10"
-                android:visibility="invisible"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginEnd="19dp"
                 android:layout_marginRight="19dp"
-                android:indeterminate="true" />
+                android:indeterminate="true"
+                android:visibility="invisible" />
 
             <EditText
                 android:id="@+id/et_search_district_recommendation"
@@ -93,7 +93,18 @@
             android:id="@+id/map_search_divider_1"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
+            android:layout_marginBottom="24dp"
             android:background="@color/separator_color" />
+
+        <TextView
+            android:id="@+id/tv_desc_input_district"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:textSize="@dimen/sp_12"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_list_district"
@@ -101,23 +112,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_24"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_desc_input_district"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/hint_advice_search_address"
-                android:textSize="@dimen/sp_12" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_list_district"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
                 android:clipToPadding="false" />
 
         </LinearLayout>
@@ -128,7 +130,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_24"
             android:orientation="vertical">
 
             <TextView

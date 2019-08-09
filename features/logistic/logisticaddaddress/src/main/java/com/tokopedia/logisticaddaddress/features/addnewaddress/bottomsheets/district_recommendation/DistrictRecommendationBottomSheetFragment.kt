@@ -7,10 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
+import android.widget.*
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -48,6 +45,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     private lateinit var rvListDistrict: RecyclerView
     private lateinit var icCloseBtn: ImageView
     private lateinit var mProgressbar: ProgressBar
+    private lateinit var mMessage: TextView
     private var isLoading: Boolean = false
     private var input: String = ""
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -83,6 +81,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         icCloseBtn = view.findViewById(R.id.ic_close)
         mProgressbar = view.findViewById(R.id.progress_bar)
         llListDistrict = view.findViewById(R.id.ll_list_district)
+        mMessage = view.findViewById(R.id.tv_desc_input_district)
         llListDistrict.visibility = View.GONE
 
         val cityList = resources.getStringArray(R.array.cityList)
@@ -138,6 +137,8 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         isLoading = false
         llPopularCity.visibility = View.GONE
         llListDistrict.visibility = View.VISIBLE
+        mMessage.visibility = View.VISIBLE
+        mMessage.setText(R.string.hint_advice_search_address)
         if (mIsInitialLoading) {
             listDistrictAdapter.setData(list)
             mEndlessListener.resetState()
@@ -150,7 +151,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     }
 
     override fun showGetListError(throwable: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun setLoadingState(active: Boolean) {
@@ -169,7 +170,10 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     }
 
     override fun showEmpty() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        mMessage.visibility = View.VISIBLE
+        mMessage.setText(R.string.hint_search_address_no_result)
+        llPopularCity.visibility = View.VISIBLE
+        llListDistrict.visibility = View.GONE
     }
 
     override fun onCityChipClicked(city: String) {
@@ -202,7 +206,12 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
                         handler.postDelayed({
                             presenter.loadData(input, 1)
                         }, 200)
-                    } else icCloseBtn.visibility = View.GONE
+                    } else {
+                        icCloseBtn.visibility = View.GONE
+                        mMessage.visibility = View.GONE
+                        llPopularCity.visibility = View.VISIBLE
+                        llListDistrict.visibility = View.GONE
+                    }
                 }.toCompositeSubs()
 
         rvListDistrict.addOnScrollListener(mEndlessListener)
