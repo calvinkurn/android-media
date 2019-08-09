@@ -517,7 +517,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         }
 
         val event = Bundle().apply {
-            putString("event", "viewProduct")
             putString("eventCategory", "product page")
             putString("eventAction", "view product page")
             putString("eventLabel", getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.basic?.name)

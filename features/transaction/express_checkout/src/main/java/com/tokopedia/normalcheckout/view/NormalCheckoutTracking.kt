@@ -187,7 +187,6 @@ class NormalCheckoutTracking {
         }
 
         val event = Bundle().apply {
-            putString("event", "addToCart")
             putString("eventCategory", category)
             putString("eventAction",actionLabel)
             putString("eventLabel", productVariantString)
