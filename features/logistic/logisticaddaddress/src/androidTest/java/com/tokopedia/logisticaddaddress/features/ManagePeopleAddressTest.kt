@@ -12,7 +12,7 @@ import android.support.test.filters.LargeTest
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.support.v7.widget.RecyclerView
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationViewHolder
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictViewHolder
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity
 import com.tokopedia.tkpd.R
 import com.tokopedia.logisticaddaddress.util.EspressoUtils.childAtPosition
@@ -68,7 +68,7 @@ class ManagePeopleAddressTest {
         Thread.sleep(NETWORK_DELAY)
 
         onView(withId(R.id.recycler_view))
-                .perform(actionOnItemAtPosition<DistrictRecommendationViewHolder>(0, click()))
+                .perform(actionOnItemAtPosition<DistrictViewHolder>(0, click()))
 
         onView(withId(R.id.postal_code_layout)).perform(click())
         onData(`is`(instanceOf(String::class.java))).atPosition(FIRST_ZIP_ITEM).inRoot(RootMatchers.isPlatformPopup()).perform(click())

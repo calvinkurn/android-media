@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.district_recommendation;
+package com.tokopedia.logisticaddaddress.features.district_recommendation.adapter;
 
 import android.view.View;
 
@@ -10,7 +10,7 @@ import com.tokopedia.logisticaddaddress.domain.model.Address;
  * Created by Irfan Khoirul on 16/11/18.
  */
 
-public interface DistrictRecommendationTypeFactory extends AdapterTypeFactory {
+public interface DistrictTypeFactory extends AdapterTypeFactory {
 
     int type(Address address);
 

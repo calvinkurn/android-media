@@ -17,6 +17,7 @@ import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.network.utils.ErrorHandler
 import rx.Emitter
 import rx.Observable
@@ -30,13 +31,13 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-29.
  */
-class DistrictRecommendationBottomSheetFragment : BottomSheets(),
-        PopularCityRecommendationBottomSheetAdapter.ActionListener,
+class DiscomBottomSheetFragment : BottomSheets(),
+        PopularCityAdapter.ActionListener,
         DiscomContract.View,
         DiscomNewAdapter.ActionListener {
 
     private var bottomSheetView: View? = null
-    private lateinit var popularCityAdapter: PopularCityRecommendationBottomSheetAdapter
+    private lateinit var popularCityAdapter: PopularCityAdapter
     private lateinit var listDistrictAdapter: DiscomNewAdapter
     private lateinit var rvChips: RecyclerView
     private lateinit var etSearch: EditText
@@ -91,7 +92,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
                 .build()
 
         ViewCompat.setLayoutDirection(rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
-        popularCityAdapter = PopularCityRecommendationBottomSheetAdapter(context, this)
+        popularCityAdapter = PopularCityAdapter(context, this)
         popularCityAdapter.cityList = cityList.toMutableList()
 
         rvChips.apply {
@@ -257,8 +258,8 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
 
     companion object {
         @JvmStatic
-        fun newInstance(): DistrictRecommendationBottomSheetFragment {
-            return DistrictRecommendationBottomSheetFragment()
+        fun newInstance(): DiscomBottomSheetFragment {
+            return DiscomBottomSheetFragment()
         }
     }
 }

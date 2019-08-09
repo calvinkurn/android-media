@@ -34,7 +34,7 @@
             android:theme="@style/Theme.White"/>
 
         <activity
-            android:name=".features.district_recommendation.DistrictRecommendationActivity"
+            android:name=".features.district_recommendation.DiscomActivity"
             android:label="@string/title_activity_search_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

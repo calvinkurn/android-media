@@ -39,7 +39,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecorati
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
@@ -64,7 +64,7 @@ import javax.inject.Inject
 class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
         ResultCallback<LocationSettingsResult>, AddEditAddressListener,
-        DistrictRecommendationBottomSheetFragment.ActionListener,
+        DiscomBottomSheetFragment.ActionListener,
         AutocompleteBottomSheetListener,
         PinpointMapListener,
         ZipCodeChipsAdapter.ActionListener, IOnBackPressed,
@@ -775,7 +775,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DistrictRecommendationBottomSheetFragment.newInstance()
+                DiscomBottomSheetFragment.newInstance()
         districtRecommendationBottomSheetFragment.setActionListener(this)
         districtRecommendationBottomSheetFragment.show(fragmentManager, "")
     }

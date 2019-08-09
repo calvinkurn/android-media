@@ -22,13 +22,15 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 import javax.inject.Inject
 
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
 
-class DiscomFragment : BaseSearchListFragment<Address, DistrictRecommendationTypeFactory>(), DiscomContract.View {
+class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), DiscomContract.View {
 
     private var mToken: Token? = null
     private var swipeRefreshLayout: SwipeToRefresh? = null
     private var tvMessage: TextView? = null
-    private var analytics: DiscomAnalytics? = null
+    private var analytics: ActionListener? = null
 
     @Inject
     lateinit var addressMapper: AddressMapper
@@ -46,7 +48,7 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictRecommendationTyp
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is DiscomAnalytics) {
+        if (context is ActionListener) {
             analytics = context
         }
     }
@@ -72,7 +74,7 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictRecommendationTyp
         searchInputView.setDelayTextChanged(DEBOUNCE_DELAY_IN_MILIS)
         searchInputView.closeImageButton.setOnClickListener { v ->
             searchInputView.searchText = ""
-            analytics?.sendAnalyticsOnClearTextDistrictRecommendationInput()
+            analytics?.gtmOnClearTextDistrictRecommendationInput()
         }
         swipeRefreshLayout!!.isEnabled = false
     }
@@ -101,12 +103,12 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictRecommendationTyp
         }
     }
 
-    override fun getAdapterTypeFactory(): DistrictRecommendationTypeFactory {
-        return DistrictRecommendationAdapterTypeFactory()
+    override fun getAdapterTypeFactory(): DistrictTypeFactory {
+        return DistrictAdapterTypeFactory()
     }
 
     override fun onItemClicked(address: Address) {
-        analytics?.sendAnalyticsOnDistrictDropdownSelectionItemClicked(address.districtName)
+        analytics?.gtmOnDistrictDropdownSelectionItemClicked(address.districtName)
         activity?.let {
             val resultIntent = Intent().apply {
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(address))
@@ -165,6 +167,12 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictRecommendationTyp
     private fun setMessageSection(active: Boolean) {
         tvMessage!!.visibility = if (active) View.VISIBLE else View.GONE
         swipeRefreshLayout!!.visibility = if (active) View.GONE else View.VISIBLE
+    }
+
+    interface ActionListener {
+        fun gtmOnBackPressClicked()
+        fun gtmOnDistrictDropdownSelectionItemClicked(districtName: String)
+        fun gtmOnClearTextDistrictRecommendationInput()
     }
 
     companion object {

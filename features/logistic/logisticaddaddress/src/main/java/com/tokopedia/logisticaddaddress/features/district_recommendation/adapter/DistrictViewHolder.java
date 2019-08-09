@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.district_recommendation;
+package com.tokopedia.logisticaddaddress.features.district_recommendation.adapter;
 
 import android.view.View;
 import android.widget.TextView;
@@ -11,13 +11,13 @@ import com.tokopedia.logisticaddaddress.domain.model.Address;
  * Created by Irfan Khoirul on 17/11/18.
  */
 
-public class DistrictRecommendationViewHolder extends AbstractViewHolder<Address> {
+public class DistrictViewHolder extends AbstractViewHolder<Address> {
 
     public static final int LAYOUT = R.layout.listview_district_recomendation;
 
     private TextView tvAddress;
     
-    public DistrictRecommendationViewHolder(View itemView) {
+    public DistrictViewHolder(View itemView) {
         super(itemView);
 
         tvAddress = itemView.findViewById(R.id.tvAddress);

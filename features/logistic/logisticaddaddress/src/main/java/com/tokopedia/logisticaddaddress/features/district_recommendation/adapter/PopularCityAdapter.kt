@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.district_recommendation
+package com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -13,7 +13,7 @@ import android.support.v4.content.ContextCompat
 /**
  * Created by fwidjaja on 2019-05-29.
  */
-class PopularCityRecommendationBottomSheetAdapter(context: Context?, private var actionListener: ActionListener) : RecyclerView.Adapter<PopularCityRecommendationBottomSheetAdapter.ViewHolder>() {
+class PopularCityAdapter(context: Context?, private var actionListener: ActionListener) : RecyclerView.Adapter<PopularCityAdapter.ViewHolder>() {
     var cityList = mutableListOf<String>()
     private var drawablePressed = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_pressed) }
     private var drawableDefault = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips) }

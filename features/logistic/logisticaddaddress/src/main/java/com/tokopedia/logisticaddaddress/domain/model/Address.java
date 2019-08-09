@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationTypeFactory;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory;
 
 import java.util.ArrayList;
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Created by Irfan Khoirul on 17/11/17.
  */
 
-public class Address implements Parcelable, Visitable<DistrictRecommendationTypeFactory> {
+public class Address implements Parcelable, Visitable<DistrictTypeFactory> {
 
     private int districtId;
     private String districtName;
@@ -104,7 +104,7 @@ public class Address implements Parcelable, Visitable<DistrictRecommendationType
     }
 
     @Override
-    public int type(DistrictRecommendationTypeFactory typeFactory) {
+    public int type(DistrictTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 

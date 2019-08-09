@@ -21,8 +21,8 @@ import static com.tokopedia.logisticaddaddress.features.district_recommendation.
  * Deeplink: DISTRICT_RECOMMENDATION_SHOP_SETTINGS
  */
 
-public class DistrictRecommendationActivity extends BaseSimpleActivity
-        implements HasComponent, DiscomAnalytics {
+public class DiscomActivity extends BaseSimpleActivity
+        implements HasComponent, DiscomFragment.ActionListener {
 
     private CheckoutAnalyticsChangeAddress analytics;
 
@@ -31,7 +31,7 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
     }
 
     public static Intent newInstance(Activity activity, Token token) {
-        Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
+        Intent intent = new Intent(activity, DiscomActivity.class);
         intent.putExtra(ARGUMENT_DATA_TOKEN, token);
         return intent;
     }
@@ -63,22 +63,22 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        sendAnalyticsOnBackPressClicked();
+        gtmOnBackPressClicked();
         super.onBackPressed();
     }
 
     @Override
-    public void sendAnalyticsOnBackPressClicked() {
+    public void gtmOnBackPressClicked() {
         analytics.eventClickShippingCartChangeAddressClickXPojokKiriKotaAtauKecamatanPadaTambahAddress();
     }
 
     @Override
-    public void sendAnalyticsOnDistrictDropdownSelectionItemClicked(String districtName) {
+    public void gtmOnDistrictDropdownSelectionItemClicked(String districtName) {
         analytics.eventClickShippingCartChangeAddressClickChecklistKotaAtauKecamatanPadaTambahAddress(districtName);
     }
 
     @Override
-    public void sendAnalyticsOnClearTextDistrictRecommendationInput() {
+    public void gtmOnClearTextDistrictRecommendationInput() {
         analytics.eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress();
     }
 
