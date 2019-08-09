@@ -18,6 +18,7 @@ import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract
+import com.tokopedia.network.utils.ErrorHandler
 import rx.Emitter
 import rx.Observable
 import rx.Subscription
@@ -151,7 +152,8 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     }
 
     override fun showGetListError(throwable: Throwable) {
-
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun setLoadingState(active: Boolean) {
