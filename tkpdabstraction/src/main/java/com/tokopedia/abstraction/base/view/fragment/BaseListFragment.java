@@ -112,9 +112,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (hasInitialSwipeRefresh()) {
-            return inflater.inflate(R.layout.fragment_base_list_swipe, container, false);
+            return inflater.inflate(com.tokopedia.abstraction.R.layout.fragment_base_list_swipe, container, false);
         } else {
-            return inflater.inflate(R.layout.fragment_base_list, container, false);
+            return inflater.inflate(com.tokopedia.abstraction.R.layout.fragment_base_list, container, false);
         }
     }
 
@@ -129,7 +129,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     @Nullable
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
         if (hasInitialSwipeRefresh()) {
-            return view.findViewById(R.id.swipe_refresh_layout);
+            return view.findViewById(com.tokopedia.abstraction.R.id.swipe_refresh_layout);
         }
         return null;
     }
@@ -321,7 +321,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setContent(getString(R.string.title_no_result));
+        emptyModel.setContent(getString(com.tokopedia.abstraction.R.string.title_no_result));
         return emptyModel;
     }
 
@@ -396,7 +396,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
             String message = getMessageFromThrowable(getActivity(), throwable);
 
             snackBarRetry = ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
-                    .setAction(R.string.retry_label, listener);
+                    .setAction(com.tokopedia.abstraction.R.string.retry_label, listener);
         }
         snackBarRetry.show();
     }
