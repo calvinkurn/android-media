@@ -725,4 +725,14 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 productId
         );
     }
+
+    public void enhancedEcommerceViewRecommendationOnCart(Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_VIEW,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.IMPRESSION_ON_PRODUCT_RECOMMENDATION,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
 }
