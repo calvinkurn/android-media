@@ -113,6 +113,8 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT = "click close on geolocation component";
     public static final String EVENT_ACTION_CLICK_ON_ATUR = "click on atur";
 
+    public static final String CHANNEL_ID = "channelId";
+
     public static ContextAnalytics getTracker(Context context) {
         return TrackApp.getInstance().getGTM();
     }
@@ -225,34 +227,34 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickSeeAllProductSprint(Context context) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT,
-                    LABEL_EMPTY
-            );
-        }
+    public static void eventClickSeeAllProductSprint(Context context, String channelId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, EVENT_CLICK_HOME_PAGE);
+        map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
+        map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT);
+        map.put(EVENT_LABEL, LABEL_EMPTY);
+        map.put(CHANNEL_ID, channelId);
+        getTracker(context).sendGeneralEvent(map);
     }
 
-    public static void eventClickSeeAllLegoProduct(Context context, String headerName) {
-        getTracker(context).sendGeneralEvent(
-                EVENT_CLICK_HOME_PAGE,
-                CATEGORY_HOME_PAGE,
-                ACTION_CLICK_SEE_ALL_LEGO_PRODUCT,
-                headerName
-        );
+    public static void eventClickSeeAllLegoProduct(Context context, String headerName, String channelId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, EVENT_CLICK_HOME_PAGE);
+        map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
+        map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_PRODUCT);
+        map.put(EVENT_LABEL, headerName);
+        map.put(CHANNEL_ID, channelId);
+        getTracker(context).sendGeneralEvent(map);
     }
 
-    public static void eventClickSeeAllProductSprintBackground(Context context) {
-        getTracker(context).sendGeneralEvent(
-                EVENT_CLICK_HOME_PAGE,
-                CATEGORY_HOME_PAGE,
-                ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND,
-                LABEL_EMPTY
-        );
+    public static void eventClickSeeAllProductSprintBackground(Context context, String channelId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, EVENT_CLICK_HOME_PAGE);
+        map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
+        map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND);
+        map.put(EVENT_LABEL, LABEL_EMPTY);
+        map.put(CHANNEL_ID, channelId);
+        getTracker(context).sendGeneralEvent(map);
     }
 
     public static void eventEnhancedClickSprintSaleProduct(Context context,
@@ -283,42 +285,38 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickSeeAllDynamicChannel(Context context, String applink) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL,
-                    applink
-            );
-        }
+    public static void eventClickSeeAllDynamicChannel(Context context, String applink, String channelId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, EVENT_CLICK_HOME_PAGE);
+        map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
+        map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL);
+        map.put(EVENT_LABEL, applink);
+        map.put(CHANNEL_ID, channelId);
+        getTracker(context).sendGeneralEvent(map);
     }
 
     public static void eventClickSeeAllLegoBannerChannel(Context context,
-                                                         String applink) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL,
-                    applink
-            );
-        }
+                                                         String applink,
+                                                         String channelId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, EVENT_CLICK_HOME_PAGE);
+        map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
+        map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL);
+        map.put(EVENT_LABEL, applink);
+        map.put(CHANNEL_ID, channelId);
+        getTracker(context).sendGeneralEvent(map);
     }
 
     public static void eventClickSeeAllThreeLegoBannerChannel(Context context,
-                                                              String headerName) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL,
-                    headerName
-            );
-        }
+                                                              String headerName,
+                                                              String channelId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, EVENT_CLICK_HOME_PAGE);
+        map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
+        map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL);
+        map.put(EVENT_LABEL, headerName);
+        map.put(CHANNEL_ID, channelId);
+        getTracker(context).sendGeneralEvent(map);
     }
 
     public static void eventClickExplorerItem(Context context, String action, String label) {

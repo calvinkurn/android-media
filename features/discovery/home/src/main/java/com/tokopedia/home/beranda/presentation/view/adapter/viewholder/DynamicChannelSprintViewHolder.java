@@ -110,13 +110,14 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             @Override
             public void onClick(View view) {
                 if (isSprintSale(channel)) {
-                    HomePageTracking.eventClickSeeAllProductSprint(context);
+                    HomePageTracking.eventClickSeeAllProductSprint(context, channel.getId());
                 } else if (isSprintSaleLego(channel)) {
-                    HomePageTracking.eventClickSeeAllLegoProduct(context, channel.getHeader().getName());
+                    HomePageTracking.eventClickSeeAllLegoProduct(context, channel.getHeader().getName(), channel.getId());
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(
                             context,
-                            DynamicLinkHelper.getActionLink(channel.getHeader()));
+                            DynamicLinkHelper.getActionLink(channel.getHeader()),
+                            channel.getId());
                 }
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
             }

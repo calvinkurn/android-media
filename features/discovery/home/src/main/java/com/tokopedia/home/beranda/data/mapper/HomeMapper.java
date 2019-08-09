@@ -101,6 +101,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)) {
                                 homeData.getSpotlight().setPromoName(String.format("/ - p%s - spotlight banner", String.valueOf(position)));
                                 homeData.getSpotlight().setHomeAttribution(String.format("%s - spotlightBanner - $1 - $2", String.valueOf(position)));
+                                homeData.getSpotlight().setChannelId(channel.getId());
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)
@@ -337,7 +338,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     spotlightItem.getCtaTextHexcolor(),
                     spotlightItem.getUrl(),
                     spotlightItem.getApplink(),
-                    spotlight.getPromoName()
+                    spotlight.getPromoName(),
+                    spotlight.getChannelId()
                     ));
         }
 
