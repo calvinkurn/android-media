@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
@@ -25,7 +26,9 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
                 view.hideProgressLoading()
                 val errors = objects.getError(FlightCheckVoucher.Response::class.java)
                 if (!errors.isNullOrEmpty()) {
-                    throw MessageErrorException(errors[0].message)
+                    val rawErrorMessage = errors[0].message
+                    val errorMessage = Gson().fromJson(rawErrorMessage.substring(1, rawErrorMessage.length - 1), FlightCheckVoucherError::class.java)
+                    throw MessageErrorException(errorMessage.title)
                 } else {
                     val checkVoucherData = objects.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
                     view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
@@ -102,5 +105,9 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
         super.detachView()
+    }
+
+    companion object {
+        data class FlightCheckVoucherError(val id: Int, val status: Int, val title: String)
     }
 }
