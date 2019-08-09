@@ -396,7 +396,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
             String message = getMessageFromThrowable(getActivity(), throwable);
 
             snackBarRetry = ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
-                    .setAction(com.tokopedia.abstraction.R.string.retry_label, listener);
+                    .setAction(R.string.retry_label, listener);
         }
         snackBarRetry.show();
     }

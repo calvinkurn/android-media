@@ -12,12 +12,14 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.google.android.play.core.tasks.Task
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.Toaster
 
 /**
@@ -208,6 +210,9 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
+                if (!GlobalConfig.DEBUG) {
+                    Crashlytics.logException(Exception("Error Install Module " + moduleName + " " + state.errorCode()));
+                }
                 Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
                     message,
                     Snackbar.LENGTH_INDEFINITE,
