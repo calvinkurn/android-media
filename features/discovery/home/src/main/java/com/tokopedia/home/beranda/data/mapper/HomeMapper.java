@@ -102,7 +102,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_3_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC)
-                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC)) {
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL)) {
                                 channel.setPosition(position);
                             }
                         }
