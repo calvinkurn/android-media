@@ -19,4 +19,5 @@ public class ShopCommonParamApiConstant {
     public static final String VALUE_TRUE_FAVOURITE = "1";
 
     public static final String QUERY_SHOP_SCORE = "gql_query_shop_score";
+    public static final String QUERY_STAMP_PROGRESS = "query_stamp_progress";
 }

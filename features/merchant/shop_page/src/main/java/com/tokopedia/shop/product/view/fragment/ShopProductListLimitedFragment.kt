@@ -19,7 +19,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -63,12 +62,16 @@ import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipData
+import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
+import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
 import com.tokopedia.shop.page.view.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
+import com.tokopedia.shop.product.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -95,7 +98,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener,
         ShopCarouselSeeAllClickedListener, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
-        MerchantVoucherListView {
+        MerchantVoucherListView,MembershipStampAdapter.MembershipStampAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -162,6 +165,13 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             when(it){
                 is Success -> onSuccessGetProductFeature(it.data)
                 is Fail -> onErrorGetProductFeature(it.throwable)
+            }
+        })
+
+        viewModel.membershipStampResponse.observe(this, Observer {
+            when(it) {
+                is Success -> onSuccessGetMembershipInfo(it.data)
+                is Fail -> onErrorGetMembershipInfo(it.throwable)
             }
         })
 
@@ -319,6 +329,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         shopInfo?.let {
             shopProductAdapter.clearMerchantVoucherData()
             shopProductAdapter.clearFeaturedData()
+            shopProductAdapter.clearMembershipData()
+
+            loadMembership()
             loadVoucherList()
 
             viewModel.getFeaturedProduct(it.shopCore.shopID, false)
@@ -365,7 +378,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         val displaymetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
-        return ShopProductAdapterTypeFactory(this, this, this,
+        return ShopProductAdapterTypeFactory(this,this, this, this,
                 this, this,
                 true, deviceWidth, ShopTrackProductTypeDef.PRODUCT
         )
@@ -562,6 +575,16 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun onErrorGetProductFeature(e: Throwable) {
         shopProductAdapter.shopProductFeaturedViewModel = null
+    }
+
+    private fun onSuccessGetMembershipInfo(data: MembershipStampProgress?) {
+        shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(data?.membershipStampProgress ?: MembershipData()))
+        shopProductAdapter.refreshSticky()
+    }
+
+    private fun onErrorGetMembershipInfo(t: Throwable) {
+        shopProductAdapter.setMembershipStampViewModel(null)
+        ToasterError.showClose(activity!!, ErrorHandler.getErrorMessage(context, t))
     }
 
     private fun onSuccessGetProductFeature(list: List<ShopProductViewModel>) {
@@ -991,6 +1014,12 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
+    private fun loadMembership(){
+        if(shopInfo != null){
+            viewModel.getMembershipStamp(shopInfo!!.shopCore.shopID.toInt(),false)
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_SELECTED_ETALASE_ID, selectedEtalaseId)
@@ -1018,6 +1047,12 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     override fun onSuccessGetShopInfo(shopInfo: com.tokopedia.shop.common.data.source.cloud.model.ShopInfo) {
         // NO-Op
     }
+
+    override fun onButtonClaimClicked() {
+        val bottomSheetMembership = MembershipBottomSheetSuccess()
+        bottomSheetMembership.show(fragmentManager, "membership_shop_page")
+    }
+
 
     companion object {
 

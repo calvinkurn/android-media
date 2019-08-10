@@ -392,7 +392,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
-        setViewState(VIEW_CONTENT)
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             shopPageViewPagerAdapter.shopId = shopCore.shopID
@@ -490,6 +489,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (isOfficialStore && tabPosition == 0) {
             tabPosition = 1
         }
+        setViewState(VIEW_CONTENT)
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
     }
 
@@ -559,7 +559,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (f != null && f is ShopProductListLimitedFragment) {
             f.clearCache()
         }
-        val feedfragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_FEED)
+        val feedfragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
         if (feedfragment != null && feedfragment is FeedShopFragment) {
             feedfragment.setRefresh()
         }
