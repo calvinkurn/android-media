@@ -7,13 +7,16 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.ThreeGridChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -21,6 +24,9 @@ import java.util.List;
  */
 
 public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
+    private HashSet<Integer> registeredUnifyDynamicChannelLayout = new HashSet<>(
+            ThreeGridChannelViewHolder.Companion.getLAYOUT()
+    );
 
     //without ticker
     static public final int POSITION_GEOLOCATION_WITHOUT_TICKER = 3;
@@ -43,7 +49,11 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
 
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        int layout = viewType;
+        if (registeredUnifyDynamicChannelLayout.contains(viewType)) {
+            layout = R.layout.home_master_dynamic_channel;
+        }
+        View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return typeFactory.createViewHolder(view, viewType);
     }
 
