@@ -11,6 +11,7 @@ import com.tokopedia.shop.common.R
  * Use this by calling
  * #setIndicator first then call
  * #setCurrentIndicator inside your onScrollRecyclerView
+ * @Override getDefaultIndicatorSelected and getDefaultIndicatorUnselected if you want to change indicator drawable
  */
 
 class CircleIndicatorView : LinearLayout {
@@ -65,6 +66,7 @@ class CircleIndicatorView : LinearLayout {
         }
     }
 
+    //override this to change indicator color as you want
     fun getDefaultIndicatorSelected(): Int = R.drawable.ic_default_indicator_selected
     fun getDefaultIndicatorUnselected(): Int = R.drawable.ic_default_idicator_unselected
 }

@@ -11,8 +11,8 @@ public class ShopPageConstant {
     public static final int DEFAULT_PER_PAGE = 10;
     public static final int ETALASE_HIGHLIGHT_COUNT = 5;
 
-    public static final int DEFAULT_MERCHANT_VOUCHER_POSITION = 0;
-    public static final int DEFAULT_MEMBERSHIP_POSITION = 1;
+    public static final int DEFAULT_MEMBERSHIP_POSITION = 0;
+    public static final int DEFAULT_MERCHANT_VOUCHER_POSITION = 1;
     public static final int DEFAULT_FEATURED_POSITION = 2;
     public static final int DEFAULT_ETALASE_HIGHLIGHT_POSITION = 3;
     public static final int DEFAULT_ETALASE_POSITION = 4;

@@ -64,14 +64,15 @@ import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipData
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
+import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
+import com.tokopedia.shop.common.widget.RecyclerViewPadding
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
 import com.tokopedia.shop.page.view.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
-import com.tokopedia.shop.product.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -98,7 +99,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener,
         ShopCarouselSeeAllClickedListener, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
-        MerchantVoucherListView,MembershipStampAdapter.MembershipStampAdapterListener {
+        MerchantVoucherListView, MembershipStampAdapter.MembershipStampAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -578,7 +579,17 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     private fun onSuccessGetMembershipInfo(data: MembershipStampProgress?) {
-        shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(data?.membershipStampProgress ?: MembershipData()))
+        val isShown = data?.membershipStampProgress?.isShown ?: false
+        if (isShown) {
+            // Remove padding when membership stamp showing
+            val scale = resources.displayMetrics.density
+            val dpAsPixels = (-resources.getDimension(R.dimen.dp_8) * scale + 0.5f).toInt()
+            recyclerView?.run {
+                addItemDecoration(RecyclerViewPadding(dpAsPixels))
+            }
+        }
+        shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(data?.membershipStampProgress
+                ?: MembershipData()))
         shopProductAdapter.refreshSticky()
     }
 
@@ -1075,6 +1086,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         const val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
         const val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
         const val NUM_VOUCHER_DISPLAY = 3
+
+        const val RECYCLERVIEW_PADDING_8 = 8
 
         @JvmStatic
         fun createInstance(shopAttribution: String?): ShopProductListLimitedFragment {

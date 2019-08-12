@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmering
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
+import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter;
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.MembershipRegisterViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.MembershipStampProgressViewHolder;
@@ -111,11 +112,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         if (!membershipStampProgressViewModel.getMembershipData().isShown() || membershipStampProgressViewModel.getMembershipData().getMembershipProgram().getMembershipQuests().size() == 0) {
             return HideViewHolder.LAYOUT;
         } else {
-            if (!membershipStampProgressViewModel.getMembershipData().isUserRegistered()) {
-                return MembershipRegisterViewHolder.getLAYOUT();
-            } else {
-                return MembershipStampProgressViewHolder.getLAYOUT();
-            }
+            return MembershipStampProgressViewHolder.getLAYOUT();
         }
     }
 
