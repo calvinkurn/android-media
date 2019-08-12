@@ -199,6 +199,7 @@ ext {
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",
             digitalproduct                  : ":features:digital:digitalproduct",
+            commonTopupBills                : ":features:digital:common_topup_bills",
             digitalTopupBills               : ":features:digital:digital_topup_bills",
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
