@@ -5,7 +5,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.checkout.R;
+import com.tokopedia.purchase_platform.checkout.R;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
 import com.tokopedia.purchase_platform.common.feature.promo.CartVoucherPromoViewHolder;
@@ -14,10 +14,10 @@ import com.tokopedia.purchase_platform.cart.view.viewholder.CartRecommendationVi
 import com.tokopedia.purchase_platform.cart.view.viewholder.CartSectionHeaderViewHolder;
 import com.tokopedia.purchase_platform.cart.view.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.purchase_platform.cart.view.viewholder.CartWishlistViewHolder;
-import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentButtonPaymentViewHolder;
-import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
-import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentEmasViewHolder;
-import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentNotifierViewHolder;
+import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewholder.ShipmentButtonPaymentViewHolder;
+import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
+import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewholder.ShipmentEmasViewHolder;
+import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewholder.ShipmentNotifierViewHolder;
 
 /**
  * @author anggaprasetiyo on 06/02/18.

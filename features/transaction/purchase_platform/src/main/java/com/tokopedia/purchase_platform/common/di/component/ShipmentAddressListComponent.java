@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.common.di.component;
 import com.tokopedia.purchase_platform.common.di.module.ShipmentAddressListModule;
 import com.tokopedia.purchase_platform.common.di.scope.ShipmentAddressListScope;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.ShipmentAddressListFragment;
-import com.tokopedia.checkout.view.feature.cornerlist.CornerListFragment;
+import com.tokopedia.purchase_platform.checkout.view.feature.cornerlist.CornerListFragment;
 
 import dagger.Component;
 

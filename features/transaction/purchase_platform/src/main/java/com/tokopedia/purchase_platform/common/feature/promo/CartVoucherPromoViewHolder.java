@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.common.feature.promo;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.checkout.R;
+import com.tokopedia.purchase_platform.checkout.R;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 

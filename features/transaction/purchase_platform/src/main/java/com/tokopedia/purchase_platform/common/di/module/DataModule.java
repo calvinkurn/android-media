@@ -17,7 +17,7 @@ import com.tokopedia.purchase_platform.checkout.data.AddressRepositoryImpl;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.repository.PeopleAddressRepository;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.repository.PeopleAddressRepositoryImpl;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.usecase.GetAddressWithCornerUseCase;
-import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.di.qualifier.CartApiInterceptorQualifier;
 import com.tokopedia.purchase_platform.common.di.qualifier.CartApiOkHttpClientQualifier;
 import com.tokopedia.purchase_platform.common.di.qualifier.CartApiRetrofitQualifier;

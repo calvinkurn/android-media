@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.checkout.R;
+import com.tokopedia.purchase_platform.checkout.R;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.di.component.CartComponent;
@@ -51,7 +51,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.checkout.view.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
+import static com.tokopedia.purchase_platform.checkout.view.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
 import static com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 

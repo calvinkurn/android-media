@@ -26,7 +26,7 @@ import com.tokopedia.purchase_platform.common.di.component.DaggerTestCartListCom
 import com.tokopedia.purchase_platform.common.di.component.TestCartListComponent;
 import com.tokopedia.purchase_platform.common.di.module.TestCartListModule;
 import com.tokopedia.purchase_platform.common.di.module.TestTrackingAnalyticsModule;
-import com.tokopedia.checkout.view.view.cartlist.CartFragment;
+import com.tokopedia.purchase_platform.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
 import com.tokopedia.feedplus.data.pojo.WhitelistQuery;

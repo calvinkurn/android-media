@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Build;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;

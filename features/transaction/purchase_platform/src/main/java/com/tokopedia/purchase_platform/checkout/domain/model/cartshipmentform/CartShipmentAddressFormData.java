@@ -8,7 +8,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promost
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.GlobalCouponAttrData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.checkout.R
+import com.tokopedia.purchase_platform.checkout.R
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 
 /**

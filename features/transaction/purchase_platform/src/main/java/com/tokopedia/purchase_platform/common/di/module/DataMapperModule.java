@@ -6,13 +6,13 @@ import com.tokopedia.purchase_platform.cart.domain.mapper.ICartMapper;
 import com.tokopedia.purchase_platform.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.purchase_platform.common.base.IMapperUtil;
 import com.tokopedia.purchase_platform.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
+import com.tokopedia.purchase_platform.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.purchase_platform.cart.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.purchase_platform.common.base.MapperUtil;
 import com.tokopedia.purchase_platform.checkout.domain.mapper.ShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.TopPayMapper;
+import com.tokopedia.purchase_platform.checkout.domain.mapper.TopPayMapper;
 import com.tokopedia.purchase_platform.cart.domain.mapper.VoucherCouponMapper;
-import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
+import com.tokopedia.purchase_platform.checkout.view.feature.shipment.converter.RatesDataConverter;
 
 import dagger.Module;
 import dagger.Provides;

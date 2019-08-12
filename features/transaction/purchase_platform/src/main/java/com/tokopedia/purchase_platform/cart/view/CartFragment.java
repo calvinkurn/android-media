@@ -38,7 +38,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.checkout.R;
+import com.tokopedia.purchase_platform.checkout.R;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
@@ -48,7 +48,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promost
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.cart.data.model.recentview.RecentView;
 import com.tokopedia.purchase_platform.cart.domain.model.voucher.PromoCodeCartListData;
-import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartItemTickerErrorHolderData;
@@ -71,7 +71,7 @@ import com.tokopedia.purchase_platform.cart.view.viewmodel.CartSectionHeaderHold
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartShopHolderData;
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartWishlistHolderData;
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartWishlistItemHolderData;
-import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
+import com.tokopedia.purchase_platform.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;

@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.cart.view.adapter
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.checkout.R
+import com.tokopedia.purchase_platform.checkout.R
 import com.tokopedia.purchase_platform.cart.view.ActionListener
 import com.tokopedia.purchase_platform.cart.view.viewholder.CartWishlistItemViewHolder
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartWishlistItemHolderData

@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.checkout.R
+import com.tokopedia.purchase_platform.checkout.R
 import com.tokopedia.purchase_platform.cart.view.ActionListener
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartRecentViewItemHolderData
 import kotlinx.android.synthetic.main.item_cart_recent_view_item.view.*

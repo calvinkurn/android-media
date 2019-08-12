@@ -19,8 +19,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promost
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
+import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
 import com.tokopedia.purchase_platform.common.base.IMapperUtil;
 import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
