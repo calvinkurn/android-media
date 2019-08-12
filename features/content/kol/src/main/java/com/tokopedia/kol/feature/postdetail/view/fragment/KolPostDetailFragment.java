@@ -31,6 +31,7 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
@@ -927,6 +928,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onAddToCartFailed(String pdpAppLink) {
         onGoToLink(pdpAppLink);
+    }
+
+    @Override
+    public void onSuccessGetRelatedPost(List<FeedPostRelated.Datum> relatedPostList) {
+
     }
 
     private void onGoToLink(String link) {

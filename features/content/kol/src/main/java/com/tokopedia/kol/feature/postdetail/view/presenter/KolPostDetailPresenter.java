@@ -313,12 +313,18 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
 
                     @Override
                     public void onError(Throwable e) {
-
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
                     public void onNext(FeedPostRelated feedPostRelated) {
+                        if (isViewNotAttached()) {
+                            return;
+                        }
 
+                        getView().onSuccessGetRelatedPost(feedPostRelated.getData());
                     }
                 }
         );
