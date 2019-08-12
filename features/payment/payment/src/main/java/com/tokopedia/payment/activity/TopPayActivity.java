@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -65,7 +66,7 @@ import javax.inject.Inject;
  * Created by kris on 3/9/17. Tokopedia
  */
 
-public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister, FilePickerInterface {
+public class TopPayActivity extends BaseActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister, FilePickerInterface {
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";

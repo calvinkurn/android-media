@@ -1,6 +1,7 @@
 package com.tokopedia.core.app;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -34,6 +35,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;
+import com.google.android.play.core.splitcompat.SplitCompat;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -323,6 +325,12 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplication()).unregisterShake();
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        SplitCompat.install(this);
     }
 
 }

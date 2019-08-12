@@ -147,6 +147,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     
     implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.playServicesDependencies.core
 
 }
 
