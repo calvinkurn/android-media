@@ -3,7 +3,7 @@ package com.tokopedia.feedcomponent.data.pojo
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ProfileRelatedQuery(
+data class FeedPostRelatedQuery(
     @SerializedName("feedPostRelated")
     @Expose
     val feedPostRelated: FeedPostRelated = FeedPostRelated()

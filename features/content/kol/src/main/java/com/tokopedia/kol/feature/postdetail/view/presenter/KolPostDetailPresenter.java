@@ -76,9 +76,10 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         likeKolPostUseCase.unsubscribe();
         followKolPostGqlUseCase.unsubscribe();
         doFavoriteShopUseCase.unsubscribe();
-        sendVoteUseCase.unsubscribe();
         trackAffiliateClickUseCase.unsubscribe();
         deletePostUseCase.unsubscribe();
+        sendVoteUseCase.unsubscribe();
+        atcUseCase.unsubscribe();
     }
 
     @Override
