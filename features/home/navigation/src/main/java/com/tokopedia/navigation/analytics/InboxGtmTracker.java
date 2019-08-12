@@ -41,7 +41,7 @@ public class InboxGtmTracker {
         if (!dataLayerList.isEmpty()) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
-                    "eventCategory", "inbox",
+                    "eventCategory", "inbox page",
                     "eventAction", "impression on product recommendation",
                     "eventLabel", "",
                     "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
@@ -54,14 +54,14 @@ public class InboxGtmTracker {
         }
     }
 
-    public void addInboxProductViewImpressions(RecommendationItem recommendationItem, int position) {
+    public void addInboxProductViewImpressions(RecommendationItem recommendationItem, int position, boolean isTopAds) {
         this.dataLayerList.add(DataLayer.mapOf("name", recommendationItem.getName(),
                 "id", recommendationItem.getProductId(),
                 "price", recommendationItem.getPrice().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
                 "varian", "none/other",
                 "category", recommendationItem.getDepartmentId(),
-                "list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType(),
+                "list", "/inbox - rekomendasi untuk anda - " + recommendationItem.getRecommendationType() + (isTopAds ? " - product topads" : ""),
                 "position", String.valueOf(position)));
     }
 
@@ -79,17 +79,17 @@ public class InboxGtmTracker {
         }
     }
 
-    public void eventInboxProductClick(Context context, RecommendationItem recommendationItem, int position) {
+    public void eventInboxProductClick(Context context, RecommendationItem recommendationItem, int position, boolean isTopAds) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
-                    "eventCategory", "inbox",
+                    "eventCategory", "inbox page",
                     "eventAction", "click on product recommendation",
                     "eventLabel", "",
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField",
-                                    DataLayer.mapOf("list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType()),
+                                    DataLayer.mapOf("list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType() + (isTopAds ? " - product topads":"")),
                                     "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", recommendationItem.getName(),
                                             "id", recommendationItem.getProductId(),

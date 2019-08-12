@@ -351,28 +351,18 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onImpressionTopAds(RecommendationItem item) {
-        Product product = new Product();
-        product.setId(String.valueOf(item.getProductId()));
-        product.setName(item.getName());
-        product.setPriceFormat(item.getPrice());
-        product.setCategory(new Category(item.getDepartmentId()));
-        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, item.getPosition(), item.getRecommendationType());
+        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
     }
 
     private void onImpressionOrganic(RecommendationItem item) {
-        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition());
+        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
     }
 
     private void onClickTopAds(RecommendationItem item) {
-        Product product = new Product();
-        product.setId(String.valueOf(item.getProductId()));
-        product.setName(item.getName());
-        product.setPriceFormat(item.getPrice());
-        product.setCategory(new Category(item.getDepartmentId()));
-        TopAdsGtmTracker.getInstance().eventInboxProductClick(getContext(), product, item.getPosition(), item.getRecommendationType());
+        InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 
     private void onClickOrganic(RecommendationItem item) {
-        InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition());
+        InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 }
