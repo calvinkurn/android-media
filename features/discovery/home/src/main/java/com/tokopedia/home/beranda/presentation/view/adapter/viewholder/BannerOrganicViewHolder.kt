@@ -200,6 +200,8 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 setButtonWishlistVisible(true)
                 setSlashedPriceVisible(gridItem.slashedPrice != "")
                 setLabelDiscountVisible(gridItem.discount != "")
+                setImageRatingVisible(false)
+                setReviewCountVisible(false)
                 setButtonWishlistVisible(false)
                 setProductNameText(gridItem.name)
                 setPriceText(gridItem.price)
