@@ -24,9 +24,9 @@ import com.tokopedia.purchase_platform.common.di.component.DaggerAddShipmentAddr
 import com.tokopedia.purchase_platform.common.di.module.AddShipmentAddressModule;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;

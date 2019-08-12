@@ -21,7 +21,7 @@ import com.tokopedia.core.geolocation.presenter.GeolocationPresenterImpl;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core2.R;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 
 import org.jetbrains.annotations.NotNull;
 

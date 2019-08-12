@@ -1,4 +1,4 @@
-package com.tokopedia.transactionanalytics;
+package com.tokopedia.purchase_platform.common.analytics;
 
 /**
  * @author anggaprasetiyo on 18/05/18.

@@ -1,8 +1,9 @@
-package com.tokopedia.transactionanalytics;
+package com.tokopedia.purchase_platform.checkout.analytics;
 
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
+import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
 /**
  * Created by fajarnuha on 01/03/19.

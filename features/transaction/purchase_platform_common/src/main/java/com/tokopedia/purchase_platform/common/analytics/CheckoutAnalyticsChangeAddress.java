@@ -1,11 +1,13 @@
-package com.tokopedia.transactionanalytics;
+package com.tokopedia.purchase_platform.common.analytics;
+
+import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventLabel;
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
 
 
 /**

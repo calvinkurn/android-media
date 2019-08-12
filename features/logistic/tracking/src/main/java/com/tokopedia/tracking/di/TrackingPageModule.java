@@ -23,7 +23,7 @@ import com.tokopedia.logisticdata.data.repository.TrackingPageRepository;
 import com.tokopedia.tracking.usecase.TrackCourierUseCase;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
-import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
+import com.tokopedia.tracking.view.OrderAnalyticsOrderTracking;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;

@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.errorview
+package com.tokopedia.purchase_platform.common.view.error_bottomsheet
 
 import android.view.View
 import android.widget.TextView

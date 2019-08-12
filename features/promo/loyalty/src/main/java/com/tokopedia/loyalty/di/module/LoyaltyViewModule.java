@@ -13,8 +13,8 @@ import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
 import com.tokopedia.loyalty.view.fragment.PromoCouponFragment;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 
 import java.util.ArrayList;
 import java.util.List;

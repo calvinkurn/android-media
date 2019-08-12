@@ -72,7 +72,6 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.analytics)
 
-    implementation project(rootProject.ext.features.transactionanalytics)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.config)

@@ -1,4 +1,4 @@
-package com.tokopedia.transactionanalytics;
+package com.tokopedia.purchase_platform.common.analytics;
 
 import android.app.Activity;
 
@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public abstract class TransactionAnalytics {
 
-    TransactionAnalytics() {
+    protected TransactionAnalytics() {
     }
 
     Analytics getTracker(){
@@ -24,7 +24,7 @@ public abstract class TransactionAnalytics {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
-    void sendEventCategoryActionLabel(String event, String eventCategory,
+    protected void sendEventCategoryActionLabel(String event, String eventCategory,
                                       String eventAction, String eventLabel) {
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
@@ -32,13 +32,13 @@ public abstract class TransactionAnalytics {
     }
 
 
-    void sendEventCategoryAction(String event, String eventCategory,
+    protected void sendEventCategoryAction(String event, String eventCategory,
                                  String eventAction) {
         sendEventCategoryActionLabel(event, eventCategory, eventAction, "");
     }
 
 
-    void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
+    protected void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
     }
 }

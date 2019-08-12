@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.errorview.ErrorBottomsheets
+import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
 import com.tokopedia.purchase_platform.express_checkout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantContract
 import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantItemDecorator
@@ -12,7 +12,7 @@ import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVar
 import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
-import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
+import com.tokopedia.purchase_platform.express_checkout.view.variant.analytics.ExpressCheckoutAnalyticsTracker
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

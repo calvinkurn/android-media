@@ -53,10 +53,10 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.ATC_AND_BUY
-import com.tokopedia.purchase_platform.common.ATC_ONLY
-import com.tokopedia.purchase_platform.common.ProductAction
-import com.tokopedia.purchase_platform.common.TRADEIN_BUY
+import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
+import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
+import com.tokopedia.purchase_platform.common.constant.ProductAction
+import com.tokopedia.purchase_platform.common.constant.TRADEIN_BUY
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.model.TradeInParams

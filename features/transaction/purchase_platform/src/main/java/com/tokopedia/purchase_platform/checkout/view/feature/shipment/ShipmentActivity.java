@@ -11,7 +11,7 @@ import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 
 /**
  * @author Irfan Khoirul on 23/04/18.

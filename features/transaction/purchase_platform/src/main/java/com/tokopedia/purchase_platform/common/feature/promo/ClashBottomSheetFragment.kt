@@ -12,8 +12,8 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOptionUiModel
 import android.support.v7.widget.SimpleItemAnimator
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 
 /**
  * Created by fwidjaja on 10/03/19.

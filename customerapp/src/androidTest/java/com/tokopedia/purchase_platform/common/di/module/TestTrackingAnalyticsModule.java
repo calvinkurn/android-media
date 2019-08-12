@@ -1,12 +1,11 @@
 package com.tokopedia.purchase_platform.common.di.module;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
-import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.tracking.view.OrderAnalyticsOrderTracking;
 
 import dagger.Module;
 import dagger.Provides;
@@ -21,7 +20,6 @@ public class TestTrackingAnalyticsModule {
     private CheckoutAnalyticsCart checkoutAnalyticsCart;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     private CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
-    private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     private OrderAnalyticsOrderTracking orderAnalyticsOrderTracking;
 
@@ -38,11 +36,6 @@ public class TestTrackingAnalyticsModule {
     @Provides
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress(AbstractionRouter abstractionRouter) {
         return checkoutAnalyticsMultipleAddress = mock(CheckoutAnalyticsMultipleAddress.class);
-    }
-
-    @Provides
-    CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart(AbstractionRouter abstractionRouter) {
-        return checkoutAnalyticsAddToCart = mock(CheckoutAnalyticsAddToCart.class);
     }
 
     @Provides
@@ -65,10 +58,6 @@ public class TestTrackingAnalyticsModule {
 
     public CheckoutAnalyticsMultipleAddress getCheckoutAnalyticsMultipleAddress() {
         return checkoutAnalyticsMultipleAddress;
-    }
-
-    public CheckoutAnalyticsAddToCart getCheckoutAnalyticsAddToCart() {
-        return checkoutAnalyticsAddToCart;
     }
 
     public CheckoutAnalyticsCourierSelection getCheckoutAnalyticsCourierSelection() {

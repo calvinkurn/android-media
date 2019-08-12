@@ -15,7 +15,7 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.express_checkout.view.profile.adapter.CheckoutProfileAdapter
 import com.tokopedia.purchase_platform.express_checkout.view.profile.di.DaggerCheckoutProfileComponent
 import com.tokopedia.purchase_platform.express_checkout.view.profile.viewmodel.ProfileViewModel
-import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
+import com.tokopedia.purchase_platform.express_checkout.view.variant.analytics.ExpressCheckoutAnalyticsTracker
 import javax.inject.Inject
 
 /**

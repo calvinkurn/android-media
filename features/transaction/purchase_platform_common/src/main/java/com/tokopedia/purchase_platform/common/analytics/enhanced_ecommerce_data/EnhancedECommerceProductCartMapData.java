@@ -1,4 +1,4 @@
-package com.tokopedia.transactionanalytics.data;
+package com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data;
 
 import android.text.TextUtils;
 

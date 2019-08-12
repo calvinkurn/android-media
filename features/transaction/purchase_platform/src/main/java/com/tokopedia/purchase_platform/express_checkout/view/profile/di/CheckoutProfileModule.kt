@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.express_checkout.view.profile.di
 
 import com.tokopedia.purchase_platform.express_checkout.view.profile.CheckoutProfileContract
 import com.tokopedia.purchase_platform.express_checkout.view.profile.CheckoutProfilePresenter
-import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
+import com.tokopedia.purchase_platform.express_checkout.view.variant.analytics.ExpressCheckoutAnalyticsTracker
 import dagger.Module
 import dagger.Provides
 

@@ -33,9 +33,9 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.shop.common.di.ShopCommonModule
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection
 import javax.inject.Inject
 
 /**

@@ -16,6 +16,8 @@ buildscript {
 }
 dependencies {
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

@@ -1,11 +1,13 @@
-package com.tokopedia.transactionanalytics;
+package com.tokopedia.tracking.view;
 
+
+import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
 
 /**
  * @author anggaprasetiyo on 18/07/18.

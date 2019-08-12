@@ -29,6 +29,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -60,7 +61,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactioncommon)
-    implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.merchantVoucher)

@@ -1,6 +1,8 @@
-package com.tokopedia.transactionanalytics;
+package com.tokopedia.purchase_platform.express_checkout.view.variant.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
 import java.util.HashMap;
 

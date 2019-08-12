@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common
+package com.tokopedia.purchase_platform.common.constant
 
 import android.support.annotation.IntDef
 

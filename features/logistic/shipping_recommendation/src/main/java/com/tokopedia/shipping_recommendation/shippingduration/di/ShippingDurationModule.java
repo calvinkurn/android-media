@@ -1,12 +1,12 @@
 package com.tokopedia.shipping_recommendation.shippingduration.di;
 
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationAdapter;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationContract;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationPresenter;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 import dagger.Module;
 import dagger.Provides;

@@ -14,10 +14,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cod.R
 import com.tokopedia.cod.di.DaggerCodComponent
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest
 import com.tokopedia.transactiondata.entity.response.cod.Data
 import kotlinx.android.synthetic.main.fragment_cod_confirmation.*

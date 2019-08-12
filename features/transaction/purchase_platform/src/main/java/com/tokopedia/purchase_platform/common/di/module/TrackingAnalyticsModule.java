@@ -1,13 +1,12 @@
 package com.tokopedia.purchase_platform.common.di.module;
 
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
-import com.tokopedia.transactionanalytics.CornerAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.purchase_platform.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.purchase_platform.checkout.analytics.CornerAnalytics;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 
 import dagger.Module;
@@ -32,11 +31,6 @@ public class TrackingAnalyticsModule {
     @Provides
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress() {
         return new CheckoutAnalyticsMultipleAddress();
-    }
-
-    @Provides
-    CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart() {
-        return new CheckoutAnalyticsAddToCart();
     }
 
     @Provides

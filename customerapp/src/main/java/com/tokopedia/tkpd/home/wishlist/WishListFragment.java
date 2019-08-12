@@ -56,7 +56,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +77,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     public static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS";
     public static final String FRAGMENT_TAG = "WishListFragment";
-    private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
 
     private WishlistAnalytics wishlistAnalytics;
 
@@ -109,7 +107,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wishList = new WishListImpl(getActivity(), this);
-        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart();
         wishlistAnalytics = new WishlistAnalytics();
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialog.setCancelable(false);
