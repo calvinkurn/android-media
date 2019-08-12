@@ -15,6 +15,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsCheckoutFragment
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
@@ -37,7 +38,6 @@ import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
-import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
 import java.util.*
@@ -50,7 +50,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var telcoClientNumberWidget: DigitalClientNumberWidget
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
-    private lateinit var buyWidget: DigitalTelcoBuyWidget
+    private lateinit var buyWidget: TopupBillsCheckoutFragment
     private lateinit var sharedModel: SharedProductTelcoViewModel
     private lateinit var layoutProgressBar: RelativeLayout
     private var inputNumberActionType = InputNumberActionType.MANUAL
@@ -87,13 +87,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         super.onActivityCreated(savedInstanceState)
         sharedModel.productItem.observe(this, Observer {
             it?.run {
-                buyWidget.setTotalPrice(it.product.attributes.price)
-                it.product.attributes.productPromo?.run {
-                    if (this.newPrice.isNotEmpty()) {
-                        buyWidget.setTotalPrice(this.newPrice)
-                    }
-                }
-
                 checkoutPassData = DigitalCheckoutPassData.Builder()
                         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                         .categoryId(it.product.attributes.categoryId.toString())
@@ -109,11 +102,22 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                         .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                         .voucherCodeCopied("")
                         .build()
+
+                if (::buyWidget.isInitialized) {
+                    buyWidget.setTotalPrice(it.product.attributes.price)
+                    it.product.attributes.productPromo?.run {
+                        if (this.newPrice.isNotEmpty()) {
+                            buyWidget.setTotalPrice(this.newPrice)
+                        }
+                    }
+
+                    buyWidget.checkoutPassData = checkoutPassData
+                }
             }
         })
         sharedModel.showTotalPrice.observe(this, Observer {
             it?.run {
-                buyWidget.setVisibilityLayout(it)
+                if (::buyWidget.isInitialized) buyWidget.setVisibilityLayout(it)
             }
         })
         sharedModel.promoItem.observe(this, Observer {
@@ -131,7 +135,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         promoListWidget = view.findViewById(R.id.promo_widget)
         viewPager = view.findViewById(R.id.product_view_pager)
         tabLayout = view.findViewById(R.id.tab_layout)
-        buyWidget = view.findViewById(R.id.buy_widget)
+        buyWidget = childFragmentManager.findFragmentById(R.id.buy_widget) as TopupBillsCheckoutFragment
         tickerView = view.findViewById(R.id.ticker_view)
         layoutProgressBar = view.findViewById(R.id.layout_progress_bar)
         return view
@@ -144,7 +148,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         renderInputNumber()
         handleFocusClientNumber()
         getCatalogMenuDetail()
-        renderBuyProduct()
         getDataFromBundle(savedInstanceState)
     }
 
@@ -407,14 +410,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
         favNumberList.addAll(data.favNumber.favNumberList)
-    }
-
-    fun renderBuyProduct() {
-        buyWidget.setListener(object : DigitalTelcoBuyWidget.ActionListener {
-            override fun onClickNextBuyButton() {
-                processToCart()
-            }
-        })
     }
 
     private fun showOnBoarding() {

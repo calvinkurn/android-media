@@ -123,7 +123,8 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
+    <fragment
+        android:name="com.tokopedia.common.topupbills.view.fragment.TopupBillsCheckoutFragment"
         android:id="@+id/buy_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
