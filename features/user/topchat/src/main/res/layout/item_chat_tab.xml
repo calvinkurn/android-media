@@ -6,6 +6,16 @@
     android:layout_height="wrap_content"
     android:gravity="center">
 
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:src="@drawable/circle_red"
+        android:visibility="visible"
+        tools:src="@drawable/ic_chat_icon_account"/>
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"

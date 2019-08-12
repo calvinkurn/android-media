@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatlist.adapter
 
+import android.support.annotation.DrawableRes
+import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
@@ -26,6 +28,7 @@ class ChatListPagerAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm) {
     data class ChatListTab (
             val title: String,
             val counter: String,
-            val fragment: Fragment
+            val fragment: Fragment,
+            @DrawableRes val icon: Int
     )
 }

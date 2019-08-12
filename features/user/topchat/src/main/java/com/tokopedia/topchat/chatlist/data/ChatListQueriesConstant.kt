@@ -9,6 +9,8 @@ object ChatListQueriesConstant {
 
     const val PARAM_TAB = "tab"
     const val PARAM_TAB_INBOX = "inbox"
+    const val PARAM_TAB_USER = "tab-user"
+    const val PARAM_TAB_SELLER = "tab-seller"
 
     const val PARAM_FILTER = "filter"
     const val PARAM_FILTER_ALL = "all"

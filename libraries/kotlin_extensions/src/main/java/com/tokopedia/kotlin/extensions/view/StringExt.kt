@@ -21,3 +21,7 @@ fun String?.toFloatOrZero(): Float {
 fun String?.toDoubleOrZero(): Double {
     return this?.toDoubleOrNull() ?: 0f.toDouble()
 }
+
+fun String?.toBlankOrString(): String {
+    return this?:""
+}

@@ -22,7 +22,7 @@ class ChatItemListViewModel
 
     val mutateChatListResponse = MutableLiveData<Result<ChatListPojo>>()
 
-    fun mutateGetChatListMessage(
+    fun queryGetChatListMessage(
             page: Int,
             filter: String,
             tab: String,

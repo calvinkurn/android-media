@@ -116,4 +116,7 @@ yang ditemukan</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_chat_search">Cari chat atau user</string>
+    <string name="menu_chat_filter">Filter</string>
+    <string name="menu_chat_setting">Pengaturan</string>
 </resources>

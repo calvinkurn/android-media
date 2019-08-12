@@ -19,7 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="?toolbarTheme"
-            app:layout_collapseMode="pin" />
+            app:layout_collapseMode="pin"
+            app:contentInsetLeft="@dimen/dp_0"
+            app:contentInsetStart="@dimen/dp_0"
+            app:contentInsetRight="@dimen/dp_0"
+            app:contentInsetEnd="@dimen/dp_0"/>
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/indicator"
@@ -29,7 +33,8 @@
             app:tabType="secondary"
             app:tabGravity="fill"
             app:tabTextAppearance="@style/Tabs.ChatTabs"
-            app:tabMode="fixed"/>
+            app:tabMode="fixed"
+            app:tabBackground="@drawable/chat_tab_background"/>
 
     </android.support.design.widget.AppBarLayout>
 

@@ -6,7 +6,7 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 /**
  * @author : Steven 2019-08-09
  */
-data class IncomingItemWebSocketModel(val messageId: String = "") {
+data class IncomingChatWebSocketModel(val msgId: String = ""): BaseIncomingItemWebSocketModel(msgId){
 
     var message: String = ""
     var unreadCounter: Int = 0
