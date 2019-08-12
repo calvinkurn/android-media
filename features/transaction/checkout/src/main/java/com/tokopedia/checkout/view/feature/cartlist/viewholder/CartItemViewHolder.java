@@ -673,10 +673,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if (data.getCartItemData().isWarning()) {
             String warningDescription = data.getCartItemData().getWarningMessageDescription();
             if (!TextUtils.isEmpty(warningDescription)) {
-                tickerWarning.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
+                tickerWarning.setTickerTitle(data.getCartItemData().getWarningMessageTitle());
                 tickerWarning.setTextDescription(warningDescription);
             } else {
-                tickerWarning.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                tickerWarning.setTextDescription(data.getCartItemData().getWarningMessageTitle());
             }
             tickerWarning.setTickerType(Ticker.TYPE_WARNING);
             tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
