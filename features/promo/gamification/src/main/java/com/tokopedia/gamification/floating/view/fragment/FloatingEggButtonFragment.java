@@ -350,7 +350,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         final long timeRemainingSeconds = tokenData.getTimeRemainingSeconds();
         final boolean isShowTime = tokenData.isShowTime();
-        String imageUrl = tokenData.getImgURL();
+//        String imageUrl = tokenData.getImgURL();
+        String imageUrl = "https://ecs7.tokopedia.net/img/blog/promo/2019/07/floatunitaptap.gif";
 
         needHideFloatingToken = TextUtils.isEmpty(imageUrl);
 
@@ -358,7 +359,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             hideFLoatingEgg();
         } else {
             showFloatingEgg();
-            trackingEggImpression(tokenData.getId(), tokenData.getName());
+//            trackingEggImpression(tokenData.getId(), tokenData.getName());
         }
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
@@ -580,5 +581,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             GamificationEventTracking.Action.CLICK_LUCKY_EGG,
                             idToken + "_" + name
                     );
+    }
+
+    public View getEgg() {
+        return vgFloatingEgg;
+    }
+
+    public void moveEgg(int yEgg) {
+        vgFloatingEgg.setY(yEgg);
+        animateToLeftOrRightBound();
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.home.widget
+package com.tokopedia.product.detail.view.widget
 
 import android.content.Context
 import android.graphics.Typeface
@@ -13,7 +13,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.tokopedia.home.R
+import com.tokopedia.product.detail.R
 
 class StickyTextView : FrameLayout {
 
@@ -115,7 +115,7 @@ class StickyTextView : FrameLayout {
     }
 
     fun getLocation(): IntArray? {
-        if(isShowing()) {
+        if (isShowing()) {
             val location = IntArray(2)
             this.getLocationOnScreen(location)
             return location

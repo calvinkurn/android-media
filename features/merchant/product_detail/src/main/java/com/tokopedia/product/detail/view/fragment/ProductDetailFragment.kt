@@ -99,10 +99,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
-import com.tokopedia.product.detail.view.widget.CountDrawable
-import com.tokopedia.product.detail.view.widget.PictureScrollingView
-import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
-import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
+import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
@@ -172,6 +169,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationThirdView: PartialRecommendationThirdView
     lateinit var recommendationFourthView: PartialRecommendationFourthView
     lateinit var valuePropositionView: PartialValuePropositionView
+    lateinit var stickyLoginTextView: StickyTextView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -593,6 +591,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
         loadProductData()
+
+        stickyLoginTextView = view.findViewById(R.id.sticky_login_text)
+        stickyLoginTextView.setOnClickListener { v ->
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN) }
+        stickyLoginTextView.setOnDismissListener(View.OnClickListener {
+            stickyLoginTextView.dismiss()
+        })
     }
 
     private fun doBuy() {
@@ -2066,4 +2071,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
         }
     }
+
+    private fun updateStickyState() {
+        val userSession = UserSession(context)
+        if (userSession.isLoggedIn) {
+            stickyLoginTextView.dismiss()
+        } else {
+            stickyLoginTextView.show()
+        }
+    }
+
 }

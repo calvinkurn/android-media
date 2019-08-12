@@ -8,8 +8,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,11 +23,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.google.android.gms.location.LocationServices;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -104,22 +104,21 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.google.android.gms.location.LocationServices;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import rx.Observable;
-
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import rx.Observable;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -186,6 +185,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private long lastSendScreenTimeMillis;
     private Snackbar homeSnackbar;
     private SharedPreferences sharedPrefs;
+
+    int[] positionSticky = new int[2];
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -277,9 +278,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         homeRecyclerView = view.findViewById(R.id.list);
         if (homeRecyclerView.getItemDecorationCount() == 0) {
-            homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(
-                    getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)
-            ));
+            homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)));
         }
 
         homeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -323,6 +322,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         stickyLoginTextView = view.findViewById(R.id.sticky_login_text);
+
         root = view.findViewById(R.id.root);
 
         if (getArguments() != null) {
@@ -370,19 +370,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         });
 
-        updateStickyState();
-        stickyLoginTextView.setOnClickListener(v -> onGoToLogin());
-        stickyLoginTextView.setOnDismissListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stickyLoginTextView.dismiss();
-                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-                if (floatingEggButtonFragment != null) {
-                    updateEggBottomMargin(floatingEggButtonFragment);
-                }
-            }
-        });
-
         KeyboardHelper.setKeyboardVisibilityChangedListener(root, new KeyboardHelper.OnKeyboardVisibilityChangedListener() {
             @Override
             public void onKeyboardShown() {
@@ -392,6 +379,38 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onKeyboardHide() {
                 floatingTextButton.resetState();
+            }
+        });
+
+        /*MUST BE DELETE -> TESTING PURPOSE*/
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            floatingEggButtonFragment.showFloatingEggAnimate(true);
+            updateEggBottomMargin(floatingEggButtonFragment);
+        }
+        /*end*/
+
+        stickyLoginTextView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                updateStickyState();
+
+                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+                if (floatingEggButtonFragment != null) {
+                    updateEggBottomMargin(floatingEggButtonFragment);
+                }
+            }
+        });
+        stickyLoginTextView.setOnClickListener(v -> onGoToLogin());
+        stickyLoginTextView.setOnDismissListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stickyLoginTextView.dismiss();
+
+                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+                if (floatingEggButtonFragment != null) {
+                    updateEggBottomMargin(floatingEggButtonFragment);
+                }
             }
         });
     }
@@ -412,6 +431,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
 
         updateStickyState();
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            updateEggBottomMargin(floatingEggButtonFragment);
+        }
     }
 
     @Override
@@ -499,7 +522,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void hideEggFragmentOnScrolling() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
         if (floatingEggButtonFragment != null) {
-            updateEggBottomMargin(floatingEggButtonFragment);
             floatingEggButtonFragment.hideOnScrolling();
         }
     }
@@ -1442,7 +1464,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initEggDragListener() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
         if (floatingEggButtonFragment != null) {
-            updateEggBottomMargin(floatingEggButtonFragment);
             floatingEggButtonFragment.setOnDragListener(new FloatingEggButtonFragment.OnDragListener() {
                 @Override
                 public void onDragStart() {
@@ -1521,6 +1542,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void updateStickyState() {
+
+        if (stickyLoginTextView.isShowing()) {
+            positionSticky = stickyLoginTextView.getLocation();
+        }
+
         if (isUserLoggedIn()) {
             stickyLoginTextView.dismiss();
         } else {
@@ -1530,15 +1556,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void updateEggBottomMargin(FloatingEggButtonFragment floatingEggButtonFragment) {
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) floatingEggButtonFragment.getView().getLayoutParams();
-        if (stickyLoginTextView.getVisibility() == View.VISIBLE) {
+        if (stickyLoginTextView.isShowing()) {
             params.setMargins(0, 0, 0, stickyLoginTextView.getHeight());
 
-            int bottomPositionEgg = floatingEggButtonFragment.getView().getBottom();
-            int topPositionSticky = stickyLoginTextView.getTop();
-            if (bottomPositionEgg > topPositionSticky) {
-                int position = bottomPositionEgg - topPositionSticky;
-                bottomPositionEgg -= position;
-                floatingEggButtonFragment.getView().setY(bottomPositionEgg);
+            int[] positionEgg = new int[2];
+            int eggHeight = floatingEggButtonFragment.getEgg().getHeight();
+            floatingEggButtonFragment.getEgg().getLocationOnScreen(positionEgg);
+
+            if (positionEgg[1] + eggHeight > positionSticky[1]) {
+                floatingEggButtonFragment.moveEgg(positionSticky[1] - eggHeight);
             }
         } else {
             params.setMargins(0, 0, 0, 0);
