@@ -4,31 +4,32 @@
     android:id="@+id/attach_product_chat_image_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipChildren="true"
+    android:layout_marginLeft="@dimen/dp_5"
+    android:layout_marginRight="@dimen/dp_5"
+    android:layout_marginBottom="@dimen/dp_10"
     android:clickable="true"
+    android:clipChildren="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_2"
     app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="false"
-    android:layout_marginRight="@dimen/dp_4"
-    android:layout_marginLeft="@dimen/dp_4">
+    app:cardUseCompatPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_marginBottom="@dimen/dp_12">
+        android:layout_marginBottom="@dimen/dp_12"
+        android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            tools:srcCompat="@tools:sample/avatars"
-            android:adjustViewBounds="true"/>
+            tools:srcCompat="@tools:sample/avatars" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,6 +44,7 @@
                 android:id="@+id/kolBadge"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_4"
                 android:layout_marginRight="@dimen/dp_4"
                 android:visibility="gone"
                 tools:srcCompat="@drawable/ic_badge_shop_official"
@@ -52,10 +54,10 @@
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
-                android:maxLines="2"
-                android:ellipsize="end"
                 tools:text="Sadam Hussein" />
         </LinearLayout>
 

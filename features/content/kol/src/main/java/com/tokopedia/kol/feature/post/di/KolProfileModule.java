@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
+import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.api.KolApi;
@@ -34,7 +35,7 @@ import retrofit2.Retrofit;
  * @author by milhamj on 12/02/18.
  */
 
-@Module(includes = {VoteModule.class})
+@Module(includes = {VoteModule.class, FeedComponentModule.class})
 public class KolProfileModule {
     @KolProfileScope
     @Provides
