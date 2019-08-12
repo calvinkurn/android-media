@@ -64,11 +64,14 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/banner_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/banner_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
@@ -76,14 +79,21 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/banner_description"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginBottom="@dimen/dp_16"
+                android:ellipsize="end"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/banner_button"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/banner_title"
                 app:layout_constraintTop_toBottomOf="@+id/banner_title"
+                app:layout_constraintVertical_bias="0.0"
                 app:typographyType="body_3"
-                tools:text="untuk pembelian pertama!" />
+                android:maxLines="1"
+                tools:text="untuk pembelian pertama adjoandowand owado ndsn udwnd dnwacnnncuid!" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/banner_button"
@@ -93,6 +103,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_20"
+                app:unifyButtonSize="small"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
