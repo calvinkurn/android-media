@@ -55,6 +55,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatCha
 import com.tokopedia.topchat.chatroom.view.customview.*
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
@@ -851,5 +852,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun notifyAttachmentsSent() {
         getViewState().clearAttachmentPreview()
+    }
+
+    override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {
+        if (attachment is InvoicePreviewViewModel) {
+            analytics.invoiceAttachmentSent(attachment)
+        }
     }
 }

@@ -18,7 +18,7 @@ import com.tokopedia.groupchat.common.util.TextFormatter
 /**
  * @author : Steven 28/05/19
  */
-class PlayWelcomeHelper(
+class PlayWelcomeHelper constructor(
         model: ChannelInfoViewModel?,
         var analytics: GroupChatAnalytics,
         var context: Context,
@@ -29,17 +29,18 @@ class PlayWelcomeHelper(
     private lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
 
     fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
-                                    onDismiss: () -> Unit) {
+                            userIsLoggedIn: Boolean,
+                            onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
             welcomeInfoDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         }
 
         welcomeInfoDialog.setOnDismissListener {
             onDismiss()
-            analytics.eventClickJoin(channelInfoViewModel.channelId)
+            analytics.eventClickJoin(channelInfoViewModel.channelId, userIsLoggedIn)
         }
 
-        val welcomeInfoView = createWelcomeInfoView(welcomeInfoDialog, channelInfoViewModel)
+        val welcomeInfoView = createWelcomeInfoView(welcomeInfoDialog, channelInfoViewModel, userIsLoggedIn)
         welcomeInfoDialog.setOnShowListener() { dialog ->
             val d = dialog as BottomSheetDialog
 
@@ -56,7 +57,8 @@ class PlayWelcomeHelper(
     }
 
     private fun createWelcomeInfoView(welcomeInfoDialog: CloseableBottomSheetDialog,
-                                      channelInfoViewModel: ChannelInfoViewModel): View {
+                                      channelInfoViewModel: ChannelInfoViewModel,
+                                      userIsLoggedIn: Boolean): View {
         val welcomeInfoView = LayoutInflater.from(context).inflate(R.layout
                 .channel_info_bottom_sheet_dialog, null)
 
@@ -81,7 +83,7 @@ class PlayWelcomeHelper(
 
         ctaButton.setOnClickListener {
             welcomeInfoDialog.dismiss()
-            analytics.eventClickJoin(channelInfoViewModel.channelId)
+            analytics.eventClickJoin(channelInfoViewModel.channelId, userIsLoggedIn)
         }
 
         return welcomeInfoView
