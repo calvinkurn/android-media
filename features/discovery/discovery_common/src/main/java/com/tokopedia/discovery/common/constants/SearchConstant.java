@@ -63,10 +63,6 @@ public interface SearchConstant {
         String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
     }
 
-    interface Tome {
-        String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
-    }
-
     interface DynamicFilter {
         String GET_DYNAMIC_FILTER_USE_CASE = "get_dynamic_filter_use_case";
         String GET_DYNAMIC_FILTER_V4_USE_CASE = "get_dynamic_filter_v4_use_case";
