@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.cart.domain.usecase;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.cart.data.model.recentview.GqlRecentViewResponse;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.GraphqlRequest;

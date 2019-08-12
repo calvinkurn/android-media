@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.checkout.view.feature.promostacking.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.tokopedia.purchase_platform.checkout.R
+import com.tokopedia.purchase_platform.R
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import kotlinx.android.synthetic.main.item_clashing_voucher_inner.view.*
 

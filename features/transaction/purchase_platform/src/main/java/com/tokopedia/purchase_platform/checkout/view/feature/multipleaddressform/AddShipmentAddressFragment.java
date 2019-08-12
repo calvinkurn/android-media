@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;

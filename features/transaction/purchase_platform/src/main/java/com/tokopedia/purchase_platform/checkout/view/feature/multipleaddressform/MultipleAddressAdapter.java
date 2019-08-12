@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.checkout.view.feature.multipleaddressform.viewholder.MultipleAddressViewHolder;

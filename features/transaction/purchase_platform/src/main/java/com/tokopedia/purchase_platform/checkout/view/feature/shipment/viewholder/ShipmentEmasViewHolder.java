@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.design.component.Tooltip;

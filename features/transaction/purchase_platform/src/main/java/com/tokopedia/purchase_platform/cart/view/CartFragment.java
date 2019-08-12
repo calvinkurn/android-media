@@ -1448,20 +1448,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onProductItemClicked(int position, Product product) {
-        navigateToActivityRequest(getProductIntent(product.getId()), NAVIGATION_PDP);
-    }
-
-    @Override
-    public void onShopItemClicked(int position, Shop shop) {
-        navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetShopInfoIntent(shop.getId()));
-    }
-
-    @Override
-    public void onAddFavorite(int position, Data shopData) {
-    }
-
-    @Override
     public void onRefresh(View view) {
         if (dPresenter.dataHasChanged()) {
             showMainContainer();

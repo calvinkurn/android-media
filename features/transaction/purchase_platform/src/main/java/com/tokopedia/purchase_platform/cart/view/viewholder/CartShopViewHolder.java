@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.cart.view.ActionListener;
 import com.tokopedia.purchase_platform.cart.view.adapter.CartItemAdapter;

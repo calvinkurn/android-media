@@ -1789,33 +1789,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onShipmentItemClick(CourierItemData courierItemData,
-                                    RecipientAddressModel recipientAddressModel,
-                                    int cartItemPosition, boolean isChangeCourier) {
-        if (isChangeCourier) {
-            sendAnalyticsOnCourierChanged(courierItemData.getName(),
-                    courierItemData.getShipmentItemDataType());
-        } else {
-            sendAnalyticsOnClickShipmentCourierItem(courierItemData.getName(),
-                    courierItemData.getShipmentItemDataType());
-        }
-        ShipmentSelectionStateData shipmentSelectionStateData = new ShipmentSelectionStateData();
-        shipmentSelectionStateData.setPosition(cartItemPosition);
-        shipmentSelectionStateData.setCourierItemData(courierItemData);
-        shipmentSelectionStateDataHashSet.add(shipmentSelectionStateData);
-        if (courierItemData.isUsePinPoint()
-                && (recipientAddressModel.getLatitude() == null ||
-                recipientAddressModel.getLatitude().equalsIgnoreCase("0")
-                || recipientAddressModel.getLongitude() == null ||
-                recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
-            setPinpoint(cartItemPosition);
-        } else {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
-            shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-        }
-    }
-
-    @Override
     public void onPriorityChecked(int position) {
         if (rvShipment.isComputingLayout()) {
             rvShipment.post(() -> {

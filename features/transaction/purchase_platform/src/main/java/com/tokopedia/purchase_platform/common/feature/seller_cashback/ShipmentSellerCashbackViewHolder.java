@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 
 /**

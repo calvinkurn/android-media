@@ -5,7 +5,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
-import com.tokopedia.purchase_platform.checkout.R
+import com.tokopedia.purchase_platform.R
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;

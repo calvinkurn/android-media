@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;

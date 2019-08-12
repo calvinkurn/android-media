@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper;
 
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.AddressCornerResponse;
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.corner.AddressCornerMapper;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.model.addressoptions.PeopleAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 
@@ -17,7 +16,7 @@ public class PeopleAddressWithCornerMapper implements Func2<GetPeopleAddress, Ad
     @Override
     public PeopleAddressModel call(GetPeopleAddress getPeopleAddress, AddressCornerResponse cornerAddressModel) {
         AddressModelMapper oldMapper = new AddressModelMapper();
-        com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.corner.AddressCornerMapper withCornerMapper = new AddressCornerMapper();
+        AddressCornerMapper withCornerMapper = new AddressCornerMapper();
 
         PeopleAddressModel withMapper = withCornerMapper.call(cornerAddressModel);
 

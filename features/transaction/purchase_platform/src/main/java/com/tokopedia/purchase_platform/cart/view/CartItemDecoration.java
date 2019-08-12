@@ -5,7 +5,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
 import com.tokopedia.purchase_platform.common.feature.promo.CartVoucherPromoViewHolder;

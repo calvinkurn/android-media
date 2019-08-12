@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.repository.PeopleAddressRepository;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.usecase.GetCornerList;
-import com.tokopedia.purchase_platform.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.purchase_platform.common.di.scope.ShipmentAddressListScope;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.AddressListContract;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.AddressListPresenter;
@@ -52,13 +51,6 @@ public class ShipmentAddressListModule {
     @ShipmentAddressListScope
     UserSessionInterface provideUserSessionInterface() {
         return new UserSession(context);
-    }
-
-    @Provides
-    @ShipmentAddressListScope
-    GetPeopleAddressUseCase provideGetAddressListUseCase(PeopleAddressRepository peopleAddressRepository,
-                                                         UserSessionInterface userSessionInterface) {
-        return new GetPeopleAddressUseCase(peopleAddressRepository, userSessionInterface);
     }
 
 }

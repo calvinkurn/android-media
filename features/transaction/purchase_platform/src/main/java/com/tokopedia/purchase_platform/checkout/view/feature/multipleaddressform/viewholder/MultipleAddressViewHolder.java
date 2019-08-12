@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import com.google.android.flexbox.FlexboxLayout;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.purchase_platform.checkout.view.feature.multipleaddressform.MultipleAddressAdapter;
 import com.tokopedia.purchase_platform.checkout.view.feature.multipleaddressform.MultipleAddressItemAdapter;

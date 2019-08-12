@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.purchase_platform.checkout.R
+import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.di.component.CartComponent
 import com.tokopedia.purchase_platform.common.di.component.DaggerShipmentAddressListComponent
 import com.tokopedia.purchase_platform.common.di.module.ShipmentAddressListModule

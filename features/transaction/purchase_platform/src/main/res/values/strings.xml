@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="title_activity_shipment_detail">Kurir Pengiriman</string>
     <string name="label_shipment_type_format">(%s)</string>
     <string name="label_hint_search_address">Cari Alamat</string>

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewholder.ShipmentCartItemViewHolder;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 

@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;

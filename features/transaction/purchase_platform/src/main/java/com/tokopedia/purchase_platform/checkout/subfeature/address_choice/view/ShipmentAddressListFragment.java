@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.di.component.CartComponent;

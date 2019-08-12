@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.cart.domain.mapper;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;

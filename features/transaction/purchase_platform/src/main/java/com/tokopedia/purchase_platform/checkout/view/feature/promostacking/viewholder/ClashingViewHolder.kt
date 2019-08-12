@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.checkout.view.feature.promostacking.view
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.tokopedia.purchase_platform.checkout.R
+import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.checkout.view.feature.promostacking.adapter.ClashingAdapter
 import com.tokopedia.purchase_platform.checkout.view.feature.promostacking.adapter.ClashingInnerAdapter
 import com.tokopedia.design.utils.CurrencyFormatUtil

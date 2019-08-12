@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
