@@ -199,7 +199,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         fragment.setArguments(args);
         return fragment;
     }
-n
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
