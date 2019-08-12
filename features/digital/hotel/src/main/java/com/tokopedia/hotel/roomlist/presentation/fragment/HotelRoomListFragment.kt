@@ -140,7 +140,7 @@ class HotelRoomListFragment : BaseListDFFragment<HotelRoom, RoomListTypeFactory>
         return view
     }
 
-    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
+    override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 

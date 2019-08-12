@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuItem
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleDFActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager

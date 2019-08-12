@@ -1,16 +1,13 @@
 package com.tokopedia.abstraction.base.view.activity;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-
-import com.tokopedia.abstraction.R;
-
 /**
- * To Set toolbar color, set the theme to android:theme="@style/Theme.White" or android:theme="@style/Theme.Green"
- * Created by zulfikarrahman on 5/30/17.
+ * If the module that extends the class is Dynamic Feature module,
+ * it is recommended to extend this class to make sure the resource R is correct
+ *
+ * to override use the full package name: for example
+ * override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
+ * override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
  */
-
 public abstract class BaseSimpleDFActivity extends BaseSimpleActivity {
 
     @Override
