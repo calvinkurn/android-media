@@ -257,7 +257,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         renderViewShadow();
         setupArguments(getArguments());
-        presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId));
+        if (categoryId != null) presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId));
 
         if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,

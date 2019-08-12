@@ -323,12 +323,12 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         }
 
                         view.renderSearchList(flightJourneyViewModelList!!, needRefresh)
+                        view.stopTrace()
 
                         if (view.isDoneLoadData()) {
                             view.addBottomPaddingForSortAndFilterActionButton()
                             view.addToolbarElevation()
                             view.hideHorizontalProgress()
-                            view.stopTrace()
                         }
                     }
                 }

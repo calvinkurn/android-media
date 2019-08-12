@@ -125,11 +125,17 @@ public class GroupChatAnalytics {
     }
 
     //#4
-    public void eventClickJoin(String channelId) {
+    public void eventClickJoin(String channelId, boolean loggedIn) {
+        String loginStatusLabel;
+        if (loggedIn) {
+            loginStatusLabel = "- login";
+        } else {
+            loginStatusLabel = "- non-login";
+        }
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on join",
-                channelId
+                String.format("%s%s", channelId, loginStatusLabel)
         ));
     }
 

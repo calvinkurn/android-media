@@ -135,6 +135,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
+    private boolean FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -156,8 +157,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Inject
     ICartListPresenter dPresenter;
     @Inject
-    CartAdapter cartAdapter;
-    @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
     @Inject
     CheckoutAnalyticsCart cartPageAnalytics;
@@ -168,6 +167,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
 
+    private CartAdapter cartAdapter;
     private RefreshHandler refreshHandler;
     private UserSessionInterface userSession;
 
@@ -249,6 +249,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             e.printStackTrace();
         }
 
+        if (FLAG_SHOULD_CLEAR_RECYCLERVIEW) {
+            clearRecyclerView();
+        }
+
         super.onStop();
     }
 
@@ -268,6 +272,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 .promoCheckoutModule(new PromoCheckoutModule())
                 .build();
         cartListComponent.inject(this);
+        cartAdapter = new CartAdapter(this, this, this);
     }
 
     @Override
@@ -378,10 +383,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
-                    return 1;
+                if (position != RecyclerView.NO_POSITION) {
+                    if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
+                        return 1;
+                    }
+                    return 2;
                 }
-                return 2;
+                return 0;
             }
         });
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
@@ -885,7 +893,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
-        dPresenter.processUpdateCartDataPromoStacking(getSelectedCartDataList(), dataGlobal, GO_TO_DETAIL);
+        List<CartItemData> cartItemData = getSelectedCartDataList();
+        if (cartItemData != null && cartItemData.size() > 0) {
+            trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
+            dPresenter.processUpdateCartDataPromoStacking(cartItemData, dataGlobal, GO_TO_DETAIL);
+        }
     }
 
     @Override
@@ -1256,6 +1268,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void renderToAddressChoice() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true;
+        FLAG_SHOULD_CLEAR_RECYCLERVIEW = true;
         boolean isAutoApplyPromoStackCodeApplied = dPresenter.getCartListData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData().isSuccess();
@@ -1264,6 +1277,14 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 isAutoApplyPromoStackCodeApplied
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
+    }
+
+    private void clearRecyclerView() {
+        cartAdapter.unsubscribeSubscription();
+        cartRecyclerView.setAdapter(null);
+        cartAdapter = new CartAdapter(null, null, null);
+        cartRecyclerView.removeAllViews();
+        cartRecyclerView.getRecycledViewPool().clear();
     }
 
     @Override
@@ -1443,7 +1464,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onDeleteCartDataSuccess(List<Integer> deletedCartIds) {
-        cartAdapter.removeCartItemById(deletedCartIds);
+        cartAdapter.removeCartItemById(deletedCartIds, getContext());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         notifyBottomCartParent();
     }
 
@@ -1511,6 +1533,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
+        if (cartRecyclerView.getAdapter() == null) {
+            cartAdapter = new CartAdapter(this, this, this);
+            cartRecyclerView.setAdapter(cartAdapter);
+        }
+        FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
         if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
             showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module));
             dPresenter.processResetAndRefreshCartData();
@@ -1522,8 +1549,20 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
             sendAnalyticsScreenName(getScreenName());
+            refreshHandler.setRefreshing(true);
+            if (cartListData != null) {
+                renderInitialGetCartListDataSuccess(cartListData);
+            } else {
+                dPresenter.processInitialGetCartData(getCartId(), false, false);
+            }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             sendAnalyticsScreenName(getScreenName());
+            refreshHandler.setRefreshing(true);
+            if (cartListData != null) {
+                renderInitialGetCartListDataSuccess(cartListData);
+            } else {
+                dPresenter.processInitialGetCartData(getCartId(), false, false);
+            }
         } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
             refreshHandler.setRefreshing(true);
             dPresenter.processInitialGetCartData(getCartId(), false, false);
@@ -2089,8 +2128,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
         }
 
-        endlessRecyclerViewScrollListener.updateStateAfterGetData();
-        hasLoadRecommendation = true;
         if (cartRecommendationItemHolderDataList.size() > 0) {
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
             recommendationList = cartRecommendationItemHolderDataList;
@@ -2105,6 +2142,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void hideItemLoading() {
         cartAdapter.removeCartLoadingData();
+        endlessRecyclerViewScrollListener.updateStateAfterGetData();
+        hasLoadRecommendation = true;
     }
 
     @Override

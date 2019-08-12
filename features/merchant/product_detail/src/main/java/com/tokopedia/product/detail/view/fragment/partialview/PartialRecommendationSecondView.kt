@@ -5,15 +5,17 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.partial_product_recom_2.view.*
 
 class PartialRecommendationSecondView private constructor(private val view: View,
-                                                          private val userActiveListener: RecommendationProductAdapter.UserActiveListener)
-    :BaseRecommendationView(view.context){
+                                                          private val userActiveListener: RecommendationProductAdapter.UserActiveListener,
+                                                          trackingQueue: TrackingQueue)
+    :BaseRecommendationView(view.context, trackingQueue){
 
     companion object {
-        fun build(_view: View, _userActiveListener: RecommendationProductAdapter.UserActiveListener) =
-                PartialRecommendationSecondView(_view, _userActiveListener)
+        fun build(_view: View, _userActiveListener: RecommendationProductAdapter.UserActiveListener, trackingQueue: TrackingQueue) =
+                PartialRecommendationSecondView(_view, _userActiveListener, trackingQueue)
     }
 
     override fun getLayoutProgress(): ProgressBar = view.loading_recom_2

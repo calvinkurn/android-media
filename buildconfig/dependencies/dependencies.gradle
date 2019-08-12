@@ -70,7 +70,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '0.0.5'
-    unifyComponentsVersion = '0.0.5'
+    unifyComponentsVersion = '0.0.7'
     unifyCoachMarkVersion = '1.0.0'
     unifyCalendarVersion = '0.0.2'
 
@@ -217,7 +217,7 @@ ext {
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
             liveData              : "android.arch.lifecycle:livedata:$lifeCycleVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.2",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.2@aar",
     ]
 
     testDependencies = [
