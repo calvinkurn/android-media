@@ -52,6 +52,7 @@ public class ProductViewModelMapper {
             productViewModel.setQuickFilterModel(searchProductModel.getQuickFilterModel());
         }
         productViewModel.setAdditionalParams(searchProduct.getAdditionalParams());
+        productViewModel.setAutocompleteApplink(searchProduct.getAutocompleteApplink());
 
         return productViewModel;
     }

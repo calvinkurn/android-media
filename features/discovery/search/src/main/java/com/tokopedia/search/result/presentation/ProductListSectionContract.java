@@ -64,6 +64,8 @@ public interface ProductListSectionContract {
 
         void setAdditionalParams(String additionalParams);
 
+        void setAutocompleteApplink(String autocompleteApplink);
+
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
 
         void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);

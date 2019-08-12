@@ -604,6 +604,7 @@ final class ProductListPresenter
         }
 
         getView().setAdditionalParams(productViewModel.getAdditionalParams());
+        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().removeLoading();
         getView().setProductList(list);
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());

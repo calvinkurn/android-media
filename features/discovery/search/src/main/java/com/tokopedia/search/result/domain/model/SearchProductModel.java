@@ -102,6 +102,9 @@ public class SearchProductModel {
         @SerializedName("additional_params")
         @Expose
         private String additionalParams;
+        @SerializedName("autocomplete_applink")
+        @Expose
+        private String autocompleteApplink;
         @SerializedName("redirection")
         @Expose
         private Redirection redirection = new Redirection();
@@ -145,6 +148,10 @@ public class SearchProductModel {
 
         public String getAdditionalParams() {
             return additionalParams;
+        }
+
+        public String getAutocompleteApplink() {
+            return autocompleteApplink;
         }
 
         public Redirection getRedirection() {
