@@ -142,7 +142,9 @@ import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
@@ -196,6 +198,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private lateinit var tradeInParams: TradeInParams
     private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
 
+    private var timer = Timer()
+
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
         ErrorBottomsheets()
@@ -240,6 +244,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val CART_SCALE_ANIMATION_TO = 2f
         const val CART_SCALE_ANIMATION_PIVOT = 0.5f
         const val CART_ANIMATION_DURATION = 700L
+
+        private const val STICKY_SHOW_DELAY: Long = 3 * 60 * 1000
 
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
@@ -454,7 +460,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
         appbar.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0)})
-        refreshLayout?.setOnRefreshListener { loadProductData(true) }
+        refreshLayout?.setOnRefreshListener {
+            loadProductData(true)
+            updateStickyState()
+        }
 
         if (isAffiliate) {
             actionButtonView.gone()
@@ -597,7 +606,25 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN) }
         stickyLoginTextView.setOnDismissListener(View.OnClickListener {
             stickyLoginTextView.dismiss()
+
+            if (!productInfoViewModel.isUserSessionActive()) {
+                timer.cancel()
+                timer = Timer()
+                timer.schedule(object : TimerTask() {
+                    override fun run() {
+                        activity!!.runOnUiThread { updateStickyState() }
+                    }
+                }, STICKY_SHOW_DELAY)
+            }
         })
+
+        updateStickyState()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        updateStickyState()
     }
 
     private fun doBuy() {
@@ -2073,6 +2100,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun updateStickyState() {
+        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
+        if (!isCanShowing) {
+            stickyLoginTextView.dismiss()
+            return
+        }
+
         val userSession = UserSession(context)
         if (userSession.isLoggedIn) {
             stickyLoginTextView.dismiss()
@@ -2080,5 +2113,4 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             stickyLoginTextView.show()
         }
     }
-
 }

@@ -113,6 +113,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -187,6 +189,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SharedPreferences sharedPrefs;
 
     int[] positionSticky = new int[2];
+    private static Timer timer = new Timer();
+    private static long STICKY_SHOW_DELAY = 3 * 60 *1000;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -362,6 +366,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
+        updateStickyState();
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -381,14 +386,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 floatingTextButton.resetState();
             }
         });
-
-        /*MUST BE DELETE -> TESTING PURPOSE*/
-        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-        if (floatingEggButtonFragment != null) {
-            floatingEggButtonFragment.showFloatingEggAnimate(true);
-            updateEggBottomMargin(floatingEggButtonFragment);
-        }
-        /*end*/
 
         stickyLoginTextView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
@@ -411,8 +408,32 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (floatingEggButtonFragment != null) {
                     updateEggBottomMargin(floatingEggButtonFragment);
                 }
+
+                if (!userSession.isLoggedIn()) {
+                    timer.cancel();
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateStickyState();
+                                }
+                            });
+                        }
+                    }, STICKY_SHOW_DELAY);
+                }
             }
         });
+
+        /*MUST BE DELETE -> TESTING PURPOSE*/
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            floatingEggButtonFragment.showFloatingEggAnimate(true);
+            updateEggBottomMargin(floatingEggButtonFragment);
+        }
+        /*end*/
     }
 
     private void scrollToRecommendList() {
@@ -1542,6 +1563,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void updateStickyState() {
+
+        boolean isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true);
+        if (!isCanShowing) {
+            stickyLoginTextView.dismiss();
+            return;
+        }
 
         if (stickyLoginTextView.isShowing()) {
             positionSticky = stickyLoginTextView.getLocation();

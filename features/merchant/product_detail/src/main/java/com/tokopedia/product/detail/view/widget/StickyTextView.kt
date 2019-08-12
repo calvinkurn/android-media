@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.product.detail.R
+import java.util.*
 
 class StickyTextView : FrameLayout {
 
@@ -115,7 +116,7 @@ class StickyTextView : FrameLayout {
     }
 
     fun getLocation(): IntArray? {
-        if (isShowing()) {
+        if(isShowing()) {
             val location = IntArray(2)
             this.getLocationOnScreen(location)
             return location
@@ -125,5 +126,6 @@ class StickyTextView : FrameLayout {
 
     companion object {
         const val TAG = "StickyTextButton"
+        const val STICKY_LOGIN_VIEW_KEY = "mainapp_native_sticky_login"
     }
 }

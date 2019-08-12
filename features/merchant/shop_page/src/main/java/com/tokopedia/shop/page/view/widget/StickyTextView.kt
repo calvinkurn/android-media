@@ -1,4 +1,4 @@
-package com.tokopedia.home.widget
+package com.tokopedia.shop.page.view.widget
 
 import android.content.Context
 import android.graphics.Typeface
@@ -13,7 +13,9 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.tokopedia.home.R
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shop.R
 import java.util.*
 
 class StickyTextView : FrameLayout {
