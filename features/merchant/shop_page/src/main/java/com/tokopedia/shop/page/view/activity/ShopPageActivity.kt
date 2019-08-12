@@ -703,7 +703,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     fun getShopInfoData() = (shopViewModel.shopInfoResp.value as? Success)?.data
 
     private fun updateStickyState() {
-        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
+//        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
+        val isCanShowing = true
         if (!isCanShowing) {
             stickyLoginTextView.dismiss()
             return
