@@ -75,5 +75,7 @@ public interface KolPostDetailContract {
         void deletePost(int id, int rowNumber);
 
         void addPostTagItemToCart(int positionInFeed, PostTagItem postTagItem);
+
+        void getRelatedPost(String activityId);
     }
 }

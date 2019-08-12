@@ -49,8 +49,8 @@ class GetRelatedPostUseCase @Inject constructor(@Named(RELATED_POST_KEY) private
         const val RELATED_POST_KEY = "relatedPost"
 
         @JvmOverloads
-        fun createRequestParams(activityId: String? = ""):
-            RequestParams {
+        @JvmStatic
+        fun createRequestParams(activityId: String? = ""): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_ACTIVITY_ID, activityId ?: "")
             return requestParams

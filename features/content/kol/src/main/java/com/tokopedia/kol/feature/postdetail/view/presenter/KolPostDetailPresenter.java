@@ -7,8 +7,10 @@ import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
+import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -42,6 +44,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
     private final SendVoteUseCase sendVoteUseCase;
     private final UserSessionInterface userSession;
     private final AddToCartUseCase atcUseCase;
+    private final GetRelatedPostUseCase getRelatedPostUseCase;
 
     @Inject
     public KolPostDetailPresenter(GetPostDetailUseCase getPostDetailUseCase,
@@ -52,6 +55,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                                   TrackAffiliateClickUseCase trackAffiliateClickUseCase,
                                   DeletePostUseCase deletePostUseCase,
                                   AddToCartUseCase atcUseCase,
+                                  GetRelatedPostUseCase getRelatedPostUseCase,
                                   UserSessionInterface userSessionInterface) {
         this.getPostDetailUseCase = getPostDetailUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
@@ -61,6 +65,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         this.sendVoteUseCase = sendVoteUseCase;
         this.deletePostUseCase = deletePostUseCase;
         this.atcUseCase = atcUseCase;
+        this.getRelatedPostUseCase = getRelatedPostUseCase;
         this.userSession = userSessionInterface;
     }
 
@@ -80,6 +85,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         deletePostUseCase.unsubscribe();
         sendVoteUseCase.unsubscribe();
         atcUseCase.unsubscribe();
+        getRelatedPostUseCase.unsubscribe();
     }
 
     @Override
@@ -293,5 +299,28 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         } else {
             getView().onAddToCartFailed(postTagItem.getApplink());
         }
+    }
+
+    @Override
+    public void getRelatedPost(String activityId) {
+        getRelatedPostUseCase.execute(
+                GetRelatedPostUseCase.createRequestParams(activityId),
+                new Subscriber<FeedPostRelated>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(FeedPostRelated feedPostRelated) {
+
+                    }
+                }
+        );
     }
 }

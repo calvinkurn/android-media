@@ -249,6 +249,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (!postDetailViewModel.getDynamicPostViewModel().getPostList().isEmpty()) {
             this.dynamicPostViewModel = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
             trackImpression(dynamicPostViewModel);
+            presenter.getRelatedPost(String.valueOf(dynamicPostViewModel.getId()));
         }
         setFooter(postDetailViewModel);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
