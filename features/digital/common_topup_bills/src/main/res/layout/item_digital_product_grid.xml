@@ -43,8 +43,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_4"
                 android:visibility="gone"
-                app:labelTitle="test"
-                app:textAllCaps="true" />
+                app:textAllCaps="true"
+                tools:labelTitle="test" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_promo_price"
