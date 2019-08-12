@@ -139,6 +139,22 @@ class CustomFieldSettingProfile : LinearLayout {
         build()
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        if (isEmptyField()) {
+            btnAdd.isEnabled = enabled
+            valueEmpty.isEnabled = enabled
+        } else {
+            btnEdit.isEnabled = enabled
+            valueFilled.isEnabled = enabled
+        }
+
+        if(enabled){
+            showButton()
+        }else{
+            hideButton()
+        }
+    }
+
     private fun build() {
         if (isEmptyField()) {
             itemEmptyField.visibility = View.VISIBLE

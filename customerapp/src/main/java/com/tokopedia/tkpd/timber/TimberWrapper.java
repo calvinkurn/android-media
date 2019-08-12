@@ -31,18 +31,6 @@ public class TimberWrapper {
         boolean isDebug = BuildConfig.DEBUG;
         if (isDebug) {
             Timber.plant(new TimberDebugTree());
-        } else {
-            String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
-            if (!TextUtils.isEmpty(logConfigString)) {
-                DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString,
-                        DataLogConfig.class);
-                if(dataLogConfig != null) {
-                    if (dataLogConfig.isEnabled() &&
-                            GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()) {
-                        Timber.plant(new TimberReportingTree(dataLogConfig.getPriorityList()));
-                    }
-                }
-            }
         }
     }
 }
