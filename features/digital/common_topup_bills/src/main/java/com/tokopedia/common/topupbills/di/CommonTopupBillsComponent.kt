@@ -1,4 +1,4 @@
-package com.tokopedia.common.topupbills.view.di
+package com.tokopedia.common.topupbills.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsCheckoutFragment

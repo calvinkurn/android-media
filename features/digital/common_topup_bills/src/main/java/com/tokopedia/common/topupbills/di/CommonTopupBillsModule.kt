@@ -1,4 +1,4 @@
-package com.tokopedia.common.topupbills.view.di
+package com.tokopedia.common.topupbills.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

@@ -13,8 +13,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.view.di.CommonTopupBillsComponent
-import com.tokopedia.common.topupbills.view.di.DaggerCommonTopupBillsComponent
+import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.di.DaggerCommonTopupBillsComponent
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.user.session.UserSessionInterface
