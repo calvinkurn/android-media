@@ -188,8 +188,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Snackbar homeSnackbar;
     private SharedPreferences sharedPrefs;
 
-    int[] positionSticky = new int[2];
-    private static Timer timer = new Timer();
+    private int[] positionSticky = new int[2];
+    private Timer timer = new Timer();
     private static long STICKY_SHOW_DELAY = 3 * 60 *1000;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
@@ -199,7 +199,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         fragment.setArguments(args);
         return fragment;
     }
-
+n
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -426,14 +426,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         });
-
-        /*MUST BE DELETE -> TESTING PURPOSE*/
-        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-        if (floatingEggButtonFragment != null) {
-            floatingEggButtonFragment.showFloatingEggAnimate(true);
-            updateEggBottomMargin(floatingEggButtonFragment);
-        }
-        /*end*/
     }
 
     private void scrollToRecommendList() {
