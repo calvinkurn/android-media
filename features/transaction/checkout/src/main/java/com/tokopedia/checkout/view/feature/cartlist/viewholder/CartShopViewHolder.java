@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.feature.cartlist.ActionListener;
@@ -27,6 +26,8 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
+
+import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -257,8 +258,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
                 tickerError.setDescriptionClickEvent(new TickerCallback() {
                     @Override
-                    public void onDescriptionViewClick(CharSequence charSequence) {
-                        RouteManager.route(itemView.getContext(), charSequence.toString());
+                    public void onDescriptionViewClick(CharSequence url) {
+                        actionListener.onSimilarProductUrlClicked(url.toString());
                     }
 
                     @Override
@@ -267,6 +268,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     }
                 });
                 tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
+                List<CartItemHolderData> cartItemDataList = data.getShopGroupData().getCartItemDataList();
+                actionListener.onShowTickerOutOfStock(cartItemDataList.get(cartItemDataList.size() - 1).getCartItemData().getOriginData().getProductId());
             } else {
                 String errorDescription = data.getShopGroupData().getErrorDescription();
                 if (!TextUtils.isEmpty(errorDescription)) {

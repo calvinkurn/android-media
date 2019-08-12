@@ -681,6 +681,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         dPresenter.processAddToCart(productModel);
     }
 
+    @Override
+    public void onShowTickerOutOfStock(@NotNull String productId) {
+        cartPageAnalytics.eventViewTickerOutOfStock(productId);
+    }
+
+    @Override
+    public void onSimilarProductUrlClicked(@NotNull String similarProductUrl) {
+        RouteManager.route(getContext(), similarProductUrl);
+        cartPageAnalytics.eventClickMoreLikeThis();
+    }
+
     @NonNull
     @Override
     public String getDefaultCartErrorMessage() {
@@ -968,6 +979,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId) {
         cartPageAnalytics.eventViewTickerStockDecreaseAndAlreadyAtcByOtherUser(productId);
+    }
+
+    @Override
+    public void onCartItemShowTickerOutOfStock(String productId) {
+        cartPageAnalytics.eventViewTickerOutOfStock(productId);
+    }
+
+    @Override
+    public void onCartItemSimilarProductUrlClicked(String similarProductUrl) {
+        RouteManager.route(getContext(), similarProductUrl);
+        cartPageAnalytics.eventClickMoreLikeThis();
     }
 
     @Override

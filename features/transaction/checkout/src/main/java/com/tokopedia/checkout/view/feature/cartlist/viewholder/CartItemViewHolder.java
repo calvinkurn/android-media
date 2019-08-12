@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
@@ -637,8 +636,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
                 tickerError.setDescriptionClickEvent(new TickerCallback() {
                     @Override
-                    public void onDescriptionViewClick(CharSequence charSequence) {
-                        RouteManager.route(itemView.getContext(), charSequence.toString());
+                    public void onDescriptionViewClick(CharSequence url) {
+                        actionListener.onCartItemSimilarProductUrlClicked(url.toString());
                     }
 
                     @Override
@@ -647,6 +646,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     }
                 });
                 tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
+                actionListener.onCartItemShowTickerOutOfStock(data.getCartItemData().getOriginData().getProductId());
             } else {
                 String errorDescription = data.getCartItemData().getErrorMessageDescription();
                 if (!TextUtils.isEmpty(errorDescription)) {
