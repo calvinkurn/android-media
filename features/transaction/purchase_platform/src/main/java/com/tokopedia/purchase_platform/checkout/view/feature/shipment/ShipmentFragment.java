@@ -29,14 +29,14 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.purchase_platform.checkout.view.CartConstant;
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
-import com.tokopedia.purchase_platform.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.di.component.CartComponent;
@@ -59,7 +59,6 @@ import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewmodel.
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
-import com.tokopedia.purchase_platform.checkout.view.feature.shippingoptions.CourierBottomsheet;
 import com.tokopedia.purchase_platform.checkout.view.feature.webview.CheckoutWebViewActivity;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
@@ -138,7 +137,7 @@ import static com.tokopedia.transactiondata.constant.Constant.EXTRA_CHECKOUT_REQ
  */
 
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View, PromoActionListener,
-        ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener, CourierBottomsheet.ActionListener,
+        ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
         MerchantVoucherListBottomSheetFragment.ActionListener, ClashBottomSheetFragment.ActionListener,
         PromoNotEligibleActionListener {
@@ -169,9 +168,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private SwipeToRefresh swipeToRefresh;
     private LinearLayout llNetworkErrorView;
     private ProgressDialog progressDialogNormal;
-    // For regular shipment
-    private CourierBottomsheet courierBottomsheet;
-    // For shipment recommendation
     private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
     private Snackbar snackbarError;
@@ -974,21 +970,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
         if (shipmentCartItemModel != null) {
-            if (!shipmentCartItemModel.isUseCourierRecommendation()) {
-                courierBottomsheet = null;
-                onChooseShipment(position, shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel());
+            shippingCourierBottomsheet = null;
+            shippingDurationBottomsheet = null;
+            RecipientAddressModel recipientAddressModel;
+            if (shipmentPresenter.getRecipientAddressModel() != null) {
+                recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
             } else {
-                shippingCourierBottomsheet = null;
-                shippingDurationBottomsheet = null;
-                RecipientAddressModel recipientAddressModel;
-                if (shipmentPresenter.getRecipientAddressModel() != null) {
-                    recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-                } else {
-                    recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-                }
-                onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel,
-                        shipmentCartItemModel.getShopShipmentList(), position);
+                recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
             }
+            onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel,
+                    shipmentCartItemModel.getShopShipmentList(), position);
         }
     }
 
@@ -1108,7 +1099,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentPresenter.setRecipientAddressModel(selectedAddress);
         shipmentAdapter.updateSelectedAddress(selectedAddress);
-        courierBottomsheet = null;
         onCartDataDisableToCheckout(null);
         shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId());
     }
@@ -1362,25 +1352,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
-                                 RecipientAddressModel recipientAddressModel) {
-        sendAnalyticsOnClickChooseCourierSelection();
-
-        RecipientAddressModel currentAddress;
-        if (recipientAddressModel != null) {
-            currentAddress = recipientAddressModel;
-        } else {
-            currentAddress = shipmentCartItemModel.getRecipientAddressModel();
-        }
-        ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
-                currentAddress);
-        if (shipmentDetailData != null) {
-            showCourierChoiceBottomSheet(shipmentDetailData, shipmentCartItemModel.getShopShipmentList(),
-                    currentAddress, position);
-        }
-    }
-
-    @Override
     public void onChooseShipmentDuration(ShipmentCartItemModel shipmentCartItemModel,
                                          RecipientAddressModel recipientAddressModel,
                                          List<ShopShipment> shopShipmentList,
@@ -1392,29 +1363,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (isTradeIn()) {
             checkoutAnalyticsCourierSelection.eventClickButtonPilihDurasi();
         }
-    }
-
-    private void showCourierChoiceBottomSheet(ShipmentDetailData shipmentDetailData,
-                                              List<ShopShipment> shopShipmentList,
-                                              RecipientAddressModel recipientAddressModel,
-                                              int position) {
-        if (courierBottomsheet == null || position != courierBottomsheet.getLastCartItemPosition() ||
-                shipmentDetailData.getSelectedCourier() == null) {
-            courierBottomsheet = new CourierBottomsheet(getActivity(), shipmentDetailData,
-                    shopShipmentList, recipientAddressModel, position);
-        }
-        if (shipmentDetailData.getSelectedCourier() != null) {
-            courierBottomsheet.setSelectedCourier(shipmentDetailData.getSelectedCourier());
-        }
-        courierBottomsheet.setListener(this);
-        courierBottomsheet.setOnShowListener(dialogInterface -> {
-            sendAnalyticsOnBottomShetCourierSelectionShow(shopShipmentList);
-            sendAnalyticsScreenName(ConstantTransactionAnalytics.ScreenName.SELECT_COURIER);
-            sendAnalyticsOnImpressionCourierSelectionShow();
-            courierBottomsheet.updateHeight();
-
-        });
-        courierBottomsheet.show();
     }
 
     public void sendAnalyticsOnBottomShetCourierSelectionShow(List<ShopShipment> shopShipmentList) {

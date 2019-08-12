@@ -1,18 +1,16 @@
 package com.tokopedia.purchase_platform.common.di.module;
 
 import com.tokopedia.purchase_platform.cart.domain.mapper.CartMapper;
-import com.tokopedia.purchase_platform.checkout.domain.mapper.CheckoutMapper;
 import com.tokopedia.purchase_platform.cart.domain.mapper.ICartMapper;
-import com.tokopedia.purchase_platform.checkout.domain.mapper.ICheckoutMapper;
-import com.tokopedia.purchase_platform.common.base.IMapperUtil;
-import com.tokopedia.purchase_platform.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.purchase_platform.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.purchase_platform.cart.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.purchase_platform.common.base.MapperUtil;
-import com.tokopedia.purchase_platform.checkout.domain.mapper.ShipmentMapper;
-import com.tokopedia.purchase_platform.checkout.domain.mapper.TopPayMapper;
 import com.tokopedia.purchase_platform.cart.domain.mapper.VoucherCouponMapper;
+import com.tokopedia.purchase_platform.checkout.domain.mapper.CheckoutMapper;
+import com.tokopedia.purchase_platform.checkout.domain.mapper.ICheckoutMapper;
+import com.tokopedia.purchase_platform.checkout.domain.mapper.IShipmentMapper;
+import com.tokopedia.purchase_platform.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.converter.RatesDataConverter;
+import com.tokopedia.purchase_platform.common.base.IMapperUtil;
+import com.tokopedia.purchase_platform.common.base.MapperUtil;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,11 +38,6 @@ public class DataMapperModule {
     @Provides
     ICheckoutMapper provideICheckoutMapper(IMapperUtil mapperUtil) {
         return new CheckoutMapper(mapperUtil);
-    }
-
-    @Provides
-    ITopPayMapper provideITopPayMapper() {
-        return new TopPayMapper();
     }
 
     @Provides

@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.common.di.module;
 import com.tokopedia.purchase_platform.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.purchase_platform.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
-import com.tokopedia.purchase_platform.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import dagger.Module;

@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper
+package com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.corner
 
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.Data
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.NewAddressCornerResponse

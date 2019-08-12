@@ -54,7 +54,7 @@ import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningAct
 import com.tokopedia.chatbot.ChatbotRouter;
 //import com.tokopedia.purchase_platform.checkout.view.CartConstant;
 //import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
-//import com.tokopedia.purchase_platform.checkout.router.ICheckoutModuleRouter;
+//import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 //import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
 //import com.tokopedia.purchase_platform.checkout.view.feature.cartlist.CartActivity;
 //import com.tokopedia.purchase_platform.checkout.view.feature.cartlist.CartFragment;

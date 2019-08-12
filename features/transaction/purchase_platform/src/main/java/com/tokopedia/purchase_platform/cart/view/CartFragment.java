@@ -38,7 +38,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
@@ -48,7 +48,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promost
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.cart.data.model.recentview.RecentView;
 import com.tokopedia.purchase_platform.cart.domain.model.voucher.PromoCodeCartListData;
-import com.tokopedia.purchase_platform.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartItemTickerErrorHolderData;
@@ -91,10 +91,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
@@ -120,7 +116,7 @@ import javax.inject.Inject;
  */
 
 public class CartFragment extends BaseCheckoutFragment implements ActionListener,
-        CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener, PromoActionListener,
+        CartItemAdapter.ActionListener, ICartListView, PromoActionListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
         ClashBottomSheetFragment.ActionListener {

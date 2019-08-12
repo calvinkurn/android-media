@@ -32,9 +32,6 @@ public interface ShipmentAdapterActionListener {
 
     void onSendToMultipleAddress(RecipientAddressModel recipientAddressModel, String cartIds);
 
-    void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
-                          RecipientAddressModel recipientAddressModel);
-
     void onChooseShipmentDuration(ShipmentCartItemModel shipmentCartItemModel,
                                   RecipientAddressModel recipientAddressModel,
                                   List<ShopShipment> shopShipmentList,

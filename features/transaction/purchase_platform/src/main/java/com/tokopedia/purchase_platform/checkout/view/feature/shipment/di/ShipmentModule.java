@@ -18,7 +18,7 @@ import com.tokopedia.purchase_platform.checkout.domain.usecase.EditAddressUseCas
 import com.tokopedia.purchase_platform.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.SaveShipmentStateUseCase;
-import com.tokopedia.purchase_platform.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
 import com.tokopedia.purchase_platform.common.di.module.ConverterDataModule;
 import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule;

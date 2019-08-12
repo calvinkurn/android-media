@@ -47,7 +47,6 @@ import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMa
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceAdd;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
@@ -110,7 +109,6 @@ public class CartListPresenter implements ICartListPresenter {
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
     private final CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase;
     private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
-    private final TopAdsGqlUseCase topAdsUseCase;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
     private final GetRecentViewUseCase getRecentViewUseCase;
@@ -134,7 +132,6 @@ public class CartListPresenter implements ICartListPresenter {
                              RemoveWishListUseCase removeWishListUseCase,
                              UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                              UserSessionInterface userSessionInterface,
-                             TopAdsGqlUseCase topAdsUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                              GetRecentViewUseCase getRecentViewUseCase,
                              GetWishlistUseCase getWishlistUseCase,
@@ -153,7 +150,6 @@ public class CartListPresenter implements ICartListPresenter {
         this.removeWishListUseCase = removeWishListUseCase;
         this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
         this.userSessionInterface = userSessionInterface;
-        this.topAdsUseCase = topAdsUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.getRecentViewUseCase = getRecentViewUseCase;
         this.getWishlistUseCase = getWishlistUseCase;

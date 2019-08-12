@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
-import com.tokopedia.purchase_platform.checkout.R;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.purchase_platform.cart.domain.usecase.GetCartListUseCase;
@@ -32,7 +32,6 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -97,12 +96,6 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    TopAdsGqlUseCase topAdsUseCase(Context context) {
-        return new TopAdsGqlUseCase(context);
-    }
-
-    @Provides
-    @CartListScope
     CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context) {
         return new CheckPromoStackingCodeUseCase(context.getResources());
     }
@@ -162,7 +155,6 @@ public class CartListModule {
                                                  RemoveWishListUseCase removeWishListUseCase,
                                                  UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                                                  UserSessionInterface userSessionInterface,
-                                                 TopAdsGqlUseCase topAdsGqlUseCase,
                                                  ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                                                  GetRecentViewUseCase getRecentViewUseCase,
                                                  GetWishlistUseCase getWishlistUseCase,
@@ -172,7 +164,7 @@ public class CartListModule {
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
-                updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
+                updateAndReloadCartUseCase, userSessionInterface,
                 clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
                 getRecommendationUseCase, addToCartUseCase);
     }

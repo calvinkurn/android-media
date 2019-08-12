@@ -1434,19 +1434,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         };
     }
 
-    private View.OnClickListener getSelectShippingOptionListener(final int position,
-                                                                 final ShipmentCartItemModel shipmentCartItemModel,
-                                                                 final RecipientAddressModel recipientAddressModel) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (position != RecyclerView.NO_POSITION) {
-                    mActionListener.onChooseShipment(position, shipmentCartItemModel, recipientAddressModel);
-                }
-            }
-        };
-    }
-
     private void initInnerRecyclerView(List<CartItemModel> cartItemList) {
         rvCartItem.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(rvCartItem.getContext());
@@ -1557,98 +1544,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private interface SaveStateDebounceListener {
 
         void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel);
-
-    }
-
-    // Choose duration, then manually choose courier
-    // Deprecated
-    private void renderRobinhoodV1(ShipmentCartItemModel shipmentCartItemModel,
-                                   ShipmentDetailData shipmentDetailData,
-                                   RecipientAddressModel recipientAddressModel,
-                                   RatesDataConverter ratesDataConverter) {
-        llShipmentRecommendationContainer.setVisibility(View.GONE);
-        llShipmentBlackboxContainer.setVisibility(View.GONE);
-        llShipmentContainer.setVisibility(View.VISIBLE);
-
-        chooseCourierButton.setOnClickListener(getSelectShippingOptionListener(getAdapterPosition(),
-                shipmentCartItemModel, recipientAddressModel));
-        tvChangeCourier.setOnClickListener(getSelectShippingOptionListener(getAdapterPosition(),
-                shipmentCartItemModel, recipientAddressModel));
-
-        boolean isCourierSelected = shipmentDetailData != null
-                && shipmentDetailData.getSelectedCourier() != null;
-
-        tvTickerInfo.setVisibility(View.GONE);
-        llShipmentInfoTicker.setVisibility(View.GONE);
-
-        if (isCourierSelected) {
-            llShippingOptionsContainer.setVisibility(View.VISIBLE);
-            if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType())) {
-                if (shipmentDetailData.getSelectedCourier().getMinEtd() != 0 &&
-                        shipmentDetailData.getSelectedCourier().getMaxEtd() != 0) {
-                    String etd = "(" + shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery() + ")";
-                    tvShippingEtd.setText(etd);
-                    tvShippingEtd.setVisibility(View.VISIBLE);
-                } else if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType()) &&
-                        !TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd())) {
-                    String etd = "(" + shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd() + ")";
-                    tvShippingEtd.setText(etd);
-                    tvShippingEtd.setVisibility(View.VISIBLE);
-                } else {
-                    tvShippingEtd.setVisibility(View.GONE);
-                }
-                tvShippingTypeName.setText(shipmentDetailData.getSelectedCourier().getShipmentItemDataType());
-                llShipmpingType.setVisibility(View.VISIBLE);
-            } else {
-                llShipmpingType.setVisibility(View.GONE);
-            }
-            tvCourierName.setText(shipmentDetailData.getSelectedCourier().getName());
-            String courierPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shipmentDetailData.getSelectedCourier().getShipperPrice(), false);
-            tvCourierPrice.setText(courierPrice);
-            tvCourierPrice.setVisibility(View.VISIBLE);
-            tvDash.setVisibility(View.VISIBLE);
-            llShipmentOptionViewLayout.setVisibility(View.GONE);
-            llSelectedCourier.setVisibility(View.VISIBLE);
-            llCourierStateLoading.setVisibility(View.GONE);
-        } else {
-            llShippingOptionsContainer.setVisibility(View.GONE);
-            llSelectedCourier.setVisibility(View.GONE);
-            llShipmentOptionViewLayout.setVisibility(View.VISIBLE);
-
-            if (shipmentCartItemModel.isStateLoadingCourierState()) {
-                llCourierStateLoading.setVisibility(View.VISIBLE);
-                llShipmentOptionViewLayout.setVisibility(View.GONE);
-            } else {
-                llCourierStateLoading.setVisibility(View.GONE);
-                if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
-                    if (shipmentDetailData == null) {
-                        RecipientAddressModel tmpRecipientAddressModel;
-                        if (recipientAddressModel != null) {
-                            tmpRecipientAddressModel = recipientAddressModel;
-                        } else {
-                            tmpRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-                        }
-                        ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
-                                shipmentCartItemModel, tmpRecipientAddressModel);
-
-                        if (!shipmentCartItemModel.isStateHasLoadCourierState()) {
-                            mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
-                                    shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), false);
-                            shipmentCartItemModel.setStateLoadingCourierState(true);
-                            shipmentCartItemModel.setStateHasLoadCourierState(true);
-                            llCourierStateLoading.setVisibility(View.VISIBLE);
-                            llShipmentOptionViewLayout.setVisibility(View.GONE);
-                        }
-                    }
-                } else {
-                    llCourierStateLoading.setVisibility(View.GONE);
-                    llShipmentOptionViewLayout.setVisibility(View.VISIBLE);
-                }
-            }
-
-        }
 
     }
 

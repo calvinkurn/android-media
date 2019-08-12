@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.common.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.purchase_platform.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 
 import dagger.Module;
 import dagger.Provides;

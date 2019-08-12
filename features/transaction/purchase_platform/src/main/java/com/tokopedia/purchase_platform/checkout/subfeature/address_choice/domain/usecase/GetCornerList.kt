@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.purchase_platform.checkout.R
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.NewAddressCornerResponse
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.AddressCornerMapper
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.corner.AddressCornerMapper
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.model.AddressListModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
