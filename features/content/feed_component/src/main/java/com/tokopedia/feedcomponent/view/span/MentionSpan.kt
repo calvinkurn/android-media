@@ -5,6 +5,7 @@ import android.support.annotation.ColorInt
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
+import com.tokopedia.feedcomponent.util.MentionTextHelper
 
 /**
  * Created by jegul on 2019-08-05.
@@ -26,6 +27,9 @@ class MentionSpan(
     val length = fullName.length
 
     val end = start + length
+
+    val displayedText: String
+        get() = "${MentionTextHelper.MENTION_CHAR}$fullName"
 
     override fun onClick(p0: View) {
         onClickListener.onClick(userId)

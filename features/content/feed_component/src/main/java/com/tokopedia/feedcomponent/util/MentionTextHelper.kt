@@ -18,7 +18,7 @@ import java.util.regex.Pattern
  *
  */
 object MentionTextHelper {
-    private const val MENTION_CHAR = "@"
+    const val MENTION_CHAR = "@"
     private const val MENTION_TAG = "mention"
     private const val OPENING_MENTION_TAG = "<$MENTION_TAG>"
     private const val CLOSING_MENTION_TAG = "</$MENTION_TAG>"
@@ -68,7 +68,7 @@ object MentionTextHelper {
                     spannableString.replace(
                             startIndex,
                             endIndex,
-                            "$MENTION_CHAR${mentionSpan.fullName}"
+                            mentionSpan.displayedText
                     )
                 }
 
@@ -101,8 +101,15 @@ object MentionTextHelper {
         existingSpanList.forEach { span ->
             val spanStart = text.getSpanStart(span)
             val spanEnd = text.getSpanEnd(span)
+
             if (spanEnd - spanStart - 1 != span.length) {
-                spannableStringBuilder.replace(spanStart, spanEnd, "")
+                val replacingText = text.substring(spanStart, spanEnd)
+                spannableStringBuilder.removeSpan(span)
+                spannableStringBuilder.replace(
+                        spanStart,
+                        spanEnd,
+                        if (span.displayedText.contains(replacingText)) "" else replacingText
+                )
             }
         }
 
