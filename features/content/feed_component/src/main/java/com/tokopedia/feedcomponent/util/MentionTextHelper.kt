@@ -63,8 +63,7 @@ object MentionTextHelper {
                             startIndex + 1,
                             endIndex,
                             mentionSpan.fullName)
-                }
-                else {
+                } else {
                     spannableString.replace(
                             startIndex,
                             endIndex,
@@ -102,14 +101,16 @@ object MentionTextHelper {
             val spanStart = text.getSpanStart(span)
             val spanEnd = text.getSpanEnd(span)
 
-            if (spanEnd - spanStart - 1 != span.length) {
+            if (spanEnd - spanStart != span.length) {
                 val replacingText = text.substring(spanStart, spanEnd)
-                spannableStringBuilder.removeSpan(span)
                 spannableStringBuilder.replace(
                         spanStart,
                         spanEnd,
-                        if (span.displayedText.contains(replacingText)) "" else replacingText
+                        ""
                 )
+                if (spanStart != text.indexOf(replacingText) ||
+                        replacingText.length != span.length - 1)
+                    spannableStringBuilder.insert(spanStart, replacingText)
             }
         }
 
@@ -141,7 +142,8 @@ object MentionTextHelper {
             val spanEnd = spannableStringBuilder.getSpanEnd(span)
             try {
                 spannableStringBuilder.replace(spanStart, spanEnd, span.fullText)
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
         }
 
         return spannableStringBuilder.toString()

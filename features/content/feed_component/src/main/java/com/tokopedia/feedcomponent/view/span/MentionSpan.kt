@@ -24,12 +24,12 @@ class MentionSpan(
         fun onClick(userId: String)
     }
 
-    val length = fullName.length
-
-    val end = start + length
-
     val displayedText: String
         get() = "${MentionTextHelper.MENTION_CHAR}$fullName"
+
+    val length = displayedText.length
+
+    val end = start + length
 
     override fun onClick(p0: View) {
         onClickListener.onClick(userId)
