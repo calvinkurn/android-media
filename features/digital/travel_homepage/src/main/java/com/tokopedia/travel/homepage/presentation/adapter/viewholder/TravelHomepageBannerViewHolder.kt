@@ -28,18 +28,23 @@ class TravelHomepageBannerViewHolder(itemView: View) : AbstractViewHolder<Travel
     }
 
     override fun bind(element: TravelHomepageBannerModel) {
-        try {
-            bannerList = element.banners
-            bannerView.shouldShowSeeAllButton(bannerList.isNotEmpty())
+        if (element.isLoaded) {
+            try {
+                bannerList = element.banners
+                bannerView.shouldShowSeeAllButton(bannerList.isNotEmpty())
 
-            val promoUrls = arrayListOf<String>()
-            for (slidesModel in bannerList) {
-                promoUrls.add(slidesModel.attribute.imageUrl)
+                val promoUrls = arrayListOf<String>()
+                for (slidesModel in bannerList) {
+                    promoUrls.add(slidesModel.attribute.imageUrl)
+                }
+                bannerView.setPromoList(promoUrls)
+                bannerView.buildView()
+            } catch (e: Throwable) {
+
             }
-            bannerView.setPromoList(promoUrls)
-            bannerView.buildView()
-        } catch (e: Throwable) {
-
+        } else {
+            //show shimmering
+            //hit API
         }
     }
 

@@ -13,7 +13,7 @@ class TravelHomepageOrderListModel(@SerializedName("orders")
                                    val orders: List<Order> = arrayListOf(),
                                    @SerializedName("meta")
                                    @Expose
-                                   val meta: MetaModel = MetaModel()) : Visitable<TravelHomepageAdapterTypeFactory> {
+                                   val meta: MetaModel = MetaModel()) : TravelHomepageItemModel() {
 
     override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
 

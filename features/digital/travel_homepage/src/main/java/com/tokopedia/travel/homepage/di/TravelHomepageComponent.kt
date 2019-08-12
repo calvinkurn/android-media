@@ -14,7 +14,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  * @author by furqan on 05/08/2019
  */
 @TravelHomepageScope
-@Component(modules = [TravelHomepageModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [TravelHomepageModule::class, TravelHomepageViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface TravelHomepageComponent {
 
     @ApplicationContext

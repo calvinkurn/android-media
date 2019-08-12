@@ -10,7 +10,7 @@ import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepage
  */
 class TravelHomepageCategoryListModel(@SerializedName("category")
                                       @Expose
-                                      val categories: List<Category> = arrayListOf()) : Visitable<TravelHomepageAdapterTypeFactory> {
+                                      val categories: List<Category> = arrayListOf()) : TravelHomepageItemModel() {
 
     override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
 

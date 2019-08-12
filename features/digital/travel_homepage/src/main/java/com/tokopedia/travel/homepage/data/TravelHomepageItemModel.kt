@@ -1,0 +1,12 @@
+package com.tokopedia.travel.homepage.data
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
+
+/**
+ * @author by jessica on 2019-08-09
+ */
+
+abstract class TravelHomepageItemModel(var isLoaded: Boolean = false): Visitable<TravelHomepageAdapterTypeFactory> {
+    abstract override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int
+}

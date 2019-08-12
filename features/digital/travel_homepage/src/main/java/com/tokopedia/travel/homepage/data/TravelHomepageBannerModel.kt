@@ -10,10 +10,10 @@ import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepage
  */
 class TravelHomepageBannerModel(@SerializedName("banners")
                                 @Expose
-                                val banners: List<Banner> = arrayListOf(),
+                                val banners: List<Banner> = listOf(),
                                 @SerializedName("meta")
                                 @Expose
-                                val meta: MetaModel = MetaModel()) : Visitable<TravelHomepageAdapterTypeFactory> {
+                                val meta: MetaModel = MetaModel()) : TravelHomepageItemModel() {
 
     override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
 
@@ -42,5 +42,9 @@ class TravelHomepageBannerModel(@SerializedName("banners")
                          @SerializedName("promoCode")
                          @Expose
                          val promoCode: String = "")
+
+    data class Response(@SerializedName("travelCollectiveBanner")
+                        @Expose
+                        val response: TravelHomepageBannerModel)
 
 }

@@ -142,9 +142,11 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
             imgBannerBackground.setImageBitmap(bitmap)
             currentBitmapDrawable = BitmapDrawable(resources, bitmap)
         } else if (::imgBannerBackground.isInitialized) {
-            val td = TransitionDrawable(arrayOf<Drawable>(currentBitmapDrawable!!, BitmapDrawable(resources, bitmap)))
-            imgBannerBackground.setImageDrawable(td)
-            td.startTransition(250)
+            currentBitmapDrawable?.let {
+                val td = TransitionDrawable(arrayOf<Drawable>(it, BitmapDrawable(resources, bitmap)))
+                imgBannerBackground.setImageDrawable(td)
+                td.startTransition(250)
+            }
             currentBitmapDrawable = BitmapDrawable(resources, bitmap)
         }
     }

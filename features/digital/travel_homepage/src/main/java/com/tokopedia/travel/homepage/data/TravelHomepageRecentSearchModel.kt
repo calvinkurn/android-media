@@ -13,7 +13,7 @@ class TravelHomepageRecentSearchModel(@SerializedName("items")
                                       val items: List<Item> = arrayListOf(),
                                       @SerializedName("meta")
                                       @Expose
-                                      val meta: MetaModel = MetaModel()) : Visitable<TravelHomepageAdapterTypeFactory> {
+                                      val meta: MetaModel = MetaModel()) : TravelHomepageItemModel() {
 
     override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
 
