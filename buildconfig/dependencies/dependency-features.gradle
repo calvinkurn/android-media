@@ -201,6 +201,7 @@ ext {
             digitalproduct                  : ":features:digital:digitalproduct",
             commonTopupBills                : ":features:digital:common_topup_bills",
             digitalTopupBills               : ":features:digital:digital_topup_bills",
+            voucherGame                     : ":features:digital:voucher_game",
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
 //            flight                          : ":features:digital:flight_no_op",
