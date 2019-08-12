@@ -17,7 +17,8 @@
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         android:text="@string/feed_other_related_post"
-        app:typographyType="body_2"
+        android:textColor="@color/black_70"
+        app:typographyType="heading_5"
         app:typographyWeight="bold" />
 
     <android.support.v7.widget.RecyclerView
