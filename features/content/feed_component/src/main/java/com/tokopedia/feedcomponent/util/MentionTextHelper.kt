@@ -92,8 +92,8 @@ object MentionTextHelper {
         }
     }
 
-    fun getAllMentionSpansFromText(text: Spannable): Array<MentionSpan> {
-        return text.getSpans(0, text.length, MentionSpan::class.java)
+    fun getAllMentionSpansFromText(text: Spannable, start: Int = 0, end: Int = text.length): Array<MentionSpan> {
+        return text.getSpans(start, end, MentionSpan::class.java)
     }
 
     fun stripInvalidMentionFromText(text: Spannable, existingSpanList: Iterable<MentionSpan>): Spannable {

@@ -50,8 +50,8 @@ class MentionEditText : MultiAutoCompleteTextView {
             val distanceFromEnd = length() - selectionEnd //calculate cursor distance from text end
 
             val spannedText = MentionTextHelper.spanText(text, color, onMentionClickedListener, true)
-            val allMentionSpan = MentionTextHelper.getAllMentionSpansFromText(spannedText).toList()
-            val newText = MentionTextHelper.stripInvalidMentionFromText(spannedText, allMentionSpan)
+            val allMentionSpans = MentionTextHelper.getAllMentionSpansFromText(spannedText).toList()
+            val newText = MentionTextHelper.stripInvalidMentionFromText(spannedText, allMentionSpans)
 
             text.replace(0, text.length, newText)
 
@@ -73,6 +73,36 @@ class MentionEditText : MultiAutoCompleteTextView {
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
         }
+    }
+
+    override fun onSelectionChanged(selStart: Int, selEnd: Int) {
+        var start = selStart
+        var end = selEnd
+
+        val mentionSpanList = MentionTextHelper.getAllMentionSpansFromText(text, selStart, selEnd)
+        for (span in mentionSpanList) {
+            val spanStart = text.getSpanStart(span)
+            val spanEnd = text.getSpanEnd(span)
+
+            if (selStart != selEnd) {
+                if (selStart in (spanStart + 1) until spanEnd) {
+                    start = spanStart
+                }
+                if (selEnd in (spanStart + 1) until spanEnd) {
+                    end = spanEnd
+                }
+            }
+            else if (spanStart <= selStart && spanEnd > selEnd) {
+                start = spanStart
+                end = spanEnd
+            }
+        }
+
+        if (selStart != start || selEnd != end) {
+            setSelection(start, end)
+        }
+
+        super.onSelectionChanged(selStart, selEnd)
     }
 
     init {
