@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
 import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -39,13 +40,14 @@ class WebSocketViewModel
             "?os_type=1" +
             "&device_id=" + userSession.deviceId +
             "&user_id=" + userSession.userId
-    val uiScope = CoroutineScope(coroutineContext)
     private var easyWS: EasyWS? = null
 
-    val itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
+    private val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
+    val itemChat: LiveData<Result<BaseIncomingItemWebSocketModel>>
+        get() = _itemChat
 
     fun connectWebSocket() {
-        uiScope.launch {
+        launch {
             client.run { newBuilder().addInterceptor(tkpdAuthInterceptor)
                                      .addInterceptor(fingerprintInterceptor) }
             easyWS = client.easyWebSocket(webSocketUrl, userSession.accessToken)
@@ -56,9 +58,9 @@ class WebSocketViewModel
                 for (response in it.textChannel) {
                     debug("tevWS"," Response: $response")
                     when(response.getCode()) {
-                        EVENT_TOPCHAT_REPLY_MESSAGE -> itemChat.value = Success(mapToIncomingChat(response))
-                        EVENT_TOPCHAT_TYPING -> itemChat.value = Success(mapToIncomingTypeState(response, true))
-                        EVENT_TOPCHAT_END_TYPING -> itemChat.value = Success(mapToIncomingTypeState(response, false))
+                        EVENT_TOPCHAT_REPLY_MESSAGE -> _itemChat.postValue(Success(mapToIncomingChat(response)))
+                        EVENT_TOPCHAT_TYPING -> _itemChat.postValue(Success(mapToIncomingTypeState(response, true)))
+                        EVENT_TOPCHAT_END_TYPING -> _itemChat.postValue(Success(mapToIncomingTypeState(response, false)))
                     }
                 }
             }

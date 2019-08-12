@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.fragment
 
 import android.app.Activity
+import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
@@ -47,7 +48,8 @@ import javax.inject.Inject
 class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         , ChatListContract.View
                         , ChatListItemListener
-                        , ChatListWebSocketContract.Fragment{
+                        , ChatListWebSocketContract.Fragment
+                        , LifecycleOwner {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -343,6 +345,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun callInitialLoadAutomatically(): Boolean {
         return false
+    }
+
+    override fun hasInitialSwipeRefresh(): Boolean {
+        return true
     }
 
     companion object {
