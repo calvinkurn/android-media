@@ -5,13 +5,12 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
@@ -35,7 +34,7 @@ import javax.inject.Inject
  * @author by jessica on 27/03/19
  */
 
-class HotelSearchDestinationFragment: BaseListFragment<SearchDestination, SearchDestinationTypeFactory>(),
+class HotelSearchDestinationFragment: BaseListDFFragment<SearchDestination, SearchDestinationTypeFactory>(),
 SearchDestinationListener{
 
     @Inject
@@ -77,9 +76,10 @@ SearchDestinationListener{
         return view
     }
 
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
-    }
+    override fun getSwipeRefreshLayoutResourceId(): Int = 0
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
 
     override fun getAdapterTypeFactory(): SearchDestinationTypeFactory {
         return SearchDestinationTypeFactory(this)

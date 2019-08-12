@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
@@ -45,7 +46,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
 import javax.inject.Inject
 
-class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
+class HotelSearchResultFragment : BaseListDFFragment<Property, PropertyAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener {
 
     @Inject
@@ -128,15 +129,11 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         return inflater.inflate(R.layout.fragment_hotel_search_result, container, false)
     }
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     override fun hasInitialSwipeRefresh(): Boolean = true
-
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
-    }
-
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        return view.findViewById(R.id.swipe_refresh_layout)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyPolicyData
@@ -15,12 +16,16 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail_policy.*
 /**
  * @author by furqan on 07/05/19
  */
-class HotelDetailPolicyFragment : BaseListFragment<PropertyPolicyData, HotelDetailFacilityAdapterTypeFactory>() {
+class HotelDetailPolicyFragment : BaseListDFFragment<PropertyPolicyData, HotelDetailFacilityAdapterTypeFactory>() {
 
     lateinit var connector: Connector
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_detail_policy, container, false)
+
+    override fun getSwipeRefreshLayoutResourceId() = 0
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,10 +57,6 @@ class HotelDetailPolicyFragment : BaseListFragment<PropertyPolicyData, HotelDeta
     override fun getScreenName(): String = ""
 
     override fun initInjector() {}
-
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
-    }
 
     override fun loadData(page: Int) {
         if (::connector.isInitialized) {

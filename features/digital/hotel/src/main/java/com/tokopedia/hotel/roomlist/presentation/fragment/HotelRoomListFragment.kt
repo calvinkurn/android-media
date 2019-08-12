@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -52,7 +53,7 @@ import kotlin.math.roundToLong
  * @author by jessica on 15/04/19
  */
 
-class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
+class HotelRoomListFragment : BaseListDFFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
         HotelRoomAndGuestBottomSheets.HotelGuestListener, BaseEmptyViewHolder.Callback,
         RoomListViewHolder.OnClickBookListener {
 
@@ -139,15 +140,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         return view
     }
 
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
-    }
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
 
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return if (hasInitialSwipeRefresh()) {
-            view?.findViewById(R.id.swipe_refresh_layout)
-        } else null
-    }
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

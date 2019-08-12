@@ -1,9 +1,10 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityData
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityAdapterTypeFactory
@@ -11,13 +12,19 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityA
 /**
  * @author by furqan on 06/05/19
  */
-class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFacilityAdapterTypeFactory>() {
+class HotelDetailFacilityFragment : BaseListDFFragment<FacilityData, HotelDetailFacilityAdapterTypeFactory>() {
+
 
     lateinit var connector: Connector
 
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById<View>(com.tokopedia.abstraction.R.id.recycler_view) as RecyclerView
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(com.tokopedia.abstraction.R.layout.fragment_base_list, container, false)
     }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.abstraction.R.id.swipe_refresh_layout
+
+    override fun getRecyclerViewResourceId() = com.tokopedia.abstraction.R.id.recycler_view
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -5,6 +5,7 @@ import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleDFActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.GraphqlClient
@@ -18,7 +19,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 25/03/19
  */
-abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.HotelMenuListener {
+abstract class HotelBaseActivity: BaseSimpleDFActivity(), HotelMenuBottomSheets.HotelMenuListener {
 
     private lateinit var hotelComponent: HotelComponent
 

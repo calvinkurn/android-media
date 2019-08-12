@@ -47,6 +47,8 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
     override fun getLayoutRes(): Int = R.layout.activity_hotel_destination
 
+    override fun getParentViewResourceID(): Int = R.id.parent_view
+
     override fun isShowCloseButton(): Boolean = true
 
     override fun getComponent(): HotelDestinationComponent = DaggerHotelDestinationComponent.builder()

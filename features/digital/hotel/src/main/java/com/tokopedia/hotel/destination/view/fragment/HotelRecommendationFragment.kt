@@ -18,6 +18,7 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -47,7 +48,7 @@ import javax.inject.Inject
  * @author by jessica on 25/03/19
  */
 
-class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearchTypeFactory>(), RecentSearchListener {
+class HotelRecommendationFragment : BaseListDFFragment<PopularSearch, PopularSearchTypeFactory>(), RecentSearchListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -111,9 +112,9 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         }
     }
 
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById<View>(com.tokopedia.hotel.R.id.recycler_view) as RecyclerView
-    }
+    override fun getSwipeRefreshLayoutResourceId(): Int = 0
+
+    override fun getRecyclerViewResourceId() = com.tokopedia.hotel.R.id.recycler_view
 
     fun initCurrentLocationTextView(view: View) {
 
