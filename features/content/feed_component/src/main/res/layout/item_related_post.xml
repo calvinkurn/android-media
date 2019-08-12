@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_8"
@@ -15,6 +16,7 @@
         tools:text="Post terkait" />
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/relatedPostRv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
