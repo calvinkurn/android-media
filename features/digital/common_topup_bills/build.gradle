@@ -1,15 +1,12 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdCommonDigital']
-            }
-        }
-    }
+repositories {
+    maven { url 'https://hansel.io/maven' }
 }
 
 project.ext {
@@ -34,21 +31,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
-    implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.commonDigital)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
 
-    implementation rootProject.ext.miscDependencies.coroutineCore
-    implementation rootProject.ext.miscDependencies.coroutineAndroid
-
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-
-    implementation rootProject.ext.playServicesDependencies.analytics
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
@@ -56,8 +46,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation project(rootProject.ext.libraries.track)
-
-    implementation rootProject.ext.networkDependencies.glide
 }
 
 apply from: '../../../publish_local.gradle'
