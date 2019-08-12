@@ -638,16 +638,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
-        activity?.let {
-            val router = (it.application as TopChatRouter)
-            (viewState as TopChatViewState)?.sendAnalyticsClickATC(element)
-            var shopId = this.shopId
-            if(shopId == 0) {
-                shopId = element.shopId
-            }
-            presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
-                    shopId)
-        }
+        val atcPageIntent = presenter.getAtcPageIntent(context, element)
+        startActivity(atcPageIntent)
     }
 
     private fun onSuccessAddToCart(): (addToCartResult: AddToCartDataModel) -> Unit {
@@ -851,5 +843,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun notifyAttachmentsSent() {
         getViewState().clearAttachmentPreview()
+    }
+
+    override fun getShopName(): String {
+        return opponentName
     }
 }
