@@ -177,7 +177,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         objectAnimator.start();
     }
 
-    public void showFloatingEggAnimate(boolean hasDelay) {
+    private void showFloatingEggAnimate(boolean hasDelay) {
         if (needHideFloatingToken) {
             return;
         }
