@@ -319,7 +319,5 @@
     <string name="label_toko">Toko: </string>
 
     <string name="ticker_action_link" formatted="false">&lt;a href=\"%1$s\">%2$s&lt;/a></string>
-    <!--<string name="ticker_action_link" formatted="false">[%1$s]{%2$s}</string>-->
-    <!--<string name="ticker_action_similar_product_link" formatted="false">[Lihat produk serupa]{%s}</string>-->
     <string name="ticker_action_similar_product_link" formatted="false">&lt;a href=\"%1$s\">Lihat produk serupa&lt;/a></string>
 </resources>
