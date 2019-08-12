@@ -15,7 +15,6 @@ import android.widget.TextView
 import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import com.google.android.play.core.tasks.Task
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -46,7 +45,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var imageView: ImageView
     private lateinit var progressGroup: View
     private var isAutoDownload = false
-    private var task: Task<Int>? = null
+    private var sessionId: Int? = null
 
     private lateinit var moduleName: String
     private lateinit var moduleNameTranslated: String
@@ -127,12 +126,12 @@ class DFInstallerActivity : BaseSimpleActivity() {
         }
         closeButton.setOnClickListener {
             try {
-                task?.run {
-                    manager.cancelInstall(this.result)
+                sessionId?.run {
+                    manager.cancelInstall(this)
                 }
             } catch (e: Exception) {
             } finally {
-                task = null
+                sessionId = null
             }
             hideProgress()
         }
@@ -162,7 +161,9 @@ class DFInstallerActivity : BaseSimpleActivity() {
             .build()
 
         // Load and install the requested feature module.
-        task = manager.startInstall(request)
+        manager.startInstall(request).addOnSuccessListener{
+            sessionId = it
+        }
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
