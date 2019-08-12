@@ -33,66 +33,67 @@ class BuyerAccountPresenter(
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val userSessionInterface: UserSessionInterface) : BuyerAccount.Presenter {
+
     private var view: BuyerAccount.View? = null
 
     override fun getFirstRecomData() {
-        if (this.view == null)
-            return
-        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
-                X_SOURCE_RECOM_WIDGET,
-                AKUN_PAGE,
-                ArrayList()),
-                object : Subscriber<List<RecommendationWidget>>() {
-                    override fun onStart() {
-                        view!!.showLoadMoreLoading()
-                    }
+        view?.let {
+            getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
+                    X_SOURCE_RECOM_WIDGET,
+                    AKUN_PAGE,
+                    ArrayList()),
+                    object : Subscriber<List<RecommendationWidget>>() {
+                        override fun onStart() {
+                            it.showLoadMoreLoading()
+                        }
 
-                    override fun onCompleted() {
-                        view!!.hideLoadMoreLoading()
-                    }
+                        override fun onCompleted() {
+                            it.hideLoadMoreLoading()
+                        }
 
-                    override fun onError(e: Throwable) {
-                        view!!.hideLoadMoreLoading()
-                    }
+                        override fun onError(e: Throwable) {
+                            it.hideLoadMoreLoading()
+                        }
 
-                    override fun onNext(recommendationWidgets: List<RecommendationWidget>) {
-                        val visitables = ArrayList<Visitable<*>>()
-                        val recommendationWidget = recommendationWidgets[0]
-                        visitables.add(AccountRecommendationTitleViewModel(recommendationWidget.title))
-                        visitables.addAll(getRecommendationVisitables(recommendationWidget))
-                        view!!.hideLoadMoreLoading()
-                        view!!.onRenderRecomAccountBuyer(visitables)
-                    }
-                })
+                        override fun onNext(recommendationWidgets: List<RecommendationWidget>) {
+                            val visitables = ArrayList<Visitable<*>>()
+                            val recommendationWidget = recommendationWidgets[0]
+                            visitables.add(AccountRecommendationTitleViewModel(recommendationWidget.title))
+                            visitables.addAll(getRecommendationVisitables(recommendationWidget))
+                            it.hideLoadMoreLoading()
+                            it.onRenderRecomAccountBuyer(visitables)
+                        }
+                    })
+        }
     }
 
     override fun getRecomData(page: Int) {
-        if (this.view == null)
-            return
-        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(
-                page,
-                X_SOURCE_RECOM_WIDGET,
-                AKUN_PAGE,
-                ArrayList()),
-                object : Subscriber<List<RecommendationWidget>>() {
-                    override fun onStart() {
-                        view!!.showLoadMoreLoading()
-                    }
+        view?.let {
+            getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(
+                    page,
+                    X_SOURCE_RECOM_WIDGET,
+                    AKUN_PAGE,
+                    ArrayList()),
+                    object : Subscriber<List<RecommendationWidget>>() {
+                        override fun onStart() {
+                            it.showLoadMoreLoading()
+                        }
 
-                    override fun onCompleted() {
-                        view!!.hideLoadMoreLoading()
-                    }
+                        override fun onCompleted() {
+                            it.hideLoadMoreLoading()
+                        }
 
-                    override fun onError(e: Throwable) {
-                        view!!.hideLoadMoreLoading()
-                    }
+                        override fun onError(e: Throwable) {
+                            it.hideLoadMoreLoading()
+                        }
 
-                    override fun onNext(recommendationWidgets: List<RecommendationWidget>) {
-                        view!!.hideLoadMoreLoading()
-                        val recommendationWidget = recommendationWidgets[0]
-                        view!!.onRenderRecomAccountBuyer(getRecommendationVisitables(recommendationWidget))
-                    }
-                })
+                        override fun onNext(recommendationWidgets: List<RecommendationWidget>) {
+                            it.hideLoadMoreLoading()
+                            val recommendationWidget = recommendationWidgets[0]
+                            it.onRenderRecomAccountBuyer(getRecommendationVisitables(recommendationWidget))
+                        }
+                    })
+        }
     }
 
     private fun getRecommendationVisitables(recommendationWidget: RecommendationWidget): List<Visitable<*>> {
@@ -104,9 +105,8 @@ class BuyerAccountPresenter(
     }
 
     override fun getBuyerData(query: String, saldoQuery: String) {
-        view?.run {
-            showLoading()
-        }
+        view?.showLoading()
+
         val requestParams = RequestParams.create()
 
         requestParams.putString(AccountConstants.QUERY, query)

@@ -4,8 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -22,8 +20,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.account.R
-import com.tokopedia.home.account.analytics.AccountAnalytics
-import com.tokopedia.home.account.di.component.BuyerAccountComponent
 import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent
 import com.tokopedia.home.account.presentation.BuyerAccount
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
@@ -34,8 +30,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
-
-import java.util.ArrayList
+import kotlinx.android.synthetic.main.fragment_buyer_account.*
 
 import javax.inject.Inject
 
@@ -43,8 +38,6 @@ import javax.inject.Inject
  * @author okasurya on 7/16/18.
  */
 class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentListener {
-    private var recyclerView: RecyclerView? = null
-    private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var fpmBuyer: PerformanceMonitoring? = null
 
     lateinit var trackingQueue: TrackingQueue
@@ -54,6 +47,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     @Inject
     lateinit var presenter: BuyerAccount.Presenter
+
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,38 +62,42 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_buyer_account, container, false)
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        recyclerView = view.findViewById(R.id.recycler_buyer)
+
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
-        recyclerView!!.addOnScrollListener(endlessRecyclerViewScrollListener!!)
-        recyclerView!!.layoutManager = layoutManager
-        recyclerView!!.adapter = adapter
-        swipeRefreshLayout!!.setColorSchemeResources(R.color.tkpd_main_green)
+        endlessRecyclerViewScrollListener?.let {
+            recycler_buyer.addOnScrollListener(it)
+        }
+        recycler_buyer.layoutManager = layoutManager
+        recycler_buyer.adapter = adapter
+
+        swipe_refresh_layout.setColorSchemeResources(R.color.tkpd_main_green)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        swipeRefreshLayout!!.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { this.getData() })
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { this.getData() })
     }
 
     override fun onResume() {
         super.onResume()
         scrollToTop()
-        if (context != null) {
-            GraphqlClient.init(context!!)
+        context?.let {
+            GraphqlClient.init(it)
             getData()
         }
     }
 
     private fun getData() {
         scrollToTop()
-        endlessRecyclerViewScrollListener!!.resetState()
+        endlessRecyclerViewScrollListener?.resetState()
 
-        val saldoQuery = GraphqlHelper.loadRawString(context!!.resources, R.raw
-                .new_query_saldo_balance)
-        presenter.getBuyerData(GraphqlHelper.loadRawString(context!!.resources, R.raw
-                .query_buyer_account_home), saldoQuery)
+        context?.let {
+            val saldoQuery = GraphqlHelper.loadRawString(it.resources, R.raw
+                    .new_query_saldo_balance)
+            presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
+                    .query_buyer_account_home), saldoQuery)
+        }
     }
 
     override fun getScreenName(): String {
@@ -122,7 +120,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     private fun initInjector() {
         val component = DaggerBuyerAccountComponent.builder()
                 .baseAppComponent(
-                        (activity!!.application as BaseMainApplication).baseAppComponent
+                        (activity?.application as BaseMainApplication).baseAppComponent
                 ).build()
 
         component.inject(this)
@@ -137,8 +135,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     override fun hideLoading() {
         adapter.hideLoading()
 
-        if (swipeRefreshLayout != null && swipeRefreshLayout!!.isRefreshing)
-            swipeRefreshLayout!!.isRefreshing = false
+        if (swipe_refresh_layout != null && swipe_refresh_layout.isRefreshing)
+            swipe_refresh_layout.isRefreshing = false
     }
 
     override fun showError(message: String) {
@@ -168,8 +166,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     override fun onScrollToTop() {
-        if (recyclerView != null) {
-            recyclerView?.run {
+        if (recycler_buyer != null) {
+            recycler_buyer?.run {
                 scrollToPosition(0)
             }
         }
@@ -224,7 +222,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun hideLoadMoreLoading() {
         adapter.hideLoading()
-        endlessRecyclerViewScrollListener!!.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
     override fun showLoadMoreLoading() {
@@ -279,9 +277,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     fun scrollToTop() {
-        recyclerView?.run {
-            scrollToPosition(0)
-        }
+        recycler_buyer.scrollToPosition(0)
     }
 
     override fun onPause() {
