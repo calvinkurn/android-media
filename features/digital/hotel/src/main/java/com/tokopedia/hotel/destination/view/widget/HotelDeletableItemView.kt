@@ -6,8 +6,17 @@ import android.view.View
 import com.tokopedia.design.item.DeletableItemView
 import com.tokopedia.hotel.R
 
-class HotelDeletableItemView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
-    DeletableItemView(context, attrs, defStyleAttr) {
+/**
+ * Wee need this class instead using layoutRef in app:layout in the .xml file
+ * This is a hacky way to get package R in this module (for dynamic feature)
+ */
+class HotelDeletableItemView : DeletableItemView {
+
+    constructor(context: Context) : super(context)
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun initView(context: Context) {
         rootView = View.inflate(context, R.layout.layout_widget_deletable_item, this);
