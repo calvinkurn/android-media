@@ -43,7 +43,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     lateinit var trackingQueue: TrackingQueue
     private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
-    //    private RemoteConfig remoteConfig;
 
     @Inject
     lateinit var presenter: BuyerAccount.Presenter
