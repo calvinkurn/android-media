@@ -115,12 +115,9 @@ public class UserIdentificationUploadImagePresenter extends
     public Observable<Boolean> registerIdentificationUseCase(int projectId) {
         return registerIdentificationUseCase.createObservable(
                 RegisterIdentificationUseCase.getRequestParam(projectId)
-        ).flatMap(new Func1<GraphqlResponse, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(GraphqlResponse graphqlResponse) {
-                RegisterIdentificationPojo pojo = graphqlResponse.getData(RegisterIdentificationPojo.class);
-                return Observable.just(pojo != null && pojo.getKycRegister() != null && pojo.getKycRegister().getIsSuccess() == 1);
-            }
+        ).flatMap((Func1<GraphqlResponse, Observable<Boolean>>) graphqlResponse -> {
+            RegisterIdentificationPojo pojo = graphqlResponse.getData(RegisterIdentificationPojo.class);
+            return Observable.just(pojo != null && pojo.getKycRegister() != null && pojo.getKycRegister().getIsSuccess() == 1);
         });
     }
 

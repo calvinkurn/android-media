@@ -15,20 +15,13 @@ import com.tokopedia.useridentification.view.listener.UserIdentificationUploadIm
 import com.tokopedia.useridentification.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.useridentification.view.viewmodel.ImageUploadModel;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.List;
-
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.observers.TestSubscriber;
-import rx.schedulers.TestScheduler;
 import rx.subscriptions.CompositeSubscription;
 
 import static org.mockito.Mockito.mock;
@@ -69,8 +62,8 @@ public class UserIdentificationUploadImagePresenterTest {
         //given
         when(userSession.getUserId()).thenReturn("1");
         RequestParams params = presenter.createParam(imageUploadModel.getFilePath());
-        //when(uploadImageUseCase.createObservable(params)).thenReturn(imageUploadModelObservable);
 
+        //when
         when(uploadImageUseCase.createObservable(params)).thenReturn(imageUploadModelObservable);
 
         //act
