@@ -47,6 +47,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
@@ -82,6 +83,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 
@@ -187,8 +190,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this,
-                this, this, this, this, userSession);
+        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,
+                this, this, this, this, this, this,
+                this, this, this, this,
+                this::onRelatedPostClicked, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
 
@@ -931,8 +936,15 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetRelatedPost(List<FeedPostRelated.Datum> relatedPostList) {
+    public void onSuccessGetRelatedPost(RelatedPostViewModel relatedPostViewModel) {
+        adapter.addElement(relatedPostViewModel);
+        adapter.hideLoading();
+    }
 
+    private Unit onRelatedPostClicked(FeedPostRelated.Datum post) {
+        //TODO milhamj
+        RouteManager.route(getContext(), post.getContent().getBody().getMedia().get(0).getApplink());
+        return Unit.INSTANCE;
     }
 
     private void onGoToLink(String link) {

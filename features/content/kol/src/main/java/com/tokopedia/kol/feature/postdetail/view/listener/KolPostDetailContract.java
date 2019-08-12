@@ -5,8 +5,8 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
+import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
@@ -55,7 +55,7 @@ public interface KolPostDetailContract {
 
         void onAddToCartFailed(String pdpAppLink);
 
-        void onSuccessGetRelatedPost(List<FeedPostRelated.Datum> relatedPostList);
+        void onSuccessGetRelatedPost(RelatedPostViewModel relatedPostViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -20,6 +20,7 @@ class RelatedPostViewHolder(v: View,
     private var adapter: RelatedPostAdapter? = null
 
     companion object {
+        @JvmField
         @LayoutRes
         val LAYOUT = R.layout.item_related_post
     }

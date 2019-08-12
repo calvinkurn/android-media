@@ -5,16 +5,20 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
+import com.tokopedia.feedcomponent.view.adapter.relatedpost.RelatedPostTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
@@ -41,12 +45,16 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
 /**
  * @author by milhamj on 27/07/18.
  */
 
 public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
-        implements KolPostDetailTypeFactory, KolPostTypeFactory, KolCommentTypeFactory, DynamicFeedTypeFactory {
+        implements KolPostDetailTypeFactory, KolPostTypeFactory, KolCommentTypeFactory,
+        DynamicFeedTypeFactory, RelatedPostTypeFactory {
 
     private final KolComment.View.ViewHolder kolCommentListener;
     private final DynamicPostViewHolder.DynamicPostListener listener;
@@ -57,6 +65,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final GridPostAdapter.GridItemListener gridItemListener;
     private final VideoViewHolder.VideoViewListener videoViewListener;
     private final FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener;
+    private final Function1<FeedPostRelated.Datum, Unit> onRelatedPostClicked;
     private final KolComment.View.SeeAll seeAll;
     private final UserSessionInterface userSession;
     private final KolPostDetailContract.View mainView;
@@ -72,6 +81,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         GridPostAdapter.GridItemListener gridItemListener,
                                         VideoViewHolder.VideoViewListener videoViewListener,
                                         FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener,
+                                        Function1<FeedPostRelated.Datum, Unit> onRelatedPostClicked,
                                         UserSessionInterface userSession) {
         this.mainView = mainView;
         this.kolCommentListener = kolCommentListener;
@@ -84,6 +94,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         this.gridItemListener = gridItemListener;
         this.videoViewListener = videoViewListener;
         this.feedMultipleImageViewListener = feedMultipleImageViewListener;
+        this.onRelatedPostClicked = onRelatedPostClicked;
         this.userSession = userSession;
     }
 
@@ -148,31 +159,6 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public AbstractViewHolder createViewHolder(View view, int viewType) {
-        AbstractViewHolder abstractViewHolder;
-        if (viewType == DynamicPostViewHolder.Companion.getLAYOUT()) {
-            abstractViewHolder = new KolPostDetailViewHolder(view,
-                    listener, cardTitleListener, imagePostListener, youtubePostListener,
-                    pollOptionListener, gridItemListener, videoViewListener,
-                    feedMultipleImageViewListener, userSession
-            );
-        } else if (viewType == KolCommentViewHolder.LAYOUT)
-            abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
-        else if (viewType == SeeAllCommentsViewHolder.LAYOUT)
-            abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
-        else if (viewType == EmptyDetailViewHolder.Companion.getLAYOUT()) {
-            abstractViewHolder = new EmptyDetailViewHolder(view, mainView);
-        } else
-            abstractViewHolder = super.createViewHolder(view, viewType);
-        return abstractViewHolder;
-    }
-
-    @Override
-    public void setType(KolPostViewHolder.Type type) {
-
-    }
-
-    @Override
     public int type(@NotNull FeedRecommendationViewModel feedRecommendationViewModel) {
         return 0;
     }
@@ -185,5 +171,38 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(@NotNull TopadsShopViewModel topadsShopViewModel) {
         return 0;
+    }
+
+    @Override
+    public int type(@NotNull RelatedPostViewModel relatedPostViewModel) {
+        return RelatedPostViewHolder.LAYOUT;
+    }
+
+    @Override
+    public AbstractViewHolder createViewHolder(View view, int viewType) {
+        AbstractViewHolder abstractViewHolder;
+        if (viewType == DynamicPostViewHolder.Companion.getLAYOUT()) {
+            abstractViewHolder = new KolPostDetailViewHolder(view,
+                    listener, cardTitleListener, imagePostListener, youtubePostListener,
+                    pollOptionListener, gridItemListener, videoViewListener,
+                    feedMultipleImageViewListener, userSession
+            );
+        } else if (viewType == KolCommentViewHolder.LAYOUT) {
+            abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
+        } else if (viewType == SeeAllCommentsViewHolder.LAYOUT) {
+            abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
+        } else if (viewType == EmptyDetailViewHolder.Companion.getLAYOUT()) {
+            abstractViewHolder = new EmptyDetailViewHolder(view, mainView);
+        } else if(viewType == RelatedPostViewHolder.LAYOUT) {
+            abstractViewHolder = new RelatedPostViewHolder(view, onRelatedPostClicked);
+        } else {
+            abstractViewHolder = super.createViewHolder(view, viewType);
+        }
+        return abstractViewHolder;
+    }
+
+    @Override
+    public void setType(KolPostViewHolder.Type type) {
+
     }
 }

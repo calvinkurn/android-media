@@ -11,6 +11,7 @@ import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase;
+import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -324,7 +325,10 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                             return;
                         }
 
-                        getView().onSuccessGetRelatedPost(feedPostRelated.getData());
+                        RelatedPostViewModel relatedPostViewModel = new RelatedPostViewModel(
+                                feedPostRelated.getData()
+                        );
+                        getView().onSuccessGetRelatedPost(relatedPostViewModel);
                     }
                 }
         );

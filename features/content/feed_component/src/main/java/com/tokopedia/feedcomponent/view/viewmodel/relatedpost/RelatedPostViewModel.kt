@@ -7,8 +7,8 @@ import com.tokopedia.feedcomponent.view.adapter.relatedpost.RelatedPostTypeFacto
 /**
  * @author by milhamj on 2019-08-12.
  */
-data class RelatedPostViewModel(val relatedPostList: List<FeedPostRelated.Datum>,
-                                val title: String? = "")
+data class RelatedPostViewModel @JvmOverloads constructor(
+        val relatedPostList: List<FeedPostRelated.Datum>, var title: String? = "")
     : Visitable<RelatedPostTypeFactory> {
     override fun type(typeFactory: RelatedPostTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
