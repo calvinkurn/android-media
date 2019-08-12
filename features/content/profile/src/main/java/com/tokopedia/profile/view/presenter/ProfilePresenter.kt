@@ -49,6 +49,7 @@ class ProfilePresenter @Inject constructor(
         trackAffiliateClickUseCase.unsubscribe()
         shouldChangeUsernameUseCase.unsubscribe()
         getRelatedPostUseCase.unsubscribe()
+        atcUseCase.unsubscribe()
     }
 
     override fun getProfileFirstPage(targetUserId: Int, isFromLogin: Boolean) {
