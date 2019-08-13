@@ -54,7 +54,7 @@ class MentionEditText : MultiAutoCompleteTextView {
             val newText = MentionTextHelper.stripInvalidMentionFromText(spannedText, allMentionSpans)
 
             text.replace(0, text.length, "")
-            text.replace(0, text.length, newText)
+                .replace(0, text.length, newText)
 
             /**
              * Cursor positioning
