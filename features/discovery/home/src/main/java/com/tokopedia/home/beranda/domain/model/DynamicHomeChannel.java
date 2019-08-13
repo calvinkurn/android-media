@@ -509,7 +509,7 @@ public class DynamicHomeChannel {
                     DataLayer.mapOf(
                             "id", getBanner().getId(),
                             "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().name,
-                            "creative", "Waiting backend to return this value..",
+                            "creative", getBanner().getAttribution(),
                             "creative_url", getBanner().getImageUrl(),
                             "position", String.valueOf(position)
                     )
@@ -671,7 +671,7 @@ public class DynamicHomeChannel {
                                             DataLayer.mapOf(
                                                     "id", banner.getId(),
                                                     "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().getName(),
-                                                    "creative", banner.getTitle(),
+                                                    "creative", banner.getAttribution(),
                                                     "creative_url", banner.getImageUrl(),
                                                     "position", String.valueOf(position)
                                             )
@@ -694,7 +694,7 @@ public class DynamicHomeChannel {
                                             DataLayer.mapOf(
                                                     "id", banner.getId(),
                                                     "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().getName(),
-                                                    "creative", banner.getTitle(),
+                                                    "creative", banner.getAttribution(),
                                                     "creative_url", banner.getImageUrl(),
                                                     "position", String.valueOf(position)
                                             )
