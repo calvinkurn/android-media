@@ -30,14 +30,13 @@
                 android:inputType="phone"
                 android:paddingLeft="-5dp">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/input_email_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
                     android:imeOptions="actionDone"
-                    android:singleLine="true"
-                    android:inputType="text"/>
+                    android:singleLine="true"/>
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

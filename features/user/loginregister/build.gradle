@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.cmnotification)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.permissionchecker)
     implementation rootProject.ext.unifyDependencies.components
 
     api (rootProject.ext.serviceDependencies.crashlytics) {

@@ -1,16 +1,22 @@
 package com.tokopedia.loginregister.registerinitial.view.customview;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
@@ -28,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 public class PartialRegisterInputView extends BaseCustomView {
 
     TkpdHintTextInputLayout wrapperEmailPhone;
-    EditText etInputEmailPhone;
+    AutoCompleteTextView etInputEmailPhone;
     TextView tvMessage;
     TextView tvError;
     ButtonCompat btnAction;
@@ -68,7 +74,7 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.layout_partial_register_input, this);
-        etInputEmailPhone = (EditText) view.findViewById(R.id.input_email_phone);
+        etInputEmailPhone = view.findViewById(R.id.input_email_phone);
         etPassword = view.findViewById(R.id.password);
         tvMessage = view.findViewById(R.id.message);
         tvError = view.findViewById(R.id.error_message);
@@ -81,6 +87,12 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void renderData() {
+        etInputEmailPhone.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            etInputEmailPhone.setImportantForAutofill(IMPORTANT_FOR_AUTOFILL_NO);
+        }
+        Drawable background = ContextCompat.getDrawable(getContext(), R.drawable.bg_rounded_corner_autocomplete_partial_input);
+        etInputEmailPhone.setDropDownBackgroundDrawable(background);
         etInputEmailPhone.addTextChangedListener(watcher(wrapperEmailPhone));
         etInputEmailPhone.setOnEditorActionListener((v, actionId, event) -> {
             boolean handled = false;
@@ -188,6 +200,20 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     public String getTextValue() {
         return etInputEmailPhone.getText().toString();
+    }
+
+    public void setAdapterInputEmailPhone(ArrayAdapter<String> adapter){
+        etInputEmailPhone.setAdapter(adapter);
+        etInputEmailPhone.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus)
+                ((AutoCompleteTextView)v).showDropDown();
+            else
+                ((AutoCompleteTextView)v).dismissDropDown();
+        });
+    }
+
+    public ListAdapter getAdapterInputEmailPhone(){
+        return etInputEmailPhone.getAdapter();
     }
 
     private class ClickRegister implements OnClickListener {
