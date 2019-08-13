@@ -17,6 +17,7 @@ import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.GqlFilterData
+import com.tokopedia.instantloan.data.model.response.GqlLendingCategoryData
 import com.tokopedia.instantloan.data.model.response.GqlLoanAmountResponse
 import com.tokopedia.instantloan.data.model.response.LoanPeriodType
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.LOAN_AMOUNT_QUERY_PARAM
@@ -48,6 +49,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     private lateinit var widgetAddRemove: WidgetAddRemove
     private lateinit var loanAmountWarning: TextView
     private lateinit var loanPeriodValueTV: TextView
+    private lateinit var loanCategoryValueTV: TextView
     private lateinit var selectedLoanPeriodType: LoanPeriodType
     private lateinit var selectedLoanPeriodMonth: LoanPeriodType
     private lateinit var selectedLoanPeriodYear: LoanPeriodType
@@ -94,6 +96,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
         loanPeriodLabelTV = spinner_label_nominal.findViewById(R.id.tv_label_text)
         loanPeriodValueTV = spinner_value_nominal.findViewById(R.id.tv_label_text)
+        loanCategoryValueTV = spinner_loan_category.findViewById(R.id.tv_label_text)
         widgetAddRemove = view.findViewById(R.id.widget_add_remove)
 
         widgetAddRemove.setButtonClickListener(this)
@@ -111,6 +114,8 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         loanPeriodValueTV.text = getString(R.string.il_loan_period_value_label)
         loanPeriodValueTV.tag = ""
 
+        loanCategoryValueTV.text = getString(R.string.il_loan_category_label)
+
         spinner_value_nominal.setOnClickListener {
             if (!::selectedLoanPeriodType.isInitialized) {
                 loanPeriodLabelTV.error = ""
@@ -121,6 +126,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
                 val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodMonthList, null)
                 startActivityForResult(intent, LOAN_PERIOD_MONTH)
             }
+        }
+
+        spinner_loan_category.setOnClickListener {
+
         }
 
         view.findViewById<View>(R.id.button_search_pinjaman).setOnClickListener { view1 ->
@@ -134,6 +143,9 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
     }
 
+    fun setCategoryData(categoryData: ArrayList<GqlLendingCategoryData>) {
+
+    }
 
     private fun sendCariPinjamanClickEvent() {
         val eventLabel = screenName + " - " + loanPeriodValueTV.tag as String
