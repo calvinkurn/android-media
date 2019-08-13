@@ -26,11 +26,7 @@ public interface ProductListSectionContract {
 
         void incrementStart();
 
-        boolean isEvenPage();
-
         void storeTotalData(int totalData);
-
-        int getStartFrom();
 
         void setHeaderTopAds(boolean hasHeader);
 
@@ -47,8 +43,6 @@ public interface ProductListSectionContract {
         String getQueryKey();
 
         void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
-
-        Map<String, Object> getSearchParameterMap();
 
         void backToTop();
 
@@ -97,6 +91,8 @@ public interface ProductListSectionContract {
         void showAdultRestriction();
 
         void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction);
+
+        void redirectSearchToAnotherPage(String applink);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
