@@ -778,29 +778,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             R.id.container_ready -> onValuePropositionClick(R.id.container_ready)
             R.id.container_ori -> onValuePropositionClick(R.id.container_ori)
             R.id.container_guarantee_7_days -> onValuePropositionClick(R.id.container_guarantee_7_days)
-            R.id.btn_apply_leasing -> onApplyLeasingClicked()
+            R.id.btn_apply_leasing -> goToNormalCheckout()
             else -> {
             }
         }
-    }
-
-    private fun onApplyLeasingClicked() {
-        productId?.let { productId ->
-            goToApplyLeasing(productId)
-        }
-    }
-
-    private fun goToApplyLeasing(productId: String) {
-        val urlApplyLeasingWithProductId = String.format(
-                URL_APPLY_LEASING,
-                productId
-        )
-        val webViewUrl = String.format(
-                "%s?url=%s",
-                ApplinkConst.WEBVIEW,
-                urlApplyLeasingWithProductId
-        )
-        RouteManager.route(context, webViewUrl)
     }
 
     private fun gotoShopDetail() {

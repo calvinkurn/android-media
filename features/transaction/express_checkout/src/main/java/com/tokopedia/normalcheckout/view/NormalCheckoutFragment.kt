@@ -401,6 +401,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             if(isLeasing){
                 button_cart.gone()
                 button_buy_partial.gone()
+                btn_apply_leasing.visible()
             }
         } else { // sellerapp or warehouse product or owner
             showFullButton(!productInfo.basic.isActive(), productInfo.isPreorderActive, false)
