@@ -2,11 +2,11 @@ package com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.RecommendationListTypeFactory
+import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.OrderListTypeFactory
 
-class OrderListRecomViewModel(val recommendationItem: RecommendationItem) : Visitable<RecommendationListTypeFactory> {
+class OrderListRecomViewModel(val recommendationItem: RecommendationItem) : Visitable<OrderListTypeFactory> {
 
-    override fun type(typeFactory: RecommendationListTypeFactory): Int {
+    override fun type(typeFactory: OrderListTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

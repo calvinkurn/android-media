@@ -20,6 +20,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Data;
 import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
+import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.CheckBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.InsertBOMSurveyParams;
@@ -27,6 +28,7 @@ import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.CheckSurve
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.InsertSurveyResponse;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomTitleViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -55,16 +57,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     GraphqlUseCase checkBomSurveyUseCase;
     GraphqlUseCase insertBomSurveyUseCase;
     private final GetRecommendationUseCase getRecommendationUseCase;
-    private List<Visitable> data = new ArrayList<>();
+    private List<Visitable> orderList = new ArrayList<>();
 
     @Inject
     public OrderListPresenterImpl(GetRecommendationUseCase getRecommendationUseCase) {
         this.getRecommendationUseCase = getRecommendationUseCase;
-    }
-
-    @Override
-    public void initDataInstance() {
-        getView().initAdapterWithData(data);
     }
 
     @Override
@@ -94,14 +91,14 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                     : getView().getAppContext().getResources().getString(R.string.order_list_title_recommendation)));
                 }
                 visitables.addAll(getRecommendationVisitables(recommendationWidget));
-                getView().addRecommendationData(visitables);
+                getView().addData(visitables, true);
             }
         });
     }
 
     @Override
     public void onRefresh() {
-        data.clear();
+        orderList.clear();
         getView().displayLoadMore(false);
     }
 
@@ -114,11 +111,23 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         return recommendationList;
     }
 
+    @NonNull
+    private List<Visitable> getOrderListVisitables(Data data) {
+        List<Visitable> orderList = new ArrayList<>();
+        for (Order item : data.orders()) {
+            orderList.add(new OrderListViewModel(item));
+        }
+        return orderList;
+    }
+
     @Override
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page, int orderId) {
         if (getView() == null || getView().getAppContext() == null)
             return;
         getView().showProcessGetData();
+        if(page!=0){
+            getView().displayLoadMore(true);
+        }
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
 
@@ -157,6 +166,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 if (getView() != null && getView().getAppContext()!=null) {
                     CommonUtils.dumper("error =" + e.toString());
                     getView().removeProgressBarView();
+                    getView().displayLoadMore(false);
                     getView().unregisterScrollListener();
                     getView().showErrorNetwork(
                             ErrorHandler.getErrorMessage(getView().getAppContext(), e));
@@ -168,10 +178,12 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 if (getView() == null || getView().getAppContext() == null)
                     return;
                 getView().removeProgressBarView();
+                getView().displayLoadMore(false);
                 if (response != null) {
                     Data data = response.getData(Data.class);
                     if (!data.orders().isEmpty()) {
-                        getView().renderDataList(data.orders());
+                        orderList.addAll(getOrderListVisitables(data));
+                        getView().addData(getOrderListVisitables(data), false);
                         getView().setLastOrderId(data.orders().get(0).getOrderId());
                         if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                             checkBomSurveyEligibility();

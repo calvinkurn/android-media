@@ -1,12 +1,12 @@
 package com.tokopedia.transaction.orders.orderlist.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.RecommendationListAdapterFactory
+import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.OrderListAdapterFactory
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.EmptyStateMarketplaceViewModel
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.EmptyStateOrderListViewModel
 
-class RecommendationListAdapter(recommendationListAdapterFactory: RecommendationListAdapterFactory)
-    : BaseAdapter<RecommendationListAdapterFactory>(recommendationListAdapterFactory) {
+class OrderListAdapter(orderListAdapterFactory: OrderListAdapterFactory)
+    : BaseAdapter<OrderListAdapterFactory>(orderListAdapterFactory) {
 
     private val emptyStateMarketPlaceViewModel = EmptyStateMarketplaceViewModel()
     private val emptyStateOrderListViewModel = EmptyStateOrderListViewModel()

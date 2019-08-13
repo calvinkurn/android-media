@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,16 +32,15 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
-import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListUseCaseModule;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
-import com.tokopedia.transaction.orders.orderlist.view.adapter.RecommendationListAdapter;
-import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.RecommendationListAdapterFactory;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.OrderListAdapterFactory;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.OrderListRecomListViewHolder;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.OrderListViewHolder;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
@@ -56,7 +54,7 @@ import javax.inject.Inject;
 
 
 public class OrderListFragment extends BaseDaggerFragment implements
-        RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener, SearchInputView.ResetListener, OrderListAdapter.OnMenuItemListener, View.OnClickListener {
+        RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener, SearchInputView.ResetListener, OrderListViewHolder.OnMenuItemListener, View.OnClickListener {
 
     private static final String ORDER_CATEGORY = "orderCategory";
     private static final String ORDER_TAB_LIST = "TAB_LIST";
@@ -67,17 +65,12 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public static final String OPEN_SURVEY_PAGE = "2";
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
-    EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     SwipeToRefresh swipeToRefresh;
-    OrderListAdapter orderListAdapter;
     LinearLayout filterDate;
     RelativeLayout mainContent;
     private RefreshHandler refreshHandler;
     private boolean isLoading = false;
     private int page_num = 1;
-    int totalItemCount;
-    private int visibleThreshold = 2;
-    private int lastVisibleItem;
     private Bundle savedState;
     private String startDate = "";
     private String endDate = "";
@@ -100,11 +93,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private boolean hasRecyclerListener = false;
 
-    private ArrayList<Order> mOrderDataList;
     private String mOrderCategory;
     private OrderLabelList orderLabelList;
     private boolean isSurveyBtnVisible = true;
-    private RecommendationListAdapter recommendationListAdapter;
+    private OrderListAdapter orderListAdapter;
+    private Boolean isRecommendation = false;
+    private GridLayoutManager layoutManager;
+    EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,10 +125,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
-        initialVar();
         setViewListener();
         setActionVar();
-        presenter.initDataInstance();
     }
 
     @Override
@@ -285,8 +278,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
     protected void setViewListener() {
         refreshHandler = new RefreshHandler(getActivity(), getView(), this);
         refreshHandler.setPullEnabled(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        layoutManager = new GridLayoutManager(getContext(), 2);
+        layoutManager.setSpanSizeLookup(onSpanSizeLookup());
+        orderListAdapter = new OrderListAdapter(new OrderListAdapterFactory(orderListAnalytics, this));
+        orderListAdapter.setVisitables(new ArrayList<>());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(orderListAdapter);
+        recyclerView.setHasFixedSize(false);
         quickSingleFilterView.setListener(this);
         simpleSearchView.setListener(this);
         simpleSearchView.setResetListener(this);
@@ -294,44 +292,45 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private void addRecyclerListener() {
         hasRecyclerListener = true;
-        recyclerView.addOnScrollListener(scrollListener);
-    }
-
-    RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            if (dy > 0 || dy < 0 && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA)))
-                setVisibilitySurveyBtn(false);
-            if (!isLoading && hasRecyclerListener) {
-                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                if (linearLayoutManager != null) {
-                    totalItemCount = linearLayoutManager.getItemCount();
-                    lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                    if (totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                        onLoadMore();
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                if(isRecommendation) {
+                    presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), false);
+                } else {
+                    page_num++;
+                    if (!isLoading) {
+                        isLoading = true;
+                        presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num, orderId);
                     }
+                    orderListAnalytics.sendLoadMoreEvent("load-" + page_num);
                 }
             }
-        }
 
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA))) {
-                setVisibilitySurveyBtn(true);
+            @Override
+            public void onScrolled(RecyclerView view, int dx, int dy) {
+                super.onScrolled(view, dx, dy);
+                if (dy > 0 || dy < 0 && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA)))
+                    setVisibilitySurveyBtn(false);
             }
-            super.onScrollStateChanged(recyclerView, newState);
-        }
-    };
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA))) {
+                    setVisibilitySurveyBtn(true);
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        };
+        recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
+    }
 
     @Override
     public void onRefresh(View view) {
         page_num = 1;
         isLoading = true;
         presenter.onRefresh();
-        if (orderListAdapter.getItemCount() != 0) {
-            mOrderDataList.clear();
-            orderListAdapter.clearItemList();
+        if(orderListAdapter !=null) {
+            orderListAdapter.clearAllElements();
         }
         if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
             quickSingleFilterView.setVisibility(View.VISIBLE);
@@ -340,26 +339,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
         presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
     }
 
-    void onLoadMore() {
-        page_num++;
-        mOrderDataList.add(null);
-        orderListAdapter.addItemAtLast(null);
-        if (!isLoading) {
-            isLoading = true;
-            presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num, orderId);
-        }
-        orderListAnalytics.sendLoadMoreEvent("load-" + page_num);
-    }
-
     @Override
     public void removeProgressBarView() {
         isLoading = false;
         refreshHandler.finishRefresh();
         refreshHandler.setPullEnabled(true);
-        if (mOrderDataList != null && mOrderDataList.size() > 0) {
-            mOrderDataList.remove(mOrderDataList.size() - 1);
-            orderListAdapter.removeItemAtLast(mOrderDataList.size());
-        }
     }
 
     @Override
@@ -383,10 +367,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
         if (typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL) {
             swipeToRefresh.setVisibility(View.VISIBLE);
             if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
-                recommendationListAdapter.setEmptyMarketplace();
+                orderListAdapter.setEmptyMarketplace();
                 presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), true);
             } else {
-                recommendationListAdapter.setEmptyOrderList();
+                orderListAdapter.setEmptyOrderList();
             }
             filterDate.setVisibility(View.GONE);
             surveyBtn.setVisibility(View.GONE);
@@ -410,14 +394,14 @@ public class OrderListFragment extends BaseDaggerFragment implements
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
+                if(orderListAdapter !=null) {
+                    orderListAdapter.clearAllElements();
+                }
                 presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
             }
         };
     }
 
-    protected void initialVar() {
-        orderListAdapter = new OrderListAdapter(getActivity(), this);
-    }
 
     protected void setActionVar() {
         initialData();
@@ -438,33 +422,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
         }
     }
 
-    @Override
-    public void renderDataList(List<Order> orderDataList) {
-        refreshHandler.finishRefresh();
-        refreshHandler.setPullEnabled(true);
-        if (mOrderDataList == null) {
-            mOrderDataList = new ArrayList<>(orderDataList);
-            orderListAdapter.addAll(mOrderDataList);
-            orderListAdapter.notifyDataSetChanged();
-        } else if (mOrderDataList.size() == 0) {
-            mOrderDataList.addAll(orderDataList);
-            orderListAdapter.addAll(orderDataList);
-            orderListAdapter.notifyDataSetChanged();
-        } else {
-            int prevSize = mOrderDataList.size();
-            mOrderDataList.addAll(orderDataList);
-            orderListAdapter.addAll(mOrderDataList);
-            orderListAdapter.notifyItemRangeInserted(prevSize, mOrderDataList.size());
-        }
-        if (!hasRecyclerListener) {
-            addRecyclerListener();
-        }
-
-        swipeToRefresh.setVisibility(View.VISIBLE);
-        if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
-            filterDate.setVisibility(View.VISIBLE);
-        }
-    }
 
     @Override
     public void showFailedResetData(String message) {
@@ -547,38 +504,30 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void addRecommendationData(List<Visitable> data) {
-        recommendationListAdapter.addElement(data);
+    public void addData(List<Visitable> data, Boolean isRecommendation) {
+        this.isRecommendation = isRecommendation;
+        if (!hasRecyclerListener) {
+            addRecyclerListener();
+        }
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(true);
+        orderListAdapter.addElement(data);
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
-    }
-
-    @Override
-    public void displayLoadMore(boolean isLoadMore) {
-        if(recommendationListAdapter!=null) {
-            if (isLoadMore) {
-                recommendationListAdapter.showLoading();
-            } else {
-                recommendationListAdapter.hideLoading();
-            }
+        swipeToRefresh.setVisibility(View.VISIBLE);
+        if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation) {
+            filterDate.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
-    public void initAdapterWithData(List<Visitable> data) {
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-        layoutManager.setSpanSizeLookup(onSpanSizeLookup());
-        recommendationListAdapter = new RecommendationListAdapter(new RecommendationListAdapterFactory(orderListAnalytics));
-        recommendationListAdapter.setVisitables(data);
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), false);
+    public void displayLoadMore(boolean isLoadMore) {
+        if(orderListAdapter !=null) {
+            if (isLoadMore) {
+                orderListAdapter.showLoading();
+            } else {
+                orderListAdapter.hideLoading();
             }
-        };
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
-        recyclerView.setAdapter(recommendationListAdapter);
-        recyclerView.setHasFixedSize(false);
+        }
     }
 
     @Override
@@ -628,7 +577,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (recommendationListAdapter.getItemViewType(position) == OrderListRecomListViewHolder.LAYOUT) {
+                if (orderListAdapter.getItemViewType(position) == OrderListRecomListViewHolder.LAYOUT) {
                     return 1;
                 } else {
                     return 2;
