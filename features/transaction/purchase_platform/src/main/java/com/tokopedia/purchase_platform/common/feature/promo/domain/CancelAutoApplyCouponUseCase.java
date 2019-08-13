@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.common.feature.promo.domain;
 
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

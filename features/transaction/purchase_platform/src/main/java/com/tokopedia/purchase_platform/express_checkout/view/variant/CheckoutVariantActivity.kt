@@ -8,8 +8,8 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.express_checkout.router.ExpressCheckoutInternalRouter.Companion.EXTRA_ATC_REQUEST
 import com.tokopedia.purchase_platform.express_checkout.router.ExpressCheckoutInternalRouter.Companion.TRACKER_ATTRIBUTION
 import com.tokopedia.purchase_platform.express_checkout.router.ExpressCheckoutInternalRouter.Companion.TRACKER_LIST_NAME
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
+import com.tokopedia.purchase_platform.express_checkout.data.entity.request.AtcRequestParam
+import com.tokopedia.purchase_platform.common.constant.Constant.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -17,7 +17,7 @@ import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
  */
 open class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
 
-    lateinit var atcRequestParam:AtcRequestParam
+    lateinit var atcRequestParam: AtcRequestParam
     var trackerAttribution:String? = null
     var trackerListName:String? = null
 

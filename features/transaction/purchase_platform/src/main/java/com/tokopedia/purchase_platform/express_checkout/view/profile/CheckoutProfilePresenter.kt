@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.express_checkout.view.profile
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.purchase_platform.express_checkout.domain.model.profile.ProfileResponseModel
-import com.tokopedia.transactiondata.usecase.GetProfileListUseCase
+import com.tokopedia.purchase_platform.express_checkout.domain.usecase.GetProfileListUseCase
 import com.tokopedia.purchase_platform.express_checkout.view.profile.mapper.ViewModelMapper
 import com.tokopedia.purchase_platform.express_checkout.view.profile.subscriber.GetProfileListSubscriber
 import com.tokopedia.usecase.RequestParams

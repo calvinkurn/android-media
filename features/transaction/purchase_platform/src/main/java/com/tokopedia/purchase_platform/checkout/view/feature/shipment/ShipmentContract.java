@@ -28,12 +28,12 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemMod
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
-import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
-import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
-import com.tokopedia.transactiondata.entity.response.cod.Data;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
+import com.tokopedia.purchase_platform.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.purchase_platform.checkout.data.model.request.CheckoutRequest;
+import com.tokopedia.purchase_platform.checkout.data.model.request.DataChangeAddressRequest;
+import com.tokopedia.purchase_platform.checkout.data.model.request.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.checkout.data.model.response.cod.Data;
+import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 
 import java.util.ArrayList;
 import java.util.List;

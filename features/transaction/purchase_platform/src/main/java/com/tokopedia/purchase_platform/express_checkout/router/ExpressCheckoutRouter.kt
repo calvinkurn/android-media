@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
+import com.tokopedia.purchase_platform.checkout.data.model.request.CheckoutRequest
+import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
+import com.tokopedia.purchase_platform.express_checkout.data.entity.request.AtcRequestParam
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import java.security.PublicKey

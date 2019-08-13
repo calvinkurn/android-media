@@ -114,11 +114,11 @@ import com.tokopedia.purchase_platform.checkout.analytics.CheckoutAnalyticsPurch
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.checkout.analytics.CornerAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
-import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
-import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
-import com.tokopedia.transactiondata.entity.response.cod.Data;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
+import com.tokopedia.purchase_platform.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.purchase_platform.checkout.data.model.request.CheckoutRequest;
+import com.tokopedia.purchase_platform.checkout.data.model.request.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.checkout.data.model.response.cod.Data;
+import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 
 import org.jetbrains.annotations.NotNull;
 

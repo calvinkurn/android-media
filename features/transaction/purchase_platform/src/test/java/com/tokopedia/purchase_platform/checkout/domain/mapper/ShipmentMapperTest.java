@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.tokopedia.UnitTestFileUtils;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.common.base.MapperUtil;
-import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
+import com.tokopedia.purchase_platform.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
 
 import org.junit.Assert;
 import org.junit.Before;

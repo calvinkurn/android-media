@@ -19,20 +19,20 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promost
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.base.IMapperUtil;
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartItemHolderData;
-import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
-import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
-import com.tokopedia.transactiondata.entity.response.cartlist.Message;
-import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
-import com.tokopedia.transactiondata.entity.response.cartlist.TrackingDetail;
-import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
-import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.CartDetail;
-import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.ShopGroup;
-import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
-import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
-import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
+import com.tokopedia.purchase_platform.common.data.model.response.promo.AutoapplyStack;
+import com.tokopedia.purchase_platform.cart.data.model.response.CartDataListResponse;
+import com.tokopedia.purchase_platform.cart.data.model.response.CartList;
+import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.data.model.response.CartMultipleAddressDataListResponse;
+import com.tokopedia.purchase_platform.common.data.model.response.promo.GlobalCouponAttr;
+import com.tokopedia.purchase_platform.common.data.model.response.promo.Message;
+import com.tokopedia.purchase_platform.cart.data.model.response.Shop;
+import com.tokopedia.purchase_platform.common.data.model.response.TrackingDetail;
+import com.tokopedia.purchase_platform.common.data.model.response.promo.VoucherOrdersItem;
+import com.tokopedia.purchase_platform.cart.data.model.response.CartDetail;
+import com.tokopedia.purchase_platform.cart.data.model.response.ShopGroup;
+import com.tokopedia.purchase_platform.cart.data.model.response.DeleteCartDataResponse;
+import com.tokopedia.purchase_platform.cart.data.model.response.ResetCartDataResponse;
+import com.tokopedia.purchase_platform.cart.data.model.response.UpdateCartDataResponse;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -227,7 +227,7 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setWarehouseId(shopGroup.getWarehouse().getWarehouseId());
                 if (data.getProduct().getWholesalePrice() != null) {
                     List<WholesalePrice> wholesalePrices = new ArrayList<>();
-                    for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
+                    for (com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
                         WholesalePrice wholesalePriceDomainModel = new WholesalePrice();
                         wholesalePriceDomainModel.setPrdPrc(wholesalePriceDataModel.getPrdPrc());
                         wholesalePriceDomainModel.setPrdPrcFmt(wholesalePriceDataModel.getPrdPrcFmt());
@@ -472,7 +472,7 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setOfficialStoreLogoUrl(data.getShop().getOfficialStore().getOsLogoUrl());
             if (data.getProduct().getWholesalePrice() != null) {
                 List<WholesalePrice> wholesalePrices = new ArrayList<>();
-                for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
+                for (com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
                     WholesalePrice wholesalePriceDomainModel = new WholesalePrice();
                     wholesalePriceDomainModel.setPrdPrc(wholesalePriceDataModel.getPrdPrc());
                     wholesalePriceDomainModel.setPrdPrcFmt(wholesalePriceDataModel.getPrdPrcFmt());

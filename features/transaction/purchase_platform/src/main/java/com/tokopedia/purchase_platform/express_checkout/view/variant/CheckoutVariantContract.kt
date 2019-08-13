@@ -11,9 +11,9 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
+import com.tokopedia.purchase_platform.checkout.data.model.request.CheckoutRequest
+import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
+import com.tokopedia.purchase_platform.express_checkout.data.entity.request.AtcRequestParam
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
 

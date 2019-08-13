@@ -11,7 +11,7 @@ import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.cart.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
-import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.purchase_platform.cart.data.model.request.UpdateCartRequest;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 

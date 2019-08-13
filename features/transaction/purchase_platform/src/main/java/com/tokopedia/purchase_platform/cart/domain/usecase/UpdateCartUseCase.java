@@ -3,8 +3,8 @@ package com.tokopedia.purchase_platform.cart.domain.usecase;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.cart.domain.mapper.ICartMapper;
-import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
-import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.purchase_platform.cart.data.model.response.UpdateCartDataResponse;
+import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

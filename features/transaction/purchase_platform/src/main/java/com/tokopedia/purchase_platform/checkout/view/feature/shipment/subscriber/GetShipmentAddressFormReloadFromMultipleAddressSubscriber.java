@@ -6,7 +6,7 @@ import com.tokopedia.purchase_platform.checkout.view.feature.shipment.ShipmentCo
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.ShipmentPresenter;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
+import com.tokopedia.purchase_platform.common.data.apiservice.CartResponseErrorException;
 
 import java.util.List;
 

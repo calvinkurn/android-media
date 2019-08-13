@@ -52,10 +52,10 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
-import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
-import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
-import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
-import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.purchase_platform.common.data.apiservice.CartResponseErrorException;
+import com.tokopedia.purchase_platform.cart.data.model.request.RemoveCartRequest;
+import com.tokopedia.purchase_platform.cart.data.model.request.UpdateCartRequest;
+import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;

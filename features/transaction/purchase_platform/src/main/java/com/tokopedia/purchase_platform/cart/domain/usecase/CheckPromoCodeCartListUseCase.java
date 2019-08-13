@@ -4,7 +4,7 @@ import com.tokopedia.purchase_platform.cart.domain.model.voucher.PromoCodeCartLi
 import com.tokopedia.purchase_platform.cart.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
-import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

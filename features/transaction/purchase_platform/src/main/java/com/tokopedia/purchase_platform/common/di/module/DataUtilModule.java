@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.common.di.module;
 
-import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
 
 import dagger.Module;
 import dagger.Provides;

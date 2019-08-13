@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.purchase_platform.cart.view.ICartListPresenter
 import com.tokopedia.purchase_platform.cart.view.ICartListView
-import com.tokopedia.transactiondata.apiservice.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.data.apiservice.CartResponseErrorException
 import rx.Subscriber
 
 /**

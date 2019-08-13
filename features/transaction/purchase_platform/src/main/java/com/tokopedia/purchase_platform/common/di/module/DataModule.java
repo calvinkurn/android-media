@@ -35,15 +35,12 @@ import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
-import com.tokopedia.transactiondata.apiservice.CartApi;
-import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
-import com.tokopedia.transactiondata.apiservice.CartResponseConverter;
-import com.tokopedia.transactiondata.apiservice.TxActApi;
-import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
-import com.tokopedia.transactiondata.repository.CartRepository;
-import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.transactiondata.repository.ITopPayRepository;
-import com.tokopedia.transactiondata.repository.TopPayRepository;
+import com.tokopedia.purchase_platform.common.data.apiservice.CartApi;
+import com.tokopedia.purchase_platform.common.data.apiservice.CartApiInterceptor;
+import com.tokopedia.purchase_platform.common.data.apiservice.CartResponseConverter;
+import com.tokopedia.purchase_platform.common.data.apiservice.TransactionDataApiUrl;
+import com.tokopedia.purchase_platform.common.data.repository.CartRepository;
+import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 
 import java.util.concurrent.TimeUnit;
 
@@ -239,12 +236,6 @@ public class DataModule {
 
     @Provides
     @CartQualifier
-    TxActApi provideTxActsApi(@CartTxActApiRetrofitQualifier Retrofit retrofit) {
-        return retrofit.create(TxActApi.class);
-    }
-
-    @Provides
-    @CartQualifier
     PeopleActApi providePeopleActApi(@CartTxActApiRetrofitQualifier Retrofit retrofit) {
         return retrofit.create(PeopleActApi.class);
     }
@@ -252,11 +243,6 @@ public class DataModule {
     @Provides
     ICartRepository provideICartRepository(@CartQualifier CartApi cartApi) {
         return new CartRepository(cartApi);
-    }
-
-    @Provides
-    ITopPayRepository provideITopPayRepository(@CartQualifier TxActApi txActApi) {
-        return new TopPayRepository(txActApi);
     }
 
     @Provides

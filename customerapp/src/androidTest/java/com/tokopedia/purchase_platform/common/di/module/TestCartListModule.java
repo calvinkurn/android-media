@@ -14,7 +14,7 @@ import com.tokopedia.purchase_platform.common.di.scope.CartListScope;
 import com.tokopedia.purchase_platform.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.purchase_platform.checkout.view.view.cartlist.CartListPresenter;
 import com.tokopedia.purchase_platform.checkout.view.view.cartlist.ICartListPresenter;
-import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
 
 import dagger.Module;
 import dagger.Provides;

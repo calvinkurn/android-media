@@ -6,7 +6,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.ShopGroupData;
-import com.tokopedia.purchase_platform.cart.data.model.recentview.RecentView;
+import com.tokopedia.purchase_platform.cart.data.model.response.recentview.RecentView;
 import com.tokopedia.purchase_platform.cart.domain.model.voucher.PromoCodeCartListData;
 import com.tokopedia.purchase_platform.common.base.IBaseView;
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartShopHolderData;

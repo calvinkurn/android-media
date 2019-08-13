@@ -7,9 +7,9 @@ import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.cart.domain.mapper.ICartMapper;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
-import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
-import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.purchase_platform.cart.data.model.response.CartDataListResponse;
+import com.tokopedia.purchase_platform.cart.data.model.response.UpdateCartDataResponse;
+import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

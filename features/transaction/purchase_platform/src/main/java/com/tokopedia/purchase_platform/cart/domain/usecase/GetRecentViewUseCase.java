@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.cart.data.model.recentview.GqlRecentViewResponse;
+import com.tokopedia.purchase_platform.cart.data.model.response.recentview.GqlRecentViewResponse;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;

@@ -52,7 +52,6 @@ import com.tokopedia.tkpd.home.wishlist.mapper.WishlistProductMapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -765,8 +764,6 @@ public class WishListImpl implements WishList {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                    wishListView.showAddToCartErrorMessage(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
                     wishListView.showAddToCartErrorMessage(e.getMessage());
                 } else {
                     /* Ini diluar dari segalanya hahahaha */

@@ -20,9 +20,9 @@ import com.tokopedia.purchase_platform.common.di.module.DataUtilModule;
 import com.tokopedia.purchase_platform.common.di.module.ShipmentUseCaseModule;
 import com.tokopedia.purchase_platform.common.di.scope.CartScope;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
-import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
-import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
 
 import dagger.Component;
 

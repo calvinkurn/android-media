@@ -32,7 +32,7 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
-import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;

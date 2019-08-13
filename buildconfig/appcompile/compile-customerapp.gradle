@@ -137,8 +137,6 @@ include "features:top_ads:top_ads_management_common"
 include "features:top_ads:top_ads_management_sourcetagging"
 
 include "features:transaction:atc_common"
-include "features:transaction:transactionanalytics"
-include "features:transaction:transactiondata"
 include "features:transaction:checkout"
 include "features:transaction:purchase_platform"
 include "features:transaction:purchase_platform_common"

@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.checkout.helper
 
 import com.google.gson.Gson
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.model.AddressListModel
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.NewAddressCornerResponse
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.response.addresscorner.NewAddressCornerResponse
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.corner.AddressCornerMapper
 
 object AddressDummyDataProvider {

@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.express_checkout.data.entity.response.atc
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.transactiondata.entity.response.shippingaddressform.GroupShop
+import com.tokopedia.purchase_platform.checkout.data.model.response.shipment_address_form.GroupShop
 
 /**
  * Created by Irfan Khoirul on 30/11/18.

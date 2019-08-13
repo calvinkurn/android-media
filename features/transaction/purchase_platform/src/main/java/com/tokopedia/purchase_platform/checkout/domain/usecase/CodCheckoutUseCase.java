@@ -8,9 +8,9 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
-import com.tokopedia.transactiondata.entity.request.CodCheckoutRequest;
-import com.tokopedia.transactiondata.entity.response.cod.CodResponse;
+import com.tokopedia.purchase_platform.checkout.data.model.request.CheckoutRequest;
+import com.tokopedia.purchase_platform.checkout.data.model.request.CodCheckoutRequest;
+import com.tokopedia.purchase_platform.checkout.data.model.response.cod.CodResponse;
 
 import java.security.PublicKey;
 import java.util.HashMap;

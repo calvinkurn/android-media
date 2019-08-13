@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.checkout.domain.mapper;
 
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
+import com.tokopedia.purchase_platform.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
 
 /**
  * @author anggaprasetiyo on 21/02/18.

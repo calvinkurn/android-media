@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.repository;
 
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.AddressCornerResponse;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.response.addresscorner.AddressCornerResponse;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 

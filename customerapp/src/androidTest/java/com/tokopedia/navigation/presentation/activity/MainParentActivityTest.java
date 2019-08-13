@@ -61,7 +61,7 @@ import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.rule.GuessTokopediaTestRule;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.purchase_platform.cart.data.model.response.CartDataListResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import org.junit.After;

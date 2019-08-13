@@ -1,23 +1,23 @@
 package com.tokopedia.purchase_platform.express_checkout.domain.mapper.atc
 
+import com.tokopedia.purchase_platform.checkout.data.model.response.shipment_address_form.*
 import com.tokopedia.purchase_platform.express_checkout.data.constant.MAX_QUANTITY
 import com.tokopedia.purchase_platform.express_checkout.data.entity.response.atc.AtcResponse
 import com.tokopedia.purchase_platform.express_checkout.data.entity.response.atc.Message
-import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.Address
-import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.Payment
-import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.Shipment
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.profile.Address
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.profile.Payment
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.profile.Shipment
 import com.tokopedia.purchase_platform.express_checkout.domain.model.HeaderModel
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.*
 import com.tokopedia.purchase_platform.express_checkout.domain.model.profile.AddressModel
 import com.tokopedia.purchase_platform.express_checkout.domain.model.profile.PaymentModel
 import com.tokopedia.purchase_platform.express_checkout.domain.model.profile.ProfileModel
 import com.tokopedia.purchase_platform.express_checkout.domain.model.profile.ShipmentModel
-import com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice
-import com.tokopedia.transactiondata.entity.response.shippingaddressform.*
-import com.tokopedia.transactiondata.entity.response.variantdata.Child
-import com.tokopedia.transactiondata.entity.response.variantdata.Option
-import com.tokopedia.transactiondata.entity.response.variantdata.ProductVariantData
-import com.tokopedia.transactiondata.entity.response.variantdata.Variant
+import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.variant.Child
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.variant.Option
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.variant.ProductVariantData
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.variant.Variant
 import javax.inject.Inject
 
 /**

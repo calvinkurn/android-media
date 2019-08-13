@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
 import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantContract
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
+import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
 import rx.Subscriber
 
 /**

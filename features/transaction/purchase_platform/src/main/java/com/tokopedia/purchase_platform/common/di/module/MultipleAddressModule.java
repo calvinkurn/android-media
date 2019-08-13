@@ -6,8 +6,8 @@ import com.tokopedia.purchase_platform.common.di.scope.MultipleAddressScope;
 import com.tokopedia.purchase_platform.checkout.view.feature.multipleaddressform.IMultipleAddressPresenter;
 import com.tokopedia.purchase_platform.checkout.view.feature.multipleaddressform.IMultipleAddressView;
 import com.tokopedia.purchase_platform.checkout.view.feature.multipleaddressform.MultipleAddressPresenter;
-import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
+import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 

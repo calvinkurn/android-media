@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.transactiondata.entity.response.cod.Data;
+import com.tokopedia.purchase_platform.checkout.data.model.response.cod.Data;
 
 import java.security.PublicKey;
 

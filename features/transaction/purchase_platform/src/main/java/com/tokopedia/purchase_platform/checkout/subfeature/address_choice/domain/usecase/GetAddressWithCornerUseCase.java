@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.GqlKeroWithAddressResponse;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.response.addresscorner.GqlKeroWithAddressResponse;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 

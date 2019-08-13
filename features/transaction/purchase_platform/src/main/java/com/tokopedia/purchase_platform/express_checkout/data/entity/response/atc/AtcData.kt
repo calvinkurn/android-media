@@ -1,10 +1,10 @@
 package com.tokopedia.purchase_platform.express_checkout.data.entity.response.atc
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.Profile
-import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply
-import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion
-import com.tokopedia.transactiondata.entity.response.shippingaddressform.Donation
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.profile.Profile
+import com.tokopedia.purchase_platform.common.data.model.response.promo.AutoApply
+import com.tokopedia.purchase_platform.common.data.model.response.promo.PromoSuggestion
+import com.tokopedia.purchase_platform.checkout.data.model.response.shipment_address_form.Donation
 
 /**
  * Created by Irfan Khoirul on 30/11/18.

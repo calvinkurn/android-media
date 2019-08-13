@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.express_checkout.domain.mapper.profile
 
 import com.tokopedia.purchase_platform.express_checkout.domain.model.profile.ProfileResponseModel
-import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileResponse
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.profile.ProfileResponse
 
 /**
  * Created by Irfan Khoirul on 17/12/18.

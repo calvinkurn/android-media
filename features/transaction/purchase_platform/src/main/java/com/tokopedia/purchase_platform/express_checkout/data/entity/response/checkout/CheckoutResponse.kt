@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.express_checkout.data.entity.response.checkout
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.transactiondata.entity.response.expresscheckout.Header
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.Header
 
 /**
  * Created by Irfan Khoirul on 01/01/19.

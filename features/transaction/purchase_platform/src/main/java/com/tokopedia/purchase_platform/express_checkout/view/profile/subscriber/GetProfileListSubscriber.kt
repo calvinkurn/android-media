@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.express_checkout.view.profile.subscriber
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileListGqlResponse
+import com.tokopedia.purchase_platform.express_checkout.data.entity.response.profile.ProfileListGqlResponse
 import com.tokopedia.purchase_platform.express_checkout.view.profile.CheckoutProfileContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.purchase_platform.express_checkout.domain.mapper.profile.ProfileDataMapper

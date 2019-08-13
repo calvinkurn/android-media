@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.purchase_platform.checkout.view.feature.shipment.ShipmentPresenter;
-import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
+import com.tokopedia.purchase_platform.common.data.apiservice.CartResponseErrorException;
 
 import rx.Subscriber;
 

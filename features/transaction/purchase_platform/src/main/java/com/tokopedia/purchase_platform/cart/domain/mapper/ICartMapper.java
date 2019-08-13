@@ -8,12 +8,12 @@ import com.tokopedia.purchase_platform.cart.domain.model.cartlist.ResetCartData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
-import com.tokopedia.transactiondata.entity.response.cartlist.Message;
-import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
-import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
-import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
+import com.tokopedia.purchase_platform.cart.data.model.response.CartDataListResponse;
+import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.data.model.response.CartMultipleAddressDataListResponse;
+import com.tokopedia.purchase_platform.common.data.model.response.promo.Message;
+import com.tokopedia.purchase_platform.cart.data.model.response.DeleteCartDataResponse;
+import com.tokopedia.purchase_platform.cart.data.model.response.ResetCartDataResponse;
+import com.tokopedia.purchase_platform.cart.data.model.response.UpdateCartDataResponse;
 
 /**
  * @author anggaprasetiyo on 31/01/18.

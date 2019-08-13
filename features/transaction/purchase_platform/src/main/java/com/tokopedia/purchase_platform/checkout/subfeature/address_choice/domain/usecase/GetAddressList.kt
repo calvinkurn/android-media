@@ -2,14 +2,14 @@ package com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domai
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.addresscorner.NewAddressCornerResponse
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.response.addresscorner.NewAddressCornerResponse
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.corner.AddressCornerMapper
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.model.AddressListModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.transactiondata.entity.request.AddressRequest
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.request.AddressRequest
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
