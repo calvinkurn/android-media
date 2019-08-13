@@ -45,6 +45,8 @@ public class BannerSlidesModel {
     private String promoCode;
     @SerializedName("topads_view_url")
     private String topadsViewUrl;
+    @SerializedName("type")
+    private String type;
 
     private boolean impressed;
 
@@ -206,5 +208,13 @@ public class BannerSlidesModel {
 
     public boolean isImpressed() {
         return impressed;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
