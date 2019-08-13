@@ -11,7 +11,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.catalog.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.catalog.CatalogHeaderViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.catalog.GridCatalogViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.catalog.ListCatalogViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.EmptySearchViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.CatalogListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;

@@ -7,7 +7,7 @@ import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
@@ -141,7 +141,7 @@ public interface FlightBookingContract {
 
         void onButtonSubmitClicked();
 
-        void onPhoneCodeResultReceived(FlightBookingPhoneCodeViewModel phoneCodeViewModel);
+        void onPhoneCodeResultReceived(CountryPhoneCode phoneCode);
 
         void onPassengerResultReceived(FlightBookingPassengerViewModel passengerViewModel);
 

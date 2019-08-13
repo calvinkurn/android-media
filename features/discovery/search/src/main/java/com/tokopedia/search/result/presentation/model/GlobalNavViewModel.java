@@ -4,10 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
 import java.util.List;
 
-public class GlobalNavViewModel implements Parcelable {
+public class GlobalNavViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
     private String title;
     private String keyword;
     private String seeAllApplink;
@@ -40,6 +42,11 @@ public class GlobalNavViewModel implements Parcelable {
 
     public List<Item> getItemList() {
         return itemList;
+    }
+
+    @Override
+    public int type(ProductListTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 
     public static class Item implements Parcelable {

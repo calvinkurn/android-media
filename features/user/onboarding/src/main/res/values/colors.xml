@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!--COLOR NEW ONBOARDING-->
-    <color name="green_nob">#42b549</color>
-    <color name="transparent_green_nob">#a642b549</color>
-    <color name="orange_nob">#f79b21</color>
-    <color name="blue_nob">#00bcd4</color>
-</resources>

@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.common.domain.mapper
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.*
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.TrackingDetail
 import com.tokopedia.promocheckout.common.view.uimodel.*
 import javax.inject.Inject
 
@@ -81,7 +82,25 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 benefit = mapBenefit(data.benefitSummaryInfo),
                 clashings = mapClashing(data.clashingInfoDetail),
                 gatewayId = data.gatewayId,
-                isCoupon = data.isCoupon
+                isCoupon = data.isCoupon,
+                trackingDetailUiModel = mapTrackingDetails(data.trackingDetail)
+        )
+    }
+
+    private fun mapTrackingDetails(trackingDetails: List<TrackingDetail>): List<TrackingDetailUiModel> {
+        val trackingDetailUiModels = ArrayList<TrackingDetailUiModel>()
+        trackingDetails.forEach {
+            trackingDetailUiModels.add(mapTrackingDetail(it))
+        }
+
+        return trackingDetailUiModels
+    }
+
+    private fun mapTrackingDetail(trackingDetail: TrackingDetail): TrackingDetailUiModel {
+        return TrackingDetailUiModel(
+                productId = trackingDetail.productId,
+                promoCodesTracking = trackingDetail.promoCodesTracking,
+                promoDetailsTracking = trackingDetail.promoDetailsTracking
         )
     }
 

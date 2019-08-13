@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.common.data.Filter;
-import com.tokopedia.discovery.newdiscovery.base.DefaultSearchSubscriber;
 import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
 
 import java.lang.reflect.Type;

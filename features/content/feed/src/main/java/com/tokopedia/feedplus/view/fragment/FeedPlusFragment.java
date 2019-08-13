@@ -49,6 +49,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.util.FeedScrollListener;
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -104,8 +105,10 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
 import com.tokopedia.kolcommon.data.pojo.Author;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -775,12 +778,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void showFeedFab(WhitelistViewModel whitelistViewModel) {
         fabFeed.show();
         isFabExpanded = false;
-        if (!whitelistViewModel.getWhitelist().getAuthors().isEmpty() &&
-                whitelistViewModel.getWhitelist().getAuthors().size() != 1) {
-            fabFeed.setOnClickListener(fabClickListener(whitelistViewModel));
-        } else {
+        if (whitelistViewModel.getWhitelist().getAuthors().size() == 1) {
             Author author = whitelistViewModel.getWhitelist().getAuthors().get(0);
-            fabFeed.setOnClickListener(v -> onGoToLink(author.getLink()));
+            fabFeed.setOnClickListener(v -> {
+                onGoToLink(author.getLink());
+
+                analytics.trackClickCreatePost(userSession.getUserId());
+                analytics.trackClickCreatePostAs(author.getType(),
+                        userSession.getUserId(),
+                        userSession.getShopId());
+            });
+        } else if (whitelistViewModel.getWhitelist().getAuthors().size() > 1) {
+            fabFeed.setOnClickListener(fabClickListener(whitelistViewModel));
         }
     }
 
@@ -792,25 +801,36 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward));
                 greyBackground.setVisibility(View.VISIBLE);
                 for (Author author : whitelistViewModel.getWhitelist().getAuthors()) {
-                    if (author.getTitle().equalsIgnoreCase(Author.KEY_POST_TOKO)) {
-                        fabShop.show();
-                        fabTextShop.setVisibility(View.VISIBLE);
-                        fabShop.setOnClickListener(v1 -> onGoToLink(author.getLink()));
-                    } else {
+                    if (author.getType().equalsIgnoreCase(Author.TYPE_AFFILIATE)) {
                         fabByme.show();
                         fabTextByme.setVisibility(View.VISIBLE);
-                        fabByme.setOnClickListener(v12 -> goToCreateAffiliate(author.getLink()));
+                        fabByme.setOnClickListener(v12 -> {
+                            goToCreateAffiliate();
+                            analytics.trackClickCreatePostAs(author.getType(),
+                                    userSession.getUserId(),
+                                    userSession.getShopId());
+                        });
+                    } else {
+                        fabShop.show();
+                        fabTextShop.setVisibility(View.VISIBLE);
+                        fabShop.setOnClickListener(v1 -> {
+                            onGoToLink(author.getLink());
+                            analytics.trackClickCreatePostAs(author.getType(),
+                                    userSession.getUserId(),
+                                    userSession.getShopId());
+                        });
                     }
                 }
                 greyBackground.setOnClickListener(v3 -> {
                     hideAllFab(false);
                 });
                 isFabExpanded = true;
+                analytics.trackClickCreatePost(userSession.getUserId());
             }
         };
     }
 
-    private void goToCreateAffiliate(String link) {
+    private void goToCreateAffiliate() {
         if (getContext() != null) {
             if (affiliatePreference.isFirstTimeEducation(userSession.getUserId())) {
 
@@ -1269,12 +1289,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private View createCustomCreatePostBottomSheetView(@NonNull LayoutInflater layoutInflater, WhitelistViewModel element) {
         View view = layoutInflater.inflate(R.layout.layout_create_post_bottom_sheet, null);
-
         if (getActivity() != null) {
             RecyclerView entryPointRecyclerView = view.findViewById(R.id.entry_point_list);
             EntryPointAdapter adapter = new EntryPointAdapter(getActivity(),
                     element.getWhitelist().getAuthors(), applink -> {
-                        analytics.trackClickCreatePostAs(applink, userSession.getUserId(),
+                        analytics.trackClickCreatePostAs(applink,
+                                userSession.getUserId(),
                                 userSession.getShopId());
                         startActivityForResult(
                                 RouteManager.getIntent(getContext(), applink),
@@ -1283,7 +1303,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         createPostBottomSheet.dismiss();
                     });
             entryPointRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                    LinearLayoutManager.VERTICAL, false));
+                    LinearLayoutManager.VERTICAL,
+                    false));
             entryPointRecyclerView.setAdapter(adapter);
         }
         return view;
@@ -1556,7 +1577,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
         if (getActivity() != null) {
-            doShare(String.format("%s %s", description, url), title);
+            new ShareBottomSheets().show(getActivity().getSupportFragmentManager(),
+                    ShareBottomSheets.Companion.constructShareData("", imageUrl, url, description, title),
+                    packageName -> {
+
+                    });
         }
 
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE);
@@ -1593,6 +1618,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
             DynamicPostViewModel model
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
             trackCardPostClick(positionInFeed, model.getTrackingPostModel());
+        }
+    }
+
+    @Override
+    public void onMediaGridClick(int positionInFeed, int contentPosition, @NotNull String redirectLink, boolean isSingleItem) {
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(positionInFeed, model.getTrackingPostModel());
+
+            if (!isSingleItem && getActivity() != null){
+                startActivity(MediaPreviewActivity.createIntent(getActivity(), String.valueOf(model.getId()), contentPosition));
+            }
         }
     }
 

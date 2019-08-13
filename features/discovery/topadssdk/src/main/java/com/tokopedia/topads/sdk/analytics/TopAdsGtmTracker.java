@@ -279,12 +279,12 @@ public class TopAdsGtmTracker {
         Analytics tracker = getTracker();
         Map<String, Object> map = DataLayer.mapOf(
                 "event", "productClick",
-                "eventCategory", "inbox",
-                "eventAction", "click on topads product",
+                "eventCategory", "inbox page",
+                "eventAction", "click on product recommendation",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                         "click", DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/inbox - topads - rekomendasi untuk anda - "+recommendationType),
+                                DataLayer.mapOf("list", "/inbox - rekomendasi untuk anda - "+recommendationType + " - product topads"),
                                 "products", DataLayer.listOf(DataLayer.mapOf(
                                         "name", product.getName(),
                                         "id", product.getId(),
