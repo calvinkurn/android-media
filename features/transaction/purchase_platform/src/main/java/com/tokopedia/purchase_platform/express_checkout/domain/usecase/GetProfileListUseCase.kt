@@ -3,11 +3,11 @@ package com.tokopedia.purchase_platform.express_checkout.domain.usecase
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.transactiondata.R
 import com.tokopedia.purchase_platform.express_checkout.data.entity.response.profile.ProfileListGqlResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.purchase_platform.R
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject

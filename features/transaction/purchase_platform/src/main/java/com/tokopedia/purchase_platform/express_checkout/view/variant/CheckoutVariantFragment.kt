@@ -63,9 +63,9 @@ import com.tokopedia.purchase_platform.express_checkout.view.variant.analytics.E
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
-import com.tokopedia.purchase_platform.checkout.data.model.request.CheckoutRequest
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
-import com.tokopedia.purchase_platform.express_checkout.data.entity.request.AtcRequestParam
+import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.usecase.RequestParams
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable

@@ -56,7 +56,7 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.purchase_platform.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.purchase_platform.checkout.data.model.request.DataChangeAddressRequest;
-import com.tokopedia.purchase_platform.checkout.data.model.request.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 
 import java.util.ArrayList;
 import java.util.Collections;

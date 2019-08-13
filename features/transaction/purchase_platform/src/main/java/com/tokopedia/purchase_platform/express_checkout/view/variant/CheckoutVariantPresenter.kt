@@ -12,7 +12,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Product
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.checkout.data.model.request.*
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
 import com.tokopedia.purchase_platform.express_checkout.domain.mapper.atc.AtcDomainModelMapper
 import com.tokopedia.purchase_platform.express_checkout.domain.mapper.checkout.CheckoutDomainModelMapper
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
@@ -21,7 +21,7 @@ import com.tokopedia.purchase_platform.express_checkout.domain.usecase.DoCheckou
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.transaction.common.sharedata.EditAddressParam
-import com.tokopedia.purchase_platform.express_checkout.data.entity.request.AtcRequestParam
+import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import rx.android.schedulers.AndroidSchedulers

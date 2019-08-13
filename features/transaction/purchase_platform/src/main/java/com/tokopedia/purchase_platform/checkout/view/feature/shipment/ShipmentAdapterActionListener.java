@@ -6,7 +6,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.purchase_platform.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.purchase_platform.checkout.data.model.request.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 
 import java.util.List;
 

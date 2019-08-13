@@ -8,7 +8,7 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.express_checkout.router.ExpressCheckoutInternalRouter.Companion.EXTRA_ATC_REQUEST
 import com.tokopedia.purchase_platform.express_checkout.router.ExpressCheckoutInternalRouter.Companion.TRACKER_ATTRIBUTION
 import com.tokopedia.purchase_platform.express_checkout.router.ExpressCheckoutInternalRouter.Companion.TRACKER_LIST_NAME
-import com.tokopedia.purchase_platform.express_checkout.data.entity.request.AtcRequestParam
+import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.constant.Constant.*
 
 /**

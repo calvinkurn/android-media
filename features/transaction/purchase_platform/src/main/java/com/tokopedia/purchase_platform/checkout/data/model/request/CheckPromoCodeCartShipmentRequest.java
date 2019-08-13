@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.checkout.data.model.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.TokopediaCornerData;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,7 @@ package com.tokopedia.promocheckout.common.data.entity.request
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.transactiondata.entity.request.TokopediaCornerData
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.TokopediaCornerData
 
 /**
  * Created by Irfan Khoirul on 19/03/19.

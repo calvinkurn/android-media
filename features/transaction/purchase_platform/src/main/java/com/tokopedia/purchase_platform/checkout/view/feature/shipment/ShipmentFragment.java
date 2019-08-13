@@ -115,9 +115,9 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.checkout.analytics.CornerAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.purchase_platform.checkout.data.model.request.CheckoutRequest;
-import com.tokopedia.purchase_platform.checkout.data.model.request.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.checkout.data.model.response.cod.Data;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 
 import org.jetbrains.annotations.NotNull;
@@ -129,7 +129,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.transactiondata.constant.Constant.EXTRA_CHECKOUT_REQUEST;
+import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
 
 /**
  * @author Irfan Khoirul on 23/04/18.

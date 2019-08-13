@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.checkout.data.model.request;
+package com.tokopedia.purchase_platform.common.data.model.request.checkout;
 
 import android.os.Parcel;
 import android.os.Parcelable;

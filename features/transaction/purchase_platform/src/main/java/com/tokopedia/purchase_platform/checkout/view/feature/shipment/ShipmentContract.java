@@ -29,10 +29,10 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.purchase_platform.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.purchase_platform.checkout.data.model.request.CheckoutRequest;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
 import com.tokopedia.purchase_platform.checkout.data.model.request.DataChangeAddressRequest;
-import com.tokopedia.purchase_platform.checkout.data.model.request.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.checkout.data.model.response.cod.Data;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 
 import java.util.ArrayList;

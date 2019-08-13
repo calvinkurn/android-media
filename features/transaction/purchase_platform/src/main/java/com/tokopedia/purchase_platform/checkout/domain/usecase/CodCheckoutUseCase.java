@@ -8,7 +8,7 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.purchase_platform.checkout.data.model.request.CheckoutRequest;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
 import com.tokopedia.purchase_platform.checkout.data.model.request.CodCheckoutRequest;
 import com.tokopedia.purchase_platform.checkout.data.model.response.cod.CodResponse;
 

@@ -14,7 +14,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.express_checkout.data.entity.response.checkout.CheckoutExpressGqlResponse
-import com.tokopedia.purchase_platform.checkout.data.model.request.DataCheckoutRequest
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject
