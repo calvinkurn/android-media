@@ -33,8 +33,6 @@ public interface ICartListAnalyticsListener {
     void sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(Map<String, Object> eeData);
     //=======================================================================
 
-    void sendAnalyticsOnButtonCheckoutClicked();
-
     void sendAnalyticsOnClickBackArrow();
 
     void sendAnalyticsOnClickRemoveButtonHeader();
@@ -53,8 +51,6 @@ public interface ICartListAnalyticsListener {
 
     void sendAnalyticsOnClickShopNameCartItem(String shopName);
 
-    void sendAnalyticsOnClickUsePromoCodeAndCoupon();
-
     void sendAnalyticsOnClickCancelPromoCodeAndCouponBanner();
 
     void sendAnalyticsOnClickRemoveCartConstrainedProduct(Map<String, Object> eeDataLayerCart);
@@ -68,10 +64,6 @@ public interface ICartListAnalyticsListener {
     void sendAnalyticsOnClickCreateNoteCartItem();
 
     void sendAnalyticsOnDataCartIsEmpty();
-
-    void sendAnalyticsOnClickShoppingNowCartEmptyState();
-
-    void sendAnalyticsOnClickAddFromWishListCartEmptyState();
 
     void sendAnalyticsScreenName(String screenName);
 

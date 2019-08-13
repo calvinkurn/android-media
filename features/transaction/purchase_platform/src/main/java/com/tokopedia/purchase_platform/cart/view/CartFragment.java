@@ -521,11 +521,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendAnalyticsOnButtonCheckoutClicked() {
-        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourierOnCart();
-    }
-
-    @Override
     protected void initialVar() {
 
     }
@@ -643,6 +638,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onClickShopNow() {
+        cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
         RouteManager.route(getActivity(), ApplinkConst.HOME);
     }
 
@@ -1686,11 +1682,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendAnalyticsOnClickUsePromoCodeAndCoupon() {
-        cartPageAnalytics.eventClickAtcCartClickGunakanKodePromoAatauKupon();
-    }
-
-    @Override
     public void sendAnalyticsOnClickCancelPromoCodeAndCouponBanner() {
         cartPageAnalytics.eventClickAtcCartClickXOnBannerPromoCode();
     }
@@ -1723,16 +1714,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void sendAnalyticsOnDataCartIsEmpty() {
         cartPageAnalytics.eventViewAtcCartImpressionCartEmpty();
-    }
-
-    @Override
-    public void sendAnalyticsOnClickShoppingNowCartEmptyState() {
-        cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
-    }
-
-    @Override
-    public void sendAnalyticsOnClickAddFromWishListCartEmptyState() {
-        cartPageAnalytics.eventClickAtcCartClickAddFromWishlistOnEmptyCart();
     }
 
     @Override
@@ -1943,11 +1924,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             return getArguments().getString(CartActivity.EXTRA_CART_ID);
         }
         return "0";
-    }
-
-    @Override
-    public PromoStackingData getPromoStackingGlobalData() {
-        return cartAdapter.getPromoStackingGlobalData();
     }
 
     @Override
