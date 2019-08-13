@@ -23,6 +23,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchImagePickerActivity;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
@@ -30,11 +31,6 @@ import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
@@ -42,9 +38,6 @@ import java.util.List;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
 
 /**
  * Created by hangnadi on 10/3/17.
@@ -417,8 +410,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onImageSearchClicked() {
-        Intent intent = ImageSearchImagePickerActivity.getIntent(this);
-        startActivityForResult(intent, REQUEST_CODE_IMAGE);
+        startActivity(ImageSearchActivity.newInstance(this, new Bundle()));
     }
 
     @Override

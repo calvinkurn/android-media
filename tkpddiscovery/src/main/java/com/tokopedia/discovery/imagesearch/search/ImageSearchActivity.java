@@ -17,8 +17,19 @@ import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
 
 /**
  * Created by sachinbansal on 4/12/18.
@@ -27,7 +38,7 @@ import javax.inject.Inject;
 public class ImageSearchActivity extends DiscoveryActivity
         implements ImageSearchContract.View, RedirectionListener {
 
-
+    private static final int REQUEST_CODE_IMAGE = 2390;
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
 
     @Inject
@@ -41,7 +52,6 @@ public class ImageSearchActivity extends DiscoveryActivity
         return intent;
     }
 
-
     public static void moveTo(AppCompatActivity activity,
                               ProductViewModel productViewModel) {
         if (activity != null) {
@@ -54,6 +64,32 @@ public class ImageSearchActivity extends DiscoveryActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList = new ArrayList<>();
+
+        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.ORIGINAL);
+        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_1_1);
+        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_3_4);
+        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_4_3);
+        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_16_9);
+        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_9_16);
+
+        ImagePickerEditorBuilder imagePickerEditorBuilder = new ImagePickerEditorBuilder
+                (new int[]{ACTION_CROP, ACTION_BRIGHTNESS, ACTION_CONTRAST},
+                        false,
+                        imageRatioTypeDefArrayList);
+
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                ImagePickerBuilder.IMAGE_SEARCH_MIN_RESOLUTION, null, true,
+                imagePickerEditorBuilder, null);
+
+        Intent intent = ImageSearchImagePickerActivity.getIntent(this, builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE);
+        overridePendingTransition(0, 0);
+    }
+
+    private void proceed(Bundle savedInstanceState) {
         initInjector();
         setPresenter(searchPresenter);
         searchPresenter.attachView(this);
