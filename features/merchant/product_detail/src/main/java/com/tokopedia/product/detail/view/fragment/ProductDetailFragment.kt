@@ -117,8 +117,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
-import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
-import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -143,7 +141,6 @@ import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
 import kotlinx.android.synthetic.main.partial_product_full_descr.*
 import kotlinx.android.synthetic.main.partial_product_image_review.*
 import kotlinx.android.synthetic.main.partial_product_latest_talk.*
-import kotlinx.android.synthetic.main.partial_product_membership.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_recom_1.*
 import kotlinx.android.synthetic.main.partial_product_recom_2.*
@@ -155,7 +152,6 @@ import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
-
     private var productId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
@@ -759,8 +755,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (!::valuePropositionView.isInitialized) {
             valuePropositionView = PartialValuePropositionView.build(layout_value_proposition, onViewClickListener)
         }
-
-
     }
 
     private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false) {
