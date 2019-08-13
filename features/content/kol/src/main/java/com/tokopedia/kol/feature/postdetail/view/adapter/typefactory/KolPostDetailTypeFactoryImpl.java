@@ -5,7 +5,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.relatedpost.RelatedPostTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
@@ -14,6 +13,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
@@ -45,9 +45,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-
 /**
  * @author by milhamj on 27/07/18.
  */
@@ -65,7 +62,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final GridPostAdapter.GridItemListener gridItemListener;
     private final VideoViewHolder.VideoViewListener videoViewListener;
     private final FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener;
-    private final Function1<FeedPostRelated.Datum, Unit> onRelatedPostClicked;
+    private final RelatedPostAdapter.RelatedPostListener relatedPostListener;
     private final KolComment.View.SeeAll seeAll;
     private final UserSessionInterface userSession;
     private final KolPostDetailContract.View mainView;
@@ -81,7 +78,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         GridPostAdapter.GridItemListener gridItemListener,
                                         VideoViewHolder.VideoViewListener videoViewListener,
                                         FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener,
-                                        Function1<FeedPostRelated.Datum, Unit> onRelatedPostClicked,
+                                        RelatedPostAdapter.RelatedPostListener relatedPostListener,
                                         UserSessionInterface userSession) {
         this.mainView = mainView;
         this.kolCommentListener = kolCommentListener;
@@ -94,7 +91,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         this.gridItemListener = gridItemListener;
         this.videoViewListener = videoViewListener;
         this.feedMultipleImageViewListener = feedMultipleImageViewListener;
-        this.onRelatedPostClicked = onRelatedPostClicked;
+        this.relatedPostListener = relatedPostListener;
         this.userSession = userSession;
     }
 
@@ -194,7 +191,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         } else if (viewType == EmptyDetailViewHolder.Companion.getLAYOUT()) {
             abstractViewHolder = new EmptyDetailViewHolder(view, mainView);
         } else if(viewType == RelatedPostViewHolder.LAYOUT) {
-            abstractViewHolder = new RelatedPostViewHolder(view, onRelatedPostClicked);
+            abstractViewHolder = new RelatedPostViewHolder(view, relatedPostListener);
         } else {
             abstractViewHolder = super.createViewHolder(view, viewType);
         }

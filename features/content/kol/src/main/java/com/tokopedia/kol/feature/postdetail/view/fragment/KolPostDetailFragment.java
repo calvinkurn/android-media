@@ -43,6 +43,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
@@ -103,7 +104,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
-        FeedMultipleImageView.FeedMultipleImageViewListener{
+        FeedMultipleImageView.FeedMultipleImageViewListener,
+        RelatedPostAdapter.RelatedPostListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -193,7 +195,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,
                 this, this, this, this, this, this,
                 this, this, this, this,
-                this::onRelatedPostClicked, userSession);
+                this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
 
@@ -947,11 +949,17 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         adapter.hideLoading();
     }
 
-    private Unit onRelatedPostClicked(FeedPostRelated.Datum post) {
+    @Override
+    public void onRelatedPostImpression(@NotNull FeedPostRelated.Datum post) {
+        analytics.eventImpressionOtherPost(post.getId());
+    }
+
+    @Override
+    public void onRelatedPostClicked(@NotNull FeedPostRelated.Datum post) {
         if (!post.getContent().getBody().getMedia().isEmpty()) {
             RouteManager.route(getContext(), post.getContent().getBody().getMedia().get(0).getApplink());
         }
-        return Unit.INSTANCE;
+        analytics.eventClickOtherPost(post.getId());
     }
 
     private void onGoToLink(String link) {

@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
+import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostItemViewModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
@@ -15,13 +17,13 @@ import kotlinx.android.synthetic.main.item_related_post_child.view.*
 /**
  * @author by milhamj on 2019-08-12.
  */
-class RelatedPostAdapter(private val relatedPostList: List<FeedPostRelated.Datum>,
-                         private val onPostClicked: (FeedPostRelated.Datum) -> Unit)
+class RelatedPostAdapter(private val relatedPostList: List<RelatedPostItemViewModel>,
+                         private val listener: RelatedPostListener)
     : RecyclerView.Adapter<RelatedPostAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_related_post_child, parent, false)
-        return ViewHolder(view, onPostClicked)
+        return ViewHolder(view, listener)
     }
 
     override fun getItemCount(): Int = relatedPostList.size
@@ -31,15 +33,18 @@ class RelatedPostAdapter(private val relatedPostList: List<FeedPostRelated.Datum
     }
 
     class ViewHolder(v: View,
-                     private val onPostClicked: (FeedPostRelated.Datum) -> Unit)
+                     private val listener: RelatedPostListener)
         : RecyclerView.ViewHolder(v) {
 
-        fun bind(element: FeedPostRelated.Datum) {
+        fun bind(element: RelatedPostItemViewModel) {
             with(itemView) {
-                val content = element.content
+                val content = element.data.content
                 val firstMedia = content.body.media.firstOrNull()?.thumbnail ?: ""
                 if (firstMedia.isNotEmpty()) {
                     image.loadImage(firstMedia)
+                }
+                image.addOnImpressionListener(element.impressionHolder) {
+                    listener.onRelatedPostImpression(element.data)
                 }
                 val avatarBadge = content.header.avatarBadge
                 if (avatarBadge.isNotEmpty()) {
@@ -55,10 +60,16 @@ class RelatedPostAdapter(private val relatedPostList: List<FeedPostRelated.Datum
                 setOnClickListener {
                     val applink = content.body.media.firstOrNull()?.applink ?: ""
                     if (applink.isNotEmpty()) {
-                        onPostClicked.invoke(element)
+                        listener.onRelatedPostClicked(element.data)
                     }
                 }
             }
         }
+    }
+
+    interface RelatedPostListener {
+        fun onRelatedPostClicked(post: FeedPostRelated.Datum)
+
+        fun onRelatedPostImpression(post: FeedPostRelated.Datum)
     }
 }

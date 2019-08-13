@@ -5,7 +5,6 @@ import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.item_related_post.view.*
@@ -14,7 +13,7 @@ import kotlinx.android.synthetic.main.item_related_post.view.*
  * @author by milhamj on 2019-08-12.
  */
 class RelatedPostViewHolder(v: View,
-                            private val onPostClicked: (FeedPostRelated.Datum) -> Unit)
+                            private val listener: RelatedPostAdapter.RelatedPostListener)
     : AbstractViewHolder<RelatedPostViewModel>(v) {
 
     private var adapter: RelatedPostAdapter? = null
@@ -35,7 +34,7 @@ class RelatedPostViewHolder(v: View,
             if (!TextUtils.isEmpty(element.title)) {
                 title.text = element.title
             }
-            adapter = RelatedPostAdapter(element.relatedPostList, onPostClicked)
+            adapter = RelatedPostAdapter(element.relatedPostList, listener)
             relatedPostRv.adapter = adapter
         }
     }

@@ -11,6 +11,7 @@ import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase;
+import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostItemViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
@@ -24,6 +25,9 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -333,11 +337,19 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
 
                         getView().dismissLoading();
                         RelatedPostViewModel relatedPostViewModel = new RelatedPostViewModel(
-                                feedPostRelated.getData()
+                                mapRelatedPost(feedPostRelated.getData())
                         );
                         getView().onSuccessGetRelatedPost(relatedPostViewModel);
                     }
                 }
         );
+    }
+
+    private List<RelatedPostItemViewModel> mapRelatedPost(List<FeedPostRelated.Datum> data) {
+        List<RelatedPostItemViewModel> list = new ArrayList<>();
+        for (FeedPostRelated.Datum item : data) {
+            list.add(new RelatedPostItemViewModel(item));
+        }
+        return list;
     }
 }
