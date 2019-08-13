@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.activity;
+package com.tokopedia.saldodetails.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -67,6 +67,10 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         return new Intent(context, SaldoDepositActivity.class);
     }
 
+    public static Intent getIntent(Context context) {
+        return new Intent(context, SaldoDepositActivity.class);
+    }
+
     @Override
     public SaldoDetailsComponent getComponent() {
         return SaldoDetailsComponentInstance.getComponent(getApplication());
@@ -123,9 +127,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         TextView saldoHelp = findViewById(R.id.toolbar_saldo_help);
 
         saldoHelp.setVisibility(View.VISIBLE);
-        saldoHelp.setOnClickListener(v -> {
-            RouteManager.route(this, ApplinkConst.SALDO_INTRO);
-        });
+        saldoHelp.setOnClickListener(v -> startActivity(SaldoIntroActivity.newInstance(this)));
     }
 
     @Override
