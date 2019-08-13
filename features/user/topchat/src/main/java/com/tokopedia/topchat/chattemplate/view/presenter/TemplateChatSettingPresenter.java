@@ -36,7 +36,6 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
     @Override
     public void attachView(TemplateChatContract.View view) {
         super.attachView(view);
-        getTemplate();
     }
 
     @Override
@@ -46,9 +45,9 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
         setAvailabilityTemplateUseCase.unsubscribe();
     }
 
-    public void getTemplate() {
+    public void getTemplate(Boolean isSeller) {
         getView().showLoading();
-        getTemplateUseCase.execute(GetTemplateUseCase.generateParam(), new Subscriber<GetTemplateViewModel>() {
+        getTemplateUseCase.execute(GetTemplateUseCase.generateParam(isSeller), new Subscriber<GetTemplateViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -140,8 +139,8 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
     }
 
     @Override
-    public void reloadTemplate() {
+    public void reloadTemplate(Boolean isSeller) {
         getView().showLoading();
-        getTemplate();
+        getTemplate(isSeller);
     }
 }

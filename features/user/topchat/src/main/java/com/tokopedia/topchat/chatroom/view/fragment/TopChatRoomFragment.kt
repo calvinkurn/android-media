@@ -483,7 +483,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun goToSettingTemplate() {
-        val intent = TemplateChatActivity.createInstance(context)
+        var isSeller = getUserSession().shopId == shopId.toString()
+        val intent = TemplateChatActivity.createInstance(context, isSeller)
         activity?.let {
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
             it.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)

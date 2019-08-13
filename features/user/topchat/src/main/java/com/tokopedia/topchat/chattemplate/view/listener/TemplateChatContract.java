@@ -50,6 +50,6 @@ public class TemplateChatContract {
 
         void setArrange(boolean enabled, ArrayList<Integer> arrayList, int from, int to);
 
-        void reloadTemplate();
+        void reloadTemplate(Boolean isSeller);
     }
 }
