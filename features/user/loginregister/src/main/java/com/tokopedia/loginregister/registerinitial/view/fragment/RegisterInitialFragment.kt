@@ -4,26 +4,19 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat.getSystemService
 import android.support.v7.app.AppCompatActivity
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
-import android.text.InputType
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.view.View.IMPORTANT_FOR_AUTOFILL_NO
-import android.view.autofill.AutofillManager
 import android.widget.*
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -51,12 +44,12 @@ import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract
 import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter
@@ -135,6 +128,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     @Inject
     lateinit var registerAnalytics: RegisterAnalytics
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     lateinit var callbackManager: CallbackManager
     lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -863,8 +859,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     fun checkPermissionGetPhoneNumber(){
-        val permissionCheckerHelper = PermissionCheckerHelper()
-
         permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE, object: PermissionCheckerHelper.PermissionCheckListener{
             override fun onPermissionDenied(permissionText: String) {
                 context?.let {
