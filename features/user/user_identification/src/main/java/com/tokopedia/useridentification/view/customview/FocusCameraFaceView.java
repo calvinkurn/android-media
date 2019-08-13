@@ -14,7 +14,7 @@ import android.view.View;
  * @author by alvinatin on 07/11/18.
  */
 
-public class FocusCameraFaceView extends View{
+public class FocusCameraFaceView extends View {
 
     private final static float LEFT_DIMEN_DIVIDER = 1.4f;
     private final static double TOP_DIMEN_DIVIDER = 1.3;
@@ -55,7 +55,7 @@ public class FocusCameraFaceView extends View{
 
         mSemiBlackPaint = new Paint();
         mSemiBlackPaint.setColor(Color.TRANSPARENT);
-        mSemiBlackPaint.setStrokeWidth(CONST_STROKE_WIDTH);
+//        mSemiBlackPaint.setStrokeWidth(CONST_STROKE_WIDTH);
     }
 
     @Override
@@ -63,6 +63,9 @@ public class FocusCameraFaceView extends View{
         super.onDraw(canvas);
 
         mPath.reset();
+        float x = getWidth() / 2 ;
+        float y = getHeight() / 3;
+        float radius = getWidth() / 3;
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mPath.addRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
@@ -70,6 +73,12 @@ public class FocusCameraFaceView extends View{
                     getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
                     (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
                     Path.Direction.CW);
+
+            mPath.addCircle(x,
+                    y,
+                    radius,
+                    Path.Direction.CW);
+
         } else {
             mPath.addRoundRect(
                     getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
@@ -81,9 +90,9 @@ public class FocusCameraFaceView extends View{
                     Path.Direction.CW
             );
 
-            mPath.addOval( getLeft() + (getRight() - getLeft()) / LEFT_OVAL_DIMEN_DIVIDER,
+            mPath.addOval(getLeft() + (getRight() - getLeft()) / LEFT_OVAL_DIMEN_DIVIDER,
                     (float) (getTop() + (getBottom() - getTop()) / TOP_OVAL_DIMEN_DIVIDER),
-                     getRight() - (getRight() - getLeft()) / RIGHT_OVAL_DIMEN_DIVIDER,
+                    getRight() - (getRight() - getLeft()) / RIGHT_OVAL_DIMEN_DIVIDER,
                     (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_OVAL_DIMEN_DIVIDER),
                     Path.Direction.CW);
         }
@@ -95,6 +104,11 @@ public class FocusCameraFaceView extends View{
                     getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
                     (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
                     mTransparentPaint);
+
+//            canvas.drawCircle(x,
+//                    y,
+//                    radius,
+//                    mTransparentPaint);
         } else {
             canvas.drawRoundRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
                     (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
