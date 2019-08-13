@@ -1,5 +1,5 @@
 query {
-  travelDestination() {
+  TravelDestination() {
     destination{
       attributes{
         title

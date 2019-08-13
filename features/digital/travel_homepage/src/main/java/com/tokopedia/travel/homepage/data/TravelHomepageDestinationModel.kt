@@ -2,7 +2,6 @@ package com.tokopedia.travel.homepage.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 
 /**
@@ -10,7 +9,10 @@ import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepage
  */
 class TravelHomepageDestinationModel(@SerializedName("destination")
                                      @Expose
-                                     val destination: List<Destination> = arrayListOf())
+                                     val destination: List<Destination> = arrayListOf(),
+                                     @SerializedName("meta")
+                                     @Expose
+                                     val meta: MetaModel = MetaModel())
     : TravelHomepageItemModel() {
 
     override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
@@ -38,4 +40,8 @@ class TravelHomepageDestinationModel(@SerializedName("destination")
     data class Response(@SerializedName("TravelDestination")
                         @Expose
                         val response: TravelHomepageDestinationModel = TravelHomepageDestinationModel())
+
+    data class MetaModel(@SerializedName("title")
+                         @Expose
+                         val title: String = "")
 }

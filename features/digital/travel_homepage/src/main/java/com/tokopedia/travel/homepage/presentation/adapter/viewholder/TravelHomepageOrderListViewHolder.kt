@@ -21,7 +21,7 @@ class TravelHomepageOrderListViewHolder(itemView: View, val onItemBindListener: 
     override fun bind(element: TravelHomepageOrderListModel) {
         if (element.isLoaded) {
             if (element.orders.isNotEmpty()) {
-                itemView.visibility = View.VISIBLE
+                itemView.section_layout.visibility = View.VISIBLE
                 with(itemView) {
                     section_title.text = element.meta.title
 
@@ -33,8 +33,11 @@ class TravelHomepageOrderListViewHolder(itemView: View, val onItemBindListener: 
                         list_recycler_view.adapter = orderAdapter
                     }
                 }
-            } else itemView.visibility = View.GONE
-        } else onItemBindListener.onOrderListVHBind()
+            } else itemView.section_layout.visibility = View.GONE
+        } else {
+            itemView.section_layout.visibility = View.GONE
+            onItemBindListener.onOrderListVHBind()
+        }
     }
 
     companion object {

@@ -17,8 +17,9 @@ class TravelHomepageOrderListAdapter(private var list: List<TravelHomepageOrderL
                                      var listener: OrderViewHolder.OnItemClickListener?):
         RecyclerView.Adapter<TravelHomepageOrderListAdapter.OrderViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, p1: Int): OrderViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(OrderViewHolder.LAYOUT, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, position: Int): OrderViewHolder {
+        val view = if (list.get(position).subtitle.isNotEmpty()) LayoutInflater.from(parent.context).inflate(OrderViewHolder.LAYOUT, parent, false)
+        else LayoutInflater.from(parent.context).inflate(OrderViewHolder.LAYOUT_WITHOUT_SUBTITLE, parent, false)
         return OrderViewHolder(view)
     }
 
@@ -35,14 +36,15 @@ class TravelHomepageOrderListAdapter(private var list: List<TravelHomepageOrderL
             with(itemView) {
                 image.loadImage(order.imageUrl)
                 title.text = order.title
-                subtitle.text = order.subtitle
-                prefix.text = order.prefix
+                if (order.subtitle.isNotEmpty()) subtitle.text = order.subtitle
+                prefix.text = order.value
             }
             if (listener != null) itemView.setOnClickListener { listener.onItemClick(order, position) }
         }
 
         companion object {
-            val LAYOUT = R.layout.travel_homepage_travel_section_list_item
+            val LAYOUT = R.layout.travel_homepage_order_section_list_item
+            val LAYOUT_WITHOUT_SUBTITLE = R.layout.travel_homepage_order_section_list_without_subtitle_item
         }
 
         interface OnItemClickListener {

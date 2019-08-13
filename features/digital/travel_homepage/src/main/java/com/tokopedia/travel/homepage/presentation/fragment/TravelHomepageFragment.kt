@@ -74,7 +74,7 @@ class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHo
     }
 
     override fun onDestinationVHBind() {
-
+        travelHomepageViewModel.getDestination(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_destination))
     }
 
     override fun onOrderListVHBind() {

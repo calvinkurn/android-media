@@ -21,6 +21,7 @@ class TravelHomepageAdapterTypeFactory(val onBindListener: OnItemBindListener) :
             TravelHomepageOrderListViewHolder.LAYOUT -> return TravelHomepageOrderListViewHolder(parent, onBindListener)
             TravelHomepageRecentSearchViewHolder.LAYOUT -> return TravelHomepageRecentSearchViewHolder(parent, onBindListener)
             TravelHomepageRecommendationViewHolder.LAYOUT -> return TravelHomepageRecommendationViewHolder(parent, onBindListener)
+            TravelHomepageDestinationViewHolder.LAYOUT -> return TravelHomepageDestinationViewHolder(parent, onBindListener)
         }
         return super.createViewHolder(parent, type)
     }
@@ -29,9 +30,7 @@ class TravelHomepageAdapterTypeFactory(val onBindListener: OnItemBindListener) :
 
     override fun type(viewModel: TravelHomepageCategoryListModel): Int = TravelHomepageCategoryViewHolder.LAYOUT
 
-    override fun type(viewModel: TravelHomepageDestinationModel): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun type(viewModel: TravelHomepageDestinationModel): Int = TravelHomepageDestinationViewHolder.LAYOUT
 
     override fun type(viewModel: TravelHomepageOrderListModel): Int = TravelHomepageOrderListViewHolder.LAYOUT
 

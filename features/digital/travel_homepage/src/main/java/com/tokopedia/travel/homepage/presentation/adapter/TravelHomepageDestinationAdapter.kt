@@ -41,7 +41,7 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
         }
 
         companion object {
-            val LAYOUT = R.layout.travel_homepage_travel_section_list_item
+            val LAYOUT = R.layout.travel_homepage_destination_section_list_item
         }
 
         interface OnItemClickListener {

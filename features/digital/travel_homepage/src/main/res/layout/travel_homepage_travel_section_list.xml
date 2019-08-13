@@ -1,42 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/section_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toStartOf="@id/section_see_all"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_2"
-        app:typographyWeight="bold"
-        tools:text="Travel Activity" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/section_see_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/green_500"
-        app:layout_constraintBottom_toBottomOf="@id/section_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="Lihat Semua" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_recycler_view"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/section_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintTop_toBottomOf="@id/section_title" />
+        android:layout_marginBottom="@dimen/dp_16">
 
-</android.support.constraint.ConstraintLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/section_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toStartOf="@id/section_see_all"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold"
+            tools:text="Travel Activity" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/section_see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:textColor="@color/green_500"
+            app:layout_constraintBottom_toBottomOf="@id/section_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Lihat Semua" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@id/section_title" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>
 

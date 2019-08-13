@@ -20,7 +20,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * @author by jessica on 2019-08-09
  */
 
-class TravelHomepageViewModel  @Inject constructor(
+class TravelHomepageViewModel @Inject constructor(
         val graphqlRepository: GraphqlRepository,
         val userSessionInterface: UserSessionInterface,
         dispatcher: CoroutineDispatcher)
@@ -31,10 +31,11 @@ class TravelHomepageViewModel  @Inject constructor(
     fun getIntialList() {
         val list: List<TravelHomepageItemModel> =
                 listOf(TravelHomepageBannerModel(),
-                TravelHomepageCategoryListModel(),
-                TravelHomepageOrderListModel(),
-                TravelHomepageRecentSearchModel(),
-                TravelHomepageRecommendationModel())
+                        TravelHomepageCategoryListModel(),
+                        TravelHomepageOrderListModel(),
+                        TravelHomepageRecentSearchModel(),
+                        TravelHomepageRecommendationModel(),
+                        TravelHomepageDestinationModel())
 
         travelItemList.value = Pair(list, true)
     }
@@ -47,10 +48,10 @@ class TravelHomepageViewModel  @Inject constructor(
             }.getSuccessData<TravelHomepageBannerModel.Response>()
 
             travelItemList.value?.let {
-                    val updatedList = it.first.toMutableList()
-                    updatedList[BANNER_ORDER] = data.response
-                    updatedList[BANNER_ORDER].isLoaded = true
-                    travelItemList.value = Pair(updatedList, true)
+                val updatedList = it.first.toMutableList()
+                updatedList[BANNER_ORDER] = data.response
+                updatedList[BANNER_ORDER].isLoaded = true
+                travelItemList.value = Pair(updatedList, true)
             }
         }) {
             travelItemList.value = travelItemList.value?.copy(second = false)
@@ -79,7 +80,7 @@ class TravelHomepageViewModel  @Inject constructor(
         if (userSessionInterface.isLoggedIn) {
             launchCatchError(block = {
                 val data = withContext(Dispatchers.Default) {
-                    val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success" )
+                    val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success")
                     val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageOrderListModel.Response::class.java, param)
                     graphqlRepository.getReseponse(listOf(graphqlRequest))
                 }.getSuccessData<TravelHomepageOrderListModel.Response>()
@@ -125,6 +126,24 @@ class TravelHomepageViewModel  @Inject constructor(
                 val updatedList = it.first.toMutableList()
                 updatedList[RECOMMENDATION_ORDER] = data.response
                 updatedList[RECOMMENDATION_ORDER].isLoaded = true
+                travelItemList.value = Pair(updatedList, true)
+            }
+        }) {
+            travelItemList.value = travelItemList.value?.copy(second = false)
+        }
+    }
+
+    fun getDestination(rawQuery: String) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageDestinationModel.Response::class.java)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TravelHomepageDestinationModel.Response>()
+
+            travelItemList.value?.let {
+                val updatedList = it.first.toMutableList()
+                updatedList[DESTINATION_ORDER] = data.response
+                updatedList[DESTINATION_ORDER].isLoaded = true
                 travelItemList.value = Pair(updatedList, true)
             }
         }) {
