@@ -40,9 +40,7 @@ class RelatedPostAdapter(private val relatedPostList: List<RelatedPostItemViewMo
             with(itemView) {
                 val content = element.data.content
                 val firstMedia = content.body.media.firstOrNull()?.thumbnail ?: ""
-                if (firstMedia.isNotEmpty()) {
-                    image.loadImage(firstMedia)
-                }
+                image.loadImage(firstMedia)
                 image.addOnImpressionListener(element.impressionHolder) {
                     listener.onRelatedPostImpression(element.data)
                 }
