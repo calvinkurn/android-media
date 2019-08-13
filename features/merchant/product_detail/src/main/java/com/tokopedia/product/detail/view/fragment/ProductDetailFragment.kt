@@ -755,6 +755,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (!::valuePropositionView.isInitialized) {
             valuePropositionView = PartialValuePropositionView.build(layout_value_proposition, onViewClickListener)
         }
+
     }
 
     private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false) {
@@ -1174,6 +1175,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun renderProductInfoP2Login(p2Login: ProductInfoP2Login) {
         shopInfo?.let { updateWishlist(it, p2Login.isWishlisted) }
         p2Login.pdpAffiliate?.let { renderAffiliate(it) }
+
         actionButtonView.renderData(p2Login.isExpressCheckoutType)
     }
 

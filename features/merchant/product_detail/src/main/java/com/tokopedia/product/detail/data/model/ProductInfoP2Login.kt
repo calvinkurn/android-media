@@ -4,12 +4,10 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.product.detail.data.model.checkouttype.CART_TYPE_DEFAULT
 import com.tokopedia.product.detail.data.model.checkouttype.CART_TYPE_EXPRESS
 import com.tokopedia.product.detail.data.model.checkouttype.CART_TYPE_OCS
-import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 
 data class ProductInfoP2Login (
         var isWishlisted: Boolean = false,
         var pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate? = null,
-        var mempershipStampProgress: MembershipStampProgress? = null,
         var cartType: String = CART_TYPE_DEFAULT
         ){
     val isExpressCheckoutType: Boolean
