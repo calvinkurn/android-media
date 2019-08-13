@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 public class SellerappWebViewActivity extends BaseSimpleActivity {
 
@@ -26,7 +26,7 @@ public class SellerappWebViewActivity extends BaseSimpleActivity {
 
     @DeepLink({ApplinkConst.WEBVIEW})
     public static Intent createApplinkIntent(Context context, Bundle bundle) {
-        return createIntent(context, bundle.getString(KEY_APP_LINK_QUERY_URL, TokopediaUrl.getInstance().getMOBILEWEB()));
+        return createIntent(context, bundle.getString(KEY_APP_LINK_QUERY_URL, TkpdBaseURL.MOBILE_DOMAIN));
     }
 
     @Override
