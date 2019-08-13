@@ -1,12 +1,11 @@
-package com.tokopedia.home_recom.view.listener
+package com.tokopedia.recommendation_widget_common.listener
 
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
- * Created by Lukas on 2019-07-22
+ * Created by Lukas on 2019-08-01
  */
-
-interface TrackingListener {
+interface RecommendationListener {
     fun onProductClick(item: RecommendationItem, layoutType: String? = null, vararg position: Int)
     fun onProductImpression(item: RecommendationItem)
     fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: ((Boolean, Throwable?) -> Unit))
