@@ -5,10 +5,13 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.merchantvoucher.R
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherOwnerTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.model.*
 import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
 
@@ -49,16 +52,15 @@ class MerchantVoucherViewUsed : CustomVoucherView {
 
     private fun init() {
         clipToPadding = false
-        val dp2 = dpToPx(2f);
-        cornerRadius = 2 * dp2
-        mScallopRadius = 4 * dp2
-        mScallopRelativePosition = 0.59f
-        mShadowRadius = dp2
-        mDashWidth = dp2
-        mDashGap = 2 * dp2
-        mDashColor = ContextCompat.getColor(this.context, R.color.colorGray)
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)
+        MethodChecker.setBackground(
+                btnUseVoucher,
+                MethodChecker.getDrawable(context, R.drawable.bg_voucher_button)
+        )
+        btnUseVoucher.setTextColor(
+                context.resources.getColorStateList(R.color.text_color_voucher_button)
+        )
     }
 
     fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
@@ -82,39 +84,62 @@ class MerchantVoucherViewUsed : CustomVoucherView {
             }
         }
         merchantVoucherViewModel?.run {
-            MethodChecker.getDrawable(getContext(),R.drawable.ic_store_logo)
-                    ?.apply {
-                        ivVoucherLogo.setImageDrawable(this)
-                    }
-            tvVoucherTitle.text = context.getString(R.string.voucher_title_x_x,
+            var voucherImageUrl = ""
+            when (merchantVoucherViewModel.merchantVoucherType) {
+                MerchantVoucherTypeDef.TYPE_DISCOUNT, MerchantVoucherTypeDef.TYPE_CASHBACK -> {
+                    voucherImageUrl = MerchantVoucherConst.DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
+                }
+                MerchantVoucherTypeDef.TYPE_FREE_ONGKIR -> {
+                    voucherImageUrl = MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
+                }
+            }
+            ImageHandler.loadImage(
+                    context,
+                    iv_voucher_type,
+                    voucherImageUrl,
+                    R.drawable.ic_loading_image
+            )
+            val voucherTitle = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())
-            tvVoucherDesc.text = merchantVoucherViewModel.getMinSpendLongString(context)
+            tvVoucherTitle.text = boldText(
+                    voucherTitle,
+                    merchantVoucherViewModel.getAmountShortString()
+            )
+            val voucherDesc = merchantVoucherViewModel.getMinSpendLongString(context)
+            tvVoucherDesc.text = boldText(
+                    voucherDesc,
+                    merchantVoucherViewModel.getMinSpendAmountShortString()
+            )
             tvCode.text = merchantVoucherViewModel.voucherCode
-            tvVoucherDetail.visibility = View.VISIBLE
-            tvVoucherDetail.text = context.getString(R.string.module_merchant_voucher_label_detail_promo)
             var isOwner = false
             onMerchantVoucherViewListener?.run {
                 isOwner = this.isOwner()
             }
             when {
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE && !isOwner) -> {
+                    btnUseVoucher.isEnabled = true
                     btnUseVoucher.visibility = View.VISIBLE
-                    tvVoucherStatus.visibility = View.GONE
                 }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE && isOwner) -> {
                     btnUseVoucher.visibility = View.GONE
-                    tvVoucherStatus.visibility = View.GONE
                 }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_RUN_OUT) -> {
-                    btnUseVoucher.visibility = View.GONE
-                    tvVoucherStatus.text = context.getString(R.string.run_out)
-                    tvVoucherStatus.visibility = View.VISIBLE
+                    btnUseVoucher.text = context.getString(R.string.run_out)
+                    btnUseVoucher.visibility = View.VISIBLE
+                    btnUseVoucher.isEnabled = false
                 }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE) -> {
-                    btnUseVoucher.visibility = View.GONE
-                    tvVoucherStatus.text = context.getString(R.string.in_use)
-                    tvVoucherStatus.visibility = View.VISIBLE
+                    MethodChecker.setBackground(
+                            btnUseVoucher,
+                            MethodChecker.getDrawable(context, R.drawable.bg_used_voucher)
+                    )
+                    btnUseVoucher.setTextColor(
+                            MethodChecker.getColor(context,R.color.white)
+                    )
+                    btnUseVoucher.visibility = View.VISIBLE
+                    btnUseVoucher.isEnabled = false
+                    btnUseVoucher.text = context.getString(R.string.in_use)
                 }
             }
         }
