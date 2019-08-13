@@ -89,6 +89,13 @@ public class ImageSearchActivity extends DiscoveryActivity
         overridePendingTransition(0, 0);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+    }
+
     private void proceed(Bundle savedInstanceState) {
         initInjector();
         setPresenter(searchPresenter);
@@ -161,7 +168,10 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     @Override
     protected void onDestroy() {
-        searchPresenter.detachView();
+        if(searchPresenter != null) {
+            searchPresenter.detachView();
+        }
+
         super.onDestroy();
     }
 }
