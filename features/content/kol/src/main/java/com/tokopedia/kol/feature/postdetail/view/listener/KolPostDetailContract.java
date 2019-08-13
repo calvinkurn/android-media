@@ -25,6 +25,8 @@ public interface KolPostDetailContract {
 
         void dismissLoading();
 
+        void showLoadingMore();
+
         void onSuccessGetKolPostDetail(List<Visitable> list, PostDetailViewModel postDetailViewModel);
 
         void onErrorGetKolPostDetail(String message);

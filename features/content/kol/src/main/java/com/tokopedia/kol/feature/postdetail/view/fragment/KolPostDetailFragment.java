@@ -388,6 +388,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (isLoading()) {
             swipeToRefresh.setRefreshing(false);
         }
+        adapter.hideLoading();
+    }
+
+    @Override
+    public void showLoadingMore() {
+        adapter.showLoading();
     }
 
     @Override
@@ -942,8 +948,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     private Unit onRelatedPostClicked(FeedPostRelated.Datum post) {
-        //TODO milhamj
-        RouteManager.route(getContext(), post.getContent().getBody().getMedia().get(0).getApplink());
+        if (!post.getContent().getBody().getMedia().isEmpty()) {
+            RouteManager.route(getContext(), post.getContent().getBody().getMedia().get(0).getApplink());
+        }
         return Unit.INSTANCE;
     }
 

@@ -304,6 +304,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
 
     @Override
     public void getRelatedPost(String activityId) {
+        getView().showLoadingMore();
         getRelatedPostUseCase.execute(
                 GetRelatedPostUseCase.createRequestParams(activityId),
                 new Subscriber<FeedPostRelated>() {
@@ -317,6 +318,11 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                         if (GlobalConfig.isAllowDebuggingTools()) {
                             e.printStackTrace();
                         }
+                        if (isViewNotAttached()) {
+                            return;
+                        }
+
+                        getView().dismissLoading();
                     }
 
                     @Override
@@ -325,6 +331,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                             return;
                         }
 
+                        getView().dismissLoading();
                         RelatedPostViewModel relatedPostViewModel = new RelatedPostViewModel(
                                 feedPostRelated.getData()
                         );
