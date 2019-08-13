@@ -2,7 +2,6 @@ package com.tokopedia.travel.homepage.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 
 /**
@@ -33,4 +32,8 @@ class TravelHomepageCategoryListModel(@SerializedName("category")
                          @SerializedName("imageURL")
                          @Expose
                          val imageUrl: String = "")
+
+    data class Response(@SerializedName("travelCategoryList")
+                        @Expose
+                        val response: TravelHomepageCategoryListModel = TravelHomepageCategoryListModel())
 }

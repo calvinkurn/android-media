@@ -45,4 +45,8 @@ class TravelHomepageRecentSearchModel(@SerializedName("items")
                     @Expose
                     val imageUrl: String = "")
 
+    data class Response(@SerializedName("TravelCollectiveRecentSearches")
+                        @Expose
+                        val response: TravelHomepageRecentSearchModel = TravelHomepageRecentSearchModel())
+
 }

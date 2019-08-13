@@ -6,13 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.banner.BannerView
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageBannerModel
-import com.tokopedia.travel.homepage.presentation.ActivityStateListener
+import com.tokopedia.travel.homepage.presentation.listener.ActivityStateListener
 import com.tokopedia.travel.homepage.presentation.customview.TravelHomepageBannerViewDynamicBackground
+import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
+import kotlinx.android.synthetic.main.travel_homepage_banner.view.*
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageBannerViewHolder(itemView: View) : AbstractViewHolder<TravelHomepageBannerModel>(itemView), BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
+class TravelHomepageBannerViewHolder(itemView: View, val onBindListener: OnItemBindListener) : AbstractViewHolder<TravelHomepageBannerModel>(itemView), BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener {
 
     private val bannerView: TravelHomepageBannerViewDynamicBackground = itemView.findViewById(R.id.banner)
@@ -42,10 +44,9 @@ class TravelHomepageBannerViewHolder(itemView: View) : AbstractViewHolder<Travel
             } catch (e: Throwable) {
 
             }
-        } else {
-            //show shimmering
-            //hit API
-        }
+        } else onBindListener.onBannerVHItemBind()
+
+        itemView.banner_shimmering.visibility = if (element.isLoaded) View.GONE else View.VISIBLE
     }
 
     override fun onPromoLoaded() {
@@ -81,8 +82,6 @@ class TravelHomepageBannerViewHolder(itemView: View) : AbstractViewHolder<Travel
     }
 
     companion object {
-
         val LAYOUT = R.layout.travel_homepage_banner
-
     }
 }

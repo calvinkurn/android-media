@@ -42,4 +42,8 @@ class TravelHomepageOrderListModel(@SerializedName("orders")
                      @Expose
                      val imageUrl: String = "")
 
+    data class Response(@SerializedName("TravelCollectiveOrderList")
+                        @Expose
+                        val response: TravelHomepageOrderListModel = TravelHomepageOrderListModel())
+
 }

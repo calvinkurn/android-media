@@ -45,6 +45,6 @@ class TravelHomepageBannerModel(@SerializedName("banners")
 
     data class Response(@SerializedName("travelCollectiveBanner")
                         @Expose
-                        val response: TravelHomepageBannerModel)
+                        val response: TravelHomepageBannerModel = TravelHomepageBannerModel())
 
 }

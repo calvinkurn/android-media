@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageRecentSearchModel
 import com.tokopedia.travel.homepage.presentation.adapter.TravelHomepageRecentSearchListAdapter
+import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list.view.*
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageRecentSearchViewHolder(itemView: View)
+class TravelHomepageRecentSearchViewHolder(itemView: View, val onItemBindListener: OnItemBindListener)
     : AbstractViewHolder<TravelHomepageRecentSearchModel>(itemView) {
 
     lateinit var recentSearchAdapter: TravelHomepageRecentSearchListAdapter
@@ -30,10 +31,7 @@ class TravelHomepageRecentSearchViewHolder(itemView: View)
                     list_recycler_view.adapter = recentSearchAdapter
                 }
             }
-        } else {
-            //show Shimmering
-            //call API
-        }
+        } else onItemBindListener.onRecentSearchVHBind()
 
     }
 

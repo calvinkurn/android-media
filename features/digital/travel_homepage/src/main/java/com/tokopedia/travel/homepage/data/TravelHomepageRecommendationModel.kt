@@ -45,4 +45,8 @@ class TravelHomepageRecommendationModel(@SerializedName("items")
                     @Expose
                     val imageUrl: String = "")
 
+    data class Response(@SerializedName("TravelCollectiveRecommendation")
+                        @Expose
+                        val response: TravelHomepageRecommendationModel = TravelHomepageRecommendationModel())
+
 }

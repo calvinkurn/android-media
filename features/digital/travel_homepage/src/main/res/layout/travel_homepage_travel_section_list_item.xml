@@ -4,7 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_2"
+    android:layout_marginStart="@dimen/dp_2"
+    android:layout_marginLeft="@dimen/dp_2"
+    android:layout_marginTop="@dimen/dp_2"
+    android:layout_marginEnd="@dimen/dp_8"
+    android:layout_marginRight="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_2"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_2"
     app:cardPreventCornerOverlap="false">
@@ -13,14 +18,13 @@
         android:layout_width="@dimen/dp_260"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/dp_0"
-        android:paddingLeft="@dimen/dp_0"
-        android:paddingEnd="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8">
+        android:paddingLeft="@dimen/dp_0">
 
         <ImageView
             android:id="@+id/image"
             android:layout_width="@dimen/dp_64"
             android:layout_height="0dp"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

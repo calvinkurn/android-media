@@ -7,11 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageCategoryListModel
 import com.tokopedia.travel.homepage.presentation.adapter.TravelHomepageCategoryListAdapter
+import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageCategoryViewHolder(itemView: View)
+class TravelHomepageCategoryViewHolder(itemView: View, val onItemBindListener: OnItemBindListener)
     : AbstractViewHolder<TravelHomepageCategoryListModel>(itemView) {
 
     lateinit var categoriesAdapter: TravelHomepageCategoryListAdapter
@@ -29,10 +30,7 @@ class TravelHomepageCategoryViewHolder(itemView: View)
                 categoriesRecyclerView.layoutManager = layoutManager
                 categoriesRecyclerView.adapter = categoriesAdapter
             }
-        } else {
-            //show shimmering
-            //hit API
-        }
+        } else onItemBindListener.onCategoryVHBind()
     }
 
     companion object {

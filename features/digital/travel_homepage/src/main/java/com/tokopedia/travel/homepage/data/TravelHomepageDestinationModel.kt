@@ -35,4 +35,7 @@ class TravelHomepageDestinationModel(@SerializedName("destination")
                          @Expose
                          val imageUrl: String = "")
 
+    data class Response(@SerializedName("TravelDestination")
+                        @Expose
+                        val response: TravelHomepageDestinationModel = TravelHomepageDestinationModel())
 }

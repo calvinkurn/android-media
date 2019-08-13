@@ -11,19 +11,20 @@ import com.tokopedia.travel.homepage.data.TravelHomepageItemModel
 import com.tokopedia.travel.homepage.di.TravelHomepageComponent
 import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
+import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
 import com.tokopedia.travel.homepage.presentation.viewmodel.TravelHomepageViewModel
 import javax.inject.Inject
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>() {
+class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var travelHomepageViewModel: TravelHomepageViewModel
 
-    override fun getAdapterTypeFactory(): TravelHomepageTypeFactory = TravelHomepageAdapterTypeFactory()
+    override fun getAdapterTypeFactory(): TravelHomepageTypeFactory = TravelHomepageAdapterTypeFactory(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +38,6 @@ class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHo
         super.onActivityCreated(savedInstanceState)
 
         travelHomepageViewModel.getIntialList()
-        travelHomepageViewModel.getBanner(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_banner))
         travelHomepageViewModel.travelItemList.observe(this, Observer {
             when (it?.second) {
                 true -> {
@@ -64,6 +64,30 @@ class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHo
     }
 
     override fun getScreenName(): String = ""
+
+    override fun onBannerVHItemBind() {
+        travelHomepageViewModel.getBanner(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_banner))
+    }
+
+    override fun onCategoryVHBind() {
+        travelHomepageViewModel.getCategories(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_category_list))
+    }
+
+    override fun onDestinationVHBind() {
+
+    }
+
+    override fun onOrderListVHBind() {
+        travelHomepageViewModel.getOrderList(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list))
+    }
+
+    override fun onRecentSearchVHBind() {
+        travelHomepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recent_search))
+    }
+
+    override fun onRecommendationVHBind() {
+        travelHomepageViewModel.getRecommendation(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation))
+    }
 
     companion object {
         fun getInstance(): TravelHomepageFragment = TravelHomepageFragment()
