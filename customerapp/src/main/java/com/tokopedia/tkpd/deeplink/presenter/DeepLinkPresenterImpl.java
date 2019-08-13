@@ -544,11 +544,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equals("preorder")
                 || lastSegment.equals("sold")
-                || (linkSegment.get(1).equals("etalase"));
+                || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
-        Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.size() > 1 ? linkSegment.get(1) : "");
+        String source = uriData.getQueryParameter("ref");
+        Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
+                linkSegment.size() > 1 ? linkSegment.get(1) : "",
+                source == null ? "" : source);
         context.startActivity(intent);
         context.finish();
     }
@@ -666,14 +669,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openBrowseProduct(List<String> linkSegment, Uri uriData) {
         Bundle bundle = new Bundle();
         String departmentId = uriData.getQueryParameter("sc");
-        String searchQuery = uriData.getQueryParameter("q");
-        String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = RouteManager.getIntent(context, constructSearchApplink(searchQuery, departmentId));
+            intent = RouteManager.getIntent(context, constructSearchApplink(uriData));
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -685,15 +686,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private static String constructSearchApplink(String query, String departmentId) {
-        String applink = TextUtils.isEmpty(query) ?
+    private static String constructSearchApplink(Uri uriData) {
+        String q = uriData.getQueryParameter("q");
+        
+        String applink = TextUtils.isEmpty(q) ?
                 ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
                 ApplinkConst.DISCOVERY_SEARCH;
 
-        return applink
-                + "?"
-                + "q=" + query
-                + "&sc=" + departmentId;
+        return applink + "?" + uriData.getQuery();
     }
 
     private void openReferralScreen(Uri uriData) {

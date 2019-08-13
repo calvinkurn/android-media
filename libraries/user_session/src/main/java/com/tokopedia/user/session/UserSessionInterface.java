@@ -12,6 +12,8 @@ public interface UserSessionInterface {
     String LOGIN_METHOD_GOOGLE = "google";
     String LOGIN_METHOD_FACEBOOK = "facebook";
     String LOGIN_METHOD_PHONE = "phone";
+    String LOGIN_METHOD_EMAIL_SMART_LOCK = "email_smartlock";
+
 
     String getAccessToken();
 
@@ -116,6 +118,8 @@ public interface UserSessionInterface {
     void setFirstTimeUser(boolean isFirstTime);
 
     void setToken(String accessToken, String tokenType, String refreshToken);
+
+    void setRefreshToken(String refreshToken);
 
     void setLoginSession(boolean isLogin, String userId, String fullName, String shopId,
                          boolean isMsisdnVerified, String shopName, String email, boolean

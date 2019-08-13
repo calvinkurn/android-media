@@ -1,10 +1,10 @@
 query enquiryTelco ($clientNumber: String!,
   $productId: String!) {
+  status
   enquiry(
     clientNumber: $clientNumber,
     productId: $productId,
-    requestType: NEW
-  ) {
+    requestType: NEW) {
     attributes: Attributes {
       UserID
       ProductID

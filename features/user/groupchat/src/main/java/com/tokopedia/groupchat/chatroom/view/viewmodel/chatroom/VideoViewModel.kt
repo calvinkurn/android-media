@@ -21,8 +21,9 @@ class VideoViewModel : BaseGroupChatPojo, Visitable<GroupChatTypeFactory>, Parce
     @Expose
     var videoLive: Boolean = false
 
-    constructor(videoId: String) {
+    constructor(videoId: String, videoLive: Boolean) {
         this.videoId = videoId
+        this.videoLive = videoLive
     }
 
     protected constructor(`in`: Parcel) {

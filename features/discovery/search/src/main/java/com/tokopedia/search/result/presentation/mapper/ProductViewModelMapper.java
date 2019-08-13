@@ -143,6 +143,7 @@ public class ProductViewModelMapper {
     private ProductItemViewModel convertToProductItem(SearchProductModel.Product productModel, int position) {
         ProductItemViewModel productItem = new ProductItemViewModel();
         productItem.setProductID(productModel.getId());
+        productItem.setWarehouseID(productModel.getWarehouseId());
         productItem.setProductName(productModel.getName());
         productItem.setImageUrl(productModel.getImageUrl());
         productItem.setImageUrl700(productModel.getImageUrlLarge());

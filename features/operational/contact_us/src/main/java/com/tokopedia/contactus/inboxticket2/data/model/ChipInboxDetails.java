@@ -3,7 +3,7 @@ package com.tokopedia.contactus.inboxticket2.data.model;
 import com.google.gson.annotations.SerializedName;
 
 public class ChipInboxDetails{
-	@SerializedName(value = "chipGetInboxDetail", alternate = {"chipSubmitRatingCSAT"})
+	@SerializedName(value = "chipGetInboxDetail", alternate = {"chipSubmitRatingCSAT","chipCloseTicketByUser"})
 	private ChipGetInboxDetail chipGetInboxDetail;
 
 	public void setChipGetInboxDetail(ChipGetInboxDetail chipGetInboxDetail){

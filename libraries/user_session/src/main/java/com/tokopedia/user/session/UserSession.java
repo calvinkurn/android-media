@@ -110,7 +110,7 @@ public class UserSession implements UserSessionInterface {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
         String shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
-        if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId)) {
+        if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId) || TextUtils.isEmpty(shopId)) {
             shopId = DEFAULT_EMPTY_SHOP_ID;
         }
         return shopId;
@@ -391,6 +391,14 @@ public class UserSession implements UserSessionInterface {
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(ACCESS_TOKEN, accessToken);
         editor.putString(TOKEN_TYPE, tokenType);
+        editor.putString(REFRESH_TOKEN, refreshToken);
+        editor.apply();
+    }
+
+    @Override
+    public void setRefreshToken(String refreshToken) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(REFRESH_TOKEN, refreshToken);
         editor.apply();
     }

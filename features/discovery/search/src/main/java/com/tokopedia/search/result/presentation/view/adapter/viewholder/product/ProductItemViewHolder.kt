@@ -11,6 +11,7 @@ import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
@@ -69,8 +70,14 @@ abstract class ProductItemViewHolder(
 
         setImageProductUrl(productItem)
 
-        getProductCardView()?.setImageProductViewHintListener(productItem) {
-            productListener.onProductImpressed(productItem, adapterPosition)
+        getProductCardView()?.setImageProductViewHintListener(productItem, createImageProductViewHintListener(productItem))
+    }
+
+    protected fun createImageProductViewHintListener(productItem: ProductItemViewModel): ViewHintListener {
+        return object: ViewHintListener {
+            override fun onViewHint() {
+                productListener.onProductImpressed(productItem, adapterPosition)
+            }
         }
     }
 
@@ -183,7 +190,7 @@ abstract class ProductItemViewHolder(
 
     protected fun loadShopBadgesIcon(url: String) {
         if(!TextUtils.isEmpty(url)) {
-            val view = LayoutInflater.from(context).inflate(R.layout.search_product_card_badge_layout, null)
+            val view = LayoutInflater.from(context).inflate(R.layout.search_result_product_card_badge_layout, null)
 
             ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
                 override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {

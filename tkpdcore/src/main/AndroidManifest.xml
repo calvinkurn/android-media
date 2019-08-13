@@ -158,11 +158,6 @@
             android:label="Tracking"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.DeveloperOptions"
-            android:label="@string/title_activity_developer_options"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.TermPrivacy"
             android:label="@string/title_activity_term_and_privacy"
             android:screenOrientation="portrait">
@@ -226,10 +221,6 @@
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->
         <activity
-            android:name="com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity"
-            android:label="@string/title_activity_manage_people_profile"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity"
             android:label="@string/title_activity_manage_people_address"
             android:screenOrientation="portrait" />
@@ -259,9 +250,6 @@
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->
-        <service
-            android:name="com.tokopedia.core.manage.people.profile.intentservice.ManagePeopleProfileIntentService"
-            android:exported="false" />
         <service android:name="com.tokopedia.core.service.HUDIntent" />
         <service
             android:name="com.tokopedia.core.product.intentservice.ProductInfoIntentService"

@@ -3,23 +3,21 @@ package com.tokopedia.shop.feed.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -27,7 +25,8 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
+import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -40,22 +39,23 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
-import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
+import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
@@ -77,7 +77,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
-        VideoViewHolder.VideoViewListener, FeedShopContract.View {
+        VideoViewHolder.VideoViewListener,
+        FeedMultipleImageView.FeedMultipleImageViewListener,
+        FeedShopContract.View {
 
     private lateinit var createPostUrl: String
     private lateinit var shopId: String
@@ -89,6 +91,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     @Inject
     lateinit var postTagAnalytics: PostTagAnalytics
+
+    @Inject
+    lateinit var shopAnalytics: ShopAnalytics
 
     companion object {
         private const val YOUTUBE_URL = "{youtube_url}"
@@ -138,10 +143,33 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         arguments?.let {
             shopId = it.getString(PARAM_SHOP_ID) ?: ""
         }
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                try {
+                    if (hasFeed()
+                            && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        recyclerView?.let {
+                            FeedScrollListener.onFeedScrolled(it, adapter.list)
+                        }
+                    }
+                } catch (e: IndexOutOfBoundsException) {
+                }
+            }
+
+        })
+    }
+
+    private fun hasFeed(): Boolean {
+        return (adapter.list != null
+                && !adapter.list.isEmpty()
+                && adapter.list.size > 1
+                && adapter.list[0] !is EmptyModel)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return FeedShopFactoryImpl(this,
+                this,
                 this,
                 this,
                 this,
@@ -247,6 +275,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onEmptyFeedButtonClicked() {
         goToCreatePost()
+        shopAnalytics.eventClickCreatePost()
     }
 
     override fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -431,7 +460,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
         activity?.let {
-            doShare(url, String.format("%s %s", description, "%s"), title)
+            ShareBottomSheets().show(activity!!.supportFragmentManager,
+                    ShareBottomSheets.constructShareData("", iamgeUrl, url, description, title),
+                    object : ShareBottomSheets.OnShareItemClickListener {
+                        override fun onShareItemClicked(packageName: String) {
+
+                        }
+                    })
         }
     }
 
@@ -453,6 +488,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+        presenter.addPostTagItemToCart(postTagItem)
+    }
+
     override fun onActionPopup() {
     }
 
@@ -462,6 +501,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
+    }
+
+    override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
+                                  redirectLink: String, isSingleItem: Boolean) {
+        val model = adapter.data[positionInFeed] as? DynamicPostViewModel
+        if (!isSingleItem && model != null){
+            activity?.let { startActivity(MediaPreviewActivity.createIntent(it,
+                    model.id.toString(), contentPosition))}
+        }
     }
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
@@ -514,15 +562,24 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun onAddToCartSuccess() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+    }
+
+    override fun onAddToCartFailed(pdpAppLink: String) {
+        onGoToLink(pdpAppLink)
+    }
+
     fun hideFAB() {
         fab_feed.hide()
     }
 
     fun showFAB(whitelistDomain: WhitelistDomain) {
         fab_feed.show()
-        val author = whitelistDomain.authors.get(0)
+        val author = whitelistDomain.authors[0]
         fab_feed.setOnClickListener {
             onGoToLink(author.link)
+            shopAnalytics.eventClickCreatePost()
         }
 
     }

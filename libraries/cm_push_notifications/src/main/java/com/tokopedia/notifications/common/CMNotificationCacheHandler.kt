@@ -16,8 +16,7 @@ class CMNotificationCacheHandler(context: Context) {
         localCacheHandler = LocalCacheHandler(context, CACHE_CMNOTIFICATIONS)
     }
 
-    fun getStringValue(Key: String): String {
-
+    fun getStringValue(Key: String): String? {
         return localCacheHandler.getString(Key)
     }
 

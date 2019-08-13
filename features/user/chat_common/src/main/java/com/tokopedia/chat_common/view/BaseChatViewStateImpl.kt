@@ -68,20 +68,22 @@ open class BaseChatViewStateImpl(
 
         replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
 
+        val onError = Action1<Throwable> { it.printStackTrace() }
 
         replyIsTyping.subscribe(Action1 {
             if (it && !isTyping) {
                 typingListener.onStartTyping()
                 isTyping = true
             }
-        })
+        }, onError)
 
+        val onChatDeBounceSubscriber = Action1<Boolean>{
+            typingListener.onStopTyping()
+            isTyping = false
+        }
         replyIsTyping.debounce(2, TimeUnit.SECONDS)
                 .skip(1)
-                .subscribe {
-                    typingListener.onStopTyping()
-                    isTyping = false
-                }
+                .subscribe(onChatDeBounceSubscriber, onError)
 
         chatMenuButton.setOnClickListener {
             chatMenuListener.showChatMenu()
@@ -184,11 +186,11 @@ open class BaseChatViewStateImpl(
     }
 
     open fun scrollToBottom() {
+        val onNext = Action1<Long> { recyclerView.scrollToPosition(0) }
+        val onError = Action1<Throwable> { it.printStackTrace() }
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    recyclerView.scrollToPosition(0)
-                }
+                .subscribe (onNext, onError)
     }
 
     open fun checkLastCompletelyVisibleItemIsFirst(): Boolean {

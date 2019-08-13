@@ -5,24 +5,20 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.home.beranda.data.model.Promotion;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.BannerFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by Akmal on 2/6/18.
@@ -37,6 +33,7 @@ public class HomePageTracking {
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
     private static final String EVENT_CLICK_HOME_PAGE = "clickHomePage";
+    private static final String EVENT_CLICK_HOME_PAGE_WISHLIST = "clickHomepage";
     private static final String EVENT_GIMMICK = "clickGimmick";
     private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
     private static final String EVENT_TOKO_POINT = "eventTokopoint";
@@ -634,7 +631,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_CLICK_HOME_PAGE,
+                    EVENT_CLICK_HOME_PAGE_WISHLIST,
                     CATEGORY_HOME_PAGE,
                     ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION,
                     tabName
@@ -646,7 +643,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_CLICK_HOME_PAGE,
+                    EVENT_CLICK_HOME_PAGE_WISHLIST,
                     CATEGORY_HOME_PAGE,
                     ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION,
                     tabName
@@ -658,7 +655,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_CLICK_HOME_PAGE,
+                    EVENT_CLICK_HOME_PAGE_WISHLIST,
                     CATEGORY_HOME_PAGE,
                     ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN,
                     tabName
@@ -868,5 +865,60 @@ public class HomePageTracking {
                     LABEL_EMPTY
             );
         }
+    }
+
+    public static void eventImpressionOnBannerFeed(
+            TrackingQueue trackingQueue,
+            BannerFeedViewModel bannerFeedViewModel,
+            String tabName) {
+
+        if (trackingQueue == null) {
+            return;
+        }
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, "impression on banner inside recommendation tab",
+                EVENT_LABEL, tabName,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS,
+                                convertBannerFeedViewModelListToObjectData(bannerFeedViewModel, tabName)
+                        )
+                )
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
+    private static List<Object> convertBannerFeedViewModelListToObjectData(
+            BannerFeedViewModel bannerFeedViewModel,
+            String tabName
+    ) {
+        List<Object> objects = new ArrayList<>();
+        objects.add(bannerFeedViewModel.convertBannerFeedModelToDataLayer());
+        return objects;
+    }
+
+    public static void eventClickOnBannerFeed(
+            Context context,
+            BannerFeedViewModel bannerFeedViewModel,
+            String tabName) {
+
+        ContextAnalytics tracker = getTracker(context);
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, "click on banner inside recommendation tab",
+                EVENT_LABEL, tabName,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS,
+                                convertBannerFeedViewModelListToObjectData(bannerFeedViewModel, tabName)
+                        )
+                )
+        );
+        tracker.sendEnhanceEcommerceEvent(data);
     }
 }

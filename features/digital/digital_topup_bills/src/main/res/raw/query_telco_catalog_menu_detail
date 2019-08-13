@@ -10,6 +10,7 @@ query catalogMenuDetail($menuID: Int!){
       categoryId
       productId
       isATC
+      description
       operatorID
     }
     promos {

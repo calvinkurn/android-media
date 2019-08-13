@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import android.content.Context
 import android.support.annotation.LayoutRes
 import android.text.TextUtils
 import android.view.View
@@ -9,9 +8,9 @@ import android.widget.TextView
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 
 /**
  * Created by Hendri on 27/03/18.

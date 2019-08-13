@@ -48,8 +48,7 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
         titleWidget.text = context.getString(R.string.title_reccent_transaction_widget)
         digitalRecentNumbersAdapter.setListener(object : DigitalRecentNumbersAdapter.ActionListener {
             override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, position: Int) {
-                listener.onClickRecentNumber(telcoRecommendation,
-                        getCategoryName(telcoRecommendation.categoryId),
+                listener.onClickRecentNumber(telcoRecommendation, telcoRecommendation.categoryId,
                         position)
             }
         })
@@ -76,7 +75,7 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
         for (i in firstPos..lastPos) {
             if (firstPos >= 0 && lastPos <= recentNumbers.size - 1) {
                 digitalTrackRecentList.add(DigitalTrackRecentTransactionTelco(recentNumbers[i],
-                        getCategoryName(recentNumbers[i].categoryId), i))
+                        recentNumbers[i].categoryId, i))
             }
         }
         if (digitalTrackRecentList.size > 0 &&
@@ -89,17 +88,8 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
         }
     }
 
-    fun getCategoryName(categoryId: Int): String {
-        return when (categoryId) {
-            TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA
-            TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA
-            TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING
-            else -> TelcoComponentName.PRODUCT_PULSA
-        }
-    }
-
     interface ActionListener {
-        fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryName: String, position: Int)
+        fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryId: Int, position: Int)
         fun onTrackImpressionRecentList(digitalTrackRecentList: List<DigitalTrackRecentTransactionTelco>)
     }
 }

@@ -6,17 +6,17 @@ import com.tokopedia.topupbills.telco.data.TelcoRecommendation
 
 class DigitalTrackRecentTransactionTelco constructor(
         val itemRecent: TelcoRecommendation,
-        val categoryName: String,
+        val categoryId: Int,
         val position: Int) : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(TelcoRecommendation::class.java.classLoader),
-            parcel.readString(),
+            parcel.readInt(),
             parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(itemRecent, flags)
-        parcel.writeString(categoryName)
+        parcel.writeInt(categoryId)
         parcel.writeInt(position)
     }
 
