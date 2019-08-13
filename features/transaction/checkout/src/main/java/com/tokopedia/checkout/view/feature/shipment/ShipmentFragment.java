@@ -228,8 +228,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         bundle.putString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, defaultSelectedTabPromo);
         bundle.putBoolean(ARG_AUTO_APPLY_PROMO_CODE_APPLIED, isAutoApplyPromoCodeApplied);
-        bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
         bundle.putString(ARG_CHECKOUT_LEASING_ID, leasingId);
+        if (leasingId != null) {
+            bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, true);
+        } else {
+            bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
+        }
         ShipmentFragment shipmentFragment = new ShipmentFragment();
         shipmentFragment.setArguments(bundle);
 
@@ -401,7 +405,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private String getCheckoutLeasingId() {
         String leasingId = "0";
-        if (getArguments() != null && getArguments().getString(ARG_CHECKOUT_LEASING_ID) != null) {
+        if (getArguments() != null && getArguments().getString(ARG_CHECKOUT_LEASING_ID) != null &&
+                !getArguments().getString(ARG_CHECKOUT_LEASING_ID).equalsIgnoreCase("null")) {
             leasingId = getArguments().getString(ARG_CHECKOUT_LEASING_ID);
         }
         return leasingId;

@@ -119,7 +119,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
                 getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
                 getIntent().getBooleanExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, false),
                 getIntent().getBooleanExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, false),
-                getIntent().getData().toString(),
+                String.valueOf(getIntent().getData()),
                 getIntent().getExtras()
         );
 
