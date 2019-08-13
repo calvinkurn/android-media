@@ -170,7 +170,7 @@ public class ImageSearchActivity extends DiscoveryActivity
             searchView.showSearch(true, false);
         }
 
-        super.initView();
+        initView();
     }
 
     private void loadSection(ProductViewModel productViewModel) {
