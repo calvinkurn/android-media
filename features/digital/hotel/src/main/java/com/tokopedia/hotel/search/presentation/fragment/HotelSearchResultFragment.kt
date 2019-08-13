@@ -7,9 +7,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.hotel.R
@@ -154,7 +152,8 @@ class HotelSearchResultFragment : BaseListDFFragment<Property, PropertyAdapterTy
             if (requestCode == REQUEST_FILTER && data != null && data.hasExtra(CommonParam.ARG_CACHE_FILTER_ID)) {
                 val cacheId = data.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID)
                 val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheId) } ?: return
-                val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java) ?: ParamFilter()
+                val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
+                        ?: ParamFilter()
 
                 trackingHotelUtil.hotelUserClickFilter(paramFilter, searchResultviewModel.filter)
                 searchResultviewModel.addFilter(paramFilter)
@@ -286,6 +285,7 @@ class HotelSearchResultFragment : BaseListDFFragment<Property, PropertyAdapterTy
     }
 
     override fun loadData(page: Int) {
-        searchResultviewModel.searchProperty(page)
+        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
+        searchResultviewModel.searchProperty(page, searchQuery)
     }
 }
