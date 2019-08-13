@@ -231,7 +231,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                     true
                 }
                 item.itemId == R.id.action_order_detail -> {
-                    if (appLink != null && appLink != "") {
+                    if (!TextUtils.isEmpty(appLink)) {
                         RouteManager.route(context, appLink)
                     }
                     true
@@ -246,10 +246,10 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         if (TextUtils.isEmpty(actionButton?.label())) {
             button?.text = actionButton?.label()
             if (actionButton?.color() != null) {
-                if (actionButton.color().background() != "") {
+                if (!TextUtils.isEmpty(actionButton.color().background())) {
                     button?.setBackgroundColor(android.graphics.Color.parseColor(actionButton.color().background()))
                 }
-                if (actionButton.color().textColor() != "") {
+                if (!TextUtils.isEmpty(actionButton.color().textColor())) {
                     button?.setTextColor(android.graphics.Color.parseColor(actionButton.color().textColor()))
                 }
             }
