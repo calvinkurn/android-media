@@ -417,27 +417,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onImageSearchClicked() {
-
-
-        ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList = new ArrayList<>();
-
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.ORIGINAL);
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_1_1);
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_3_4);
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_4_3);
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_16_9);
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_9_16);
-
-        ImagePickerEditorBuilder imagePickerEditorBuilder = new ImagePickerEditorBuilder
-                (new int[]{ACTION_CROP, ACTION_BRIGHTNESS, ACTION_CONTRAST},
-                        false,
-                        imageRatioTypeDefArrayList);
-
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
-                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.IMAGE_SEARCH_MIN_RESOLUTION, null, true,
-                imagePickerEditorBuilder, null);
-        Intent intent = ImageSearchImagePickerActivity.getIntent(this, builder);
+        Intent intent = ImageSearchImagePickerActivity.getIntent(this);
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
