@@ -228,6 +228,12 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_header_saldo_intro"
+            android:theme="@style/Theme.White.PopupTransparent" />
+
+        <activity
             android:name="com.tokopedia.sellerapp.webview.SellerappWebViewActivity"
             android:label="@string/title_activity_deep_link"
             android:theme="@style/Theme.White"
