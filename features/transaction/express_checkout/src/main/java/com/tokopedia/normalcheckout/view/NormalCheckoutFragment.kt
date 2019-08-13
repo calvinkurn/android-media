@@ -135,6 +135,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val REQUEST_CODE_LOGIN_THEN_ATC = 562
         const val REQUEST_CODE_LOGIN_THEN_BUY = 563
         const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
+        const val REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT = 565
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
@@ -295,6 +296,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     tv_trade_in.setOnClickListener(null)
                     doCheckoutAction(TRADEIN_BUY)
                 }
+                REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT -> {
+                    goToApplyLeasing()
+                }
             }
         }
     }
@@ -398,7 +402,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else {
                 button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
             }
-            if(isLeasing){
+            if (isLeasing) {
                 button_cart.gone()
                 button_buy_partial.gone()
                 btn_apply_leasing.visible()
@@ -546,6 +550,18 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             doCheckoutAction(action)
         }
         btn_apply_leasing.setOnClickListener {
+            if (!viewModel.isUserSessionActive()) {
+                context?.run {
+                    //do tracking
+                    if (action == APPLY_CREDIT) {
+                        startActivityForResult(
+                                RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT
+                        )
+                    }
+                }
+                return@setOnClickListener
+            }
             goToApplyLeasing()
         }
         tv_trade_in.setTrackListener { trackClickTradeIn() }
@@ -668,14 +684,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    private fun sendBranchAddToCardEvent(){
-        if(selectedProductInfo != null) {
+    private fun sendBranchAddToCardEvent() {
+        if (selectedProductInfo != null) {
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, createLinkerData(selectedProductInfo,
                     (UserSession(activity)).userId)))
         }
     }
 
-    private fun createLinkerData(productInfo: ProductInfo?, userId: String?): LinkerData{
+    private fun createLinkerData(productInfo: ProductInfo?, userId: String?): LinkerData {
         var linkerData = LinkerData()
         linkerData.id = productInfo?.basic?.id.toString()
         linkerData.price = productInfo?.basic?.price?.toInt().toString()
