@@ -63,6 +63,11 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         val view = inflater.inflate(R.layout.fragment_buyer_account, container, false)
 
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         endlessRecyclerViewScrollListener?.let {
             recycler_buyer.addOnScrollListener(it)
         }
@@ -70,11 +75,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         recycler_buyer.adapter = adapter
 
         swipe_refresh_layout.setColorSchemeResources(R.color.tkpd_main_green)
-        return view
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { this.getData() })
     }
 

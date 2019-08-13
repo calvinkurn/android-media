@@ -113,8 +113,8 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
 
     private fun mapBadges(badges: List<String?>){
         for (badge in badges) {
-            val view = LayoutInflater.from(productCardView.context).inflate(com.tokopedia.productcard.R.layout.layout_badge, null)
-            ImageHandler.loadImageFitCenter(productCardView.context, view.findViewById(com.tokopedia.productcard.R.id.badge), badge)
+            val view = LayoutInflater.from(productCardView.context).inflate(R.layout.layout_badge, null)
+            ImageHandler.loadImageFitCenter(productCardView.context, view.findViewById(R.id.badge), badge)
             productCardView.addShopBadge(view)
         }
     }
