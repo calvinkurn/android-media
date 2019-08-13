@@ -61,6 +61,7 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.purchase_platform_common)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

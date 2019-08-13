@@ -7,7 +7,6 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.purchase_platform.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.checkout.analytics.CornerAnalytics;
-import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,11 +35,6 @@ public class TrackingAnalyticsModule {
     @Provides
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection() {
         return new CheckoutAnalyticsCourierSelection();
-    }
-
-    @Provides
-    OrderAnalyticsOrderTracking orderAnalyticsOrderTracking() {
-        return new OrderAnalyticsOrderTracking();
     }
 
     @Provides
