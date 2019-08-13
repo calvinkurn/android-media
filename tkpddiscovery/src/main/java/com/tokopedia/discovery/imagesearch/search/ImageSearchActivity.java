@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
@@ -17,7 +16,6 @@ import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -70,6 +68,11 @@ public class ImageSearchActivity extends DiscoveryActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initInjector();
+        setPresenter(searchPresenter);
+        searchPresenter.attachView(this);
+        searchPresenter.setDiscoveryView(this);
+
         ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList = new ArrayList<>();
 
         imageRatioTypeDefArrayList.add(ImageRatioTypeDef.ORIGINAL);
@@ -94,6 +97,15 @@ public class ImageSearchActivity extends DiscoveryActivity
         overridePendingTransition(0, 0);
     }
 
+    private void initInjector() {
+        searchComponent =
+                DaggerSearchComponent.builder()
+                        .appComponent(getApplicationComponent())
+                        .build();
+
+        searchComponent.inject(this);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -102,7 +114,7 @@ public class ImageSearchActivity extends DiscoveryActivity
             if (resultCode == Activity.RESULT_CANCELED) {
                 finish();
             }
-            else if (data != null) {
+            else if (resultCode == Activity.RESULT_OK && data != null) {
                 ArrayList<String> imagePathList = data.getStringArrayListExtra(ImageSearchImagePickerActivity.PICKER_RESULT_PATHS);
                 if (imagePathList == null || imagePathList.size() <= 0) {
                     return;
@@ -144,15 +156,11 @@ public class ImageSearchActivity extends DiscoveryActivity
         }
         TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds,productViewModel.getQuery(),prodIdArray);
         sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+
         proceed(productViewModel);
     }
 
     private void proceed(ProductViewModel productViewModel) {
-        initInjector();
-        setPresenter(searchPresenter);
-        searchPresenter.attachView(this);
-        searchPresenter.setDiscoveryView(this);
-
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel);
@@ -163,15 +171,6 @@ public class ImageSearchActivity extends DiscoveryActivity
         }
 
         super.initView();
-    }
-
-    private void initInjector() {
-        searchComponent =
-                DaggerSearchComponent.builder()
-                        .appComponent(getApplicationComponent())
-                        .build();
-
-        searchComponent.inject(this);
     }
 
     private void loadSection(ProductViewModel productViewModel) {
