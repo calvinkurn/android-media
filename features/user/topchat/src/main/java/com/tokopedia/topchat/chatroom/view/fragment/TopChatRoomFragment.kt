@@ -198,7 +198,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
             getViewState().onSetCustomMessage(customMessage)
-            presenter.getTemplate()
+            presenter.getTemplate(getUserSession().shopId == shopId.toString())
 
             activity?.run {
                 val data = Intent()
@@ -512,7 +512,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_GO_TO_SETTING_TEMPLATE -> {
-                presenter.getTemplate()
+                presenter.getTemplate(getUserSession().shopId == shopId.toString())
             }
 
             TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {

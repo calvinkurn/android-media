@@ -233,30 +233,33 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    fun getTemplate() {
-        getTemplateChatRoomUseCase.execute(object : Subscriber<GetTemplateViewModel>() {
-            override fun onNext(t: GetTemplateViewModel?) {
-                val templateList = arrayListOf<Visitable<Any>>()
-                t?.let {
-                    if (t.isEnabled) {
-                        t.listTemplate?.let {
-                            templateList.addAll(it)
+    fun getTemplate(isSeller: Boolean) {
+        getTemplateChatRoomUseCase.execute(
+                GetTemplateChatRoomUseCase.generateParam(isSeller),
+                object : Subscriber<GetTemplateViewModel>() {
+                    override fun onNext(t: GetTemplateViewModel?) {
+                        val templateList = arrayListOf<Visitable<Any>>()
+                        t?.let {
+                            if (t.isEnabled) {
+                                t.listTemplate?.let {
+                                    templateList.addAll(it)
+                                }
+                            }
                         }
+                        templateList.add(TemplateChatModel(false) as Visitable<Any>)
+                        view.onSuccessGetTemplate(templateList)
                     }
+
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        view.onErrorGetTemplate()
+                    }
+
                 }
-                templateList.add(TemplateChatModel(false) as Visitable<Any>)
-                view.onSuccessGetTemplate(templateList)
-            }
-
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-                view.onErrorGetTemplate()
-            }
-
-        })
+        )
     }
 
     private fun readMessage() {
