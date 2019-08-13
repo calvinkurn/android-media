@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
 import android.support.annotation.LayoutRes
@@ -59,7 +59,6 @@ class SixGridChannelViewHolder(sixGridView: View,
     override fun getViewHolderClassName(): String {
         return SixGridChannelViewHolder::class.java.simpleName
     }
-
 
     class SixGridItemAdapter(private val context: Context,
                              private val listener: HomeCategoryListener,

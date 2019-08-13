@@ -11,6 +11,8 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeFeedsListener
 import com.tokopedia.home.beranda.listener.HomeInspirationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.SixGridChannelViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.ThreeGridChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessUnitViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel
