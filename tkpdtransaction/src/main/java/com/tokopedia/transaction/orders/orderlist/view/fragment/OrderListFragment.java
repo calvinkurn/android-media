@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,6 +64,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final int ANIMATION_DURATION = 500;
     private static final int SUBMIT_SURVEY_REQUEST = 2;
     public static final String OPEN_SURVEY_PAGE = "2";
+    private static final long KEYBOARD_SEARCH_WAITING_TIME = 300;
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -546,7 +548,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
             searchedString = text;
             orderListAnalytics.sendSearchFilterClickEvent();
             filterDate.setVisibility(View.GONE);
-            refreshHandler.startRefresh();
+            Handler handler = new Handler();
+            handler.postDelayed(() -> refreshHandler.startRefresh(), KEYBOARD_SEARCH_WAITING_TIME);
         }
     }
 
