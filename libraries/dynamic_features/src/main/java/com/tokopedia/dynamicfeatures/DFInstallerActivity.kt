@@ -161,8 +161,13 @@ class DFInstallerActivity : BaseSimpleActivity() {
             .build()
 
         // Load and install the requested feature module.
-        manager.startInstall(request).addOnSuccessListener{
+        manager.startInstall(request).addOnSuccessListener {
             sessionId = it
+        }.addOnFailureListener {
+            sessionId = null
+            hideProgress()
+            val message = getString(R.string.error_for_module_x, moduleName)
+            showFailedMessage(message)
         }
     }
 
@@ -182,6 +187,9 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     /** Listener used to handle changes in state for install requests. */
     private val listener = SplitInstallStateUpdatedListener { state ->
+        if (state.sessionId() != sessionId) {
+            return@SplitInstallStateUpdatedListener
+        }
         val multiInstall = state.moduleNames().size > 1
 
         val names = state.moduleNames().joinToString(" - ")
@@ -211,16 +219,20 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                if (!GlobalConfig.DEBUG) {
-                    Crashlytics.logException(Exception("Error Install Module " + moduleName + " " + state.errorCode()));
-                }
-                Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
-                    message,
-                    Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.general_label_ok), View.OnClickListener { })
+                showFailedMessage(message)
                 hideProgress()
             }
         }
+    }
+
+    private fun showFailedMessage(message: String) {
+        if (!GlobalConfig.DEBUG) {
+            Crashlytics.logException(Exception(message))
+        }
+        Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
+            message,
+            Snackbar.LENGTH_INDEFINITE,
+            getString(R.string.general_label_ok), View.OnClickListener { })
     }
 
     private fun updateProgressMessage(message: String) {
