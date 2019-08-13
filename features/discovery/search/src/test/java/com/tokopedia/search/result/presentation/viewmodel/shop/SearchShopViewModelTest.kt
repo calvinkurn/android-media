@@ -79,12 +79,22 @@ class SearchShopViewModelTest {
         whenever(it.getString(SearchConstant.GCM_ID, "")).thenReturn("MOCK_GCM_ID")
     }
 
+    private lateinit var searchShopViewModel: SearchShopViewModel
+
     @Test
-    fun `when searchShop() is successful, validate data is correct`() {
+    fun `test search shop successful`() {
+        `given search shop API call will be successful and return search shop data`()
+
+        `when execute search shop`()
+
+        `then assert search shop state is success with data contains search shop header and shop items`()
+    }
+
+    private fun `given search shop API call will be successful and return search shop data`() {
         whenever(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
         whenever(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
 
-        val searchShopViewModel = SearchShopViewModel(
+        searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
@@ -94,9 +104,13 @@ class SearchShopViewModelTest {
                 userSession,
                 localCacheHandler
         )
+    }
 
+    private fun `when execute search shop`() {
         searchShopViewModel.searchShop()
+    }
 
+    private fun `then assert search shop state is success with data contains search shop header and shop items`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchShopData(searchShopState)
     }

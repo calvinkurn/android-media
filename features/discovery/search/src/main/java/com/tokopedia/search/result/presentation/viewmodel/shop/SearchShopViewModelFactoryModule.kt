@@ -28,6 +28,7 @@ class SearchShopViewModelFactoryModule(
 
     @SearchScope
     @Provides
+    @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
     fun provideSearchShopViewModelFactory(
             @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
             searchShopFirstPageUseCase: SearchUseCase<SearchShopModel>,

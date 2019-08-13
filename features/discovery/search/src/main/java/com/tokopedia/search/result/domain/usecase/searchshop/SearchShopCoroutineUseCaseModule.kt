@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.annotation.RawRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -12,6 +13,7 @@ import com.tokopedia.search.result.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 @SearchScope
 @Module
@@ -19,6 +21,7 @@ class SearchShopCoroutineUseCaseModule {
 
     @SearchScope
     @Provides
+    @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
     fun provideSearchShopFirstPageUseCase(
             @ApplicationContext context: Context
     ): SearchUseCase<SearchShopModel> {
@@ -27,7 +30,10 @@ class SearchShopCoroutineUseCaseModule {
         return SearchShopFirstPageUseCase(graphqlUseCase)
     }
 
-    private fun provideSearchShopLoadMoreUseCase(
+    @SearchScope
+    @Provides
+    @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
+    fun provideSearchShopLoadMoreUseCase(
             @ApplicationContext context: Context
     ): SearchUseCase<SearchShopModel> {
         val graphqlUseCase = createGraphqlUseCase(context, R.raw.gql_search_shop_load_more)

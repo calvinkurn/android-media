@@ -101,6 +101,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.testDependencies.archCoreTesting
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 }
 
 apply from: '../../../publish_local.gradle'
