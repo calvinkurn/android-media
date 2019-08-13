@@ -50,8 +50,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:singleLine="true"
             android:textSize="@dimen/sp_10"
-            tools:text="*Min Pembelian 250Rb" />
+            tools:text="*Min Pembelian 250Rb " />
 
     </RelativeLayout>
 
@@ -78,13 +79,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:background="@drawable/bg_voucher_button"
                 android:layout_alignParentRight="true"
+                android:background="@drawable/bg_voucher_button"
                 android:minWidth="@dimen/dp_76"
-                android:textAllCaps="false"
                 android:minHeight="@dimen/dp_8"
                 android:padding="@dimen/dp_8"
                 android:text="@string/use_voucher"
+                android:textAllCaps="false"
                 android:textColor="@color/text_color_voucher_button"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="bold" />
@@ -97,6 +98,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:gravity="end"
+                android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_10"
                 android:textStyle="bold"

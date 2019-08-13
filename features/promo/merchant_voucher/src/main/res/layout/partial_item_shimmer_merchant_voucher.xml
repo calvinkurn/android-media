@@ -8,8 +8,7 @@
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_2"
     android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_2"
-    app:vchCornerRadius="@dimen/dp_4">
+    android:paddingBottom="@dimen/dp_2">
 
     <LinearLayout
         android:layout_width="match_parent"
