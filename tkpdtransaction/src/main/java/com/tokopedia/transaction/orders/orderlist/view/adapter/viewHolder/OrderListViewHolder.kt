@@ -20,6 +20,9 @@ import android.widget.TextView
 import com.tkpd.library.utils.ImageHandler
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.transaction.R
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter
 import com.tokopedia.transaction.orders.common.view.DoubleTextView
@@ -61,6 +64,10 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     var rightButton = itemView?.findViewById<TextView>(R.id.right_button)
     var parentMetadataLayout = itemView?.findViewById<LinearLayout>(R.id.metadata)
 
+    var cornerRadiusValue: Float = 9f
+    var topTextSize: Float = 11f
+    var textSize: Float = 10f
+    var padding16: Int = 16
     var orderCategory: String? = null
     var appLink: String? = null
 
@@ -81,6 +88,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     }
 
     private fun setObservers(element: OrderListViewModel) {
+        element.orderListLiveData.removeObservers(itemView.context as FragmentActivity)
         element.orderListLiveData.observe(itemView.context as FragmentActivity, Observer {
             when(it){
                 is DotMenuVisibility -> {
@@ -125,18 +133,20 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     }
 
     private fun setCategoryAndTitle(titleText: String, category: String) {
-        if (category == "")
-            categoryName?.visibility = View.GONE
+        if (TextUtils.isEmpty(category))
+            categoryName?.hide()
         else
             categoryName?.text = Html.fromHtml(Html.fromHtml(category).toString())
         title?.text = titleText
     }
 
     private fun setItemCount(count: Int) {
-        if (orderCategory.equals(OrderListContants.BELANJA, ignoreCase = true) || orderCategory.equals(OrderListContants.MARKETPLACE, ignoreCase = true)) {
-            itemCount?.visibility = View.VISIBLE
-            title?.visibility = View.GONE
+        if ((orderCategory.equals(OrderListContants.BELANJA, ignoreCase = true) || orderCategory.equals(OrderListContants.MARKETPLACE, ignoreCase = true)) && count > 0) {
+            itemCount?.show()
+            title?.hide()
             itemCount?.text = String.format(itemView.context.resources.getString(R.string.item_count), count)
+        } else {
+            itemCount?.hide()
         }
     }
 
@@ -151,7 +161,9 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     private fun setPaymentAvatar(imgUrl: String) {
         if (!TextUtils.isEmpty(imgUrl)) {
             ImageHandler.loadImageThumbs(itemView.context, paymentAvatar, imgUrl)
-            paymentAvatar?.visibility = View.VISIBLE
+            paymentAvatar?.show()
+        } else {
+            paymentAvatar?.invisible()
         }
     }
 
@@ -159,12 +171,14 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         conditionalInfoLayout?.visibility = successCondInfoVisibility
         if (successConditionalText!= null) {
             val shape = GradientDrawable()
-            shape.shape = GradientDrawable.RECTANGLE
-            shape.cornerRadius = 9f
-            shape.setColor(android.graphics.Color.parseColor(color?.background()))
-            shape.setStroke(1, android.graphics.Color.parseColor(color?.border()))
+            shape.apply {
+                this.shape = GradientDrawable.RECTANGLE
+                shape.cornerRadius = cornerRadiusValue
+                setColor(android.graphics.Color.parseColor(color?.background()))
+                setStroke(1, android.graphics.Color.parseColor(color?.border()))
+            }
             conditionalInfoText?.background = shape
-            conditionalInfoText?.setPadding(16, 16, 16, 16)
+            conditionalInfoText?.setPadding(padding16, padding16, padding16, padding16)
             conditionalInfoText?.text = successConditionalText
         }
     }
@@ -172,7 +186,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     private fun setMetadata(metaData: MetaData) {
         val childLayout = DoubleTextView(itemView.context, LinearLayout.VERTICAL)
         childLayout.setTopText(metaData.label())
-        childLayout.setTopTextSize(11f)
+        childLayout.setTopTextSize(topTextSize)
         val value = metaData.value()
         val tv = TextView(itemView.context)
         if (value.contains(KEY_META_DATA)) {
@@ -180,7 +194,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             tv.layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT)
-            tv.textSize = 10f
+            tv.textSize = textSize
             tv.typeface = Typeface.DEFAULT_BOLD
             tv.text = KEY_META_DATA.plus(values[1])
             childLayout.setBottomText(values[0])
@@ -201,7 +215,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             popup.show()
         }
         itemView.setOnClickListener {
-            if (appLink != null && appLink != "") {
+            if (!TextUtils.isEmpty(appLink)) {
                 orderListAnalytics.sendProductClickEvent(status?.text.toString())
                 RouteManager.route(itemView.context, appLink)
             }
@@ -229,9 +243,9 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
 
     private fun setButtonData(button: TextView?, visibility: Int, actionButton: ActionButton?) {
         button?.visibility = visibility
-        if (actionButton != null && actionButton.label() != "") {
-            button?.text = actionButton.label()
-            if (actionButton.color() != null) {
+        if (TextUtils.isEmpty(actionButton?.label())) {
+            button?.text = actionButton?.label()
+            if (actionButton?.color() != null) {
                 if (actionButton.color().background() != "") {
                     button?.setBackgroundColor(android.graphics.Color.parseColor(actionButton.color().background()))
                 }
@@ -240,15 +254,15 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                 }
             }
             button?.setOnClickListener {
-                var newUri = actionButton.uri()
-                if (newUri.startsWith(KEY_URI)) {
+                var newUri = actionButton?.uri()
+                if (newUri?.startsWith(KEY_URI) == true) {
                     if (newUri.contains(KEY_URI_PARAMETER)) {
                         val url = Uri.parse(newUri)
                         newUri = newUri.replace(url.getQueryParameter(KEY_URI_PARAMETER)!!, "")
                         newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "")
                     }
                     RouteManager.route(it.context, newUri)
-                } else if (newUri != "") {
+                } else if (!TextUtils.isEmpty(newUri)) {
                     try {
                         it.context.startActivity((it.context.applicationContext as UnifiedOrderListRouter).getWebviewActivityWithIntent(it.context,
                                 URLEncoder.encode(newUri, "UTF-8")))

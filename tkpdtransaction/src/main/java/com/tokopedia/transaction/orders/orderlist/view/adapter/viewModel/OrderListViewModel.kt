@@ -67,6 +67,8 @@ class OrderListViewModel(var order: Order) : Visitable<OrderListTypeFactory> {
         orderListLiveData.value = SetCategoryAndTitle(order.categoryName(), order.title())
         if (!order.itemCount.equals("0", ignoreCase = true) && !order.itemCount.equals("1", ignoreCase = true)) {
             orderListLiveData.value = SetItemCount(Integer.parseInt(order.itemCount) - 1)
+        } else {
+            orderListLiveData.value = SetItemCount(-1)
         }
         val metaDataList = order.metaData()
         for (metaData in metaDataList) {
