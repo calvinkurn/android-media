@@ -124,8 +124,6 @@ open class CustomVoucherView : FrameLayout {
         canvasCleanHeight = maxY - minY
         totalJaggedAndStraight = totalJaggedEdge * 2 + 1
         diameter = canvasCleanHeight / totalJaggedAndStraight.toFloat()
-//        diameter = (totalJaggedEdge*2).toFloat() * 2 +1
-//        totalJaggedAndStraight = (canvasCleanHeight / diameter).toInt()
     }
 
     override fun dispatchDraw(canvas: Canvas) {
