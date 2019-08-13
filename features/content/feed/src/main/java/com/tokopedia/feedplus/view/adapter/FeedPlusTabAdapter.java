@@ -14,6 +14,8 @@ import com.tokopedia.feedplus.data.pojo.FeedTabs;
 import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -39,9 +41,9 @@ public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         FeedTabs.FeedData data = itemList.get(position);
-        if (data.getType().equals(TYPE_FEEDS)){
+        if (data.getType().equals(FeedTabs.TYPE_FEEDS)){
             return FeedPlusFragment.Companion.newInstance(bundle);
-        } else if (data.getType().equals(TYPE_EXPLORE)){
+        } else if (data.getType().equals(FeedTabs.TYPE_EXPLORE)){
             return ContentExploreFragment.newInstance(bundle);
         } else if (data.getType().equals(TYPE_CUSTOM) && data.getKey().equals(KEY_TRENDING)) {
             return DynamicFeedFragment.Companion.newInstance(data.getKey());
@@ -80,16 +82,34 @@ public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
         super.destroyItem(container, position, object);
     }
 
+    public void setItemList(List<FeedTabs.FeedData> itemList) {
+        this.itemList = itemList;
+        notifyDataSetChanged();
+    }
+
     public Fragment getRegisteredFragment(int pos){
         return registeredFragment.get(pos);
     }
 
-    public ContentExploreFragment getContentExplorer() {
-        for (int i = 0; i < getCount(); ++i){
-            if (itemList.get(i).getType().equals(TYPE_EXPLORE)){
-                return (ContentExploreFragment) getRegisteredFragment(i);
-            }
+    @Nullable
+    public ContentExploreFragment getContentExplore() {
+        int index = getContentExploreIndex();
+        if (getRegisteredFragment(index) instanceof ContentExploreFragment) {
+            return (ContentExploreFragment) getRegisteredFragment(index);
         }
         return null;
+    }
+
+    public int getContentExploreIndex() {
+        for (int i = 0; i < getCount(); ++i) {
+            if (itemList.get(i).getType().equals(FeedTabs.TYPE_EXPLORE)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public boolean isContextExploreExist() {
+        return getContentExplore() != null;
     }
 }

@@ -24,8 +24,7 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDispatcher,
-                                                     private val useCase: GraphqlUseCase<FeedTabs.Response>,
-                                                     private val getWhitelistUseCase: GetWhitelistUseCase)
+                                                     private val useCase: GraphqlUseCase<FeedTabs.Response>, private val getWhitelistUseCase: GetWhitelistUseCase)
     : BaseViewModel(baseDispatcher){
     private val PARAM_IS_LOGIN = "isLogin"
 
@@ -35,11 +34,18 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
     }
 
-    fun getDynamicTabs(){
+    fun getDynamicTabs() {
         launchCatchError(block = {
-            tabResp.value = Success(useCase.executeOnBackground().feedTabs)
-        }){
+            val feedTabs: FeedTabs = useCase.executeOnBackground().feedTabs
+            if (feedTabs.feedData.isNotEmpty()) {
+                tabResp.value = Success(feedTabs)
+            } else {
+                tabResp.value = Fail(RuntimeException())
+                useCase.clearCache()
+            }
+        }) {
             tabResp.value = Fail(it)
+            useCase.clearCache()
         }
     }
 
