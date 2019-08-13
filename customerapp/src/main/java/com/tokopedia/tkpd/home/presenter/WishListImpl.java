@@ -428,7 +428,7 @@ public class WishListImpl implements WishList {
         wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
         dataWishlist.addAll(wishlistData.getWishlistDataList());
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList(),
-                gqlWishListDataResponse.getTopAdsModel(), query));
+                gqlWishListDataResponse.getTopAdsModel(), query, gqlWishListDataResponse.getTitle()));
         mPaging.setPagination(wishlistData.getPagination());
         wishListView.setPullEnabled(true);
         wishListView.loadDataChange();
@@ -557,7 +557,7 @@ public class WishListImpl implements WishList {
                     data.clear();
                     dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                     data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
-                            gqlWishListDataResponse.getTopAdsModel(), query));
+                            gqlWishListDataResponse.getTopAdsModel(), query, gqlWishListDataResponse.getTitle()));
                     mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
                     wishListView.loadDataChange();
                     wishListView.displayContentList(true);
@@ -615,7 +615,7 @@ public class WishListImpl implements WishList {
         }
     }
 
-    public List<Visitable> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel, String query) {
+    public List<Visitable> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel, String query, String title) {
         List<Visitable> products = new ArrayList<>();
         for (int i = 0; i < wishlists.size(); i++) {
             ProductItem product = new ProductItem();
@@ -639,7 +639,7 @@ public class WishListImpl implements WishList {
             products.add(new WishlistProductViewModel(product));
         }
         if (products.size() >= TOPADS_INDEX && adsModel != null && !adsModel.getData().isEmpty()) {
-            products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query));
+            products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query, title));
         }
         return products;
     }
@@ -663,7 +663,7 @@ public class WishListImpl implements WishList {
 
         dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
         data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
-                gqlWishListDataResponse.getTopAdsModel(), query));
+                gqlWishListDataResponse.getTopAdsModel(), query, gqlWishListDataResponse.getTitle()));
         mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
         wishListView.setPullEnabled(true);
         wishListView.loadDataChange();

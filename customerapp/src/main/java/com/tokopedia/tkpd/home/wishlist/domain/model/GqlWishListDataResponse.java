@@ -19,12 +19,22 @@ public class GqlWishListDataResponse {
     @Expose
     private TopAdsModel topAdsModel;
 
+    private String title;
+
     public TopAdsModel getTopAdsModel() {
         return topAdsModel;
     }
 
     public void setTopAdsModel(TopAdsModel topAdsModel) {
         this.topAdsModel = topAdsModel;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public GqlWishList getGqlWishList() {
