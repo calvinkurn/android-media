@@ -37,14 +37,15 @@ class MembershipStampProgressViewHolder(itemView: View, listener: MembershipStam
         } else{
             circleIndicator.visibility = View.VISIBLE
             circleIndicator.setIndicator(element.membershipData.membershipProgram.membershipQuests.size)
-            membershipAdapter.setMembershipData(element.membershipData)
-            rvMembership.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    circleIndicator.setCurrentIndicator((rvMembership.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition())
-                }
-            })
         }
+
+        membershipAdapter.setMembershipData(element.membershipData)
+        rvMembership.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                circleIndicator.setCurrentIndicator((rvMembership.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition())
+            }
+        })
     }
 
     private fun findViews(itemView: View) {

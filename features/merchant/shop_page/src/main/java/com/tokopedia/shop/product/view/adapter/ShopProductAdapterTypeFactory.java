@@ -16,7 +16,6 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter;
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.MembershipRegisterViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.MembershipStampProgressViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopMerchantVoucherViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductCarouselViewHolder;
@@ -109,7 +108,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(MembershipStampProgressViewModel membershipStampProgressViewModel) {
-        if (!membershipStampProgressViewModel.getMembershipData().isShown() || membershipStampProgressViewModel.getMembershipData().getMembershipProgram().getMembershipQuests().size() == 0) {
+        if (!membershipStampProgressViewModel.getMembershipData().isShown()) {
             return HideViewHolder.LAYOUT;
         } else {
             return MembershipStampProgressViewHolder.getLAYOUT();
@@ -212,8 +211,6 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new ShopProductViewHolder(parent, shopProductClickedListener, !isGridSquareLayout, deviceWidth, shopTrackType, type);
         } else if (type == MembershipStampProgressViewHolder.getLAYOUT()) {
             return new MembershipStampProgressViewHolder(parent, membershipStampAdapterListener);
-        } else if (type == MembershipRegisterViewHolder.getLAYOUT()) {
-            return new MembershipRegisterViewHolder(parent);
         }
         if (type == HideViewHolder.LAYOUT) {
             return new HideViewHolder(parent);

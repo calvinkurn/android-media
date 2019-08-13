@@ -61,6 +61,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipData
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
@@ -99,7 +100,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener,
         ShopCarouselSeeAllClickedListener, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
-        MerchantVoucherListView, MembershipStampAdapter.MembershipStampAdapterListener {
+        MerchantVoucherListView, MembershipStampAdapter.MembershipStampAdapterListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -118,6 +119,10 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private val sortName = Integer.toString(Integer.MIN_VALUE)
     private var recyclerView: RecyclerView? = null
+
+    private var lastQuestId: Int = 0
+    private var isPaddingSet = false
+
 
     var selectedEtalaseId: String = ""
         private set
@@ -166,6 +171,13 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             when(it){
                 is Success -> onSuccessGetProductFeature(it.data)
                 is Fail -> onErrorGetProductFeature(it.throwable)
+            }
+        })
+
+        viewModel.claimMembershipResp.observe(this,Observer{
+            when(it){
+                is Success -> onSuccessClaimBenefit(it.data)
+                is Fail -> onErrorGetMembershipInfo(it.throwable)
             }
         })
 
@@ -336,7 +348,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             loadVoucherList()
 
             viewModel.getFeaturedProduct(it.shopCore.shopID, false)
-
         }
     }
 
@@ -580,8 +591,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun onSuccessGetMembershipInfo(data: MembershipStampProgress?) {
         val isShown = data?.membershipStampProgress?.isShown ?: false
-        if (isShown) {
-            // Remove padding when membership stamp showing
+        if (isShown && !isPaddingSet) {
+            isPaddingSet = true
+            // Remove padding item membership stamp when isShown
             val scale = resources.displayMetrics.density
             val dpAsPixels = (-resources.getDimension(R.dimen.dp_8) * scale + 0.5f).toInt()
             recyclerView?.run {
@@ -590,12 +602,39 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
         shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(data?.membershipStampProgress
                 ?: MembershipData()))
+        shopProductAdapter.notifyDataSetChanged()
         shopProductAdapter.refreshSticky()
     }
 
     private fun onErrorGetMembershipInfo(t: Throwable) {
         shopProductAdapter.setMembershipStampViewModel(null)
-        ToasterError.showClose(activity!!, ErrorHandler.getErrorMessage(context, t))
+        activity?.let {
+            ToasterError.showClose(it, ErrorHandler.getErrorMessage(context, t))
+        }
+    }
+
+    private fun showToasterError(message:String) {
+        activity?.let {
+            ToasterError.showClose(it,message)
+        }
+    }
+
+    private fun onSuccessClaimBenefit(data: MembershipClaimBenefitResponse) {
+
+        if (data.membershipClaimBenefitResponse.title == "") {
+            if (data.membershipClaimBenefitResponse.resultStatus.message.isNotEmpty()) {
+                showToasterError(data.membershipClaimBenefitResponse.resultStatus.message.firstOrNull()
+                        ?: "")
+            } else {
+                showToasterError(getString(R.string.default_request_error_unknown))
+            }
+        } else {
+            val bottomSheetMembership = MembershipBottomSheetSuccess.newInstance(data.membershipClaimBenefitResponse.title,
+                    data.membershipClaimBenefitResponse.subTitle,
+                    data.membershipClaimBenefitResponse.resultStatus.code,lastQuestId)
+            bottomSheetMembership.setListener(this)
+            bottomSheetMembership.show(fragmentManager, "membership_shop_page")
+        }
     }
 
     private fun onSuccessGetProductFeature(list: List<ShopProductViewModel>) {
@@ -898,6 +937,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                     needLoadVoucher = true
                 }
             }
+            REQUEST_CODE_MEMBERSHIP_STAMP -> {
+                loadMembership()
+            }
             else -> {
             }
         }
@@ -1059,11 +1101,20 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         // NO-Op
     }
 
-    override fun onButtonClaimClicked() {
-        val bottomSheetMembership = MembershipBottomSheetSuccess()
-        bottomSheetMembership.show(fragmentManager, "membership_shop_page")
+    override fun onButtonClaimClicked(questId: Int) {
+        lastQuestId = questId
+        viewModel.claimMembershipBenefit(questId)
     }
 
+    override fun goToVoucherOrRegister(url: String?) {
+        val intent: Intent = if (url == null) {
+            RouteManager.getIntent(context, ApplinkConst.COUPON_LISTING)
+        } else {
+            RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://${url}"))
+        }
+
+        startActivityForResult(intent, REQUEST_CODE_MEMBERSHIP_STAMP)
+    }
 
     companion object {
 
@@ -1073,6 +1124,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         private const val REQUEST_CODE_LOGIN_USE_VOUCHER = 206
         private const val REQUEST_CODE_MERCHANT_VOUCHER = 207
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
+        private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
+
 
         private const val REQUEST_CODE_SORT = 300
         private const val LIST_SPAN_COUNT = 1

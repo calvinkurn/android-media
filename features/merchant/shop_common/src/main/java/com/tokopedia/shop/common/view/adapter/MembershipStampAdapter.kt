@@ -22,7 +22,8 @@ class MembershipStampAdapter(private val context: Context, private val listener:
     }
 
     interface MembershipStampAdapterListener {
-        fun onButtonClaimClicked()
+        fun onButtonClaimClicked(questId: Int)
+        fun goToVoucherOrRegister(url: String?)
     }
 
     private var membershipData: MembershipData = MembershipData()
@@ -31,6 +32,7 @@ class MembershipStampAdapter(private val context: Context, private val listener:
     fun setMembershipData(data: MembershipData?) {
         membershipData = data ?: MembershipData()
         membershipQuest = data?.membershipProgram?.membershipQuests ?: listOf()
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseMembershipViewHolder<*> {
@@ -40,13 +42,13 @@ class MembershipStampAdapter(private val context: Context, private val listener:
                 val itemView = inflater.inflate(R.layout.item_custom_membership, parent, false)
                 val layoutParams = itemView.layoutParams
 
-                setWidthPercentage(parent,layoutParams,itemView)
-                return MembershipItemRegisteredViewHolder(itemView, membershipQuest.size, listener)
+                setWidthPercentage(parent, layoutParams, itemView)
+                return MembershipItemRegisteredViewHolder(itemView, membershipQuest.size, listener, membershipData.infoMessage.membershipCta.url)
             }
             TYPE_UNREGISTERED -> {
                 val inflater = LayoutInflater.from(parent.context)
                 val itemView = inflater.inflate(R.layout.item_membership_register, parent, false)
-                return MembershipItemUnregisteredViewHolder(itemView)
+                return MembershipItemUnregisteredViewHolder(itemView, listener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -78,7 +80,7 @@ class MembershipStampAdapter(private val context: Context, private val listener:
         }
     }
 
-    override fun getItemCount(): Int = membershipQuest.size
+    override fun getItemCount(): Int = if (membershipQuest.isEmpty()) 1 else membershipQuest.size
 
     override fun onBindViewHolder(holder: BaseMembershipViewHolder<*>, position: Int) {
         when (holder) {

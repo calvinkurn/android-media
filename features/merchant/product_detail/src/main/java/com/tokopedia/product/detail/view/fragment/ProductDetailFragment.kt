@@ -154,7 +154,7 @@ import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
 
-class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener,MembershipStampAdapter.MembershipStampAdapterListener {
+class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
 
     private var productId: String? = null
     private var productKey: String? = null
@@ -181,7 +181,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationFourthView: PartialRecommendationFourthView
     lateinit var valuePropositionView: PartialValuePropositionView
     lateinit var trackingQueue: TrackingQueue
-    lateinit var membershipViewStampView : PartialProductMembershipView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -761,9 +760,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             valuePropositionView = PartialValuePropositionView.build(layout_value_proposition, onViewClickListener)
         }
 
-        if (!::membershipViewStampView.isInitialized) {
-            membershipViewStampView = PartialProductMembershipView.build(layout_membership_stamp, this)
-        }
 
     }
 
@@ -1184,9 +1180,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun renderProductInfoP2Login(p2Login: ProductInfoP2Login) {
         shopInfo?.let { updateWishlist(it, p2Login.isWishlisted) }
         p2Login.pdpAffiliate?.let { renderAffiliate(it) }
-        p2Login.mempershipStampProgress?.let {
-            membershipViewStampView.renderMembershipData(it)
-        }
         actionButtonView.renderData(p2Login.isExpressCheckoutType)
     }
 
@@ -2080,11 +2073,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun hideProgressDialog() {
         loadingProgressDialog?.dismiss()
-    }
-
-    override fun onButtonClaimClicked() {
-        val bottomSheetMembership = MembershipBottomSheetSuccess()
-        bottomSheetMembership.show(fragmentManager, "membership_shop_page")
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {

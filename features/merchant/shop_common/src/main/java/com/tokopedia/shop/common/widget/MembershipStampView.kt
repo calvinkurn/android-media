@@ -17,18 +17,28 @@ import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipQuests
 class MembershipStampView : FrameLayout {
 
     lateinit var txtTitle: TextView
-    lateinit var imgStamp1: ImageView
-    lateinit var imgStamp2: ImageView
-    lateinit var imgStamp3: ImageView
-    lateinit var imgStamp4: ImageView
-    lateinit var imgStamp5: ImageView
+    private lateinit var imgStamp1: ImageView
+    private lateinit var imgStamp2: ImageView
+    private lateinit var imgStamp3: ImageView
+    private lateinit var imgStamp4: ImageView
+    private lateinit var imgStamp5: ImageView
+
+    private lateinit var circleStamp1: FrameLayout
+    private lateinit var circleStamp2: FrameLayout
+    private lateinit var circleStamp3: FrameLayout
+    private lateinit var circleStamp4: FrameLayout
+    private lateinit var circleStamp5: FrameLayout
+
+    lateinit var line1: View
+    lateinit var line2: View
+    lateinit var line3: View
+    lateinit var line4: View
     lateinit var btnClaim: Button
     lateinit var membershipCard: CardView
-    private var listImage = mutableListOf<ImageView>()
 
-    companion object {
-        private const val TOTAL_TEMP = 5
-    }
+    private var listImage = mutableListOf<ImageView>()
+    private var listLine = mutableListOf<View>()
+    private var listCircleStamp = mutableListOf<FrameLayout>()
 
     constructor(context: Context) : super(context) {
         init()
@@ -44,7 +54,7 @@ class MembershipStampView : FrameLayout {
 
     fun setMembershipModel(item: MembershipQuests, dataSize: Int) {
         txtTitle.text = item.title
-        if(dataSize<=1) {
+        if (dataSize <= 1) {
             val layoutParams = membershipCard.layoutParams
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
         }
@@ -54,8 +64,18 @@ class MembershipStampView : FrameLayout {
     }
 
     private fun setTargetProgress(targetProgress: Int) {
-        (targetProgress..TOTAL_TEMP).forEachIndexed { index, it ->
-            listImage[index + 1].visibility = View.INVISIBLE
+        listCircleStamp.forEachIndexed { index, _ ->
+            if (index <= targetProgress - 1) {
+                listCircleStamp[index].visibility = View.VISIBLE
+                if (index != listCircleStamp.size - 1) {
+                    listLine[index].visibility = View.VISIBLE
+                }
+            } else {
+                listCircleStamp[index].visibility = View.INVISIBLE
+                if (index != listCircleStamp.size - 1) {
+                    listLine[index].visibility = View.INVISIBLE
+                }
+            }
         }
     }
 
@@ -69,9 +89,17 @@ class MembershipStampView : FrameLayout {
     }
 
     private fun setCurrentStamp(currentProgress: Int, iconUrl: String) {
-        (0 until currentProgress).forEachIndexed { index, _ ->
-            listImage[index].visibility = View.VISIBLE
-            renderCircleImageStamp(listImage[index], iconUrl)
+        if (currentProgress == 0) {
+            hideAllImageStamp()
+        } else {
+            listImage.forEachIndexed { index, imageView ->
+                if (index <= currentProgress - 1) {
+                    imageView.visibility = View.VISIBLE
+                    renderCircleImageStamp(imageView, iconUrl)
+                } else {
+                    imageView.visibility = View.GONE
+                }
+            }
         }
     }
 
@@ -84,16 +112,37 @@ class MembershipStampView : FrameLayout {
         findView(inflatedView)
     }
 
+    private fun hideAllImageStamp() {
+        listImage.forEach {
+            it.visibility = View.GONE
+        }
+    }
+
     private fun findView(view: View) {
         membershipCard = view.findViewById(R.id.membership_card)
+        btnClaim = view.findViewById(R.id.btn_claim)
+
         txtTitle = view.findViewById(R.id.title_coupon)
         imgStamp1 = view.findViewById(R.id.img_stamp_1)
         imgStamp2 = view.findViewById(R.id.img_stamp_2)
         imgStamp3 = view.findViewById(R.id.img_stamp_3)
         imgStamp4 = view.findViewById(R.id.img_stamp_4)
         imgStamp5 = view.findViewById(R.id.img_stamp_5)
-        btnClaim = view.findViewById(R.id.btn_claim)
+
+        circleStamp1 = view.findViewById(R.id.circle_stamp_1)
+        circleStamp2 = view.findViewById(R.id.circle_stamp_2)
+        circleStamp3 = view.findViewById(R.id.circle_stamp_3)
+        circleStamp4 = view.findViewById(R.id.circle_stamp_4)
+        circleStamp5 = view.findViewById(R.id.circle_stamp_5)
+
+        line1 = view.findViewById(R.id.line1)
+        line2 = view.findViewById(R.id.line2)
+        line3 = view.findViewById(R.id.line3)
+        line4 = view.findViewById(R.id.line4)
+
+        listLine = mutableListOf(line1, line2, line3, line4)
         listImage = mutableListOf(imgStamp1, imgStamp2, imgStamp3, imgStamp4, imgStamp5)
+        listCircleStamp = mutableListOf(circleStamp1, circleStamp2, circleStamp3, circleStamp4, circleStamp5)
 
     }
 }

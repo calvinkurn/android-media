@@ -11,8 +11,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
@@ -36,7 +38,8 @@ import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
 
-class ShopProductLimitedViewModel @Inject constructor(private val getMembershipUseCase: GetMembershipUseCase,
+class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
+                                                      private val getMembershipUseCase: GetMembershipUseCase,
                                                       private val userSession: UserSessionInterface,
                                                       private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
                                                       private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
@@ -68,6 +71,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val getMembershipU
     val productResponse = MutableLiveData<Result<Pair<Boolean, List<ShopProductViewModel>>>>()
     val productHighlightResp = MutableLiveData<List<List<ShopProductViewModel>>>()
     val etalaseHighLight = mutableListOf<ShopEtalaseViewModel>()
+    val claimMembershipResp = MutableLiveData<Result<MembershipClaimBenefitResponse>>()
 
     fun getFeaturedProduct(shopId: String, isForceRefresh: Boolean = false) {
         getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(shopId.toInt())
@@ -103,7 +107,18 @@ class ShopProductLimitedViewModel @Inject constructor(private val getMembershipU
         })
     }
 
-    fun getMembershipStamp(shopId: Int,isForceRefresh: Boolean) {
+    fun claimMembershipBenefit(questId: Int) {
+        claimBenefitMembershipUseCase.params = ClaimBenefitMembershipUseCase.createRequestParams(questId)
+        claimBenefitMembershipUseCase.isFromCacheFirst = false
+
+        launchCatchError(block = {
+            claimMembershipResp.value = Success(claimBenefitMembershipUseCase.executeOnBackground())
+        }) {
+            claimMembershipResp.value = Fail(it)
+        }
+    }
+
+    fun getMembershipStamp(shopId: Int, isForceRefresh: Boolean) {
         getMembershipUseCase.params = GetMembershipUseCase.createRequestParams(shopId)
         getMembershipUseCase.isFromCacheFirst = isForceRefresh
         launchCatchError(block = {

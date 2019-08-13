@@ -1,20 +1,25 @@
 package com.tokopedia.shop.common.view.viewholder
 
 import android.view.View
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipQuests
 import com.tokopedia.shop.common.view.BaseMembershipViewHolder
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipStampView
 
-class MembershipItemRegisteredViewHolder(view: View, private val dataSize: Int, private val listener: MembershipStampAdapter.MembershipStampAdapterListener) : BaseMembershipViewHolder<MembershipQuests>(view) {
+class MembershipItemRegisteredViewHolder(private val view: View, private val dataSize: Int, private val listener: MembershipStampAdapter.MembershipStampAdapterListener, private val url: String) : BaseMembershipViewHolder<MembershipQuests>(view) {
 
     private var membershipView: MembershipStampView = view.findViewById(R.id.membership_stamp_view)
 
     override fun bind(element: MembershipQuests) {
         membershipView.setMembershipModel(element, dataSize)
+        membershipView.setOnClickListener {
+            RouteManager.route(view.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://${url}"))
+        }
         membershipView.btnClaim.setOnClickListener {
-            listener.onButtonClaimClicked()
+            listener.onButtonClaimClicked(element.questUserID)
         }
     }
 

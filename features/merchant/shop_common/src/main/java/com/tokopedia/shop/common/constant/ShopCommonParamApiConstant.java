@@ -20,4 +20,5 @@ public class ShopCommonParamApiConstant {
 
     public static final String QUERY_SHOP_SCORE = "gql_query_shop_score";
     public static final String QUERY_STAMP_PROGRESS = "query_stamp_progress";
+    public static final String QUERY_CLAIM_MEMBERSHIP = "query_claim_membership";
 }

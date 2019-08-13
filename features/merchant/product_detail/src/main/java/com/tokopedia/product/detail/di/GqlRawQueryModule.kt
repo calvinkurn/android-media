@@ -8,7 +8,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import javax.inject.Named
 
 @ProductDetailScope
 @Module
@@ -188,11 +187,4 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_SHOP_FEATURE)
     fun provideProductShopFeature(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_shop_feature)
-
-    @ProductDetailScope
-    @Provides
-    @Named(RawQueryKeyConstant.QUERY_STAMP_PROGRESS)
-    fun provideQueryStampProgress(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_stamp_progress)
-    }
 }
