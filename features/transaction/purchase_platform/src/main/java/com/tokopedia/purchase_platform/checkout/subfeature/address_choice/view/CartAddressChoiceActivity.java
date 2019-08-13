@@ -10,7 +10,7 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
-import com.tokopedia.purchase_platform.checkout.view.feature.cornerlist.CornerListFragment;
+import com.tokopedia.purchase_platform.checkout.subfeature.corner_list.CornerListFragment;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;

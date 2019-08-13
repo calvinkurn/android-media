@@ -71,7 +71,7 @@ import com.tokopedia.purchase_platform.cart.view.viewmodel.CartSectionHeaderHold
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartShopHolderData;
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartWishlistHolderData;
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartWishlistItemHolderData;
-import com.tokopedia.purchase_platform.checkout.view.feature.shipment.ShipmentActivity;
+import com.tokopedia.purchase_platform.checkout.view.ShipmentActivity;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;

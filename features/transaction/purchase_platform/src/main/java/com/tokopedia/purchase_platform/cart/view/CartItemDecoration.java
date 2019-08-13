@@ -14,10 +14,10 @@ import com.tokopedia.purchase_platform.cart.view.viewholder.CartRecommendationVi
 import com.tokopedia.purchase_platform.cart.view.viewholder.CartSectionHeaderViewHolder;
 import com.tokopedia.purchase_platform.cart.view.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.purchase_platform.cart.view.viewholder.CartWishlistViewHolder;
-import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewholder.ShipmentButtonPaymentViewHolder;
-import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
-import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewholder.ShipmentEmasViewHolder;
-import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewholder.ShipmentNotifierViewHolder;
+import com.tokopedia.purchase_platform.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
+import com.tokopedia.purchase_platform.checkout.view.viewholder.ShipmentDonationViewHolder;
+import com.tokopedia.purchase_platform.checkout.view.viewholder.ShipmentEmasViewHolder;
+import com.tokopedia.purchase_platform.checkout.view.viewholder.ShipmentNotifierViewHolder;
 
 /**
  * @author anggaprasetiyo on 06/02/18.

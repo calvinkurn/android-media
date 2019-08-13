@@ -35,7 +35,7 @@ import com.tokopedia.purchase_platform.cart.view.viewmodel.CartSectionHeaderHold
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartShopHolderData;
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartWishlistHolderData;
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartWishlistItemHolderData;
-import com.tokopedia.purchase_platform.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
+import com.tokopedia.purchase_platform.checkout.view.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;

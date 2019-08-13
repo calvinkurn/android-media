@@ -2,8 +2,8 @@ package com.tokopedia.purchase_platform.express_checkout.data.entity.response.at
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.express_checkout.data.entity.response.profile.Profile
-import com.tokopedia.purchase_platform.common.data.model.response.promo.AutoApply
-import com.tokopedia.purchase_platform.common.data.model.response.promo.PromoSuggestion
+import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.AutoApply
+import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.PromoSuggestion
 import com.tokopedia.purchase_platform.checkout.data.model.response.shipment_address_form.Donation
 
 /**

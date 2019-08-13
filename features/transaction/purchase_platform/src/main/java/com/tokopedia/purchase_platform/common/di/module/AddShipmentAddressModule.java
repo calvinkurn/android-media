@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.common.di.module;
 
 import com.tokopedia.purchase_platform.common.di.scope.AddShipmentAddressScope;
-import com.tokopedia.purchase_platform.checkout.view.feature.multipleaddressform.AddShipmentAddressPresenter;
-import com.tokopedia.purchase_platform.checkout.view.feature.multipleaddressform.IAddShipmentAddressPresenter;
+import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.view.AddShipmentAddressPresenter;
+import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.view.IAddShipmentAddressPresenter;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import dagger.Module;

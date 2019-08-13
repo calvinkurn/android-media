@@ -42,10 +42,10 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.atc_variant.adapter.NormalCheckoutAdapterTypeFactory
+import com.tokopedia.purchase_platform.atc_variant.view.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.purchase_platform.atc_variant.di.DaggerNormalCheckoutComponent
 import com.tokopedia.purchase_platform.atc_variant.model.ProductInfoAndVariant
-import com.tokopedia.purchase_platform.atc_variant.presenter.NormalCheckoutViewModel
+import com.tokopedia.purchase_platform.atc_variant.view.presenter.NormalCheckoutViewModel
 import com.tokopedia.purchase_platform.atc_variant.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo

@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.data.model.response.promo.GlobalCouponAttr;
+import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.GlobalCouponAttr;
 
 import java.util.ArrayList;
 import java.util.List;

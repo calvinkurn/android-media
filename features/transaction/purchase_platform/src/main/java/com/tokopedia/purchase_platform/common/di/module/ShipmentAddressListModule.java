@@ -2,14 +2,13 @@ package com.tokopedia.purchase_platform.common.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.repository.PeopleAddressRepository;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.usecase.GetCornerList;
 import com.tokopedia.purchase_platform.common.di.scope.ShipmentAddressListScope;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.AddressListContract;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.AddressListPresenter;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.ShipmentAddressListFragment;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.recyclerview.ShipmentAddressListAdapter;
-import com.tokopedia.purchase_platform.checkout.view.feature.cornerlist.CornerListPresenter;
+import com.tokopedia.purchase_platform.checkout.subfeature.corner_list.CornerListPresenter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 

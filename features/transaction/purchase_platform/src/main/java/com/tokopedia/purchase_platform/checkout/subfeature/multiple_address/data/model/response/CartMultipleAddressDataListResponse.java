@@ -2,12 +2,12 @@ package com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.dat
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.common.data.model.response.promo.AutoApply;
-import com.tokopedia.purchase_platform.common.data.model.response.promo.AutoapplyStack;
-import com.tokopedia.purchase_platform.common.data.model.response.promo.AutoapplyV2;
+import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.AutoApply;
+import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.AutoapplyStack;
+import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.AutoapplyV2;
 import com.tokopedia.purchase_platform.cart.data.model.response.CartList;
 import com.tokopedia.purchase_platform.common.data.model.response.Messages;
-import com.tokopedia.purchase_platform.common.data.model.response.promo.PromoSuggestion;
+import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.PromoSuggestion;
 import com.tokopedia.purchase_platform.cart.data.model.response.Donation;
 
 import java.util.ArrayList;

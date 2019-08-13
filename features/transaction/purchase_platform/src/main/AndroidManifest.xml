@@ -53,24 +53,24 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".checkout.view.feature.multipleaddressform.MultipleAddressFormActivity"
+            android:name=".checkout.subfeature.multiple_address.view.MultipleAddressFormActivity"
             android:label="@string/checkout_module_title_send_to_multiple_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".checkout.view.feature.multipleaddressform.AddShipmentAddressActivity"
+            android:name=".checkout.subfeature.multiple_address.view.AddShipmentAddressActivity"
             android:label="@string/checkout_module_title_shipping_dest"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".checkout.view.feature.shipment.ShipmentActivity"
+            android:name=".checkout.view.ShipmentActivity"
             android:label="@string/checkout_module_title_shipping_dest_new"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".checkout.view.feature.webview.CheckoutWebViewActivity"
+            android:name=".checkout.subfeature.webview.CheckoutWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
