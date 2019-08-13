@@ -39,8 +39,6 @@ class RegisterInitialPresenter @Inject constructor(
         private val userSession: UserSessionInterface,
         private val tickerInfoUseCase : TickerInfoUseCase) : BaseDaggerPresenter<RegisterInitialContract.View>(), RegisterInitialContract.Presenter {
 
-    private val permissionCheckerHelper = PermissionCheckerHelper()
-
     override fun getProvider() {
         view.showLoadingDiscover()
         discoverUseCase.execute(DiscoverUseCase.getParamRegister(), object : Subscriber<DiscoverViewModel>() {
