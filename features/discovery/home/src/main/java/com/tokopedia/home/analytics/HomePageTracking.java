@@ -115,8 +115,6 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT = "click close on geolocation component";
     public static final String EVENT_ACTION_CLICK_ON_ATUR = "click on atur";
     public static final String ACTION_CLICK_VIEW_ALL_ON_DYNAMIC_CHANNEL_MIX = "click view all on dynamic channel mix";
-    public static final String EVENT_ACTION_CLICK_ON_GUNAKAN_PROMO = "click on gunakan promo";
-    public static final String EVENT_LABEL_COPY_COUPON = "%s - %s";
 
     public static ContextAnalytics getTracker(Context context) {
         return TrackApp.getInstance().getGTM();
@@ -973,18 +971,6 @@ public class HomePageTracking {
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
                     bannerChannel.getEnhanceClickBannerButtonChannelMix()
-            );
-        }
-    }
-
-    public static void eventClickBannerOrganicCouponCopy(Context context, String bannerId, String couponCode) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    EVENT_ACTION_CLICK_ON_GUNAKAN_PROMO,
-                    String.format(EVENT_LABEL_COPY_COUPON, bannerId, couponCode)
             );
         }
     }

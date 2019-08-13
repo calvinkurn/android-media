@@ -696,7 +696,8 @@ public class DynamicHomeChannel {
                                                     "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().getName(),
                                                     "creative", banner.getAttribution(),
                                                     "creative_url", banner.getImageUrl(),
-                                                    "position", String.valueOf(position)
+                                                    "position", String.valueOf(position),
+                                                    "promo_code", banner.getCta().couponCode
                                             )
                                     )
                             )

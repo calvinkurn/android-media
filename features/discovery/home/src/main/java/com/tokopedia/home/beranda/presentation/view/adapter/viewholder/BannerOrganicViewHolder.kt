@@ -70,12 +70,12 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         mappingCtaButton(element.channel.banner.cta)
 
         bannerUnifyButton.setOnClickListener {
+            HomePageTracking.eventClickBannerButtonChannelMix(itemView.context, element.channel)
+
             if (bannerItem.cta.couponCode.isEmpty()) {
-                HomePageTracking.eventClickBannerButtonChannelMix(itemView.context, element.channel)
                 homeCategoryListener.onSectionItemClicked(element.channel.banner.applink)
             } else {
-                HomePageTracking.eventClickBannerOrganicCouponCopy(itemView.context, bannerItem.id, bannerItem.cta.couponCode)
-                copyCoupon(itemView, bannerItem.cta);
+                copyCoupon(itemView, bannerItem.cta)
             }
         }
 
