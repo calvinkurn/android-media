@@ -60,7 +60,8 @@
 /features/payment/pms/                          @tokopedia/minion-bob
 /features/transaction/atc_common/               @tokopedia/minion-bob
 /features/transaction/checkout/                 @tokopedia/minion-bob
-/features/transaction/transactiondata/          @tokopedia/minion-bob
+/features/transaction/purchase_platform/        @tokopedia/minion-bob
+/features/transaction/purchase_platform_common/ @tokopedia/minion-bob
 /features/logistic/cod/                         @tokopedia/minion-bob
 /features/logistic/district_recommendation/     @tokopedia/minion-bob
 /features/logistic/logisticdata/                @tokopedia/minion-bob
