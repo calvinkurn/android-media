@@ -2,10 +2,10 @@ package com.tokopedia.feedcomponent.domain.usecase
 
 import com.tokopedia.feedcomponent.data.pojo.mention.GetMentionableUserData
 import com.tokopedia.feedcomponent.domain.mapper.MentionableUserMapper
-import com.tokopedia.feedcomponent.util.toUrlParams
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.toUrlParams
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -17,7 +17,7 @@ import javax.inject.Named
  */
 
 class GetMentionableUserUseCase @Inject constructor(
-        @Named("search_profile_query") val query: String,
+        @Named(SEARCH_PROFILE_QUERY) val query: String,
         val graphqlUseCase: GraphqlUseCase,
         val mentionableUserMapper: MentionableUserMapper
 ) : UseCase<List<MentionableUserViewModel>>() {
@@ -31,6 +31,8 @@ class GetMentionableUserUseCase @Inject constructor(
     }
 
     companion object {
+
+        const val SEARCH_PROFILE_QUERY = "search_profile_query"
 
         private const val PARAMS = "params"
         private const val PARAM_QUERY = "q"
