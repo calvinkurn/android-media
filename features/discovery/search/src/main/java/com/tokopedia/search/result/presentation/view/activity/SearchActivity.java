@@ -2,18 +2,19 @@ package com.tokopedia.search.result.presentation.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,7 +25,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
@@ -49,6 +49,7 @@ import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragm
 import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public class SearchActivity extends BaseActivity
         RedirectionListener,
         BottomSheetListener,
         SearchNavigationListener,
+        SearchPerformanceMonitoringListener,
         HasComponent<BaseAppComponent> {
 
     private static final int TAB_FIRST_POSITION = 0;
@@ -120,21 +122,27 @@ public class SearchActivity extends BaseActivity
     private boolean isForceSwipeToShop;
     private int activeTabPosition;
 
-    @Inject SearchContract.Presenter searchPresenter;
     @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
 
-    private SearchViewComponent searchComponent;
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        startPerformanceMonitoring();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
+
         initActivityOnCreate();
         proceed();
         handleIntent(getIntent());
+    }
+
+    @Override
+    public void startPerformanceMonitoring() {
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
     }
 
     private void initActivityOnCreate() {
@@ -143,10 +151,9 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initInjector() {
-        searchComponent =
-                DaggerSearchViewComponent.builder()
-                        .baseAppComponent(getBaseAppComponent())
-                        .build();
+        SearchViewComponent searchComponent = DaggerSearchViewComponent.builder()
+                .baseAppComponent(getBaseAppComponent())
+                .build();
         searchComponent.inject(this);
     }
 
@@ -186,6 +193,12 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initToolbar() {
+        configureSupportActionBar();
+        setSearchTextViewDrawableLeft();
+        configureToolbarOnClickListener();
+    }
+
+    private void configureSupportActionBar() {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -193,7 +206,14 @@ public class SearchActivity extends BaseActivity
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(false);
         }
+    }
 
+    private void setSearchTextViewDrawableLeft() {
+        Drawable iconSearch = AppCompatResources.getDrawable(this, com.tokopedia.discovery.R.drawable.discovery_ic_search);
+        searchTextView.setCompoundDrawablesWithIntrinsicBounds(iconSearch, null, null, null);
+    }
+
+    private void configureToolbarOnClickListener() {
         searchTextView.setOnClickListener(v -> moveToAutoCompleteActivity());
         backButton.setOnClickListener(v -> onBackPressed());
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
@@ -317,16 +337,10 @@ public class SearchActivity extends BaseActivity
     }
 
     private void handleIntent(Intent intent) {
-        initPresenter();
         initResources();
         getExtrasFromIntent(intent);
         performProductSearch();
         setToolbarTitle(searchParameter.getSearchQuery());
-    }
-
-    private void initPresenter() {
-        searchPresenter.attachView(this);
-        searchPresenter.initInjector(this);
     }
 
     private void initResources() {
@@ -350,9 +364,7 @@ public class SearchActivity extends BaseActivity
     private void performProductSearch() {
         updateSearchParameterBeforeSearch();
         onSearchingStart();
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
-
-        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap());
+        loadSection();
     }
 
     private void updateSearchParameterBeforeSearch() {
@@ -395,18 +407,6 @@ public class SearchActivity extends BaseActivity
 
     protected void setToolbarTitle(String query) {
         searchTextView.setText(query);
-    }
-
-    @Override
-    public void initiateSearchHandleResponseSearch() {
-        stopPerformanceMonitoring();
-        loadSection();
-    }
-
-    protected void stopPerformanceMonitoring() {
-        if (performanceMonitoring != null) {
-            performanceMonitoring.stopTrace();
-        }
     }
 
     private void loadSection() {
@@ -516,16 +516,6 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void initiateSearchHandleApplink(@NonNull String applink) {
-        moveWithApplink(applink);
-    }
-
-    public void moveWithApplink(String applink) {
-        startActivityWithApplink(applink);
-        finish();
-    }
-
-    @Override
     public void startActivityWithApplink(String applink, String... parameter) {
         finishCurrentActivityIfRedirectedToSearch(applink);
 
@@ -575,36 +565,9 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void initiateSearchHandleResponseError() {
-        NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
-            if(searchParameter == null) return;
-            SearchActivity.this.performProductSearch();
-        });
-    }
-
-    @Override
-    public void initiateSearchHandleResponseUnknown() {
-        throw new RuntimeException("Not yet handle unknown response");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        searchPresenter.onPause();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        searchPresenter.onResume();
         unregisterShake();
-    }
-
-    @Override
-    protected void onDestroy() {
-        searchPresenter.onDestroy();
-        searchPresenter.detachView();
-        super.onDestroy();
     }
 
     @Override
@@ -736,5 +699,13 @@ public class SearchActivity extends BaseActivity
     @Override
     public void startActivityWithUrl(String url, String... parameter) {
         RouteManager.route(this, url, parameter);
+    }
+
+    @Override
+    public void stopPerformanceMonitoring() {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+            performanceMonitoring = null;
+        }
     }
 }

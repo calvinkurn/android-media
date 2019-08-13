@@ -12,6 +12,9 @@ query SearchProduct(
         count_text
         additional_params
         isQuerySafe
+        redirection {
+            redirect_applink
+        }
         suggestion {
             currentKeyword
             suggestion
