@@ -1134,6 +1134,10 @@ public class DynamicHomeChannel {
         @SerializedName("image_url")
         private String imageUrl;
 
+        @Expose
+        @SerializedName("attribution")
+        private String attribution;
+
         public String getId() {
             return id;
         }
@@ -1197,6 +1201,14 @@ public class DynamicHomeChannel {
         public void setImageUrl(String imageUrl) {
             this.imageUrl = imageUrl;
         }
+
+        public String getAttribution() {
+            return attribution;
+        }
+
+        public void setAttribution(String attribution) {
+            this.attribution = attribution;
+        }
     }
 
     public class CtaData {
@@ -1211,6 +1223,10 @@ public class DynamicHomeChannel {
         @Expose
         @SerializedName("text")
         private String text;
+
+        @Expose
+        @SerializedName("coupon_code")
+        private String couponCode;
 
         public String getType() {
             return type;
@@ -1234,6 +1250,14 @@ public class DynamicHomeChannel {
 
         public void setText(String text) {
             this.text = text;
+        }
+
+        public String getCouponCode() {
+            return couponCode;
+        }
+
+        public void setCouponCode(String couponCode) {
+            this.couponCode = couponCode;
         }
     }
 }

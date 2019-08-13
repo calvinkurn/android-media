@@ -1,10 +1,16 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintLayout
+import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat.getSystemService
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
@@ -26,6 +32,7 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -63,8 +70,13 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         mappingCtaButton(element.channel.banner.cta)
 
         bannerUnifyButton.setOnClickListener {
-            HomePageTracking.eventClickBannerButtonChannelMix(itemView.context, element.channel)
-            homeCategoryListener.onSectionItemClicked(element.channel.banner.applink)
+            if (bannerItem.cta.couponCode.isEmpty()) {
+                HomePageTracking.eventClickBannerButtonChannelMix(itemView.context, element.channel)
+                homeCategoryListener.onSectionItemClicked(element.channel.banner.applink)
+            } else {
+                HomePageTracking.eventClickBannerOrganicCouponCopy(itemView.context, bannerItem.id, bannerItem.cta.couponCode)
+                copyCoupon(itemView, bannerItem.cta);
+            }
         }
 
         itemView.setOnClickListener {
@@ -146,6 +158,16 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 itemRecyclerView.layoutParams = param
             }
         }
+    }
+
+    private fun copyCoupon(view: View, cta: DynamicHomeChannel.CtaData) {
+        val clipboard = view.context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
+        clipboard.primaryClip = clipData
+
+        Toaster.showNormal(view,
+                getString(R.string.discovery_home_toaster_coupon_copied),
+                Snackbar.LENGTH_LONG)
     }
 
     private fun mappingCtaButton(cta: DynamicHomeChannel.CtaData) {
