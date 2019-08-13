@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel
 
 import android.arch.lifecycle.MutableLiveData
+import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants
@@ -13,9 +14,18 @@ import java.util.*
 
 class OrderListViewModel(var order: Order) : Visitable<OrderListTypeFactory> {
 
-    private var position: Int = 0
-    private val WAITING_THIRD_PARTY = 103
-    private val WAITING_TRANSFER = 107
+    companion object {
+        private const val WAITING_THIRD_PARTY = 103
+        private const val WAITING_TRANSFER = 107
+        private const val SINGLE_BUTTON_VIEW = 1
+        private const val TWO_BUTTON_VIEW = 2
+        private const val PAYMENT_METHOD = "Metode Pembayaran"
+        private const val PAYMENT_CODE = "Kode Pembayaran"
+        private const val DATE_WIB_T = "T"
+        private const val SIMPLE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
+        private const val OUTPUT_DATE_FORMAT = "dd MMM yyyy"
+    }
+
     var orderListLiveData: MutableLiveData<OrderListViewState> = MutableLiveData()
 
     override fun type(typeFactory: OrderListTypeFactory): Int {
@@ -31,11 +41,11 @@ class OrderListViewModel(var order: Order) : Visitable<OrderListTypeFactory> {
     }
 
     fun setActionButtonData() {
-        if (order.actionButtons().size == 2) {
+        if (order.actionButtons().size == TWO_BUTTON_VIEW) {
             val leftActionButton = order.actionButtons()[0]
             val rightActionButton = order.actionButtons()[1]
             orderListLiveData.value = SetActionButtonData(leftActionButton, rightActionButton, View.VISIBLE, View.VISIBLE)
-        } else if (order.actionButtons().size == 1) {
+        } else if (order.actionButtons().size == SINGLE_BUTTON_VIEW) {
             val actionButton = order.actionButtons()[0]
             if (actionButton.buttonType() == "primary") {
                 orderListLiveData.value = SetActionButtonData(actionButton, null, View.VISIBLE, View.GONE)
@@ -51,7 +61,7 @@ class OrderListViewModel(var order: Order) : Visitable<OrderListTypeFactory> {
         orderListLiveData.value = SetStatus(order.statusStr())
         orderListLiveData.value = SetFailStatusBgColor(order.statusColor())
 
-        if (order.conditionalInfo().text() != "") {
+        if (!TextUtils.isEmpty(order.conditionalInfo().text())) {
             val conditionalInfo = order.conditionalInfo()
             orderListLiveData.value = SetConditionalInfo(View.VISIBLE, conditionalInfo.text(), conditionalInfo.color())
         } else {
@@ -59,20 +69,15 @@ class OrderListViewModel(var order: Order) : Visitable<OrderListTypeFactory> {
         }
         orderListLiveData.value = SetInvoice(order.invoiceRefNum())
         var date: String? = order.createdAt()
-        if (date != null && date.contains("T")) {
+        if (date?.contains(DATE_WIB_T) == true) {
             date = lastUpdatedDate(order.createdAt())
         }
         orderListLiveData.value = SetDate(date)
-
         orderListLiveData.value = SetCategoryAndTitle(order.categoryName(), order.title())
-        if (!order.itemCount.equals("0", ignoreCase = true) && !order.itemCount.equals("1", ignoreCase = true)) {
-            orderListLiveData.value = SetItemCount(Integer.parseInt(order.itemCount) - 1)
-        } else {
-            orderListLiveData.value = SetItemCount(-1)
-        }
+        orderListLiveData.value = SetItemCount(Integer.parseInt(order.itemCount) - 1)
         val metaDataList = order.metaData()
         for (metaData in metaDataList) {
-            if (order.status() == WAITING_THIRD_PARTY || order.status() == WAITING_TRANSFER && (metaData.label().equals("Metode Pembayaran", ignoreCase = true) || metaData.label().equals("Kode Pembayaran", ignoreCase = true)))
+            if (order.status() == WAITING_THIRD_PARTY || order.status() == WAITING_TRANSFER && (metaData.label().equals(PAYMENT_METHOD, ignoreCase = true) || metaData.label().equals(PAYMENT_CODE, ignoreCase = true)))
                 continue
             orderListLiveData.value = SetMetaDataToCustomView(metaData)
         }
@@ -81,9 +86,9 @@ class OrderListViewModel(var order: Order) : Visitable<OrderListTypeFactory> {
     }
 
 
-    fun lastUpdatedDate(date: String): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-        val output = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+    private fun lastUpdatedDate(date: String): String {
+        val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, Locale.getDefault())
+        val output = SimpleDateFormat(OUTPUT_DATE_FORMAT, Locale.getDefault())
         var formattedTime = ""
         try {
             val d = sdf.parse(date)
