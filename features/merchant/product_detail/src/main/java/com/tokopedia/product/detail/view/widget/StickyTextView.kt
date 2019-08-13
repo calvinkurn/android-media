@@ -126,6 +126,6 @@ class StickyTextView : FrameLayout {
 
     companion object {
         const val TAG = "StickyTextButton"
-        const val STICKY_LOGIN_VIEW_KEY = "mainapp_native_sticky_login_pdp"
+        const val STICKY_LOGIN_VIEW_KEY = "android_customer_sticky_login_pdp"
     }
 }
