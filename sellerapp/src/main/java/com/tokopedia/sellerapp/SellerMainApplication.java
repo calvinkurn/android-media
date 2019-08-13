@@ -27,6 +27,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
@@ -238,9 +239,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
-    //@Override
+    @Override
     public Intent getInboxTicketCallingIntent(Context context) {
-        return null;
+        return new Intent(context, InboxListActivity.class);
     }
 
 }
