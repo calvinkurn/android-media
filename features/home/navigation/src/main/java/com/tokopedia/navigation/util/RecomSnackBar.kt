@@ -1,14 +1,14 @@
-package com.tokopedia.home_recom.util
+package com.tokopedia.navigation.util
 
 import android.graphics.Color
 import android.support.design.widget.Snackbar
 import android.view.View
 import android.widget.FrameLayout
-import com.tokopedia.home_recom.R
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.navigation.R
 
 /**
- * Created by Lukas on 2019-07-25
+ * Created by Lukas on 2019-07-31
  * A class for handling custom snack bar specially for recommendation widget
  */
 object RecomSnackBar {
