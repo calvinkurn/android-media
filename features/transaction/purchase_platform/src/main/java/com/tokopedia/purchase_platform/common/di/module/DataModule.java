@@ -77,13 +77,13 @@ public class DataModule {
     @Provides
     @CartChuckApiInterceptorQualifier
     Interceptor provideChuckInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
-        return cartCheckoutModuleRouter.checkoutModuleRouterGetCartCheckoutChuckInterceptor();
+        return cartCheckoutModuleRouter.getChuckInterceptor();
     }
 
     @Provides
     @CartFingerPrintApiInterceptorQualifier
     Interceptor fingerprintInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
-        return cartCheckoutModuleRouter.checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor();
+        return cartCheckoutModuleRouter.getFingerPrintInterceptor();
     }
 
     @Provides
@@ -182,7 +182,7 @@ public class DataModule {
         return new Retrofit.Builder()
                 .baseUrl(TransactionDataApiUrl.Cart.BASE_URL)
                 .addConverterFactory(CartResponseConverter.create())
-                .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetStringResponseConverter())
+                .addConverterFactory(cartCheckoutModuleRouter.getStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
@@ -198,7 +198,7 @@ public class DataModule {
         return new Retrofit.Builder()
                 .baseUrl(LogisticDataConstantUrl.KeroRates.BASE_URL)
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
-                .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetStringResponseConverter())
+                .addConverterFactory(cartCheckoutModuleRouter.getStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
@@ -215,7 +215,7 @@ public class DataModule {
         return new Retrofit.Builder()
                 .baseUrl(TransactionDataApiUrl.TransactionAction.BASE_URL)
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
-                .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetStringResponseConverter())
+                .addConverterFactory(cartCheckoutModuleRouter.getStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)

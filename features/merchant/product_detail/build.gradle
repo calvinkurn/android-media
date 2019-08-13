@@ -84,4 +84,6 @@ dependencies {
 
 
     testImplementation rootProject.ext.testDependencies.assertJ
+
+    implementation project(rootProject.ext.features.purchase_platform)
 }

@@ -31,19 +31,13 @@ public interface ICheckoutModuleRouter {
 
     String checkoutModuleRouterGetAutoApplyCouponBranchUtil();
 
-    Intent checkoutModuleRouterGetShopInfoIntent(String shopId);
+    Intent getShopPageIntent(Context context, String shopId);
 
-    Intent checkoutModuleRouterGetWhislistIntent();
+    Interceptor getChuckInterceptor();
 
-    Interceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor();
+    Interceptor getFingerPrintInterceptor();
 
-    Interceptor checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor();
-
-    Converter.Factory checkoutModuleRouterGetWS4TkpdResponseConverter();
-
-    Converter.Factory checkoutModuleRouterGetStringResponseConverter();
-
-    Intent checkoutModuleRouterGetHomeIntent(Context context);
+    Converter.Factory getStringResponseConverter();
 
     Intent getGeolocationIntent(Context context, LocationPass locationPass);
 
@@ -52,8 +46,6 @@ public interface ICheckoutModuleRouter {
     PublicKey checkoutModuleRouterGeneratePublicKey();
 
     String checkoutModuleRouterGetPublicKey(PublicKey publicKey);
-
-    Intent checkoutModuleRouterGetRecentViewIntent();
 
     Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking, Promo promo);
 

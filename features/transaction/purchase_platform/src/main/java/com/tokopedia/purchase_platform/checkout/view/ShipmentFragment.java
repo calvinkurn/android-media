@@ -49,7 +49,7 @@ import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.view
 import com.tokopedia.purchase_platform.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.checkout.view.converter.ShipmentDataConverter;
-import com.tokopedia.purchase_platform.checkout.view.feature.shipment.di.DaggerShipmentComponent;
+import com.tokopedia.purchase_platform.checkout.view.di.DaggerShipmentComponent;
 import com.tokopedia.purchase_platform.checkout.view.di.ShipmentComponent;
 import com.tokopedia.purchase_platform.checkout.view.di.ShipmentModule;
 import com.tokopedia.purchase_platform.checkout.view.util.Utils;

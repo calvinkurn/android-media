@@ -45,6 +45,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -65,8 +66,6 @@ import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
 import com.tokopedia.purchase_platform.common.constant.TRADEIN_BUY
-//import com.tokopedia.expresscheckout.common.view.NormalCheckoutActivity
-//import com.tokopedia.expresscheckout.common.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
@@ -75,6 +74,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
@@ -106,6 +106,8 @@ import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
+import com.tokopedia.purchase_platform.atc_variant.view.NormalCheckoutActivity
+import com.tokopedia.purchase_platform.atc_variant.view.NormalCheckoutFragment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants.Action.Companion.ACTION_GET_REFERRAL_CODE
 import com.tokopedia.referral.ReferralAction
@@ -618,7 +620,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productInfo?.run {
                 val isOcsCheckoutType = (productInfoViewModel.p2Login.value)?.isOcsCheckoutType
                     ?: false
-/*
                 val intent = NormalCheckoutActivity.getIntent(it,
                         basic.shopID.toString(),
                         parentProductId,
@@ -637,7 +638,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
                 startActivityForResult(intent,
                         REQUEST_CODE_NORMAL_CHECKOUT)
-*/
             }
         }
     }
@@ -1041,7 +1041,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             REQUEST_CODE_NORMAL_CHECKOUT -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-/*
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
                         //refresh product by selected variant/product
                         val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
@@ -1074,8 +1073,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shouldShowCartAnimation = true
                         updateCartNotification()
                     }
-*/
-
                 }
             }
             REQUEST_CODE_ATC_EXPRESS -> {

@@ -52,13 +52,21 @@ import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
-//import com.tokopedia.purchase_platform.checkout.view.CartConstant;
-//import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
-//import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
-//import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
-//import com.tokopedia.purchase_platform.checkout.view.feature.cartlist.CartActivity;
-//import com.tokopedia.purchase_platform.checkout.view.feature.cartlist.CartFragment;
-//import com.tokopedia.purchase_platform.checkout.view.feature.shipment.ShipmentActivity;
+import com.tokopedia.cod.view.CodActivity;
+import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
+import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity;
+import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
+import com.tokopedia.purchase_platform.cart.view.CartActivity;
+import com.tokopedia.purchase_platform.cart.view.CartFragment;
+import com.tokopedia.purchase_platform.checkout.view.CartConstant;
+import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
+import com.tokopedia.purchase_platform.checkout.view.ShipmentActivity;
+import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
@@ -66,6 +74,7 @@ import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.purchase_platform.express_checkout.router.ExpressCheckoutInternalRouter;
 import com.tokopedia.purchase_platform.express_checkout.router.ExpressCheckoutRouter;
+import com.tokopedia.recentview.RecentViewInternalRouter;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -448,7 +457,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ShopModuleRouter,
         LoyaltyModuleRouter,
         ITkpdLoyaltyModuleRouter,
-//        ICheckoutModuleRouter,
+        ICheckoutModuleRouter,
         GamificationRouter,
         ProfileModuleRouter,
         ReactNativeRouter,
@@ -913,11 +922,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getHomeHotlistIntent(Context context) {
         return MainParentActivity.start(context);
     }
-
-//    @Override
-//    public Intent checkoutModuleRouterGetHomeIntent(Context context) {
-//        return MainParentActivity.getApplinkIntent(context, null);
-//    }
 
     @Override
     public Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam) {
@@ -1741,28 +1745,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @NotNull
     @Override
     public Observable<CheckoutData> checkoutProduct(@NotNull CheckoutRequest checkoutRequest, boolean isOneClickShipment, boolean isExpressCheckout) {
-        return null;
-//        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-//        requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
-//        requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
-//        requestParams.putBoolean(CheckoutUseCase.PARAM_IS_EXPRESS, isExpressCheckout);
-//        return CartComponentInjector.newInstance(this).getCheckoutUseCase()
-//                .createObservable(requestParams);
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
+        requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
+        requestParams.putBoolean(CheckoutUseCase.PARAM_IS_EXPRESS, isExpressCheckout);
+        return CartComponentInjector.newInstance(this).getCheckoutUseCase()
+                .createObservable(requestParams);
     }
 
     @NotNull
     @Override
     public Observable<String> updateAddress(com.tokopedia.usecase.RequestParams requestParams) {
-        return null;
-//        return CartComponentInjector.newInstance(this).getEditAddressUseCase().createObservable(requestParams);
+        return CartComponentInjector.newInstance(this).getEditAddressUseCase().createObservable(requestParams);
     }
 
     @Override
     public Intent getCartIntent(Activity activity) {
-        return null;
-//        Intent intent = new Intent(activity, CartActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        return intent;
+        Intent intent = new Intent(activity, CartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
     }
 
     @Override
@@ -1780,18 +1781,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @NonNull
     @Override
     public Intent getCheckoutIntent(@NonNull Context context, ShipmentFormRequest shipmentFormRequest) {
-        return null;
-//        return ShipmentActivity.createInstance(context, shipmentFormRequest);
+        return ShipmentActivity.createInstance(context, shipmentFormRequest);
     }
 
     @NonNull
     @Override
     public Intent getCheckoutIntent(@NonNull Context context, String deviceid) {
-        return null;
-//        ShipmentFormRequest shipmentFormRequest = new ShipmentFormRequest.BundleBuilder()
-//                .deviceId(deviceid)
-//                .build();
-//        return ShipmentActivity.createInstance(context, shipmentFormRequest);
+        ShipmentFormRequest shipmentFormRequest = new ShipmentFormRequest.BundleBuilder()
+                .deviceId(deviceid)
+                .build();
+        return ShipmentActivity.createInstance(context, shipmentFormRequest);
     }
 
     @NonNull
@@ -1820,37 +1819,32 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
     }
 
-//    @Override
-//    public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-//            boolean couponActive, String additionalStringData, int pageTracking,
-//            String cartString, Promo promo
-//    ) {
-//        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive, "", false, pageTracking, promo);
-//    }
+    @Override
+    public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+            boolean couponActive, String additionalStringData, int pageTracking,
+            String cartString, Promo promo
+    ) {
+        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive, "", false, pageTracking, promo);
+    }
 
-//    @Override
-//    public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-//            boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking,
-//            Promo promo
-//    ) {
-//        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive, "", isOneClickShipment, pageTracking, promo);
-//    }
+    @Override
+    public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
+            boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking,
+            Promo promo
+    ) {
+        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive, "", isOneClickShipment, pageTracking, promo);
+    }
 
-//    @Override
-//    public Intent checkoutModuleRouterGetRecentViewIntent() {
-//        return RecentViewInternalRouter.getRecentViewIntent(getAppContext());
-//    }
+    @Override
+    public Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking, Promo promo) {
+        return PromoCheckoutDetailMarketplaceActivity.Companion.createIntent(getAppContext(), promoCode, true, oneClickShipment, pageTracking, promo);
+    }
 
-//    @Override
-//    public Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking, Promo promo) {
-//        return PromoCheckoutDetailMarketplaceActivity.Companion.createIntent(getAppContext(), promoCode, true, oneClickShipment, pageTracking, promo);
-//    }
-
-//    @Override
-//    public Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking,
-//                                                     Promo promo) {
-//        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), promoCouponActive, promoCode, oneClickShipment, pageTracking, promo);
-//    }
+    @Override
+    public Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking,
+                                                     Promo promo) {
+        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), promoCouponActive, promoCode, oneClickShipment, pageTracking, promo);
+    }
 
     @Override
     public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
@@ -1862,30 +1856,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new StringResponseConverter();
     }
 
-//    @Override
-//    public void checkoutModuleRouterResetBadgeCart() {
-//        CartBadgeNotificationReceiver.resetBadgeCart(getAppContext());
-//    }
+    @Override
+    public void checkoutModuleRouterResetBadgeCart() {
+        CartBadgeNotificationReceiver.resetBadgeCart(getAppContext());
+    }
 
-//    @Override
-//    public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
-//        return PersistentCacheManager.instance.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
-//    }
-
-//    @Override
-//    public Intent checkoutModuleRouterGetShopInfoIntent(String shopId) {
-//        return ShopPageInternalRouter.getShopPageIntent(getAppContext(), shopId);
-//    }
-
-//    @Override
-//    public Intent checkoutModuleRouterGetWhislistIntent() {
-//        return SimpleHomeActivity.newWishlistInstance(this);
-//    }
-
-//    @Override
-//    public Interceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor() {
-//        return getAppComponent().chuckInterceptor();
-//    }
+    @Override
+    public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
+        return PersistentCacheManager.instance.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
+    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     @Override
@@ -1903,20 +1882,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getEnableFingerprintPayment();
     }
 
-//    @Override
-//    public FingerprintInterceptor checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor() {
-//        return getAppComponent().fingerprintInterceptor();
-//    }
+    @Override
+    public FingerprintInterceptor getFingerPrintInterceptor() {
+        return getAppComponent().fingerprintInterceptor();
+    }
 
-//    @Override
-//    public Converter.Factory checkoutModuleRouterGetWS4TkpdResponseConverter() {
-//        return new TkpdResponseConverter();
-//    }
-
-//    @Override
-//    public Converter.Factory checkoutModuleRouterGetStringResponseConverter() {
-//        return new StringResponseConverter();
-//    }
+    @Override
+    public Converter.Factory getStringResponseConverter() {
+        return new StringResponseConverter();
+    }
 
     @Override
     public Intent getContactUsIntent(Context context) {
@@ -2228,9 +2202,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void setCartCount(Context context, int count) {
-//        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
-//        localCacheHandler.putInt(CartConstant.CACHE_TOTAL_CART, count);
-//        localCacheHandler.applyEditor();
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
+        localCacheHandler.putInt(CartConstant.CACHE_TOTAL_CART, count);
+        localCacheHandler.applyEditor();
     }
 
     @Override
@@ -2240,9 +2214,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public int getCartCount(Context context) {
-        return 1;
-//        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
-//        return localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
+        return localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0);
     }
 
     @Override
@@ -2421,10 +2394,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return BuildConfig.FLAVOR;
     }
 
-//    @Override
-//    public Intent getCodPageIntent(Context context, Data data) {
-//        return CodActivity.newIntent(context, data);
-//    }
+    @Override
+    public Intent getCodPageIntent(Context context, Data data) {
+        return CodActivity.newIntent(context, data);
+    }
 
     @Override
     public FingerprintModel getFingerprintModel() {
@@ -2480,8 +2453,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getCartFragment(Bundle bundle) {
-        return FeedPlusContainerFragment.newInstance(bundle);
-//        return CartFragment.newInstance(bundle, CartFragment.class.getSimpleName());
+        return CartFragment.newInstance(bundle, CartFragment.class.getSimpleName());
     }
 
     @Override

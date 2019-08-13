@@ -681,8 +681,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onCartShopNameClicked(CartShopHolderData cartShopHolderData) {
         sendAnalyticsOnClickShopNameCartItem(cartShopHolderData.getShopGroupData().getShopName());
-        navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetShopInfoIntent(
-                cartShopHolderData.getShopGroupData().getShopId()
+        navigateToActivity(checkoutModuleRouter.getShopPageIntent(
+                getActivity(), cartShopHolderData.getShopGroupData().getShopId()
         ));
     }
 
