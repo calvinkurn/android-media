@@ -93,12 +93,6 @@ class TravelHomepageViewModel  @Inject constructor(
             }) {
                 travelItemList.value = travelItemList.value?.copy(second = false)
             }
-        } else {
-            val updatedList = travelItemList.value?.first
-            updatedList?.let {
-                it[ORDER_LIST_ORDER].isLoaded = true
-                travelItemList.value = Pair(it, true)
-            }
         }
     }
 
