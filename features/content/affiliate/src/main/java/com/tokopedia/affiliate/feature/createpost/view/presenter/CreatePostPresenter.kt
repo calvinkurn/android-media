@@ -13,6 +13,8 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetProfileRelatedUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
@@ -24,6 +26,7 @@ class CreatePostPresenter @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getContentFormUseCase: GetContentFormUseCase,
         private val getFeedUseCase: GetFeedForEditUseCase,
+        private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
         private val twitterManager: TwitterManager
 ) : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter, TwitterManager.TwitterManagerListener {
 
