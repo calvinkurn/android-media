@@ -28,18 +28,18 @@ class CommissionDetailViewModel
     }
 
     fun getFirstData() {
-        launch {
-            val job1 = async(Dispatchers.IO) {
-
-                delay (1000)
-                getProductDetailUseCase.executeOnBackground().affiliatedProductDetail
-            }
-            val job2 = async(Dispatchers.IO) {
-                delay (1000)
-                getTranscationDetailUseCase.executeOnBackground().affiliatedProductTxList
-            }
-            val result = Pair(job1.await(), job2.await())
-        }
+//        launch {
+//            val job1 = async(Dispatchers.IO) {
+//
+//                delay (1000)
+//                getProductDetailUseCase.executeOnBackground().affiliatedProductDetail
+//            }
+//            val job2 = async(Dispatchers.IO) {
+//                delay (1000)
+//                getTranscationDetailUseCase.executeOnBackground().affiliatedProductTxList
+//            }
+//            val result = Pair(job1.await(), job2.await())
+//        }
     }
 
     fun loadMoreTxDetail() {
