@@ -11,8 +11,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetail
  * @author by yoasfs on 2019-08-12
  */
 
-class CommissionDetailTypeFactoryImpl:
-        BaseAdapterTypeFactory(), CommissionDetailTypeFactory {
+class CommissionDetailTypeFactoryImpl: BaseAdapterTypeFactory(), CommissionDetailTypeFactory {
 
     override fun type(commissionDetailHeaderViewModel: CommissionDetailHeaderViewModel): Int {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
