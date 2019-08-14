@@ -59,10 +59,8 @@ class TwitterManager(
         verifyAuthData(twitterInstance, requestToken, oAuthVerifier)
     }
 
-    fun getAuthenticator(): Observable<TwitterAuthenticator> {
-        return Observable.fromCallable {
-            TwitterAuthenticator(getTwitterInstance(), this)
-        }.subscribeOn(Schedulers.io())
+    suspend fun getAuthenticator(): TwitterAuthenticator = withContext(Dispatchers.IO) {
+        TwitterAuthenticator(getTwitterInstance(), this@TwitterManager)
     }
 
     private fun verifyAuthData(twitterInstance: Twitter, requestToken: RequestToken, oAuthVerifier: String) {

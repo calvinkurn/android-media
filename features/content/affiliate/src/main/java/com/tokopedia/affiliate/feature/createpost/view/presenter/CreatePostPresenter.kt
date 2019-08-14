@@ -16,8 +16,13 @@ import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import rx.Subscriber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by milhamj on 9/26/18.
@@ -28,10 +33,13 @@ class CreatePostPresenter @Inject constructor(
         private val getFeedUseCase: GetFeedForEditUseCase,
         private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
         private val twitterManager: TwitterManager
-) : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter, TwitterManager.TwitterManagerListener {
+) : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter, TwitterManager.TwitterManagerListener, CoroutineScope {
 
     private var followersCount: Int? = null
-    private val twitterSubscription: MutableList<Subscription> = mutableListOf()
+
+    private val job: Job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.IO
 
     override fun attachView(view: CreatePostContract.View?) {
         super.attachView(view)
@@ -43,7 +51,6 @@ class CreatePostPresenter @Inject constructor(
     override fun detachView() {
         super.detachView()
         getContentFormUseCase.unsubscribe()
-        twitterSubscription.forEach(Subscription::unsubscribe)
         getFeedUseCase.unsubscribe()
         getProfileHeaderUseCase.unsubscribe()
     }
@@ -108,11 +115,11 @@ class CreatePostPresenter @Inject constructor(
     }
 
     private fun authenticateTwitter() {
-        twitterSubscription.add(
-                twitterManager.getAuthenticator()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe { view?.onAuthenticateTwitter(it) }
-        )
+        launch {
+            view?.onAuthenticateTwitter(
+                    twitterManager.getAuthenticator()
+            )
+        }
     }
 
     private fun getShareOptions(): List<ShareType> {

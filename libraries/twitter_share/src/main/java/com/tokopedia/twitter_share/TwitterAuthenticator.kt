@@ -16,7 +16,6 @@ class TwitterAuthenticator(
 ) {
 
     private val requestToken = twitterInstance.getOAuthRequestToken(CALLBACK_URL)
-    private lateinit var callbackUrlSubscription: Subscription
 
     interface TwitterAuthenticatorListener {
         fun onAuthenticateSuccess(twitterInstance: Twitter, requestToken: RequestToken, oAuthToken: String, oAuthVerifier: String)
@@ -31,6 +30,8 @@ class TwitterAuthenticator(
         private const val CALLBACK_URL = "https://localhost"
 
         private val callbackUrlSubject = PublishSubject.create<TwitterAuthenticationState>()
+
+        private var callbackUrlSubscription: Subscription? = null
 
         fun broadcastState(state: TwitterAuthenticationState) {
             callbackUrlSubject.onNext(state)
@@ -60,6 +61,8 @@ class TwitterAuthenticator(
     }
 
     private fun initSubscription(): Subscription {
+        callbackUrlSubscription?.let(::safeUnsubscribe)
+
         return TwitterAuthenticator.callbackUrlSubject
                 .observeOn(Schedulers.io())
                 .subscribe { state ->
@@ -75,7 +78,11 @@ class TwitterAuthenticator(
 
                         }
                     }
-                    if (::callbackUrlSubscription.isInitialized && !callbackUrlSubscription.isUnsubscribed) callbackUrlSubscription.unsubscribe()
+                    callbackUrlSubscription?.let(::safeUnsubscribe)
                 }
+    }
+
+    private fun safeUnsubscribe(subscription: Subscription) {
+        if (!subscription.isUnsubscribed) subscription.unsubscribe()
     }
 }

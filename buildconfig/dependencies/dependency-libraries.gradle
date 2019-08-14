@@ -34,10 +34,10 @@ ext {
             videoplayer           : "com.tokopedia.videoplayer:videoplayer:${tkpdVideoplayerVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             globalconfig          : "com.tokopedia.config:global_config:1",
-            graphql               : "com.tokopedia.graphql:graphql:1",
-            network               : "com.tokopedia.network:network:1",
+            graphql               : "com.tokopedia.graphql:graphql:1.0.1",
+            network               : "com.tokopedia.network:network:1.0.1",
             url                   : "com.tokopedia.url:url:1",
-            usersession           : "com.tokopedia.user.session:user_session:1.01"
+            usersession           : "com.tokopedia.user.session:user_session:1.0.2"
     ]
 
     // Sort and categorize alphabetically by folder name

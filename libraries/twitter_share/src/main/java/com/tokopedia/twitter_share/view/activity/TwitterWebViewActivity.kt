@@ -31,8 +31,8 @@ class TwitterWebViewActivity : BaseSimpleActivity(), TwitterWebViewActivityListe
         finish()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
+    override fun onDestroy() {
+        super.onDestroy()
         TwitterAuthenticator.broadcastState(
                 TwitterAuthenticator.TwitterAuthenticationState.Cancel
         )
