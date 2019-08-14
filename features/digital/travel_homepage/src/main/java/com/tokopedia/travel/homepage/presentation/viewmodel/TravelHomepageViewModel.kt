@@ -79,22 +79,24 @@ class TravelHomepageViewModel @Inject constructor(
     }
 
     fun getOrderList(rawQuery: String) {
-        if (userSessionInterface.isLoggedIn) {
-            launchCatchError(block = {
-                val data = withContext(Dispatchers.Default) {
-                    val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success")
-                    val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageOrderListModel.Response::class.java, param)
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
-                }.getSuccessData<TravelHomepageOrderListModel.Response>()
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success")
+                val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageOrderListModel.Response::class.java, param)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TravelHomepageOrderListModel.Response>()
 
-                travelItemList.value?.let {
-                    val updatedList = it.first.toMutableList()
-                    updatedList[ORDER_LIST_ORDER] = mapper.mapToSectionViewModel(data.response)
-                    updatedList[ORDER_LIST_ORDER].isLoaded = true
-                    travelItemList.value = Pair(updatedList, true)
-                }
-            }) {
-                travelItemList.value = travelItemList.value?.copy(second = false)
+            travelItemList.value?.let {
+                val updatedList = it.first.toMutableList()
+                updatedList[ORDER_LIST_ORDER] = mapper.mapToSectionViewModel(data.response)
+                updatedList[ORDER_LIST_ORDER].isLoaded = true
+                travelItemList.value = Pair(updatedList, true)
+            }
+        }) {
+            travelItemList.value?.let {
+                val updatedList = it.first.toMutableList()
+                updatedList[ORDER_LIST_ORDER].isLoaded = true
+                travelItemList.value = Pair(updatedList, false)
             }
         }
     }

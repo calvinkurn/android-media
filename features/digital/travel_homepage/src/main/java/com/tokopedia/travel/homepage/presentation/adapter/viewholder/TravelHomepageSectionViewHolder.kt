@@ -47,9 +47,8 @@ class TravelHomepageSectionViewHolder(itemView: View,
                 }
             } else {
                 itemView.section_layout.hide()
-                itemView.shimmering.show()
+                itemView.shimmering.hide()
             }
-
         } else {
             itemView.shimmering.visibility = View.VISIBLE
             itemView.section_layout.visibility = View.GONE
