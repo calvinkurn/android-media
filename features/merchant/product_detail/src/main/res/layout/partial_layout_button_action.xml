@@ -59,7 +59,7 @@
         app:weight="medium"
         app:layout_constraintLeft_toRightOf="@+id/btn_buy"
         app:layout_constraintStart_toEndOf="@+id/btn_buy"
-      app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -80,7 +80,7 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btn_topchat"
         app:layout_constraintEnd_toStartOf="@+id/btn_topchat"/>
@@ -102,7 +102,7 @@
         app:srcCompat="@drawable/ic_topchat"
         app:layout_constraintLeft_toRightOf="@+id/btn_byme"
         app:layout_constraintStart_toEndOf="@+id/btn_byme"
-      app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btn_buy_now"
         app:layout_constraintEnd_toStartOf="@+id/btn_buy_now"/>
@@ -121,7 +121,7 @@
         tools:visibility="visible"
         app:layout_constraintLeft_toRightOf="@+id/btn_topchat"
         app:layout_constraintStart_toEndOf="@+id/btn_topchat"
-      app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btn_add_to_cart"
         app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart">
@@ -162,7 +162,7 @@
         tools:visibility="visible"
         app:layout_constraintLeft_toRightOf="@+id/btn_buy_now"
         app:layout_constraintStart_toEndOf="@+id/btn_buy_now"
-      app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
