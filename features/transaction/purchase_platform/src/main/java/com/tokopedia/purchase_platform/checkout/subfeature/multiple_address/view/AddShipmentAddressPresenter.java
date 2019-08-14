@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.view;
 
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 /**
  * Created by kris on 3/1/18. Tokopedia

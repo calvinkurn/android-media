@@ -2,14 +2,14 @@ package com.tokopedia.purchase_platform.checkout.view.subscriber;
 
 import android.text.TextUtils;
 
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.checkout.view.ShipmentContract;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
-import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationViewModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 
 import java.util.List;

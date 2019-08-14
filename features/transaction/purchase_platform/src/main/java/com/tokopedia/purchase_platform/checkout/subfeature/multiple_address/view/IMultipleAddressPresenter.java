@@ -2,9 +2,9 @@ package com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.vie
 
 import android.content.Context;
 
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.List;
 

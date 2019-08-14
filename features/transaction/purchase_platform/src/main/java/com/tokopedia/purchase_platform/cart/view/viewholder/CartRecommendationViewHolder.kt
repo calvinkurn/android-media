@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.cart.view.viewholder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.cart.view.ActionListener
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartRecommendationItemHolderData
@@ -34,6 +35,10 @@ class CartRecommendationViewHolder(val view: View, val actionListener: ActionLis
         itemView.setOnClickListener {
             actionListener.onProductClicked(element.recommendationItem.productId.toString())
         }
+    }
+
+    fun clearImage() {
+        ImageHandler.clearImage(itemView.productCardView.imageView)
     }
 
     override fun onImpressionTopAds(item: RecommendationItem) {

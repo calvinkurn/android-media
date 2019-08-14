@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domai
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.List;

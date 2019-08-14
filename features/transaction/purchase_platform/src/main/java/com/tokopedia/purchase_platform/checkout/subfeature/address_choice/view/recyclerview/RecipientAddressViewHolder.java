@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.purchase_platform.checkout.view.util.Utils;
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**

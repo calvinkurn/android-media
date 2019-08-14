@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
@@ -23,7 +24,6 @@ import com.tokopedia.purchase_platform.common.di.component.CartComponent;
 import com.tokopedia.purchase_platform.common.di.component.DaggerAddShipmentAddressComponent;
 import com.tokopedia.purchase_platform.common.di.module.AddShipmentAddressModule;
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;

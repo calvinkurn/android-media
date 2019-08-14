@@ -3,11 +3,11 @@ package com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.AutoApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.AutoApplyStackData;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.GlobalCouponAttrData;
-import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.purchase_platform.checkout.view.viewmodel.EgoldAttributeModel;
 
 import java.util.ArrayList;

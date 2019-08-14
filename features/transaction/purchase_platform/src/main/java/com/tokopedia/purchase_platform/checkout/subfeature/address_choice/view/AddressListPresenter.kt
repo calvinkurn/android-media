@@ -1,9 +1,9 @@
 package com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view
 
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.model.AddressListModel
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import rx.Subscriber
 import java.util.concurrent.TimeUnit

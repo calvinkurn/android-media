@@ -41,12 +41,12 @@ import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.unifycomponents.ticker.Ticker;
@@ -584,7 +584,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
-        tvOptionalNoteToSeller.setText(cartItemModel.getNoteToSeller());
+        tvOptionalNoteToSeller.setText(Utils.getHtmlFormat(cartItemModel.getNoteToSeller()));
         tvNoteToSellerLabel.setVisibility(View.GONE);
 
         rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() ? View.VISIBLE : View.GONE);

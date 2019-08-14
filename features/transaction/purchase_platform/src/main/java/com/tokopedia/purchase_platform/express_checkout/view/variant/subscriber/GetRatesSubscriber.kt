@@ -4,10 +4,10 @@ import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVar
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationViewModel
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData
 import rx.Subscriber
 
 /**

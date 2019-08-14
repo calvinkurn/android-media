@@ -4,7 +4,7 @@ import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.m
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.model.response.addresscorner.NewAddressCornerResponse
 import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.model.AddressListModel
 import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import rx.functions.Func1
 import javax.inject.Inject
 

@@ -1,12 +1,12 @@
 package com.tokopedia.purchase_platform.checkout.view;
 
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.purchase_platform.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 
 import java.util.List;
 

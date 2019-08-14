@@ -53,13 +53,13 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
     public int getIconTypeRecyclerView() {
         switch (getTypeFactory().getRecyclerViewItem()) {
             case SearchConstant.RecyclerView.VIEW_PRODUCT:
-                return R.drawable.ic_list;
+                return R.drawable.search_ic_list;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return R.drawable.ic_grid_default;
+                return R.drawable.search_ic_grid;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
-                return R.drawable.ic_grid_box;
+                return R.drawable.search_ic_big_list;
             default:
-                return R.drawable.ic_grid_default;
+                return R.drawable.search_ic_grid;
         }
     }
 

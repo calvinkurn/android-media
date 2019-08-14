@@ -18,8 +18,8 @@ import com.tokopedia.purchase_platform.express_checkout.domain.mapper.checkout.C
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
 import com.tokopedia.purchase_platform.express_checkout.domain.usecase.DoAtcExpressUseCase
 import com.tokopedia.purchase_platform.express_checkout.domain.usecase.DoCheckoutExpressUseCase
-import com.tokopedia.shipping_recommendation.domain.ShippingParam
-import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.transaction.common.sharedata.EditAddressParam
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.usecase.RequestParams

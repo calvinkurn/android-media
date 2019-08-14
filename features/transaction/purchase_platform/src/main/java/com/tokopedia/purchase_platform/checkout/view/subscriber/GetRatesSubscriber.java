@@ -1,9 +1,9 @@
 package com.tokopedia.purchase_platform.checkout.view.subscriber;
 
 import com.tokopedia.purchase_platform.checkout.view.ShipmentContract;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentItemData;
 
 import rx.Subscriber;
 

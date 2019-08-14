@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**

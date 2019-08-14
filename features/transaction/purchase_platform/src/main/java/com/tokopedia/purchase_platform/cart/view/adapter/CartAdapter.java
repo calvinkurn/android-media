@@ -205,6 +205,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder.getItemViewType() == CartRecommendationViewHolder.Companion.getLAYOUT()) {
+            ((CartRecommendationViewHolder) holder).clearImage();
+        }
+    }
+
+    @Override
     public int getItemCount() {
         return cartDataList.size();
     }
@@ -219,7 +227,16 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (shopGroupData.isError()) {
                 cartShopHolderData.setAllSelected(false);
             } else {
-                cartShopHolderData.setAllSelected(shopGroupData.isChecked());
+                if (shopGroupData.isChecked()) {
+                    cartShopHolderData.setAllSelected(true);
+                } else if (shopGroupData.getCartItemDataList() != null && shopGroupData.getCartItemDataList().size() > 1) {
+                    for (CartItemHolderData cartItemHolderData : shopGroupData.getCartItemDataList()) {
+                        if (cartItemHolderData.isSelected()) {
+                            cartShopHolderData.setPartialSelected(true);
+                            break;
+                        }
+                    }
+                }
             }
             cartShopHolderData.setShopGroupData(shopGroupData);
             cartDataList.add(cartShopHolderData);

@@ -18,9 +18,9 @@ import com.tokopedia.purchase_platform.checkout.subfeature.multiple_address.doma
 import com.tokopedia.purchase_platform.cart.view.viewmodel.CartItemHolderData;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.purchase_platform.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 

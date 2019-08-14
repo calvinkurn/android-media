@@ -67,7 +67,6 @@ import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActi
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
@@ -346,17 +345,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun prepareView() {
-        emailPhoneEditText.setOnEditorActionListener { _, id, _ ->
-            if (id == EditorInfo.IME_ACTION_DONE) {
-                showLoadingLogin()
-                analytics.trackClickOnNext(emailPhoneEditText.text.toString())
-                presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
-                true
-            } else {
-                false
-            }
-        }
-
         partialActionButton.text = getString(R.string.next)
         partialActionButton.setOnClickListener {
             showLoadingLogin()
@@ -621,7 +609,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     userSession.shopName,
                     userSession.shopId,
                     userSession.hasShop(),
-                    LoginRegisterAnalytics.LABEL_EMAIL
+                    analytics.getLoginMethodMoengage(userSession.loginMethod)
             )
 
         } catch (e: Exception) {

@@ -412,7 +412,12 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processToUpdateAndReloadCartData() {
-        List<CartItemData> cartItemDataList = view.getAllCartDataList();
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        for (CartItemData data : view.getAllCartDataList()) {
+            if (!data.isError()) {
+                cartItemDataList.add(data);
+            }
+        }
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
             updateCartRequestList.add(new UpdateCartRequest.Builder()

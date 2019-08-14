@@ -8,9 +8,9 @@ import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.F
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
-import com.tokopedia.shipping_recommendation.domain.ShippingParam
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam

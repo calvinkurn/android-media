@@ -1,11 +1,6 @@
 package com.tokopedia.purchase_platform.checkout.view.converter;
 
 import com.tokopedia.purchase_platform.checkout.view.adapter.ShipmentAdapter;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.purchase_platform.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.purchase_platform.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
@@ -13,6 +8,11 @@ import com.tokopedia.purchase_platform.common.data.model.request.checkout.Dropsh
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.ProductDataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.ShippingInfoCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.ShopProductCheckoutRequest;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 
 import java.util.ArrayList;
 import java.util.List;

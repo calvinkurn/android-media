@@ -37,6 +37,7 @@ public class FlightOrderViewModelMapper {
                     successViewModel.setCancellations(flightOrder.getCancellations());
                     successViewModel.setStatus(flightOrder.getStatus());
                     successViewModel.setPdf(flightOrder.getPdf());
+                    successViewModel.setContactUsUrl(flightOrder.getContactUsUrl());
                     visitables.add(successViewModel);
                     break;
                 case FlightStatusOrderType.EXPIRED:
@@ -46,6 +47,7 @@ public class FlightOrderViewModelMapper {
                     failedViewModel.setId(flightOrder.getId());
                     failedViewModel.setOrderJourney(flightOrder.getJourneys());
                     failedViewModel.setTitle(flightOrder.getStatusString());
+                    failedViewModel.setContactUsUrl(flightOrder.getContactUsUrl());
                     visitables.add(failedViewModel);
                     break;
                 case FlightStatusOrderType.READY_FOR_QUEUE:
@@ -56,6 +58,7 @@ public class FlightOrderViewModelMapper {
                     inProcessViewModel.setOrderJourney(flightOrder.getJourneys());
                     inProcessViewModel.setStatus(flightOrder.getStatus());
                     inProcessViewModel.setTitle(flightOrder.getStatusString());
+                    inProcessViewModel.setContactUsUrl(flightOrder.getContactUsUrl());
                     visitables.add(inProcessViewModel);
                     break;
                 case FlightStatusOrderType.WAITING_FOR_THIRD_PARTY:
@@ -68,6 +71,7 @@ public class FlightOrderViewModelMapper {
                     waitingForPaymentViewModel.setStatus(flightOrder.getStatus());
                     waitingForPaymentViewModel.setTitle(flightOrder.getStatusString());
                     waitingForPaymentViewModel.setPayment(flightOrder.getPayment());
+                    waitingForPaymentViewModel.setContactUsUrl(flightOrder.getContactUsUrl());
                     visitables.add(waitingForPaymentViewModel);
                     break;
                 case FlightStatusOrderType.FLIGHT_CANCELLED:
@@ -78,6 +82,7 @@ public class FlightOrderViewModelMapper {
                     refundViewModel.setOrderJourney(flightOrder.getJourneys());
                     refundViewModel.setStatus(flightOrder.getStatus());
                     refundViewModel.setTitle(flightOrder.getStatusString());
+                    refundViewModel.setContactUsUrl(flightOrder.getContactUsUrl());
                     visitables.add(refundViewModel);
                     break;
             }

@@ -40,7 +40,7 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.url)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
@@ -48,7 +48,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.firebase.appIndexing
@@ -74,7 +74,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.config)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.iris)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.firebase.config

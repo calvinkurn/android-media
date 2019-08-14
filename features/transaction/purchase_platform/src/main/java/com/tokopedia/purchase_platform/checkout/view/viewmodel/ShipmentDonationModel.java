@@ -3,8 +3,8 @@ package com.tokopedia.purchase_platform.checkout.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.logisticcart.shipping.model.ShipmentData;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.Donation;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 
 /**
  * @author Irfan Khoirul on 13/07/18.

@@ -1,12 +1,12 @@
 package com.tokopedia.purchase_platform.express_checkout.view.variant
 
+import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.purchase_platform.express_checkout.domain.mapper.atc.AtcDomainModelMapper
 import com.tokopedia.purchase_platform.express_checkout.domain.mapper.checkout.CheckoutDomainModelMapper
 import com.tokopedia.purchase_platform.express_checkout.domain.usecase.DoAtcExpressUseCase
 import com.tokopedia.purchase_platform.express_checkout.domain.usecase.DoCheckoutExpressUseCase
 import com.tokopedia.purchase_platform.express_checkout.view.variant.mapper.ViewModelMapper
-import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.user.session.UserSessionInterface
 import org.junit.Before

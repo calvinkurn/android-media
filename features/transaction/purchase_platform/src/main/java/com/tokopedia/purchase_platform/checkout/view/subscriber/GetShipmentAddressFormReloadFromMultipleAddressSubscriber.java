@@ -1,11 +1,11 @@
 package com.tokopedia.purchase_platform.checkout.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.checkout.view.ShipmentContract;
 import com.tokopedia.purchase_platform.checkout.view.ShipmentPresenter;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.purchase_platform.common.data.apiservice.CartResponseErrorException;
 
 import java.util.List;
