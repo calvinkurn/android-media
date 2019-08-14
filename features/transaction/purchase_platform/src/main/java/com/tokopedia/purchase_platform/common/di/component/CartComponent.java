@@ -4,11 +4,11 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.purchase_platform.cart.domain.mapper.ICartMapper;
-import com.tokopedia.purchase_platform.cart.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.purchase_platform.checkout.data.AddressRepository;
-import com.tokopedia.purchase_platform.checkout.domain.mapper.ICheckoutMapper;
-import com.tokopedia.purchase_platform.checkout.domain.mapper.IShipmentMapper;
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.purchase_platform.features.checkout.data.AddressRepository;
+import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ICheckoutMapper;
+import com.tokopedia.purchase_platform.features.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.purchase_platform.common.di.module.CartUseCaseModule;
 import com.tokopedia.purchase_platform.common.di.module.CheckoutRouterModule;

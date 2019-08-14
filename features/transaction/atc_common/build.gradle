@@ -15,13 +15,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "${artifactIdTransactionAnalytics}"
-    groupId = "${groupIdTransaction}"
-    versionName = "${transactionGroupVersion}"
-    artifactName = "${artifactIdTransactionAnalytics}-release"
-}
-
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

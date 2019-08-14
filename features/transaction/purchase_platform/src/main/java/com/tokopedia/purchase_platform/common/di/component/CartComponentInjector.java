@@ -3,10 +3,10 @@ package com.tokopedia.purchase_platform.common.di.component;
 import android.app.Application;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.purchase_platform.cart.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
-import com.tokopedia.purchase_platform.checkout.domain.usecase.EditAddressUseCase;
-import com.tokopedia.purchase_platform.cart.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.CheckoutUseCase;
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.purchase_platform.common.di.module.CartUseCaseModule;
 import com.tokopedia.purchase_platform.common.di.module.CheckoutRouterModule;
 import com.tokopedia.purchase_platform.common.di.module.CheckoutUseCaseModule;

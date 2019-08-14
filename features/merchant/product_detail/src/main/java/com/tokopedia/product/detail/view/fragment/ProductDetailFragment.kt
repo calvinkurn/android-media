@@ -106,8 +106,8 @@ import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
-import com.tokopedia.purchase_platform.atc_variant.view.NormalCheckoutActivity
-import com.tokopedia.purchase_platform.atc_variant.view.NormalCheckoutFragment
+import com.tokopedia.purchase_platform.features.atc_variant.view.NormalCheckoutActivity
+import com.tokopedia.purchase_platform.features.atc_variant.view.NormalCheckoutFragment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants.Action.Companion.ACTION_GET_REFERRAL_CODE
 import com.tokopedia.referral.ReferralAction

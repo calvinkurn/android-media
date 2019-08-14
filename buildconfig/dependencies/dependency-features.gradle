@@ -315,7 +315,6 @@ ext {
             atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
             transactionanalytics            : ":features:transaction:transactionanalytics",
-            checkout                        : ":features:transaction:checkout",
             purchase_platform               : ":features:transaction:purchase_platform",
             purchase_platform_common        : ":features:transaction:purchase_platform_common",
             loyalty                         : ":features:promo:loyalty",

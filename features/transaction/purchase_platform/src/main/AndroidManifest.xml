@@ -6,7 +6,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".express_checkout.view.variant.CheckoutVariantActivity"
+            android:name="com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActivity"
             android:label="@string/activity_title_checkout_variant"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
@@ -24,13 +24,13 @@
         </activity>
 
         <activity
-            android:name=".atc_variant.view.NormalCheckoutActivity"
+            android:name="com.tokopedia.purchase_platform.features.atc_variant.view.NormalCheckoutActivity"
             android:label="@string/activity_title_checkout_variant"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".cart.view.CartActivity"
+            android:name="com.tokopedia.purchase_platform.features.cart.view.CartActivity"
             android:label="@string/checkout_module_title_activity_cart"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
@@ -48,34 +48,34 @@
         </activity>
 
         <activity
-            android:name=".checkout.subfeature.address_choice.view.CartAddressChoiceActivity"
+            android:name="com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".checkout.subfeature.multiple_address.view.MultipleAddressFormActivity"
+            android:name="com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity"
             android:label="@string/checkout_module_title_send_to_multiple_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".checkout.subfeature.multiple_address.view.AddShipmentAddressActivity"
+            android:name="com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.AddShipmentAddressActivity"
             android:label="@string/checkout_module_title_shipping_dest"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".checkout.view.ShipmentActivity"
+            android:name="com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity"
             android:label="@string/checkout_module_title_shipping_dest_new"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".checkout.subfeature.webview.CheckoutWebViewActivity"
+            android:name="com.tokopedia.purchase_platform.features.checkout.subfeature.webview.CheckoutWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <service
-            android:name=".cart.view.UpdateCartIntentService"
+            android:name="com.tokopedia.purchase_platform.features.cart.view.UpdateCartIntentService"
             android:exported="false" />
 
 
