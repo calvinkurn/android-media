@@ -51,7 +51,7 @@ class SixGridChannelViewHolder(sixGridView: View,
         return GridSpacingItemDecoration(defaultSpanCount, 0, true)
     }
 
-    override fun onSeeAllClickTracker(headerName: String, applink: String) {
+    override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         HomePageTracking.eventClickSeeAllLegoBannerChannel(
                 context, applink)
     }

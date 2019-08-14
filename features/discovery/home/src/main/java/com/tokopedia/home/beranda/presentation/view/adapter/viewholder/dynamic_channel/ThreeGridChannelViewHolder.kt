@@ -50,8 +50,8 @@ class ThreeGridChannelViewHolder(threeGridView: View,
         return GridSpacingItemDecoration(defaultSpanCount, 0, true)
     }
 
-    override fun onSeeAllClickTracker(headerName: String, applink: String) {
-        HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(context, headerName)
+    override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
+        HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(context, channel.header.name)
     }
 
     override fun getViewHolderClassName(): String {

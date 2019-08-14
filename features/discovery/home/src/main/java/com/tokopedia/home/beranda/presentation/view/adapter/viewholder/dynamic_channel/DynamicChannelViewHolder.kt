@@ -30,7 +30,7 @@ abstract class DynamicChannelViewHolder<T: RecyclerView.ViewHolder>(itemView: Vi
     private val channelTitle: Typography by bind(R.id.channel_title)
     private val seeAllButton: TextView by bind(R.id.see_all_button)
     private val channelTitleContainer: View by bind(R.id.channel_title_container)
-    private val countDownView: CountDownView by bind(R.id.count_down)
+    protected val countDownView: CountDownView by bind(R.id.count_down)
 
     private val context: Context = itemView.context
 
@@ -72,7 +72,7 @@ abstract class DynamicChannelViewHolder<T: RecyclerView.ViewHolder>(itemView: Vi
                     listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header), channel.homeAttribution)
                     HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
                             DynamicLinkHelper.getActionLink(channel.header))
-                    onSeeAllClickTracker(channelHeaderName, DynamicLinkHelper.getActionLink(channel.getHeader()))
+                    onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.getHeader()))
                 }
             } else {
                 seeAllButton.visibility = View.GONE
@@ -104,7 +104,7 @@ abstract class DynamicChannelViewHolder<T: RecyclerView.ViewHolder>(itemView: Vi
 
     protected abstract fun getViewHolderClassName(): String
 
-    protected abstract fun onSeeAllClickTracker(headerName: String, applink: String)
+    protected abstract fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String)
 
     private fun hasExpiredTime(channel: DynamicHomeChannel.Channels): Boolean {
         return channel.header.expiredTime != null && !TextUtils.isEmpty(channel.header.expiredTime)
