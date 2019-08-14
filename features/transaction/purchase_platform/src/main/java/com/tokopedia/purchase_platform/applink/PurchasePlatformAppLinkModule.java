@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.checkout.applink;
+package com.tokopedia.purchase_platform.applink;
 
 import com.airbnb.deeplinkdispatch.DeepLinkModule;
 
@@ -7,5 +7,5 @@ import com.airbnb.deeplinkdispatch.DeepLinkModule;
  */
 
 @DeepLinkModule
-public class CheckoutAppLinkModule {
+public class PurchasePlatformAppLinkModule {
 }

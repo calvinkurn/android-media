@@ -5,19 +5,12 @@ import android.text.TextUtils;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.UserAddress;
-import com.tokopedia.logisticdata.data.entity.rates.Attribute;
-import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-
-import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,120 +139,6 @@ public class RatesDataConverter {
             }
         }
         return TextUtils.join(",", shippingServices);
-    }
-
-    public ShipmentDetailData getShipmentDetailData(ShipmentDetailData shipmentDetailData,
-                                                    List<ShopShipment> shopShipmentList,
-                                                    RatesResponse ratesResponse) {
-        if (shipmentDetailData == null) {
-            shipmentDetailData = new ShipmentDetailData();
-        }
-        List<ShipmentItemData> shipmentItemDataList = getShipmentItemDataList(ratesResponse);
-
-        List<ShipProd> allShipProds = new ArrayList<>();
-        for (ShopShipment shopShipment : shipmentDetailData.getShipmentCartData().getShopShipments()) {
-            allShipProds.addAll(shopShipment.getShipProds());
-            for (ShipmentItemData shipmentItemData : shipmentItemDataList) {
-                for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
-                    if (courierItemData.getShipperId() == shopShipment.getShipId()) {
-                        courierItemData.setAllowDropshiper(shopShipment.isDropshipEnabled());
-                    }
-                }
-            }
-        }
-
-        for (ShipProd shipProd : allShipProds) {
-            for (ShipmentItemData shipmentItemData : shipmentItemDataList) {
-                for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
-                    if (shipProd.getShipProdId() == courierItemData.getShipperProductId()) {
-                        courierItemData.setAdditionalPrice(shipProd.getAdditionalFee());
-                    }
-                }
-            }
-        }
-
-        for (ShipmentItemData shipmentItemData : shipmentItemDataList) {
-            List<CourierItemData> activeCourierItemDataList = new ArrayList<>();
-            for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
-                if (isCourierActive(shopShipmentList, courierItemData)) {
-                    activeCourierItemDataList.add(courierItemData);
-                }
-            }
-            shipmentItemData.setCourierItemData(activeCourierItemDataList);
-        }
-
-        shipmentDetailData.setShipmentItemData(shipmentItemDataList);
-        return shipmentDetailData;
-    }
-
-    private boolean isCourierActive(List<ShopShipment> shopShipmentList, CourierItemData courierItemData) {
-        for (ShopShipment shopShipment : shopShipmentList) {
-            if (shopShipment.getShipId() == courierItemData.getShipperId()) {
-                for (ShipProd shipProd : shopShipment.getShipProds()) {
-                    if (shipProd.getShipProdId() == courierItemData.getShipperProductId()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private List<ShipmentItemData> getShipmentItemDataList(RatesResponse ratesResponse) {
-        List<ShipmentItemData> shipmentItemDataList = new ArrayList<>();
-        if (ratesResponse != null && ratesResponse.getData() != null &&
-                ratesResponse.getData().getAttributes() != null) {
-            for (Attribute attribute : ratesResponse.getData().getAttributes()) {
-                shipmentItemDataList.add(getShipmentItemData(attribute));
-            }
-        }
-        return shipmentItemDataList;
-    }
-
-    private ShipmentItemData getShipmentItemData(Attribute attribute) {
-        ShipmentItemData shipmentItemData = new ShipmentItemData();
-        shipmentItemData.setServiceId(attribute.getServiceId());
-        shipmentItemData.setType(WordUtils.capitalize(attribute.getServiceName()));
-        shipmentItemData.setMultiplePriceRange(attribute.getServiceRangePrice());
-        shipmentItemData.setDeliveryTimeRange(attribute.getServiceEtd());
-        shipmentItemData.setCourierItemData(getCourierItemDataList(attribute, shipmentItemData));
-        return shipmentItemData;
-    }
-
-    private List<CourierItemData> getCourierItemDataList(Attribute attribute,
-                                                         ShipmentItemData shipmentItemData) {
-        List<CourierItemData> courierItemDataList = new ArrayList<>();
-        for (com.tokopedia.logisticdata.data.entity.rates.Product product : attribute.getProducts()) {
-            courierItemDataList.add(getCourierItemData(attribute.getServiceId(), product, shipmentItemData));
-        }
-        return courierItemDataList;
-    }
-
-    private CourierItemData getCourierItemData(int serviceId, com.tokopedia.logisticdata.data.entity.rates.Product product,
-                                               ShipmentItemData shipmentItemData) {
-        CourierItemData courierItemData = new CourierItemData();
-        courierItemData.setUsePinPoint(product.getIsShowMap() == 1);
-        courierItemData.setName(product.getShipperName());
-        courierItemData.setShipperId(product.getShipperId());
-        courierItemData.setServiceId(serviceId);
-        courierItemData.setShipperProductId(product.getShipperProductId());
-        courierItemData.setInsuranceUsedInfo(product.getInsuranceUsedInfo());
-        courierItemData.setInsurancePrice(product.getInsurancePrice());
-        courierItemData.setInsuranceType(product.getInsuranceType());
-        courierItemData.setInsuranceUsedDefault(product.getInsuranceUsedDefault());
-        courierItemData.setCourierInfo(product.getShipperProductDesc());
-        courierItemData.setInsuranceUsedType(product.getInsuranceUsedType());
-        courierItemData.setShipperPrice(product.getShipperPrice());
-        courierItemData.setEstimatedTimeDelivery(product.getShipperEtd());
-        courierItemData.setMinEtd(product.getMinEtd());
-        courierItemData.setMaxEtd(product.getMaxEtd());
-        courierItemData.setShipmentItemDataEtd(shipmentItemData.getDeliveryTimeRange());
-        courierItemData.setShipmentItemDataType(shipmentItemData.getType());
-        courierItemData.setShipperFormattedPrice(product.getShipperFormattedPrice());
-        courierItemData.setChecksum(product.getCheckSum());
-        courierItemData.setUt(product.getUt());
-
-        return courierItemData;
     }
 
 }

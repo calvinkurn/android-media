@@ -11,36 +11,28 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
-import com.tokopedia.purchase_platform.checkout.data.AddressRepository;
-import com.tokopedia.purchase_platform.checkout.data.AddressRepositoryImpl;
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.repository.PeopleAddressRepository;
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.data.repository.PeopleAddressRepositoryImpl;
-import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.usecase.GetAddressWithCornerUseCase;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartApiInterceptorQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartApiOkHttpClientQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartApiRetrofitQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartChuckApiInterceptorQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartFingerPrintApiInterceptorQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartKeroRatesApiInterceptorQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartKeroRatesApiRetrofitQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartKeroRatesOkHttpQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartTxActApiInterceptorQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartTxActApiRetrofitQualifier;
-import com.tokopedia.purchase_platform.common.di.qualifier.CartTxActOkHttpClientQualifier;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
-import com.tokopedia.logisticdata.data.apiservice.RatesApi;
-import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
-import com.tokopedia.logisticdata.data.repository.RatesRepository;
+import com.tokopedia.purchase_platform.checkout.data.AddressRepository;
+import com.tokopedia.purchase_platform.checkout.data.AddressRepositoryImpl;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
+import com.tokopedia.purchase_platform.checkout.subfeature.address_choice.domain.usecase.GetAddressWithCornerUseCase;
 import com.tokopedia.purchase_platform.common.data.apiservice.CartApi;
 import com.tokopedia.purchase_platform.common.data.apiservice.CartApiInterceptor;
 import com.tokopedia.purchase_platform.common.data.apiservice.CartResponseConverter;
 import com.tokopedia.purchase_platform.common.data.apiservice.TransactionDataApiUrl;
 import com.tokopedia.purchase_platform.common.data.repository.CartRepository;
 import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
+import com.tokopedia.purchase_platform.common.di.qualifier.CartApiInterceptorQualifier;
+import com.tokopedia.purchase_platform.common.di.qualifier.CartApiOkHttpClientQualifier;
+import com.tokopedia.purchase_platform.common.di.qualifier.CartApiRetrofitQualifier;
+import com.tokopedia.purchase_platform.common.di.qualifier.CartChuckApiInterceptorQualifier;
+import com.tokopedia.purchase_platform.common.di.qualifier.CartFingerPrintApiInterceptorQualifier;
+import com.tokopedia.purchase_platform.common.di.qualifier.CartQualifier;
+import com.tokopedia.purchase_platform.common.di.qualifier.CartTxActApiInterceptorQualifier;
+import com.tokopedia.purchase_platform.common.di.qualifier.CartTxActApiRetrofitQualifier;
+import com.tokopedia.purchase_platform.common.di.qualifier.CartTxActOkHttpClientQualifier;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -95,13 +87,6 @@ public class DataModule {
 
 
     @Provides
-    @CartKeroRatesApiInterceptorQualifier
-    TkpdAuthInterceptor provideKeroRatesInterceptor(@ApplicationContext Context context,
-                                                    AbstractionRouter abstractionRouter) {
-        return new TkpdAuthInterceptor(context, abstractionRouter);
-    }
-
-    @Provides
     @CartTxActApiInterceptorQualifier
     TkpdAuthInterceptor provideTxActInterceptor(@ApplicationContext Context context,
                                                 AbstractionRouter abstractionRouter) {
@@ -124,28 +109,6 @@ public class DataModule {
                 .addInterceptor(new AkamaiBotInterceptor())
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(cartApiInterceptor);
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(chuckInterceptor);
-        }
-        return builder.build();
-    }
-
-
-    @Provides
-    @CartKeroRatesOkHttpQualifier
-    OkHttpClient provideKeroRatesApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                                 @CartKeroRatesApiInterceptorQualifier TkpdAuthInterceptor keroRatesInterceptor,
-                                                 @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
-                                                 @CartFingerPrintApiInterceptorQualifier Interceptor fingerprintInterceptor,
-                                                 @CartChuckApiInterceptorQualifier Interceptor chuckInterceptor) {
-
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
-                .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(keroRatesInterceptor);
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
                     .addInterceptor(chuckInterceptor);
@@ -190,23 +153,6 @@ public class DataModule {
     }
 
     @Provides
-    @CartKeroRatesApiRetrofitQualifier
-    Retrofit provideCartKeroRatesRetrofit(
-            ICheckoutModuleRouter cartCheckoutModuleRouter,
-            @CartKeroRatesOkHttpQualifier OkHttpClient okHttpClient
-    ) {
-        return new Retrofit.Builder()
-                .baseUrl(LogisticDataConstantUrl.KeroRates.BASE_URL)
-                .addConverterFactory(new TokopediaWsV4ResponseConverter())
-                .addConverterFactory(cartCheckoutModuleRouter.getStringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okHttpClient)
-                .build();
-    }
-
-
-    @Provides
     @CartTxActApiRetrofitQualifier
     Retrofit provideCartTxActRetrofit(
             ICheckoutModuleRouter cartCheckoutModuleRouter,
@@ -230,12 +176,6 @@ public class DataModule {
 
     @Provides
     @CartQualifier
-    RatesApi provideRatesApi(@CartKeroRatesApiRetrofitQualifier Retrofit retrofit) {
-        return retrofit.create(RatesApi.class);
-    }
-
-    @Provides
-    @CartQualifier
     PeopleActApi providePeopleActApi(@CartTxActApiRetrofitQualifier Retrofit retrofit) {
         return retrofit.create(PeopleActApi.class);
     }
@@ -246,11 +186,6 @@ public class DataModule {
     }
 
     @Provides
-    RatesRepository provideRatesRepository(@CartQualifier RatesApi ratesApi) {
-        return new RatesRepository(ratesApi);
-    }
-
-    @Provides
     AddressRepository provideAddressRepository(@CartQualifier PeopleActApi peopleActApi) {
         return new AddressRepositoryImpl(peopleActApi);
     }
@@ -258,12 +193,6 @@ public class DataModule {
     @Provides
     AddressModelMapper providePeopleAddressMapper() {
         return new AddressModelMapper();
-    }
-
-    @Provides
-    PeopleAddressRepository providePeopleAddressRepository(@CartQualifier PeopleActApi peopleActApi,
-                                                           GetAddressWithCornerUseCase addressWithCornerUseCase) {
-        return new PeopleAddressRepositoryImpl(peopleActApi, addressWithCornerUseCase);
     }
 
     @Provides
