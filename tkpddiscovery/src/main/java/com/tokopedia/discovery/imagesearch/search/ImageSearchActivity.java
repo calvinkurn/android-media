@@ -101,9 +101,14 @@ public class ImageSearchActivity extends DiscoveryActivity
     }
 
     private void askForPermission() {
-        permissionCheckerHelper.checkPermission(
-                this,
+        String[] imageSearchPermissions = {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
+        };
+
+        permissionCheckerHelper.checkPermissions(
+                this,
+                imageSearchPermissions,
                 new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
                     public void onPermissionDenied(@NotNull String permissionText) {
