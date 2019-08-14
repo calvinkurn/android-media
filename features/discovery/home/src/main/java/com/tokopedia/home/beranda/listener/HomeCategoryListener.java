@@ -42,9 +42,7 @@ public interface HomeCategoryListener {
 
     void onRefreshTokoCashButtonClicked();
 
-    void onSixGridItemClicked(String actionLink, String trackingAttribution);
-
-    void onThreeGridItemClicked(String actionLink, String trackingAttribution);
+    void onLegoBannerClicked(String actionLink, String trackingAttribution);
 
     void onPromoScrolled(BannerSlidesModel bannerSlidesModel);
 

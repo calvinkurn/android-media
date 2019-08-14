@@ -34,21 +34,13 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         ) {
 
     companion object {
-        val TYPE_SPRINT_SALE = 0
-        val TYPE_SPRINT_LEGO = 1
-        val TYPE_ORGANIC = 2
-        val TYPE_CURATED = 3
+        private const val TYPE_SPRINT_SALE = 0
+        private const val TYPE_SPRINT_LEGO = 1
+        private const val TYPE_ORGANIC = 2
+        private const val TYPE_CURATED = 3
 
         @LayoutRes
-        val LAYOUT = R.layout.home_master_dynamic_channel
-
-        private fun getAvailableLink(applink: String, url: String): String {
-            return if (!TextUtils.isEmpty(applink)) {
-                applink
-            } else {
-                url
-            }
-        }
+        val LAYOUT_ITEM_SPRINT = R.layout.layout_sprint_product_item_simple
     }
 
     val context = sprintView.context
@@ -95,7 +87,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SprintViewHolder {
-            val v = LayoutInflater.from(parent.context).inflate(R.layout.layout_sprint_product_item_simple, parent, false)
+            val v = LayoutInflater.from(parent.context).inflate(LAYOUT_ITEM_SPRINT, parent, false)
             return SprintViewHolder(v)
         }
 

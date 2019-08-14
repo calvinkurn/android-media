@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.support.annotation.IdRes
+import android.support.annotation.LayoutRes
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -26,30 +27,29 @@ abstract class DynamicChannelViewHolder<T: RecyclerView.ViewHolder>(itemView: Vi
 
     protected val defaultSpanCount = 3
 
-    private val recyclerView: RecyclerView by bind(R.id.recycleList)
-    private val channelTitle: Typography by bind(R.id.channel_title)
-    private val seeAllButton: TextView by bind(R.id.see_all_button)
-    private val channelTitleContainer: View by bind(R.id.channel_title_container)
-    protected val countDownView: CountDownView by bind(R.id.count_down)
-
     private val context: Context = itemView.context
 
-    fun <T : View> bind(@IdRes res : Int) : Lazy<T> {
-        @Suppress("UNCHECKED_CAST")
-        return lazy { itemView.findViewById(res) as T }
-    }
+    lateinit var countDownView: CountDownView
 
-    init {
-        recyclerView.layoutManager = GridLayoutManager(itemView.context, defaultSpanCount,
-                GridLayoutManager.VERTICAL, false)
-        recyclerView.addItemDecoration(getRecyclerViewDecorator())
+    companion object {
+        @LayoutRes
+        val MASTER_LAYOUT_DC = R.layout.home_master_dynamic_channel
     }
 
     override fun bind(element: DynamicChannelViewModel) {
         try {
+            val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
+            val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
+            val seeAllButton: TextView = itemView.findViewById(R.id.see_all_button)
+            val channelTitleContainer: View = itemView.findViewById(R.id.channel_title_container)
+            countDownView = itemView.findViewById(R.id.count_down)
+
             val channel = element.channel
             val channelHeaderName = element.channel.header.name
 
+            recyclerView.layoutManager = GridLayoutManager(itemView.context, defaultSpanCount,
+                    GridLayoutManager.VERTICAL, false)
+            recyclerView.addItemDecoration(getRecyclerViewDecorator())
             recyclerView.adapter = getItemAdapter(channel)
             /**
              * Requirement:

@@ -11,8 +11,8 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeFeedsListener
 import com.tokopedia.home.beranda.listener.HomeInspirationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.SixGridChannelViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.ThreeGridChannelViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicLegoBannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessUnitViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel
@@ -141,7 +141,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
          * refer to item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
          */
         if (sprintLayout.contains(layout)) {
-            return DynamicChannelSprintViewHolder.LAYOUT
+            return DynamicChannelSprintViewHolder.LAYOUT_ITEM_SPRINT
         } else if (bannerLayout.contains(layout)) {
             /**
              * Layout registered as sprint sale viewholder
@@ -160,8 +160,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             /**
              * refer to 3 and 6 image item layout {@link com.tokopedia.home.R.layout#layout_lego_item}
              */
-            DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> SixGridChannelViewHolder.LAYOUT
-            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> ThreeGridChannelViewHolder.LAYOUT
+            DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT_ITEM_LEGO
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT_ITEM_LEGO
 
             /**
              * refer to sprint product item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
@@ -174,6 +174,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
+            DynamicChannelSprintViewHolder.LAYOUT_ITEM_SPRINT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, countDownListener)
+            DynamicLegoBannerViewHolder.LAYOUT_ITEM_LEGO -> viewHolder = DynamicLegoBannerViewHolder(view, listener, countDownListener)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
             DigitalsViewHolder.LAYOUT -> viewHolder = DigitalsViewHolder(listener, fragmentManager, view)
@@ -184,13 +186,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             HeaderViewHolder.LAYOUT -> viewHolder = HeaderViewHolder(view, listener)
             InspirationViewHolder.LAYOUT -> viewHolder = InspirationViewHolder(view, inspirationListener)
             DynamicChannelHeroViewHolder.LAYOUT -> viewHolder = DynamicChannelHeroViewHolder(view, listener)
-            DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, countDownListener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             TopAdsViewHolder.LAYOUT -> viewHolder = TopAdsViewHolder(view)
             TopAdsDynamicChannelViewHolder.LAYOUT -> viewHolder = TopAdsDynamicChannelViewHolder(view, inspirationListener)
             SprintSaleCarouselViewHolder.LAYOUT -> viewHolder = SprintSaleCarouselViewHolder(view, listener, countDownListener)
-            SixGridChannelViewHolder.LAYOUT -> viewHolder = SixGridChannelViewHolder(view, listener, countDownListener)
-            ThreeGridChannelViewHolder.LAYOUT -> viewHolder = ThreeGridChannelViewHolder(view, listener, countDownListener)
             SpotlightViewHolder.LAYOUT -> viewHolder = SpotlightViewHolder(view, listener)
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)

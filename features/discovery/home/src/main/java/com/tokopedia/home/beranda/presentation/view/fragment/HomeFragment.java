@@ -1121,12 +1121,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onSixGridItemClicked(String actionLink, String trackingAttribution) {
-        onActionLinkClicked(actionLink, trackingAttribution);
-    }
-
-    @Override
-    public void onThreeGridItemClicked(String actionLink, String trackingAttribution) {
+    public void onLegoBannerClicked(String actionLink, String trackingAttribution) {
         onActionLinkClicked(actionLink, trackingAttribution);
     }
 

@@ -7,9 +7,10 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.ThreeGridChannelViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicLegoBannerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
@@ -25,7 +26,8 @@ import java.util.List;
 
 public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     private HashSet<Integer> registeredUnifyDynamicChannelLayout = new HashSet<>(
-            ThreeGridChannelViewHolder.Companion.getLAYOUT()
+            DynamicChannelSprintViewHolder.Companion.getLAYOUT_ITEM_SPRINT(),
+            DynamicLegoBannerViewHolder.Companion.getLAYOUT_ITEM_LEGO()
     );
 
     //without ticker
@@ -51,7 +53,7 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int layout = viewType;
         if (registeredUnifyDynamicChannelLayout.contains(viewType)) {
-            layout = R.layout.home_master_dynamic_channel;
+            layout = DynamicChannelViewHolder.Companion.getMASTER_LAYOUT_DC();
         }
         View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return typeFactory.createViewHolder(view, viewType);
