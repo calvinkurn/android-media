@@ -24,8 +24,6 @@ class TravelHomepageCategoryViewHolder(itemView: View, val onItemBindListener: O
 
             if (!::categoriesAdapter.isInitialized) {
                 categoriesAdapter = TravelHomepageCategoryListAdapter(element.categories, listener)
-                //set onclicklistener here
-
                 val layoutManager = GridLayoutManager(itemView.context, CATEGORY_SPAN_COUNT)
                 categoriesRecyclerView.layoutManager = layoutManager
                 categoriesRecyclerView.adapter = categoriesAdapter

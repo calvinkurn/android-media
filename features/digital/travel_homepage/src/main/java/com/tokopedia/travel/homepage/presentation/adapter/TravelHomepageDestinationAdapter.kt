@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageDestinationModel
+import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.view.*
 
 /**
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.v
  */
 
 class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDestinationModel.Destination>,
-                                       var listener: DestinationViewHolder.OnItemClickListener?):
+                                       var listener: OnItemClickListener):
         RecyclerView.Adapter<TravelHomepageDestinationAdapter.DestinationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): DestinationViewHolder {
@@ -31,21 +32,17 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
 
     class DestinationViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        fun bind(destination: TravelHomepageDestinationModel.Attribute, position: Int, listener: OnItemClickListener?) {
+        fun bind(destination: TravelHomepageDestinationModel.Attribute, position: Int, listener: OnItemClickListener) {
             with(itemView) {
                 image.loadImage(destination.imageUrl)
                 title.text = destination.title
                 subtitle.text = destination.subtitle
             }
-            if (listener != null) itemView.setOnClickListener { listener.onItemClick(destination, position) }
+            if (listener != null) itemView.setOnClickListener { listener.onItemClick(destination.appUrl) }
         }
 
         companion object {
             val LAYOUT = R.layout.travel_homepage_destination_section_list_item
-        }
-
-        interface OnItemClickListener {
-            fun onItemClick(category: TravelHomepageDestinationModel.Attribute, position: Int)
         }
     }
 }
