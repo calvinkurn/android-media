@@ -300,7 +300,7 @@
               android:id="@+id/sticky_login_text"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="#E6EBFFEF"
+              android:background="@color/sticky_bg_color"
               app:layout_constraintTop_toTopOf="parent"
               app:sticky_highlight_color="@color/g_500"
               app:sticky_left_icon="@drawable/ic_toped_widget_login"
