@@ -7,20 +7,9 @@
     android:foreground="?selectableItemBackground"
     android:orientation="vertical">
 
-    <!--<include
+    <include
         android:id="@+id/ll_warning_and_error"
-        layout="@layout/layout_item_warning_and_error" />-->
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_cart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:visibility="gone" />
+        layout="@layout/layout_item_warning_and_error" />
 
     <FrameLayout
         android:id="@+id/fl_cart_item_container"

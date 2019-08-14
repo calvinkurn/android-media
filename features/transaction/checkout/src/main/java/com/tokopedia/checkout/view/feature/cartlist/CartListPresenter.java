@@ -417,7 +417,12 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processToUpdateAndReloadCartData() {
-        List<CartItemData> cartItemDataList = view.getAllCartDataList();
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        for (CartItemData data : view.getAllCartDataList()) {
+            if (!data.isError()) {
+                cartItemDataList.add(data);
+            }
+        }
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
             updateCartRequestList.add(new UpdateCartRequest.Builder()
@@ -1091,6 +1096,7 @@ public class CartListPresenter implements ICartListPresenter {
         );
         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(cartItemData.getOriginData().getCartId()));
         enhancedECommerceProductCartMapData.setDimension54(cartItemData.isFulfillment());
+        enhancedECommerceProductCartMapData.setDimension53(cartItemData.getOriginData().getPriceOriginal() > 0);
         enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
         enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
         enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
@@ -1107,28 +1113,8 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setWarehouseId(String.valueOf(cartItemData.getOriginData().getWarehouseId()));
         enhancedECommerceProductCartMapData.setProductWeight(String.valueOf(cartItemData.getOriginData().getWeightPlan()));
         enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
-
-        StringBuilder promoCodes = new StringBuilder();
-        StringBuilder promoDetails = new StringBuilder();
-        PromoStackingData promoStackingGlobalData = view.getPromoStackingGlobalData();
-        if (promoStackingGlobalData != null && !TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
-            promoCodes.append(promoStackingGlobalData.getPromoCode());
-            promoDetails.append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
-        }
-        if (cartShopHolderData != null && cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
-                !TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode()) &&
-                cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getMessageData() != null) {
-            if (!TextUtils.isEmpty(promoCodes)) {
-                promoCodes.append("|");
-            }
-            promoCodes.append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode());
-            if (!TextUtils.isEmpty(promoDetails)) {
-                promoDetails.append("|");
-            }
-            promoDetails.append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getMessageData().getState());
-        }
-        enhancedECommerceProductCartMapData.setPromoCode(promoCodes.toString());
-        enhancedECommerceProductCartMapData.setPromoDetails(promoDetails.toString());
+        enhancedECommerceProductCartMapData.setPromoCode(cartItemData.getOriginData().getPromoCodes());
+        enhancedECommerceProductCartMapData.setPromoDetails(cartItemData.getOriginData().getPromoDetails());
         return enhancedECommerceProductCartMapData;
     }
 
@@ -1293,9 +1279,9 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setDimension57(cartRecentViewItemHolderData.getShopName());
         enhancedECommerceProductCartMapData.setDimension59(cartRecentViewItemHolderData.getShopType());
         enhancedECommerceProductCartMapData.setDimension77(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
-        enhancedECommerceProductCartMapData.setBrand("");
+        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceProductCartMapData.setCategoryId("");
-        enhancedECommerceProductCartMapData.setVariant("");
+        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
@@ -1322,9 +1308,9 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setShopType(cartRecommendationItemHolderData.getRecommendationItem().getShopType());
         enhancedECommerceProductCartMapData.setShopName(cartRecommendationItemHolderData.getRecommendationItem().getShopName());
         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
-        enhancedECommerceProductCartMapData.setBrand("");
+        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceProductCartMapData.setCategoryId("");
-        enhancedECommerceProductCartMapData.setVariant("");
+        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());

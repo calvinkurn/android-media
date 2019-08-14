@@ -75,6 +75,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         });
 
         bVM.getWarningMessage().observe(this, (message) -> {
+            hideProgressBar();
             if (!TextUtils.isEmpty(message)) {
                 try {
                     Toaster.Companion.showError(this.findViewById(android.R.id.content),
@@ -97,8 +98,17 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         return new BaseLifeCycleObserver(viewModel);
     }
 
-    public void showMessage(String message) {
+    public void showMessageWithAction(String message, String actionText, View.OnClickListener listener) {
+        Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+                message,
+                Snackbar.LENGTH_INDEFINITE, actionText, listener);
 
+    }
+
+    public void showMessage(String message) {
+        Toaster.Companion.showError(this.findViewById(android.R.id.content),
+                message,
+                Snackbar.LENGTH_LONG);
     }
 
     public void navigateToActivityRequest(Intent intent, int requestCode) {

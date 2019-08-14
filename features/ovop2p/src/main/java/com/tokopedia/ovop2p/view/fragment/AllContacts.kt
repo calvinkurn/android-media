@@ -2,6 +2,7 @@ package com.tokopedia.ovop2p.view.fragment
 
 import android.content.Intent
 import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.LayoutInflater
@@ -53,7 +54,7 @@ class AllContacts : BaseDaggerFragment(), View.OnClickListener, CoroutineScope {
         var id: Int = v?.id ?: -1
         if (id != -1) {
             when (id) {
-                R.id.scanqr_imgvw or R.id.scan_qr_header -> {
+                R.id.scanqr_imgvw -> {
                     startActivityForResult((context?.applicationContext as OvoP2pRouter)
                             .gotoQrScannerPage(true), Constants.Keys.CODE_QR_SCANNER_ACTIVITY)
                 }
@@ -93,7 +94,10 @@ class AllContacts : BaseDaggerFragment(), View.OnClickListener, CoroutineScope {
 
 
     private suspend fun createAllContactsCursor(): Cursor? = withContext(Dispatchers.IO) {
-        activity?.contentResolver?.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null)
+        var selection = ContactsContract.CommonDataKinds.Phone.ACCOUNT_TYPE_AND_DATA_SET + " = '" + ("com.google") + "'"
+        activity?.contentResolver?.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                selection, null,
+                ContactsContract.Contacts.DISPLAY_NAME + " ASC ")
     }
 
     private fun setItemOnClickListener() {
@@ -114,9 +118,9 @@ class AllContacts : BaseDaggerFragment(), View.OnClickListener, CoroutineScope {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Constants.Keys.CODE_QR_SCANNER_ACTIVITY) {
-            var qrResponse: String = data?.getStringExtra(Constants.Keys.QR_RESPONSE) ?: ""
-            sendResultBack(qrResponse, "")
+        if (requestCode == Constants.Keys.CODE_QR_SCANNER_ACTIVITY) {
+            var qrResponse: String = Uri.decode(data?.extras?.getString(Constants.Keys.QR_RESPONSE) ?: "")
+            sendResultBack("", qrResponse)
         }
     }
 

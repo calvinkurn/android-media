@@ -7,7 +7,7 @@ import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactory
 /**
  * Model to show the the profile has no post (empty)
  */
-class OtherRelatedProfileViewModel(val feedPostRelatedDatum: FeedPostRelated.Datum) : Visitable<ProfileTypeFactory> {
+class OtherRelatedProfileViewModel(val feedPostRelatedDatum: FeedPostRelated.Datum, val position: Int) : Visitable<ProfileTypeFactory> {
     override fun type(typeFactory: ProfileTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }

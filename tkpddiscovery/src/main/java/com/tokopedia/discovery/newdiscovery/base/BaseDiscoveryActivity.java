@@ -1,10 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.URLParser;
@@ -15,7 +12,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
@@ -29,11 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
-import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
-import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
-import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -49,12 +40,9 @@ public class BaseDiscoveryActivity
 
     private BaseDiscoveryContract.Presenter presenter;
     private boolean forceSwipeToShop;
-    private boolean requestOfficialStoreBanner;
     private int activeTabPosition;
 
     private Boolean isPause = false;
-    private boolean isStartingSearchActivityWithProductViewModel = false;
-    private ProductViewModel productViewModelForOnResume;
 
     protected GCMHandler gcmHandler;
 
@@ -66,7 +54,6 @@ public class BaseDiscoveryActivity
         if (savedInstanceState != null) {
             setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION, 0));
             setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP, false));
-            setRequestOfficialStoreBanner(savedInstanceState.getBoolean(KEY_REQUEST_OS, false));
         }
     }
 
@@ -93,26 +80,12 @@ public class BaseDiscoveryActivity
         this.forceSwipeToShop = forceSwipeToShop;
     }
 
-    @Override
-    public boolean isRequestOfficialStoreBanner() {
-        return requestOfficialStoreBanner;
-    }
-
-    @Override
-    public void setRequestOfficialStoreBanner(boolean requestOfficialStoreBanner) {
-        this.requestOfficialStoreBanner = requestOfficialStoreBanner;
-    }
-
     public void setPresenter(BaseDiscoveryContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
     public BaseDiscoveryContract.Presenter getPresenter() {
         return presenter;
-    }
-
-    protected void onProductQuerySubmit() {
-
     }
 
     @Override
@@ -128,88 +101,6 @@ public class BaseDiscoveryActivity
     public void onHandleResponseHotlist(String url, String query) {
         startActivity(HotlistActivity.createInstanceUsingURL(this, url, query, isPausing()));
         finish();
-    }
-
-    @Override
-    public void onHandleApplink(String applink) {
-        if (getApplicationContext() instanceof DiscoveryRouter
-                && ((DiscoveryRouter) getApplicationContext()).isSupportApplink(applink)) {
-            openApplink(applink);
-        } else {
-            openWebViewURL(applink, this);
-        }
-        finish();
-    }
-
-    public void openApplink(String applink) {
-        if (!TextUtils.isEmpty(applink)) {
-            ((DiscoveryRouter) getApplicationContext())
-                    .goToApplinkActivity(this, applink);
-        }
-    }
-
-    public void openWebViewURL(String url, Context context) {
-        if (!TextUtils.isEmpty(url) && context != null) {
-            ((DiscoveryRouter) getApplication())
-                    .actionOpenGeneralWebView(
-                            this,
-                            url);
-        }
-    }
-
-    @Override
-    public void onHandleResponseSearch(ProductViewModel productViewModel) {
-        handleMoveToSearchActivity(productViewModel);
-    }
-
-    protected void handleMoveToSearchActivity(ProductViewModel productViewModel) {
-        if (!isPausing()) {
-            finishAndMoveToSearchActivity(productViewModel);
-        }
-        else {
-            prepareMoveToSearchActivityDuringOnResume(productViewModel);
-        }
-    }
-
-    private void finishAndMoveToSearchActivity(ProductViewModel productViewModel) {
-        isStartingSearchActivityWithProductViewModel = false;
-
-        moveToSearchActivity(productViewModel);
-        finish();
-    }
-
-    private void moveToSearchActivity(ProductViewModel productViewModel) {
-        if(getApplication() instanceof DiscoveryRouter) {
-            DiscoveryRouter router = (DiscoveryRouter)getApplication();
-
-            if(router != null) {
-                Intent searchActivityIntent = getSearchActivityIntent(router, productViewModel);
-                if(isActivityCalledForResult()) {
-                    setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, searchActivityIntent);
-                }
-                else {
-                    startActivity(searchActivityIntent);
-                }
-            }
-        }
-    }
-
-    private Intent getSearchActivityIntent(@NonNull DiscoveryRouter router, ProductViewModel productViewModel) {
-        Intent searchActivityIntent = router.gotoSearchPage(this);
-        searchActivityIntent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, productViewModel.getSearchParameter());
-        searchActivityIntent.putExtra(EXTRA_HAS_CATALOG, productViewModel.isHasCatalog());
-        searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
-
-        return searchActivityIntent;
-    }
-
-    private boolean isActivityCalledForResult() {
-        return getCallingActivity() != null;
-    }
-
-    private void prepareMoveToSearchActivityDuringOnResume(ProductViewModel productViewModel) {
-        isStartingSearchActivityWithProductViewModel = true;
-        productViewModelForOnResume = productViewModel;
     }
 
     @Override
@@ -248,8 +139,7 @@ public class BaseDiscoveryActivity
     }
 
     @Override
-    public void onHandleImageSearchResponseError() {
-    }
+    public void onHandleImageSearchResponseError() { }
 
     @Override
     public void onHandleResponseIntermediary(String departmentId) {
@@ -304,7 +194,6 @@ public class BaseDiscoveryActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
-        outState.putBoolean(KEY_REQUEST_OS, isRequestOfficialStoreBanner());
         outState.putInt(KEY_TAB_POSITION, getActiveTabPosition());
     }
 
@@ -312,7 +201,6 @@ public class BaseDiscoveryActivity
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP));
-        setRequestOfficialStoreBanner(savedInstanceState.getBoolean(KEY_REQUEST_OS));
         setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION));
     }
 
@@ -326,19 +214,6 @@ public class BaseDiscoveryActivity
     protected void onResume() {
         super.onResume();
         isPause = false;
-
-        handleMoveToSearchActivityOnResume();
-    }
-
-    private void handleMoveToSearchActivityOnResume() {
-        if(isStartingSearchActivityWithProductViewModel) {
-            if(productViewModelForOnResume != null) {
-                finishAndMoveToSearchActivity(productViewModelForOnResume);
-            }
-            else {
-                onProductQuerySubmit();
-            }
-        }
     }
 
     public Boolean isPausing() {

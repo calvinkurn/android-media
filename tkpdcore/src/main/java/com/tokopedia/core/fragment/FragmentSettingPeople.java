@@ -25,7 +25,6 @@ import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.ManageConstant;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
-import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
@@ -130,7 +129,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                 Intent intent = null;
                 switch (position) {
                     case 0:
-                        intent = new Intent(getActivity(), ManagePeopleProfileActivity.class);
+                        intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
                         startActivityForResult(intent, 0);
                         break;
                     case 1:
@@ -181,7 +180,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                 Intent intent = null;
                 switch (position) {
                     case 0:
-                        intent = new Intent(getActivity(), ManagePeopleProfileActivity.class);
+                        intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
                         startActivityForResult(intent, 0);
                         break;
                     case 1:

@@ -14,5 +14,5 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.firebase.config
-    implementation project(rootProject.ext.libraries.config)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 }

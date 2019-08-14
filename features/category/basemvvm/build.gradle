@@ -6,9 +6,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.url)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.abstraction)
@@ -17,5 +17,5 @@ dependencies {
     implementation rootProject.ext.miscDependencies.liveData
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.unifyDependencies.components
-    implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 }
