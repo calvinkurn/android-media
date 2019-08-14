@@ -48,6 +48,8 @@ class HotelMenuShareSheets : BottomSheets() {
 
     override fun title(): String = ""
 
+    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
+
     interface HotelShareListener {
 
         fun onShareAsImageClicked()

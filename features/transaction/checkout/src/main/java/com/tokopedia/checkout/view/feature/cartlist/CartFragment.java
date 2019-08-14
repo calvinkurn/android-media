@@ -389,10 +389,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
-                    return 1;
+                if (position != RecyclerView.NO_POSITION) {
+                    if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
+                        return 1;
+                    }
+                    return 2;
                 }
-                return 2;
+                return 0;
             }
         });
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
@@ -1507,7 +1510,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onDeleteCartDataSuccess(List<Integer> deletedCartIds) {
-        cartAdapter.removeCartItemById(deletedCartIds);
+        cartAdapter.removeCartItemById(deletedCartIds, getContext());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         notifyBottomCartParent();
     }
 
@@ -2300,8 +2304,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
         }
 
-        endlessRecyclerViewScrollListener.updateStateAfterGetData();
-        hasLoadRecommendation = true;
         if (cartRecommendationItemHolderDataList.size() > 0) {
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
             recommendationList = cartRecommendationItemHolderDataList;
@@ -2316,6 +2318,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void hideItemLoading() {
         cartAdapter.removeCartLoadingData();
+        endlessRecyclerViewScrollListener.updateStateAfterGetData();
+        hasLoadRecommendation = true;
     }
 
     @Override
