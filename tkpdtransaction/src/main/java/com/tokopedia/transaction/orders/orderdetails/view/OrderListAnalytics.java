@@ -35,7 +35,7 @@ public class OrderListAnalytics {
     private static final String EVENT_TRANSACTION = "transaction";
     private static final String EVENT_CARTEGORY = "digital-deals";
     private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list detail - mp";
-    private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi";
+    private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi order";
     private static final String EVENT_LABEL_BUY_AGAIN_SUCCESS = "success";
     private static final String EVENT_LABEL_BUY_AGAIN_FAILURE = "failure";
     private static final String KEY_ADD = "add";
