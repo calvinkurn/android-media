@@ -102,7 +102,7 @@ class StickyTextView : FrameLayout {
 
     fun show() {
         val currentTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis())
-        if ((currentTimeInMinutes - getLastSeen()) < INTERVAL_TIME) {
+        if ((currentTimeInMinutes - getLastSeen()) < INTERVAL_TIME_IN_MINUTES) {
             return
         }
 
@@ -151,6 +151,6 @@ class StickyTextView : FrameLayout {
 
         private const val STICKY_PREF = "sticky_login_widget.pref"
         private const val KEY_LAST_SEEN = "last_seen_at_home"
-        private const val INTERVAL_TIME = 30
+        private const val INTERVAL_TIME_IN_MINUTES = 30
     }
 }
