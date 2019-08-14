@@ -669,7 +669,7 @@ class ProductDetailTracking() {
         val tracker = TrackApp.getInstance().gtm
         tracker.sendGeneralEvent(
                 ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
-                ProductTrackingConstant.Category.PDP,,
+                ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.VIEW_LOGIN_STICKY_WIDGET,
                 ProductTrackingConstant.Label.EMPTY_LABEL
         )
