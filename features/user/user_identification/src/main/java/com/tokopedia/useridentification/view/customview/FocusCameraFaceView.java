@@ -16,6 +16,12 @@ import android.view.View;
 
 public class FocusCameraFaceView extends View {
 
+
+    private final static float LEFT_DIMEN_DIVIDER_KK = 20;
+    private final static double TOP_DIMEN_DIVIDER_KK = 3.55;
+    private final static float RIGHT_DIMEN_DIVIDER_KK = 20;
+    private final static double BOTTOM_DIMEN_DIVIDER_KK = 4.73;
+
     private final static float LEFT_DIMEN_DIVIDER = 1.4f;
     private final static double TOP_DIMEN_DIVIDER = 1.3;
     private final static float RIGHT_DIMEN_DIVIDER = 1.4f;
@@ -48,14 +54,13 @@ public class FocusCameraFaceView extends View {
     }
 
     private void initPaints() {
-
         mTransparentPaint = new Paint();
         mTransparentPaint.setColor(Color.TRANSPARENT);
         mTransparentPaint.setStrokeWidth(CONST_STROKE_WIDTH);
 
         mSemiBlackPaint = new Paint();
         mSemiBlackPaint.setColor(Color.TRANSPARENT);
-//        mSemiBlackPaint.setStrokeWidth(CONST_STROKE_WIDTH);
+        mSemiBlackPaint.setStrokeWidth(CONST_STROKE_WIDTH);
     }
 
     @Override
@@ -63,22 +68,13 @@ public class FocusCameraFaceView extends View {
         super.onDraw(canvas);
 
         mPath.reset();
-        float x = getWidth() / 2 ;
-        float y = getHeight() / 3;
-        float radius = getWidth() / 3;
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mPath.addRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
-                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
-                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
-                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
+            mPath.addRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER_KK,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER_KK),
+                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER_KK,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER_KK),
                     Path.Direction.CW);
-
-            mPath.addCircle(x,
-                    y,
-                    radius,
-                    Path.Direction.CW);
-
         } else {
             mPath.addRoundRect(
                     getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
@@ -99,16 +95,11 @@ public class FocusCameraFaceView extends View {
         mPath.setFillType(Path.FillType.INVERSE_EVEN_ODD);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas.drawRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
-                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
-                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
-                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
+            canvas.drawRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER_KK,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER_KK),
+                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER_KK,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER_KK),
                     mTransparentPaint);
-
-//            canvas.drawCircle(x,
-//                    y,
-//                    radius,
-//                    mTransparentPaint);
         } else {
             canvas.drawRoundRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
                     (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
