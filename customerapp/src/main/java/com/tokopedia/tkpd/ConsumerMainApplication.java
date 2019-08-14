@@ -68,6 +68,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -203,24 +205,24 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private void initializeAbTestVariant() {
         // ====== Todo ==== //
-        // 1. Cek sharedPref timestamp apakah ada sharedPref nya + validate
-        // 2. Jika timestamp yg tersimpan lebih dari sejam, fetch gql AbTestVariant
+        // 1. Cek sharedPref timestamp apakah ada sharedPref nya + validate ==== ok
+        // 2. Jika timestamp yg tersimpan lebih dari sejam, fetch gql AbTestVariant + update sharedPref timestamp
         // 3. Jika sukses request, update SharedPref timestamp nya
 
         SharedPreferences sharedPreferences = getSharedPreferences(CustomerAppConstants.SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE);
         Long timestamp_ab_test = sharedPreferences.getLong(CustomerAppConstants.KEY_SP_TIMESTAMP_AB_TEST, 0);
-        // Long current_timestamp = System.currentTimeMillis();
-        Long current_timestamp = new Date().getTime();
-        System.out.println(current_timestamp);
-        long diff = (new Date().getTime() - current_timestamp);
-        System.out.println("diff: " + diff);
+        // long target_timestamp = 1565858512000L;
+
         if (timestamp_ab_test == 0) {
             // Fetch gql
-            Log.d("AB_TEST: ", "0 " + current_timestamp.toString());
         } else {
-            Log.d("AB_TEST: ", "Not 0 " + current_timestamp.toString());
-            // Validate timestamp apakah sudah lebih dari 1 jam
+            long current_timestamp = new Date().getTime();
+            long diff = new Date().getTime() - timestamp_ab_test;        // Validate time differences
+            long diffHours = diff / (60 * 60 * 1000) % 24;
+
+            if (diffHours >= 1) {
                 // Jika ya, fetch gql
+            }
         }
     }
 
