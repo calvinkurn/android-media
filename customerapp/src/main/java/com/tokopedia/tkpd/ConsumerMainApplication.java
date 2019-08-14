@@ -68,6 +68,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -208,7 +209,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         SharedPreferences sharedPreferences = getSharedPreferences(CustomerAppConstants.SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE);
         Long timestamp_ab_test = sharedPreferences.getLong(CustomerAppConstants.KEY_SP_TIMESTAMP_AB_TEST, 0);
-        Long current_timestamp = System.currentTimeMillis();
+        // Long current_timestamp = System.currentTimeMillis();
+        Long current_timestamp = new Date().getTime();
+        System.out.println(current_timestamp);
+        long diff = (new Date().getTime() - current_timestamp);
+        System.out.println("diff: " + diff);
         if (timestamp_ab_test == 0) {
             // Fetch gql
             Log.d("AB_TEST: ", "0 " + current_timestamp.toString());
