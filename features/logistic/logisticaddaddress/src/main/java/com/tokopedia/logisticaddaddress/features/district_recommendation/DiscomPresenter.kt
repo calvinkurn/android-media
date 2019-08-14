@@ -24,12 +24,22 @@ class DiscomPresenter @Inject constructor(
         view = null
     }
 
+    /**
+     * New method to load district recommendations using graphql, token is not required anymore, one
+     * thing to notice: this has not been tested for massive hits, it was meant only just for the
+     * NANA feature, thus the hit load is still divided with REST loadData
+     */
     override fun loadData(query: String, page: Int) {
         gqlUsecase.execute(query, page)
                 .doOnSubscribe { view?.setLoadingState(true) }
                 .subscribe(getLoadDataObserver())
     }
 
+    /**
+     * Loads district recommendations by rest api, it uses mandatory kero token to
+     * request, if the token is not provided, please use the graphql version
+     * @see DiscomPresenter.loadData
+     */
     override fun loadData(query: String, page: Int, token: Token) {
         view?.setLoadingState(true)
         val params = RequestParams.create().apply {
@@ -46,7 +56,7 @@ class DiscomPresenter @Inject constructor(
             view?.let {
                 it.setLoadingState(false)
                 if (!response?.addresses.isNullOrEmpty()) {
-                    it.renderData(response!!.addresses, response!!.isNextAvailable)
+                    it.renderData(response!!.addresses, response.isNextAvailable)
                 } else {
                     it.showEmpty()
                 }
