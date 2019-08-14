@@ -115,11 +115,15 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
     @Override
     protected Fragment getNewFragment() {
+        String leasingId = "";
+        if (getIntent().getData() != null) {
+            leasingId = String.valueOf(getIntent().getData());
+        }
         shipmentFragment = ShipmentFragment.newInstance(
                 getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
                 getIntent().getBooleanExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, false),
                 getIntent().getBooleanExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, false),
-                String.valueOf(getIntent().getData()),
+                leasingId,
                 getIntent().getExtras()
         );
 
