@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.promo.data.model.response;
+package com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -32,14 +32,14 @@ public class AutoApply {
     private int promoId;
     @SerializedName("message")
     @Expose
-    private MessageAutoApply messageAutoApply = new MessageAutoApply();
+    private Message message = new Message();
 
-    public MessageAutoApply getMessageAutoApply() {
-        return messageAutoApply;
+    public Message getMessage() {
+        return message;
     }
 
-    public void setMessageAutoApply(MessageAutoApply messageAutoApply) {
-        this.messageAutoApply = messageAutoApply;
+    public void setMessage(Message message) {
+        this.message = message;
     }
 
     public boolean isSuccess() {

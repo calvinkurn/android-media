@@ -3,23 +3,22 @@ package com.tokopedia.purchase_platform.common.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
-import com.tokopedia.purchase_platform.features.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.CancelAutoApplyCouponUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.DeleteCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListUseCase;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.usecase.GetCartMultipleAddressListUseCase;
-import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateAndReloadCartUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.DeleteCartListUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.ResetCartGetCartListUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateAndReloadCartUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.purchase_platform.features.checkout.domain.mapper.IShipmentMapper;
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormUseCase;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -80,11 +79,6 @@ public class CartUseCaseModule {
             Context context, ICartRepository cartRepository, ICartMapper cartMapper
     ) {
         return new UpdateAndReloadCartUseCase(context, cartRepository, cartMapper);
-    }
-
-    @Provides
-    CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase(ICartRepository iCartRepository) {
-        return new CancelAutoApplyCouponUseCase(iCartRepository);
     }
 
     @Provides

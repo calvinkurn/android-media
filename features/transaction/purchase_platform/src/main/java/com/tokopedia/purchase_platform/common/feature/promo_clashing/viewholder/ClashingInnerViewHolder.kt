@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.promo.viewholder
+package com.tokopedia.purchase_platform.common.feature.promo_clashing.viewholder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View

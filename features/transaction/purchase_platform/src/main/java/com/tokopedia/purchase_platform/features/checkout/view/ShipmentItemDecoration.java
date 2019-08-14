@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.cart.view;
+package com.tokopedia.purchase_platform.features.checkout.view;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -6,25 +6,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoGlobalViewHolder;
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecentViewViewHolder;
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder;
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartSectionHeaderViewHolder;
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartTickerErrorViewHolder;
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartWishlistViewHolder;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
+import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentDonationViewHolder;
+import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentEmasViewHolder;
+import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentNotifierViewHolder;
 
 /**
  * @author anggaprasetiyo on 06/02/18.
  */
 
-public class CartItemDecoration extends RecyclerView.ItemDecoration {
+public class ShipmentItemDecoration extends RecyclerView.ItemDecoration {
 
     private int verticalSpaceHeight;
     private Context context;
 
-    public CartItemDecoration() {
+    public ShipmentItemDecoration() {
     }
 
     @Override
@@ -44,17 +43,19 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
             } else {
                 outRect.bottom = 0;
             }
+        } else if (viewHolder instanceof ShipmentNotifierViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder instanceof PromoGlobalViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_8);
-        } else if (viewHolder instanceof CartTickerErrorViewHolder) {
-            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_6);
+        } else if (viewHolder instanceof ShipmentDonationViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+        } else if (viewHolder instanceof ShipmentEmasViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+            outRect.top = (int) context.getResources().getDimension(R.dimen.dp_8);
+        } else if (viewHolder instanceof ShipmentButtonPaymentViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_14);
-        } else if (viewHolder instanceof CartRecentViewViewHolder ||
-                viewHolder instanceof CartWishlistViewHolder ||
-                viewHolder instanceof CartRecommendationViewHolder ||
-                viewHolder instanceof CartSectionHeaderViewHolder) {
-            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else {
             outRect.bottom = verticalSpaceHeight;
         }

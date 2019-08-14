@@ -5,9 +5,9 @@ import android.os.Parcelable;
 
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.AutoApplyData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.AutoApplyStackData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartPromoSuggestion;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.GlobalCouponAttrData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private boolean useCourierRecommendation;
     private boolean isHidingCourier;
     private boolean isBlackbox;
-    private CartPromoSuggestion cartPromoSuggestion;
+    private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
     private AutoApplyData autoApplyData;
     private EgoldAttributeModel egoldAttributes;
     private AutoApplyStackData autoApplyStackData;
@@ -136,12 +136,12 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.isBlackbox = blackbox;
     }
 
-    public CartPromoSuggestion getCartPromoSuggestion() {
-        return cartPromoSuggestion;
+    public CartPromoSuggestionHolderData getCartPromoSuggestionHolderData() {
+        return cartPromoSuggestionHolderData;
     }
 
-    public void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
-        this.cartPromoSuggestion = cartPromoSuggestion;
+    public void setCartPromoSuggestionHolderData(CartPromoSuggestionHolderData cartPromoSuggestionHolderData) {
+        this.cartPromoSuggestionHolderData = cartPromoSuggestionHolderData;
     }
 
     public AutoApplyData getAutoApplyData() {
@@ -225,7 +225,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         donation = in.readParcelable(Donation.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
         isHidingCourier = in.readByte() != 0;
-        cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
+        cartPromoSuggestionHolderData = in.readParcelable(CartPromoSuggestionHolderData.class.getClassLoader());
         autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
         egoldAttributes = in.readParcelable(EgoldAttributeModel.class.getClassLoader());
         autoApplyStackData = in.readParcelable(AutoApplyStackData.class.getClassLoader());
@@ -247,7 +247,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(donation, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeByte((byte) (isHidingCourier ? 1 : 0));
-        dest.writeParcelable(cartPromoSuggestion, flags);
+        dest.writeParcelable(cartPromoSuggestionHolderData, flags);
         dest.writeParcelable(autoApplyData, flags);
         dest.writeParcelable(egoldAttributes, flags);
         dest.writeParcelable(autoApplyStackData, flags);

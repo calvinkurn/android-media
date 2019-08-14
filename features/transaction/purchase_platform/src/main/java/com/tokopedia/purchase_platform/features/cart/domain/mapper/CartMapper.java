@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartPromoSuggestion;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartTickerErrorData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ResetCartData;
@@ -14,20 +14,20 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopG
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePrice;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.base.IMapperUtil;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
-import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.AutoapplyStack;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDataListResponse;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartList;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.model.response.CartMultipleAddressDataListResponse;
 import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.GlobalCouponAttr;
-import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.Message;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Shop;
 import com.tokopedia.purchase_platform.common.data.model.response.TrackingDetail;
-import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.VoucherOrdersItem;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDetail;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroup;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.DeleteCartDataResponse;
@@ -321,13 +321,13 @@ public class CartMapper implements ICartMapper {
         cartListData.setAllSelected(cartDataListResponse.isGlobalCheckboxState());
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
 
-        CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
-        cartPromoSuggestion.setCta(cartDataListResponse.getPromoSuggestion().getCta());
-        cartPromoSuggestion.setCtaColor(cartDataListResponse.getPromoSuggestion().getCtaColor());
-        cartPromoSuggestion.setPromoCode(cartDataListResponse.getPromoSuggestion().getPromoCode());
-        cartPromoSuggestion.setText(cartDataListResponse.getPromoSuggestion().getText());
-        cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
-        cartListData.setCartPromoSuggestion(cartPromoSuggestion);
+        CartPromoSuggestionHolderData cartPromoSuggestionHolderData = new CartPromoSuggestionHolderData();
+        cartPromoSuggestionHolderData.setCta(cartDataListResponse.getPromoSuggestion().getCta());
+        cartPromoSuggestionHolderData.setCtaColor(cartDataListResponse.getPromoSuggestion().getCtaColor());
+        cartPromoSuggestionHolderData.setPromoCode(cartDataListResponse.getPromoSuggestion().getPromoCode());
+        cartPromoSuggestionHolderData.setText(cartDataListResponse.getPromoSuggestion().getText());
+        cartPromoSuggestionHolderData.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
+        cartListData.setCartPromoSuggestionHolderData(cartPromoSuggestionHolderData);
 
         GlobalCouponAttr globalCouponAttr = new GlobalCouponAttr();
         if (cartDataListResponse.getGlobalCouponAttr() != null && cartDataListResponse.getGlobalCouponAttr().getDescription() != null) {
@@ -531,12 +531,12 @@ public class CartMapper implements ICartMapper {
             cartItemDataList.add(cartItemData);
         }
 
-        CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
-        cartPromoSuggestion.setCta(cartDataListResponse.getPromoSuggestion().getCta());
-        cartPromoSuggestion.setCtaColor(cartDataListResponse.getPromoSuggestion().getCtaColor());
-        cartPromoSuggestion.setPromoCode(cartDataListResponse.getPromoSuggestion().getPromoCode());
-        cartPromoSuggestion.setText(cartDataListResponse.getPromoSuggestion().getText());
-        cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
+        CartPromoSuggestionHolderData cartPromoSuggestionHolderData = new CartPromoSuggestionHolderData();
+        cartPromoSuggestionHolderData.setCta(cartDataListResponse.getPromoSuggestion().getCta());
+        cartPromoSuggestionHolderData.setCtaColor(cartDataListResponse.getPromoSuggestion().getCtaColor());
+        cartPromoSuggestionHolderData.setPromoCode(cartDataListResponse.getPromoSuggestion().getPromoCode());
+        cartPromoSuggestionHolderData.setText(cartDataListResponse.getPromoSuggestion().getText());
+        cartPromoSuggestionHolderData.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
 
         List<ShopGroupData> shopGroupDataList = new ArrayList<>();
         for (CartItemData cartItemData : cartItemDataList) {
@@ -548,7 +548,7 @@ public class CartMapper implements ICartMapper {
         }
         cartListData.setShopGroupDataList(shopGroupDataList);
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
-        cartListData.setCartPromoSuggestion(cartPromoSuggestion);
+        cartListData.setCartPromoSuggestionHolderData(cartPromoSuggestionHolderData);
 
         if (cartDataListResponse.getAutoapplyStack() != null) {
             AutoApplyStackData autoApplyStackData = new AutoApplyStackData();

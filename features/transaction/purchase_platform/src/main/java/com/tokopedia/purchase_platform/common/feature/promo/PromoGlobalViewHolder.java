@@ -10,12 +10,12 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
-public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
+public class PromoGlobalViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_PROMO = R.layout.holder_item_cart_promo;
     private final PromoActionListener actionListener;
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
 
-    public CartVoucherPromoViewHolder(View itemView, PromoActionListener actionListener) {
+    public PromoGlobalViewHolder(View itemView, PromoActionListener actionListener) {
         super(itemView);
         this.actionListener = actionListener;
         this.tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_cart_holder_view);

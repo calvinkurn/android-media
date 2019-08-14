@@ -3,8 +3,9 @@ package com.tokopedia.purchase_platform.features.cart.domain.model.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.AutoApplyStackData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.GlobalCouponAttr;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class CartListData implements Parcelable {
     private String errorMessage;
 
     private List<ShopGroupData> shopGroupDataList = new ArrayList<>();
-    private CartPromoSuggestion cartPromoSuggestion;
+    private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
     private boolean promoCouponActive;
     private CartTickerErrorData cartTickerErrorData;
     private AutoApplyData autoApplyData;
@@ -52,12 +53,12 @@ public class CartListData implements Parcelable {
         this.promoCouponActive = promoCouponActive;
     }
 
-    public CartPromoSuggestion getCartPromoSuggestion() {
-        return cartPromoSuggestion;
+    public CartPromoSuggestionHolderData getCartPromoSuggestionHolderData() {
+        return cartPromoSuggestionHolderData;
     }
 
-    public void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
-        this.cartPromoSuggestion = cartPromoSuggestion;
+    public void setCartPromoSuggestionHolderData(CartPromoSuggestionHolderData cartPromoSuggestionHolderData) {
+        this.cartPromoSuggestionHolderData = cartPromoSuggestionHolderData;
     }
 
     public boolean isError() {
@@ -137,7 +138,7 @@ public class CartListData implements Parcelable {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
         dest.writeTypedList(this.shopGroupDataList);
-        dest.writeParcelable(this.cartPromoSuggestion, flags);
+        dest.writeParcelable(this.cartPromoSuggestionHolderData, flags);
         dest.writeByte(this.promoCouponActive ? (byte) 1 : (byte) 0);
         dest.writeByte(this.allSelected ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.cartTickerErrorData, flags);
@@ -149,7 +150,7 @@ public class CartListData implements Parcelable {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
         this.shopGroupDataList = in.createTypedArrayList(ShopGroupData.CREATOR);
-        this.cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
+        this.cartPromoSuggestionHolderData = in.readParcelable(CartPromoSuggestionHolderData.class.getClassLoader());
         this.promoCouponActive = in.readByte() != 0;
         this.allSelected = in.readByte() != 0;
         this.cartTickerErrorData = in.readParcelable(CartTickerErrorData.class.getClassLoader());

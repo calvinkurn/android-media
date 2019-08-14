@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.cart.domain.model.cartlist;
+package com.tokopedia.purchase_platform.common.feature.promo_suggestion;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentData;
  * @author anggaprasetiyo on 15/02/18.
  */
 
-public class CartPromoSuggestion implements Parcelable, ShipmentData {
+public class CartPromoSuggestionHolderData implements Parcelable, ShipmentData {
     private String cta;
     private String ctaColor;
     private boolean isVisible;
@@ -57,7 +57,7 @@ public class CartPromoSuggestion implements Parcelable, ShipmentData {
     }
 
 
-    public CartPromoSuggestion() {
+    public CartPromoSuggestionHolderData() {
     }
 
     @Override
@@ -74,7 +74,7 @@ public class CartPromoSuggestion implements Parcelable, ShipmentData {
         dest.writeString(this.text);
     }
 
-    protected CartPromoSuggestion(Parcel in) {
+    protected CartPromoSuggestionHolderData(Parcel in) {
         this.cta = in.readString();
         this.ctaColor = in.readString();
         this.isVisible = in.readByte() != 0;
@@ -82,15 +82,15 @@ public class CartPromoSuggestion implements Parcelable, ShipmentData {
         this.text = in.readString();
     }
 
-    public static final Creator<CartPromoSuggestion> CREATOR = new Creator<CartPromoSuggestion>() {
+    public static final Creator<CartPromoSuggestionHolderData> CREATOR = new Creator<CartPromoSuggestionHolderData>() {
         @Override
-        public CartPromoSuggestion createFromParcel(Parcel source) {
-            return new CartPromoSuggestion(source);
+        public CartPromoSuggestionHolderData createFromParcel(Parcel source) {
+            return new CartPromoSuggestionHolderData(source);
         }
 
         @Override
-        public CartPromoSuggestion[] newArray(int size) {
-            return new CartPromoSuggestion[size];
+        public CartPromoSuggestionHolderData[] newArray(int size) {
+            return new CartPromoSuggestionHolderData[size];
         }
     };
 }

@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.checkout.domain.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.AutoApplyData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartPromoSuggestion;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Donation;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupAddress;
@@ -15,18 +15,18 @@ import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipme
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.ServiceId;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.TradeInInfo;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.GlobalCouponAttrData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.GlobalCouponAttrData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldTieringModel;
 import com.tokopedia.purchase_platform.common.base.IMapperUtil;
-import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.AutoapplyStack;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
-import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.Message;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message;
 import com.tokopedia.purchase_platform.common.data.model.response.TrackingDetail;
-import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.VoucherOrdersItem;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
@@ -73,13 +73,13 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
 
         if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
-            CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
-            cartPromoSuggestion.setCta(shipmentAddressFormDataResponse.getPromoSuggestion().getCta());
-            cartPromoSuggestion.setCtaColor(shipmentAddressFormDataResponse.getPromoSuggestion().getCtaColor());
-            cartPromoSuggestion.setPromoCode(shipmentAddressFormDataResponse.getPromoSuggestion().getPromoCode());
-            cartPromoSuggestion.setText(shipmentAddressFormDataResponse.getPromoSuggestion().getText());
-            cartPromoSuggestion.setVisible(shipmentAddressFormDataResponse.getPromoSuggestion().getIsVisible() == 1);
-            dataResult.setCartPromoSuggestion(cartPromoSuggestion);
+            CartPromoSuggestionHolderData cartPromoSuggestionHolderData = new CartPromoSuggestionHolderData();
+            cartPromoSuggestionHolderData.setCta(shipmentAddressFormDataResponse.getPromoSuggestion().getCta());
+            cartPromoSuggestionHolderData.setCtaColor(shipmentAddressFormDataResponse.getPromoSuggestion().getCtaColor());
+            cartPromoSuggestionHolderData.setPromoCode(shipmentAddressFormDataResponse.getPromoSuggestion().getPromoCode());
+            cartPromoSuggestionHolderData.setText(shipmentAddressFormDataResponse.getPromoSuggestion().getText());
+            cartPromoSuggestionHolderData.setVisible(shipmentAddressFormDataResponse.getPromoSuggestion().getIsVisible() == 1);
+            dataResult.setCartPromoSuggestionHolderData(cartPromoSuggestionHolderData);
         }
 
         if (shipmentAddressFormDataResponse.getEgoldAttributes() != null) {

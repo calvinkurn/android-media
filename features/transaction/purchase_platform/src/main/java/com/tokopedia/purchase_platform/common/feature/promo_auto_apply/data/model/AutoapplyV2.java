@@ -1,5 +1,5 @@
 
-package com.tokopedia.purchase_platform.common.feature.promo.data.model.response;
+package com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

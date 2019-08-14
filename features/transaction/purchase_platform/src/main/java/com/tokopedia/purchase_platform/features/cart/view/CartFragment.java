@@ -41,11 +41,11 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartPromoSuggestion;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView;
 import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
@@ -59,7 +59,7 @@ import com.tokopedia.purchase_platform.common.di.component.CartListComponent;
 import com.tokopedia.purchase_platform.common.di.component.DaggerCartListComponent;
 import com.tokopedia.purchase_platform.common.di.module.CartListModule;
 import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule;
-import com.tokopedia.purchase_platform.common.feature.promo.ClashBottomSheetFragment;
+import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartAdapter;
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder;
@@ -708,7 +708,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
+    public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestionHolderData data, int position) {
         data.setVisible(false);
         cartAdapter.notifyItemChanged(position);
         cartAdapter.checkForShipmentForm();
@@ -1068,8 +1068,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 cartAdapter.removeCartEmptyData();
                 cartAdapter.addPromoStackingVoucherData(promoStackingData);
 
-                if (cartListData.getCartPromoSuggestion().isVisible()) {
-                    cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
+                if (cartListData.getCartPromoSuggestionHolderData().isVisible()) {
+                    cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestionHolderData());
                 }
 
                 if (cartListData.isError()) {
@@ -1251,7 +1251,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 dPresenter.getCartListData().getAutoApplyStackData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData().isSuccess();
         Intent intent = ShipmentActivity.createInstance(getActivity(), cartAdapter.getPromoStackingGlobalData(),
-                cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(),
+                cartListData.getCartPromoSuggestionHolderData(), cartListData.getDefaultPromoDialogTab(),
                 isAutoApplyPromoStackCodeApplied
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);

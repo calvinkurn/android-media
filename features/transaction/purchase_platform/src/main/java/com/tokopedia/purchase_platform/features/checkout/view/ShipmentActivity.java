@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartPromoSuggestion;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
@@ -35,12 +35,12 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
     public static Intent createInstance(Context context,
                                         PromoStackingData promoData,
-                                        CartPromoSuggestion cartPromoSuggestion,
+                                        CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
                                         String defaultSelectedTabPromo,
                                         boolean isAutoApplyPromoCodeApplied) {
         Intent intent = new Intent(context, ShipmentActivity.class);
         intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoData);
-        intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
+        intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionHolderData);
         intent.putExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB, defaultSelectedTabPromo);
         intent.putExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, isAutoApplyPromoCodeApplied);
         return intent;

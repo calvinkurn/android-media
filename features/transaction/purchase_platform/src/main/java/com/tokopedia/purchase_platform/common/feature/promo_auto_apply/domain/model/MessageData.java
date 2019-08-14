@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking;
+package com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

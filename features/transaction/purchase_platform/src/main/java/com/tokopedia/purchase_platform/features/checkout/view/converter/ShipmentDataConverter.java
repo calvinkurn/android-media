@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.checkout.view.common.utils.Utils;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupShop;

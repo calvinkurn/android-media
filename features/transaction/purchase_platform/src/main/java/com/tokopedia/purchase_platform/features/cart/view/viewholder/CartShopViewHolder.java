@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;

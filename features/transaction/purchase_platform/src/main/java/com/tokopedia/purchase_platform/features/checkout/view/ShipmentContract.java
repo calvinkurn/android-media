@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartPromoSuggestion;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
@@ -239,7 +239,7 @@ public interface ShipmentContract {
                                             String cornerId, String deviceId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoStackingData promoStackingData,
-                                                          CartPromoSuggestion cartPromoSuggestion,
+                                                          CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
                                                           RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
                                                           ShipmentCostModel shipmentCostModel,
@@ -277,9 +277,9 @@ public interface ShipmentContract {
 
         void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList);
 
-        CartPromoSuggestion getCartPromoSuggestion();
+        CartPromoSuggestionHolderData getCartPromoSuggestionHolderData();
 
-        void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion);
+        void setCartPromoSuggestionHolderData(CartPromoSuggestionHolderData cartPromoSuggestionHolderData);
 
         CheckoutData getCheckoutData();
 
@@ -302,8 +302,6 @@ public interface ShipmentContract {
         void setEgoldAttributeModel(EgoldAttributeModel egoldAttributeModel);
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
-
-        void cancelAutoApplyCoupon(String variant);
 
         void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 

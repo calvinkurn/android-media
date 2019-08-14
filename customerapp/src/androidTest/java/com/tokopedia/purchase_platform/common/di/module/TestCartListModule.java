@@ -3,18 +3,17 @@ package com.tokopedia.purchase_platform.common.di.module;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
-import com.tokopedia.purchase_platform.common.feature.promo.domain.CancelAutoApplyCouponUseCase;
+import com.tokopedia.purchase_platform.common.di.scope.CartListScope;
+import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.CartListAdapter;
-import com.tokopedia.purchase_platform.common.di.scope.CartListScope;
 import com.tokopedia.purchase_platform.features.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.purchase_platform.features.checkout.view.view.cartlist.CartListPresenter;
 import com.tokopedia.purchase_platform.features.checkout.view.view.cartlist.ICartListPresenter;
-import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
 
 import dagger.Module;
 import dagger.Provides;
@@ -35,7 +34,6 @@ public class TestCartListModule {
     private ResetCartGetCartListUseCase resetCartGetCartListUseCase;
     private CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private CartApiRequestParamGenerator cartApiRequestParamGenerator;
-    private CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
 
     public TestCartListModule(CartListAdapter.ActionListener cartFragment) {
         this.cartListActionListener = cartFragment;
@@ -55,15 +53,14 @@ public class TestCartListModule {
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
-                                                 CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
+                                                 CartApiRequestParamGenerator cartApiRequestParamGenerator) {
 
         return new CartListPresenter(
                 getGetCartListUseCase(),
                 deleteCartListUseCase, updateCartUseCase,
                 resetCartGetCartListUseCase,
                 checkPromoCodeCartListUseCase, compositeSubscription,
-                cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase
+                cartApiRequestParamGenerator
         );
     }
 

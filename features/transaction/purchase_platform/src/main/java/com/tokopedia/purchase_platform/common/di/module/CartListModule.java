@@ -177,19 +177,6 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    CartAdapter provideCartListAdapter() {
-        return new CartAdapter(cartActionListener, promoActionListener, cartItemActionListener);
-    }
-
-    @Provides
-    @CartListScope
-    @ApplicationContext
-    Context provideContextAbstraction(Context context) {
-        return context;
-    }
-
-    @Provides
-    @CartListScope
     TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
         return new TrackingPromoCheckoutUtil();
     }

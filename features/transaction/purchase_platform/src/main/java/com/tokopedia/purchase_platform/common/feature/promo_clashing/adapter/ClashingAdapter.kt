@@ -1,9 +1,9 @@
-package com.tokopedia.purchase_platform.common.feature.promo.adapter
+package com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.purchase_platform.common.feature.promo.viewholder.ClashingViewHolder
+import com.tokopedia.purchase_platform.common.feature.promo_clashing.viewholder.ClashingViewHolder
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOptionUiModel
 import javax.inject.Inject
 

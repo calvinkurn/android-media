@@ -30,12 +30,12 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartPromoSuggestion;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
@@ -43,9 +43,8 @@ import com.tokopedia.purchase_platform.common.di.component.CartComponent;
 import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.cod_bottomsheet.CodBottomSheetFragment;
-import com.tokopedia.purchase_platform.common.feature.promo.ClashBottomSheetFragment;
+import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.promo_benefit.TotalBenefitBottomSheetFragment;
-import com.tokopedia.purchase_platform.features.cart.view.CartItemDecoration;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity;
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
@@ -199,7 +198,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CornerAnalytics mTrackerCorner;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
-    CartPromoSuggestion savedCartPromoSuggestion;
+    CartPromoSuggestionHolderData savedCartPromoSuggestionHolderData;
     List<ShipmentCartItemModel> savedShipmentCartItemModelList;
     ShipmentCostModel savedShipmentCostModel;
     EgoldAttributeModel savedEgoldAttributeModel;
@@ -254,7 +253,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     (new TypeToken<ArrayList<ShipmentCartItemModel>>() {
                     }).getType());
             if (savedShipmentCartItemModelList != null) {
-                savedCartPromoSuggestion = saveInstanceCacheManager.get(CartPromoSuggestion.class.getSimpleName(), CartPromoSuggestion.class);
+                savedCartPromoSuggestionHolderData = saveInstanceCacheManager.get(CartPromoSuggestionHolderData.class.getSimpleName(), CartPromoSuggestionHolderData.class);
                 savedRecipientAddressModel = saveInstanceCacheManager.get(RecipientAddressModel.class.getSimpleName(), RecipientAddressModel.class);
                 savedShipmentCostModel = saveInstanceCacheManager.get(ShipmentCostModel.class.getSimpleName(), ShipmentCostModel.class);
                 savedEgoldAttributeModel = saveInstanceCacheManager.get(EgoldAttributeModel.class.getSimpleName(), EgoldAttributeModel.class);
@@ -323,7 +322,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         progressDialogNormal.setCancelable(false);
 
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
-        rvShipment.addItemDecoration(new CartItemDecoration());
+        rvShipment.addItemDecoration(new ShipmentItemDecoration());
     }
 
     @Override
@@ -333,7 +332,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), true, null, getDeviceId());
         } else {
             shipmentPresenter.setShipmentCartItemModelList(savedShipmentCartItemModelList);
-            shipmentPresenter.setCartPromoSuggestion(savedCartPromoSuggestion);
+            shipmentPresenter.setCartPromoSuggestionHolderData(savedCartPromoSuggestionHolderData);
             shipmentPresenter.setRecipientAddressModel(savedRecipientAddressModel);
             shipmentPresenter.setShipmentCostModel(savedShipmentCostModel);
             shipmentPresenter.setShipmentDonationModel(savedShipmentDonationModel);
@@ -360,7 +359,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         saveInstanceCacheManager.onSave(outState);
         if (shipmentPresenter.getShipmentCartItemModelList() != null) {
             saveInstanceCacheManager.put(ShipmentCartItemModel.class.getSimpleName(), new ArrayList<>(shipmentPresenter.getShipmentCartItemModelList()));
-            saveInstanceCacheManager.put(CartPromoSuggestion.class.getSimpleName(), shipmentPresenter.getCartPromoSuggestion());
+            saveInstanceCacheManager.put(CartPromoSuggestionHolderData.class.getSimpleName(), shipmentPresenter.getCartPromoSuggestionHolderData());
             saveInstanceCacheManager.put(RecipientAddressModel.class.getSimpleName(), shipmentPresenter.getRecipientAddressModel());
             saveInstanceCacheManager.put(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
             saveInstanceCacheManager.put(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
@@ -396,7 +395,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void initRecyclerViewData(PromoStackingData promoStackingData,
-                                      CartPromoSuggestion cartPromoSuggestion,
+                                      CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
                                       RecipientAddressModel recipientAddressModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
@@ -422,10 +421,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         shipmentAdapter.addPromoStackingVoucherData(promoStackingData);
         if (promoStackingData != null) {
-            cartPromoSuggestion.setVisible(false);
-            shipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
+            cartPromoSuggestionHolderData.setVisible(false);
+            shipmentAdapter.addPromoSuggestionData(cartPromoSuggestionHolderData);
         } else {
-            shipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
+            shipmentAdapter.addPromoSuggestionData(cartPromoSuggestionHolderData);
         }
 
         if (recipientAddressModel != null) {
@@ -599,7 +598,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.setShowOnboarding(shipmentPresenter.isShowOnboarding());
         initRecyclerViewData(
                 shipmentAdapter.getPromoGlobalStackData(),
-                shipmentPresenter.getCartPromoSuggestion(),
+                shipmentPresenter.getCartPromoSuggestionHolderData(),
                 recipientAddressModel,
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
@@ -643,7 +642,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         initRecyclerViewData(shipmentAdapter.getPromoGlobalStackData(),
-                shipmentPresenter.getCartPromoSuggestion(),
+                shipmentPresenter.getCartPromoSuggestionHolderData(),
                 shipmentPresenter.getRecipientAddressModel(),
                 oldShipmentCartItemModelList,
                 shipmentPresenter.getShipmentDonationModel(),
@@ -658,7 +657,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderDataChanged() {
         initRecyclerViewData(
                 shipmentAdapter.getPromoGlobalStackData(),
-                shipmentPresenter.getCartPromoSuggestion(),
+                shipmentPresenter.getCartPromoSuggestionHolderData(),
                 shipmentPresenter.getRecipientAddressModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
@@ -1157,13 +1156,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         } else if (data != null) {
             PromoStackingData promoStackingData = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_PROMO_DATA);
-            CartPromoSuggestion cartPromoSuggestion = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_PROMO_SUGGESTION_DATA);
+            CartPromoSuggestionHolderData cartPromoSuggestionHolderData = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_PROMO_SUGGESTION_DATA);
             RecipientAddressModel recipientAddressModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_RECIPIENT_ADDRESS_DATA);
             ArrayList<ShipmentCartItemModel> shipmentCartItemModels = data.getParcelableArrayListExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_CART_TEM_LIST_DATA);
             ShipmentCostModel shipmentCostModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_COST_SATA);
             ShipmentDonationModel shipmentDonationModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_DONATION_DATA);
             shipmentPresenter.processReloadCheckoutPageFromMultipleAddress(
-                    promoStackingData, cartPromoSuggestion, recipientAddressModel, shipmentCartItemModels,
+                    promoStackingData, cartPromoSuggestionHolderData, recipientAddressModel, shipmentCartItemModels,
                     shipmentCostModel, shipmentDonationModel
             );
         } else {
@@ -1305,7 +1304,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         sendAnalyticsOnClickChooseToMultipleAddressShipment();
         Intent intent = MultipleAddressFormActivity.createInstance(getActivity(),
                 shipmentAdapter.getPromoGlobalStackData(),
-                shipmentPresenter.getCartPromoSuggestion(),
+                shipmentPresenter.getCartPromoSuggestionHolderData(),
                 shipmentPresenter.getRecipientAddressModel(),
                 new ArrayList<>(),
                 shipmentPresenter.getShipmentCostModel(),
@@ -1575,9 +1574,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion cartPromoSuggestion,
+    public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
                                                         int position) {
-        cartPromoSuggestion.setVisible(false);
+        cartPromoSuggestionHolderData.setVisible(false);
         shipmentAdapter.notifyDataSetChanged();
     }
 

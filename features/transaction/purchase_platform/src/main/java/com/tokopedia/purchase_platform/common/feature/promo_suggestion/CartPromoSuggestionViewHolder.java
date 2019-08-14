@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartPromoSuggestion;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
 
 /**
@@ -28,7 +27,7 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
     private TextView tvAction;
     private RecyclerView.LayoutParams layoutParamsVisible;
     private RecyclerView.LayoutParams layoutParamsGone;
-    private CartPromoSuggestion cartPromoSuggestion;
+    private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
 
     public CartPromoSuggestionViewHolder(View itemView, PromoActionListener actionListener) {
         super(itemView);
@@ -48,8 +47,8 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
         layoutParamsGone = new RecyclerView.LayoutParams(0, 0);
     }
 
-    public void bindData(CartPromoSuggestion data, int position) {
-        cartPromoSuggestion = data;
+    public void bindData(CartPromoSuggestionHolderData data, int position) {
+        cartPromoSuggestionHolderData = data;
         if (data.isVisible()) {
             mRlPromoSuggestionLayout.setVisibility(View.VISIBLE);
             mRlPromoSuggestionLayout.setLayoutParams(layoutParamsVisible);
@@ -66,11 +65,11 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public CartPromoSuggestion getCartPromoSuggestion() {
-        return cartPromoSuggestion;
+    public CartPromoSuggestionHolderData getCartPromoSuggestionHolderData() {
+        return cartPromoSuggestionHolderData;
     }
 
-    private View.OnClickListener actionClickListener(final CartPromoSuggestion cartPromoSuggestion,
+    private View.OnClickListener actionClickListener(final CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
                                                      final int position) {
         return new View.OnClickListener() {
             @Override
@@ -80,12 +79,12 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
         };
     }
 
-    private View.OnClickListener closeClickListener(final CartPromoSuggestion cartPromoSuggestion,
+    private View.OnClickListener closeClickListener(final CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
                                                     final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onCartPromoSuggestionButtonCloseClicked(cartPromoSuggestion, position);
+                actionListener.onCartPromoSuggestionButtonCloseClicked(cartPromoSuggestionHolderData, position);
             }
         };
     }

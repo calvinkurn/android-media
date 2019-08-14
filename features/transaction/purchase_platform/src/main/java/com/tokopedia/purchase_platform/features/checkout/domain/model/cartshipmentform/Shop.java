@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipm
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 
 /**
  * @author anggaprasetiyo on 22/02/18.

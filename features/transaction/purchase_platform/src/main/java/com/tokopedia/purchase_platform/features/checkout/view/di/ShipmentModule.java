@@ -3,49 +3,48 @@ package com.tokopedia.purchase_platform.features.checkout.view.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter;
+import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase;
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.base.IMapperUtil;
+import com.tokopedia.purchase_platform.common.base.MapperUtil;
+import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
+import com.tokopedia.purchase_platform.common.di.module.ConverterDataModule;
+import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule;
+import com.tokopedia.purchase_platform.common.di.module.UtilModule;
+import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.data.AddressRepository;
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ICheckoutMapper;
-import com.tokopedia.purchase_platform.common.base.IMapperUtil;
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.purchase_platform.common.base.MapperUtil;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.CancelAutoApplyCouponUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.ChangeShippingAddressUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.CodCheckoutUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.SaveShipmentStateUseCase;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
-import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
-import com.tokopedia.purchase_platform.common.di.module.ConverterDataModule;
-import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule;
-import com.tokopedia.purchase_platform.common.di.module.UtilModule;
-import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentFragment;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter;
+import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataRequestConverter;
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter;
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
-import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
-import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
-import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -180,7 +179,6 @@ public class ShipmentModule {
                                                         GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
                                                         GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase,
                                                         EditAddressUseCase editAddressUseCase,
-                                                        CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                         ChangeShippingAddressUseCase changeShippingAddressUseCase,
                                                         SaveShipmentStateUseCase saveShipmentStateUseCase,
                                                         CodCheckoutUseCase codCheckoutUseCase,
@@ -195,7 +193,7 @@ public class ShipmentModule {
                 checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormUseCase,
                 getShipmentAddressFormOneClickShipementUseCase,
-                editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
+                editAddressUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getCourierRecommendationUseCase,
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface,

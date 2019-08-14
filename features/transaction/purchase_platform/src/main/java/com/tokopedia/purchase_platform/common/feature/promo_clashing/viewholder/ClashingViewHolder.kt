@@ -1,11 +1,11 @@
-package com.tokopedia.purchase_platform.common.feature.promo.viewholder
+package com.tokopedia.purchase_platform.common.feature.promo_clashing.viewholder
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.feature.promo.adapter.ClashingAdapter
-import com.tokopedia.purchase_platform.common.feature.promo.adapter.ClashingInnerAdapter
+import com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter.ClashingAdapter
+import com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter.ClashingInnerAdapter
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOptionUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel

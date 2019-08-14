@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.checkout.view.viewmodel;
+package com.tokopedia.purchase_platform.common.feature.seller_cashback;
 
 import com.tokopedia.logisticcart.shipping.model.ShipmentData;
 
