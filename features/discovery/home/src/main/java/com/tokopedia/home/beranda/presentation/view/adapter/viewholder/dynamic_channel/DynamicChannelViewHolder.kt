@@ -49,7 +49,11 @@ abstract class DynamicChannelViewHolder<T: RecyclerView.ViewHolder>(itemView: Vi
 
             recyclerView.layoutManager = GridLayoutManager(itemView.context, defaultSpanCount,
                     GridLayoutManager.VERTICAL, false)
-            recyclerView.addItemDecoration(getRecyclerViewDecorator())
+            /**
+             * add decoration when recyclerview has no item decorator
+             */
+            if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(getRecyclerViewDecorator())
+
             recyclerView.adapter = getItemAdapter(channel)
             /**
              * Requirement:
@@ -86,7 +90,7 @@ abstract class DynamicChannelViewHolder<T: RecyclerView.ViewHolder>(itemView: Vi
              */
             if (hasExpiredTime(channel)) {
                 val expiredTime = DateHelper.getExpiredTime(channel.header.expiredTime)
-                if (DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
+                if (!DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
                     countDownView.setup(element.serverTimeOffset, expiredTime, countDownListener)
                     countDownView.visibility = View.VISIBLE
                 }

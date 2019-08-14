@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
+import android.graphics.Paint
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -100,6 +101,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 TextViewHelper.displayText(holder.channelDiscount1, grid.discount)
                 TextViewHelper.displayText(holder.channelBeforeDiscPrice1, grid.slashedPrice)
                 TextViewHelper.displayText(holder.channelCashback, grid.cashback)
+                holder.channelBeforeDiscPrice1.paintFlags = holder.channelBeforeDiscPrice1.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
                 holder.itemContainer1.setOnClickListener {
                     var attr = ""
