@@ -539,8 +539,12 @@ final class ProductListPresenter
     private void getViewToProcessSearchResult(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
-        getView().sendTrackingForResultCode(productViewModel.getResponseCode(),
-                productViewModel.getRelatedSearchModel().getRelatedKeyword());
+        String alternativeKeyword = "";
+        if (productViewModel.getRelatedSearchModel() != null) {
+            alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+        }
+
+        getView().sendTrackingForResultCode(productViewModel.getResponseCode(), alternativeKeyword);
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToShowEmptySearch(productViewModel);

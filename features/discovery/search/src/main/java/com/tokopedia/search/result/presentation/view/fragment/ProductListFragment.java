@@ -1057,11 +1057,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTrackingForResultCode(String resultCode, String relatedKeyword) {
-        if ("1".equals(resultCode) || "3".equals(resultCode)) {
-            SearchTracking.eventSearchNoResult(getQueryKey(), getScreenName(), getSelectedFilter(), "", resultCode);
-        } else if ("2".equals(resultCode) || "6".equals(resultCode)) {
-            SearchTracking.eventSearchNoResult(getQueryKey(), getScreenName(), getSelectedFilter(), relatedKeyword, resultCode);
+    public void sendTrackingForResultCode(String resultCode, String alternativeKeyword) {
+        if ("1".equals(resultCode) || "3".equals(resultCode) || "2".equals(resultCode) || "6".equals(resultCode)) {
+            SearchTracking.eventSearchNoResult(getQueryKey(), getScreenName(), getSelectedFilter(), alternativeKeyword, resultCode);
         }
     }
 
