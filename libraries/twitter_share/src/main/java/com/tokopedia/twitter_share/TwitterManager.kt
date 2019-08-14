@@ -1,6 +1,7 @@
 package com.tokopedia.twitter_share
 
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -12,7 +13,7 @@ import twitter4j.conf.ConfigurationBuilder
 import java.io.File
 
 class TwitterManager(
-    private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface
 ) : TwitterAuthenticator.TwitterAuthenticatorListener {
 
     interface TwitterManagerListener {
@@ -68,12 +69,12 @@ class TwitterManager(
         Observable.fromCallable {
             getAccessToken(requestToken, oAuthVerifier)
         }.subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe { accessToken ->
-            instance = twitterInstance
-            saveAccessToken(accessToken)
-            listener?.onAuthenticationSuccess(accessToken.token, accessToken.tokenSecret)
-        }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { accessToken ->
+                    instance = twitterInstance
+                    saveAccessToken(accessToken)
+                    listener?.onAuthenticationSuccess(accessToken.token, accessToken.tokenSecret)
+                }
     }
 
     private fun getTwitterInstance() = TwitterFactory(config).instance
@@ -93,34 +94,31 @@ class TwitterManager(
      * @see <a href="https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started">Twitter API Docs</a>
      * @see <a href="https://cards-dev.twitter.com/validator">Twitter Card Validator</a>
      */
-    fun postTweet(message: String, fileList: List<File> = emptyList()): Observable<Status> {
-        return doIfAuthenticated {
-            return@doIfAuthenticated Observable.from(fileList)
-                    .concatMap(::uploadMedia)
-                    .map(UploadedMedia::getMediaId)
+    suspend fun postTweet(message: String, fileList: List<File> = emptyList()) = coroutineScope {
+        return@coroutineScope doIfAuthenticated {
+            val mediaIds = fileList
+                    .map { file -> async { uploadMedia(file) } }
+                    .map { deferredMedia -> deferredMedia.await().mediaId }
                     .toList()
-                    .flatMap { ids -> updateStatus(message, ids.toLongArray()) }
-                    .subscribeOn(Schedulers.io())
+
+            return@doIfAuthenticated updateStatus(message, mediaIds.toLongArray())
         }
     }
 
-    private fun updateStatus(message: String, mediaIds: LongArray): Observable<Status> {
-        return Observable.fromCallable {
-            instance.tweets().updateStatus(
-                    StatusUpdate(message)
-                            .apply {
-                                setMediaIds(*mediaIds)
-                            }
-            )
-        }
+    private suspend fun updateStatus(message: String, mediaIds: LongArray): Status = withContext(Dispatchers.IO) {
+        instance.tweets().updateStatus(
+                StatusUpdate(message)
+                        .apply {
+                            setMediaIds(*mediaIds)
+                        }
+        )
     }
 
-    private fun uploadMedia(file: File): Observable<UploadedMedia> {
-        return Observable.fromCallable { instance.tweets().uploadMedia(file) }
+    private suspend fun uploadMedia(file: File): UploadedMedia = withContext(Dispatchers.IO) {
+        instance.tweets().uploadMedia(file)
     }
 
-    private fun<T> doIfAuthenticated(action: () -> Observable<T>): Observable<T> {
-        return if (isAuthenticated) action()
-        else Observable.error(IllegalStateException("User not authenticated"))
+    private suspend fun<T> doIfAuthenticated(action: suspend () -> T) {
+        if (isAuthenticated) withContext(Dispatchers.IO) { action() }
     }
 }

@@ -22,10 +22,12 @@ import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostDat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import rx.Subscriber
-import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -157,8 +159,8 @@ class SubmitPostService : JobIntentService() {
                     return
                 }
                 notificationManager?.onSuccessPost()
-                postContentToOtherService(submitPostData.feedContentSubmit.meta.content)
                 sendBroadcast()
+                postContentToOtherService(submitPostData.feedContentSubmit.meta.content)
             }
 
             override fun onCompleted() {
@@ -184,10 +186,8 @@ class SubmitPostService : JobIntentService() {
     }
 
     private fun postToTwitter(content: Content) {
-        twitterManager.postTweet(content.description)
-                .subscribe(
-                        { Timber.tag("Post to Twitter").d("Success") },
-                        { Timber.tag("Post to Twitter").e(it) }
-                )
+        GlobalScope.launchCatchError(Dispatchers.IO, block = {
+            twitterManager.postTweet(content.description)
+        }) { it.debugTrace() }
     }
 }
