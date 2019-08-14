@@ -2,13 +2,13 @@ package com.tokopedia.home_recom.model.datamodel
 
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
-import com.tokopedia.home_recom.view.listener.TrackingListener
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 class RecommendationCarouselDataModel(
         val title: String,
         val products: List<RecommendationCarouselItemDataModel>,
-        val listener: TrackingListener
+        val listener: RecommendationListener
 ) : HomeRecommendationDataModel {
 
     companion object{
