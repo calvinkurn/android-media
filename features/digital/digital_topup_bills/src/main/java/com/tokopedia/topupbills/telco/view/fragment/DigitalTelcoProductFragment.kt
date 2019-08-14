@@ -14,7 +14,6 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
@@ -110,7 +109,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             override fun onClickProduct(itemProduct: TelcoProductDataCollection, position: Int) {
                 sharedModel.setProductSelected(itemProduct)
                 sharedModel.setShowTotalPrice(true)
-                topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName)
+                if (::selectedOperatorName.isInitialized) {
+                    topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName)
+                }
             }
 
             override fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
