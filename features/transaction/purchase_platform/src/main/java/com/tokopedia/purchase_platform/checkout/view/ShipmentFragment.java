@@ -28,6 +28,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -52,7 +53,6 @@ import com.tokopedia.purchase_platform.checkout.view.converter.ShipmentDataConve
 import com.tokopedia.purchase_platform.checkout.view.di.DaggerShipmentComponent;
 import com.tokopedia.purchase_platform.checkout.view.di.ShipmentComponent;
 import com.tokopedia.purchase_platform.checkout.view.di.ShipmentModule;
-import com.tokopedia.purchase_platform.checkout.view.util.Utils;
 import com.tokopedia.purchase_platform.checkout.view.viewmodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.checkout.view.viewmodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.checkout.view.viewmodel.ShipmentButtonPaymentModel;

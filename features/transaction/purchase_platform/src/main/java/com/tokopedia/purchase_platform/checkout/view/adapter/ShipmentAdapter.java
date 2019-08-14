@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.cart.domain.model.cartlist.CartPromoSuggestion;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
@@ -21,7 +22,6 @@ import com.tokopedia.purchase_platform.checkout.view.ShipmentAdapterActionListen
 import com.tokopedia.purchase_platform.checkout.view.ShipmentFragment;
 import com.tokopedia.purchase_platform.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.checkout.view.converter.ShipmentDataRequestConverter;
-import com.tokopedia.purchase_platform.checkout.view.util.Utils;
 import com.tokopedia.purchase_platform.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.purchase_platform.checkout.view.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.purchase_platform.checkout.view.viewholder.ShipmentDonationViewHolder;

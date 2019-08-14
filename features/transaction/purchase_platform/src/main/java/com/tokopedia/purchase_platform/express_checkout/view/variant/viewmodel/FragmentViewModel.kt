@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
 
 /**
  * Created by Irfan Khoirul on 09/01/19.

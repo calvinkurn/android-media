@@ -66,7 +66,9 @@ dependencies {
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.payment)
+    // productCard & topAdsSdk is used for recommendation section on cart
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.basemvvm)
 

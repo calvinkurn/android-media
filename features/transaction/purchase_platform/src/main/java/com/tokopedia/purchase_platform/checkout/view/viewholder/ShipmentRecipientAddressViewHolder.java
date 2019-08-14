@@ -15,10 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.view.ShipmentAdapterActionListener;
-import com.tokopedia.purchase_platform.checkout.view.util.Utils;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.unifyprinciples.Typography;

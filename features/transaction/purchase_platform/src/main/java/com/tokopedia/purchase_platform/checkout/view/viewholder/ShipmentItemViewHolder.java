@@ -29,12 +29,12 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.utils.WeightFormatterUtil;
 import com.tokopedia.purchase_platform.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.purchase_platform.checkout.view.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.purchase_platform.checkout.view.converter.RatesDataConverter;
-import com.tokopedia.purchase_platform.checkout.view.util.Utils;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;

@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.cart.view.viewholder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.cart.view.ActionListener

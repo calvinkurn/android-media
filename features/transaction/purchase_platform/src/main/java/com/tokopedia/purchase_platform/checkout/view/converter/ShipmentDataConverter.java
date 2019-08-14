@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.checkout.view.converter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.promostacking.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -12,7 +13,6 @@ import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.Pr
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.UserAddress;
-import com.tokopedia.purchase_platform.checkout.view.util.Utils;
 import com.tokopedia.purchase_platform.checkout.view.viewmodel.ShipmentDonationModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;

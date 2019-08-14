@@ -2,15 +2,15 @@ package com.tokopedia.purchase_platform.checkout.view.converter;
 
 import android.text.TextUtils;
 
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.purchase_platform.checkout.domain.model.cartshipmentform.UserAddress;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 
 import java.util.ArrayList;
 import java.util.List;
