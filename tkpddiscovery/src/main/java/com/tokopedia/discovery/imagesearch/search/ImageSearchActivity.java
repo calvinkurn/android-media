@@ -76,11 +76,7 @@ public class ImageSearchActivity extends DiscoveryActivity
 
         initImageSearch();
 
-        handleImageUri(getIntent());
-
-        if (!isImageAlreadyPicked) {
-            openImagePickerActivity();
-        }
+        askForPermission();
     }
 
     private void initImageSearch() {
@@ -98,6 +94,36 @@ public class ImageSearchActivity extends DiscoveryActivity
         searchComponent.inject(this);
     }
 
+    private void askForPermission() {
+        permissionCheckerHelper.checkPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        RequestPermissionUtil.onPermissionDenied(ImageSearchActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                        finish();
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        RequestPermissionUtil.onNeverAskAgain(ImageSearchActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                        finish();
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        handleImageUri(getIntent());
+
+                        if (!isImageAlreadyPicked) {
+                            openImagePickerActivity();
+                        }
+                    }
+                },
+                ""
+        );
+    }
+
     private void handleImageUri(Intent intent) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
 
@@ -111,7 +137,7 @@ public class ImageSearchActivity extends DiscoveryActivity
                 ClipData clipData = intent.getClipData();
                 Uri uri = clipData.getItemAt(0).getUri();
                 isImageAlreadyPicked = true;
-                onImageSuccess(uri.toString());
+                onImagePickedSuccess(uri.toString());
             }
             else if (intent.getData() != null
                     && !TextUtils.isEmpty(intent.getData().toString())
@@ -119,7 +145,7 @@ public class ImageSearchActivity extends DiscoveryActivity
                 searchView.hideShowCaseDialog(true);
                 sendImageSearchFromGalleryGTM();
                 isImageAlreadyPicked = true;
-                onImageSuccess(intent.getData().toString());
+                onImagePickedSuccess(intent.getData().toString());
             }
         }
     }
@@ -154,30 +180,6 @@ public class ImageSearchActivity extends DiscoveryActivity
                     fileExtension.toLowerCase());
         }
         return mimeType;
-    }
-
-    public void onImageSuccess(String uri) {
-        permissionCheckerHelper.checkPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                new PermissionCheckerHelper.PermissionCheckListener() {
-                    @Override
-                    public void onPermissionDenied(@NotNull String permissionText) {
-                        RequestPermissionUtil.onPermissionDenied(ImageSearchActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-                    }
-
-                    @Override
-                    public void onNeverAskAgain(@NotNull String permissionText) {
-                        RequestPermissionUtil.onNeverAskAgain(ImageSearchActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-                    }
-
-                    @Override
-                    public void onPermissionGranted() {
-                        onImagePickedSuccess(uri);
-                    }
-                },
-                ""
-        );
     }
 
     @Override
