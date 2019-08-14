@@ -1,4 +1,4 @@
-query ProfileRelated($activityID: String) {
+query FeedPostRelated($activityID: String) {
  feedPostRelated(activityID: $activityID) {
   data {
     id
