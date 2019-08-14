@@ -64,7 +64,6 @@ class DiscomPresenter @Inject constructor(
         }
 
         override fun onError(e: Throwable?) {
-            e?.printStackTrace()
             view?.setLoadingState(false)
             view?.showGetListError(e ?: Throwable())
         }
