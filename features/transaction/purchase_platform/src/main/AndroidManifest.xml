@@ -24,13 +24,13 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.purchase_platform.atc_variant.view.NormalCheckoutActivity"
+            android:name=".atc_variant.view.NormalCheckoutActivity"
             android:label="@string/activity_title_checkout_variant"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.tokopedia.purchase_platform.cart.view.CartActivity"
+            android:name=".cart.view.CartActivity"
             android:label="@string/checkout_module_title_activity_cart"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
@@ -48,7 +48,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.purchase_platform.checkout.subfeature.address_choice.view.CartAddressChoiceActivity"
+            android:name=".checkout.subfeature.address_choice.view.CartAddressChoiceActivity"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
@@ -75,7 +75,7 @@
             android:theme="@style/Theme.White" />
 
         <service
-            android:name="com.tokopedia.purchase_platform.cart.view.UpdateCartIntentService"
+            android:name=".cart.view.UpdateCartIntentService"
             android:exported="false" />
 
 

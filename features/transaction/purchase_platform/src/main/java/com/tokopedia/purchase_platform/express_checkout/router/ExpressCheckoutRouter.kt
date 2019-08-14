@@ -18,20 +18,10 @@ import java.security.PublicKey
 
 interface ExpressCheckoutRouter {
 
-    fun getExpressCheckoutIntent(activity: Activity, atcRequestParam: AtcRequestParam): Intent
-
     fun getGeolocationIntent(context: Context, locationPass: LocationPass): Intent
-
-    fun getCheckoutIntent(context: Context, shiomentFormRequest: ShipmentFormRequest): Intent
 
     fun checkoutProduct(checkoutRequest: CheckoutRequest, isOneClickShipment: Boolean, isExpressCheckout: Boolean): Observable<CheckoutData>
 
     fun updateAddress(requestParams: RequestParams): Observable<String>
-
-    fun checkoutModuleRouterGetEnableFingerprintPayment(): Boolean
-
-    fun checkoutModuleRouterGeneratePublicKey(): PublicKey?
-
-    fun checkoutModuleRouterGetPublicKey(publicKey: PublicKey): String
 
 }

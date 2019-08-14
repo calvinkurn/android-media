@@ -87,10 +87,11 @@ public class ShipmentModule {
     @Provides
     @ShipmentScope
     CheckoutUseCase provideCheckoutUseCase(
+            @ApplicationContext Context context,
             ICheckoutModuleRouter checkoutModuleRouter,
             ICartRepository cartRepository,
             ICheckoutMapper checkoutMapper) {
-        return new CheckoutUseCase(cartRepository, checkoutMapper, checkoutModuleRouter);
+        return new CheckoutUseCase(context, cartRepository, checkoutMapper, checkoutModuleRouter);
     }
 
     @Provides

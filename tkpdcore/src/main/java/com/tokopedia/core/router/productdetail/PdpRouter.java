@@ -22,8 +22,6 @@ public interface PdpRouter {
 
     Intent getCartIntent(Activity activity);
 
-    Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest);
-
     Intent getLoginIntent(Context context);
 
     Intent getShopPageIntent(Context context, String shopId);
@@ -35,8 +33,6 @@ public interface PdpRouter {
     int getCartCount(Context context);
 
     Intent getProductTalk(Context context, String productId);
-
-    Intent getCheckoutIntent(Context context, String deviceid);
 
     void eventClickFilterReview(Context context,
                                 String filterName,

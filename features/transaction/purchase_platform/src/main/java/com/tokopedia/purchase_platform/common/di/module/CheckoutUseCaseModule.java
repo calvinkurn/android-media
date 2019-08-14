@@ -1,5 +1,8 @@
 package com.tokopedia.purchase_platform.common.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.purchase_platform.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.purchase_platform.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
@@ -15,8 +18,8 @@ import dagger.Provides;
 public class CheckoutUseCaseModule {
 
     @Provides
-    CheckoutUseCase provideCheckoutUseCase(ICheckoutModuleRouter checkoutModuleRouter, ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
-        return new CheckoutUseCase(cartRepository, checkoutMapper, checkoutModuleRouter);
+    CheckoutUseCase provideCheckoutUseCase(@ApplicationContext Context context, ICheckoutModuleRouter checkoutModuleRouter, ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
+        return new CheckoutUseCase(context, cartRepository, checkoutMapper, checkoutModuleRouter);
     }
 
 }

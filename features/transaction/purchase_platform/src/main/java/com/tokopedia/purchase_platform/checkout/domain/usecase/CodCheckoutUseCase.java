@@ -4,13 +4,14 @@ import android.content.Context;
 import android.os.Build;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.checkout.data.model.request.CodCheckoutRequest;
 import com.tokopedia.purchase_platform.checkout.data.model.response.cod.CodResponse;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.common.utils.FingerprintUtil;
 
 import java.security.PublicKey;
 import java.util.HashMap;
@@ -55,10 +56,10 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
 
     private void setFingerPrintParams() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkoutModuleRouter != null
-                && checkoutModuleRouter.checkoutModuleRouterGetEnableFingerprintPayment()) {
-            PublicKey publicKey = checkoutModuleRouter.checkoutModuleRouterGeneratePublicKey();
+                && FingerprintUtil.getEnableFingerprintPayment(context)) {
+            PublicKey publicKey = FingerprintUtil.generatePublicKey(context);
             if (publicKey != null) {
-                mFingerPrintPublicKey = checkoutModuleRouter.checkoutModuleRouterGetPublicKey(publicKey);
+                mFingerPrintPublicKey = FingerprintUtil.getPublicKeyString(publicKey);
                 mFingerPrintSupport = String.valueOf(true);
             } else {
                 mFingerPrintSupport = String.valueOf(false);

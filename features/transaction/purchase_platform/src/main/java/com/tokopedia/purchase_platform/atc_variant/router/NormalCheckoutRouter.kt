@@ -10,8 +10,4 @@ import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 
 interface NormalCheckoutRouter {
 
-    fun getCheckoutIntent(context: Context, shipmentFormRequest: ShipmentFormRequest): Intent
-    fun getCheckoutIntent(context: Context, deviceid: String): Intent
-    fun getCartIntent(context: Context): Intent
-
 }

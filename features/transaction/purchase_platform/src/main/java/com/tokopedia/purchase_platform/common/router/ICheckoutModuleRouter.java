@@ -41,12 +41,6 @@ public interface ICheckoutModuleRouter {
 
     Intent getGeolocationIntent(Context context, LocationPass locationPass);
 
-    boolean checkoutModuleRouterGetEnableFingerprintPayment();
-
-    PublicKey checkoutModuleRouterGeneratePublicKey();
-
-    String checkoutModuleRouterGetPublicKey(PublicKey publicKey);
-
     Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking, Promo promo);
 
     Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking,

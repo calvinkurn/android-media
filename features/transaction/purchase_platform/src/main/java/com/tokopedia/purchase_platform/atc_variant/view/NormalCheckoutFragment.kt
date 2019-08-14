@@ -30,11 +30,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantItemDecorator
-import com.tokopedia.purchase_platform.express_checkout.view.variant.adapter.CheckoutVariantAdapter
-import com.tokopedia.purchase_platform.express_checkout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
-import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerConstants
@@ -42,22 +37,28 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.atc_variant.view.adapter.NormalCheckoutAdapterTypeFactory
-import com.tokopedia.purchase_platform.atc_variant.di.DaggerNormalCheckoutComponent
-import com.tokopedia.purchase_platform.atc_variant.model.ProductInfoAndVariant
-import com.tokopedia.purchase_platform.atc_variant.view.presenter.NormalCheckoutViewModel
-import com.tokopedia.purchase_platform.atc_variant.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.atc_variant.di.DaggerNormalCheckoutComponent
+import com.tokopedia.purchase_platform.atc_variant.model.ProductInfoAndVariant
+import com.tokopedia.purchase_platform.atc_variant.view.adapter.NormalCheckoutAdapterTypeFactory
+import com.tokopedia.purchase_platform.atc_variant.view.presenter.NormalCheckoutViewModel
+import com.tokopedia.purchase_platform.checkout.view.ShipmentActivity
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
 import com.tokopedia.purchase_platform.common.constant.TRADEIN_BUY
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter
 import com.tokopedia.purchase_platform.express_checkout.domain.model.atc.AtcResponseModel
+import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantActionListener
+import com.tokopedia.purchase_platform.express_checkout.view.variant.CheckoutVariantItemDecorator
+import com.tokopedia.purchase_platform.express_checkout.view.variant.adapter.CheckoutVariantAdapter
+import com.tokopedia.purchase_platform.express_checkout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.purchase_platform.express_checkout.view.variant.viewmodel.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
@@ -83,7 +84,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private val normalCheckoutTracking: NormalCheckoutTracking by lazy {
         NormalCheckoutTracking()
     }
-    private lateinit var router: NormalCheckoutRouter
+    private lateinit var router: ICheckoutModuleRouter
     private lateinit var adapter: CheckoutVariantAdapter
 
     var shopId: String? = null
@@ -679,7 +680,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             }
             activity?.run {
                 if (isOcs) {
-                    val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
+                    val intent = ShipmentActivity.createInstance(this, ShipmentFormRequest.BundleBuilder().build())
                     startActivity(intent)
                 } else {
                     val cartUriString = ApplinkConstInternalMarketplace.CART
@@ -709,7 +710,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         trackerAttribution, trackerListName)
             }
             activity?.run {
-                val intent = router.getCheckoutIntent(this, deviceid)
+                val shipmentFormRequest = ShipmentFormRequest.BundleBuilder()
+                        .deviceId(deviceid)
+                        .build()
+                val intent = ShipmentActivity.createInstance(context, shipmentFormRequest)
                 startActivity(intent)
             }
         }, onRetryWhenError = {
@@ -834,8 +838,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context?.run {
-            if (applicationContext is NormalCheckoutRouter) {
-                router = applicationContext as NormalCheckoutRouter
+            if (applicationContext is ICheckoutModuleRouter) {
+                router = applicationContext as ICheckoutModuleRouter
             } else {
                 activity?.finish()
             }

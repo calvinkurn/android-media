@@ -254,7 +254,6 @@ import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.purchase_platform.atc_variant.router.NormalCheckoutRouter;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
@@ -501,7 +500,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ChatbotRouter,
         ExpressCheckoutRouter,
         ResolutionRouter,
-        NormalCheckoutRouter,
         TradeInRouter,
         ProductDetailRouter,
         OvoPayWithQrRouter,
@@ -921,11 +919,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getHomeHotlistIntent(Context context) {
         return MainParentActivity.start(context);
-    }
-
-    @Override
-    public Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam) {
-        return ExpressCheckoutInternalRouter.createIntent(activity, atcRequestParam);
     }
 
     @Override
@@ -1780,21 +1773,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @NonNull
     @Override
-    public Intent getCheckoutIntent(@NonNull Context context, ShipmentFormRequest shipmentFormRequest) {
-        return ShipmentActivity.createInstance(context, shipmentFormRequest);
-    }
-
-    @NonNull
-    @Override
-    public Intent getCheckoutIntent(@NonNull Context context, String deviceid) {
-        ShipmentFormRequest shipmentFormRequest = new ShipmentFormRequest.BundleBuilder()
-                .deviceId(deviceid)
-                .build();
-        return ShipmentActivity.createInstance(context, shipmentFormRequest);
-    }
-
-    @NonNull
-    @Override
     public Intent getKYCIntent(Context context, int projectId) {
         Intent intent = UserIdentificationFormActivity.getIntent(this);
         intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
@@ -1864,22 +1842,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
         return PersistentCacheManager.instance.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    @Override
-    public PublicKey checkoutModuleRouterGeneratePublicKey() {
-        return FingerPrintDialog.generatePublicKey(getAppContext());
-    }
-
-    @Override
-    public String checkoutModuleRouterGetPublicKey(PublicKey publicKey) {
-        return FingerPrintDialog.getPublicKey(publicKey);
-    }
-
-    @Override
-    public boolean checkoutModuleRouterGetEnableFingerprintPayment() {
-        return getEnableFingerprintPayment();
     }
 
     @Override
@@ -2887,12 +2849,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } else {
             goToCreateMerchantRedirect(context);
         }
-    }
-
-    @NotNull
-    @Override
-    public Intent getCartIntent(@NotNull Context context) {
-        return TransactionCartRouter.createInstanceCartActivity(context);
     }
 
     private void initCMPushNotification() {
