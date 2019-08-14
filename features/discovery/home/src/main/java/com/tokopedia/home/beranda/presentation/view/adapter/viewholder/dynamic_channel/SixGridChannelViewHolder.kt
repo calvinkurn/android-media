@@ -60,6 +60,7 @@ class SixGridChannelViewHolder(sixGridView: View,
         return SixGridChannelViewHolder::class.java.simpleName
     }
 
+
     class SixGridItemAdapter(private val context: Context,
                              private val listener: HomeCategoryListener,
                              private val channels: DynamicHomeChannel.Channels,
