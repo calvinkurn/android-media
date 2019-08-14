@@ -113,8 +113,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -189,8 +187,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SharedPreferences sharedPrefs;
 
     private int[] positionSticky = new int[2];
-    private Timer timer = new Timer();
-    private static long STICKY_SHOW_DELAY = 3 * 60 *1000;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();

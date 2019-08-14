@@ -97,8 +97,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     lateinit var stickyLoginTextView: StickyTextView
 
-    private var timer = Timer()
-
     private lateinit var titles: Array<String>
 
     private var tabPosition = 0

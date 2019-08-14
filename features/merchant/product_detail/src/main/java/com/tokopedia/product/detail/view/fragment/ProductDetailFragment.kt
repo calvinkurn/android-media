@@ -198,8 +198,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private lateinit var tradeInParams: TradeInParams
     private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
 
-    private var timer = Timer()
-
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
         ErrorBottomsheets()
