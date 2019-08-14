@@ -63,7 +63,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public MenuItem searchItem;
 
     protected TkpdProgressDialog tkpdProgressDialog;
-    private boolean isFromCamera = false;
+    protected boolean isFromCamera = false;
     private String imagePath;
     protected View root;
 
@@ -417,23 +417,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImageSearchImagePickerActivity.PICKER_RESULT_PATHS);
-            if (imagePathList == null || imagePathList.size() <= 0) {
-                return;
-            }
-            String imagePath = imagePathList.get(0);
-            if (!TextUtils.isEmpty(imagePath)) {
-                onImagePickedSuccess(imagePath);
-            } else {
-                showSnackBarView(getString(com.tokopedia.core2.R.string.error_gallery_valid));
-            }
-            if (searchView != null) {
-                searchView.clearFocus();
-            }
-
-            isFromCamera = data.getBooleanExtra(ImageSearchImagePickerActivity.RESULT_IS_FROM_CAMERA, false);
-        } else if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case DiscoverySearchView.REQUEST_VOICE:
                     List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);

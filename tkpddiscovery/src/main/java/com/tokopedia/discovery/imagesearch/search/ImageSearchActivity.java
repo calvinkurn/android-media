@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.imagesearch.search;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,8 +41,6 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     @Inject
     ImageSearchPresenter searchPresenter;
-
-    private SearchComponent searchComponent;
 
     public static Intent newInstance(Context context, Bundle bundle) {
         Intent intent = new Intent(context, ImageSearchActivity.class);
@@ -94,10 +91,9 @@ public class ImageSearchActivity extends DiscoveryActivity
     }
 
     private void initInjector() {
-        searchComponent =
-                DaggerSearchComponent.builder()
-                        .appComponent(getApplicationComponent())
-                        .build();
+        SearchComponent searchComponent = DaggerSearchComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
 
         searchComponent.inject(this);
     }
@@ -107,30 +103,57 @@ public class ImageSearchActivity extends DiscoveryActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_IMAGE) {
-            if (resultCode == Activity.RESULT_CANCELED) {
-                finish();
-            }
-            else if (resultCode == Activity.RESULT_OK && data != null) {
-                ArrayList<String> imagePathList = data.getStringArrayListExtra(ImageSearchImagePickerActivity.PICKER_RESULT_PATHS);
-                if (imagePathList == null || imagePathList.size() <= 0) {
-                    return;
-                }
-                String imagePath = imagePathList.get(0);
-                if (!TextUtils.isEmpty(imagePath)) {
-                    onImagePickedSuccess(imagePath);
-                } else {
-                    showSnackBarView(getString(com.tokopedia.core2.R.string.error_gallery_valid));
-                    finish();
-                }
-                if (searchView != null) {
-                    searchView.clearFocus();
-                }
-            }
-            else {
-                showSnackBarView(getString(com.tokopedia.core2.R.string.error_gallery_valid));
-                finish();
-            }
+            handleResultFromImagePicker(resultCode, data);
         }
+    }
+
+    private void handleResultFromImagePicker(int resultCode, Intent data) {
+        switch (resultCode) {
+            case RESULT_CANCELED:
+                cancelImageSearch();
+                break;
+            case RESULT_OK:
+                continueToImageSearch(data);
+                break;
+            default:
+                errorHandlingImagePicker();
+        }
+    }
+
+    private void cancelImageSearch() {
+        finish();
+    }
+
+    private void continueToImageSearch(Intent data) {
+        if (data == null) {
+            errorHandlingImagePicker();
+            return;
+        }
+
+        ArrayList<String> imagePathList = data.getStringArrayListExtra(ImageSearchImagePickerActivity.PICKER_RESULT_PATHS);
+        if (imagePathList == null || imagePathList.size() <= 0) {
+            errorHandlingImagePicker();
+            return;
+        }
+
+        isFromCamera = data.getBooleanExtra(ImageSearchImagePickerActivity.RESULT_IS_FROM_CAMERA, false);
+
+        String imagePath = imagePathList.get(0);
+
+        if (!TextUtils.isEmpty(imagePath)) {
+            onImagePickedSuccess(imagePath);
+        } else {
+            errorHandlingImagePicker();
+        }
+
+        if (searchView != null) {
+            searchView.clearFocus();
+        }
+    }
+
+    private void errorHandlingImagePicker() {
+        showSnackBarView(getString(com.tokopedia.core2.R.string.error_gallery_valid));
+        finish();
     }
 
     @Override
@@ -163,7 +186,6 @@ public class ImageSearchActivity extends DiscoveryActivity
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel);
             setToolbarTitle(getString(R.string.image_search_title));
-            stopLoading();
         } else {
             searchView.showSearch(true, false);
         }
@@ -178,12 +200,6 @@ public class ImageSearchActivity extends DiscoveryActivity
             FragmentTransaction fragmentTransaction = this.getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(containerViewId, fragment);
             fragmentTransaction.commitAllowingStateLoss();
-        }
-    }
-
-    private void stopLoading() {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
         }
     }
 
