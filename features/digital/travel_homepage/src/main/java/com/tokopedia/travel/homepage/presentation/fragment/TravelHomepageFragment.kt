@@ -5,28 +5,31 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageItemModel
 import com.tokopedia.travel.homepage.di.TravelHomepageComponent
 import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
 import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
+import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
 import com.tokopedia.travel.homepage.presentation.viewmodel.TravelHomepageViewModel
 import javax.inject.Inject
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener {
+class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, OnItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var travelHomepageViewModel: TravelHomepageViewModel
 
-    override fun getAdapterTypeFactory(): TravelHomepageTypeFactory = TravelHomepageAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): TravelHomepageTypeFactory = TravelHomepageAdapterTypeFactory(this, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +97,10 @@ class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHo
 
     override fun onRecommendationVHBind() {
         travelHomepageViewModel.getRecommendation(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation))
+    }
+
+    override fun onItemClick(appUrl: String) {
+        RouteManager.route(context, appUrl)
     }
 
     companion object {
