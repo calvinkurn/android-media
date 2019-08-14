@@ -295,21 +295,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         getShopInfo()
 
         stickyLoginTextView = findViewById(R.id.sticky_login_text)
-        stickyLoginTextView.setOnClickListener { v ->
+        stickyLoginTextView.setOnClickListener {
+            shopPageTracking.eventClickOnStickyLogin(true);
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN) }
         stickyLoginTextView.setOnDismissListener(View.OnClickListener {
+            shopPageTracking.eventClickOnStickyLogin(true);
             stickyLoginTextView.dismiss()
-
-            val userSession = UserSession(this)
-            if (!userSession.isLoggedIn) {
-                timer.cancel()
-                timer = Timer()
-                timer.schedule(object : TimerTask() {
-                    override fun run() {
-                        this@ShopPageActivity.runOnUiThread { updateStickyState() }
-                    }
-                }, STICKY_SHOW_DELAY)
-            }
         })
 
         updateStickyState()
@@ -703,8 +694,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     fun getShopInfoData() = (shopViewModel.shopInfoResp.value as? Success)?.data
 
     private fun updateStickyState() {
-//        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
-        val isCanShowing = true
+        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
         if (!isCanShowing) {
             stickyLoginTextView.dismiss()
             return
@@ -715,6 +705,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             stickyLoginTextView.dismiss()
         } else {
             stickyLoginTextView.show()
+            shopPageTracking.eventViewLoginStickyWidget();
         }
     }
 }
