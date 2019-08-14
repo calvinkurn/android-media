@@ -216,7 +216,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (timestamp_ab_test == 0) {
             // Fetch gql
         } else {
-            long current_timestamp = new Date().getTime();
             long diff = new Date().getTime() - timestamp_ab_test;        // Validate time differences
             long diffHours = diff / (60 * 60 * 1000) % 24;
 
