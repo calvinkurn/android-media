@@ -315,12 +315,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                         }
                     }
 
-                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                        if (cartItemHolderData.getCartItemData().isError() && cartItemHolderData.getCartItemData().isSingleChild()) {
-                            isAllSelected = false;
-                        }
-                    }
-
                     cartShopHolderData.setAllSelected(isAllSelected);
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                         actionListener.onShopItemCheckChanged(getAdapterPosition(), isChecked);
