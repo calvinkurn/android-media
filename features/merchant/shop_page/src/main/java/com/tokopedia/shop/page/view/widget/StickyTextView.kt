@@ -1,6 +1,7 @@
 package com.tokopedia.shop.page.view.widget
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
@@ -17,6 +18,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class StickyTextView : FrameLayout {
 
@@ -102,6 +104,11 @@ class StickyTextView : FrameLayout {
     }
 
     fun show() {
+        val currentTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis())
+        if ((currentTimeInMinutes - getLastSeen()) < INTERVAL_TIME) {
+            return
+        }
+
         if (this.visibility == View.GONE || this.visibility == View.INVISIBLE) {
             this.visibility = View.VISIBLE
         }
@@ -110,6 +117,8 @@ class StickyTextView : FrameLayout {
     fun dismiss() {
         if (this.visibility == View.VISIBLE) {
             this.visibility = View.GONE
+
+            setLastSeen(System.currentTimeMillis())
         }
     }
 
@@ -126,8 +135,25 @@ class StickyTextView : FrameLayout {
         return null
     }
 
+    private fun getSharedPreference(): SharedPreferences {
+        return context.getSharedPreferences(STICKY_PREF, Context.MODE_PRIVATE)
+    }
+
+    private fun getLastSeen(): Long {
+        return getSharedPreference().getLong(KEY_LAST_SEEN, 0)
+    }
+
+    private fun setLastSeen(epoch: Long) {
+        val inMinute = TimeUnit.MILLISECONDS.toMinutes(epoch)
+        getSharedPreference().edit().putLong(KEY_LAST_SEEN, inMinute).apply()
+    }
+
     companion object {
         const val TAG = "StickyTextButton"
         const val STICKY_LOGIN_VIEW_KEY = "android_customer_sticky_login_shop"
+
+        private const val STICKY_PREF = "sticky_login_widget.pref"
+        private const val KEY_LAST_SEEN = "last_seen_at_shop"
+        private const val INTERVAL_TIME = 30
     }
 }
