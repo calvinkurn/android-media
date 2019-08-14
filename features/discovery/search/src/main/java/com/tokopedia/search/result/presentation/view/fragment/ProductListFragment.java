@@ -723,7 +723,6 @@ public class ProductListFragment
         isListEmpty = true;
         adapter.setGlobalNavViewModel(globalNavViewModel);
         adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
-        SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
     }
 
     @Override
@@ -1055,6 +1054,15 @@ public class ProductListFragment
     public void redirectSearchToAnotherPage(String applink) {
         redirectionListener.startActivityWithApplink(applink);
         finishActivity();
+    }
+
+    @Override
+    public void sendTrackingForResultCode(String resultCode, String relatedKeyword) {
+        if ("1".equals(resultCode) || "3".equals(resultCode)) {
+            SearchTracking.eventSearchNoResult(getQueryKey(), getScreenName(), getSelectedFilter(), "", resultCode);
+        } else if ("2".equals(resultCode) || "6".equals(resultCode)) {
+            SearchTracking.eventSearchNoResult(getQueryKey(), getScreenName(), getSelectedFilter(), relatedKeyword, resultCode);
+        }
     }
 
     private void finishActivity() {
