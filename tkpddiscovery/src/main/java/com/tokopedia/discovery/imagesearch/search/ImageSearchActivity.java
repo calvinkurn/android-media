@@ -1,46 +1,68 @@
 package com.tokopedia.discovery.imagesearch.search;
 
+import android.Manifest;
+import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
+import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 
 public class ImageSearchActivity extends DiscoveryActivity
         implements ImageSearchContract.View, RedirectionListener {
 
     private static final int REQUEST_CODE_IMAGE = 2390;
-    private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
+
+    private boolean isImageAlreadyPicked = false;
 
     @Inject
     ImageSearchPresenter searchPresenter;
+
+    @Inject
+    PermissionCheckerHelper permissionCheckerHelper;
 
     public static Intent newInstance(Context context, Bundle bundle) {
         Intent intent = new Intent(context, ImageSearchActivity.class);
@@ -48,24 +70,156 @@ public class ImageSearchActivity extends DiscoveryActivity
         return intent;
     }
 
-    public static void moveTo(AppCompatActivity activity,
-                              ProductViewModel productViewModel) {
-        if (activity != null) {
-            Intent intent = new Intent(activity, ImageSearchActivity.class);
-            intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
-            activity.startActivity(intent);
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initImageSearch();
+
+        handleImageUri(getIntent());
+
+        if (!isImageAlreadyPicked) {
+            openImagePickerActivity();
+        }
+    }
+
+    private void initImageSearch() {
         initInjector();
         setPresenter(searchPresenter);
         searchPresenter.attachView(this);
         searchPresenter.setDiscoveryView(this);
+    }
 
+    private void initInjector() {
+        SearchComponent searchComponent = DaggerSearchComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
+
+        searchComponent.inject(this);
+    }
+
+    private void handleImageUri(Intent intent) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.SHOW_IMAGE_SEARCH, false)
+                && intent != null) {
+
+            if (intent.getClipData() != null
+                    && intent.getClipData().getItemCount() > 0) {
+                searchView.hideShowCaseDialog(true);
+                sendImageSearchFromGalleryGTM();
+                ClipData clipData = intent.getClipData();
+                Uri uri = clipData.getItemAt(0).getUri();
+                isImageAlreadyPicked = true;
+                onImageSuccess(uri.toString());
+            }
+            else if (intent.getData() != null
+                    && !TextUtils.isEmpty(intent.getData().toString())
+                    && isValidMimeType(intent.getData().toString())) {
+                searchView.hideShowCaseDialog(true);
+                sendImageSearchFromGalleryGTM();
+                isImageAlreadyPicked = true;
+                onImageSuccess(intent.getData().toString());
+            }
+        }
+    }
+
+    private void sendImageSearchFromGalleryGTM() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                SearchEventTracking.Category.IMAGE_SEARCH,
+                SearchEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
+                "");
+    }
+
+    private boolean isValidMimeType(String url) {
+        String mimeType = getMimeTypeUri(Uri.parse(url));
+
+        return mimeType != null &&
+                (mimeType.equalsIgnoreCase("image/jpg") ||
+                        mimeType.equalsIgnoreCase("image/png") ||
+                        mimeType.equalsIgnoreCase("image/jpeg"));
+
+    }
+
+    private String getMimeTypeUri(Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
+
+    public void onImageSuccess(String uri) {
+        permissionCheckerHelper.checkPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        RequestPermissionUtil.onPermissionDenied(ImageSearchActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        RequestPermissionUtil.onNeverAskAgain(ImageSearchActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        onImagePickedSuccess(uri);
+                    }
+                },
+                ""
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+    }
+
+    private void openImagePickerActivity() {
+        ImagePickerEditorBuilder imagePickerEditorBuilder = new ImagePickerEditorBuilder(
+                createAllowedImageEditorActions(),
+                false,
+                createAllowedImageRatioList()
+        );
+
+        ImagePickerBuilder builder = new ImagePickerBuilder(
+                getString(R.string.choose_image),
+                createImagePickerTabTypes(),
+                GalleryType.IMAGE_ONLY,
+                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                ImagePickerBuilder.IMAGE_SEARCH_MIN_RESOLUTION,
+                null,
+                true,
+                imagePickerEditorBuilder,
+                null
+        );
+
+        Intent intent = ImageSearchImagePickerActivity.getIntent(this, builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE);
+        overridePendingTransition(0, 0);
+    }
+
+    @ImageEditActionTypeDef
+    private int[] createAllowedImageEditorActions() {
+        return new int[] {
+                ACTION_CROP,
+                ACTION_BRIGHTNESS,
+                ACTION_CONTRAST
+        };
+    }
+
+    private ArrayList<ImageRatioTypeDef> createAllowedImageRatioList() {
         ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList = new ArrayList<>();
 
         imageRatioTypeDefArrayList.add(ImageRatioTypeDef.ORIGINAL);
@@ -75,27 +229,15 @@ public class ImageSearchActivity extends DiscoveryActivity
         imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_16_9);
         imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_9_16);
 
-        ImagePickerEditorBuilder imagePickerEditorBuilder = new ImagePickerEditorBuilder
-                (new int[]{ACTION_CROP, ACTION_BRIGHTNESS, ACTION_CONTRAST},
-                        false,
-                        imageRatioTypeDefArrayList);
-
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
-                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.IMAGE_SEARCH_MIN_RESOLUTION, null, true,
-                imagePickerEditorBuilder, null);
-
-        Intent intent = ImageSearchImagePickerActivity.getIntent(this, builder);
-        startActivityForResult(intent, REQUEST_CODE_IMAGE);
-        overridePendingTransition(0, 0);
+        return imageRatioTypeDefArrayList;
     }
 
-    private void initInjector() {
-        SearchComponent searchComponent = DaggerSearchComponent.builder()
-                .appComponent(getApplicationComponent())
-                .build();
-
-        searchComponent.inject(this);
+    @ImagePickerTabTypeDef
+    private int[] createImagePickerTabTypes() {
+        return new int[] {
+                TYPE_GALLERY,
+                TYPE_CAMERA
+        };
     }
 
     @Override
@@ -174,9 +316,21 @@ public class ImageSearchActivity extends DiscoveryActivity
             }
         }
         TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds,productViewModel.getQuery(),prodIdArray);
-        sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+        sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
 
         proceed(productViewModel);
+    }
+
+    public void sendMoEngageSearchAttempt(String keyword, boolean isResultFound, HashMap<String, String> category) {
+        Map<String, Object> value = DataLayer.mapOf(
+                SearchEventTracking.MOENGAGE.KEYWORD, keyword,
+                SearchEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
+        );
+        if (category != null) {
+            value.put(SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
+            value.put(SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
+        }
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 
     private void proceed(ProductViewModel productViewModel) {

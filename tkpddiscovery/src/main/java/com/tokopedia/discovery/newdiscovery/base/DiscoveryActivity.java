@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -24,7 +23,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
-import com.tokopedia.discovery.imagesearch.search.ImageSearchImagePickerActivity;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -33,7 +31,6 @@ import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 import com.tokopedia.track.TrackApp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
@@ -437,20 +434,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         tkpdProgressDialog = new TkpdProgressDialog(this, 1);
         tkpdProgressDialog.showDialog();
         getPresenter().requestImageSearch(imagePath);
-    }
-
-    @Override
-    public void onHandleImageSearchResponseError() {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(FAILURE);
-        } else {
-            sendGalleryImageSearchResultGTM(FAILURE);
-        }
-        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
     }
 
     @Override
