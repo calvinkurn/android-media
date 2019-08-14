@@ -100,10 +100,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
-import com.tokopedia.product.detail.view.widget.CountDrawable
-import com.tokopedia.product.detail.view.widget.PictureScrollingView
-import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
-import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
+import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
@@ -1078,6 +1075,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
 
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
+                        AddToCartDoneBottomSheet().show(
+                                fragmentManager,"TAG"
+                        )
                         val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
                         showSnackbarSuccessAtc(successMessage)
                         shouldShowCartAnimation = true
