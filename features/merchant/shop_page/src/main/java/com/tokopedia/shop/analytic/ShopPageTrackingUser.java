@@ -44,6 +44,9 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT_BY
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TAB;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION_CLICK_ON_LOGIN_STICKY_WIDGET;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_VIEW_LOGIN_STICKY_WIDGET;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_ADD_PRODUCT_FROM_ZERO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_HOW_TO_ACTIVATE_SHOP;
@@ -64,6 +67,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_BAR;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_INFO;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
@@ -73,13 +77,6 @@ import static com.tokopedia.shop.analytic.model.ListTitleTypeDef.HIGHLIGHTED;
 
 public class ShopPageTrackingUser {
     public static final String SHOPPAGE = "/shoppage";
-
-    private static final String EVENT_CLICK_SHOP_PAGE = "clickShopPage";
-    private static final String EVENT_VIEW_SHOP_PAGE = "viewShopPage";
-    private static final String CATEGORY_SHOP_PAGE = "shop page";
-    private static final String EVENT_ACTION_CLICK_ON_LOGIN_STICKY_WIDGET = "click login sticky widget";
-    private static final String EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN = "click close button on login sticky widget";
-    private static final String EVENT_VIEW_LOGIN_STICKY_WIDGET = "view login sticky widget";
 
     protected final TrackingQueue trackingQueue;
 
@@ -497,15 +494,15 @@ public class ShopPageTrackingUser {
         if (tracker != null) {
             if (isOnSticky) {
                 tracker.sendGeneralEvent(
-                        EVENT_CLICK_SHOP_PAGE,
-                        CATEGORY_SHOP_PAGE,
+                        CLICK_SHOP_PAGE,
+                        SHOP_PAGE,
                         EVENT_ACTION_CLICK_ON_LOGIN_STICKY_WIDGET,
                         "click"
                 );
             } else {
                 tracker.sendGeneralEvent(
-                        EVENT_CLICK_SHOP_PAGE,
-                        CATEGORY_SHOP_PAGE,
+                        CLICK_SHOP_PAGE,
+                        SHOP_PAGE,
                         EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN,
                         ""
                 );
@@ -516,8 +513,8 @@ public class ShopPageTrackingUser {
     public void eventViewLoginStickyWidget() {
         ContextAnalytics tracker = TrackApp.getInstance().getGTM();
         tracker.sendGeneralEvent(
-                EVENT_VIEW_SHOP_PAGE,
-                CATEGORY_SHOP_PAGE,
+                VIEW_SHOP_PAGE,
+                SHOP_PAGE,
                 EVENT_VIEW_LOGIN_STICKY_WIDGET,
                 ""
         );
