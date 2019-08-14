@@ -10,8 +10,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
-import com.tokopedia.home_recom.util.RecomSnackBar
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
@@ -99,7 +99,8 @@ class RecommendationItemViewHolder(
     }
 
     private fun showError(view: View, throwable: Throwable?){
-        RecomSnackBar.showError(view, throwable)
+        Toaster.showError(view,
+            ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
     }
 
 }

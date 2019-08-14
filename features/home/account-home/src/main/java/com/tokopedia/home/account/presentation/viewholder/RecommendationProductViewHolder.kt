@@ -1,13 +1,10 @@
 package com.tokopedia.home.account.presentation.viewholder
 
 import android.app.Activity
-import android.graphics.Color
 import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
@@ -18,7 +15,7 @@ import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductVi
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardView
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * @author devarafikry on 24/07/19.
@@ -97,17 +94,9 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
     }
 
     private fun showError(view: View, throwable: Throwable?){
-        val snackbar = Snackbar.make(
-                view,
-                ErrorHandler.getErrorMessage(view.context, throwable),
-                Snackbar.LENGTH_LONG)
-        val snackbarView = snackbar.view
-        val padding = view.resources.getDimensionPixelSize(R.dimen.dp_16)
-        snackbarView.setPadding(padding, 0, padding, 0)
-        snackbarView.setBackgroundColor(Color.TRANSPARENT)
-        val rootSnackBarView = snackbarView as FrameLayout
-        rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_error)
-        snackbar.show()
+        Toaster.showError(view,
+            ErrorHandler.getErrorMessage(view.context, throwable),
+            Snackbar.LENGTH_LONG)
 
     }
 
