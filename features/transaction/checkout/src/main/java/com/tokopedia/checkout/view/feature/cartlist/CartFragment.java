@@ -996,11 +996,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onMicroInsuranceCheckChange(boolean isChecked, CartItemHolderData data) {
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
-    }
-
-    @Override
     public void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId) {
         cartPageAnalytics.eventViewTickerStockDecreaseAndAlreadyAtcByOtherUser(productId);
     }

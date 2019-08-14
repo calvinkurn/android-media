@@ -121,7 +121,5 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartItemShowTickerPriceDecrease(String productId);
 
         void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId);
-
-        void onMicroInsuranceCheckChange(boolean isChecked, CartItemHolderData data);
     }
 }
