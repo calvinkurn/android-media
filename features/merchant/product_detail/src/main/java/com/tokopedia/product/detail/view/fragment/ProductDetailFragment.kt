@@ -2057,8 +2057,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
                     isElligible, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
 
-            productDetailTracking.eventEnhanceEcommerceProductDetailV5(trackerListName, productInfo, shopInfo, trackerAttribution,
-                    isElligible, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
+            productDetailTracking.eventEnhanceEcommerceProductDetailV5(productInfo, shopInfo, trackerAttribution, isElligible,
+                    tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
         } else if (shopInfo == null) {
             delegateTradeInTracking = true
         }

@@ -492,10 +492,9 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         ))
     }
 
-    fun eventEnhanceEcommerceProductDetailV5(trackerListName: String?, productInfo: ProductInfo?,
-                                             shopInfo: ShopInfo?, trackerAttribution: String?,
-                                             isTradeIn: Boolean, isDiagnosed: Boolean,
-                                             multiOrigin: Boolean) {
+    fun eventEnhanceEcommerceProductDetailV5(productInfo: ProductInfo?, shopInfo: ShopInfo?,
+                                             trackerAttribution: String?, isTradeIn: Boolean,
+                                             isDiagnosed: Boolean, multiOrigin: Boolean) {
         val dimension55 = if (isTradeIn && isDiagnosed)
             "true diagnostic"
         else if (isTradeIn && !isDiagnosed)
@@ -520,7 +519,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             putString("eventCategory", "product page")
             putString("eventAction", "view product page")
             putString("eventLabel", getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.basic?.name)
-            putString(FirebaseAnalytics.Param.ITEM_LIST, trackerListName ?: "")
             putString("screenName", screenName)
             putString("shopId", productInfo?.basic?.shopID.toString())
             putString("shopName", shopInfo?.shopCore?.name)

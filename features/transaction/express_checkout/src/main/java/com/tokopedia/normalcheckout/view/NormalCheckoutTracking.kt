@@ -142,7 +142,7 @@ class NormalCheckoutTracking {
 
         eventClickAddToCartOrBuyInVariantV5(originalProductInfoAndVariant, actionLabel,
                 selectedVariantId, selectedProductInfo, qty, shopId, shopType, shopName,
-                cartId, trackerAttribution, trackerListName, multiOrigin)
+                cartId, trackerAttribution, multiOrigin)
     }
 
     private fun eventClickAddToCartOrBuyInVariantV5(
@@ -156,7 +156,6 @@ class NormalCheckoutTracking {
             shopName: String? = NONE_OTHER,
             cartId: String? = NONE_OTHER,
             trackerAttribution: String?,
-            trackerListName: String?,
             multiOrigin: Boolean) {
         if (originalProductInfoAndVariant == null) {
             isTrackTradeIn = false
@@ -190,7 +189,6 @@ class NormalCheckoutTracking {
             putString("eventCategory", category)
             putString("eventAction",actionLabel)
             putString("eventLabel", productVariantString)
-            putString(FirebaseAnalytics.Param.ITEM_LIST, trackerListName ?: "")
             putString("screenName", "/product")
             putString("shopId", shopId ?: NONE_OTHER)
             putString("shopName", shopName ?: NONE_OTHER)
