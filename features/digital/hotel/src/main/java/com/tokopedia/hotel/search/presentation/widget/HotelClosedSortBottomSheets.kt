@@ -46,4 +46,6 @@ class HotelClosedSortBottomSheets : BottomSheets() {
         val title = getDialog().findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
         title.typeface = Typeface.DEFAULT_BOLD
     }
+
+    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
 }

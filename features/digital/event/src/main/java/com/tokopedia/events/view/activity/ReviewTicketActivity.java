@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.events.EventModuleRouter;
@@ -27,13 +28,11 @@ import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
-import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
 import java.util.List;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView, View.OnClickListener, View.OnFocusChangeListener {
@@ -88,9 +87,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     public static final int PAYMENT_REQUEST_CODE = 65000;
     public static final int PAYMENT_SUCCESS = 5;
-    public static final int PROMO_CODE_CHECK = 4096;
-    private ImageTextViewHolder timeHolder;
-    private ImageTextViewHolder addressHolder;
+    private TextView dateRangeName, cityName;
+    private ImageView dateImageView, cityImageView;
     private EventsAnalytics eventsAnalytics;
 
     @Override
@@ -171,6 +169,14 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         sectionDiscount = findViewById(R.id.rl_section_discount);
         tvDiscount = findViewById(R.id.tv_discount);
 
+        View view = findViewById(R.id.event_time_tv);
+        dateRangeName = view.findViewById(R.id.textview_holder_small);
+        dateImageView = view.findViewById(R.id.image_holder_small);
+
+        View cityView = findViewById(R.id.event_address_tv);
+        cityName = cityView.findViewById(R.id.textview_holder_small);
+        cityImageView = cityView.findViewById(R.id.image_holder_small);
+
         btnGoToPayment.setOnClickListener(this);
         infoEmail.setOnClickListener(this);
         infoMoreinfo.setOnClickListener(this);
@@ -201,15 +207,15 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
-        timeHolder = new ImageTextViewHolder(this);
-        addressHolder = new ImageTextViewHolder(this);
         eventNameTv.setText(packageViewModel.getDisplayName());
         if (timerange == null || timerange.length() == 0) {
             eventTimeTv.setVisibility(View.GONE);
         } else {
-            setHolder(R.drawable.ic_time, timerange, timeHolder);
+            dateImageView.setImageResource(R.drawable.ic_time);
+            dateRangeName.setText(timerange);
         }
-        setHolder(R.drawable.ic_skyline, packageViewModel.getAddress(), addressHolder);
+        cityName.setText(packageViewModel.getAddress());
+        cityImageView.setImageResource(R.drawable.ic_placeholder);
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
 
@@ -413,10 +419,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         super.onResume();
     }
 
-    public void setHolder(int resID, String label, ImageTextViewHolder holder) {
-        holder.setImage(resID);
-        holder.setTextView(label);
-    }
 
     private void showDiscountSection(long discount, boolean show) {
         if (show) {

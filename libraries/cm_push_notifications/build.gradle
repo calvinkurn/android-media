@@ -42,10 +42,10 @@ dependencies {
     implementation (rootProject.ext.playServicesDependencies.ads){
         exclude group: 'com.android.support'
     }
-    implementation project(rootProject.ext.libraries.config)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.iris)
     implementation rootProject.ext.firebase.messaging
 
