@@ -119,4 +119,5 @@ yang ditemukan</string>
     <string name="menu_chat_search">Cari chat atau user</string>
     <string name="menu_chat_filter">Filter</string>
     <string name="menu_chat_setting">Pengaturan</string>
+    <string name="search_chat_by_username">Cari nama pengguna</string>
 </resources>

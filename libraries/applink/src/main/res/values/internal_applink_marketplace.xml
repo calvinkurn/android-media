@@ -41,4 +41,6 @@
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
 
+    <string name="path_chat_search">/chat-search</string>
+
 </resources>

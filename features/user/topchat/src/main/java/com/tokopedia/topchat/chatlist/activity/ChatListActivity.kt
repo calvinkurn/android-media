@@ -101,6 +101,7 @@ class ChatListActivity : BaseTabActivity()
     private fun initTabLayout() {
         for (i in 0 until tabList.size) {
             tabLayout.addTab(tabLayout.newTab())
+            tabLayout.setBackgroundColor(MethodChecker.getColor(this, R.color.white))
         }
         for (i in 0 until tabLayout.tabCount) {
             val title = tabList[i].title
@@ -113,7 +114,7 @@ class ChatListActivity : BaseTabActivity()
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tabLayout.elevation = 0f
+            tabLayout.elevation = 10f
         }
         tabLayout.setBackgroundResource(R.color.white)
         tabLayout.tabMode = TabLayout.MODE_FIXED
