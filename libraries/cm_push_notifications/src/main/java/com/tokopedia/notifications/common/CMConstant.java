@@ -4,7 +4,7 @@ package com.tokopedia.notifications.common;
  * Created by Ashwani Tyagi on 18/10/18.
  */
 public interface CMConstant {
-    String EXTRA_NOTIFICATION_ID = "notif_id";
+    String EXTRA_NOTIFICATION_ID = "notification_id";
     String EXTRA_BASE_MODEL = "extra_base_model";
     String EXTRA_PRODUCT_INFO = "extra_product_info";
     String EXTRA_CAROUSEL_ITEM = "extra_carousel_item";
@@ -80,6 +80,7 @@ public interface CMConstant {
         String NOTIFICATION_PRIORITY = "priorityPreOreo";
         String PRODUCT_INFO_LIST = "product_info_list";
         String PARENT_ID = "parentId";
+        String CAMPAIGN_USER_TOKEN = "campaignUserToken";
     }
 
     interface ReceiverExtraData {

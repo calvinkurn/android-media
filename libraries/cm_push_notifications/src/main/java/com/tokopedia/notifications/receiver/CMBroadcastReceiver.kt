@@ -87,12 +87,10 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION)
                     }
                     CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK -> {
-                        CarouselNotification.onRightIconClick(context.applicationContext,
-                                intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
+                        CarouselNotification.onRightIconClick(context.applicationContext,baseNotificationModel!!)
                     }
                     CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK -> {
-                        CarouselNotification.onLeftIconClick(context.applicationContext,
-                                intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
+                        CarouselNotification.onLeftIconClick(context.applicationContext,baseNotificationModel!!)
                     }
 
                     CMConstant.ReceiverAction.ACTION_CAROUSEL_NOTIFICATION_DISMISS -> {
@@ -113,28 +111,26 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK -> {
-                        ProductNotification.onLeftIconClick(context.applicationContext,
-                                intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
+                        ProductNotification.onLeftIconClick(context.applicationContext,baseNotificationModel!!)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_RIGHT_CLICK -> {
-                        ProductNotification.onRightIconClick(context.applicationContext,
-                                intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
+                        ProductNotification.onRightIconClick(context.applicationContext,baseNotificationModel!!)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_NOTIFICATION_DISMISS -> {
                         clearProductImages(context.applicationContext)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED,baseNotificationModel ,CMConstant.NotificationType.GENERAL)
 
                     }
-                    /*Product Info Carousel Click Handling*/
 
                 }
             }
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int) {
-        val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
+        val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra<BaseNotificationModel>(CMConstant.EXTRA_BASE_MODEL)
         val appLinkIntent = RouteManager.getIntent(context.applicationContext, baseNotificationModel.appLink)
         appLinkIntent.putExtras(intent.extras!!)
         startActivity(context, appLinkIntent)
@@ -256,7 +252,6 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             CarouselUtilities.deleteCarouselImageDirectory(context)
         },
                 onError = {
-                    //Timber.i(it)
                 })
     }
 
