@@ -1,10 +1,8 @@
 package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder
 
 import android.support.annotation.LayoutRes
-import android.support.v7.widget.AppCompatTextView
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetailHeaderViewModel
@@ -14,7 +12,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * @author by milhamj on 2019-08-14.
  */
-class CommissionDetailHeaderViewHolder(v: View) : AbstractViewHolder<CommissionDetailHeaderViewModel>(v){
+class CommissionDetailHeaderViewHolder(v: View) : AbstractViewHolder<CommissionDetailHeaderViewModel>(v) {
 
     private val productImage: ImageView = v.findViewById(R.id.productImage)
     private val productName: Typography = v.findViewById(R.id.productName)
