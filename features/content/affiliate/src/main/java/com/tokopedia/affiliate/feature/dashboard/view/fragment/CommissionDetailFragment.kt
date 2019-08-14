@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
+import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.CommissionDetailTypeFactoryImpl
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetailViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.coroutinedata.CommissionData
 import com.tokopedia.usecase.coroutines.Fail
@@ -78,15 +79,15 @@ class CommissionDetailFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFa
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return CommissionDetailTypeFactoryImpl()
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return ""
     }
 
     override fun initInjector() {

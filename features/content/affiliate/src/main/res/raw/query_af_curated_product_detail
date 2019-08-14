@@ -1,4 +1,4 @@
-query GetCuratedProductDetail($affiliatedProductID: String){
+query GetCuratedProductDetail($affiliatedProductID: Int!){
     affiliatedProductDetail(affiliatedProductID: $affiliatedProductID) {
         price
         priceFormatted

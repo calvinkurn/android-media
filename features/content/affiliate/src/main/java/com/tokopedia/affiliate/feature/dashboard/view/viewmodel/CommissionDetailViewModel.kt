@@ -28,6 +28,8 @@ class CommissionDetailViewModel
     : BaseViewModel(baseDispatcher) {
 
     val PARAM_AFF_ID = "affiliatedProductID"
+    val PARAM_CURSOR = "next"
+    val PARAM_LIMIT = "limit"
 
     val commissionDetailRsp = MutableLiveData<Result<CommissionData>>()
     val transactionDetailLoadMoreRsp = MutableLiveData<Result<AffiliateProductTxResponse>>()
@@ -48,11 +50,11 @@ class CommissionDetailViewModel
     private suspend fun loadFirstCommissionDataAsync(affId:String, forceRefresh: Boolean): Deferred<CommissionData> {
         return async(Dispatchers.IO) {
             val resultData = CommissionData()
-            val productParam = mapOf(PARAM_AFF_ID to affId)
+            val productParam = mapOf(PARAM_AFF_ID to affId.toInt())
             val productRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_AFF_PRODUCT_DETAIL],
                     AffiliateProductDetailResponse::class.java, productParam)
 
-            val txParam = mapOf(PARAM_AFF_ID to affId)
+            val txParam = mapOf(PARAM_AFF_ID to affId.toInt(), PARAM_LIMIT to 3, PARAM_CURSOR to "")
             val txRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_AFF_PRODUCT_TX_LIST],
                     AffiliateProductTxResponse::class.java, txParam)
 
@@ -71,7 +73,9 @@ class CommissionDetailViewModel
                 }
 
             }
-            catch(t: Throwable) {}
+            catch(t: Throwable) {
+                t.printStackTrace()
+            }
             resultData
         }
     }

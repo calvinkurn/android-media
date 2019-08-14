@@ -1,5 +1,5 @@
-query GetAffiliatedProductTxList($affiliatedProductID: String, $next: String){
-   affiliatedProductTxList(affiliatedProductID: $affiliatedProductID , next: $next) {
+query GetAffiliatedProductTxList($affiliatedProductID: Int!, $limit: Int! $next: String){
+   affiliatedProductTxList(affiliatedProductID: $affiliatedProductID , next: $next, limit: $limit) {
        history {
          itemSent
          affCommission

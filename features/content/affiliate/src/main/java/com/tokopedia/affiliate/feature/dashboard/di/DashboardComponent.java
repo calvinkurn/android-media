@@ -10,7 +10,11 @@ import dagger.Component;
  * @author by yfsx on 13/09/18.
  */
 @DashboardScope
-@Component(modules = DashboardModule.class, dependencies = AffiliateComponent.class)
+@Component(modules =
+            {DashboardModule.class,
+            GqlRawQueryModule.class,
+            ViewModelModule.class},
+        dependencies = AffiliateComponent.class)
 public interface DashboardComponent {
 
     void inject(DashboardFragment dashboardFragment);
