@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">travel_homepage</string>
+    <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
     <string name="travel_homepage_section_see_all">Lihat semua</string>
 </resources>
