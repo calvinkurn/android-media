@@ -1,6 +1,5 @@
 package com.tokopedia.instantloan.ddcollector.bdd
 
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.LocationManager
@@ -8,7 +7,6 @@ import android.os.Build
 import com.tokopedia.instantloan.ddcollector.BaseCollector
 import com.tokopedia.instantloan.ddcollector.util.AppInfo
 import com.tokopedia.instantloan.ddcollector.util.DeviceInfo
-import java.util.*
 
 class BasicDeviceData(private val mContext: Context, private val mLocationManager: LocationManager) : BaseCollector() {
 
