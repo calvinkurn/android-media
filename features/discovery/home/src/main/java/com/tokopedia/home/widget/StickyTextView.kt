@@ -151,6 +151,6 @@ class StickyTextView : FrameLayout {
 
         private const val STICKY_PREF = "sticky_login_widget.pref"
         private const val KEY_LAST_SEEN = "last_seen_at_home"
-        private const val INTERVAL_TIME = 1
+        private const val INTERVAL_TIME = 30
     }
 }
