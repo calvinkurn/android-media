@@ -7,7 +7,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.Commission
  * @author by yoasfs on 2019-08-12
  */
 
-class CommissionDetaiItemViewModel (
+class CommissionDetailItemViewModel (
         val id: Int = 0
 ) : Visitable<CommissionDetailTypeFactory> {
 

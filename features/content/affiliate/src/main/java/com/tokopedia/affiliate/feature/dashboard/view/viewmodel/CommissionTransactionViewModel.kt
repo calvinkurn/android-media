@@ -8,5 +8,5 @@ package com.tokopedia.affiliate.feature.dashboard.view.viewmodel
 data class CommissionTransactionViewModel (
         val hasNext : Boolean = false,
         val nextCursor : String = "",
-        val historyList: MutableList<CommissionDetaiItemViewModel> = ArrayList()
+        val historyList: MutableList<CommissionDetailItemViewModel> = ArrayList()
 )

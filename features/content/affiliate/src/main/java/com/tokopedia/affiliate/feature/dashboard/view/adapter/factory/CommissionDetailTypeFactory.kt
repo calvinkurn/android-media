@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.dashboard.view.adapter.factory
 
-import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetaiItemViewModel
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetailItemViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetailHeaderViewModel
 
 /**
@@ -10,5 +10,5 @@ interface CommissionDetailTypeFactory {
 
     fun type(commissionDetailHeaderViewModel: CommissionDetailHeaderViewModel): Int
 
-    fun type(commissionDetaiItemViewModel: CommissionDetaiItemViewModel): Int
+    fun type(commissionDetailItemViewModel: CommissionDetailItemViewModel): Int
 }
