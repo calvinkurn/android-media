@@ -118,12 +118,12 @@ class ShopSettingsEtalaseListFragment :
     }
 
     override fun getSearchInputView(view: View): SearchInputView {
-        return view.findViewById<View>(R.id.search_input_view) as SearchInputView
+        return view.findViewById(R.id.search_input_view)
     }
 
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
-    }
+    override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     private fun hasCustomEtalaseAtLeast2(shopEtalaseViewModelList: List<ShopEtalaseViewModel>): Boolean {
         var count = 0
