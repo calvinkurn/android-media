@@ -45,12 +45,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.OnQueryTextListener,
         BottomNavigationListener {
 
-    private static final int REQUEST_CODE_IMAGE = 2390;
-    private static final double MIN_SCORE = 10.0;
-    private static final String FAILURE = "no matching result found";
-    private static final String NO_RESPONSE = "no response";
-    private static final String SUCCESS = "success match found";
-    private static final String SEARCH_RESULT_TRACE = "search_result_trace";
     private Toolbar toolbar;
     private FrameLayout container;
     private AHBottomNavigation bottomNavigation;
@@ -61,7 +55,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     protected TkpdProgressDialog tkpdProgressDialog;
     protected boolean isFromCamera = false;
-    private String imagePath;
+
     protected View root;
 
     protected SearchParameter searchParameter;
@@ -266,23 +260,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 label);
     }
 
-    private void sendGalleryImageSearchResultGTM(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.GALLERY_SEARCH_RESULT,
-                label);
-    }
-
-
-    private void sendCameraImageSearchResultGTM(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.CAMERA_SEARCH_RESULT,
-                label);
-    }
-
     @Override
     public boolean onQueryTextChange(String searchQuery) {
         return false;
@@ -427,108 +404,5 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                     break;
             }
         }
-    }
-
-    public void onImagePickedSuccess(String imagePath) {
-        setImagePath(imagePath);
-        tkpdProgressDialog = new TkpdProgressDialog(this, 1);
-        tkpdProgressDialog.showDialog();
-        getPresenter().requestImageSearch(imagePath);
-    }
-
-    @Override
-    public void showErrorNetwork(String message) {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(NO_RESPONSE);
-        } else {
-            sendGalleryImageSearchResultGTM(NO_RESPONSE);
-        }
-
-        if (TextUtils.isEmpty(getImagePath())) {
-            NetworkErrorHelper.showSnackbar(this, message);
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(this, message, new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    onImagePickedSuccess(getImagePath());
-                }
-            }).showRetrySnackbar();
-        }
-    }
-
-    @Override
-    public void showTimeoutErrorNetwork(String message) {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-
-        if (TextUtils.isEmpty(getImagePath())) {
-            NetworkErrorHelper.showSnackbar(this, message);
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(this, message, new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    onImagePickedSuccess(getImagePath());
-                }
-            }).showRetrySnackbar();
-        }
-    }
-
-    @Override
-    public void onHandleInvalidImageSearchResponse() {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(NO_RESPONSE);
-        } else {
-            sendGalleryImageSearchResultGTM(NO_RESPONSE);
-        }
-
-        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.invalid_image_search_response));
-    }
-
-    @Override
-    public void onHandleImageSearchResponseSuccess() {
-
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(SUCCESS);
-        } else {
-            sendGalleryImageSearchResultGTM(SUCCESS);
-        }
-    }
-
-    @Override
-    public void showImageNotSupportedError() {
-        super.showImageNotSupportedError();
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-
-        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.image_not_supported));
-    }
-
-    public void showSnackBarView(String message) {
-        if (message == null) {
-            NetworkErrorHelper.showSnackbar(this);
-        } else {
-            NetworkErrorHelper.showSnackbar(this, message);
-        }
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
-    public String getImagePath() {
-        return imagePath;
     }
 }
