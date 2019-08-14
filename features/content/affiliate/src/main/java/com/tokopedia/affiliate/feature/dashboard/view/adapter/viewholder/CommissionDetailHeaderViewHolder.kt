@@ -17,10 +17,11 @@ class CommissionDetailHeaderViewHolder(v: View) : AbstractViewHolder<CommissionD
     private val productImage: ImageView = v.findViewById(R.id.productImage)
     private val productName: Typography = v.findViewById(R.id.productName)
     private val productPrice: Typography = v.findViewById(R.id.productPrice)
-    private val commission: Typography = v.findViewById(R.id.productShop)
-    private val clickNumber: Typography = v.findViewById(R.id.productShop)
-    private val buyNumber: Typography = v.findViewById(R.id.productShop)
-    private val commissionTotal: Typography = v.findViewById(R.id.productShop)
+    private val productShop: Typography = v.findViewById(R.id.productShop)
+    private val commission: Typography = v.findViewById(R.id.commission)
+    private val clickNumber: Typography = v.findViewById(R.id.clickNumber)
+    private val buyNumber: Typography = v.findViewById(R.id.buyNumber)
+    private val commissionTotal: Typography = v.findViewById(R.id.commissionTotal)
 
     companion object {
         @JvmField
@@ -29,12 +30,13 @@ class CommissionDetailHeaderViewHolder(v: View) : AbstractViewHolder<CommissionD
     }
 
     override fun bind(element: CommissionDetailHeaderViewModel?) {
-        productImage.loadImage("")
-        productName.text = ""
-        productPrice.text = ""
-        commission.text = ""
-        clickNumber.text = ""
-        buyNumber.text = ""
-        commissionTotal.text = ""
+        productImage.loadImage("https://avatars2.githubusercontent.com/u/11229830?s=88&v=4")
+        productName.text = "The Unbranded Brand - UB 16oz SL bla bla and bla and bla vbla bla and bla and bla bla bla and bla and bla"
+        productPrice.text = "The Unbranded Brand - UB 16oz SL bla bla and bla and bla vbla bla and bla and bla bla bla and bla and bla "
+        productShop.text = "Dijual oleh Denim House"
+        commission.text = "Rp10.000"
+        clickNumber.text = "123"
+        buyNumber.text = "696"
+        commissionTotal.text = "Rp100.000.100.000"
     }
 }
