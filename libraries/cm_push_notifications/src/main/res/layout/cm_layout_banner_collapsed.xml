@@ -3,20 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/push_noti_background"
     android:layout_width="match_parent"
-    android:layout_height="70dp">
+    android:layout_height="@dimen/dp_72">
 
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.56"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_15">
 
         <LinearLayout
             android:id="@+id/time_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="@dimen/dp_7"
             android:gravity="center_vertical">
 
             <ImageView
@@ -28,17 +28,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="3dp"
+                android:layout_marginLeft="@dimen/dp_3"
                 android:gravity="center_vertical"
                 android:text="Tokopedia"
                 android:textColor="@color/medium_green_70"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sp_12" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 android:background="@color/transparent"
                 android:src="@drawable/cm_notification_icon_dot" />
 
@@ -47,9 +47,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:paddingRight="7dp"
-                android:textColor="#666666"
-                android:textSize="12sp"
+                android:paddingRight="@dimen/dp_7"
+                android:textColor="@color/cm_grey_255"
+                android:textSize="@dimen/sp_12"
                 tools:text="11:00 am" />
           </LinearLayout>
 
@@ -62,8 +62,8 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:text="Title"
-            android:textColor="#272727"
-            android:textSize="13sp" />
+            android:textColor="@color/cm_title_black_255"
+            android:textSize="@dimen/sp_13" />
 
         <TextView
             android:id="@+id/push_message"
@@ -73,8 +73,8 @@
             android:layout_marginTop="1dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="#404040"
-            android:textSize="13sp" />
+            android:textColor="@color/cm_light_grey_255"
+            android:textSize="@dimen/sp_13" />
     </RelativeLayout>
 
     <RelativeLayout

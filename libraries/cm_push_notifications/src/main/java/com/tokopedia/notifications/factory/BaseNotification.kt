@@ -34,6 +34,8 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
+const val IMAGE_DOWNLOAD_TIME_OUT_SECOND  = 10L
+
 abstract class BaseNotification internal constructor(protected var context: Context, var baseNotificationModel: BaseNotificationModel) {
 
     private var cacheHandler: CMNotificationCacheHandler? = null
@@ -245,7 +247,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             Glide.with(context).load(url)
                     .asBitmap()
                     .into(imageWidth, imageHeight)
-                    .get(10, TimeUnit.SECONDS)
+                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {
@@ -263,7 +265,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             Glide.with(context).load(url)
                     .asBitmap()
                     .into(wh, wh)
-                    .get(3, TimeUnit.SECONDS)
+                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {
