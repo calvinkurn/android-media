@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.district_recommendation
+package com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 
 import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
