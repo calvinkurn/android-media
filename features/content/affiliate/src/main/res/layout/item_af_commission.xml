@@ -17,6 +17,7 @@
         android:orientation="horizontal">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/datetime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
@@ -30,6 +31,7 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/collapseBtn"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:padding="@dimen/dp_2"
@@ -39,6 +41,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/incomeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_2"
@@ -61,6 +64,7 @@
             android:layout_weight="1" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/incomeValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
@@ -72,6 +76,7 @@
     </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/incomeInvoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
@@ -84,6 +89,7 @@
         tools:visibility="visible" />
 
     <LinearLayout
+        android:id="@+id/feeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_2"
@@ -106,6 +112,7 @@
             android:layout_weight="1" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/feeValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
@@ -117,6 +124,7 @@
     </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/feeInvoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_24"
@@ -149,6 +157,7 @@
             android:layout_weight="1" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/totalCommission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
