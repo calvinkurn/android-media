@@ -152,6 +152,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         LogWrapper.init(this);
         TimberWrapper.init(this);
+
+        initializeAbTestVariant();
+
     }
 
     @Override
@@ -193,6 +196,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void initializeAbTestVariant() {
+        // ====== Todo ==== //
+        // 1. Cek sharedPref timestamp apakah ada sharedPref nya + validate
+        // 2. Jika timestamp yg tersimpan lebih dari sejam, fetch gql AbTestVariant
+        // 3. Jika sukses request, update SharedPref timestamp nya
     }
 
     private void setVersionCode() {
