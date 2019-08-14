@@ -103,6 +103,7 @@ class StickyTextView : FrameLayout {
     fun show() {
         val currentTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis())
         if ((currentTimeInMinutes - getLastSeen()) < INTERVAL_TIME_IN_MINUTES) {
+            this.visibility = View.GONE
             return
         }
 

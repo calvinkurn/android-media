@@ -2134,7 +2134,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             return
         }
 
-        if (UserSession(activity).isLoggedIn) {
+        val userSession = UserSession(activity)
+        if (userSession.isLoggedIn) {
             stickyLoginTextView.dismiss()
         } else {
             stickyLoginTextView.show()
