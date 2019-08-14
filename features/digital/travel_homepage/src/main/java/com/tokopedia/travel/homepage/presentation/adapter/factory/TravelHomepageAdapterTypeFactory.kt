@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.travel.homepage.data.*
-import com.tokopedia.travel.homepage.data.TravelHomepageItemModel
 import com.tokopedia.travel.homepage.presentation.adapter.viewholder.*
 import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
 
@@ -18,9 +17,7 @@ class TravelHomepageAdapterTypeFactory(val onBindListener: OnItemBindListener) :
         when (type) {
             TravelHomepageBannerViewHolder.LAYOUT -> return TravelHomepageBannerViewHolder(parent, onBindListener)
             TravelHomepageCategoryViewHolder.LAYOUT -> return TravelHomepageCategoryViewHolder(parent, onBindListener)
-            TravelHomepageOrderListViewHolder.LAYOUT -> return TravelHomepageOrderListViewHolder(parent, onBindListener)
-            TravelHomepageRecentSearchViewHolder.LAYOUT -> return TravelHomepageRecentSearchViewHolder(parent, onBindListener)
-            TravelHomepageRecommendationViewHolder.LAYOUT -> return TravelHomepageRecommendationViewHolder(parent, onBindListener)
+            TravelHomepageSectionViewHolder.LAYOUT -> return TravelHomepageSectionViewHolder(parent, onBindListener)
             TravelHomepageDestinationViewHolder.LAYOUT -> return TravelHomepageDestinationViewHolder(parent, onBindListener)
         }
         return super.createViewHolder(parent, type)
@@ -32,9 +29,5 @@ class TravelHomepageAdapterTypeFactory(val onBindListener: OnItemBindListener) :
 
     override fun type(viewModel: TravelHomepageDestinationModel): Int = TravelHomepageDestinationViewHolder.LAYOUT
 
-    override fun type(viewModel: TravelHomepageOrderListModel): Int = TravelHomepageOrderListViewHolder.LAYOUT
-
-    override fun type(viewModel: TravelHomepageRecentSearchModel): Int = TravelHomepageRecentSearchViewHolder.LAYOUT
-
-    override fun type(viewModel: TravelHomepageRecommendationModel): Int = TravelHomepageRecommendationViewHolder.LAYOUT
+    override fun type(viewModel: TravelHomepageSectionViewModel): Int = TravelHomepageSectionViewHolder.LAYOUT
 }

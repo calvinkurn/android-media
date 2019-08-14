@@ -1,8 +1,6 @@
 package com.tokopedia.travel.homepage.presentation.adapter.viewholder
 
-import android.graphics.Rect
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.travel.homepage.R
@@ -10,7 +8,7 @@ import com.tokopedia.travel.homepage.data.TravelHomepageDestinationModel
 import com.tokopedia.travel.homepage.presentation.adapter.TravelHomepageDestinationAdapter
 import com.tokopedia.travel.homepage.presentation.adapter.itemdecoration.TravelHomepageDestinationViewDecorator
 import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
-import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_4.view.*
+import kotlinx.android.synthetic.main.travel_homepage_travel_destination_list.view.*
 
 /**
  * @author by furqan on 06/08/2019
@@ -45,6 +43,6 @@ class TravelHomepageDestinationViewHolder(itemView: View, val onItemBindListener
     }
 
     companion object {
-        val LAYOUT = R.layout.travel_homepage_travel_section_list_4
+        val LAYOUT = R.layout.travel_homepage_travel_destination_list
     }
 }

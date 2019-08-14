@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travel.homepage.data.*
+import com.tokopedia.travel.homepage.data.mapper.TravelHomepageMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
@@ -27,14 +28,15 @@ class TravelHomepageViewModel @Inject constructor(
     : BaseViewModel(dispatcher) {
 
     val travelItemList = MutableLiveData<Pair<List<TravelHomepageItemModel>, Boolean>>()
+    val mapper = TravelHomepageMapper()
 
     fun getIntialList() {
         val list: List<TravelHomepageItemModel> =
                 listOf(TravelHomepageBannerModel(),
                         TravelHomepageCategoryListModel(),
-                        TravelHomepageOrderListModel(),
-                        TravelHomepageRecentSearchModel(),
-                        TravelHomepageRecommendationModel(),
+                        TravelHomepageSectionViewModel(type = TravelHomepageSectionViewModel.TYPE_ORDER_LIST),
+                        TravelHomepageSectionViewModel(type = TravelHomepageSectionViewModel.TYPE_RECENT_SEARCH),
+                        TravelHomepageSectionViewModel(type = TravelHomepageSectionViewModel.TYPE_RECOMMENDATION),
                         TravelHomepageDestinationModel())
 
         travelItemList.value = Pair(list, true)
@@ -87,7 +89,7 @@ class TravelHomepageViewModel @Inject constructor(
 
                 travelItemList.value?.let {
                     val updatedList = it.first.toMutableList()
-                    updatedList[ORDER_LIST_ORDER] = data.response
+                    updatedList[ORDER_LIST_ORDER] = mapper.mapToSectionViewModel(data.response)
                     updatedList[ORDER_LIST_ORDER].isLoaded = true
                     travelItemList.value = Pair(updatedList, true)
                 }
@@ -106,7 +108,7 @@ class TravelHomepageViewModel @Inject constructor(
 
             travelItemList.value?.let {
                 val updatedList = it.first.toMutableList()
-                updatedList[RECENT_SEARCHES_ORDER] = data.response
+                updatedList[RECENT_SEARCHES_ORDER] = mapper.mapToSectionViewModel(data.response)
                 updatedList[RECENT_SEARCHES_ORDER].isLoaded = true
                 travelItemList.value = Pair(updatedList, true)
             }
@@ -124,7 +126,7 @@ class TravelHomepageViewModel @Inject constructor(
 
             travelItemList.value?.let {
                 val updatedList = it.first.toMutableList()
-                updatedList[RECOMMENDATION_ORDER] = data.response
+                updatedList[RECOMMENDATION_ORDER] = mapper.mapToSectionViewModel(data.response)
                 updatedList[RECOMMENDATION_ORDER].isLoaded = true
                 travelItemList.value = Pair(updatedList, true)
             }

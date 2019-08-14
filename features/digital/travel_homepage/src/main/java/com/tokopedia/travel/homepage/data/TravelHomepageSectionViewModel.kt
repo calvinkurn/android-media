@@ -1,0 +1,33 @@
+package com.tokopedia.travel.homepage.data
+
+import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
+
+/**
+ * @author by jessica on 2019-08-14
+ */
+
+data class TravelHomepageSectionViewModel(
+        var title: String = "",
+        var seeAllUrl: String = "",
+        var list: List<Item> = listOf(),
+        var type: Int = 0
+): TravelHomepageItemModel() {
+
+    override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
+
+    data class Item(
+            var title: String = "",
+            var subtitle: String = "",
+            var prefix: String = "",
+            var prefixStyling: String = "normal",
+            var value: String = "",
+            var appUrl: String = "",
+            var imageUrl: String = ""
+    )
+
+    companion object {
+        val TYPE_ORDER_LIST = 1
+        val TYPE_RECENT_SEARCH = 2
+        val TYPE_RECOMMENDATION = 3
+    }
+}

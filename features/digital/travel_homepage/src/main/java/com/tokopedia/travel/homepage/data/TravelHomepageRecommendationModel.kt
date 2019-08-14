@@ -10,12 +10,10 @@ import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepage
  */
 class TravelHomepageRecommendationModel(@SerializedName("items")
                                         @Expose
-                                        val items: List<Item> = arrayListOf(),
+                                        val items: List<Item> = listOf(),
                                         @SerializedName("meta")
                                         @Expose
-                                        val meta: MetaModel = MetaModel()) : TravelHomepageItemModel() {
-
-    override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
+                                        val meta: MetaModel = MetaModel()) {
 
     data class Item(@SerializedName("product")
                     @Expose

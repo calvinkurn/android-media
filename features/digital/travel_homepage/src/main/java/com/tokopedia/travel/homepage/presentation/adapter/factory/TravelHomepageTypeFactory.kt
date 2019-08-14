@@ -15,9 +15,5 @@ interface TravelHomepageTypeFactory : AdapterTypeFactory {
 
     fun type(viewModel: TravelHomepageDestinationModel): Int
 
-    fun type(viewModel: TravelHomepageOrderListModel): Int
-
-    fun type(viewModel: TravelHomepageRecentSearchModel): Int
-
-    fun type(viewModel: TravelHomepageRecommendationModel): Int
+    fun type(viewModel: TravelHomepageSectionViewModel): Int
 }

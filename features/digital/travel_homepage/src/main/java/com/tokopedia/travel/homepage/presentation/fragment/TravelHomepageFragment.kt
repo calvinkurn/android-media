@@ -4,7 +4,9 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.view.View
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageItemModel
@@ -32,6 +34,11 @@ class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHo
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             travelHomepageViewModel = viewModelProvider.get(TravelHomepageViewModel::class.java)
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
