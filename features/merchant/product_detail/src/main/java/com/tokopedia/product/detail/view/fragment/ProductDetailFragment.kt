@@ -182,6 +182,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var productInfoViewModel: ProductInfoViewModel
     lateinit var productWarehouseViewModel: ProductWarehouseViewModel
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     lateinit var performanceMonitoringP1: PerformanceMonitoring
     lateinit var performanceMonitoringP2: PerformanceMonitoring
     lateinit var performanceMonitoringP2General: PerformanceMonitoring
@@ -2134,7 +2137,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             return
         }
 
-        val userSession = UserSession(context)
         if (userSession.isLoggedIn) {
             stickyLoginTextView.dismiss()
         } else {
