@@ -111,9 +111,7 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
                 val manager: LinearLayoutManager =
                         recyclerView.layoutManager as LinearLayoutManager
                 val position = manager.findFirstCompletelyVisibleItemPosition()
-                if (
-                        position != currentImagePosition && position != -1) {
-
+                if (position != currentImagePosition && position != -1) {
                     val url = promoImageUrls[position]
                     ImageHandler.loadImageBlurWithViewTarget(
                             context.applicationContext,
