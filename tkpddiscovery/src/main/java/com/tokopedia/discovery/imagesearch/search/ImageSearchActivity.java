@@ -112,13 +112,13 @@ public class ImageSearchActivity extends DiscoveryActivity
                 new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
                     public void onPermissionDenied(@NotNull String permissionText) {
-                        RequestPermissionUtil.onPermissionDenied(ImageSearchActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                        permissionCheckerHelper.onPermissionDenied(ImageSearchActivity.this, permissionText);
                         finish();
                     }
 
                     @Override
                     public void onNeverAskAgain(@NotNull String permissionText) {
-                        RequestPermissionUtil.onNeverAskAgain(ImageSearchActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                        permissionCheckerHelper.onNeverAskAgain(ImageSearchActivity.this, permissionText);
                         finish();
                     }
 
@@ -133,6 +133,12 @@ public class ImageSearchActivity extends DiscoveryActivity
                 },
                 ""
         );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     private void handleImageUri(Intent intent) {
@@ -191,12 +197,6 @@ public class ImageSearchActivity extends DiscoveryActivity
                     fileExtension.toLowerCase());
         }
         return mimeType;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     private void openImagePickerActivity() {
