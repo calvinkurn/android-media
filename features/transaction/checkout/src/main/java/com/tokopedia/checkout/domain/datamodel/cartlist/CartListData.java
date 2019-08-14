@@ -17,6 +17,7 @@ import java.util.List;
 public class CartListData implements Parcelable {
     private boolean isError;
     private String errorMessage;
+    private CartTickerData ticker;
 
     private List<ShopGroupData> shopGroupDataList = new ArrayList<>();
     private CartPromoSuggestion cartPromoSuggestion;
@@ -84,6 +85,14 @@ public class CartListData implements Parcelable {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public CartTickerData getTicker() {
+        return ticker;
+    }
+
+    public void setTicker(CartTickerData ticker) {
+        this.ticker = ticker;
     }
 
     public AutoApplyData getAutoApplyData() {

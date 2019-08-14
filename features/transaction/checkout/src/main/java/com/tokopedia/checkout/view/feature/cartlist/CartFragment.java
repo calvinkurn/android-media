@@ -100,6 +100,7 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
@@ -151,6 +152,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private CardView cardFooter;
     private LinearLayout llNetworkErrorView;
     private LinearLayout llCartContainer;
+    private Ticker cartTicker;
 
     private ProgressDialog progressDialog;
 
@@ -353,6 +355,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
         llCartContainer = view.findViewById(R.id.ll_cart_container);
+        cartTicker = view.findViewById(R.id.cart_ticker);
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -554,6 +557,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 refreshHandler.startRefresh();
             } else {
                 if (cartListData != null) {
+                    dPresenter.setCartListData(cartListData);
                     renderLoadGetCartDataFinish();
                     renderInitialGetCartListDataSuccess(cartListData);
                     stopCartPerformanceTrace();
@@ -1137,6 +1141,22 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
             }
 
+            if (cartListData.getTicker() != null) {
+                if (cartTicker != null) {
+                    cartTicker.setTickerType(Ticker.TYPE_ANNOUNCEMENT);
+                    cartTicker.setTickerShape(Ticker.SHAPE_FULL);
+                    cartTicker.setCloseButtonVisibility(View.GONE);
+                    cartTicker.setHtmlDescription(cartListData.getTicker().getMessage());
+                    cartTicker.setVisibility(View.VISIBLE);
+                    View view = cartTicker.findViewById(com.tokopedia.unifycomponents.R.id.ticker_content_multiple);
+                    if (view != null) {
+                        view.setVisibility(View.GONE);
+                    }
+                    cartTicker.requestLayout();
+                }
+            } else if (cartTicker != null) {
+                cartTicker.setVisibility(View.GONE);
+            }
         }
     }
 
