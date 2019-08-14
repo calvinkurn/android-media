@@ -276,6 +276,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
                     tickerError.setTextDescription(errorDescription);
                 } else {
+                    tickerError.setTickerTitle(null);
                     tickerError.setTextDescription(data.getShopGroupData().getErrorTitle());
                 }
             }
@@ -303,6 +304,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 tickerWarning.setTickerTitle(data.getShopGroupData().getWarningTitle());
                 tickerWarning.setTextDescription(warningDescription);
             } else {
+                tickerWarning.setTickerTitle(null);
                 tickerWarning.setTextDescription(data.getShopGroupData().getWarningTitle());
             }
             tickerWarning.setTickerType(Ticker.TYPE_WARNING);

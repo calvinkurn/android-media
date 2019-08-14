@@ -653,6 +653,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
                     tickerError.setTextDescription(errorDescription);
                 } else {
+                    tickerError.setTickerTitle(null);
                     tickerError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
                 }
             }
@@ -676,6 +677,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 tickerWarning.setTickerTitle(data.getCartItemData().getWarningMessageTitle());
                 tickerWarning.setTextDescription(warningDescription);
             } else {
+                tickerWarning.setTickerTitle(null);
                 tickerWarning.setTextDescription(data.getCartItemData().getWarningMessageTitle());
             }
             tickerWarning.setTickerType(Ticker.TYPE_WARNING);
