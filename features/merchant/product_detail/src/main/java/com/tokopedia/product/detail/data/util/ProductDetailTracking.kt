@@ -11,6 +11,7 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.normalcheckout.view.NormalCheckoutTracking.Companion.PRODUCT_DETAIL_PAGE
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -648,17 +649,17 @@ class ProductDetailTracking() {
         if (tracker != null) {
             if (isOnSticky) {
                 tracker.sendGeneralEvent(
-                        Event.CLICK_PDP,
-                        Event.Category.PRODUCT_DETAIL_PAGE,
-                        Event.Action.CLICK_ON_LOGIN_STICKY_WIDGET,
-                        Event.Label.CLICK
+                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                        ProductTrackingConstant.Category.PDP,
+                        ProductTrackingConstant.Action.CLICK_ON_LOGIN_STICKY_WIDGET,
+                        ProductTrackingConstant.Label.CLICK
                 )
             } else {
                 tracker.sendGeneralEvent(
-                        Event.CLICK_PDP,
-                        Event.Category.PRODUCT_DETAIL_PAGE,
-                        Event.Action.CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET,
-                        Event.Label.EMPTY_LABEL
+                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                        ProductTrackingConstant.Category.PDP,
+                        ProductTrackingConstant.Action.CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET,
+                        ProductTrackingConstant.Label.EMPTY_LABEL
                 )
             }
         }
@@ -667,10 +668,10 @@ class ProductDetailTracking() {
     fun eventViewLoginStickyWidget() {
         val tracker = TrackApp.getInstance().gtm
         tracker.sendGeneralEvent(
-                Event.VIEW_PDP,
-                Event.Category.PRODUCT_DETAIL_PAGE,
-                Event.Action.VIEW_LOGIN_STICKY_WIDGET,
-                Event.Label.EMPTY_LABEL
+                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                ProductTrackingConstant.Category.PDP,,
+                ProductTrackingConstant.Action.VIEW_LOGIN_STICKY_WIDGET,
+                ProductTrackingConstant.Label.EMPTY_LABEL
         )
     }
 
@@ -704,25 +705,5 @@ class ProductDetailTracking() {
         private const val LIST_RECOMMENDATION = " - rekomendasi untuk anda - "
         private const val CURRENCY_CODE = "currencyCode"
         private const val CURRENCY_DEFAULT_VALUE = "IDR"
-
-        object Event {
-            const val CLICK_PDP = "clickPDP"
-            const val VIEW_PDP = "viewPDP"
-
-            object Category {
-                const val PRODUCT_DETAIL_PAGE = "product detail page"
-            }
-
-            object Action {
-                const val CLICK_ON_LOGIN_STICKY_WIDGET = "click on login sticky widget"
-                const val CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET = "click on button close login sticky widget"
-                const val VIEW_LOGIN_STICKY_WIDGET = "view login sticky widget"
-            }
-
-            object Label {
-                const val EMPTY_LABEL = ""
-                const val CLICK = "click"
-            }
-        }
     }
 }
