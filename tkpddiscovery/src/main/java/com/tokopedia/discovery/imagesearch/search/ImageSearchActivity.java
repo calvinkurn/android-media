@@ -34,10 +34,6 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeD
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
 
-/**
- * Created by sachinbansal on 4/12/18.
- */
-
 public class ImageSearchActivity extends DiscoveryActivity
         implements ImageSearchContract.View, RedirectionListener {
 
@@ -161,16 +157,16 @@ public class ImageSearchActivity extends DiscoveryActivity
     }
 
     private void proceed(ProductViewModel productViewModel) {
+        initView();
+
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel);
-
             setToolbarTitle(getString(R.string.image_search_title));
+            stopLoading();
         } else {
             searchView.showSearch(true, false);
         }
-
-        initView();
     }
 
     private void loadSection(ProductViewModel productViewModel) {
@@ -185,14 +181,10 @@ public class ImageSearchActivity extends DiscoveryActivity
         }
     }
 
-    @Override
-    protected int getLayoutRes() {
-        return super.getLayoutRes();
-    }
-
-    @Override
-    public void performNewProductSearch(String queryParams) {
-
+    private void stopLoading() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
     }
 
     @Override

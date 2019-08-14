@@ -62,7 +62,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public MenuItem searchItem;
 
-    private TkpdProgressDialog tkpdProgressDialog;
+    protected TkpdProgressDialog tkpdProgressDialog;
     private boolean isFromCamera = false;
     private String imagePath;
     protected View root;
