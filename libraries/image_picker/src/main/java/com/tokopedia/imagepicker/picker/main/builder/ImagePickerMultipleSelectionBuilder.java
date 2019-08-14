@@ -80,6 +80,10 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
         return placeholderImagePathResList;
     }
 
+    public void setMaximumNoPick(int maximumNoPick) {
+        this.maximumNoPick = maximumNoPick;
+    }
+
     @Override
     public int describeContents() {
         return 0;

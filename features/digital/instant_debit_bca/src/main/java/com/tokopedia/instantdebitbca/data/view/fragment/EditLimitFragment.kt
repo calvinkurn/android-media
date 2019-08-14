@@ -28,7 +28,7 @@ class EditLimitFragment @Inject constructor(): InstantDebitBcaFragment() {
     }
 
     override fun createAndSetBcaWidget() {
-        widgetBca = BCAEditXCOWidget(activity, XCOEnum.ENVIRONMENT.DEV)
+        widgetBca = BCAEditXCOWidget(activity, XCOEnum.ENVIRONMENT.PROD)
         widgetBca.setListener(this)
         layoutWidget.addView(widgetBca)
     }

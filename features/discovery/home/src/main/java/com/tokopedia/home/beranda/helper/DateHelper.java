@@ -19,4 +19,11 @@ public class DateHelper {
         }
     }
 
+    public static boolean isExpired(long serverTimeOffset, Date expiredTime) {
+        Date serverTime = new Date(System.currentTimeMillis());
+        serverTime.setTime(
+                serverTime.getTime() + serverTimeOffset
+        );
+        return serverTime.after(expiredTime);
+    }
 }

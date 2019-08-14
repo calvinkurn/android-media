@@ -42,7 +42,7 @@ public class CartTickerErrorViewHolder extends RecyclerView.ViewHolder {
 
         this.errorTicker.setTickerTitle(data.getCartTickerErrorData().getErrorInfo());
         this.errorTicker.setTextDescription(data.getCartTickerErrorData().getActionInfo());
-        this.errorTicker.setTickerType(Ticker.TYPE_ERROR);
+        this.errorTicker.setTickerType(Ticker.TYPE_WARNING);
         this.errorTicker.setTickerShape(Ticker.SHAPE_LOOSE);
         this.errorTicker.setCloseButtonVisibility(View.GONE);
         this.errorTicker.setOnClickListener(view -> actionListener.onCartItemTickerErrorActionClicked(data, position));

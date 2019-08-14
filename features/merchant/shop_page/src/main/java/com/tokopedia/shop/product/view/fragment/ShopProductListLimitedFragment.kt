@@ -72,7 +72,6 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
@@ -92,8 +91,7 @@ import javax.inject.Inject
  */
 
 class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
-        WishListActionListener, BaseEmptyViewHolder.Callback,
-        ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedListener,
+        WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener,
         ShopCarouselSeeAllClickedListener, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
         MerchantVoucherListView {
@@ -325,10 +323,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     protected fun loadTopData() {
         shopInfo?.let {
-            shopProductAdapter.clearPromoData()
             shopProductAdapter.clearMerchantVoucherData()
             shopProductAdapter.clearFeaturedData()
-            viewModel.renderProductPromoModel(getOfficialWebViewUrl(shopInfo), this::renderShopProductPromo)
             loadVoucherList()
 
             viewModel.getFeaturedProduct(it.shopCore.shopID, false)
@@ -355,10 +351,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
-    private fun renderShopProductPromo(shopProductPromoViewModel: ShopProductPromoViewModel) {
-        shopProductAdapter.setShopProductPromoViewModel(shopProductPromoViewModel)
-    }
-
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return gridLayoutManager
     }
@@ -379,8 +371,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         val displaymetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
-        return ShopProductAdapterTypeFactory(this,
-                this, this, this,
+        return ShopProductAdapterTypeFactory(this, this, this,
                 this, this,
                 true, deviceWidth, ShopTrackProductTypeDef.PRODUCT
         )
@@ -663,7 +654,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         RouteManager.route(activity, ApplinkConst.PRODUCT_ADD)
     }
 
-    override fun promoClicked(url: String?) {
+    fun promoClicked(url: String?) {
         activity?.let {
             val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopInfo!!.shopCore.shopID,
                     viewModel.isLogin,

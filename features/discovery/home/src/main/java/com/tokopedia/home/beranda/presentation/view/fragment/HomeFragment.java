@@ -142,6 +142,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
+    public static Boolean HIDE_TICKER = false;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
@@ -744,6 +745,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCloseTicker(int pos) {
+        HIDE_TICKER = true;
         adapter.getItems().remove(pos);
         adapter.notifyItemRemoved(pos);
     }

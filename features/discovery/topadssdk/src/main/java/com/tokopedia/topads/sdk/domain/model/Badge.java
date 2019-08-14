@@ -31,6 +31,7 @@ public class Badge implements Parcelable {
     @Expose
     private Boolean show = false;
 
+
     public Badge(String imageUrl) {
         this.imageUrl = imageUrl;
     }

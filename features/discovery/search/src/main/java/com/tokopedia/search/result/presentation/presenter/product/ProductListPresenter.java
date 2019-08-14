@@ -68,7 +68,7 @@ final class ProductListPresenter
 
         component.inject(this);
 
-        enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,false);
+        enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,true);
         changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
     }
 
@@ -513,31 +513,62 @@ final class ProductListPresenter
 
     private void loadDataSubscriberOnNextIfViewAttached(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
         if (isViewAttached()) {
-            getView().clearLastProductItemPositionFromCache();
-
-            int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
-
-            ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
-
-            saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
-
-            if (productViewModel.getProductList().isEmpty()) {
-                getViewToShowEmptySearch();
-            } else {
-                getViewToShowProductList(productViewModel);
+            if(isSearchRedirected(searchProductModel)) {
+                getViewToRedirectSearch(searchProductModel);
             }
-
-            getView().storeTotalData(productViewModel.getTotalData());
-
-            if(isFirstTimeLoad) {
-                getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+            else {
+                getViewToProcessSearchResult(searchProductModel, isFirstTimeLoad);
             }
         }
     }
 
-    private void getViewToShowEmptySearch() {
+    private boolean isSearchRedirected(SearchProductModel searchProductModel) {
+        SearchProductModel.Redirection redirection = searchProductModel.getSearchProduct().getRedirection();
+
+        return redirection != null
+                && redirection.getRedirectApplink() != null
+                && redirection.getRedirectApplink().length() > 0;
+    }
+
+    private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
+        String applink = searchProductModel.getSearchProduct().getRedirection().getRedirectApplink();
+
+        getView().redirectSearchToAnotherPage(applink);
+    }
+
+    private void getViewToProcessSearchResult(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
+        ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
+
+        if (productViewModel.getProductList().isEmpty()) {
+            getViewToShowEmptySearch(productViewModel);
+        } else {
+            getViewToShowProductList(productViewModel);
+        }
+
+        getView().storeTotalData(productViewModel.getTotalData());
+
+        if (isFirstTimeLoad) {
+            getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+        }
+    }
+
+    private ProductViewModel createProductViewModelWithPosition(SearchProductModel searchProductModel) {
+        getView().clearLastProductItemPositionFromCache();
+
+        int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
+
+        ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
+
+        saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
+
+        return productViewModel;
+    }
+
+    private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
+        boolean isGlobalNavWidgetAvailable
+                = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
         getView().removeLoading();
-        getView().setEmptyProduct();
+        getView().setEmptyProduct(isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null);
         getView().setTotalSearchResultCount("0");
     }
 
@@ -560,7 +591,7 @@ final class ProductListPresenter
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
         if (isGlobalNavWidgetAvailable) {
-            headerViewModel.setGlobalNavViewModel(productViewModel.getGlobalNavViewModel());
+            list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
         if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable) {

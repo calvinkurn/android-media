@@ -66,6 +66,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoToAnalytics;
     private CheckBox toggleAnalytics;
 
+    private CheckBox toggleUiBlockDebugger;
+
     private AppCompatEditText ipGroupChat;
     private View saveIpGroupChat;
     private ToggleButton groupChatLogToggle;
@@ -83,12 +85,10 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         if(GlobalConfig.isAllowDebuggingTools()) {
-            super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_developer_options);
-
             userSession = new UserSession(this);
-
             setupView();
             initListener();
         } else {
@@ -108,6 +108,8 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         vGoToAnalytics = findViewById(R.id.goto_analytics);
         toggleAnalytics = findViewById(R.id.toggle_analytics);
+
+        toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
 
         remoteConfigKeyEditText = findViewById(R.id.et_remote_config_key);
         remoteConfigValueEditText = findViewById(R.id.et_remote_config_value);
@@ -185,6 +187,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
+
         SharedPreferences cache = getSharedPreferences(CHUCK_ENABLED);
 
         toggleChuck.setChecked(cache.getBoolean(IS_CHUCK_ENABLED, false));
@@ -205,6 +208,12 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
 
         vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
+
+        SharedPreferences uiBlockDebuggerPref = getSharedPreferences("UI_BLOCK_DEBUGGER");
+        toggleUiBlockDebugger.setChecked(uiBlockDebuggerPref.getBoolean("isEnabled", false));
+        toggleUiBlockDebugger.setOnCheckedChangeListener((compoundButton, state) -> {
+            uiBlockDebuggerPref.edit().putBoolean("isEnabled", state).apply();
+        });
 
         remoteConfigCheckBtn.setOnClickListener(view -> actionCheckValueRemoteConfig());
         remoteConfigSaveBtn.setOnClickListener(view -> actionSaveValueRemoteConfig());

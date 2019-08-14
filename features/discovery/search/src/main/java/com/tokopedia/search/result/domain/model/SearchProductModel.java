@@ -102,6 +102,9 @@ public class SearchProductModel {
         @SerializedName("additional_params")
         @Expose
         private String additionalParams;
+        @SerializedName("redirection")
+        @Expose
+        private Redirection redirection = new Redirection();
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
@@ -110,7 +113,7 @@ public class SearchProductModel {
         private Related related = new Related();
         @SerializedName("products")
         @Expose
-        private List<Product> products = null;
+        private List<Product> products = new ArrayList<>();
 
         public String getQuery() {
             return query;
@@ -144,6 +147,10 @@ public class SearchProductModel {
             return additionalParams;
         }
 
+        public Redirection getRedirection() {
+            return this.redirection;
+        }
+
         public Suggestion getSuggestion() {
             return suggestion;
         }
@@ -154,6 +161,17 @@ public class SearchProductModel {
 
         public Related getRelated() {
             return related;
+        }
+    }
+
+    public static class Redirection {
+
+        @SerializedName("redirect_applink")
+        @Expose
+        private String redirectApplink;
+
+        public String getRedirectApplink() {
+            return this.redirectApplink;
         }
     }
 
@@ -683,31 +701,6 @@ public class SearchProductModel {
 
         public boolean isShown() {
             return isShown;
-        }
-    }
-
-    public static class Redirection {
-
-        @SerializedName("redirect_url")
-        @Expose
-        private String redirectUrl;
-        @SerializedName("department_id")
-        @Expose
-        private String departmentId;
-        @SerializedName("redirect_applink")
-        @Expose
-        private String redirectApplink;
-
-        public String getRedirectUrl() {
-            return redirectUrl;
-        }
-
-        public String getDepartmentId() {
-            return departmentId;
-        }
-
-        public String getRedirectApplink() {
-            return redirectApplink;
         }
     }
 

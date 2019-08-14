@@ -15,6 +15,7 @@ query WhitelistQuery($type: String, $ID: String) {
       thumbnail
       link
       badge
+      type
     }
     error
   }
