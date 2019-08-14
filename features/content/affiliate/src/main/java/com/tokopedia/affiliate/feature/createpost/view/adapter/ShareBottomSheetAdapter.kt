@@ -5,7 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_af_share.view.*
 
 class ShareBottomSheetAdapter(val onClick: (ShareType, Boolean) -> Unit) : RecyclerView.Adapter<ShareBottomSheetAdapter.ShareBottomSheetViewHolder>() {
@@ -37,7 +40,17 @@ class ShareBottomSheetAdapter(val onClick: (ShareType, Boolean) -> Unit) : Recyc
         fun bind(item: ShareType) {
             itemView.apply {
                 imageShare.setImageResource(item.imageRes)
-                shareTitle.text = item.showTitleFormula(context, item.titleRes)
+                shareTitle.text = context.getString(item.titleRes)
+
+                val subtitle =
+                        if (item.subtitleRes != null) item.subtitleFormula?.invoke(context, item.subtitleRes)
+                        else null
+
+                if (subtitle != null) {
+                    shareSubtitle.visible()
+                    shareSubtitle.text = subtitle
+                } else shareSubtitle.gone()
+
                 toggleShare.apply {
                     setOnCheckedChangeListener(null)
 

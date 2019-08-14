@@ -89,7 +89,17 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private val shareDialogView: View by lazy {
-        layoutInflater.inflate(R.layout.bottom_sheet_share_post, null)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_share_post, null)
+        val (title, subtitle) = getShareTitleAndSubtitle()
+        view.apply {
+            shareSheetTitle.text = title
+            shareSheetSubtitle.text = subtitle
+            shareBtn.setOnClickListener {
+                saveDraftAndSubmit()
+                shareDialog.dismiss()
+            }
+        }
+        return@lazy view
     }
 
     private val shareDialog: CloseableBottomSheetDialog by lazy {
@@ -751,7 +761,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     fun openShareBottomSheetDialog() {
         presenter.invalidateShareOptions()
-        shareDialogView.shareList.adapter = shareAdapter
+        shareDialogView.apply {
+            shareList.adapter = shareAdapter
+            shareBtn.isEnabled = isPostEnabled
+        }
         shareDialog.show()
     }
 
@@ -761,5 +774,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun onShareButtonClicked(type: ShareType, isChecked: Boolean) {
         presenter.onShareButtonClicked(type, isChecked)
+    }
+
+    private fun getShareTitleAndSubtitle(): Pair<String, String> {
+        return if (isTypeAffiliate()) context?.getString(R.string.af_share_title).orEmpty() to context?.getString(R.string.af_share_subtitle).orEmpty()
+        else context?.getString(R.string.af_merchant_share_title).orEmpty() to context?.getString(R.string.af_merchant_share_subtitle).orEmpty()
     }
 }

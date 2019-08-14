@@ -7,14 +7,14 @@ import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetFeedForEditU
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
-import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.twitter_share.TwitterManager
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import timber.log.Timber
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetProfileRelatedUseCase
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
@@ -30,13 +30,14 @@ class CreatePostPresenter @Inject constructor(
         private val twitterManager: TwitterManager
 ) : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter, TwitterManager.TwitterManagerListener {
 
+    private var followersCount: Int? = null
     private val twitterSubscription: MutableList<Subscription> = mutableListOf()
 
     override fun attachView(view: CreatePostContract.View?) {
         super.attachView(view)
         twitterManager.setListener(this)
+        getFollowersCount()
         invalidateShareOptions()
-        postContentToOtherService(CreatePostViewModel(caption = "Jual barang di https://www.tokopedia.com https://news.detik.com"))
     }
 
     override fun detachView() {
@@ -44,6 +45,7 @@ class CreatePostPresenter @Inject constructor(
         getContentFormUseCase.unsubscribe()
         twitterSubscription.forEach(Subscription::unsubscribe)
         getFeedUseCase.unsubscribe()
+        getProfileHeaderUseCase.unsubscribe()
     }
 
     override fun fetchContentForm(idList: MutableList<String>, type: String, postId: String) {
@@ -68,6 +70,26 @@ class CreatePostPresenter @Inject constructor(
         view?.changeShareHeaderText(getShareHeaderText())
     }
 
+    private fun getFollowersCount() {
+        getProfileHeaderUseCase.execute(
+                GetProfileHeaderUseCase.createRequestParams(userSession.userId.toInt()),
+                object : Subscriber<GraphqlResponse>() {
+                    override fun onNext(t: GraphqlResponse?) {
+                        followersCount = t?.let(::getFollowersCount)
+                        invalidateShareOptions()
+                    }
+
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        e?.debugTrace()
+                    }
+                }
+        )
+    }
+
     override fun onShareButtonClicked(type: ShareType, isChecked: Boolean) {
         if (isChecked) {
             when (type) {
@@ -85,18 +107,6 @@ class CreatePostPresenter @Inject constructor(
         shouldChangeShareHeaderText()
     }
 
-    override fun postContentToOtherService(viewModel: CreatePostViewModel) {
-        if (twitterManager.shouldPostToTwitter) {
-            twitterSubscription.add(
-                    twitterManager.postTweet(viewModel.caption)
-                            .subscribe(
-                                    { Timber.tag("Post to Twitter").d("Success") },
-                                    { Timber.tag("Post to Twitter").e(it) }
-                            )
-            )
-        }
-    }
-
     private fun authenticateTwitter() {
         twitterSubscription.add(
                 twitterManager.getAuthenticator()
@@ -107,7 +117,7 @@ class CreatePostPresenter @Inject constructor(
 
     private fun getShareOptions(): List<ShareType> {
         return listOf(
-                ShareType.Tokopedia(0),
+                ShareType.Tokopedia(followersCount),
                 ShareType.Twitter(twitterManager.shouldPostToTwitter)
         )
     }
@@ -139,6 +149,11 @@ class CreatePostPresenter @Inject constructor(
             }
 
         })
+    }
+
+    private fun getFollowersCount(response: GraphqlResponse): Int {
+        val data: ProfileHeaderData = response.getData(ProfileHeaderData::class.java)
+        return data.bymeProfileHeader.profile.totalFollower.number
     }
 
     companion object {

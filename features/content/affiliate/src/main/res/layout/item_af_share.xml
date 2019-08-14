@@ -18,19 +18,35 @@
         android:layout_centerVertical="true"
         tools:src="@drawable/ic_facebook" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shareTitle"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:textColor="#e131353b"
         android:layout_toEndOf="@id/imageShare"
         android:layout_toRightOf="@id/imageShare"
         android:layout_centerVertical="true"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="@string/af_share_facebook_option"/>
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shareTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="@string/af_share_facebook_option"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shareSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_68"
+            android:layout_marginTop="@dimen/dp_2"
+            app:typographyType="body_3"
+            tools:text="203 orang akan melihat post ini"/>
+
+    </LinearLayout>
 
     <Switch
         android:id="@+id/toggleShare"

@@ -5,28 +5,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.view.View
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.TYPE_CONTENT_SHOP
-import com.tokopedia.affiliate.feature.createpost.view.adapter.ShareBottomSheetAdapter
 import com.tokopedia.affiliate.feature.createpost.view.fragment.AffiliateCreatePostFragment
 import com.tokopedia.affiliate.feature.createpost.view.fragment.BaseCreatePostFragment
 import com.tokopedia.affiliate.feature.createpost.view.fragment.ContentCreatePostFragment
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
-import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post.*
-import kotlinx.android.synthetic.main.bottom_sheet_share_post.view.*
 
 class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, BaseCreatePostFragment.OnCreatePostCallBack {
     private var postId: String? = null

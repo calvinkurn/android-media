@@ -43,8 +43,6 @@ interface CreatePostContract {
 
         fun onShareButtonClicked(type: ShareType, isChecked: Boolean)
 
-        fun postContentToOtherService(viewModel: CreatePostViewModel)
-
         fun fetchContentForm(idList: MutableList<String>, type: String, postId: String)
 
         fun getFeedDetail(postId: String, isAffiliate: Boolean)
