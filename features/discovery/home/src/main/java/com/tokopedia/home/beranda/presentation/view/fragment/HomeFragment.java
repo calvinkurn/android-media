@@ -398,31 +398,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         });
-        stickyLoginTextView.setOnClickListener(v -> onGoToLogin());
+        stickyLoginTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGoToLogin();
+                HomePageTracking.eventClickOnStickyLogin(true);
+            }
+        });
         stickyLoginTextView.setOnDismissListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 stickyLoginTextView.dismiss();
+                HomePageTracking.eventClickOnStickyLogin(false);
 
                 FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
                 if (floatingEggButtonFragment != null) {
                     updateEggBottomMargin(floatingEggButtonFragment);
-                }
-
-                if (!userSession.isLoggedIn()) {
-                    timer.cancel();
-                    timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    updateStickyState();
-                                }
-                            });
-                        }
-                    }, STICKY_SHOW_DELAY);
                 }
             }
         });
@@ -1555,8 +1546,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void updateStickyState() {
-//        boolean isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true);
-        boolean isCanShowing = true;
+        boolean isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true);
         if (!isCanShowing) {
             stickyLoginTextView.dismiss();
             return;
@@ -1570,6 +1560,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             stickyLoginTextView.dismiss();
         } else {
             stickyLoginTextView.show();
+            HomePageTracking.eventOnStickyLoginShowing();
         }
     }
 
