@@ -50,8 +50,8 @@
         android:background="#E6EBFFEF"
         app:sticky_highlight_color="@color/g_500"
         app:sticky_left_icon="@drawable/ic_toped_widget_login"
-        app:sticky_text="@string/mau_akses_semua_fitur"
-        app:sticky_text_highlight="@string/masuk_yuk" />
+        app:sticky_text="@string/discovery_mau_akses_semua_fitur"
+        app:sticky_text_highlight="@string/discovery_masuk_yuk" />
     
     </LinearLayout>
     
