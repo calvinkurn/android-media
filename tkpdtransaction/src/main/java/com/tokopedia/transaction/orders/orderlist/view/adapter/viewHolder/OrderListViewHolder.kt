@@ -68,8 +68,8 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     var topTextSize: Float = 11f
     var textSize: Float = 10f
     var padding16: Int = 16
-    var orderCategory: String? = null
-    var appLink: String? = null
+    var orderCategory: String = ""
+    var appLink: String = ""
 
     override fun bind(element: OrderListViewModel) {
         setObservers(element)
@@ -168,8 +168,8 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     }
 
     private fun setConditionalInfo(successConditionalText: String?, successCondInfoVisibility: Int, color: Color?) {
-        conditionalInfoLayout?.visibility = successCondInfoVisibility
         if (successConditionalText!= null) {
+            conditionalInfoLayout?.visibility = successCondInfoVisibility
             val shape = GradientDrawable()
             shape.apply {
                 this.shape = GradientDrawable.RECTANGLE
@@ -180,6 +180,8 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             conditionalInfoText?.background = shape
             conditionalInfoText?.setPadding(padding16, padding16, padding16, padding16)
             conditionalInfoText?.text = successConditionalText
+        } else {
+            conditionalInfoLayout?.hide()
         }
     }
 
@@ -187,9 +189,9 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         val childLayout = DoubleTextView(itemView.context, LinearLayout.VERTICAL)
         childLayout.setTopText(metaData.label())
         childLayout.setTopTextSize(topTextSize)
-        val value = metaData.value()
+        val value : String? = metaData.value()
         val tv = TextView(itemView.context)
-        if (value.contains(KEY_META_DATA)) {
+        if (value?.contains(KEY_META_DATA) == true) {
             val values = value.split(KEY_META_DATA.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             tv.layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
