@@ -38,7 +38,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactioncommon)
-    implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation rootProject.ext.miscDependencies.multiDex
