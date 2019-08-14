@@ -602,20 +602,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         loadProductData()
 
         stickyLoginTextView = view.findViewById(R.id.sticky_login_text)
-        stickyLoginTextView.setOnClickListener { v ->
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN) }
+        stickyLoginTextView.setOnClickListener {
+            productDetailTracking.eventClickOnStickyLogin(true)
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+        }
         stickyLoginTextView.setOnDismissListener(View.OnClickListener {
             stickyLoginTextView.dismiss()
-
-            if (!productInfoViewModel.isUserSessionActive()) {
-                timer.cancel()
-                timer = Timer()
-                timer.schedule(object : TimerTask() {
-                    override fun run() {
-                        activity!!.runOnUiThread { updateStickyState() }
-                    }
-                }, STICKY_SHOW_DELAY)
-            }
+            productDetailTracking.eventClickOnStickyLogin(false)
         })
 
         updateStickyState()
@@ -2100,8 +2093,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun updateStickyState() {
-//        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
-        val isCanShowing = true
+        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
         if (!isCanShowing) {
             stickyLoginTextView.dismiss()
             return
@@ -2112,6 +2104,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             stickyLoginTextView.dismiss()
         } else {
             stickyLoginTextView.show()
+            productDetailTracking.eventViewLoginStickyWidget()
         }
     }
 }
