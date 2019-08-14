@@ -64,15 +64,20 @@ class MembershipStampView : FrameLayout {
     }
 
     private fun setTargetProgress(targetProgress: Int) {
-        listCircleStamp.forEachIndexed { index, _ ->
+        val TOTAL_INDEX = listCircleStamp
+        TOTAL_INDEX.forEachIndexed { index, _ ->
             if (index <= targetProgress - 1) {
-                listCircleStamp[index].visibility = View.VISIBLE
-                if (index != listCircleStamp.size - 1) {
-                    listLine[index].visibility = View.VISIBLE
+                TOTAL_INDEX[index].visibility = View.VISIBLE
+                if (index != TOTAL_INDEX.size - 1) { //logic for listLine index out of bound
+                    if (index < targetProgress - 1) {
+                        listLine[index].visibility = View.VISIBLE
+                    } else {
+                        listLine[index].visibility = View.INVISIBLE
+                    }
                 }
             } else {
-                listCircleStamp[index].visibility = View.INVISIBLE
-                if (index != listCircleStamp.size - 1) {
+                TOTAL_INDEX[index].visibility = View.INVISIBLE
+                if (index != TOTAL_INDEX.size - 1) {
                     listLine[index].visibility = View.INVISIBLE
                 }
             }

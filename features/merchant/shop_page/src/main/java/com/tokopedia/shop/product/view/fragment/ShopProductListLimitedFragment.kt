@@ -1110,7 +1110,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         val intent: Intent = if (url == null) {
             RouteManager.getIntent(context, ApplinkConst.COUPON_LISTING)
         } else {
-            RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://${url}"))
+            RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         }
 
         startActivityForResult(intent, REQUEST_CODE_MEMBERSHIP_STAMP)

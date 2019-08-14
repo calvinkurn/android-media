@@ -8,10 +8,15 @@ import android.widget.LinearLayout
 import com.tokopedia.shop.common.R
 
 /**
- * Use this by calling
- * #setIndicator first then call
- * #setCurrentIndicator inside your onScrollRecyclerView
- * @Override getDefaultIndicatorSelected and getDefaultIndicatorUnselected if you want to change indicator drawable
+ * For RecyclerView Indicator
+ *
+ * How to use this :
+ *
+ * 1. Make sure RecyclerView implement PagerSnapHelper()
+ * 2. Call [setIndicator] to set total indicator (Call FIRST)
+ * 3. Then call [setCurrentIndicator] inside your onScrollRecyclerView or wherever its need (set current indicator when swipe the recyclerview)
+ * 4. #Optional @Override [getDefaultIndicatorSelected] and [getDefaultIndicatorUnselected] to customize indicator drawable
+ *
  */
 
 class CircleIndicatorView : LinearLayout {
@@ -19,6 +24,7 @@ class CircleIndicatorView : LinearLayout {
     lateinit var circleIndicator: LinearLayout
     private var globalIndicatorSize: Int = 0
     protected var indicatorItems: ArrayList<ImageView> = arrayListOf()
+    private var listTemp = mutableListOf<Int>()
 
     constructor(context: Context) : super(context) {
         initView()
@@ -38,10 +44,12 @@ class CircleIndicatorView : LinearLayout {
     }
 
     fun setIndicator(indicatorSize: Int) {
+        indicatorItems.clear()
+        circleIndicator.removeAllViews()
         globalIndicatorSize = indicatorSize
         if (indicatorSize > 1) {
             circleIndicator.visibility = View.VISIBLE
-            (0..indicatorSize).forEach {
+            (0 until indicatorSize).forEach {
                 val circleView = ImageView(context)
                 circleView.setPadding(5, 0, 5, 0)
 
@@ -59,7 +67,7 @@ class CircleIndicatorView : LinearLayout {
 
     fun setCurrentIndicator(currentPosition: Int) {
         if (globalIndicatorSize > 1) {
-            (0..globalIndicatorSize).forEach {
+            (0 until globalIndicatorSize).forEach {
                 if (currentPosition != it) indicatorItems[it].setImageResource(getDefaultIndicatorUnselected())
                 else indicatorItems[it].setImageResource(getDefaultIndicatorSelected())
             }
