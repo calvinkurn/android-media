@@ -15,4 +15,7 @@ buildscript {
 dependencies {
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 }
