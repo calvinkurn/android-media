@@ -28,7 +28,7 @@ public class ProductCardView extends BaseCustomView {
     protected TextView textSlashedPrice;
     protected ImpressedImageView imageView;
     protected View topAdsIcon;
-    protected ImageView wishlistButton;
+    protected View wishlistButton;
     protected ImageView ratingView;
     protected TextView reviewCountView;
     protected LinearLayout ratingContainer;
@@ -141,7 +141,7 @@ public class ProductCardView extends BaseCustomView {
 
     public void setWishlistButtonVisible(boolean isVisible) {
         //wishlist not implemented yet, don't delete this.
-        wishlistButton.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+//        wishlistButton.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     public void setRatingReviewCount(int rating, int reviewCount) {
