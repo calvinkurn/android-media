@@ -23,16 +23,16 @@ public class FocusCameraFaceView extends View {
     private final static double BOTTOM_DIMEN_DIVIDER_KK = 4.73;
 
     private final static float LEFT_DIMEN_DIVIDER = 1.4f;
-    private final static double TOP_DIMEN_DIVIDER = 1.3;
+    private final static double TOP_DIMEN_DIVIDER = 1.25;
     private final static float RIGHT_DIMEN_DIVIDER = 1.4f;
-    private final static double BOTTOM_DIMEN_DIVIDER = 2.5;
+    private final static double BOTTOM_DIMEN_DIVIDER = 2.75;
     private final static int CONST_RADIUS = 20;
     private final static int CONST_STROKE_WIDTH = 10;
 
-    private float LEFT_OVAL_DIMEN_DIVIDER = 1.4f;
-    private double TOP_OVAL_DIMEN_DIVIDER = 1.8;
-    private float RIGHT_OVAL_DIMEN_DIVIDER = 1.4f;
-    private double BOTTOM_OVAL_DIMEN_DIVIDER = 1.3;
+    private float LEFT_OVAL_DIMEN_DIVIDER = 1.3f;
+    private double TOP_OVAL_DIMEN_DIVIDER = 1.7;
+    private float RIGHT_OVAL_DIMEN_DIVIDER = 1.3f;
+    private double BOTTOM_OVAL_DIMEN_DIVIDER = 1.25;
 
     private Paint mTransparentPaint;
     private Paint mSemiBlackPaint;
