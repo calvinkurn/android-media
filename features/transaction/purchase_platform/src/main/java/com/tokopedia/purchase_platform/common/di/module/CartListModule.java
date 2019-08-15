@@ -180,4 +180,11 @@ public class CartListModule {
     TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
         return new TrackingPromoCheckoutUtil();
     }
+
+    @Provides
+    @CartListScope
+    @ApplicationContext
+    Context provideContextAbstraction(Context context) {
+        return context;
+    }
 }

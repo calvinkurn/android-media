@@ -23,4 +23,3 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
-apply from: "$rootProject.projectDir/publish_local.gradle"
