@@ -62,8 +62,9 @@ public class ImageSearchActivity extends DiscoveryActivity
     private static final int REQUEST_CODE_IMAGE = 2390;
     private static final String NO_RESPONSE = "no response";
     private static final String SUCCESS = "success match found";
+    private static final String KEY_IMAGE_PATH = "image_path";
 
-    private String imagePath;
+    private String imagePath = "";
     private boolean isFromCamera = false;
 
     @Inject
@@ -76,16 +77,18 @@ public class ImageSearchActivity extends DiscoveryActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initImageSearch();
+        initImageSearch(savedInstanceState);
 
         checkPermissionToContinue();
     }
 
-    private void initImageSearch() {
+    private void initImageSearch(Bundle savedInstanceState) {
         initInjector();
         setPresenter(searchPresenter);
         searchPresenter.attachView(this);
         searchPresenter.setDiscoveryView(this);
+
+        restoreStateOnCreate(savedInstanceState);
     }
 
     private void initInjector() {
@@ -94,6 +97,10 @@ public class ImageSearchActivity extends DiscoveryActivity
                 .build();
 
         searchComponent.inject(this);
+    }
+
+    private void restoreStateOnCreate(Bundle savedInstanceState) {
+        imagePath = savedInstanceState.getString(KEY_IMAGE_PATH, "");
     }
 
     private void checkPermissionToContinue() {
@@ -125,11 +132,24 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     @Override
     public void onPermissionGranted() {
-        boolean isImageAlreadyPicked = handleImageUri(getIntent());
+        boolean isImageAlreadyPicked = handleSelectedImagePath();
+
+        if (!isImageAlreadyPicked) {
+            isImageAlreadyPicked = handleImageUri(getIntent());
+        }
 
         if (!isImageAlreadyPicked) {
             openImagePickerActivity();
         }
+    }
+
+    private boolean handleSelectedImagePath() {
+        if (!TextUtils.isEmpty(imagePath)) {
+            onImagePickedSuccess(imagePath);
+            return true;
+        }
+
+        return false;
     }
 
     private boolean handleImageUri(Intent intent) {
@@ -508,6 +528,13 @@ public class ImageSearchActivity extends DiscoveryActivity
     public void showSearchInputView() {
         searchView.showSearch(true, DiscoverySearchView.TAB_DEFAULT_SUGGESTION);
         searchView.setFinishOnClose(false);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(KEY_IMAGE_PATH, imagePath);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
