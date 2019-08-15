@@ -433,7 +433,7 @@ public class GTMAnalytics extends ContextAnalytics {
     public static void logEvent(String eventName, Bundle bundle,Context context){
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
-            log(context, "openScreen", bundle);
+            log(context, eventName, bundle);
         }catch (Exception ex){
             ex.printStackTrace();
         }
