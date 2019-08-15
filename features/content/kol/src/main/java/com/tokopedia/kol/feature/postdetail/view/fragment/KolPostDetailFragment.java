@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -31,6 +30,8 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
@@ -42,17 +43,18 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -83,6 +85,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 
 /**
@@ -100,7 +104,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
-        FeedMultipleImageView.FeedMultipleImageViewListener{
+        FeedMultipleImageView.FeedMultipleImageViewListener,
+        RelatedPostAdapter.RelatedPostListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -187,8 +192,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this
-                , this, this, this, this, userSession);
+        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,
+                this, this, this, this, this, this,
+                this, this, this, this,
+                this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
 
@@ -250,6 +257,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (!postDetailViewModel.getDynamicPostViewModel().getPostList().isEmpty()) {
             this.dynamicPostViewModel = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
             trackImpression(dynamicPostViewModel);
+            presenter.getRelatedPost(String.valueOf(dynamicPostViewModel.getId()));
         }
         setFooter(postDetailViewModel);
         recyclerView.clearOnScrollListeners();
@@ -383,6 +391,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (isLoading()) {
             swipeToRefresh.setRefreshing(false);
         }
+        adapter.hideLoading();
+    }
+
+    @Override
+    public void showLoadingMore() {
+        adapter.showLoading();
     }
 
     @Override
@@ -933,6 +947,25 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onAddToCartFailed(String pdpAppLink) {
         onGoToLink(pdpAppLink);
+    }
+
+    @Override
+    public void onSuccessGetRelatedPost(RelatedPostViewModel relatedPostViewModel) {
+        adapter.addElement(relatedPostViewModel);
+        adapter.hideLoading();
+    }
+
+    @Override
+    public void onRelatedPostImpression(@NotNull FeedPostRelated.Datum post) {
+        analytics.eventImpressionOtherPost(post.getId());
+    }
+
+    @Override
+    public void onRelatedPostClicked(@NotNull FeedPostRelated.Datum post) {
+        if (!post.getContent().getBody().getMedia().isEmpty()) {
+            RouteManager.route(getContext(), post.getContent().getBody().getMedia().get(0).getApplink());
+        }
+        analytics.eventClickOtherPost(post.getId());
     }
 
     private void onGoToLink(String link) {
