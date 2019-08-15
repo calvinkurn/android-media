@@ -13,6 +13,7 @@
     <string name="text_af_finished">Berakhir</string>
     <string name="text_af_income">Komisi masuk</string>
     <string name="text_af_click">Klik</string>
+    <string name="text_af_clicked">Diklik</string>
     <string name="text_af_buy">Dibeli</string>
     <string name="text_af_default_saldo">Rp. 0</string>
     <string name="text_af_active_1">Raih</string>
@@ -21,6 +22,11 @@
     <string name="text_empty_start_recommendation_btn">Mulai Kurasi</string>
     <string name="text_empty_have_recommendation">Kamu masih memiliki 15 jatah kurasi yang bisa diambil.</string>
     <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah kurasi yang bisa diambil.</string>
+    <string name="text_af_total_commission">Komisi total</string>
+    <string name="af_commission_income">Pendapatan komisi</string>
+    <string name="af_see_invoice">Lihat Invoice</string>
+    <string name="af_text_tokopedia_service_fee">Service fee Tokopedia</string>
+    <string name="af_commission_received">Komisi Masuk</string>
 
     <!--EXPLORE-->
     <string name="text_search_hint">Cari Rekomendasimu</string>
