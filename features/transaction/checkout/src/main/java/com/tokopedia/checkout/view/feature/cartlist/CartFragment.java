@@ -683,6 +683,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         for (CartRecommendationItemHolderData recommendation : recommendationList) {
             if (String.valueOf(recommendation.getRecommendationItem().getProductId()).equalsIgnoreCase(productId)) {
                 position = index;
+                break;
             }
             index++;
         }
