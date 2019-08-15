@@ -54,6 +54,8 @@ public interface ICartListPresenter {
 
     Map<String, Object> generateRecommendationDataAnalytics(List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList, boolean isEmptyCart);
 
+    Map<String, Object> generateRecommendationDataOnClickAnalytics(List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList);
+
     CartListData getCartListData();
 
     void setCartListData(CartListData cartListData);

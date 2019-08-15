@@ -678,6 +678,25 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
+    public void onRecommendationProductClicked(@NotNull String productId) {
+        int index = 0, position = 0;
+        for (CartRecommendationItemHolderData recommendation : recommendationList) {
+            if (String.valueOf(recommendation.getRecommendationItem().getProductId()).equalsIgnoreCase(productId)) {
+                position = index;
+            }
+            index++;
+        }
+
+        if (FLAG_IS_CART_EMPTY) {
+            sendAnalyticsOnClickProductRecommendationOnEmptyCart(String.valueOf(position),
+                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationList));
+        }
+
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
+        startActivityForResult(intent, NAVIGATION_PDP);
+    }
+
+    @Override
     public void onButtonAddToCartClicked(@NotNull Object productModel) {
         dPresenter.processAddToCart(productModel);
     }
@@ -1835,6 +1854,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void sendAnalyticsOnViewProductRecommendationOnCart(Map<String, Object> eeDataLayerCart) {
         cartPageAnalytics.enhancedEcommerceViewRecommendationOnCart(eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductRecommendationOnEmptyCart(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(position, eeDataLayerCart);
     }
 
     @Override

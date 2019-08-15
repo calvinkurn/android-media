@@ -226,7 +226,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LIHAT_SEMUA_LAST_SEEN = "click lihat semua last seen on empty cart";
         String CLICK_PRODUCT_WISHLIST = "click product wishlist on empty cart";
         String CLICK_PRODUCT_LAST_SEEN = "click product last seen on empty cart";
-        String CLICK_PRODUCT_RECOMMENDATION = "click product recommendation on empty cart";
+        String CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation";
         String VIEW_PRODUCT = "view product";
 
         //PURCHASE PROTECTION

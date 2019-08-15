@@ -17,6 +17,7 @@ public class EnhancedECommerceCartMapData {
     private static final String KEY_CURRENCY = "currencyCode";
     private static final String KEY_PRODUCTS = "products";
     private static final String KEY_IMPRESSIONS = "impressions";
+    private static final String KEY_CLICK = "click";
 
     private Map<String, Object> cart = new HashMap<>();
     private Map<String, Object> act = new HashMap<>();
@@ -39,6 +40,11 @@ public class EnhancedECommerceCartMapData {
     public void addImpression(Map<String, Object> Impression) {
         listImpressions.add(Impression);
         cart.put(KEY_IMPRESSIONS, listImpressions);
+    }
+
+    public void addClick(Map<String, Object> Click) {
+        listImpressions.add(Click);
+        cart.put(KEY_CLICK, listImpressions);
     }
 
     public Map<String, Object> getCartMap() {

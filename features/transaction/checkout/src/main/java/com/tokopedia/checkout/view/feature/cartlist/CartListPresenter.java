@@ -1060,13 +1060,28 @@ public class CartListPresenter implements ICartListPresenter {
         return enhancedECommerceCartMapData.getCartMap();
     }
 
+    @Override
+    public Map<String, Object> generateRecommendationDataOnClickAnalytics(List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList) {
+        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
+
+        int position = 0;
+        for (CartRecommendationItemHolderData cartRecommendationItemHolderData : cartRecommendationItemHolderDataList) {
+            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationMapData(cartRecommendationItemHolderData.getRecommendationItem(), isEmptyCart, position);
+            enhancedECommerceCartMapData.addClick(enhancedECommerceProductCartMapData.getProduct());
+            position++;
+        }
+
+        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+        return enhancedECommerceCartMapData.getCartMap();
+    }
+
     @NonNull
     private EnhancedECommerceProductCartMapData getEnhancedECommerceProductRecommendationMapData(RecommendationItem recommendationItem, boolean isEmptyCart, int position) {
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                 new EnhancedECommerceProductCartMapData();
         enhancedECommerceProductCartMapData.setProductID(String.valueOf(recommendationItem.getProductId()));
         enhancedECommerceProductCartMapData.setProductName(recommendationItem.getName());
-        enhancedECommerceProductCartMapData.setPrice(recommendationItem.getPrice());
+        enhancedECommerceProductCartMapData.setPrice(recommendationItem.getPrice().replaceAll("[^0-9]", ""));
         enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(recommendationItem.getCategoryBreadcrumbs())
                 ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
