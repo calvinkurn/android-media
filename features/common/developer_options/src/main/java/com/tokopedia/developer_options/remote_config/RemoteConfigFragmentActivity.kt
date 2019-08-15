@@ -52,8 +52,10 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
     private fun getPrefixes(vararg prefixes: String): Set<String> {
         val keysSet: MutableSet<String> = mutableSetOf()
 
-        for (prefix in prefixes) {
-            keysSet.apply { addAll(remoteConfig!!.getKeysByPrefix(prefix) ?: setOf()) }
+        remoteConfig?.let {
+            for (prefix in prefixes) {
+                keysSet.apply { addAll(remoteConfig!!.getKeysByPrefix(prefix) ?: setOf()) }
+            }
         }
 
         if (keysSet.isEmpty()) {

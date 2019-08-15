@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -33,8 +33,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.features.core)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -48,5 +48,5 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
