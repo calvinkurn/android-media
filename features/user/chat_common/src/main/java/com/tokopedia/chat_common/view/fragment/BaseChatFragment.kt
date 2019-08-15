@@ -156,9 +156,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                 RouteManager.isSupportApplink(activity, url) -> RouteManager.route(activity, url)
                 isBranchIOLink(url) -> handleBranchIOLinkClick(url)
                 else -> {
-                    val applinkRouter = activity!!.applicationContext as ApplinkRouter
-                    applinkRouter.goToApplinkActivity(activity,
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                    openWebview(url)
                 }
             }
         }
@@ -172,13 +170,18 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun handleBranchIOLinkClick(url: String) {
-        activity?.run {
-            val applinkRouter = this.applicationContext as ApplinkRouter
-            var intent = applinkRouter.getApplinkIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
+        if (GlobalConfig.isCustomerApp()) {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
             startActivity(intent)
+        } else {
+            openWebview(url)
         }
+    }
+
+    private fun openWebview(url: String) {
+        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
     override fun isBranchIOLink(url: String): Boolean {

@@ -24,7 +24,7 @@ public class SellerappWebViewActivity extends BaseSimpleActivity {
         return intent;
     }
 
-    @DeepLink({ApplinkConst.WEBVIEW})
+    @DeepLink({ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW})
     public static Intent createApplinkIntent(Context context, Bundle bundle) {
         return createIntent(context, bundle.getString(KEY_APP_LINK_QUERY_URL, TkpdBaseURL.MOBILE_DOMAIN));
     }
