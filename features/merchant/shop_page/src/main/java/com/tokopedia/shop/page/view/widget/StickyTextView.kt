@@ -138,7 +138,9 @@ class StickyTextView : FrameLayout {
     }
 
     private fun getLastSeen(): Long {
-        return getSharedPreference().getLong(KEY_LAST_SEEN, 0)
+        val lastSeen = getSharedPreference().getLong(KEY_LAST_SEEN, 0)
+        if (lastSeen != null) return lastSeen
+        else return 0
     }
 
     private fun setLastSeen(epoch: Long) {
