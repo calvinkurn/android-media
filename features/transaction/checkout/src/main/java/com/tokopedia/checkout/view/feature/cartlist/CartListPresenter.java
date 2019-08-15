@@ -1066,7 +1066,7 @@ public class CartListPresenter implements ICartListPresenter {
 
         int position = 0;
         for (CartRecommendationItemHolderData cartRecommendationItemHolderData : cartRecommendationItemHolderDataList) {
-            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationMapData(cartRecommendationItemHolderData.getRecommendationItem(), isEmptyCart, position);
+            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationMapData(cartRecommendationItemHolderData.getRecommendationItem(), true, position);
             enhancedECommerceCartMapData.addClick(enhancedECommerceProductCartMapData.getProduct());
             position++;
         }
