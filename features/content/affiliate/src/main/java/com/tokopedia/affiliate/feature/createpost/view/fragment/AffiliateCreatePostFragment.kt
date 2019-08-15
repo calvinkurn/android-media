@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.affiliate.feature.createpost.TOKEN
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -48,7 +49,9 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
     }
 
     override fun fetchContentForm() {
-        presenter.fetchContentForm(viewModel.adIdList, viewModel.authorType, viewModel.postId)
+        val token = arguments?.getString(TOKEN)
+        if (token != null) presenter.fetchContentFormByToken(token, viewModel.authorType)
+        else presenter.fetchContentForm(viewModel.adIdList, viewModel.authorType, viewModel.postId)
     }
 
     override fun onRelatedAddProductClick() {

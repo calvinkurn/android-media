@@ -38,6 +38,14 @@ class CreatePostPresenter @Inject constructor(
         )
     }
 
+    override fun fetchContentFormByToken(token: String, type: String) {
+        view.showLoading()
+        getContentFormUseCase.execute(
+                GetContentFormUseCase.createRequestParams(token, type),
+                GetContentFormSubscriber(view, type)
+        )
+    }
+
     override fun getFeedDetail(postId: String, isAffiliate: Boolean) {
         view?.showLoading()
         getFeedUseCase.execute(GetDynamicFeedUseCase.createRequestParams(

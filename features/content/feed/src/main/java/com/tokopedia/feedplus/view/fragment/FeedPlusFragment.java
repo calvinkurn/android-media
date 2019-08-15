@@ -843,7 +843,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 affiliatePreference.setFirstTimeEducation(userSession.getUserId());
 
             } else {
-                RouteManager.route(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
+                RouteManager.route(getContext(), ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST);
             }
         }
     }

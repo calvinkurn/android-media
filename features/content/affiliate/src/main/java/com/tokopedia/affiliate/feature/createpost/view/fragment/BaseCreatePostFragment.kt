@@ -310,6 +310,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.allowVideo = feedContentForm.media.allowVideo
         viewModel.maxProduct = feedContentForm.maxTag
         viewModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
+        if (viewModel.caption.isEmpty()) viewModel.caption = feedContentForm.caption
 
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
@@ -700,7 +701,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun updateCaption() {
-        caption.hint = viewModel.defaultPlaceholder
+        caption.apply {
+            hint = viewModel.defaultPlaceholder
+            setText(viewModel.caption)
+        }
     }
 
     open fun updateRelatedProduct() {

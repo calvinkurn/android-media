@@ -31,6 +31,9 @@ interface CreatePostContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun fetchContentForm(idList: MutableList<String>, type: String, postId: String)
+
+        fun fetchContentFormByToken(token: String, type: String)
+
         fun getFeedDetail(postId: String, isAffiliate: Boolean)
     }
 }

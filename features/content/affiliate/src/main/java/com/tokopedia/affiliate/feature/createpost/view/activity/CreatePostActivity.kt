@@ -78,6 +78,12 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         fun getInstanceDraftContent(context: Context, bundle: Bundle): Intent {
             return getInstanceContent(context, bundle)
         }
+
+        @DeepLink(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST)
+        @JvmStatic
+        fun getInstanceDefaultAffiliate(context: Context, bundle: Bundle): Intent {
+            return getInstanceAffiliate(context, bundle)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
