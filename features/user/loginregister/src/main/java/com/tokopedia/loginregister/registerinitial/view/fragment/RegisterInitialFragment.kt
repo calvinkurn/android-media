@@ -919,4 +919,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     override fun onBackPressed() {
         registerAnalytics.trackClickOnBackButtonRegister()
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        context?.let {
+            permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+        }
+    }
 }

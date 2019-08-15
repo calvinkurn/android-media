@@ -203,6 +203,8 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void setAdapterInputEmailPhone(ArrayAdapter<String> adapter){
+        if(adapter.getItem(0) != null)
+            etInputEmailPhone.setText(adapter.getItem(0));
         etInputEmailPhone.setAdapter(adapter);
         etInputEmailPhone.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus)
