@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
@@ -82,7 +83,7 @@ public class ImageSearchActivity extends DiscoveryActivity
         checkPermissionToContinue();
     }
 
-    private void initImageSearch(Bundle savedInstanceState) {
+    private void initImageSearch(@Nullable Bundle savedInstanceState) {
         initInjector();
         setPresenter(searchPresenter);
         searchPresenter.attachView(this);
@@ -99,8 +100,10 @@ public class ImageSearchActivity extends DiscoveryActivity
         searchComponent.inject(this);
     }
 
-    private void restoreStateOnCreate(Bundle savedInstanceState) {
-        imagePath = savedInstanceState.getString(KEY_IMAGE_PATH, "");
+    private void restoreStateOnCreate(@Nullable Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            imagePath = savedInstanceState.getString(KEY_IMAGE_PATH, "");
+        }
     }
 
     private void checkPermissionToContinue() {
