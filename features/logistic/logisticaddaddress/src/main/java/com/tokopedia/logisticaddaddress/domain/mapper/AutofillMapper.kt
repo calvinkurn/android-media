@@ -16,8 +16,8 @@ class AutofillMapper @Inject constructor() {
         var dataUiModel = AutofillDataUiModel()
         val responseAutofill: AutofillResponse? = response?.getData(AutofillResponse::class.java)
         responseAutofill.let { response ->
-            response?.keroMapsAutofill.let { keroMapsAutofill ->
-                dataUiModel = keroMapsAutofill?.data?.let { mapData(it) }!!
+            response?.keroMapsAutofill?.let { keroMapsAutofill ->
+                dataUiModel = mapData(keroMapsAutofill.data)
             }
         }
         return AutofillResponseUiModel(dataUiModel)

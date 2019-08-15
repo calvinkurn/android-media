@@ -23,7 +23,6 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.di.DaggerProfileComponent
-import com.tokopedia.track.TrackApp
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -87,6 +86,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private lateinit var data: LinkerData
+    private lateinit var adapter: ShareAdapter
     private var isAdding: Boolean = false
     private var isOwner = false
     private var profileId = ""
@@ -109,7 +109,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.bottomsheet_share
+        return R.layout.bottomsheet_feed_share
     }
 
     override fun state(): BottomSheetsState {
@@ -141,7 +141,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
                 .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
                 .build()
                 .inject(this)
-        mRecyclerView = view.findViewById(R.id.recyclerview)
+        mRecyclerView = view.findViewById(R.id.recyclerview_bottomsheet)
         mProgressBar = view.findViewById(R.id.progressbar)
         mLayoutError = view.findViewById(R.id.layout_error)
         mTextViewError = view.findViewById(R.id.message_error)
@@ -154,7 +154,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
 
     override fun setupDialog(dialog: Dialog?, style: Int) {
         super.setupDialog(dialog, style)
-        val btnClose = getDialog().findViewById<ImageButton>(com.tokopedia.design.R.id.btn_close)
+        val btnClose = getDialog().findViewById<ImageView>(com.tokopedia.design.R.id.btn_close)
         btnClose.setOnClickListener { dismiss() }
     }
 
@@ -166,10 +166,10 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
             if (!resolvedActivities.isEmpty()) {
                 val showApplications: ArrayList<ResolveInfo> = validate(resolvedActivities)
 //                showApplications.addAll(getInstagramApps()) //for next development
-                val adapter = ShareAdapter(showApplications, it
+                adapter = ShareAdapter(showApplications, it
                         .getPackageManager())
                 mRecyclerView.adapter = adapter
-
+                adapter.notifyDataSetChanged()
                 adapter.setOnItemClickListener(this)
             } else {
                 return
@@ -378,8 +378,8 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
 
     private fun sendTracker(packageName: String) {
         if (isShareProfile)
-            profileAnalytics.eventClickShareProfileIni(isOwner, profileId, constantMedia(packageName))
+            profileAnalytics.eventClickShareProfileOpsiIni(isOwner, profileId, constantMedia(packageName))
         else
-            profileAnalytics.eventClickSharePostIni(isOwner, profileId, constantMedia(packageName))
+            profileAnalytics.eventClickSharePostOpsiIni(isOwner, profileId, constantMedia(packageName))
     }
 }

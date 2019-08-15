@@ -1,8 +1,10 @@
 package com.tokopedia.unifycomponents
 
+import android.graphics.Color
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.widget.FrameLayout
 
 /**
  * Created by meta on 27/02/19.
@@ -39,11 +41,14 @@ object Toaster {
     private fun buildView(view: View, charSequence: CharSequence, duration: Int, type: String): Snackbar {
         val snackbar = Snackbar.make(view, charSequence, duration)
         val snackbarView = snackbar.view
-        snackbarView.setPadding(0, 0, 0, 0)
+        val padding = view.resources.getDimensionPixelSize(R.dimen.unify_dp_16)
+        snackbarView.setPadding(padding, 0, padding, 0)
+        snackbarView.setBackgroundColor(Color.TRANSPARENT)
+        val rootSnackBarView = snackbarView as FrameLayout
         if (type == RED) {
-            snackbarView.background = ContextCompat.getDrawable(view.context, R.drawable.bg_toaster_red)
+            rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_red)
         } else if (type == GREEN) {
-            snackbarView.background = ContextCompat.getDrawable(view.context, R.drawable.bg_toaster_green)
+            rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_green)
         }
         return snackbar
     }

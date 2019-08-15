@@ -13,48 +13,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 
 import java.util.Arrays;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
-public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
-    @BindView(R2.id.tv_bad_reason_1)
-    TextView tvBadReason1;
-    @BindView(R2.id.tv_bad_reason_2)
-    TextView tvBadReason2;
-    @BindView(R2.id.tv_bad_reason_3)
-    TextView tvBadReason3;
-    @BindView(R2.id.tv_bad_reason_4)
-    TextView tvBadReason4;
-    @BindView(R2.id.tv_bad_reason_5)
-    TextView tvBadReason5;
-    @BindView(R2.id.tv_custom_reason)
-    TextView tvCustomReason;
-    @BindView(R2.id.tv_label_custom)
-    TextView tvLabelCustom;
-    @BindView(R2.id.btn_send)
-    TextView btnSend;
-    @BindView(R2.id.ed_other_reason)
-    EditText editText;
+public class BottomSheetButtonsFragment extends InboxBottomSheetFragment implements View.OnClickListener {
 
+    private TextView tvBadReason1;
+    private TextView tvBadReason2;
+    private TextView tvBadReason3;
+    private TextView tvBadReason4;
+    private TextView tvBadReason5;
+    private TextView tvBadReason6;
+    private TextView tvCustomReason;
+    private TextView tvLabelCustom;
+    private TextView btnSend;
+    private EditText editText;
     private InboxDetailContract.InboxDetailPresenter mPresenter;
     private View selectedButton;
     private int ratingId;
 
-    @OnClick({R2.id.tv_bad_reason_1,
-            R2.id.tv_bad_reason_2,
-            R2.id.tv_bad_reason_3,
-            R2.id.tv_bad_reason_4,
-            R2.id.tv_bad_reason_5,
-            R2.id.tv_bad_reason_6,
-            R2.id.tv_custom_reason
-    })
+
     void handleClickBadCsat(View v) {
         int id = v.getId();
         int buttonids[] = {R.id.tv_bad_reason_1, R.id.tv_bad_reason_2, R.id.tv_bad_reason_3, R.id.tv_bad_reason_4, R.id.tv_bad_reason_5, R.id.tv_bad_reason_6};
@@ -98,7 +79,6 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
         }
     }
 
-    @OnClick(R2.id.btn_send)
     void onClickSend() {
         if (editText.getVisibility() == View.VISIBLE) {
             mPresenter.sendCustomReason(editText.getText().toString());
@@ -114,6 +94,8 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        findingViewsId(rootView);
+        settingClickListener();
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -137,6 +119,30 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
             }
         });
         return rootView;
+    }
+
+    private void findingViewsId(View view) {
+        tvBadReason1 = view.findViewById(R.id.tv_bad_reason_1);
+        tvBadReason2 = view.findViewById(R.id.tv_bad_reason_2);
+        tvBadReason3 = view.findViewById(R.id.tv_bad_reason_3);
+        tvBadReason4 = view.findViewById(R.id.tv_bad_reason_4);
+        tvBadReason5 = view.findViewById(R.id.tv_bad_reason_5);
+        tvBadReason6 = view.findViewById(R.id.tv_bad_reason_6);
+        tvCustomReason = view.findViewById(R.id.tv_custom_reason);
+        tvLabelCustom = view.findViewById(R.id.tv_label_custom);
+        btnSend = view.findViewById(R.id.btn_send);
+        editText = view.findViewById(R.id.ed_other_reason);
+    }
+
+    private void settingClickListener() {
+        tvBadReason1.setOnClickListener(this);
+        tvBadReason2.setOnClickListener(this);
+        tvBadReason3.setOnClickListener(this);
+        tvBadReason4.setOnClickListener(this);
+        tvBadReason5.setOnClickListener(this);
+        tvBadReason6.setOnClickListener(this);
+        tvCustomReason.setOnClickListener(this);
+        btnSend.setOnClickListener(this);
     }
 
     private void setBadrating(View v, int ratingId) {
@@ -167,6 +173,16 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
     public void setPresenter(InboxBaseContract.InboxBasePresenter presenter) {
         if (presenter != null) {
             mPresenter = (InboxDetailContract.InboxDetailPresenter) presenter;
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.btn_send){
+            onClickSend();
+        }else{
+            handleClickBadCsat(view);
         }
     }
 }

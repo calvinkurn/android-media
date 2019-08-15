@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_item_product_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_marginTop="@dimen/dp_5"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_3">
@@ -15,11 +15,11 @@
         android:id="@+id/v_separator_multiple_product_same_store"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
         android:background="@color/grey_300"
         android:visibility="gone" />
 
@@ -70,11 +70,11 @@
             android:id="@+id/iv_product_card"
             android:layout_width="@dimen/dp_52"
             android:layout_height="@dimen/dp_52"
+            android:layout_margin="5dp"
             android:layout_marginEnd="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_20"
             app:cardCornerRadius="6dp"
-            app:cardElevation="@dimen/dp_0"
-            android:layout_margin="5dp">
+            app:cardElevation="@dimen/dp_0">
 
             <ImageView
                 android:id="@+id/iv_product_image"
@@ -85,9 +85,8 @@
 
         </android.support.v7.widget.CardView>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"
-            style="@style/TextMidMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
@@ -96,7 +95,8 @@
             android:layout_toRightOf="@id/iv_product_card"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textStyle="bold"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="Kaos Adidas Camo Tongue Tee... White  gsf fsu gfsah hjsfj gsfugshj sjbfj hsjfh hsfjh vhsfh bjsf bjsfbjRed, XS" />
 
         <include
@@ -105,29 +105,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_product_name"
-            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_card"
             android:layout_toRightOf="@id/iv_product_card" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_item_count_and_weight"
-            style="@style/TextSmallMediumBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_policy"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_card"
             android:layout_toRightOf="@id/iv_product_card"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
             tools:text="2 barang (3 kg)" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_price"
-            style="@style/TextMidMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_item_count_and_weight"
@@ -135,8 +135,9 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_toEndOf="@id/iv_product_card"
             android:layout_toRightOf="@id/iv_product_card"
-            android:textColor="@color/orange_red"
-            android:textStyle="bold"
+            android:textColor="@color/price_label"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="Rp200.000" />
 
     </RelativeLayout>
@@ -171,12 +172,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <CheckBox
-            android:id="@+id/checkbox_ppp"
+        <RelativeLayout
+            android:id="@+id/checkbox_rl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:theme="@style/TransactionCheckbox" />
+            android:layout_centerVertical="true">
+
+            <CheckBox
+                android:id="@+id/checkbox_ppp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/TransactionCheckbox" />
+
+            <CheckBox
+                android:id="@+id/checkbox_ppp_disabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/TransactionCheckboxDisabled" />
+
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -186,8 +201,8 @@
             android:layout_marginLeft="@dimen/dp_9"
             android:layout_toStartOf="@+id/text_ppp_more"
             android:layout_toLeftOf="@+id/text_ppp_more"
-            android:layout_toEndOf="@+id/checkbox_ppp"
-            android:layout_toRightOf="@+id/checkbox_ppp"
+            android:layout_toEndOf="@+id/checkbox_rl"
+            android:layout_toRightOf="@+id/checkbox_rl"
             android:orientation="vertical">
 
             <TextView

@@ -23,6 +23,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE
@@ -573,13 +574,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY)
     }
 
-    override fun onErrorEtalase() {
-        showWarning(getString(R.string.product_error_product_etalase_empty), View.OnClickListener {
-            startProductEtalaseActivity()
-        })
-        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE)
-    }
-
     override fun onErrorPrice() {
         showWarning(getString(R.string.error_empty_price), View.OnClickListener {
             startPriceActivity()
@@ -610,7 +604,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         if (currentProductAddViewModel?.productPictureList?.size == 0) {
             return
         }
-        ImageUtils.deleteFilesInTokopediaFolder(currentProductAddViewModel?.productPictureList?.convertToListImageString())
+        FileUtils.deleteFilesInTokopediaFolder(currentProductAddViewModel?.productPictureList?.convertToListImageString())
     }
 
     companion object {

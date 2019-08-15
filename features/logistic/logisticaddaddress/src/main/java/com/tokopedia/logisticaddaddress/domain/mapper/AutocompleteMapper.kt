@@ -20,8 +20,8 @@ class AutocompleteMapper @Inject constructor() {
         var dataUiModel = AutocompleteDataUiModel()
         val responseAutocomplete: AutocompleteResponse? = response?.getData(AutocompleteResponse::class.java)
         responseAutocomplete.let { response ->
-            response?.keroMapsAutocomplete.let { keroMapsAutocomplete ->
-                dataUiModel = keroMapsAutocomplete?.data?.let { mapData(it) }!!
+            response?.keroMapsAutocomplete?.let { keroMapsAutocomplete ->
+                dataUiModel = keroMapsAutocomplete.data.let { mapData(it) }
             }
         }
         return AutocompleteResponseUiModel(dataUiModel)
@@ -36,20 +36,18 @@ class AutocompleteMapper @Inject constructor() {
 
     private fun mapPrediction(predictionsItem: PredictionsItem) : AutocompletePredictionUiModel {
         var structuredFormattingUiModel = AutocompleteStructuredFormattingUiModel()
-        var placeId = ""
-        predictionsItem.let { it ->
-            placeId = it.placeId.toString()
-            structuredFormattingUiModel = it.structuredFormatting.let {
-                it?.let { it1 -> mapStructuredFormatting(it1) }
-            }!!
+        var placeId: String
+        predictionsItem.let {
+            placeId = it.placeId
+            structuredFormattingUiModel = mapStructuredFormatting(it.structuredFormatting)
         }
         return AutocompletePredictionUiModel(placeId, structuredFormattingUiModel)
     }
 
     private fun mapStructuredFormatting(structuredFormatting: StructuredFormatting) : AutocompleteStructuredFormattingUiModel {
         return AutocompleteStructuredFormattingUiModel(
-                mainText = structuredFormatting.mainText.toString(),
-                secondaryText = structuredFormatting.secondaryText.toString()
+                mainText = structuredFormatting.mainText,
+                secondaryText = structuredFormatting.secondaryText
         )
     }
 }

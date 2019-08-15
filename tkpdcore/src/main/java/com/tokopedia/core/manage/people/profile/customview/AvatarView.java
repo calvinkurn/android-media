@@ -9,13 +9,10 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 
 import java.io.File;
-
-import butterknife.BindView;
 
 /**
  * Created on 6/9/16.
@@ -23,12 +20,8 @@ import butterknife.BindView;
 public class AvatarView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
     private static final String TAG = AvatarView.class.getSimpleName();
-
-    @BindView(R2.id.loading)
     View loading;
-    @BindView(R2.id.avatar)
     ImageView avatar;
-
 
     public AvatarView(Context context) {
         super(context);
@@ -46,6 +39,13 @@ public class AvatarView extends BaseView<Profile, ManagePeopleProfileFragmentPre
     @Override
     protected void parseAttribute(Context context, AttributeSet attrs) {
 
+    }
+
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        loading = (View) findViewById(R.id.loading);
+        avatar = (ImageView) findViewById(R.id.avatar);
     }
 
     @Override

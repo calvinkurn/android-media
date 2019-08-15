@@ -258,7 +258,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 animator.supportsChangeAnimations = false
             }
             it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (dy < 0) { // going up
                         if (shopProductAdapter.shopProductViewModelList.size > 0) {
@@ -590,7 +590,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun onSuccessGetProductFeature(list: List<ShopProductViewModel>) {
         shopProductAdapter.shopProductFeaturedViewModel = ShopProductFeaturedViewModel(list)
-        if (list.isNotEmpty()) {
+        if (list.isNotEmpty() && shopInfo != null) {
             shopPageTracking?.impressionProductList(
                     isOwner,
                     ListTitleTypeDef.HIGHLIGHTED,
@@ -647,8 +647,10 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun loadEtalaseHighLight() {
         // load etalase highlight
-        shopId = shopInfo!!.shopCore.shopID
-        viewModel.getShopProductsEtalaseHighlight(shopId!!)
+        shopInfo?.let {
+            shopId = it.shopCore.shopID
+            viewModel.getShopProductsEtalaseHighlight(shopId!!)
+        }
     }
 
     private fun onErrorGetEtalaseListByShop(e: Throwable) {
@@ -765,16 +767,16 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onSeeAllClicked(shopEtalaseViewModel: ShopEtalaseViewModel) {
-        if (shopInfo != null) {
+        shopInfo?.let {
             shopPageTracking?.clickHighLightSeeAll(isOwner, shopEtalaseViewModel.etalaseName,
-                    CustomDimensionShopPage.create(shopInfo!!.shopCore.shopID,
-                            shopInfo!!.goldOS.isOfficial == 1,
-                            shopInfo!!.goldOS.isGold == 1))
+                    CustomDimensionShopPage.create(it.shopCore.shopID,
+                            it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1))
+            val intent = ShopProductListActivity.createIntent(activity,
+                    it.shopCore.shopID, "",
+                    shopEtalaseViewModel.etalaseId, attribution, sortName)
+            startActivity(intent)
         }
-        val intent = ShopProductListActivity.createIntent(activity,
-                shopInfo!!.shopCore.shopID, "",
-                shopEtalaseViewModel.etalaseId, attribution, sortName)
-        startActivity(intent)
     }
 
     override fun onProductClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int,

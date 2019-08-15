@@ -235,9 +235,11 @@ public class ShipmentDataRequestConverter {
     private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem, ShipmentDetailData shipmentDetailData) {
         String courierName = "";
         String duration = "";
+        String shippingPrice = "";
         if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
             courierName = shipmentDetailData.getSelectedCourier().getName();
             duration = shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery();
+            shippingPrice = String.valueOf(shipmentDetailData.getSelectedCourier().getShipperPrice());
         }
 
         return new ProductDataCheckoutRequest.Builder()
@@ -263,7 +265,7 @@ public class ShipmentDataRequestConverter {
                 .buyerAddressId(cartItem.getAnalyticsProductCheckoutData().getBuyerAddressId())
                 .shippingDuration(duration)
                 .courier(courierName)
-                .shippingPrice(cartItem.getAnalyticsProductCheckoutData().getShippingPrice())
+                .shippingPrice(shippingPrice)
                 .codFlag(cartItem.getAnalyticsProductCheckoutData().getCodFlag())
                 .tokopediaCornerFlag(cartItem.getAnalyticsProductCheckoutData().getTokopediaCornerFlag())
                 .isFulfillment(cartItem.getAnalyticsProductCheckoutData().getIsFulfillment())

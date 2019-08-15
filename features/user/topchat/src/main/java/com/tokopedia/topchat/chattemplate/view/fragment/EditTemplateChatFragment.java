@@ -178,18 +178,14 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
             }
         });
 
-        counterObservable.subscribe(new Action1<Integer>() {
-            @Override
-            public void call(final Integer integer) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        showErrorAndProceed(integer, submit);
-                        counter.setText(String.format("%d/%d", integer, MAX_CHAR));
-                    }
-                });
-            }
+        Action1<Integer> onNextAction = integer -> getActivity().runOnUiThread(() -> {
+            showErrorAndProceed(integer, submit);
+            counter.setText(String.format("%d/%d", integer, MAX_CHAR));
         });
+
+        Action1<Throwable> onError = throwable -> throwable.printStackTrace();
+
+        counterObservable.subscribe(onNextAction, onError);
 
 
         submit.setOnClickListener(new View.OnClickListener() {

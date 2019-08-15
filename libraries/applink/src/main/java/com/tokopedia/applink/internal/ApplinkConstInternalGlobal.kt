@@ -21,6 +21,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_CIPF_USER_ID = "userId"
     @JvmField
     val PARAM_CIPF_OLD_PHONE = "oldPhone"
+    @JvmField
+    val PARAM_EMAIL = "email"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -40,5 +42,35 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHOOSE_ACCOUNT = "$INTERNAL_GLOBAL/choose-account"
 
+    // AddNameRegisterActivity
+    // tokopedia-android-internal://global/add-name-register
+    @JvmField
+    val ADD_NAME_REGISTER = "$INTERNAL_GLOBAL/add-name-register"
+
+    // ForgotPasswordActivity
+    // tokopedia-android-internal://global/add-name-register
+    @JvmField
+    val FORGOT_PASSWORD = "$INTERNAL_GLOBAL/forgot-password"
+
+    // WebViewActivity (Web View in library)
+    // Solution for sellerapp that does not have AppLinkWebsiteActivity
+    // Activity can have title by putting "title=.."
+    @JvmField
+    val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
+
+    @JvmField
+    val DYNAMIC_FEATURE_INSTALL_BASE= "$INTERNAL_GLOBAL/dynamic-features-install/"
+
+    // DFInstallerActivity
+    // tokopedia-android-internal://global/dynamic-features-install/hotel/?
+    // auto = true will download when activity is open
+    // applink, if provided will launch the applink after the module is installed
+    // imageUrl, is the placeholder for the background
+    @JvmField
+    val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
+        "dfname={moduleTranslate}&" +
+        "dfapplink={encodedApplink}&" +
+        "dfauto={isAutoDownload}&" +
+        "dfimage={imageUrl}"
 
 }

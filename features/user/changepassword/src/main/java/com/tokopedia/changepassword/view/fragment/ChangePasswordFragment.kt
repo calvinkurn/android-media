@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.changepassword.ChangePasswordRouter
 import com.tokopedia.changepassword.R
 import com.tokopedia.changepassword.common.analytics.ChangePasswordAnalytics
@@ -62,8 +64,8 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     private fun onGoToForgotPass() {
         if (activity != null && activity!!.applicationContext != null) {
-            val intent = (activity!!.applicationContext as ChangePasswordRouter)
-                    .getForgotPasswordIntent(activity!!, presenter.userSession.email)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PARAM_EMAIL)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, presenter.userSession.email)
             startActivity(intent)
             activity!!.finish()
         }

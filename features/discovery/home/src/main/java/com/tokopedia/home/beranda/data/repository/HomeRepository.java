@@ -1,10 +1,10 @@
 package com.tokopedia.home.beranda.data.repository;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 
 import java.util.List;
 
+import retrofit2.Response;
 import rx.Observable;
 
 /**
@@ -17,4 +17,5 @@ public interface HomeRepository {
 
     Observable<List<TrackedVisitable>> getHomeDataCache();
 
+    Observable<Response<String>> sendGeolocationInfo();
 }

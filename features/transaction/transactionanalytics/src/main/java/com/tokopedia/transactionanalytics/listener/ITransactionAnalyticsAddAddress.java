@@ -5,8 +5,6 @@ package com.tokopedia.transactionanalytics.listener;
  */
 public interface ITransactionAnalyticsAddAddress {
 
-    void sendAnalyticsOnSubmitSaveAddressClicked();
-
     void sendAnalyticsOnDistrictSelectionClicked();
 
     void sendAnalyticsOnZipCodeSelectionClicked();

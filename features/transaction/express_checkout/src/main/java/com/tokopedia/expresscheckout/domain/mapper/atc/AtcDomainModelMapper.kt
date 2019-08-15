@@ -396,6 +396,7 @@ open class AtcDomainModelMapper @Inject constructor() : AtcDataMapper {
         purchaseProtectionPlanDataModel.protectionSubtitle = product.purchaseProtectionPlanData?.protectionSubtitle
         purchaseProtectionPlanDataModel.protectionTitle = product.purchaseProtectionPlanData?.protectionTitle
         purchaseProtectionPlanDataModel.protectionTypeId = product.purchaseProtectionPlanData?.protectionTypeId
+        purchaseProtectionPlanDataModel.protectionCheckboxDisabled = product.purchaseProtectionPlanData?.protectionCheckboxDisabled
         return purchaseProtectionPlanDataModel
     }
 

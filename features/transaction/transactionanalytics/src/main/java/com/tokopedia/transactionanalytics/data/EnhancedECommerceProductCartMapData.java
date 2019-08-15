@@ -33,6 +33,10 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_DIMENSION_40 = "dimension40";
     private static final String KEY_DIMENSION_45 = "dimension45";
     private static final String KEY_DIMENSION_54 = "dimension54";
+    private static final String KEY_DIMENSION_52 = "dimension52";
+    private static final String KEY_DIMENSION_57 = "dimension57";
+    private static final String KEY_DIMENSION_59 = "dimension59";
+    private static final String KEY_DIMENSION_77 = "dimension77";
     private static final String KEY_DIMENSION_80 = "dimension80";
     private static final String KEY_DIMENSION_12 = "dimension12";
     private static final String KEY_ATTRIBUTION = "attribution";
@@ -47,6 +51,8 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_COD_FLAG = "dimension10";
     private static final String KEY_TOKOPEDIA_CORNER_FLAG = "dimension57";
     private static final String KEY_IS_FULFILLMENT = "dimension58";
+    private static final String KEY_PICTURE = "picture";
+    private static final String KEY_URL = "url";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
@@ -105,11 +111,11 @@ public class EnhancedECommerceProductCartMapData {
     }
 
     public void setBrand(String brand) {
-        Product.put(KEY_BRAND, !TextUtils.isEmpty(brand) ? brand : DEFAULT_VALUE_NONE_OTHER);
+        Product.put(KEY_BRAND, brand != null ? brand : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public void setVariant(String variant) {
-        Product.put(KEY_VARIANT, !TextUtils.isEmpty(variant) ? variant : DEFAULT_VALUE_NONE_OTHER);
+        Product.put(KEY_VARIANT, variant != null ? variant : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public Map<String, Object> getProduct() {
@@ -129,7 +135,7 @@ public class EnhancedECommerceProductCartMapData {
     }
 
     public void setCategoryId(String categoryId) {
-        Product.put(KEY_CATEGORY_ID, !TextUtils.isEmpty(categoryId) ? categoryId : DEFAULT_VALUE_NONE_OTHER);
+        Product.put(KEY_CATEGORY_ID, categoryId != null ? categoryId : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public void setCartId(String cartId) {
@@ -187,4 +193,29 @@ public class EnhancedECommerceProductCartMapData {
     public void setIsFulfillment(String isFulfillment) {
         Product.put(KEY_IS_FULFILLMENT, !TextUtils.isEmpty(isFulfillment) ? isFulfillment : "");
     }
+
+    public void setPicture(String picture) {
+        Product.put(KEY_PICTURE, !TextUtils.isEmpty(picture) ? picture : "");
+    }
+
+    public void setUrl(String url) {
+        Product.put(KEY_URL, !TextUtils.isEmpty(url) ? url : "");
+    }
+
+    public void setDimension52(String shopId) {
+        Product.put(KEY_DIMENSION_52, !TextUtils.isEmpty(shopId) ? shopId : "");
+    }
+
+    public void setDimension57(String shopName) {
+        Product.put(KEY_DIMENSION_57, !TextUtils.isEmpty(shopName) ? shopName : "");
+    }
+
+    public void setDimension59(String shopType) {
+        Product.put(KEY_DIMENSION_59, !TextUtils.isEmpty(shopType) ? shopType : "");
+    }
+
+    public void setDimension77(String cartId) {
+        Product.put(KEY_DIMENSION_77, !TextUtils.isEmpty(cartId) ? cartId : "");
+    }
+
 }

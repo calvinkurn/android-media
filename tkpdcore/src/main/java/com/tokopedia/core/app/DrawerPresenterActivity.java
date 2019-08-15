@@ -64,7 +64,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         super.onCreate(savedInstanceState);
         sessionHandler = new SessionHandler(MainApplication.getAppContext());
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
-        GraphqlClient.init(this);
         initialize();
     }
 

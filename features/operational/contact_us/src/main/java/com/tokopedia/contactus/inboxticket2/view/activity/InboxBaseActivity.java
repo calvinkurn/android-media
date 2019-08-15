@@ -24,7 +24,6 @@ import com.tokopedia.design.component.ToasterNormal;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 
 
 public abstract class InboxBaseActivity extends BaseSimpleActivity implements InboxBaseContract.InboxBaseView {
@@ -93,7 +92,6 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
         executeInjector();
         NetworkClient.init(this);
         mPresenter = getPresenter();

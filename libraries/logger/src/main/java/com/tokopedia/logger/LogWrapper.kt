@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSession
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,7 +28,11 @@ import kotlin.coroutines.CoroutineContext
  */
 class LogWrapper(val application: Application) : CoroutineScope {
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO
+        get() = Dispatchers.IO + handler
+
+    val handler: CoroutineExceptionHandler by lazy {
+        CoroutineExceptionHandler { _, ex -> }
+    }
 
     /**
      * To give "INFO" message log to logging server
@@ -35,7 +40,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
      */
     private fun info(message: String) {
         launch {
-            logger.info(message)
+            logger?.info(message)
         }
     }
 
@@ -46,7 +51,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
      */
     private fun warning(message: String) {
         launch {
-            logger.warning(message)
+            logger?.warning(message)
         }
     }
 
@@ -56,7 +61,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
      */
     private fun severe(message: String) {
         launch {
-            logger.severe(message)
+            logger?.severe(message)
         }
     }
 
@@ -73,7 +78,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
 
     private fun logThrowable(level: Level, message: String, throwable: Throwable) {
         launch {
-            logger.log(LogRecord(level, message).apply {
+            logger?.log(LogRecord(level, message).apply {
                 this.thrown = throwable
             })
         }
@@ -100,10 +105,20 @@ class LogWrapper(val application: Application) : CoroutineScope {
 
     companion object {
         var instance: LogWrapper? = null
-        val logger: Logger by lazy {
-            val logManager = LogManager.getLogManager()
-            logManager.readConfiguration(instance!!.application.resources.openRawResource(R.raw.logging))
-            logManager.getLogger(Logger.GLOBAL_LOGGER_NAME)
+        var logger: Logger? = null
+            get() {
+                if (field == null) {
+                    initLogger()
+                }
+                return field
+            }
+
+        fun initLogger(){
+            instance?.let {
+                val logManager = LogManager.getLogManager()
+                logManager.readConfiguration(it.application.resources.openRawResource(R.raw.logging))
+                logger = logManager.getLogger(Logger.GLOBAL_LOGGER_NAME)
+            }
         }
 
         @JvmStatic
@@ -142,7 +157,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
                 return
             }
             instance?.run {
-                val messageWithUser =  buildUserMessage()+ "\n" + (message ?: "")
+                val messageWithUser = buildUserMessage() + "\n" + (message ?: "")
                 if (throwable != null) {
                     logThrowable(level, messageWithUser, throwable)
                 } else {

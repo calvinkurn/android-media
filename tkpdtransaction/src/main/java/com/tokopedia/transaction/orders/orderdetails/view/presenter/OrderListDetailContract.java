@@ -65,6 +65,8 @@ public interface OrderListDetailContract {
 
         Context getAppContext();
 
+        Context getActivity();
+
         void setPayMethodInfo(PayMethod payMethod);
 
         void setButtonMargin();

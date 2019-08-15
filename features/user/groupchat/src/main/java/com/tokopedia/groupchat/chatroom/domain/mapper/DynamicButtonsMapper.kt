@@ -17,13 +17,18 @@ class DynamicButtonsMapper @Inject constructor() : Func1<Response<DataResponse<B
         DynamicButtonsViewModel> {
 
     override fun call(response: Response<DataResponse<ButtonsPojo>>): DynamicButtonsViewModel {
-        if ((response.body() != null) && (response.body().header == null ||
-                        (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                        (response.body().header != null && response.body().header.messages[0].isBlank()))) {
-            val pojo: ButtonsPojo = response.body().data
-            return mapToViewModel(pojo)
+        val body = response.body()
+        if(body != null) {
+            if (body.header == null ||
+                    (body.header != null && body.header.messages.isEmpty()) ||
+                    (body.header != null && body.header.messages[0].isBlank())) {
+                val pojo: ButtonsPojo = body.data
+                return mapToViewModel(pojo)
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 

@@ -95,6 +95,12 @@ public class AuthUtil {
         private static final int[] RAW_ALIYUN_ACCESS_KEY_ID = new int[]{76, 84, 65, 73, 85, 101, 69, 87, 83, 118, 105, 97, 49, 75, 107, 87};
         private static final int[] RAW_BRANCHIO_KEY_ID = new int[]{107, 101, 121, 95, 108, 105, 118, 101, 95, 97, 98, 104, 72, 103, 73, 104, 49, 68, 81, 105, 117, 80, 120, 100, 66, 78, 103, 57, 69, 88, 101, 112, 100, 68, 117, 103, 119, 119, 107, 72, 114};
         private static final int[] RAW_INDI_API_KEY = new int[]{69, 69, 82, 73, 120, 119, 88, 70, 54, 52, 52, 99, 49, 69, 49, 84, 111, 53, 112, 117, 76, 56, 120, 78, 80, 53, 80, 118, 76, 72, 83, 118, 50, 52, 48, 80, 121, 78, 89, 102};
+        private static final int[] RAW_API_KEY_INSTANT_DEBIT_BCA = new int[]{97, 99, 97, 53, 98, 52, 50, 55, 45, 99, 102, 52, 97, 45, 52, 102, 49, 52, 45, 98, 51, 101, 51, 45, 101, 54, 56, 53, 50, 101, 55, 98, 56, 101, 49, 50};
+        private static final int[] RAW_API_SECRET_INSTANT_DEBIT_BCA = new int[]{101, 102, 101, 48, 51, 98, 52, 100, 45, 101, 102, 49, 102, 45, 52, 98, 98, 98, 45, 57, 97, 99, 100, 45, 53, 53, 100, 101, 50, 48, 49, 54, 56, 102, 49, 99};
+        private static final int[] RAW_INSTANT_DEBIT_BCA_MERCHANT_ID = new int[]{54, 49, 48, 49, 55};
+        private static final int[] RAW_INSTANT_DEBIT_BCA_BANK_CODE = new int[] {66, 67, 65};
+        private static final int[] RAW_INSTANT_DEBIT_BCA_MERCHANT_CODE = new int[] {116, 111, 107, 111, 112, 101, 100, 105, 97};
+        private static final int[] RAW_INSTANT_DEBIT_BCA_PROFILE_CODE = new int[]{84, 75, 80, 68, 95, 68, 69, 70, 65, 85, 76, 84};
 
         public static final String KEY_WSV4_NEW = convert(RAW_KEY_WSV4);
         public static final String KEY_WSV4 = "web_service_v4";
@@ -108,6 +114,12 @@ public class AuthUtil {
         public static String ALIYUN_SECRET_KEY = convert(RAW_ALIYUN_SECRET_KEY);
         public static String ALIYUN_ACCESS_KEY_ID = convert(RAW_ALIYUN_ACCESS_KEY_ID);
         public static String INDI_API_KEY = convert(RAW_INDI_API_KEY);
+        public static String API_KEY_INSTANT_DEBIT_BCA = convert(RAW_API_KEY_INSTANT_DEBIT_BCA);
+        public static String API_SEED_INSTANT_DEBIT_BCA = convert(RAW_API_SECRET_INSTANT_DEBIT_BCA);
+        public static String INSTANT_DEBIT_BCA_MERCHANT_ID = convert(RAW_INSTANT_DEBIT_BCA_MERCHANT_ID);
+        public static String INSTANT_DEBIT_BCA_BANK_CODE = convert(RAW_INSTANT_DEBIT_BCA_BANK_CODE);
+        public static String INSTANT_DEBIT_BCA_MERCHANT_CODE = convert(RAW_INSTANT_DEBIT_BCA_MERCHANT_CODE);
+        public static String INSTANT_DEBIT_BCA_PROFILE_CODE = convert(RAW_INSTANT_DEBIT_BCA_PROFILE_CODE);
     }
 
 

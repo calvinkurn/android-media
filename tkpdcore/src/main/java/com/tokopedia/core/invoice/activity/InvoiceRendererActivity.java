@@ -29,7 +29,6 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -42,8 +41,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.design.component.Dialog;
-
-import butterknife.BindView;
 
 /**
  * InvoiceRendererActivity
@@ -58,11 +55,8 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
     private static final String EXTRA_INVOICE_RENDER_PARAM = "EXTRA_INVOICE_RENDER_PARAM";
     private static final String EXTRA_INVOICE_SELLER = "EXTRA_INVOICE_SELLER";
 
-    @BindView(R2.id.webview)
     TkpdWebView webViewOauth;
-    @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
-    @BindView(R2.id.layout_parent)
     FrameLayout layoutParent;
 
     private InvoiceRenderParam invoiceParam;
@@ -104,7 +98,9 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
 
     @Override
     protected void initView() {
-
+        webViewOauth = (TkpdWebView) findViewById(R.id.webview);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        layoutParent = (FrameLayout) findViewById(R.id.layout_parent);
     }
 
     @SuppressLint("SetJavaScriptEnabled")

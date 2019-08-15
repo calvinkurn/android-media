@@ -37,6 +37,7 @@ public class EventsDetailsViewModel implements Parcelable {
     private String seatMapImage;
     private Boolean dateRange;
     private String cityName;
+    private int customText1;
     private List<SchedulesViewModel> schedulesViewModels;
 
     public int getId() {
@@ -281,6 +282,14 @@ public class EventsDetailsViewModel implements Parcelable {
         this.displayTags = displayTags;
     }
 
+    public int getCustomText1() {
+        return customText1;
+    }
+
+    public void setCustomText1(int customText1) {
+        this.customText1 = customText1;
+    }
+
     public EventsDetailsViewModel() {
     }
 
@@ -318,6 +327,7 @@ public class EventsDetailsViewModel implements Parcelable {
         dest.writeString(this.seatMapImage);
         dest.writeValue(this.dateRange);
         dest.writeString(this.cityName);
+        dest.writeInt(this.customText1);
         dest.writeTypedList(this.schedulesViewModels);
         dest.writeTypedList(this.forms);
     }
@@ -350,6 +360,7 @@ public class EventsDetailsViewModel implements Parcelable {
         this.seatMapImage = in.readString();
         this.dateRange = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.cityName = in.readString();
+        this.customText1 = in.readInt();
         this.schedulesViewModels = in.createTypedArrayList(SchedulesViewModel.CREATOR);
         this.forms = in.createTypedArrayList(Form.CREATOR);
     }

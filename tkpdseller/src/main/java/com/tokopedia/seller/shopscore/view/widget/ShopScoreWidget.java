@@ -13,10 +13,9 @@ import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModelData;
 /**
  * @author sebastianuskh on 2/23/17.
  */
-
+@Deprecated
 public class ShopScoreWidget extends FrameLayout {
     private ShopScoreMainDetailView shopScoreMainDetailView;
-    private ShopScoreWidgetCallback callback;
 
     public ShopScoreWidget(Context context) {
         super(context);
@@ -37,14 +36,6 @@ public class ShopScoreWidget extends FrameLayout {
     public ShopScoreWidget(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView(context, attrs);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (callback != null) {
-            callback.getShopScoreData();
-        }
     }
 
     private void initView(Context context, AttributeSet attrs) {
@@ -81,7 +72,4 @@ public class ShopScoreWidget extends FrameLayout {
         shopScoreMainDetailView.setVisibility(VISIBLE);
     }
 
-    public void setCallback(ShopScoreWidgetCallback callback) {
-        this.callback = callback;
-    }
 }

@@ -62,7 +62,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     protected static final String ARGS_DATA = "ARGS_DATA";
     protected static final String ARGS_PASS_DATA = "pass_data";
 
-    private static final int COUNTDOWN_LENGTH = 90;
+    private static final int COUNTDOWN_LENGTH = 30;
     private static final int INTERVAL = 1000;
     protected static final int MAX_OTP_LENGTH = 6;
 

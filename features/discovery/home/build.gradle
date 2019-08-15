@@ -38,6 +38,8 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
@@ -69,6 +71,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
@@ -109,10 +112,6 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    kapt  rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
-
     implementation rootProject.ext.debugToolsDependencies.stetho
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -123,7 +122,11 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.locationmanager)
+    implementation rootProject.ext.playServicesDependencies.location
 
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
 }
 
 apply from: '../../../publish_local.gradle'

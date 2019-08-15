@@ -38,6 +38,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private EgoldAttributeModel egoldAttributes;
     private AutoApplyStackData autoApplyStackData;
     private GlobalCouponAttrData globalCouponAttrData;
+    private boolean isIneligbilePromoDialogEnabled;
 
     public boolean isHasError() {
         return hasError;
@@ -199,6 +200,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         isShowOnboarding = showOnboarding;
     }
 
+    public boolean isIneligbilePromoDialogEnabled() {
+        return isIneligbilePromoDialogEnabled;
+    }
+
+    public void setIneligbilePromoDialogEnabled(boolean ineligbilePromoDialogEnabled) {
+        isIneligbilePromoDialogEnabled = ineligbilePromoDialogEnabled;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -220,6 +229,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
         egoldAttributes = in.readParcelable(EgoldAttributeModel.class.getClassLoader());
         autoApplyStackData = in.readParcelable(AutoApplyStackData.class.getClassLoader());
+        isIneligbilePromoDialogEnabled = in.readByte() != 0;
     }
 
     @Override
@@ -241,6 +251,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(autoApplyData, flags);
         dest.writeParcelable(egoldAttributes, flags);
         dest.writeParcelable(autoApplyStackData, flags);
+        dest.writeByte((byte) (isIneligbilePromoDialogEnabled ? 1 : 0));
     }
 
     @Override

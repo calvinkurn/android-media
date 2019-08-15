@@ -101,6 +101,7 @@ public class ShipmentDataConverter {
         recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
         recipientAddress.setCornerId(String.valueOf(userAddress.getCornerId()));
         recipientAddress.setTradeIn(isTradeIn);
+        recipientAddress.setCornerAddress(userAddress.isCorner());
 
         return recipientAddress;
     }
@@ -348,6 +349,7 @@ public class ShipmentDataConverter {
             cartItemModel.setProtectionLinkText(ppp.getProtectionLinkText());
             cartItemModel.setProtectionLinkUrl(ppp.getProtectionLinkUrl());
             cartItemModel.setProtectionOptIn(ppp.isProtectionOptIn());
+            cartItemModel.setProtectionCheckboxDisabled(ppp.isProtectionCheckboxDisabled());
         }
 
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());

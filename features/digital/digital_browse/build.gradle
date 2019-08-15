@@ -59,6 +59,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.unifyDependencies.icon
+    implementation project(rootProject.ext.features.navigationCommon)
 }
 
 apply from: '../../../publish_local.gradle'

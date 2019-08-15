@@ -35,4 +35,5 @@ public class GMCommonRepositoryImpl implements GMCommonRepository {
         return gmCommonDataSource.getCashbackList(productIdList, shopId);
     }
 
+
 }

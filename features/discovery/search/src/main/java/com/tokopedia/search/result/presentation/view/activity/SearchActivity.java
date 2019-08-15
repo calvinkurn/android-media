@@ -27,17 +27,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.discovery.DiscoveryRouter;
-import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
-import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
@@ -75,7 +72,6 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEAR
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SearchActivity extends BaseActivity
         implements SearchContract.View,
@@ -826,5 +822,45 @@ public class SearchActivity extends BaseActivity
     @Override
     public BaseAppComponent getComponent() {
         return getBaseAppComponent();
+    }
+
+    @Override
+    public void startActivityWithApplink(String applink, String... parameter) {
+        finishCurrentActivityIfRedirectedToSearch(applink);
+
+        Intent intent = RouteManager.getIntent(this, applink, parameter);
+        int startActivityForResultRequestCode = getStartActivityForResultRequestCode(applink);
+
+        startActivityForResult(intent, startActivityForResultRequestCode);
+    }
+
+    private void finishCurrentActivityIfRedirectedToSearch(String applink) {
+        if(isApplinkToSearchActivity(applink)) {
+            setIntent(new Intent());
+            finish();
+        }
+    }
+
+    private boolean isApplinkToSearchActivity(String applink) {
+        return !TextUtils.isEmpty(applink)
+                && applink.startsWith(ApplinkConst.DISCOVERY_SEARCH + "?");
+    }
+
+    private int getStartActivityForResultRequestCode(String applink) {
+        if(isApplinkToAutoCompleteActivity(applink)) {
+            return AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
+        }
+
+        return -1;
+    }
+
+    private boolean isApplinkToAutoCompleteActivity(String applink) {
+        return !TextUtils.isEmpty(applink)
+                && applink.startsWith(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?");
+    }
+
+    @Override
+    public void startActivityWithUrl(String url, String... parameter) {
+        RouteManager.route(this, url, parameter);
     }
 }

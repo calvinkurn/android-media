@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
 import com.tokopedia.contactus.orderquery.data.QueryTicket;
 import com.tokopedia.contactus.orderquery.data.SubmitTicketInvoiceData;
@@ -30,9 +29,6 @@ import com.tokopedia.contactus.orderquery.di.DaggerOrderQueryComponent;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by sandeepgoyal on 12/04/18.
  */
@@ -42,14 +38,11 @@ public class OrderQueryTicketFragment extends BaseDaggerFragment implements Orde
     public static final String KEY_BUYER_PURCHASE_LIST = "BUYER_PURCHASE_LIST";
 
     OrderQueryComponent orderQueryComponent;
-    @BindView(R2.id.img_order)
-    ImageView imgOrder;
-    @BindView(R2.id.txt_ticket_invoice)
-    TextView txtTicketInvoice;
-    @BindView(R2.id.txt_ticket_title)
-    TextView txtTicketTitle;
-    @BindView(R2.id.ticket_list)
-    LinearLayout ticketList;
+
+    private ImageView imgOrder;
+    private TextView txtTicketInvoice;
+    private TextView txtTicketTitle;
+    private LinearLayout ticketList;
 
     @Inject
     OrderQueryTicketPresenter presenter;
@@ -71,11 +64,13 @@ public class OrderQueryTicketFragment extends BaseDaggerFragment implements Orde
         View view = inflater.inflate(R.layout.layout_invoice_details, container, false);
         initInjector();
         presenter.attachView(this);
-        ButterKnife.bind(this, view);
+        imgOrder = view.findViewById(R.id.img_order);
+        txtTicketInvoice = view.findViewById(R.id.txt_ticket_invoice);
+        txtTicketTitle = view.findViewById(R.id.txt_ticket_title);
+        ticketList = view.findViewById(R.id.ticket_list);
         buyerPurchaseList = (BuyerPurchaseList) getArguments().getSerializable(KEY_BUYER_PURCHASE_LIST);
         presenter.setBuyerPurchaseList(buyerPurchaseList);
         return view;
-
     }
 
     @Override

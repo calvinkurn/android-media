@@ -94,6 +94,7 @@ dependencies {
     }
 
     implementation project(rootProject.ext.features.kolCommon)
+    implementation project(rootProject.ext.features.productCard)
 }
 
 apply from: '../../../publish_local.gradle'

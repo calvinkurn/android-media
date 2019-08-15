@@ -29,9 +29,11 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
         discountPercentage
         slashedPrice
         slashedPriceInt
+        minOrder
         shop {
           id
           name
+          city
         }
         departmentId
         labels {

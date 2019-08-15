@@ -1,0 +1,21 @@
+query getCustomQuery($componentID: Int!) {
+                status
+                rechargeComponentDataCollection(data: CUSTOM, componentID: $componentID) {
+                    data_collections {
+                        key
+                        value
+                        operator {
+                            id
+                            attributes {
+                                name
+                                image
+                                image_url
+                                lastorder_url
+                                default_product_id
+                                ussd
+                                description
+                            }
+                        }
+                    }
+                }
+            }

@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">profilecompletion</string>
+
+    <!--ADD CHANGE NAME-->
+    <string name="title_add_name">Masukkan \nNama Lengkap Anda</string>
+    <string name="title_name_full">Nama Lengkap</string>
+    <string name="title_add_name_empty"> </string>
+    <string name="title_change_name">Ubah Nama Lengkap</string>
+    <string name="title_complete_name">Nama Lengkap</string>
+    <string name="email_name_top">Masukkan nama lengkap Anda dengan benar.\nNama lengkap hanya dapat diubah satu kali.</string>
+    <string name="button_name_finish">Selesai</string>
+    <string name="button_name_continue">Ubah Nama Lengkap</string>
+    <string name="name_confirmation">Apakah nama lengkap Anda sudah benar?</string>
+    <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
+    <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
+    <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 128 karakter</string>
+    <string name="name_confirmation_yes">Ya, benar</string>
+    <string name="name_confirmation_no">Tidak</string>
+    <string name="error_minimal_name">Minimum 3 karakter</string>
+    <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \n<a href="https://m.tokopedia.com/terms.pl">Syarat dan Ketentuan</a> serta <a href="https://m.tokopedia.com/privacy.pl">Kebijakan Privasi</a>.</string>
+    <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui  </string>
+    <string name="link_term_condition">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="link_privacy_policy">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="privacy_pl">https://m.tokopedia.com/privacy.pl?device=android&amp;flag_app=1</string>
+    <string name="term_pl">https://m.tokopedia.com/terms.pl?device=android&amp;flag_app=1</string>
+    <string name="bottom_info_terms_and_privacy">Dengan mendaftar, saya menyetujui \n &lt;font
+        color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt; serta &lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
+
+</resources>

@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -46,6 +47,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
+import com.tokopedia.feedcomponent.util.FeedScrollListener;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -71,6 +73,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecomme
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity;
@@ -118,6 +121,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
 import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED;
 import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
@@ -146,7 +150,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
-        VideoViewHolder.VideoViewListener {
+        VideoViewHolder.VideoViewListener,
+        FeedMultipleImageView.FeedMultipleImageViewListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -198,6 +203,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    AffiliatePreference affiliatePreference;
 
     public static FeedPlusFragment newInstance(Bundle bundle) {
         FeedPlusFragment fragment = new FeedPlusFragment();
@@ -363,6 +371,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             onRefresh();
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @SuppressWarnings("unchecked")
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -387,6 +396,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER);
                             }
                         }
+                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist());
                     }
                 } catch (IndexOutOfBoundsException e) {
                     Log.d(FeedPlusFragment.TAG, e.toString());
@@ -787,7 +797,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     } else {
                         fabByme.show();
                         fabTextByme.setVisibility(View.VISIBLE);
-                        fabByme.setOnClickListener(v12 -> onGoToLink(author.getLink()));
+                        fabByme.setOnClickListener(v12 -> goToCreateAffiliate(author.getLink()));
                     }
                 }
                 greyBackground.setOnClickListener(v3 -> {
@@ -796,6 +806,24 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 isFabExpanded = true;
             }
         };
+    }
+
+    private void goToCreateAffiliate(String link) {
+        if (getContext() != null) {
+            if (affiliatePreference.isFirstTimeEducation(userSession.getUserId())) {
+
+                Intent intent = RouteManager.getIntent(
+                        getContext(),
+                        ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
+                );
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(intent);
+                affiliatePreference.setFirstTimeEducation(userSession.getUserId());
+
+            } else {
+                RouteManager.route(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
+            }
+        }
     }
 
     private void loadData(boolean isVisibleToUser) {
@@ -1548,6 +1576,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     model.getId(),
                     postTagItem,
                     itemPosition,
+                    model.getHeader().getFollowCta().getAuthorType(),
                     model.getTrackingPostModel()
             );
         }
@@ -1727,15 +1756,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     );
                 }
 
-                if (postViewModel.getPostTag().getTotalItems() != 0
-                        && postViewModel.getPostTag().getItems().size() != 0) {
-                    for (int j = 0; j< postViewModel.getPostTag().getTotalItems(); j++) {
-                        postTagAnalytics.trackViewPostTagFeed(
-                                postViewModel.getId(),
-                                postViewModel.getPostTag().getItems().get(j),
-                                j,
-                                trackingPostModel);
-                    }
+                if (postViewModel.getPostTag().getItems().size() != 0) {
+                    postTagAnalytics.trackViewPostTagFeed(
+                            postViewModel.getId(),
+                            postViewModel.getPostTag().getItems(),
+                            postViewModel.getHeader().getFollowCta().getAuthorType(),
+                            trackingPostModel);
                 }
                 onAffiliateTrackClicked(postViewModel.getTracking(), false);
 

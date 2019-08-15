@@ -3,18 +3,13 @@ package com.tokopedia.core.manage.general;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
-
-import butterknife.BindView;
 
 public class ManageWebViewActivity extends BasePresenterActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
