@@ -3,20 +3,19 @@ package com.tokopedia.merchantvoucher.common.widget
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.merchantvoucher.R
-import android.graphics.Bitmap
 import android.graphics.RectF
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
-import android.graphics.Canvas.ALL_SAVE_FLAG
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.AbsoluteSizeSpan
 import android.text.style.StyleSpan
 
 /*
@@ -235,20 +234,70 @@ open class CustomVoucherView : FrameLayout {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().displayMetrics).toInt()
     }
 
-    protected fun boldText(stringSource: String, stringToBold: String): CharSequence {
-        val boldText = SpannableString(stringSource)
-        val startIndex = stringSource.indexOf(stringToBold)
-        if (startIndex == -1)
-            return boldText
-        val endIndex = startIndex + stringToBold.length
-        boldText.setSpan(
-                StyleSpan(Typeface.BOLD),
-                startIndex,
-                endIndex,
-                Spannable.SPAN_INCLUSIVE_INCLUSIVE
-        )
-        return boldText
+    inner class SpanText(
+            stringSource: String,
+            stringToBeSpanned: String
+    ){
+        val spannableString: SpannableString = SpannableString(stringSource)
+        val startIndex =  stringSource.indexOf(stringToBeSpanned)
+        val endIndex =  startIndex + stringToBeSpanned.length
+
+
+        fun addBoldSpan(): SpanText{
+            if(startIndex == -1)
+                 return this
+            spannableString.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            return this
+        }
+
+        fun changeTextSize(sizeInDp: Int): SpanText{
+            if(startIndex == -1)
+                return this
+            spannableString.setSpan(
+                    AbsoluteSizeSpan(sizeInDp),
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            return this
+        }
+
+        fun getCharSequence(): CharSequence{
+            return spannableString
+        }
+
+
     }
+
+//    protected fun spanBoldText(stringSource: String, stringToBeSpanned: String): CharSequence {
+//        val spanText = SpannableString(stringSource)
+//        val startIndex = stringSource.indexOf(stringToBeSpanned)
+//        if (startIndex == -1)
+//            return spanText
+//        val endIndex = startIndex + stringToBeSpanned.length
+//        spanText.setSpan(
+//                StyleSpan(Typeface.BOLD),
+//                startIndex,
+//                endIndex,
+//                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+//        )
+//
+//        return spanText
+//    }
+//
+//    protected fun spanChangeTextSize(stringSource: String, stringToBeSpanned: String, sizeInDp :Int): CharSequence {
+//        val spanText = SpannableStringBuilder(stringSource)
+//        val startIndex = stringSource.indexOf(stringToBeSpanned)
+//        if (startIndex == -1)
+//            return spanText
+//        val endIndex = startIndex + stringToBeSpanned.length
+//
+//    }
 
 
 }

@@ -1,21 +1,15 @@
 package com.tokopedia.merchantvoucher.common.widget
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.merchantvoucher.R
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherOwnerTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.model.*
 import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
@@ -108,15 +102,16 @@ class MerchantVoucherView : CustomVoucherView {
             val voucherTitle = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())
-            tvVoucherTitle.text = boldText(
+            val spannedVoucherTitle = SpanText(
                     voucherTitle,
                     merchantVoucherViewModel.getAmountShortString()
-            )
+            ).addBoldSpan().changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_18)).getCharSequence()
+            tvVoucherTitle.text = spannedVoucherTitle
             val voucherDesc = merchantVoucherViewModel.getMinSpendLongString(context)
-            tvVoucherDesc.text = boldText(
+            tvVoucherDesc.text = SpanText(
                     voucherDesc,
                     merchantVoucherViewModel.getMinSpendAmountShortString()
-            )
+            ).addBoldSpan().getCharSequence()
             tvCode.text = merchantVoucherViewModel.voucherCode
             var isOwner = false
             onMerchantVoucherViewListener?.run {
@@ -147,7 +142,7 @@ class MerchantVoucherView : CustomVoucherView {
                             MethodChecker.getDrawable(context, R.drawable.bg_voucher_button_in_use)
                     )
                     btnUseVoucher.setTextColor(
-                            MethodChecker.getColor(context,R.color.white)
+                            MethodChecker.getColor(context, R.color.white)
                     )
                     btnUseVoucher.visibility = View.VISIBLE
                     btnUseVoucher.isEnabled = false

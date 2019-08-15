@@ -1,7 +1,6 @@
 package com.tokopedia.merchantvoucher.common.widget
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherOwnerTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.model.*
@@ -64,13 +62,13 @@ class MerchantVoucherViewUsed : CustomVoucherView {
     }
 
     fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
-        if (merchantVoucherViewModel?.enableButtonUse == true) {
-            btnUseVoucher.visibility = View.VISIBLE
-            tvCode.visibility = View.GONE
-        } else {
-            btnUseVoucher.visibility = View.GONE
-            tvCode.visibility = View.VISIBLE
-        }
+//        if (merchantVoucherViewModel?.enableButtonUse == true) {
+//            btnUseVoucher.visibility = View.VISIBLE
+//            tvCode.visibility = View.GONE
+//        } else {
+//            btnUseVoucher.visibility = View.GONE
+//            tvCode.visibility = View.VISIBLE
+//        }
         this.merchantVoucherViewModel = merchantVoucherViewModel
         btnUseVoucher.setOnClickListener {
             merchantVoucherViewModel?.run {
@@ -102,15 +100,16 @@ class MerchantVoucherViewUsed : CustomVoucherView {
             val voucherTitle = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())
-            tvVoucherTitle.text = boldText(
+            val spannedVoucherTitle = SpanText(
                     voucherTitle,
                     merchantVoucherViewModel.getAmountShortString()
-            )
+            ).addBoldSpan().changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_18)).getCharSequence()
+            tvVoucherTitle.text = spannedVoucherTitle
             val voucherDesc = merchantVoucherViewModel.getMinSpendLongString(context)
-            tvVoucherDesc.text = boldText(
+            tvVoucherDesc.text = SpanText(
                     voucherDesc,
                     merchantVoucherViewModel.getMinSpendAmountShortString()
-            )
+            ).addBoldSpan().getCharSequence()
             tvCode.text = merchantVoucherViewModel.voucherCode
             var isOwner = false
             onMerchantVoucherViewListener?.run {
