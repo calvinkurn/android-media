@@ -5,6 +5,5 @@ import com.tokopedia.transaction.common.TransactionRouter
 
 interface ProductDetailRouter{
     fun getCartCount(context: Context): Int
-    fun updateMarketplaceCartCounter(listener: TransactionRouter.CartNotificationListener)
     fun getDeviceId(context : Context): String
 }

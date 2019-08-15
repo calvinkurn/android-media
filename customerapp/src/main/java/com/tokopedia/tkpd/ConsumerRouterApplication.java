@@ -1974,13 +1974,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
-//        CartComponentInjector.newInstance(this)
-//                .getGetMarketPlaceCartCounterUseCase()
-//                .executeWithSubscriber(this, listener);
-    }
-
-    @Override
     public void shareGroupChat(Activity activity, String channelId, String title, String contentMessage, String imgUrl,
                                String shareUrl, String userId, String sharing) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()

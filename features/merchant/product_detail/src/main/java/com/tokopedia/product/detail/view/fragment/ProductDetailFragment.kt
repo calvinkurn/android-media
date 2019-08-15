@@ -39,6 +39,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -128,6 +129,7 @@ import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.purchase_platform.common.constant.Constant.*
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
+import com.tokopedia.purchase_platform.features.checkout.view.CartConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -215,7 +217,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private var shouldShowCartAnimation = false
 
-    private lateinit var initToolBarMethod:()-> Unit
+    private lateinit var initToolBarMethod: () -> Unit
     private val productDetailTracking: ProductDetailTracking by lazy {
         ProductDetailTracking()
     }
@@ -331,7 +333,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     override fun onPause() {
         super.onPause()
-        if (::trackingQueue.isInitialized) { trackingQueue?.run { sendAll() }}
+        if (::trackingQueue.isInitialized) {
+            trackingQueue?.run { sendAll() }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -367,7 +371,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productInfoViewModel.p2Login.observe(this, Observer {
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
-            it?.run{ renderProductInfoP2Login(this) }
+            it?.run { renderProductInfoP2Login(this) }
         })
 
         productInfoViewModel.productInfoP3resp.observe(this, Observer {
@@ -442,10 +446,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initView()
         tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         refreshLayout = view.findViewById(R.id.swipeRefresh)
-         et_search.setOnClickListener { v ->
+        et_search.setOnClickListener { v ->
             RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
         }
-        et_search.hint = String.format(getString(R.string.pdp_search_hint),"")
+        et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -466,7 +470,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             layoutParams.behavior = FlingBehavior(nested_scroll)
         }
 
-        appbar.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0)})
+        appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0) })
         refreshLayout?.setOnRefreshListener { loadProductData(true) }
 
         if (isAffiliate) {
@@ -627,7 +631,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         context?.let {
             productInfo?.run {
                 val isOcsCheckoutType = (productInfoViewModel.p2Login.value)?.isOcsCheckoutType
-                    ?: false
+                        ?: false
                 val intent = NormalCheckoutActivity.getIntent(it,
                         basic.shopID.toString(),
                         parentProductId,
@@ -641,7 +645,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.goldOS?.shopTypeString,
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType)
-                if(::tradeInParams.isInitialized) {
+                if (::tradeInParams.isInitialized) {
                     intent.putExtra(NormalCheckoutActivity.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
                 startActivityForResult(intent,
@@ -678,7 +682,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun addLoadMoreImpression(){
+    private fun addLoadMoreImpression() {
         val impressionHolder = ImpressHolder()
         title_product_desc_label.addOnImpressionListener(impressionHolder, object : ViewHintListener {
             override fun onViewHint() {
@@ -853,9 +857,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun initView() {
         val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
-        if(appShowSearchPDP) {
+        if (appShowSearchPDP) {
             initShowSearchPDP()
-        }else {
+        } else {
             initCollapsingToolBar()
         }
         varToolbar.show()
@@ -892,11 +896,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         search_pdp_toolbar.show()
         varToolbar = search_pdp_toolbar
         varPictureImage = view_picture_search_bar
-        initToolBarMethod  =  ::initToolbarLight
+        initToolBarMethod = ::initToolbarLight
         fab_detail.setAnchor(R.id.view_picture_search_bar)
         nested_scroll.viewTreeObserver.addOnScrollChangedListener {
             activity?.run {
-                if(isAdded) {
+                if (isAdded) {
                     if (isViewVisible(varPictureImage)) {
                         showFabDetailAfterLoadData()
                         label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.VISIBLE else View.GONE
@@ -914,7 +918,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         collapsing_toolbar.show()
         varToolbar = toolbar
         varPictureImage = view_picture
-        initToolBarMethod  =  ::initToolbarTransparent
+        initToolBarMethod = ::initToolbarTransparent
         fab_detail.setAnchor(R.id.view_picture)
 
     }
@@ -1064,7 +1068,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             selectedWarehouse?.let {
                                 productInfoViewModel.multiOrigin = it.warehouseInfo
                                 productInfoViewModel.p2ShopDataResp.value = productInfoViewModel.p2ShopDataResp.value?.copy(
-                                    nearestWarehouse = it
+                                        nearestWarehouse = it
                                 )
                             }
 
@@ -1141,16 +1145,20 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun updateCartNotification() {
-        activity?.run {
-            (application as ProductDetailRouter).updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener {
-                if (isAdded) {
-                    if (isAppBarCollapsed) {
-                        initToolbarLight()
-                    } else {
-                        initToolBarMethod()
-                    }
-                }
-            })
+        productInfoViewModel.updateCartCounerUseCase(::onSuccessUpdateCartCounter)
+    }
+
+    private fun onSuccessUpdateCartCounter(count: Int) {
+        val cache = LocalCacheHandler(context, CartConstant.CART);
+        cache.putInt(CartConstant.IS_HAS_CART, if (count > 0) 1 else 0)
+        cache.putInt(CartConstant.CACHE_TOTAL_CART, count);
+        cache.applyEditor();
+        if (isAdded) {
+            if (isAppBarCollapsed) {
+                initToolbarLight()
+            } else {
+                initToolBarMethod()
+            }
         }
     }
 
@@ -1231,7 +1239,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun goToCourier(
-            productId : String,
+            productId: String,
             shipment: List<ShopShipment>,
             bbInfos: List<BBInfo>
     ) {
@@ -1251,7 +1259,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun renderProductInfo2Shop(p2ShopData: ProductInfoP2ShopData){
+    private fun renderProductInfo2Shop(p2ShopData: ProductInfoP2ShopData) {
         p2ShopData.shopInfo?.let { shopInfo ->
             this.shopInfo = shopInfo
             productDescrView.shopInfo = shopInfo
@@ -1275,7 +1283,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         gotoRateEstimation(true)
                     } else {
                         goToCourier(
-                                productInfo?.basic?.id?.toString()?: "",
+                                productInfo?.basic?.id?.toString() ?: "",
                                 shopInfo.shipments,
                                 shopInfo.bbInfo
                         )
@@ -1417,7 +1425,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
-        et_search.hint = String.format(getString(R.string.pdp_search_hint),productInfo?.category?.name)
+        et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
         headerView.renderData(data)
         varPictureImage.renderData(data.pictures, this::onPictureProductClicked)
@@ -1505,8 +1513,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             "click trade in widget",
                             "before diagnostic")
 
-                }
             }
+        }
         // if when first time and the product is actually a variant product, then select the default variant
         if (userInputVariant == null && data.variant.isVariant && data.variant.parentID != productId) {
             userInputVariant = productId
@@ -1757,8 +1765,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun generateVariantString(): String {
         return try {
-            productInfoViewModel.p2General.value?.variantResp?.
-                    variant?.map { it.name }?.joinToString(separator = ", ") ?: ""
+            productInfoViewModel.p2General.value?.variantResp?.variant?.map { it.name }?.joinToString(separator = ", ")
+                    ?: ""
         } catch (e: Throwable) {
             ""
         }
