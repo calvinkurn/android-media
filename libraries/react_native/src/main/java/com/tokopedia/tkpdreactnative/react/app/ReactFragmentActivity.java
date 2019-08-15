@@ -14,11 +14,11 @@ import android.widget.ProgressBar;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.core.router.reactnative.IReactNativeRouter;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactNavigationModule;
+import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 
 /**
  *
@@ -71,7 +71,7 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         if (requestCode == ReactConst.REACT_LOGIN_REQUEST_CODE){
             if (resultCode == Activity.RESULT_OK){
                 String UserID = ReactNavigationModule.getUserId(this);
-                ((IReactNativeRouter) getApplication()).sendLoginEmitter(UserID);
+                ((ReactNativeRouter) getApplication()).sendLoginEmitter(UserID);
             }
         } else if (requestCode == ReactConst.REACT_ADD_CREDIT_CARD_REQUEST_CODE) {
             ReactInstanceManager reactInstanceManager = ((ReactApplication) getApplication()).getReactNativeHost().getReactInstanceManager();

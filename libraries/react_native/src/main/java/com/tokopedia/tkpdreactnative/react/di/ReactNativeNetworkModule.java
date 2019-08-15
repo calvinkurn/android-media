@@ -2,14 +2,15 @@ package com.tokopedia.tkpdreactnative.react.di;
 
 import android.content.Context;
 
-import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.common.service.CommonService;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdreactnative.react.data.ReactNetworkRepositoryImpl;
+import com.tokopedia.tkpdreactnative.react.data.UnifyReactNetworkRepositoryImpl;
 import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkAuthDataSource;
+import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkBearerDataSource;
+import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkDataSource;
 import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkWsV4AuthDataSource;
 import com.tokopedia.tkpdreactnative.react.data.factory.ReactNetworkAuthFactory;
 import com.tokopedia.tkpdreactnative.react.data.factory.ReactNetworkDefaultAuthFactory;
@@ -18,10 +19,10 @@ import com.tokopedia.tkpdreactnative.react.di.qualifier.ReactDefaultAuthQualifie
 import com.tokopedia.tkpdreactnative.react.di.qualifier.ReactDynamicAuthQualifier;
 import com.tokopedia.tkpdreactnative.react.di.qualifier.ReactNoAuthQualifier;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
-import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkBearerDataSource;
-import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkDataSource;
 import com.tokopedia.tkpdreactnative.react.domain.UnifyReactNetworkRepository;
-import com.tokopedia.tkpdreactnative.react.data.UnifyReactNetworkRepositoryImpl;
+import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -149,9 +150,15 @@ public class ReactNativeNetworkModule {
 
     @Provides
     @ReactNativeNetworkScope
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context applicationContext) {
+        return new UserSession(applicationContext);
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
     UnifyReactNetworkBearerDataSource provideUnifyReactNetworkBearerDataSource(Retrofit.Builder retrofitBuilder,
-                                                                               SessionHandler sessionHandler) {
-        return new UnifyReactNetworkBearerDataSource(retrofitBuilder, sessionHandler);
+                                                                               UserSessionInterface userSessionInterface) {
+        return new UnifyReactNetworkBearerDataSource(retrofitBuilder, userSessionInterface);
     }
 
     @Provides

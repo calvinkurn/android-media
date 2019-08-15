@@ -18,4 +18,6 @@ public interface ReactNativeRouter {
     boolean getEnableFingerprintPayment();
 
     Intent getBrandsWebViewIntent(Context context, String url);
+
+    void sendLoginEmitter(String userId);
 }

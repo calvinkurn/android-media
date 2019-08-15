@@ -4,10 +4,9 @@ import android.net.Uri;
 
 import com.tokopedia.core.base.common.service.CommonService;
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
-import com.tokopedia.core.network.retrofit.interceptors.ReactNativeBearerInterceptor;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -18,15 +17,15 @@ import rx.Observable;
 
 public class UnifyReactNetworkBearerDataSource {
     private Retrofit.Builder retrofit;
-    private SessionHandler sessionHandler;
+    private UserSessionInterface sessionInterface;
 
-    public UnifyReactNetworkBearerDataSource(Retrofit.Builder retrofit, SessionHandler sessionHandler) {
+    public UnifyReactNetworkBearerDataSource(Retrofit.Builder retrofit, UserSessionInterface sessionInterface) {
         this.retrofit = retrofit;
-        this.sessionHandler = sessionHandler;
+        this.sessionInterface = sessionInterface;
     }
 
     public Observable<String> request(ReactNetworkingConfiguration configuration) {
-        String token = sessionHandler.getAccessToken(sessionHandler.getActiveContext());
+        String token = sessionInterface.getAccessToken();
 
         Uri uri = Uri.parse(configuration.getUrl());
         CommonService commonService = retrofit.baseUrl(uri.getScheme() + "://" + uri.getHost())
