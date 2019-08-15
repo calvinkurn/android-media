@@ -147,7 +147,6 @@ import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
@@ -2136,8 +2135,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         val userSession = UserSession(activity)
         if (userSession.isLoggedIn) {
+            actionButtonView.setBackground(R.drawable.bg_shadow_top)
             stickyLoginTextView.dismiss()
         } else {
+            actionButtonView.setBackground(R.color.white)
             stickyLoginTextView.show()
             productDetailTracking.eventViewLoginStickyWidget()
         }
