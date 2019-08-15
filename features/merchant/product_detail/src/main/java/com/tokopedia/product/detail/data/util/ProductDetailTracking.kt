@@ -32,6 +32,17 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 shopType, "/product", productId)
     }
 
+    fun sendScreenV5(shopId: String, shopType: String, productId: String, categoryId: String) {
+        val params = hashMapOf<String, String>().apply {
+            put("shopId", shopId)
+            put("shopType", shopType)
+            put("productId", productId)
+            put("categoryId", categoryId)
+            put("pageType", "/product")
+        }
+        TrackApp.getInstance().gtm.sendScreenV5(screenName, params)
+    }
+
     fun eventTalkClicked() {
         TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
@@ -490,6 +501,10 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "url", productInfo?.basic?.url,
                 "shopType", getEnhanceShopType(shopInfo?.goldOS)
         ))
+
+        eventEnhanceEcommerceProductDetailV5(productInfo, shopInfo,
+                trackerAttribution, isTradeIn,
+                isDiagnosed, multiOrigin)
     }
 
     fun eventEnhanceEcommerceProductDetailV5(productInfo: ProductInfo?, shopInfo: ShopInfo?,

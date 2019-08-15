@@ -1284,6 +1284,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     shopInfo.shopCore.shopID,
                     shopInfo.goldOS.shopTypeString,
                     productId ?: "")
+            productDetailTracking.sendScreenV5(
+                    shopInfo.shopCore.shopID,
+                    shopInfo.goldOS.shopTypeString,
+                    productId ?: "",
+                    productInfo?.category?.detail?.firstOrNull()?.id ?: "")
 
             if (delegateTradeInTracking) {
                 trackTradeIn(tradeInParams.isEligible == 1)
@@ -2056,9 +2061,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (productInfo != null && shopInfo != null) {
             productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
                     isElligible, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
-
-            productDetailTracking.eventEnhanceEcommerceProductDetailV5(productInfo, shopInfo, trackerAttribution, isElligible,
-                    tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
         } else if (shopInfo == null) {
             delegateTradeInTracking = true
         }

@@ -361,7 +361,8 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
         // replace list
-        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))) {
+        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
+                && !TextUtils.isEmpty(bundle.getString("list"))) {
             bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
             bundle.remove("list");
         }
@@ -382,7 +383,6 @@ public class GTMAnalytics extends ContextAnalytics {
 
         }
         logEvent(keyEvent, bundle, context);
-        log(getContext(), keyEvent, bundle);
     }
 
     public void pushGeneralGtmV5(Map<String, Object> params){
@@ -394,7 +394,6 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
 
         logEvent(params.get(KEY_EVENT) + "", bundle, context);
-        log(getContext(), params.get(KEY_EVENT) + "", bundle);
     }
 
     public void pushGeneralGtmV5(String event, String category, String action, String label){
@@ -406,12 +405,35 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_LABEL, label);
 
         logEvent(event, bundle, context);
-        log(getContext(), event, bundle);
+    }
+
+    public void sendScreenV5(String screenName) {
+        sendScreenV5(screenName, new HashMap<>());
+    }
+
+    public void sendScreenV5(String screenName, Map<String, String> additionalParams) {
+        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
+        final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
+
+        Bundle bundle = new Bundle();
+        bundle.putString("screenName", screenName);
+        bundle.putString("appsflyerId", afUniqueId);
+        bundle.putString("userId", sessionHandler.getLoginID());
+        bundle.putString("clientId", getClientIDString());
+
+        for(String key : additionalParams.keySet()) {
+            if (additionalParams.get(key) != null) {
+                bundle.putString(key, additionalParams.get(key));
+            }
+        }
+
+        logEvent("openScreen", bundle, context);
     }
 
     public static void logEvent(String eventName, Bundle bundle,Context context){
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
+            log(context, "openScreen", bundle);
         }catch (Exception ex){
             ex.printStackTrace();
         }
