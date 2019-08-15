@@ -5,4 +5,7 @@
     <string name="success_empty_delete_featured_product_empty">Berhasil menghapus semua produk dari Produk Unggulan</string>
     <string name="undo_text">Undo</string>
     <string name="gmsubscribe_featured_product">Produk Unggulan</string>
+    <string name="ticker_featured_product_title">Produk Unggulan tidak tampil</string>
+    <string name="ticker_featured_product_description">Produk Unggulan hanya untuk Power Merchant aktif. Tingkatkan performa tokomu minimal 65</string>
+    <string name="ticker_featured_product_read_more">Selengkapnya</string>
 </resources>

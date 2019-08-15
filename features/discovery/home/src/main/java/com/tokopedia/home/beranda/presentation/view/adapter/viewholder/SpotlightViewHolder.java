@@ -13,6 +13,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,7 +121,15 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
         public SpotlightItemViewHolder(View itemView, HomeCategoryListener listener) {
             super(itemView);
             context = itemView.getContext();
+
+            /**
+             * Hardcoded spotlight title to use dip unit
+             * prevent spotlight title increase text size
+             * when user font size preference is large
+             */
             title = itemView.findViewById(R.id.spotlightTitle);
+            title.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_16));
+
             tag = itemView.findViewById(R.id.spotlightTag);
             description = itemView.findViewById(R.id.spotlightDesc);
             background = itemView.findViewById(R.id.spotlightBackground);
