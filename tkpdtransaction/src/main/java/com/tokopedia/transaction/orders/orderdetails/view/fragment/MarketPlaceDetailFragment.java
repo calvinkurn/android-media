@@ -457,10 +457,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void showSuccessMessageWithAction(String message) {
         ToasterNormal.make(getView(),
                 message.replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.bom_check_cart), v -> {
-            if (getActivity() != null && getActivity().getApplication() != null) {
-                getActivity().startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
-                        .getCartIntent(getActivity()));
-            }
+                    orderListAnalytics.sendActionClickButtonSeeOnAtcSuccessToasterEvent();
+                    if (getActivity() != null && getActivity().getApplication() != null) {
+                        getActivity().startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
+                                .getCartIntent(getActivity()));
+                    }
         }).show();
     }
 
