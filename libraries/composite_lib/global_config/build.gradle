@@ -10,7 +10,7 @@ kotlin {
 project.ext {
     artifactId = 'global_config'
     groupId = 'com.tokopedia.config'
-    versionName = "5.0"
+    versionName = "1"
     artifactName = "global_config"
 }
 
