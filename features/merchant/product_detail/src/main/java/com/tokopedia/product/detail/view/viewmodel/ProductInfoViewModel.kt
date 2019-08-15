@@ -588,6 +588,49 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
+    fun loadTopAds(productId: String){
+        launch {
+            val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
+                    (loadTopAdsProduct.value as? Loaded)?.data as? Success == null){
+                loadTopAdsProduct.value = Loading
+                doLoadTopAdsProduct1(productId)
+
+            } else null
+
+            topAdsProductDef?.await()?.let {
+                val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data?: return@launch)
+                loadTopAdsProduct.value = Loaded(Success(recommendationWidget))
+            }
+        }
+
+    }
+
+    private fun doLoadTopAdsProduct1(productId: String) = async(Dispatchers.IO) {
+        val topadsParams = generateTopAdsParams1(productId)
+        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
+                RecomendationEntity::class.java, topadsParams)
+        val cacheStrategy = GraphqlCacheStrategy.Builder(if (lazyNeedForceUpdate) CacheType.ALWAYS_CLOUD
+        else CacheType.CACHE_FIRST).build()
+
+        try {
+            Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
+                    .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data ?: emptyList()))
+        } catch (t: Throwable){
+            Loaded(Fail(t))
+        }
+    }
+    private fun generateTopAdsParams1(productId: String): Map<String,Any> {
+        return mapOf(
+                TopAdsDisplay.KEY_USER_ID to (userSessionInterface.userId.toIntOrNull() ?: 0),
+                TopAdsDisplay.KEY_PAGE_NAME to TopAdsDisplay.DEFAULT_PAGE_NAME,
+                TopAdsDisplay.KEY_PAGE_NUMBER to TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                TopAdsDisplay.KEY_XDEVICE to TopAdsDisplay.DEFAULT_DEVICE,
+                TopAdsDisplay.KEY_XSOURCE to TopAdsDisplay.DEFAULT_SRC_PAGE,
+                TopAdsDisplay.KEY_PRODUCT_ID to productId
+        )
+
+    }
+
     private fun doLoadTopAdsProduct(productInfo: ProductInfo) = async(Dispatchers.IO) {
         val topadsParams = generateTopAdsParams(productInfo)
         val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],

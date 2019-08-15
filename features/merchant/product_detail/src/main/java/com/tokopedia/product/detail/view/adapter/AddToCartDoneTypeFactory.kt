@@ -9,8 +9,13 @@ import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCart
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationViewModel
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
-class AddToCartDoneTypeFactory : BaseAdapterTypeFactory() {
+class AddToCartDoneTypeFactory(
+        private val addToCartDoneAddedProductListener: AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
+        val listener : RecommendationProductAdapter.UserActiveListener,
+        private val trackingQueue: TrackingQueue
+) : BaseAdapterTypeFactory() {
     fun type(addToCartDoneRecommendationViewModel: AddToCartDoneRecommendationViewModel): Int {
         return AddToCartDoneRecommendationViewHolder.LAYOUT_RES
     }
@@ -21,8 +26,11 @@ class AddToCartDoneTypeFactory : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            AddToCartDoneRecommendationViewHolder.LAYOUT_RES -> AddToCartDoneRecommendationViewHolder(parent)
-            AddToCartDoneAddedProductViewHolder.LAYOUT_RES -> AddToCartDoneAddedProductViewHolder(parent)
+            AddToCartDoneRecommendationViewHolder.LAYOUT_RES -> AddToCartDoneRecommendationViewHolder(parent,listener,trackingQueue)
+            AddToCartDoneAddedProductViewHolder.LAYOUT_RES -> AddToCartDoneAddedProductViewHolder(
+                    parent,
+                    addToCartDoneAddedProductListener
+            )
             else -> return super.createViewHolder(parent, type)
         }
     }

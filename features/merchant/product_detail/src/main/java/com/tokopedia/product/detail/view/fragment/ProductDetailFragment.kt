@@ -78,6 +78,7 @@ import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductViewModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
@@ -1075,9 +1076,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
 
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
-                        AddToCartDoneBottomSheet().show(
-                                fragmentManager,"TAG"
-                        )
+                        showAddToCartDoneBottomSheet()
                         val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
                         showSnackbarSuccessAtc(successMessage)
                         shouldShowCartAnimation = true
@@ -1126,6 +1125,25 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun showAddToCartDoneBottomSheet() {
+        productInfo?.let {
+            val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
+            val productName = it.basic.name
+            val productImageUrl = it.firstThumbnailPicture
+            val model = AddToCartDoneAddedProductViewModel(
+                    it.basic.id.toString(),
+                    productName,
+                    productImageUrl
+            )
+            val bundleData = Bundle()
+            bundleData.putParcelable("model", model)
+            addToCartDoneBottomSheet.arguments = bundleData
+            addToCartDoneBottomSheet.show(
+                    fragmentManager, "TAG"
+            )
         }
     }
 
