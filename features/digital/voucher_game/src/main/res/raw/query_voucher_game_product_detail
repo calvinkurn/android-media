@@ -1,0 +1,32 @@
+query voucherGameProductDetail($menuID: Int!, $platformID: Int!, $operator: String!){
+  rechargeCatalogVoucherGameInput(menuID: $menuID, platformID: $platformID, operator: $operator) {
+    needEnquiry
+    isShowingProduct
+    enquiryFields {
+      id
+      param_name
+      name
+      validations {
+        id
+      }
+    }
+    product {
+      name
+      text
+      dataCollections {
+        name
+        products {
+          id
+          attributes {
+            price
+            detail
+            info
+            promo {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+}
