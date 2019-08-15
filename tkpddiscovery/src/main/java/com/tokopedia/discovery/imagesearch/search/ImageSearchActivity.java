@@ -64,6 +64,7 @@ public class ImageSearchActivity extends DiscoveryActivity
     private static final String SUCCESS = "success match found";
 
     private String imagePath;
+    private boolean isFromCamera = false;
 
     @Inject
     ImageSearchPresenter searchPresenter;
