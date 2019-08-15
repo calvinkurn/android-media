@@ -63,7 +63,6 @@ class StickyTextView : FrameLayout {
         textContent = view.findViewById(R.id.layout_sticky_content)
         imageViewLeft = view.findViewById(R.id.layout_sticky_image_left)
         imageViewRight = view.findViewById(R.id.layout_sticky_image_right)
-        imageViewRight.setOnClickListener { dismiss() }
     }
 
     private fun initView() {
