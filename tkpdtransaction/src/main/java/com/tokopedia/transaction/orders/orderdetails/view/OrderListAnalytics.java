@@ -118,6 +118,6 @@ public class OrderListAnalytics {
     }
 
     public void sendActionClickButtonSeeOnAtcSuccessToasterEvent() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_DETAIL, eventAction, ""));
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_DETAIL, ACTION_CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER, ""));
     }
 }
