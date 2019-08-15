@@ -80,7 +80,12 @@ public class ImageSearchActivity extends DiscoveryActivity
 
         initImageSearch(savedInstanceState);
 
-        checkPermissionToContinue();
+        if (savedInstanceState == null) {
+            checkPermissionToContinue();
+        }
+        else {
+            handleSelectedImagePath();
+        }
     }
 
     private void initImageSearch(@Nullable Bundle savedInstanceState) {
