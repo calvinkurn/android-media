@@ -1067,8 +1067,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     userInputNotes = data.getStringExtra(ApplinkConst.Transaction.EXTRA_NOTES)
                     userInputQuantity = data.getIntExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, 0)
 
-                    if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
-                        val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
+                    if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
+                        val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
                         showSnackbarSuccessAtc(successMessage)
                         shouldShowCartAnimation = true
                         updateCartNotification()

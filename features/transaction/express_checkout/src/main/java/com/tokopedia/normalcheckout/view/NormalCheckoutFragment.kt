@@ -115,7 +115,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val RESULT_PRODUCT_DATA_CACHE_ID = "product_data_cache"
         const val RESULT_SELECTED_WAREHOUSE = "selected_warehouse"
         const val RESULT_PRODUCT_DATA = "product_data"
-        const val RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message"
 
         const val REQUEST_CODE_LOGIN = 561
         const val REQUEST_CODE_LOGIN_THEN_ATC = 562
@@ -625,7 +624,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
                 putExtra(ApplinkConst.Transaction.EXTRA_NOTES, notes)
                 atcSuccessMessage?.let {
-                    putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
+                    putExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
                 }
             })
             sendBranchAddToCardEvent()

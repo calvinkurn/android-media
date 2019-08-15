@@ -64,6 +64,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import java.lang.IllegalStateException
@@ -105,6 +106,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
     val REQUEST_GO_TO_SETTING_TEMPLATE = 113
     val REQUEST_GO_TO_SETTING_CHAT = 114
+    val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
 
     var seenAttachedProduct = HashSet<Int>()
 
@@ -528,6 +530,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
 
             REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
+
+            REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
+        }
+    }
+
+    private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
+        if (resultCode != RESULT_OK) return
+        if (data == null) return
+        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
+        view?.let {
+            Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
         }
     }
 
@@ -639,7 +652,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         val atcPageIntent = presenter.getAtcPageIntent(context, element)
-        startActivity(atcPageIntent)
+        startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
     private fun onSuccessAddToCart(): (addToCartResult: AddToCartDataModel) -> Unit {
