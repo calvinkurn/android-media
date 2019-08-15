@@ -9,13 +9,16 @@ import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.product.manage.list.data.model.productlist.ProductListResponse;
 import com.tokopedia.product.manage.list.domain.DeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
+import com.tokopedia.product.manage.list.domain.GetProductListUseCase;
 import com.tokopedia.product.manage.list.domain.MultipleDeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.list.domain.model.MultipleDeleteProductModel;
 import com.tokopedia.product.manage.list.view.listener.ProductManageView;
 import com.tokopedia.product.manage.list.view.mapper.GetProductListManageMapperView;
+import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView;
 import com.tokopedia.product.manage.list.view.model.ProductListManageModelView;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
@@ -52,6 +55,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private SetCashbackUseCase setCashbackUseCase;
     private final UserSessionInterface userSession;
     private final PopupManagerAddProductUseCase popupManagerAddProductUseCase;
+    private final GetProductListUseCase getProductListUseCase;
+    private final ProductListMapperView productListMapperView;
     public static final String GQL_POPUP_NAME = "gql_popup";
 
     public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
@@ -65,7 +70,9 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                                       TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
                                       GetFeatureProductListUseCase getFeatureProductListUseCase,
                                       SetCashbackUseCase setCashbackUseCase,
-                                      PopupManagerAddProductUseCase popupManagerAddProductUseCase) {
+                                      PopupManagerAddProductUseCase popupManagerAddProductUseCase,
+                                      GetProductListUseCase getProductListUseCase,
+                                      ProductListMapperView productListMapperView) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.editPriceProductUseCase = editPriceProductUseCase;
@@ -78,6 +85,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         this.getFeatureProductListUseCase = getFeatureProductListUseCase;
         this.setCashbackUseCase = setCashbackUseCase;
         this.popupManagerAddProductUseCase = popupManagerAddProductUseCase;
+        this.getProductListUseCase = getProductListUseCase;
+        this.productListMapperView = productListMapperView;
     }
 
     @Override
@@ -165,21 +174,21 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         String source = isSellerApp ? TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT : TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT;
         topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
                 new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(Void aVoid) {
-                //do nothing
-            }
-        });
+                    @Override
+                    public void onNext(Void aVoid) {
+                        //do nothing
+                    }
+                });
     }
 
     @Override
@@ -256,12 +265,46 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
-    public void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,
+    public void getProductList(int page, String keywordFilter, @CatalogProductOption String catalogOption,
                                @ConditionProductOption String conditionOption, int etalaseId,
                                @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption, String categoryId) {
-        getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(page,
-                keywordFilter, catalogOption, conditionOption, categoryId, etalaseId,
-                pictureOption, sortOption), getSubscriberGetListProduct());
+
+        int catalogOptionInt = Integer.parseInt(catalogOption);
+        int conditionOptionInt = Integer.parseInt(conditionOption);
+        int sortOptionInt = Integer.parseInt(sortOption);
+        int pictureOptionInt = Integer.parseInt(pictureOption);
+        String etalaseIdString = String.valueOf(etalaseId);
+        int categoryIdInt = Integer.parseInt(categoryId);
+
+        getProductListUseCase.execute(GetProductListUseCase.createRequestParams(userSession.getShopId(), page,
+                keywordFilter, catalogOptionInt, conditionOptionInt, etalaseIdString,
+                pictureOptionInt, sortOptionInt, categoryIdInt), getSubscriberGetProductList());
+    }
+
+
+    private Subscriber<ProductListResponse> getSubscriberGetProductList() {
+        return new Subscriber<ProductListResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onLoadSearchError(e);
+                }
+            }
+
+            @Override
+            public void onNext(ProductListResponse productListResponse) {
+                ProductListManageModelView productListManageModelView = productListMapperView.mapIntoViewModel(productListResponse);
+                getView().onSearchLoaded(productListManageModelView.getProductManageViewModels(),
+                        productListManageModelView.getProductManageViewModels().size(),
+                        productListManageModelView.isHasNextPage());
+            }
+
+        };
     }
 
     private Subscriber<ProductListSellerModel> getSubscriberGetListProduct() {
@@ -326,14 +369,14 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
                     @Override
                     public void onError(Throwable throwable) {
-                        if (isViewAttached()){
+                        if (isViewAttached()) {
                             getView().onErrorGetFreeClaim(throwable);
                         }
                     }
 
                     @Override
                     public void onNext(DataDeposit dataDeposit) {
-                        if (isViewAttached()){
+                        if (isViewAttached()) {
                             getView().onSuccessGetFreeClaim(dataDeposit);
                         }
                     }
@@ -344,6 +387,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     public void detachView() {
         super.detachView();
         setCashbackUseCase.unsubscribe();
+        getProductListUseCase.unsubscribe();
         getProductListSellingUseCase.unsubscribe();
         editPriceProductUseCase.unsubscribe();
         deleteProductUseCase.unsubscribe();

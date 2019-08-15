@@ -19,7 +19,7 @@ public interface ProductManagePresenter extends CustomerPresenter<ProductManageV
 
     void getListFeaturedProduct();
 
-    void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,
+    void getProductList(int page, String keywordFilter, @CatalogProductOption String catalogOption,
                         @ConditionProductOption String conditionOption, int etalaseId,
                         @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption,
                         String categoryId);

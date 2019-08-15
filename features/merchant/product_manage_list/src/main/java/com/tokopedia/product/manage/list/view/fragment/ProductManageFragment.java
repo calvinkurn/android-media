@@ -543,10 +543,16 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         if (((ProductManageListAdapter) adapter).getFeaturedProduct() == null) {
             productManagePresenter.getListFeaturedProduct();
         }
-        productManagePresenter.getListProduct(page, searchInputView.getSearchText(),
+//        productManagePresenter.getListProduct(page, searchInputView.getSearchText(),
+//                productManageFilterModel.getCatalogProductOption(), productManageFilterModel.getConditionProductOption(),
+//                productManageFilterModel.getEtalaseProductOption(), productManageFilterModel.getPictureStatusOption(),
+//                sortProductOption, productManageFilterModel.getCategoryId());
+
+        productManagePresenter.getProductList(page, searchInputView.getSearchText(),
                 productManageFilterModel.getCatalogProductOption(), productManageFilterModel.getConditionProductOption(),
                 productManageFilterModel.getEtalaseProductOption(), productManageFilterModel.getPictureStatusOption(),
                 sortProductOption, productManageFilterModel.getCategoryId());
+
         hasNextPage = false;
     }
 
@@ -857,7 +863,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     private void onPromoTopAdsClicked(ProductManageViewModel productManageViewModel) {
         ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
-                productManageViewModel.getItemId(), productManageViewModel.getProductShopId(),
+                productManageViewModel.getItemId(), userSession.getUserId(),
                 GlobalConfig.isSellerApp() ? TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT :
                         TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT);
     }

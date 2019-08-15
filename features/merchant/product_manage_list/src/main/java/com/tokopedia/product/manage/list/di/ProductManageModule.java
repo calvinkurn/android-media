@@ -22,8 +22,6 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
-import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.data.repository.ActionProductManageRepositoryImpl;
 import com.tokopedia.product.manage.list.data.source.ActionProductManageDataSource;
@@ -31,9 +29,11 @@ import com.tokopedia.product.manage.list.data.source.ProductActionApi;
 import com.tokopedia.product.manage.list.domain.ActionProductManageRepository;
 import com.tokopedia.product.manage.list.domain.DeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
+import com.tokopedia.product.manage.list.domain.GetProductListUseCase;
 import com.tokopedia.product.manage.list.domain.MultipleDeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.list.view.mapper.GetProductListManageMapperView;
+import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -59,6 +59,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
+import static com.tokopedia.product.manage.list.constant.GqlRawConstantKt.GQL_PRODUCT_LIST;
 import static com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl.GQL_POPUP_NAME;
 
 /**
@@ -81,10 +82,13 @@ public class ProductManageModule {
                                                                 TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
                                                                 GetFeatureProductListUseCase getFeatureProductListUseCase,
                                                                 SetCashbackUseCase setCashbackUseCase,
-                                                                PopupManagerAddProductUseCase popupManagerAddProductUseCase){
+                                                                PopupManagerAddProductUseCase popupManagerAddProductUseCase,
+                                                                GetProductListUseCase getProductListUseCase,
+                                                                ProductListMapperView productListMapperView){
         return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase,
                 deleteProductUseCase, getProductListManageMapperView, multipleDeleteProductUseCase, userSession,
-                topAdsAddSourceTaggingUseCase, topAdsGetShopDepositGraphQLUseCase, getFeatureProductListUseCase, setCashbackUseCase, popupManagerAddProductUseCase);
+                topAdsAddSourceTaggingUseCase, topAdsGetShopDepositGraphQLUseCase, getFeatureProductListUseCase,
+                setCashbackUseCase, popupManagerAddProductUseCase,getProductListUseCase,productListMapperView);
     }
 
     @Provides
@@ -246,6 +250,16 @@ public class ProductManageModule {
         return GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.gql_popup_manager
+        );
+    }
+
+    @ProductManageScope
+    @Provides
+    @Named(GQL_PRODUCT_LIST)
+    public String provideProductListQuery(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.gql_get_product_list
         );
     }
 }
