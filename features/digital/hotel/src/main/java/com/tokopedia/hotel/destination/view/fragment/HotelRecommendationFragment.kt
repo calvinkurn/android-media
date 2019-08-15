@@ -62,6 +62,9 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
+    private var gpsRetryCounter: Int = 0
+    private val GPS_MAX_RETRY = 5
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -242,7 +245,14 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showDialogEnableGPS()
         } else {
-            onErrorGetLocation()
+            if (gpsRetryCounter < GPS_MAX_RETRY) {
+                gpsRetryCounter++
+                destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+            }
+            else {
+                onErrorGetLocation()
+                gpsRetryCounter = 0
+            }
         }
     }
 

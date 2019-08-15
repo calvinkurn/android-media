@@ -5,15 +5,17 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.partial_product_recom_4.view.*
 
 class PartialRecommendationFourthView private constructor(private val view: View,
-                                                          private val userActiveListener: RecommendationProductAdapter.UserActiveListener)
-    : BaseRecommendationView(view.context) {
+                                                          private val userActiveListener: RecommendationProductAdapter.UserActiveListener,
+                                                          trackingQueue: TrackingQueue)
+    : BaseRecommendationView(view.context, trackingQueue) {
 
     companion object {
-        fun build(_view:View,_userActiveListener: RecommendationProductAdapter.UserActiveListener) =
-                PartialRecommendationFourthView(_view,_userActiveListener)
+        fun build(_view:View,_userActiveListener: RecommendationProductAdapter.UserActiveListener, trackingQueue: TrackingQueue) =
+                PartialRecommendationFourthView(_view,_userActiveListener, trackingQueue)
     }
 
     override fun getListener(): RecommendationProductAdapter.UserActiveListener = userActiveListener

@@ -14,12 +14,14 @@ import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRe
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_4
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.partial_product_recom_1.view.*
 import kotlinx.android.synthetic.main.partial_product_recom_2.view.*
 import kotlinx.android.synthetic.main.partial_product_recom_3.view.*
 import kotlinx.android.synthetic.main.partial_product_recom_4.view.*
 
-abstract class BaseRecommendationView(context: Context) : View(context) {
+abstract class BaseRecommendationView(context: Context,
+                                      private val trackingQueue: TrackingQueue) : View(context) {
 
     fun hideView() {
         getView().gone()
@@ -50,7 +52,7 @@ abstract class BaseRecommendationView(context: Context) : View(context) {
             getView().base_recom_4 -> PDP_4
             else -> ""
         }
-        getRecyclerView().adapter = RecommendationProductAdapter(product, getListener(), pageName)
+        getRecyclerView().adapter = RecommendationProductAdapter(product, getListener(), pageName, trackingQueue)
         getRecyclerView().visible()
     }
 

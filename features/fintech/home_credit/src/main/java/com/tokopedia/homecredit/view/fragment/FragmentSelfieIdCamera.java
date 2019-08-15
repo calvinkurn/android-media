@@ -41,18 +41,19 @@ public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment{
         hideLoading();
         cameraView.close();//always call this method if you do not want awkward issues
         getActivity().getSupportFragmentManager().popBackStack();
-        if(!TextUtils.isEmpty(imagePath) && actionCreator != null){
-            if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()){
-                toBeFlipped = true;
+        if(actionCreator != null) {
+            if (!TextUtils.isEmpty(imagePath)) {
+                if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()) {
+                    toBeFlipped = true;
+                }
+                ArrayList<String> keysList = (ArrayList<String>) actionDataProvider.getData(1, null);
+                HashMap<String, Object> dataMap = new HashMap<>();
+                dataMap.put(keysList.get(0), imagePath);
+                dataMap.put(keysList.get(1), toBeFlipped);
+                actionCreator.actionSuccess(1, dataMap);
+            } else {
+                actionCreator.actionError(1, 101);
             }
-            ArrayList<String> keysList = (ArrayList<String>) actionDataProvider.getData(1, null);
-            HashMap<String , Object> dataMap = new HashMap<>();
-            dataMap.put(keysList.get(0), imagePath);
-            dataMap.put(keysList.get(1), toBeFlipped);
-            actionCreator.actionSuccess(1, dataMap);
-        }
-        else {
-            actionCreator.actionError(1,101);
         }
     }
 

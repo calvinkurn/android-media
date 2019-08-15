@@ -117,7 +117,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
         val b = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
         val c = Canvas(b)
-        v.layout(0, 0, v.width, v.height)
         v.draw(c)
         return b
     }
