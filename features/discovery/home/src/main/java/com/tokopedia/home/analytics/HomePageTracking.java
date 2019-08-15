@@ -114,8 +114,8 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT = "click close on geolocation component";
     public static final String EVENT_ACTION_CLICK_ON_ATUR = "click on atur";
 
-    private static final String EVENT_ACTION_CLICK_ON_STICKY_LOGIN_WIDGET = "click login sticky widget";
-    private static final String EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN = "click close button on login sticky widget";
+    private static final String EVENT_ACTION_CLICK_ON_STICKY_LOGIN_WIDGET = "click on login sticky widget";
+    private static final String EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN = "click on button close login sticky widget";
     private static final String EVENT_VIEW_STICKY_LOGIN_AT_HOME = "view login sticky widget";
 
     public static ContextAnalytics getTracker(Context context) {

@@ -2130,7 +2130,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun updateStickyState() {
         val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
         if (!isCanShowing) {
-            stickyLoginTextView.dismiss()
+            stickyLoginTextView.visibility = View.GONE
             return
         }
 

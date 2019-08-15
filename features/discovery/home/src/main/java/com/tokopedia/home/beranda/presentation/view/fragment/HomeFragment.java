@@ -1546,7 +1546,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void updateStickyState() {
         boolean isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true);
         if (!isCanShowing) {
-            stickyLoginTextView.dismiss();
+            stickyLoginTextView.setVisibility(View.GONE);
             return;
         }
 
