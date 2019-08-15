@@ -680,17 +680,19 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onRecommendationProductClicked(@NotNull String productId) {
         int index = 0, position = 0;
+        RecommendationItem recommendationItemClick = null;
         for (CartRecommendationItemHolderData recommendation : recommendationList) {
             if (String.valueOf(recommendation.getRecommendationItem().getProductId()).equalsIgnoreCase(productId)) {
                 position = index;
+                recommendationItemClick = recommendation.getRecommendationItem();
                 break;
             }
             index++;
         }
 
-        if (FLAG_IS_CART_EMPTY) {
+        if (FLAG_IS_CART_EMPTY && recommendationItemClick != null) {
             sendAnalyticsOnClickProductRecommendationOnEmptyCart(String.valueOf(position),
-                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationList));
+                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, position));
         }
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);

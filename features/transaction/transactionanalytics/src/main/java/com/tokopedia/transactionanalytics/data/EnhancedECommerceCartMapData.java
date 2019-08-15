@@ -43,8 +43,7 @@ public class EnhancedECommerceCartMapData {
     }
 
     public void addClick(Map<String, Object> Click) {
-        listImpressions.add(Click);
-        cart.put(KEY_CLICK, listImpressions);
+        cart.put(KEY_CLICK, Click);
     }
 
     public Map<String, Object> getCartMap() {
