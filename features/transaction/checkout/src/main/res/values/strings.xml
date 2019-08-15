@@ -318,6 +318,6 @@
 
     <string name="label_toko">Toko: </string>
 
-    <string name="ticker_action_link" formatted="false">&lt;a href=\"%1$s\">%2$s&lt;/a></string>
-    <string name="ticker_action_similar_product_link" formatted="false">&lt;a href=\"%1$s\">Lihat produk serupa&lt;/a></string>
+    <string name="ticker_action_link" formatted="false"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
+    <string name="ticker_action_similar_product_link" formatted="false"><![CDATA[<a href="%1$s">Lihat produk serupa</a>]]></string>
 </resources>
