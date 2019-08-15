@@ -4,12 +4,17 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.RequestParams
+import java.util.*
 
-class AbTestPlatform(val context: Context): RemoteConfig {
+class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteConfig {
 
-    val SHARED_PREFERENCE_NAME = "tkpd_ab_test_platform"
-    private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
-    lateinit var editor: SharedPreferences.Editor
+//    val SHARED_PREFERENCE_NAME = "tkpd_ab_test_platform"
+//    private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
+    val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test";
+    val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
+    private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
+    var editor = sharedPreferences.edit()
+//    lateinit var editor: SharedPreferences.Editor
 
     override fun getBoolean(key: String?): Boolean {
         return getBoolean(key, false)
@@ -72,6 +77,15 @@ class AbTestPlatform(val context: Context): RemoteConfig {
 //        val graphqlUseCase = GraphqlUseCase()
 //        graphqlUseCase.addRequest(graphqlRequest)
 //        graphqlUseCase.execute(createRequestParams(0, 1), subscriber)
+
+        // =================== ToDo =================== //
+        // 1. Request gql
+        // 2. Save the result to sharedPref
+        // 3. 
+
+        val currentTimestamp = Date().time
+        editor.putLong(KEY_SP_TIMESTAMP_AB_TEST, currentTimestamp)
+        editor.apply()
     }
 
     //    fun execute(requestParams: RequestParams, subscriber: Subscriber<GraphqlResponse>) {

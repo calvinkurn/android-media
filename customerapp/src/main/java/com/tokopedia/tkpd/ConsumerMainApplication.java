@@ -50,6 +50,9 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -68,8 +71,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -86,6 +87,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
+
+    protected RemoteConfig remoteConfig;
 
     CharacterPerMinuteActivityLifecycleCallbacks callback;
 
@@ -211,19 +214,23 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         SharedPreferences sharedPreferences = getSharedPreferences(CustomerAppConstants.SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE);
         Long timestamp_ab_test = sharedPreferences.getLong(CustomerAppConstants.KEY_SP_TIMESTAMP_AB_TEST, 0);
-        // long target_timestamp = 1565858512000L;
+        RemoteConfigInstance.initAbTestPlatform(this);
 
         if (timestamp_ab_test == 0) {
             // Fetch gql
+            RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
         } else {
             long diff = new Date().getTime() - timestamp_ab_test;        // Validate time differences
             long diffHours = diff / (60 * 60 * 1000) % 24;
 
             if (diffHours >= 1) {
                 // Jika ya, fetch gql
+                RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
             }
         }
     }
+
+    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
 
     private void setVersionCode() {
         try {
