@@ -1,0 +1,16 @@
+// time config days, hours
+
+Day = 0
+Hour = 0
+Minute = 30
+
+// version number Major.MinorPatch
+// Major 1
+// Minor 0,1
+// Patch 0,01
+
+Version = 
+//
+
+// conditions 
+// 

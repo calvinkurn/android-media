@@ -1,0 +1,25 @@
+task readGradlefile(type: ReadGradlefileTasks){
+    subprojects = project.subprojects
+    doLast{
+        lastRelease = scanReleaseDate.listReleaseDate[scanReleaseDate.listReleaseDate.size()-1]
+        listVersion = versionDependency.listVersion
+        listTree = versionDependency.listTree
+        //readGradleFile()
+        topList()
+        moduleVersionUpdate()
+    }
+}
+task scanSubproject(type: ScanSubprojectTasks){
+}
+task scanReleaseDate(type: ScanReleaseDateTasks,dependsOn: scanSubproject){
+    doLast{
+        println "scanInput Proses"
+    }
+}
+task versionDependency(type: VersionTasks, dependsOn: scanReleaseDate) {
+    listReleaseDate = scanReleaseDate.listReleaseDate
+    finalizedBy readGradlefile
+    rootProjectTask = rootProject
+    doLast {
+    }
+}
