@@ -10,4 +10,5 @@ object ApplinkConsInternalDigital {
 
     const val CART_DIGITAL = "${INTERNAL_DIGITAL}/cart"
     const val TELCO_DIGITAL = "${INTERNAL_DIGITAL}/telco"
+    const val VOUCHER_GAME = "${INTERNAL_DIGITAL}/vouchergame"
 }
