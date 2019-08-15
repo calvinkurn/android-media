@@ -60,6 +60,33 @@ class SearchShopViewModelTest {
         `then assert search shop state is error, but still contains data from search shop`()
     }
 
+    @Test
+    fun `test search shop twice`() {
+        `given search shop API call will return different values between first and second call`()
+
+        `when execute search shop twice`()
+
+        `then assert search shop state is success but only have data from the first search shop API call`()
+    }
+    
+    @Test
+    fun `test search more shop but without next page after search shop`() {
+        `given search shop API call will return data with has next page is false`()
+
+        `when execute search shop, then search more shop`()
+
+        `then assert search shop state is success, but only have search shop data`()
+    }
+
+    @Test
+    fun `test search more shop but without next page after search more shop`() {
+        `given search more shop API will return data with has next page is false`()
+
+        `when execute search shop, search more shop, and then search more shop again`()
+
+        `then assert search shop state is success, without data from last search more shop API call`()
+    }
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -323,8 +350,7 @@ class SearchShopViewModelTest {
         }
     }
 
-    @Test
-    fun `searchShop() should not do anything if searchShopLiveData already has value`() {
+    private fun `given search shop API call will return different values between first and second call`() {
         whenever(shopHeaderViewModelMapper.convert(searchShopModel))
                 .thenReturn(shopHeaderViewModel)
                 .thenReturn(ShopHeaderViewModel())
@@ -333,7 +359,7 @@ class SearchShopViewModelTest {
                 .thenReturn(shopViewModel)
                 .thenReturn(ShopViewModel())
 
-        val searchShopViewModel = SearchShopViewModel(
+        searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
@@ -343,10 +369,14 @@ class SearchShopViewModelTest {
                 userSession,
                 localCacheHandler
         )
+    }
 
+    private fun `when execute search shop twice`() {
         searchShopViewModel.searchShop()
         searchShopViewModel.searchShop()
+    }
 
+    private fun `then assert search shop state is success but only have data from the first search shop API call`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchShopDataOnlyOnce(searchShopState)
     }
@@ -366,13 +396,12 @@ class SearchShopViewModelTest {
         }
     }
 
-    @Test
-    fun `searchMoreShop() should not do anything if hasNextPage is false after searchShop()`() {
+    private fun `given search shop API call will return data with has next page is false`() {
         whenever(shopHeaderViewModelMapper.convert(searchShopModelWithoutNextPage)).thenReturn(shopHeaderViewModel)
         whenever(shopViewModelMapper.convert(searchShopModelWithoutNextPage)).thenReturn(shopViewModel)
         whenever(shopViewModelMapper.convert(searchMoreShopModel)).thenReturn(moreShopViewModel)
 
-        val searchShopViewModel = SearchShopViewModel(
+        searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
                 TestSearchUseCase(searchShopModelWithoutNextPage),
@@ -382,10 +411,9 @@ class SearchShopViewModelTest {
                 userSession,
                 localCacheHandler
         )
+    }
 
-        searchShopViewModel.searchShop()
-        searchShopViewModel.searchMoreShop()
-
+    private fun `then assert search shop state is success, but only have search shop data`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchShopWithoutNextPage(searchShopState)
     }
@@ -405,15 +433,14 @@ class SearchShopViewModelTest {
         }
     }
 
-    @Test
-    fun `searchMoreShop() should not do anything if hasNextPage is false after searchMoreShop()`() {
+    private fun `given search more shop API will return data with has next page is false`() {
         whenever(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
         whenever(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
         whenever(shopViewModelMapper.convert(searchMoreShopModelWithoutNextPage))
                 .thenReturn(moreShopViewModel)
                 .thenReturn(ShopViewModel(shopItemList = moreShopItemViewModelList.map { it.copy() }.toList()))
 
-        val searchShopViewModel = SearchShopViewModel(
+        searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
@@ -423,11 +450,15 @@ class SearchShopViewModelTest {
                 userSession,
                 localCacheHandler
         )
+    }
 
+    private fun `when execute search shop, search more shop, and then search more shop again`() {
         searchShopViewModel.searchShop()
         searchShopViewModel.searchMoreShop()
         searchShopViewModel.searchMoreShop()
+    }
 
+    private fun `then assert search shop state is success, without data from last search more shop API call`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchMoreShopWithoutNextPage(searchShopState)
     }
