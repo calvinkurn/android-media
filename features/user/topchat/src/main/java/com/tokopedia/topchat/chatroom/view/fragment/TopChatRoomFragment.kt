@@ -662,6 +662,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
             ToasterNormal.make(view,
                     it.data.message[0].replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.chat_check_cart)) {
+                analytics.eventClickSeeButtonOnAtcSuccessToaster()
                 activity?.startActivity((activity!!.application as TopChatRouter)
                         .getCartIntent(activity))
             }.show()
