@@ -24,6 +24,7 @@ import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,6 +44,8 @@ public class PartialRegisterInputView extends BaseCustomView {
     TkpdHintTextInputLayout wrapperPassword;
     TextView btnForgotPassword;
     TextView btnChange;
+
+    RegisterAnalytics registerAnalytics = new RegisterAnalytics();
 
     private static Boolean isButtonValidatorActived = false;
 
@@ -93,6 +96,9 @@ public class PartialRegisterInputView extends BaseCustomView {
         }
         Drawable background = ContextCompat.getDrawable(getContext(), R.drawable.bg_rounded_corner_autocomplete_partial_input);
         etInputEmailPhone.setDropDownBackgroundDrawable(background);
+        etInputEmailPhone.setOnItemClickListener((parent, view, position, id) -> {
+            registerAnalytics.trackClickPhoneNumberSuggestion();
+        });
         etInputEmailPhone.addTextChangedListener(watcher(wrapperEmailPhone));
         etInputEmailPhone.setOnEditorActionListener((v, actionId, event) -> {
             boolean handled = false;
@@ -203,8 +209,10 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void setAdapterInputEmailPhone(ArrayAdapter<String> adapter){
-        if(adapter.getItem(0) != null)
+        if(adapter.getItem(0) != null){
             etInputEmailPhone.setText(adapter.getItem(0));
+            etInputEmailPhone.setSelection(etInputEmailPhone.getText().length());
+        }
         etInputEmailPhone.setAdapter(adapter);
         etInputEmailPhone.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus)
