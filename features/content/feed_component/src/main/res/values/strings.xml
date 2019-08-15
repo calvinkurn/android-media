@@ -26,7 +26,7 @@
     <string name="feed_post_detail_empty_subtitle">Ada sedikit kendala nih. Coba beberapa
         saat lagi ya.</string>
     <string name="feed_post_detail_empty_button">Kembali</string>
-
+    <string name="feed_other_related_post">Post lainnya</string>
 
     <string name="string_posttag_buy">Beli</string>
 
@@ -42,6 +42,5 @@
     <string name="menu_copy">Salin</string>
     <string name="msg_copy">Teks berhasil disalin.</string>
     <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
-
 
 </resources>
