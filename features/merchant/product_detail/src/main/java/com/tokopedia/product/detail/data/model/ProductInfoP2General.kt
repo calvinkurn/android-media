@@ -1,14 +1,14 @@
 package com.tokopedia.product.detail.data.model
 
+import com.tokopedia.affiliatecommon.data.pojo.trackaffiliate.TrackAffiliateResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.common.data.model.product.ProductOther
 import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.common.data.model.product.WishlistCount
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.installment.InstallmentBank
-import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
+import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -26,5 +26,6 @@ data class ProductInfoP2General (
         var latestTalk: Talk = Talk(),
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
         var variantResp: ProductVariant? = null,
-        var shopFeature: ShopFeatureData = ShopFeatureData()
+        var shopFeature: ShopFeatureData = ShopFeatureData(),
+        var trackAffiliate: TrackAffiliateResponse? = null
 )

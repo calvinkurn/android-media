@@ -7,6 +7,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
+import com.tokopedia.affiliatecommon.data.pojo.trackaffiliate.TrackAffiliateResponse
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -14,6 +15,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -22,7 +24,10 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRO
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_ID
-import com.tokopedia.product.detail.common.data.model.product.*
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.product.Rating
+import com.tokopedia.product.detail.common.data.model.product.WishlistCount
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
@@ -117,6 +122,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price,
                     productInfoP1.productInfo.basic.condition, productInfoP1.productInfo.basic.name,
                     productInfoP1.productInfo.category.id,
+                    "", "",
                     forceRefresh)
 
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive()){
@@ -189,10 +195,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2GeneralAsync(shopId: Int, productId: Int, productPrice: Float,
-                                         condition: String, productTitle: String, categoryId: String,
-                                         forceRefresh: Boolean): Deferred<ProductInfoP2General>{
-        return async (Dispatchers.IO) {
+    private suspend fun getProductInfoP2GeneralAsync(
+            shopId: Int, productId: Int, productPrice: Float,
+            condition: String, productTitle: String, categoryId: String,
+            affiliateUniqueString: String?, trackerId: String?,
+            forceRefresh: Boolean): Deferred<ProductInfoP2General> {
+        return async(Dispatchers.IO) {
             val productInfoP2 = ProductInfoP2General()
 
             val paramsVariant = mapOf(PARAM_PRODUCT_ID to productId.toString())
@@ -286,6 +294,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
                     helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest, shopFeatureRequest)
 
+            if (affiliateUniqueString.hasValue() && trackerId.hasValue()){
+                val affiliateTrackerParams = mapOf("trackerID" to trackerId,
+                        "uniqueString" to affiliateUniqueString)
+                val affiliateTrackerequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_FEATURE],
+                        TrackAffiliateResponse::class.java,
+                        affiliateTrackerParams)
+                requests.add(affiliateTrackerequest)
+            }
 
             val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
             try {
