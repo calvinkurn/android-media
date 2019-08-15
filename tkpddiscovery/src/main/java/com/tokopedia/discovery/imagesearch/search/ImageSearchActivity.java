@@ -7,14 +7,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
@@ -360,8 +358,7 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     public void onImagePickedSuccess(String imagePath) {
         setImagePath(imagePath);
-        tkpdProgressDialog = new TkpdProgressDialog(this, 1);
-        tkpdProgressDialog.showDialog();
+        showLoadingView(true);
         getPresenter().requestImageSearch(imagePath);
     }
 
@@ -371,9 +368,7 @@ public class ImageSearchActivity extends DiscoveryActivity
 
         showImageSearchResult(productViewModel);
 
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
+        showLoadingView(false);
     }
 
     private void trackEventOnSuccessImageSearch(ProductViewModel productViewModel) {
@@ -434,6 +429,8 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     private void loadSection(ProductViewModel productViewModel) {
         addFragment(R.id.container, ImageSearchProductListFragment.newInstance(productViewModel));
+
+        showContainer(true);
     }
 
     private void addFragment(int containerViewId, ImageSearchProductListFragment fragment) {
@@ -446,9 +443,7 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     @Override
     public void onHandleInvalidImageSearchResponse() {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
+        showLoadingView(false);
 
         if (isFromCamera) {
             sendCameraImageSearchResultGTM(NO_RESPONSE);
@@ -462,9 +457,7 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     @Override
     public void showErrorNetwork(String message) {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
+        showLoadingView(false);
 
         if (isFromCamera) {
             sendCameraImageSearchResultGTM(NO_RESPONSE);
@@ -485,9 +478,7 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     @Override
     public void showTimeoutErrorNetwork(String message) {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
+        showLoadingView(false);
 
         if (TextUtils.isEmpty(getImagePath())) {
             NetworkErrorHelper.showSnackbar(this, message);
@@ -502,10 +493,7 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     @Override
     public void showImageNotSupportedError() {
-        super.showImageNotSupportedError();
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
+        showLoadingView(false);
 
         Toast.makeText(this, getResources().getString(R.string.image_not_supported), Toast.LENGTH_LONG).show();
         finish();
