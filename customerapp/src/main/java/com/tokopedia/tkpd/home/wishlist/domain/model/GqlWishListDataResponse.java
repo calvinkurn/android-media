@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ public class GqlWishListDataResponse {
     @Expose
     private TopAdsModel topAdsModel;
 
-    private String title;
+    private RecommendationWidget recommendationWidget;
 
     public TopAdsModel getTopAdsModel() {
         return topAdsModel;
@@ -29,12 +31,12 @@ public class GqlWishListDataResponse {
         this.topAdsModel = topAdsModel;
     }
 
-    public String getTitle() {
-        return title;
+    public RecommendationWidget getRecommendationWidget() {
+        return recommendationWidget;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setRecommendationWidget(RecommendationWidget recommendationWidget) {
+        this.recommendationWidget = recommendationWidget;
     }
 
     public GqlWishList getGqlWishList() {

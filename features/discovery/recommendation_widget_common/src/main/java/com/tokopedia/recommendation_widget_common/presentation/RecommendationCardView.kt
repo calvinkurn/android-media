@@ -5,6 +5,7 @@ package com.tokopedia.recommendation_widget_common.presentation
  */
 
 import android.content.Context
+import android.support.v7.widget.CardView
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -20,7 +21,7 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
-class RecommendationCardView : ProductCardView {
+open class RecommendationCardView : ProductCardView {
 
     constructor(context: Context) : super(context) {}
 
@@ -35,11 +36,11 @@ class RecommendationCardView : ProductCardView {
         setTopAdsVisible(item.isTopAds)
         setSlashedPrice(item.slashedPrice)
         setDiscount(item.discountPercentage)
-        setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setWishlistButtonVisible(false)
         setRatingReviewCount(item.rating, item.countReview)
         setBadges(item.badgesUrl)
         setLocation(item.location)
+        setButtonWishlistImage(item.isWishlist)
         imageView.addOnImpressionListener(item,
                 object: ViewHintListener {
                     override fun onViewHint() {
@@ -86,6 +87,23 @@ class RecommendationCardView : ProductCardView {
         }
     }
 
+    fun setWishlistListener(recommendationItem: RecommendationItem, listener: WishlistListener){
+        wishlistButton.setOnClickListener {
+            listener.onWishlistClick(recommendationItem, !it.isActivated) { isWishlist ->
+                setButtonWishlistImage(isWishlist)
+            }
+        }
+    }
+
+    fun setButtonWishlistImage(isWishlisted: Boolean) {
+        wishlistButton.isActivated = isWishlisted
+        if (isWishlisted) {
+            wishlistButton?.setImageResource(com.tokopedia.productcard.R.drawable.product_card_ic_wishlist_red)
+        } else {
+            wishlistButton?.setImageResource(com.tokopedia.productcard.R.drawable.product_card_ic_wishlist)
+        }
+    }
+
     private fun setRatingVisible(){
         ratingView.visibility = View.VISIBLE
         reviewCountView.visibility = View.VISIBLE
@@ -94,10 +112,19 @@ class RecommendationCardView : ProductCardView {
         }
     }
 
+    fun setCardElevation(elevation: Float){
+        val cardView: CardView = this.findViewById<CardView>(R.id.card_view)
+        cardView.cardElevation = elevation
+    }
+
     interface TrackingListener {
         fun onImpressionTopAds(item: RecommendationItem)
         fun onImpressionOrganic(item: RecommendationItem)
         fun onClickTopAds(item: RecommendationItem)
         fun onClickOrganic(item: RecommendationItem)
+    }
+
+    interface WishlistListener{
+        fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: ((Boolean) -> Unit))
     }
 }

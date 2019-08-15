@@ -6,6 +6,7 @@
     app:cardElevation="@dimen/dp_1"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <android.support.constraint.ConstraintLayout
@@ -35,6 +36,7 @@
             android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:maxLines="2"
+            android:lines="2"
             android:textColor="@color/charcoal_grey_88"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -103,6 +103,8 @@ public interface WishListView {
 
     void onSuccessDeleteWishlist(String searchTerm, int position);
 
+    void onSuccessAddOrRemoveWishlist(String message);
+
     void displayErrorNetwork(Boolean isAction);
 
     void showAddToCartMessage(String message);
