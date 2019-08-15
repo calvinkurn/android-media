@@ -168,4 +168,8 @@ class PartialButtonActionView private constructor(private val view: View,
     fun setBackground(resource: Int) {
         view.base_btn_action.setBackgroundResource(resource)
     }
+
+    fun setBackground(drawable: Drawable) {
+        view.base_btn_action.background = drawable
+    }
 }

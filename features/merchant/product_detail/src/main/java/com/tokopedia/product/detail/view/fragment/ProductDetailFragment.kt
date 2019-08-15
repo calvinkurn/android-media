@@ -616,6 +616,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         stickyLoginTextView.setOnDismissListener(View.OnClickListener {
             stickyLoginTextView.dismiss()
             productDetailTracking.eventClickOnStickyLogin(false)
+            ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
         })
 
         updateStickyState()
@@ -2135,12 +2136,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         val userSession = UserSession(activity)
         if (userSession.isLoggedIn) {
-            actionButtonView.setBackground(R.drawable.bg_shadow_top)
             stickyLoginTextView.dismiss()
         } else {
-            actionButtonView.setBackground(R.color.white)
             stickyLoginTextView.show()
             productDetailTracking.eventViewLoginStickyWidget()
+        }
+
+        if (stickyLoginTextView.isShowing()) {
+            actionButtonView.setBackground(R.color.white)
+        } else {
+            ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
         }
     }
 }
