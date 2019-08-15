@@ -78,23 +78,21 @@ public class ImageSearchActivity extends DiscoveryActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initImageSearch(savedInstanceState);
+        initImageSearch();
 
         if (savedInstanceState == null) {
             checkPermissionToContinue();
         }
         else {
-            handleSelectedImagePath();
+            restoreStateOnCreate(savedInstanceState);
         }
     }
 
-    private void initImageSearch(@Nullable Bundle savedInstanceState) {
+    private void initImageSearch() {
         initInjector();
         setPresenter(searchPresenter);
         searchPresenter.attachView(this);
         searchPresenter.setDiscoveryView(this);
-
-        restoreStateOnCreate(savedInstanceState);
     }
 
     private void initInjector() {
@@ -105,12 +103,6 @@ public class ImageSearchActivity extends DiscoveryActivity
         searchComponent.inject(this);
     }
 
-    private void restoreStateOnCreate(@Nullable Bundle savedInstanceState) {
-        if(savedInstanceState != null) {
-            imagePath = savedInstanceState.getString(KEY_IMAGE_PATH, "");
-        }
-    }
-
     private void checkPermissionToContinue() {
         String[] imageSearchPermissions = {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -118,6 +110,14 @@ public class ImageSearchActivity extends DiscoveryActivity
         };
 
         permissionCheckerHelper.checkPermissions(this, imageSearchPermissions, this, "");
+    }
+
+    private void restoreStateOnCreate(@NonNull Bundle savedInstanceState) {
+        String imagePath = savedInstanceState.getString(KEY_IMAGE_PATH, "");
+
+        if (!TextUtils.isEmpty(imagePath)) {
+            onImagePickedSuccess(imagePath);
+        }
     }
 
     @Override
@@ -140,24 +140,11 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     @Override
     public void onPermissionGranted() {
-        boolean isImageAlreadyPicked = handleSelectedImagePath();
-
-        if (!isImageAlreadyPicked) {
-            isImageAlreadyPicked = handleImageUri(getIntent());
-        }
+        boolean isImageAlreadyPicked = handleImageUri(getIntent());
 
         if (!isImageAlreadyPicked) {
             openImagePickerActivity();
         }
-    }
-
-    private boolean handleSelectedImagePath() {
-        if (!TextUtils.isEmpty(imagePath)) {
-            onImagePickedSuccess(imagePath);
-            return true;
-        }
-
-        return false;
     }
 
     private boolean handleImageUri(Intent intent) {
