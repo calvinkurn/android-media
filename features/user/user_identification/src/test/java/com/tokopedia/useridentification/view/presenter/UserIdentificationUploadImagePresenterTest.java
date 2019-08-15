@@ -56,22 +56,14 @@ public class UserIdentificationUploadImagePresenterTest {
 
     @Test public void testUploadImageUseCase() {
         ImageUploadModel imageUploadModel = imageUploadModelMock();
-
         Observable<ImageUploadDomainModel<AttachmentImageModel>> imageUploadModelObservable = Observable.just(new ImageUploadDomainModel<>(AttachmentImageModel.class));
-
-        //given
         when(userSession.getUserId()).thenReturn("1");
         RequestParams params = presenter.createParam(imageUploadModel.getFilePath());
-
-        //when
         when(uploadImageUseCase.createObservable(params)).thenReturn(imageUploadModelObservable);
-
-        //act
         Observable<ImageUploadModel> uploadImageUseCaseObservable = presenter.uploadImageUseCase(imageUploadModel);
-
-        //verify
         uploadImageUseCaseObservable.subscribe(genericResponseSubscriber);
-        genericResponseSubscriber.assertNoValues();
+        genericResponseSubscriber.assertCompleted();
+        genericResponseSubscriber.assertNoErrors();
     }
 
     private ImageUploadModel imageUploadModelMock() {
