@@ -1,0 +1,16 @@
+query voucherGameProductList($menuID: Int!, $platformID: Int!){
+  rechargeCatalogOperatorSelect(menuID: $menuID, platformID: $platformID) {
+    componentID
+    name
+    paramName
+    text
+    operators {
+      id
+      attributes {
+        name
+        image
+        image_url
+      }
+    }
+  }
+}
