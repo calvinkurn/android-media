@@ -20,18 +20,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.component.UnifyButton
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
-import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.KolComponent
 import com.tokopedia.kol.common.util.TimeConverter
@@ -44,6 +40,7 @@ import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_media_preview.*
@@ -51,6 +48,9 @@ import javax.inject.Inject
 
 class MediaPreviewFragment: BaseDaggerFragment() {
     var selectedIndex = 0
+
+    var buttonTagAction: UnifyButton? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var mediaPreviewViewModel: FeedMediaPreviewViewModel
@@ -112,6 +112,9 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        buttonTagAction = view.findViewById(R.id.button_tag_action)
+
         action_back.setOnClickListener { activity?.onBackPressed() }
         mediaPreviewViewModel.getPostDetail()
     }
@@ -194,15 +197,15 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                 tag_title.text = getString(R.string.kol_template_start_price,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true))
 
-                button_tag_action.text = getString(R.string.kol_see_product)
-                button_tag_action.buttonType = UnifyButton.Type.MAIN
+                buttonTagAction?.text = getString(R.string.kol_see_product)
+                buttonTagAction?.buttonType = UnifyButton.Type.MAIN
                 tagsAdapter.updateTags(tags.items)
-                button_tag_action.setOnClickListener {
+                buttonTagAction?.setOnClickListener {
                     tagsBottomSheet?.show()
                 }
 
                 action_favorite.gone()
-                button_tag_action.visible()
+                buttonTagAction?.visible()
             }
             tags.totalItems == 1 -> {
                 val tagItem = tags.items[0]
@@ -215,20 +218,20 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                 val shop = tagItem.shop.firstOrNull()
                 val ctaBtn = tagItem.buttonCTA.firstOrNull()
                 if (shop == null || mediaPreviewViewModel.isMyShop(shop.shopId)){
-                    button_tag_action.text = getString(R.string.kol_see_product)
+                    buttonTagAction?.text = getString(R.string.kol_see_product)
                     action_favorite.gone()
-                    button_tag_action.buttonType = UnifyButton.Type.MAIN
-                    button_tag_action.setOnClickListener { onGoToLink(tagItem.applink) }
+                    buttonTagAction?.buttonType = UnifyButton.Type.MAIN
+                    buttonTagAction?.setOnClickListener { onGoToLink(tagItem.applink) }
                 } else {
-                    button_tag_action.buttonType = UnifyButton.Type.TRANSACTION
+                    buttonTagAction?.buttonType = UnifyButton.Type.TRANSACTION
                     if (ctaBtn == null || ctaBtn.text.isBlank()){
-                        button_tag_action.isEnabled = false
-                        button_tag_action.text = getString(R.string.empty_product)
+                        buttonTagAction?.isEnabled = false
+                        buttonTagAction?.text = getString(R.string.empty_product)
                     } else {
-                        button_tag_action.isEnabled = true
-                        button_tag_action.text = getString(R.string.string_posttag_buy)
+                        buttonTagAction?.isEnabled = true
+                        buttonTagAction?.text = getString(R.string.string_posttag_buy)
                     }
-                    button_tag_action.setOnClickListener {
+                    buttonTagAction?.setOnClickListener {
                         checkAddToCart(tagItem)
                     }
                     action_favorite.visible()
@@ -245,7 +248,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
                 tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(R.dimen.dp_8))
                 tag_picture.visible()
-                button_tag_action.visible()
+                buttonTagAction?.visible()
             }
             else -> overlay_tags.gone()
         }

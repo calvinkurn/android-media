@@ -380,3 +380,6 @@
 
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
+
+
+-dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
