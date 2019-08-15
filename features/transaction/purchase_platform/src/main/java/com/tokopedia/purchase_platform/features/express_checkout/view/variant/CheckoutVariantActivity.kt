@@ -5,9 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.express_checkout.router.ExpressCheckoutInternalRouter.Companion.EXTRA_ATC_REQUEST
-import com.tokopedia.purchase_platform.features.express_checkout.router.ExpressCheckoutInternalRouter.Companion.TRACKER_ATTRIBUTION
-import com.tokopedia.purchase_platform.features.express_checkout.router.ExpressCheckoutInternalRouter.Companion.TRACKER_LIST_NAME
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.constant.Constant.*
 
