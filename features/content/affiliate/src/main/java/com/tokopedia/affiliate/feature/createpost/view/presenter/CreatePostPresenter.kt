@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate.feature.createpost.view.presenter
 
-import android.util.Log
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase
@@ -9,9 +8,6 @@ import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContra
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
-import com.tokopedia.videouploader.domain.model.VideoUploadDomainModel
-import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
 import rx.Subscriber
 import javax.inject.Inject
 
