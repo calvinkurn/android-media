@@ -2,8 +2,10 @@ package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder
 
 import android.support.annotation.LayoutRes
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetailHeaderViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -22,6 +24,8 @@ class CommissionDetailHeaderViewHolder(v: View) : AbstractViewHolder<CommissionD
     private val clickNumber: Typography = v.findViewById(R.id.clickNumber)
     private val buyNumber: Typography = v.findViewById(R.id.buyNumber)
     private val commissionTotal: Typography = v.findViewById(R.id.commissionTotal)
+    private val statusTv: Typography = v.findViewById(R.id.statusTv)
+    private val statusLayout: FrameLayout = v.findViewById(R.id.statusLayout)
 
     companion object {
         @JvmField
@@ -29,14 +33,31 @@ class CommissionDetailHeaderViewHolder(v: View) : AbstractViewHolder<CommissionD
         val LAYOUT = R.layout.item_af_commission_header
     }
 
-    override fun bind(element: CommissionDetailHeaderViewModel?) {
-        productImage.loadImage("https://avatars2.githubusercontent.com/u/11229830?s=88&v=4")
-        productName.text = "The Unbranded Brand - UB 16oz SL bla bla and bla and bla vbla bla and bla and bla bla bla and bla and bla"
-        productPrice.text = "The Unbranded Brand - UB 16oz SL bla bla and bla and bla vbla bla and bla and bla bla bla and bla and bla "
-        productShop.text = "Dijual oleh Denim House"
-        commission.text = "Rp10.000"
-        clickNumber.text = "123"
-        buyNumber.text = "696"
-        commissionTotal.text = "Rp100.000.100.000"
+    override fun bind(element: CommissionDetailHeaderViewModel) {
+        productImage.loadImage(element.productImg)
+        productName.text = element.productName
+        productPrice.text = element.priceFmt
+        productShop.text = element.shopName
+        commission.text = element.commissionFmt
+        clickNumber.text = element.totalClick.toString()
+        buyNumber.text = element.totalSold.toString()
+        commissionTotal.text = element.totalCOmmissionFmt
+        statusTv.setTextColor(MethodChecker.getColor(
+                statusTv.context,
+                if (element.isActive)
+                    R.color.color_ongoing_text
+                else
+                    R.color.font_black_secondary_54))
+        statusTv.setText(statusTv.getContext().getString(
+                if (element.isActive)
+                    R.string.text_af_ongoing
+                else
+                    R.string.text_af_finished))
+        statusLayout.setBackground(MethodChecker.getDrawable(
+                statusLayout.context,
+                if (element.isActive)
+                    R.drawable.bg_af_ongoing
+                else
+                    R.drawable.bg_af_finished))
     }
 }

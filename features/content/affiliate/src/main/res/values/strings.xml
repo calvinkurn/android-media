@@ -27,6 +27,8 @@
     <string name="af_see_invoice">Lihat Invoice</string>
     <string name="af_text_tokopedia_service_fee">Service fee Tokopedia</string>
     <string name="af_commission_received">Komisi Masuk</string>
+    <string name="af_empty_commission">Komisi akan masuk saat temanmu sudah menerima barangnya</string>
+
 
     <!--EXPLORE-->
     <string name="text_search_hint">Cari Rekomendasimu</string>

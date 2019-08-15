@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder
 
 import android.support.annotation.LayoutRes
 import android.view.View
+import android.view.animation.AnimationUtils
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetailItemViewModel
@@ -34,11 +35,11 @@ class CommissionDetailItemViewHolder(v: View) : AbstractViewHolder<CommissionDet
         val LAYOUT = R.layout.item_af_commission
     }
 
-    override fun bind(element: CommissionDetailItemViewModel?) {
-        datetime.text = "21 Agustus 2018 pukul 22.08"
-        incomeValue.text = "Rp 5.000"
-        feeValue.text = "- Rp 2.000"
-        totalCommission.text = "Rp 3.000"
+    override fun bind(element: CommissionDetailItemViewModel) {
+        datetime.text = element.txTimeFmt
+        incomeValue.text = element.affCommissionFmt
+        feeValue.text = element.tkpdCommissionFmt
+        totalCommission.text = element.netCommissionFmt
 
         collapseBtn.setOnClickListener {
             if (isDetailVisible()) {
@@ -49,17 +50,18 @@ class CommissionDetailItemViewHolder(v: View) : AbstractViewHolder<CommissionDet
         }
 
         incomeInvoice.setOnClickListener {
-            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}?url=www.tokopedia.com")
+            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}?url=" + element.affInvoiceUrl)
         }
 
         feeInvoice.setOnClickListener {
-            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}?url=www.bukalapak.com")
+            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}?url=w"+ element.tkpdInvoiceUrl)
         }
     }
 
     private fun isDetailVisible() = incomeLayout.isVisible
 
     private fun showDetail() {
+        collapseBtn.setAnimation(AnimationUtils.loadAnimation(itemView.context, R.anim.aff_rotate_backward))
         incomeLayout.visible()
         feeLayout.visible()
         incomeInvoice.visible()
@@ -67,6 +69,7 @@ class CommissionDetailItemViewHolder(v: View) : AbstractViewHolder<CommissionDet
     }
 
     private fun hideDetail() {
+        collapseBtn.setAnimation(AnimationUtils.loadAnimation(itemView.context, R.anim.aff_rotate_forward))
         incomeLayout.gone()
         feeLayout.gone()
         incomeInvoice.gone()

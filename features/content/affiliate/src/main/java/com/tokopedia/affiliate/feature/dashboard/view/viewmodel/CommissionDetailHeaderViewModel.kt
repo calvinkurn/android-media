@@ -8,7 +8,20 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.Commission
  */
 
 data class CommissionDetailHeaderViewModel (
-        val id: Int = 0
+        val price: Int = 0,
+        val priceFmt: String = "",
+        val isActive: Boolean = false,
+        val commission: Int = 0,
+        val commissionFmt: String = "",
+        val totalClick:Int = 0,
+        val totalSold: Int = 0,
+        val totalCommission: Int = 0,
+        val totalCOmmissionFmt: String = "",
+        val shopId: String = "",
+        val shopName: String = "",
+        val productId: Int = 0,
+        val productName: String = "",
+        val productImg: String = ""
 ) : Visitable<CommissionDetailTypeFactory> {
     override fun type(typeFactory: CommissionDetailTypeFactory): Int {
         return typeFactory.type(this)

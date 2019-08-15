@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -13,13 +14,17 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.CommissionDetailTypeFactoryImpl
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetailViewModel
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionTransactionViewModel
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyCommissionViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.coroutinedata.CommissionData
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_commission_detail.*
@@ -68,11 +73,18 @@ class CommissionDetailFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFa
         super.onActivityCreated(savedInstanceState)
 
         commissionDetailViewModel.commissionDetailRsp.observe(this, Observer {
-//            refreshLayout?.isRefreshing = false
             isLoading = false
             when (it) {
                 is Success -> onSuccessGetFirstData(it.data)
                 is Fail -> onErrorGetFirstData(it.throwable)
+            }
+        })
+
+        commissionDetailViewModel.transactionDetailLoadMoreRsp.observe(this, Observer {
+            isLoading = false
+            when (it) {
+                is Success -> onSuccessGetLoadMoreData(it.data)
+                is Fail -> onErrorLoadMoreData(it.throwable)
             }
         })
 
@@ -125,15 +137,40 @@ class CommissionDetailFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFa
     }
 
     fun onSuccessGetFirstData(commissionData: CommissionData) {
+        adapter.clearAllElements()
         val dataList: MutableList<Visitable<*>> = ArrayList()
         dataList.add(commissionData.commissionDetailHeaderViewModel)
-        dataList.addAll(commissionData.commissionTransactionViewModel.historyList)
-        renderList(dataList)
+        if (commissionData.commissionTransactionViewModel.historyList.isNotEmpty()) {
+            dataList.addAll(commissionData.commissionTransactionViewModel.historyList)
+        } else {
+            dataList.add(EmptyCommissionViewModel())
+        }
         cursor = commissionData.commissionTransactionViewModel.nextCursor
         hasNext = commissionData.commissionTransactionViewModel.hasNext
+        renderList(dataList, hasNext)
     }
 
     fun onErrorGetFirstData(throwable: Throwable) {
+        view?.let {
+            Toaster.showErrorWithAction(it, throwable.localizedMessage, Snackbar.LENGTH_LONG, "Coba Lagi", View.OnClickListener {
+                loadInitialData()
+            })
+        }
+    }
 
+    fun onSuccessGetLoadMoreData(commissionTransactionViewModel: CommissionTransactionViewModel) {
+        val dataList: MutableList<Visitable<*>> = ArrayList()
+        dataList.addAll(commissionTransactionViewModel.historyList)
+        cursor = commissionTransactionViewModel.nextCursor
+        hasNext = commissionTransactionViewModel.hasNext
+        renderList(dataList, hasNext)
+    }
+
+    fun onErrorLoadMoreData(throwable: Throwable) {
+        view?.let {
+            Toaster.showErrorWithAction(it, throwable.localizedMessage, Snackbar.LENGTH_LONG, "Coba Lagi", View.OnClickListener {
+                loadData(0)
+            })
+        }
     }
 }

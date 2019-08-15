@@ -32,7 +32,7 @@ class CommissionDetailViewModel
     val PARAM_LIMIT = "limit"
 
     val commissionDetailRsp = MutableLiveData<Result<CommissionData>>()
-    val transactionDetailLoadMoreRsp = MutableLiveData<Result<AffiliateProductTxResponse>>()
+    val transactionDetailLoadMoreRsp = MutableLiveData<Result<CommissionTransactionViewModel>>()
 
     init {
     }
@@ -44,6 +44,16 @@ class CommissionDetailViewModel
         }) {
             it.printStackTrace()
             commissionDetailRsp.value = Fail(it)
+        }
+    }
+
+    fun loadMoreTxDetail(affId: String, cursor: String) {
+        launchCatchError(block = {
+            val firstDataDeferred = loadMoreCommissionTx(affId, cursor)
+            transactionDetailLoadMoreRsp.value = Success(firstDataDeferred.await())
+        }) {
+            it.printStackTrace()
+            transactionDetailLoadMoreRsp.value = Fail(it)
         }
     }
 
@@ -62,12 +72,12 @@ class CommissionDetailViewModel
             val requests = mutableListOf(productRequest, txRequest)
             try {
                 val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
-                if (gqlResponse.getError(AffiliateProductDetailResponse::class.java).isNotEmpty() != true) {
+                if (gqlResponse.getError(AffiliateProductDetailResponse::class.java)?.isNotEmpty() != true) {
                     val result = (gqlResponse.getData(AffiliateProductDetailResponse::class.java) as AffiliateProductDetailResponse)
                     resultData.commissionDetailHeaderViewModel = mapProductDetailData(result)
                 }
 
-                if (gqlResponse.getError(AffiliateProductTxResponse::class.java).isNotEmpty() != true) {
+                if (gqlResponse.getError(AffiliateProductTxResponse::class.java)?.isNotEmpty() != true) {
                     val result = (gqlResponse.getData(AffiliateProductTxResponse::class.java) as AffiliateProductTxResponse)
                     resultData.commissionTransactionViewModel = mapProductTransactionData(result)
                 }
@@ -80,13 +90,49 @@ class CommissionDetailViewModel
         }
     }
 
-    fun loadMoreTxDetail(affId: String, cursor: String) {
+    private suspend fun loadMoreCommissionTx(affId:String, cursor: String): Deferred<CommissionTransactionViewModel> {
+        return async(Dispatchers.IO) {
+            var resultData = CommissionTransactionViewModel()
+            val txParam = mapOf(PARAM_AFF_ID to affId.toInt(), PARAM_LIMIT to 3, PARAM_CURSOR to cursor)
+            val txRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_AFF_PRODUCT_TX_LIST],
+                    AffiliateProductTxResponse::class.java, txParam)
 
+            val requests = mutableListOf(txRequest)
+            try {
+                val gqlResponse = graphqlRepository.getReseponse(requests)
+                if (gqlResponse.getError(AffiliateProductTxResponse::class.java)?.isNotEmpty() != true) {
+                    val result = (gqlResponse.getData(AffiliateProductTxResponse::class.java) as AffiliateProductTxResponse)
+                    resultData = mapProductTransactionData(result)
+                }
+
+            }
+            catch(t: Throwable) {
+                t.printStackTrace()
+            }
+            resultData
+        }
     }
+
 
     //create mapping pojo ke view model
     fun mapProductDetailData(pojo: AffiliateProductDetailResponse) : CommissionDetailHeaderViewModel {
-        return CommissionDetailHeaderViewModel(0)
+        val data = pojo.affiliatedProductDetail
+        return CommissionDetailHeaderViewModel(
+                data.price,
+                data.priceFormatted,
+                data.isActive,
+                data.commission,
+                data.commissionFormatted,
+                data.totalClick,
+                data.totalSold,
+                data.totalCommission,
+                data.totalCommissionFormatted,
+                data.shopID.toString(),
+                data.shopName,
+                data.productID,
+                data.productName,
+                data.productImg
+        )
     }
 
     fun mapProductTransactionData(pojo: AffiliateProductTxResponse) : CommissionTransactionViewModel {
@@ -99,7 +145,21 @@ class CommissionDetailViewModel
     fun mapCommissionTransaction(pojoList: List<AffiliateHistoryPojo>): MutableList<CommissionDetailItemViewModel> {
         val list: MutableList<CommissionDetailItemViewModel> = ArrayList()
         for (pojo in pojoList) {
-//            list.add(CommissionDetailItemViewModel(0))
+            list.add(CommissionDetailItemViewModel(
+                    pojo.itemSent,
+                    pojo.affCommission,
+                    pojo.affCommissionFormatted,
+                    pojo.affInvoice,
+                    pojo.affInvoiceURL,
+                    pojo.txTimeFormatted,
+                    pojo.txTime,
+                    pojo.tkpdInvoice,
+                    pojo.tkpdInvoiceURL,
+                    pojo.tkpdCommission,
+                    pojo.tkpdCommissionFormatted,
+                    pojo.netCommission,
+                    pojo.netCommissionFormatted
+            ))
         }
         return list
     }
