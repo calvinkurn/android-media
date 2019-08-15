@@ -12,10 +12,12 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
+import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import com.tokopedia.vouchergame.list.di.VoucherGameListComponent
 import com.tokopedia.vouchergame.list.view.adapter.VoucherGameListAdapterFactory
@@ -54,12 +56,12 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        voucherGameViewModel.searchVoucherGameList.observe(this, Observer {
+        voucherGameViewModel.voucherGameList.observe(this, Observer {
             it.run {
                 when(it) {
                     is Success -> {
-                        if (it.data.isEmpty()) showEmpty()
-                        else renderList(it.data)
+                        // TODO: Process header data
+                        renderOperators(it.data)
                     }
                     is Fail -> {
                         showGetListError(it.throwable)
@@ -81,14 +83,23 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        outState.putInt(EXTRA_MENU_ID, menuId)
+        outState.putInt(EXTRA_PLATFORM_ID, platformId)
     }
 
     private fun initView() {
+        searchInputView.setResetListener(this)
+
         val layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
         recycler_view.layoutManager = layoutManager
         recycler_view.addItemDecoration(VoucherGameListDecorator(8, resources))
 
-        searchInputView.setResetListener(this)
+//        promo_banner.setPagerAdapter(object: BannerViewPagerAdapter())
+    }
+
+    private fun renderOperators(data: VoucherGameListData) {
+        if (data.operators.isEmpty()) showEmpty()
+        else renderList(data.operators)
     }
 
     override fun getAdapterTypeFactory(): VoucherGameListAdapterFactory {
@@ -120,14 +131,20 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
 
     override fun onSearchSubmitted(text: String?) {
         text?.run {
-            if (text.isNotEmpty()) voucherGameViewModel.searchVoucherGame(text)
+            if (text.isNotEmpty()) searchVoucherGame(text)
         }
     }
 
     override fun onSearchTextChanged(text: String?) { }
 
     override fun onSearchReset() {
-        voucherGameViewModel.searchVoucherGame("")
+        searchVoucherGame("")
+    }
+
+    private fun searchVoucherGame(query: String) {
+        voucherGameViewModel.searchVoucherGame(query,
+                GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
+                voucherGameViewModel.createParams(menuId, platformId))
     }
 
     companion object {

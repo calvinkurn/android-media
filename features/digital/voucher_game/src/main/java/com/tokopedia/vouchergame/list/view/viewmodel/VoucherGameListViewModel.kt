@@ -14,34 +14,31 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
+import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Created by resakemal on 12/08/19.
  */
-class VoucherGameListViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class VoucherGameListViewModel @Inject constructor(private val voucherGameUseCase: VoucherGameListUseCase,
                                                    val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    var voucherGameList: List<VoucherGameOperator> = listOf()
-    val searchVoucherGameList = MutableLiveData<Result<List<VoucherGameOperator>>>()
+    val voucherGameList = MutableLiveData<Result<VoucherGameListData>>()
 
     fun getVoucherGameList(rawQuery: String, mapParam: Map<String, Any>) {
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, VoucherGameListData.Response::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
-            }.getSuccessData<VoucherGameListData.Response>()
+        launch {
+            voucherGameList.value = voucherGameUseCase.getVoucherGameList(rawQuery, mapParam)
+        }
+    }
 
-            voucherGameList = data.response.operators
-            searchVoucherGameList.value = Success(voucherGameList)
-        }) {
-            searchVoucherGameList.value = Fail(it)
+    fun searchVoucherGame(searchQuery: String, rawQuery: String, mapParam: Map<String, Any>) {
+        launch {
+            voucherGameList.value = voucherGameUseCase.searchVoucherGame(searchQuery, rawQuery, mapParam)
         }
     }
 
@@ -52,10 +49,6 @@ class VoucherGameListViewModel @Inject constructor(private val graphqlRepository
         params.put(PARAM_MENU_ID, 10)
         params.put(PARAM_PLATFORM_ID, 7)
         return params
-    }
-
-    fun searchVoucherGame(query: String) {
-        searchVoucherGameList.value = Success(voucherGameList.filter { it.attributes.name.contains(query, true) })
     }
 
     companion object {

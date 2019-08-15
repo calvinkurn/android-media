@@ -18,6 +18,11 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <com.tokopedia.banner.Banner
+        android:id="@+id/promo_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
