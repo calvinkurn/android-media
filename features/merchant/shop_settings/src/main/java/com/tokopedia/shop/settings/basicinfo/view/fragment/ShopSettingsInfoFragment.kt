@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
@@ -135,10 +134,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                         setTitle(getString(R.string.remove_schedule))
                         setDesc(getString(R.string.remove_schedule_message))
                         setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(R.string.cancel))
+                        setBtnCancel(getString(com.tokopedia.design.R.string.label_cancel))
                         setOnOkClickListener {
                             //remove schedule
-                            showSubmitLoading(getString(R.string.title_loading))
+                            showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                             shopSettingsInfoPresenter.updateShopSchedule(
                                 if (shopBasicDataModel!!.isClosed)
                                     ShopScheduleActionDef.CLOSED
@@ -154,7 +153,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             }
             itemMenuTitle.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
                 // open now
-                showSubmitLoading(getString(R.string.title_loading))
+                showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                 shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
                     "", "", "")
             }
@@ -247,7 +246,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             if (URLUtil.isNetworkUrl(it)) {
                 it
             } else {
-                getString(R.string.tokopedia_domain) + "/$it"
+                getString(com.tokopedia.design.R.string.tokopedia_domain) + "/$it"
             }
         }
         if (shopBasicDataModel.tagline.isNullOrBlank()) {
@@ -272,7 +271,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         if (TextUtils.isEmpty(logoUrl)) {
             ivShopLogo.setImageDrawable(
                     MethodChecker.getDrawable(ivShopLogo.getContext(),
-                            R.drawable.ic_shop_default_empty))
+                            com.tokopedia.design.R.drawable.ic_shop_default_empty))
         } else {
             ImageHandler.LoadImage(ivShopLogo, logoUrl)
         }
@@ -280,7 +279,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun setUIStatus(shopBasicDataModel: ShopBasicDataModel) {
         if (shopBasicDataModel.isOpen) {
-            tvShopStatus.text = getString(R.string.label_open)
+            tvShopStatus.text = getString(com.tokopedia.design.R.string.label_open)
 
             val stringBuilder = StringBuilder()
             val closeScheduleUnixString = shopBasicDataModel.closeSchedule
@@ -303,7 +302,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 tvShopCloseSchedule.visibility = View.VISIBLE
             }
         } else {
-            tvShopStatus.text = getString(R.string.label_close)
+            tvShopStatus.text = getString(com.tokopedia.design.R.string.label_close)
 
             val openScheduleUnixString = shopBasicDataModel.openSchedule
             var openScheduleString: String? = null
@@ -334,7 +333,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel) {
         tvManageGmSubscribe.visibility = View.GONE
         iv_power_merchant_logo.visibility = View.GONE
-        tv_shop_membership_title.text = getString(R.string.label_regular_merchant)
+        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
         tv_ticker_info.visibility = View.VISIBLE
@@ -353,8 +352,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             navigateToPMSubscribe()
         }
         iv_power_merchant_logo.visibility = View.VISIBLE
-        iv_power_merchant_logo.setImageResource(R.drawable.ic_power_merchant)
-        tv_shop_membership_title.text = getString(R.string.label_power_merchant)
+        iv_power_merchant_logo.setImageResource(com.tokopedia.gm.resource.R.drawable.ic_power_merchant)
+        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_power_merchant)
         tv_shop_status.visibility = View.VISIBLE
         tv_shop_status.text = getString(if (shopStatusModel.isPowerMerchantActive()) {
             R.string.active_label
@@ -373,8 +372,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tvManageGmSubscribe.visibility = View.GONE
         button_activate.visibility = View.GONE
         iv_power_merchant_logo.visibility = View.VISIBLE
-        iv_power_merchant_logo.setImageResource(R.drawable.ic_badge_shop_official)
-        tv_shop_membership_title.text = getString(R.string.label_official_store)
+        iv_power_merchant_logo.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
+        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_official_store)
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
         tv_ticker_info.visibility = View.GONE
@@ -385,7 +384,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         val indexStart = 0
         val indexEnd = indexStart + learnMoreString.length
 
-        val color = ContextCompat.getColor(context!!, R.color.tkpd_main_green)
+        val color = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
         spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
