@@ -60,11 +60,6 @@ public class WishlistAdapterFactory extends BaseAdapterTypeFactory implements Wi
     }
 
     @Override
-    public int type(WishlistRecommendationCarouselViewModel viewModel) {
-        return WishlistRecommendationCarouselViewHolder.LAYOUT;
-    }
-
-    @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if(type == WishlistEmptySearchViewHolder.LAYOUT) {
             return new WishlistEmptySearchViewHolder(parent, actionButtonClicked);
@@ -78,8 +73,6 @@ public class WishlistAdapterFactory extends BaseAdapterTypeFactory implements Wi
             return new WishlistRecomendationViewHolder(parent, wishlistAnalytics);
         } else if (type == WishlistRecomTitleViewHolder.LAYOUT){
             return new WishlistRecomTitleViewHolder(parent);
-        } else if(type == WishlistRecommendationCarouselViewHolder.LAYOUT){
-            return new WishlistRecommendationCarouselViewHolder(parent, wishlistAnalytics);
         }
         return super.createViewHolder(parent, type);
     }

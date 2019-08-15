@@ -21,7 +21,7 @@ public class GqlWishListDataResponse {
     @Expose
     private TopAdsModel topAdsModel;
 
-    private RecommendationWidget recommendationWidget;
+    private String title;
 
     public TopAdsModel getTopAdsModel() {
         return topAdsModel;
@@ -31,12 +31,13 @@ public class GqlWishListDataResponse {
         this.topAdsModel = topAdsModel;
     }
 
-    public RecommendationWidget getRecommendationWidget() {
-        return recommendationWidget;
+
+    public String getTitle() {
+        return title;
     }
 
-    public void setRecommendationWidget(RecommendationWidget recommendationWidget) {
-        this.recommendationWidget = recommendationWidget;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public GqlWishList getGqlWishList() {

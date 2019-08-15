@@ -27,7 +27,6 @@ public class WishlistAnalytics {
     private static final String CLICK_WISHLIST = "Click Wishlist";
     private static final String LONG_PRESS_SHORTCUT_WISHLIST = "Share";
     private List<Object> dataLayerList = new ArrayList<>();
-    private TrackingQueue trackingQueue;
 
     public void trackEventAddToCardProductWishlist(Object dataItem) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
@@ -81,8 +80,7 @@ public class WishlistAnalytics {
         );
     }
 
-    public WishlistAnalytics(TrackingQueue trackingQueue) {
-        this.trackingQueue = trackingQueue;
+    public WishlistAnalytics() {
     }
 
     public void eventClickCariWishlist(String query) {
@@ -197,7 +195,7 @@ public class WishlistAnalytics {
     }
 
     public void eventRecommendationProductClick(RecommendationItem item, int position){
-        trackingQueue.putEETracking((HashMap<String, Object>) DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 "event", "productClick",
                 "eventCategory", "wishlist page",
                 "eventAction", "click on product recommendation",
@@ -217,7 +215,7 @@ public class WishlistAnalytics {
     }
 
     public void eventRecommendationProductImpression(RecommendationItem item, int position){
-        trackingQueue.putEETracking((HashMap<String, Object>) DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent((HashMap<String, Object>) DataLayer.mapOf(
                 "event", "productView",
                 "eventCategory", "wishlist page",
                 "eventAction", "impression on product recommendation",

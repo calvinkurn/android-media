@@ -17,6 +17,4 @@ public interface WishlistTypeFactory {
     int type(WishlistRecomendationViewModel viewModel);
 
     int type(WishlistRecomTitleViewModel viewModel);
-
-    int type(WishlistRecommendationCarouselViewModel viewModel);
 }

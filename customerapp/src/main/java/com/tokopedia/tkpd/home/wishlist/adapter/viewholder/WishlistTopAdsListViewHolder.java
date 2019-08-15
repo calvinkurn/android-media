@@ -52,6 +52,11 @@ public class WishlistTopAdsListViewHolder extends AbstractViewHolder<WishlistTop
             public void onImpressionProductAdsItem(int position, Product product) {
                 TopAdsGtmTracker.eventWishlistProductView(context, product, keyword, position);
             }
+
+            @Override
+            public void onAddWishlist(boolean isWishlist) {
+                TopAdsGtmTracker.eventRecommendationWishlistClick(isWishlist);
+            }
         });
         topAdsCarouselView.setData(element.getTopAdsModel());
     }

@@ -110,13 +110,13 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         super.onCreate(savedInstanceState);
         wishList = new WishListImpl(getActivity(), this);
         checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart();
-        trackingQueue = new TrackingQueue(getContext());
-        wishlistAnalytics = new WishlistAnalytics(trackingQueue);
+        wishlistAnalytics = new WishlistAnalytics();
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialog.setCancelable(false);
         wishList.fetchSavedsInstance(savedInstanceState);
         wishList.initDataInstance(getActivity());
         isDeleteDialogShown = false;
+        trackingQueue = new TrackingQueue(getContext());
     }
 
     @Override
@@ -396,14 +396,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 wishlistAdapter.notifyItemRemoved(position);
                 wishlistAdapter.notifyItemRangeChanged(position, wishlistAdapter.getItemCount());
             }
-        }
-    }
-
-    @Override
-    public void onSuccessAddOrRemoveWishlist(String message) {
-        if (getActivity() != null && getView() != null) {
-            wishlistAnalytics.eventRecommendationWishlistClick(!getString(R.string.msg_delete_wishlist_success).equals(message));
-            ToasterNormal.make(getView(), message, BaseToaster.LENGTH_SHORT).show();
         }
     }
 
