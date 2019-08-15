@@ -52,7 +52,6 @@ import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottom
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.AtcResponseModel
 import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.WholesalePriceModel
-import com.tokopedia.purchase_platform.features.express_checkout.router.ExpressCheckoutRouter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
@@ -67,6 +66,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter
 import com.tokopedia.purchase_platform.common.utils.FingerprintUtil
 import com.tokopedia.usecase.RequestParams
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
@@ -105,7 +105,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     @Inject
     lateinit var analyticsTracker: ExpressCheckoutAnalyticsTracker
 
-    private lateinit var router: ExpressCheckoutRouter
+    private lateinit var router: ICheckoutModuleRouter
     private lateinit var adapter: CheckoutVariantAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var fragmentListener: CheckoutVariantFragmentListener
@@ -177,7 +177,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         fragmentListener = context as CheckoutVariantFragmentListener
-        router = context.applicationContext as ExpressCheckoutRouter
+        router = context.applicationContext as ICheckoutModuleRouter
     }
 
     override fun onDetach() {
@@ -630,14 +630,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         analyticsTracker.enhanceEcommerceImpressionExpressCheckoutForm(generateEnhanceEcommerceData(EnhancedECommerceActionField.STEP_2), eventLabel)
         if (activity != null) startActivity(RouteManager.getIntent(activity, appLink))
         activity?.finish()
-    }
-
-    override fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData> {
-        return router.checkoutProduct(checkoutRequest, true, true)
-    }
-
-    override fun getEditAddressObservable(requestParams: RequestParams): Observable<String> {
-        return router.updateAddress(requestParams)
     }
 
     override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {

@@ -4,24 +4,26 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.mapper.ViewModelMapper
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.subscriber.*
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.FragmentViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductChild
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.CheckoutUseCase
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.features.express_checkout.domain.mapper.atc.AtcDomainModelMapper
 import com.tokopedia.purchase_platform.features.express_checkout.domain.mapper.checkout.CheckoutDomainModelMapper
 import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.AtcResponseModel
 import com.tokopedia.purchase_platform.features.express_checkout.domain.usecase.DoAtcExpressUseCase
 import com.tokopedia.purchase_platform.features.express_checkout.domain.usecase.DoCheckoutExpressUseCase
-import com.tokopedia.logisticcart.shipping.model.ShippingParam
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.mapper.ViewModelMapper
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.subscriber.*
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.FragmentViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductChild
 import com.tokopedia.transaction.common.sharedata.EditAddressParam
-import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import rx.android.schedulers.AndroidSchedulers
@@ -39,7 +41,9 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
                                                    private val atcDomainModelMapper: AtcDomainModelMapper,
                                                    private val checkoutDomainModelMapper: CheckoutDomainModelMapper,
                                                    private var viewModelMapper: ViewModelMapper,
-                                                   private val userSessionInterface: UserSessionInterface) :
+                                                   private val userSessionInterface: UserSessionInterface,
+                                                   private val checkoutUseCase: CheckoutUseCase,
+                                                   private val editAddressUseCase: EditAddressUseCase) :
         BaseDaggerPresenter<CheckoutVariantContract.View>(), CheckoutVariantContract.Presenter {
 
     private lateinit var atcResponseModel: AtcResponseModel
@@ -158,11 +162,11 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
         requestParamsMap.put(EditAddressParam.LONGITUDE, longitude)
         val requestParams = RequestParams.create()
         requestParams.putAllString(requestParamsMap)
-        view?.getEditAddressObservable(requestParams)
-                ?.subscribeOn(Schedulers.io())
-                ?.unsubscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(DoEditAddressSubscriber(view, this, latitude, longitude))
+        editAddressUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(DoEditAddressSubscriber(view, this, latitude, longitude))
     }
 
     private fun getProductId(fragmentViewModel: FragmentViewModel): Int {
@@ -222,11 +226,16 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
 
     override fun hitOldCheckout(fragmentViewModel: FragmentViewModel) {
         view?.showLoadingDialog()
-        view?.getCheckoutObservable(getOldCheckoutParams(fragmentViewModel))
-                ?.subscribeOn(Schedulers.io())
-                ?.unsubscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(DoCheckoutSubscriber(view, this))
+        val requestParams = RequestParams.create()
+        requestParams.putObject(CheckoutUseCase.PARAM_CARTS, getOldCheckoutParams(fragmentViewModel))
+        requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, true)
+        requestParams.putBoolean(CheckoutUseCase.PARAM_IS_EXPRESS, true)
+
+        checkoutUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(DoCheckoutSubscriber(view, this))
     }
 
     private fun getOldCheckoutParams(fragmentViewModel: FragmentViewModel): CheckoutRequest {

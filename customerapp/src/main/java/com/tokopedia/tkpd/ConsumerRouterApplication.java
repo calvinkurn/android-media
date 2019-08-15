@@ -264,16 +264,11 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity;
 import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
+import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.features.cart.view.CartActivity;
 import com.tokopedia.purchase_platform.features.cart.view.CartFragment;
-import com.tokopedia.purchase_platform.features.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.purchase_platform.features.checkout.view.CartConstant;
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
-import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
-import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
-import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
-import com.tokopedia.purchase_platform.features.express_checkout.router.ExpressCheckoutRouter;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.referral.ReferralAction;
 import com.tokopedia.referral.ReferralRouter;
@@ -486,7 +481,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SaldoDetailsRouter,
         ILoyaltyRouter,
         ChatbotRouter,
-        ExpressCheckoutRouter,
         ResolutionRouter,
         TradeInRouter,
         ProductDetailRouter,
@@ -1721,23 +1715,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         );
                     }
                 });
-    }
-
-    @NotNull
-    @Override
-    public Observable<CheckoutData> checkoutProduct(@NotNull CheckoutRequest checkoutRequest, boolean isOneClickShipment, boolean isExpressCheckout) {
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
-        requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
-        requestParams.putBoolean(CheckoutUseCase.PARAM_IS_EXPRESS, isExpressCheckout);
-        return CartComponentInjector.newInstance(this).getCheckoutUseCase()
-                .createObservable(requestParams);
-    }
-
-    @NotNull
-    @Override
-    public Observable<String> updateAddress(com.tokopedia.usecase.RequestParams requestParams) {
-        return CartComponentInjector.newInstance(this).getEditAddressUseCase().createObservable(requestParams);
     }
 
     @Override

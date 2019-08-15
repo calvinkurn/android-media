@@ -76,10 +76,6 @@ interface CheckoutVariantContract {
 
         fun generateFingerprintPublicKey()
 
-        fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData>
-
-        fun getEditAddressObservable(requestParams: RequestParams): Observable<String>
-
         fun getActivityContext(): Context?
     }
 
