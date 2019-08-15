@@ -5,13 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleDFActivity
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchFilterFragment
 
-class HotelSearchFilterActivity: BaseSimpleDFActivity() {
+class HotelSearchFilterActivity : BaseSimpleDFActivity() {
     lateinit var currentTag: String
 
     override fun getLayoutRes(): Int = R.layout.activity_hotel_search_filter
@@ -31,7 +30,7 @@ class HotelSearchFilterActivity: BaseSimpleDFActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null){
+        if (savedInstanceState == null) {
             currentTag = tagFragment
         } else {
             currentTag = savedInstanceState.getString(ARG_SAVED_TAG, HotelSearchFilterFragment.TAG)
@@ -39,13 +38,14 @@ class HotelSearchFilterActivity: BaseSimpleDFActivity() {
         updateCloseButton()
     }
 
-    private fun updateCloseButton(){
-        if (supportFragmentManager.backStackEntryCount > 1){
+    private fun updateCloseButton() {
+        if (supportFragmentManager.backStackEntryCount > 1) {
             supportActionBar?.setHomeAsUpIndicator(null)
         } else {
             supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(this,
                     com.tokopedia.abstraction.R.drawable.ic_close_default))
         }
+        supportActionBar?.setTitle(getString(com.tokopedia.design.R.string.label_filter))
     }
 
     override fun getTagFragment(): String = HotelSearchFilterFragment.TAG
