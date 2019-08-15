@@ -9,15 +9,24 @@ object DiscomDummyProvider {
 
     private val mapper = DistrictRecommendationMapper()
 
-    fun getSuccessResponse(): AddressResponse {
+    fun getSuccessModel(): AddressResponse {
         val response = Gson().fromJson(jakDiscomResponse, DistrictRecommendationResponse::class.java)
         return mapper.transform(response)
     }
 
-    fun getEmptyResponse(): AddressResponse {
+    fun getEmptyModel(): AddressResponse {
         val response = Gson().fromJson(qwrDiscomResponse, DistrictRecommendationResponse::class.java)
         return mapper.transform(response)
     }
+
+    fun getSuccessResponse(): DistrictRecommendationResponse =
+            Gson().fromJson(jakDiscomResponse, DistrictRecommendationResponse::class.java)
+
+    fun getEmptyResponse(): DistrictRecommendationResponse =
+            Gson().fromJson(qwrDiscomResponse, DistrictRecommendationResponse::class.java)
+
+    fun getEmptyZipResponse(): DistrictRecommendationResponse =
+            Gson().fromJson(wolowaDiscomResponse, DistrictRecommendationResponse::class.java)
 }
 
 
@@ -25,6 +34,25 @@ val qwrDiscomResponse = """
 {
     "kero_district_recommendation": {
       "district": [],
+      "next_available": false
+    }
+}
+""".trimIndent()
+
+val wolowaDiscomResponse = """
+{
+    "kero_district_recommendation": {
+      "district": [
+        {
+          "district_id": 8144,
+          "district_name": "Wolowa",
+          "city_id": 382,
+          "city_name": "Kab. Buton",
+          "province_id": 26,
+          "province_name": "Sulawesi Tenggara",
+          "zip_code": []
+        }
+      ],
       "next_available": false
     }
 }

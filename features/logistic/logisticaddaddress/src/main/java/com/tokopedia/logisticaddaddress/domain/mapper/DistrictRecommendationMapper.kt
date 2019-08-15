@@ -14,23 +14,23 @@ class DistrictRecommendationMapper @Inject constructor() {
 
     fun transform(response: DistrictRecommendationResponse): AddressResponse {
         return AddressResponse().apply {
-            addresses = response.keroDistrictRecommendation.district
-                    .map { mapDistrictToAddress(it) }
-                    as ArrayList<Address>
+            addresses = response.keroDistrictRecommendation.district.mapToAddressResponse()
             isNextAvailable = response.keroDistrictRecommendation.nextAvailable
         }
     }
 
-    private fun mapDistrictToAddress(district: DistrictItem): Address = Address().apply {
-        districtId = district.districtId
-        districtName = district.districtName
-        cityId = district.cityId
-        cityName = district.cityName
-        provinceId = district.provinceId
-        provinceName = district.provinceName
-        if (district.zipCode.isNotEmpty()) {
-            zipCodes = district.zipCode as ArrayList<String>
-        }
+    private fun List<DistrictItem>.mapToAddressResponse(): ArrayList<Address> {
+        return this.map {
+            Address().apply {
+                districtId = it.districtId
+                districtName = it.districtName
+                cityId = it.cityId
+                cityName = it.cityName
+                provinceId = it.provinceId
+                provinceName = it.provinceName
+                zipCodes = it.zipCode as ArrayList<String>
+            }
+        } as ArrayList<Address>
     }
 
 }

@@ -28,7 +28,7 @@ class DiscomPresenterTest {
     @Test
     fun loadDataWithData_returnSuccess() {
         val query = "jak"
-        val expected = DiscomDummyProvider.getSuccessResponse()
+        val expected = DiscomDummyProvider.getSuccessModel()
         every { gql.execute(any(), any()) } answers { Observable.just(expected) }
 
         presenter.loadData(query, first_page)
@@ -62,7 +62,7 @@ class DiscomPresenterTest {
     @Test
     fun loadDataWithData_returnEmpty() {
         val query = "qwr"
-        val datum = DiscomDummyProvider.getEmptyResponse()
+        val datum = DiscomDummyProvider.getEmptyModel()
         every { gql.execute(any(), any()) } answers { Observable.just(datum) }
 
         presenter.loadData(query, first_page)
