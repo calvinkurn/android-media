@@ -168,7 +168,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
             onSearchClicked()
             CategoryAnalytics.createInstance().eventSearchBarClick()
             return true
-        } else if (item.itemId == R.id.home) {
+        } else if (item.itemId == android.R.id.home) {
             CategoryAnalytics.createInstance().eventBackButtonClick()
             onBackPressed()
             return true
