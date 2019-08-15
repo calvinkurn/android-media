@@ -30,7 +30,7 @@ artifactory {
     contextUrl = rootProject.ext.artifactoryUrl
     publish {
         repository {
-            repoKey = 'libs-snapshot-local'
+            repoKey = 'libs-release-local'
 
             username = artifactory_username
             password = artifactory_password
