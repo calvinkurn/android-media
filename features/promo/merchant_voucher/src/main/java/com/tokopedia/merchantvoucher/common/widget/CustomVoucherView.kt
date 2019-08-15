@@ -238,10 +238,9 @@ open class CustomVoucherView : FrameLayout {
             stringSource: String,
             stringToBeSpanned: String
     ){
-        val spannableString: SpannableString = SpannableString(stringSource)
-        val startIndex =  stringSource.indexOf(stringToBeSpanned)
-        val endIndex =  startIndex + stringToBeSpanned.length
-
+        private val spannableString: SpannableString = SpannableString(stringSource)
+        private val startIndex =  stringSource.indexOf(stringToBeSpanned)
+        private val endIndex =  startIndex + stringToBeSpanned.length
 
         fun addBoldSpan(): SpanText{
             if(startIndex == -1)
