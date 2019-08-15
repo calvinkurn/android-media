@@ -42,6 +42,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
@@ -1141,18 +1142,23 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
             }
 
-            if (cartListData.getTicker() != null) {
+            CartTickerData tickerData = cartListData.getTicker();
+            if (tickerData != null) {
                 if (cartTicker != null) {
                     cartTicker.setTickerType(Ticker.TYPE_ANNOUNCEMENT);
                     cartTicker.setTickerShape(Ticker.SHAPE_FULL);
                     cartTicker.setCloseButtonVisibility(View.GONE);
-                    cartTicker.setHtmlDescription(cartListData.getTicker().getMessage());
+                    cartTicker.setHtmlDescription(tickerData.getMessage());
                     cartTicker.setVisibility(View.VISIBLE);
+
+                    // Ticker Wrap_Content workaround - remove TickerViewPager
                     View view = cartTicker.findViewById(com.tokopedia.unifycomponents.R.id.ticker_content_multiple);
                     if (view != null) {
                         view.setVisibility(View.GONE);
                     }
+
                     cartTicker.requestLayout();
+                    cartPageAnalytics.eventViewInformationAndWarningTickerInCart(String.valueOf(tickerData.getId()));
                 }
             } else if (cartTicker != null) {
                 cartTicker.setVisibility(View.GONE);

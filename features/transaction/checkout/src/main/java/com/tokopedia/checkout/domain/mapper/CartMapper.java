@@ -100,8 +100,6 @@ public class CartMapper implements ICartMapper {
             TickerData tickerData = cartDataListResponse.getTickers().get(0);
             cartListData.setTicker(new CartTickerData(tickerData.getId(), tickerData.getMessage(), tickerData.getPage()));
         }
-        cartListData.setTicker(new CartTickerData(0, "testing message panjang abcdef ghijkl mnopqr stuvwx yz123 456 789 0", "cart"));
-        cartListData.setTicker(new CartTickerData(0, "testing message panjang", "cart"));
 
         List<ShopGroupData> shopGroupDataList = new ArrayList<>();
         boolean isDisableAllProducts = false;
