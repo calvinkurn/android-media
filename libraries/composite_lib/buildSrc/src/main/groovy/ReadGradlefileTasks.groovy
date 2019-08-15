@@ -105,7 +105,7 @@ class ReadGradlefileTasks extends DefaultTask{
     }
     def compileModule(String module){
         def stdout = new ByteArrayOutputStream()
-        stdout = "./gradlew assemble publishToMavenLocal artifactoryPublish  -p $module --parallel -x lint".execute().text
+        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel -x lint".execute().text
         return stdout.toString().trim().replace("'", "").replace(","," ")
     }
 
