@@ -22,7 +22,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -384,7 +383,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onImageSearchClicked() {
-        startActivity(ImageSearchActivity.newInstance(this, new Bundle()));
+        RouteManager.route(this, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT);
     }
 
     @Override

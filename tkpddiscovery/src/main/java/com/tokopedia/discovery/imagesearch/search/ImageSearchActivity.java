@@ -3,10 +3,10 @@ package com.tokopedia.discovery.imagesearch.search;
 import android.Manifest;
 import android.content.ClipData;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
@@ -45,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -55,14 +55,15 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 
 public class ImageSearchActivity extends DiscoveryActivity
-        implements ImageSearchContract.View, RedirectionListener {
+        implements ImageSearchContract.View,
+        RedirectionListener,
+        PermissionCheckerHelper.PermissionCheckListener {
 
     private static final int REQUEST_CODE_IMAGE = 2390;
     private static final String NO_RESPONSE = "no response";
     private static final String SUCCESS = "success match found";
 
     private String imagePath;
-    private boolean isImageAlreadyPicked = false;
 
     @Inject
     ImageSearchPresenter searchPresenter;
@@ -70,19 +71,13 @@ public class ImageSearchActivity extends DiscoveryActivity
     @Inject
     PermissionCheckerHelper permissionCheckerHelper;
 
-    public static Intent newInstance(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, ImageSearchActivity.class);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         initImageSearch();
 
-        askForPermission();
+        checkPermissionToContinue();
     }
 
     private void initImageSearch() {
@@ -100,79 +95,80 @@ public class ImageSearchActivity extends DiscoveryActivity
         searchComponent.inject(this);
     }
 
-    private void askForPermission() {
+    private void checkPermissionToContinue() {
         String[] imageSearchPermissions = {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA
         };
 
-        permissionCheckerHelper.checkPermissions(
-                this,
-                imageSearchPermissions,
-                new PermissionCheckerHelper.PermissionCheckListener() {
-                    @Override
-                    public void onPermissionDenied(@NotNull String permissionText) {
-                        permissionCheckerHelper.onPermissionDenied(ImageSearchActivity.this, permissionText);
-                        finish();
-                    }
-
-                    @Override
-                    public void onNeverAskAgain(@NotNull String permissionText) {
-                        permissionCheckerHelper.onNeverAskAgain(ImageSearchActivity.this, permissionText);
-                        finish();
-                    }
-
-                    @Override
-                    public void onPermissionGranted() {
-                        handleImageUri(getIntent());
-
-                        if (!isImageAlreadyPicked) {
-                            openImagePickerActivity();
-                        }
-                    }
-                },
-                ""
-        );
+        permissionCheckerHelper.checkPermissions(this, imageSearchPermissions, this, "");
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
-    private void handleImageUri(Intent intent) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+    @Override
+    public void onPermissionDenied(@NotNull String permissionText) {
+        permissionCheckerHelper.onPermissionDenied(this, permissionText);
+        finish();
+    }
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.SHOW_IMAGE_SEARCH, false)
-                && intent != null) {
+    @Override
+    public void onNeverAskAgain(@NotNull String permissionText) {
+        permissionCheckerHelper.onNeverAskAgain(this, permissionText);
+        finish();
+    }
 
-            if (intent.getClipData() != null
-                    && intent.getClipData().getItemCount() > 0) {
-                searchView.hideShowCaseDialog(true);
-                sendImageSearchFromGalleryGTM();
-                ClipData clipData = intent.getClipData();
-                Uri uri = clipData.getItemAt(0).getUri();
-                isImageAlreadyPicked = true;
-                onImagePickedSuccess(uri.toString());
-            }
-            else if (intent.getData() != null
-                    && !TextUtils.isEmpty(intent.getData().toString())
-                    && isValidMimeType(intent.getData().toString())) {
-                searchView.hideShowCaseDialog(true);
-                sendImageSearchFromGalleryGTM();
-                isImageAlreadyPicked = true;
-                onImagePickedSuccess(intent.getData().toString());
-            }
+    @Override
+    public void onPermissionGranted() {
+        boolean isImageAlreadyPicked = handleImageUri(getIntent());
+
+        if (!isImageAlreadyPicked) {
+            openImagePickerActivity();
         }
     }
 
-    private void sendImageSearchFromGalleryGTM() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
-                "");
+    private boolean handleImageUri(Intent intent) {
+        if (canHandleImageUri(intent)) {
+            if (hasClipData(intent)) {
+                String imagePath = getImagePathFromClipData(intent);
+                processImageUri(imagePath);
+                return true;
+            }
+            else if (hasDataWithValidMimeType(intent)) {
+                String imagePath = getImagePathFromData(intent);
+                processImageUri(imagePath);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean canHandleImageUri(Intent intent) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+
+        return remoteConfig.getBoolean(RemoteConfigKey.SHOW_IMAGE_SEARCH, false)
+                && intent != null;
+    }
+
+    private boolean hasClipData(Intent intent) {
+        return intent.getClipData() != null && intent.getClipData().getItemCount() > 0;
+    }
+
+    private String getImagePathFromClipData(Intent intent) {
+        ClipData clipData = intent.getClipData();
+        Uri uri = Objects.requireNonNull(clipData).getItemAt(0).getUri();
+        return uri.toString();
+    }
+
+    private boolean hasDataWithValidMimeType(Intent intent) {
+        return intent.getData() != null
+                && !TextUtils.isEmpty(intent.getData().toString())
+                && isValidMimeType(intent.getData().toString());
     }
 
     private boolean isValidMimeType(String url) {
@@ -197,6 +193,24 @@ public class ImageSearchActivity extends DiscoveryActivity
                     fileExtension.toLowerCase());
         }
         return mimeType;
+    }
+
+    private String getImagePathFromData(Intent intent) {
+        return Objects.requireNonNull(intent.getData()).toString();
+    }
+
+    private void processImageUri(String imagePath) {
+        searchView.hideShowCaseDialog(true);
+        sendImageSearchFromGalleryGTM();
+        onImagePickedSuccess(imagePath);
+    }
+
+    private void sendImageSearchFromGalleryGTM() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                SearchEventTracking.Category.IMAGE_SEARCH,
+                SearchEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
+                "");
     }
 
     private void openImagePickerActivity() {
@@ -311,19 +325,6 @@ public class ImageSearchActivity extends DiscoveryActivity
         finish();
     }
 
-    @Override
-    public void onHandleImageSearchResponseSuccess() {
-
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(SUCCESS);
-        } else {
-            sendGalleryImageSearchResultGTM(SUCCESS);
-        }
-    }
-
     private void sendGalleryImageSearchResultGTM(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
@@ -341,8 +342,38 @@ public class ImageSearchActivity extends DiscoveryActivity
                 label);
     }
 
+    public void onImagePickedSuccess(String imagePath) {
+        setImagePath(imagePath);
+        tkpdProgressDialog = new TkpdProgressDialog(this, 1);
+        tkpdProgressDialog.showDialog();
+        getPresenter().requestImageSearch(imagePath);
+    }
+
     @Override
     public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
+        trackEventOnSuccessImageSearch(productViewModel);
+
+        showImageSearchResult(productViewModel);
+
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+    }
+
+    private void trackEventOnSuccessImageSearch(ProductViewModel productViewModel) {
+        sendGTMEventSuccessImageSearch();
+        sendAppsFlyerEventSuccessImageSearch(productViewModel);
+    }
+
+    private void sendGTMEventSuccessImageSearch() {
+        if (isFromCamera) {
+            sendCameraImageSearchResultGTM(SUCCESS);
+        } else {
+            sendGalleryImageSearchResultGTM(SUCCESS);
+        }
+    }
+
+    private void sendAppsFlyerEventSuccessImageSearch(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> category = new HashMap<String, String>();
         ArrayList<String> prodIdArray = new ArrayList<>();
@@ -358,13 +389,12 @@ public class ImageSearchActivity extends DiscoveryActivity
                 category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
             }
         }
-        TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds,productViewModel.getQuery(),prodIdArray);
-        sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
 
-        proceed(productViewModel);
+        TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds,productViewModel.getQuery(),prodIdArray);
+        sendMoEngageSearchAttemptSuccessImageSearch(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
     }
 
-    public void sendMoEngageSearchAttempt(String keyword, boolean isResultFound, HashMap<String, String> category) {
+    public void sendMoEngageSearchAttemptSuccessImageSearch(String keyword, boolean isResultFound, HashMap<String, String> category) {
         Map<String, Object> value = DataLayer.mapOf(
                 SearchEventTracking.MOENGAGE.KEYWORD, keyword,
                 SearchEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
@@ -376,9 +406,7 @@ public class ImageSearchActivity extends DiscoveryActivity
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 
-    private void proceed(ProductViewModel productViewModel) {
-        initView();
-
+    private void showImageSearchResult(ProductViewModel productViewModel) {
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel);
@@ -434,7 +462,8 @@ public class ImageSearchActivity extends DiscoveryActivity
             NetworkErrorHelper.createSnackbarWithAction(
                     this,
                     message,
-                    () -> onImagePickedSuccess(getImagePath())).showRetrySnackbar();
+                    () -> onImagePickedSuccess(getImagePath())
+            ).showRetrySnackbar();
         }
     }
 
@@ -455,13 +484,6 @@ public class ImageSearchActivity extends DiscoveryActivity
         }
     }
 
-    public void onImagePickedSuccess(String imagePath) {
-        setImagePath(imagePath);
-        tkpdProgressDialog = new TkpdProgressDialog(this, 1);
-        tkpdProgressDialog.showDialog();
-        getPresenter().requestImageSearch(imagePath);
-    }
-
     @Override
     public void showImageNotSupportedError() {
         super.showImageNotSupportedError();
@@ -469,7 +491,8 @@ public class ImageSearchActivity extends DiscoveryActivity
             tkpdProgressDialog.dismiss();
         }
 
-        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.image_not_supported));
+        Toast.makeText(this, getResources().getString(R.string.image_not_supported), Toast.LENGTH_LONG).show();
+        finish();
     }
 
     public void setImagePath(String imagePath) {

@@ -1,30 +1,17 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.content.Context;
 import android.os.Bundle;
 
-import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
-import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.track.TrackApp;
-
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -36,7 +23,6 @@ public class BaseDiscoveryActivity
 
     private static final String KEY_FORCE_SWIPE_TO_SHOP = "KEY_FORCE_SWIPE_TO_SHOP";
     private static final String KEY_TAB_POSITION = "KEY_TAB_POSITION";
-    private static final String KEY_REQUEST_OS = "KEY_REQUEST_OS";
 
     private BaseDiscoveryContract.Presenter presenter;
     private boolean forceSwipeToShop;
@@ -146,11 +132,6 @@ public class BaseDiscoveryActivity
 
     @Override
     public void showTimeoutErrorNetwork(String message) {
-
-    }
-
-    @Override
-    public void onHandleImageSearchResponseSuccess() {
 
     }
 
