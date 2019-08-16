@@ -359,6 +359,7 @@ public class ImageSearchActivity extends DiscoveryActivity
     public void onImagePickedSuccess(String imagePath) {
         setImagePath(imagePath);
         showLoadingView(true);
+        showContainer(false);
         getPresenter().requestImageSearch(imagePath);
     }
 
