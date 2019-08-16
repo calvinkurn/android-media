@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -26,6 +28,8 @@ public class WishlistTopAdsListViewHolder extends AbstractViewHolder<WishlistTop
     @LayoutRes
     public static int LAYOUT = R.layout.layout_wishlist_topads;
     private TopAdsCarouselView topAdsCarouselView;
+    private TextView titleView;
+    private ImageView infoView;
     private String keyword;
     private Context context;
 
@@ -33,17 +37,25 @@ public class WishlistTopAdsListViewHolder extends AbstractViewHolder<WishlistTop
         super(itemView);
         this.context = itemView.getContext();
         topAdsCarouselView = itemView.findViewById(R.id.topads);
-
+        titleView = topAdsCarouselView.findViewById(R.id.title);
+        infoView = topAdsCarouselView.findViewById(R.id.info_cta);
     }
 
     @Override
     public void bind(WishlistTopAdsViewModel element) {
+        titleView.setText(element.getTitle());
+        infoView.setVisibility(View.GONE);
         this.keyword = element.getQuery();
         topAdsCarouselView.setAdsItemClickListener(this);
         topAdsCarouselView.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionProductAdsItem(int position, Product product) {
                 TopAdsGtmTracker.eventWishlistProductView(context, product, keyword, position);
+            }
+
+            @Override
+            public void onAddWishlist(boolean isWishlist) {
+                TopAdsGtmTracker.eventRecommendationWishlistClick(isWishlist);
             }
         });
         topAdsCarouselView.setData(element.getTopAdsModel());

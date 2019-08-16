@@ -84,20 +84,25 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
     }
 
     private fun showSuccessAddWishlist(view: View, message: String){
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                .setAction(R.string.account_go_to_wishlist) { RouteManager.route(view.context, ApplinkConst.WISHLIST) }
-                .show()
+        Toaster.showNormalWithAction(
+                view,
+                message,
+                Snackbar.LENGTH_LONG,
+                view.context.getString(R.string.account_go_to_wishlist),
+                View.OnClickListener {
+                    RouteManager.route(view.context, ApplinkConst.WISHLIST)
+                }
+                )
     }
 
     private fun showSuccessRemoveWishlist(view: View, message: String){
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        Toaster.showNormal(view, message, Snackbar.LENGTH_LONG)
     }
 
     private fun showError(view: View, throwable: Throwable?){
         Toaster.showError(view,
             ErrorHandler.getErrorMessage(view.context, throwable),
             Snackbar.LENGTH_LONG)
-
     }
 
     private fun mapBadges(badges: List<String?>){

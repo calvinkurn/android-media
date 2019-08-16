@@ -376,4 +376,3 @@
 
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
-

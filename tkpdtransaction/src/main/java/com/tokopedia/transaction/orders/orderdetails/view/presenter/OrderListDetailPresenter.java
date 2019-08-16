@@ -279,7 +279,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     getView().hideProgressBar();
                     ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
                     if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
-                        getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }

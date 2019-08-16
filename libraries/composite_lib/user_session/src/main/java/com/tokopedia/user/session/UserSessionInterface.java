@@ -75,11 +75,14 @@ public interface UserSessionInterface {
 
     boolean getTwitterShouldPost();
 
+    /**
+     * @return method name from this class
+     */
     String getLoginMethod();
 
-        /**
-         * SETTER METHOD
-         */
+    /**
+     * SETTER METHOD
+     */
 
     void setUUID(String uuid);
 

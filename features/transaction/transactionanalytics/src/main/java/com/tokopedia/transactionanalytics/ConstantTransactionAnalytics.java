@@ -226,7 +226,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LIHAT_SEMUA_LAST_SEEN = "click lihat semua last seen on empty cart";
         String CLICK_PRODUCT_WISHLIST = "click product wishlist on empty cart";
         String CLICK_PRODUCT_LAST_SEEN = "click product last seen on empty cart";
-        String CLICK_PRODUCT_RECOMMENDATION = "click product recommendation on empty cart";
+        String CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation";
         String VIEW_PRODUCT = "view product";
 
         //PURCHASE PROTECTION
@@ -282,6 +282,10 @@ public interface ConstantTransactionAnalytics {
         String VIEW_POP_UP_ERROR_PROMO_CONFIRMATION = "view pop up error promo confirmation";
 
         String SEARCH_NOT_FOUND = "search result not found";
+
+        //WIDGET_RECOMMENDATION
+        String IMPRESSION_ON_PRODUCT_RECOMMENDATION = "impression on product recommendation";
+        String CLICK_ADD_TO_CART = "click add to cart";
     }
 
     interface EventLabel {
