@@ -32,6 +32,7 @@ include "features:digital:hotel"
 include "features:digital:imagepreviewslider"
 include "features:digital:train"
 //include "features:digital:train_no_op"
+include "feature:digital:travel_homepage"
 
 include "features:discovery:category_common"
 include "features:discovery:discovery_common"

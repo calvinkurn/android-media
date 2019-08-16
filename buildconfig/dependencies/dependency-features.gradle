@@ -164,7 +164,7 @@ ext {
             topAdsAutoAds        : "com.tokopedia.topads:top_ads_autoads:${tkpdTopAdsSDKVersion}",
             transaction             : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             transactioncommon       : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
-            travelhomepage          : "com.tokopedia.travel.homepage:travel_homepage:${tkpdTravelHomepageVersion}",
+            travelHomepage          : "com.tokopedia.travel.homepage:travel_homepage:${tkpdTravelHomepageVersion}",
             userIdentification      : "com.tokopedia.user:user:${tkpdUserIdentification}",
             userIdentificationCommon: "com.tokopedia.user:user:${tkpdUserIdentificationCommon}",
             vote                    : "com.tokopedia.user:user:${tkpdVoteVersion}",
