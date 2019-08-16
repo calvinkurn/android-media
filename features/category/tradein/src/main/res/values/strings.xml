@@ -8,4 +8,6 @@
     <string name="choose_courier">Pilih Kurir</string>
     <string name="choose">Pilih</string>
     <string name="retrieval_time">Waktu Pengambilan</string>
+    <string name="terms_and_conditions_text">Saya menyetujui syarat dan ketentuan yang berlaku.</string>
+    <string name="checkout">Checkout</string>
 </resources>

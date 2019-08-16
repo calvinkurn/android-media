@@ -1,0 +1,16 @@
+mutation checkout_general($params: CheckoutGeneralParams) {
+  checkout_general(params: $params) {
+    header {
+      process_time
+      reason
+      error_code
+      messages
+    }
+    data {
+      success
+      error
+      error_state
+      message
+    }
+  }
+}

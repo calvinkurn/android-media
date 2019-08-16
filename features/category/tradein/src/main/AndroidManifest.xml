@@ -13,5 +13,8 @@
         <activity
             android:name=".view.viewcontrollers.FinalPriceActivity"
             android:label="@string/harga_final" />
+        <activity
+            android:name=".view.viewcontrollers.MoneyInCheckoutActivity"
+            android:label="@string/checkout" />
     </application>
 </manifest>
