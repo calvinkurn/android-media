@@ -1061,9 +1061,9 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public Map<String, Object> generateRecommendationDataOnClickAnalytics(RecommendationItem cartRecommendation, int position) {
+    public Map<String, Object> generateRecommendationDataOnClickAnalytics(RecommendationItem cartRecommendation, boolean isEmptyCart, int position) {
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
-        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationOnClickMapData(cartRecommendation, position);
+        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationOnClickMapData(cartRecommendation, isEmptyCart, position);
         enhancedECommerceCartMapData.addClick(enhancedECommerceProductCartMapData.getProduct());
         enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
         return enhancedECommerceCartMapData.getCartMap();
@@ -1087,9 +1087,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private EnhancedECommerceProductCartMapData getEnhancedECommerceProductRecommendationOnClickMapData(RecommendationItem recommendationItem, int position) {
-        EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
-        enhancedECommerceActionField.setList(getActionFieldListStr(true, recommendationItem));
+    private EnhancedECommerceProductCartMapData getEnhancedECommerceProductRecommendationOnClickMapData(RecommendationItem recommendationItem, boolean isEmptyCart, int position) {
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                 new EnhancedECommerceProductCartMapData();
         enhancedECommerceProductCartMapData.setProductID(String.valueOf(recommendationItem.getProductId()));
@@ -1100,6 +1098,7 @@ public class CartListPresenter implements ICartListPresenter {
                 ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                 : recommendationItem.getCategoryBreadcrumbs());
         enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setListName(getActionFieldListStr(isEmptyCart, recommendationItem));
         enhancedECommerceProductCartMapData.setPosition(String.valueOf(position));
         enhancedECommerceProductCartMapData.setAttribution(EnhancedECommerceProductCartMapData.RECOMMENDATION_ATTRIBUTION);
         return enhancedECommerceProductCartMapData;

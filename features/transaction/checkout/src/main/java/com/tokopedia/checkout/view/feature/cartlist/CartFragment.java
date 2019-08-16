@@ -693,9 +693,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             index++;
         }
 
-        if (FLAG_IS_CART_EMPTY && recommendationItemClick != null) {
+        if (recommendationItemClick != null) {
             sendAnalyticsOnClickProductRecommendationOnEmptyCart(String.valueOf(position),
-                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, position));
+                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
         }
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
