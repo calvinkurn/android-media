@@ -33,6 +33,7 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -55,6 +56,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatCha
 import com.tokopedia.topchat.chatroom.view.customview.*
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
@@ -657,7 +659,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessAddToCart(): (addToCartResult: AddToCartDataModel) -> Unit {
         return {
-            showSnackbarAddToCart(it)
+            showSnackbarAddToCartWithAction(it)
+        }
+    }
+
+    private fun showSnackbarAddToCartWithAction(it: AddToCartDataModel) {
+        if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
+            ToasterNormal.make(view,
+                    it.data.message[0].replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.chat_check_cart)) {
+                analytics.eventClickSeeButtonOnAtcSuccessToaster()
+                activity?.startActivity((activity!!.application as TopChatRouter)
+                        .getCartIntent(activity))
+            }.show()
+        } else {
+            ToasterError.make(view, it.errorMessage[0], ToasterNormal.LENGTH_LONG).show()
         }
     }
 
@@ -860,5 +875,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun getShopName(): String {
         return opponentName
+    }
+
+    override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {
+        if (attachment is InvoicePreviewViewModel) {
+            analytics.invoiceAttachmentSent(attachment)
+        }
     }
 }

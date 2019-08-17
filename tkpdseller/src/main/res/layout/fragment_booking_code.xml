@@ -105,7 +105,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
-            android:src="@drawable/info_icon" />
+            app:srcCompat="@drawable/info_icon" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_message"

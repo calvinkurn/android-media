@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.cartshipmentform;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,9 @@ public class GroupShop implements Parcelable {
     private boolean isFulfillment;
     private int fulfillmentId;
     private String fulfillmentName;
+
+    private boolean isLeasingProduct;
+    private int bookingFee;
 
     public Shop getShop() {
         return shop;
@@ -173,6 +176,14 @@ public class GroupShop implements Parcelable {
         this.saveStateFlag = saveStateFlag;
     }
 
+    public boolean getIsLeasingProduct() { return isLeasingProduct; }
+
+    public void setIsLeasingProduct(boolean leasingProduct) { isLeasingProduct = leasingProduct; }
+
+    public int getBookingFee() { return bookingFee; }
+
+    public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -198,6 +209,8 @@ public class GroupShop implements Parcelable {
         dest.writeString(cartString);
         dest.writeByte(this.hasPromoList ? (byte) 1 : (byte) 0);
         dest.writeByte(this.saveStateFlag ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isLeasingProduct ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.bookingFee);
     }
 
     protected GroupShop(Parcel in) {
@@ -219,6 +232,8 @@ public class GroupShop implements Parcelable {
         this.cartString = in.readString();
         this.hasPromoList = in.readByte() != 0;
         this.saveStateFlag = in.readByte() != 0;
+        this.isLeasingProduct = in.readByte() != 0;
+        this.bookingFee = in.readInt();
     }
 
     public static final Creator<GroupShop> CREATOR = new Creator<GroupShop>() {

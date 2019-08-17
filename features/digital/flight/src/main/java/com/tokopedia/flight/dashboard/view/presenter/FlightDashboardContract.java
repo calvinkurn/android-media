@@ -84,6 +84,8 @@ public interface FlightDashboardContract {
 
         String getClassArguments();
 
+        Boolean isAutoSearch();
+
         FlightDashboardPassDataViewModel getDashboardPassData();
 
         void setDashboardPassData(FlightDashboardPassDataViewModel flightDashboardPassDataViewModel);

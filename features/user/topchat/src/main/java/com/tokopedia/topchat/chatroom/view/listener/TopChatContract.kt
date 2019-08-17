@@ -51,6 +51,8 @@ interface TopChatContract {
         fun notifyAttachmentsSent()
 
         fun getShopName(): String
+
+        fun sendAnalyticAttachmentSent(attachment: PreviewViewModel)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

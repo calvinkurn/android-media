@@ -26,9 +26,12 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
@@ -104,7 +107,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
             initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID, conversionListener);
 
             // suddenly hit appflyer init.
-            if(getContext() instanceof TkpdCoreRouter){
+            if (getContext() instanceof TkpdCoreRouter) {
                 TkpdCoreRouter context = (TkpdCoreRouter) getContext().getApplicationContext();
                 context.onAppsFlyerInit();
             }
@@ -193,14 +196,46 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     }
 
     public void getAdsID(final AFAdsIDCallback callback) {
-        String adId = getGoogleAdId();
-        if (!TextUtils.isEmpty(adId)) {
-            callback.onGetAFAdsID(adId);
-        } else {
-            callback.onErrorAFAdsID();
+        SharedPreferences sharedPrefs = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE);
+
+        String adsId = sharedPrefs.getString(KEY_ADVERTISINGID, "");
+        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
+            callback.onGetAFAdsID(adsId);
+            return;
         }
+
+        Observable.fromCallable(() -> {
+            AdvertisingIdClient.Info adInfo;
+            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+            return adInfo.getId();
+        }).doOnNext(s -> {
+            if (!TextUtils.isEmpty(s)) {
+                sharedPrefs.edit().putString(KEY_ADVERTISINGID, s).apply();
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+        .subscribe(new Observer<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                callback.onErrorAFAdsID();
+            }
+
+            @Override
+            public void onNext(String s) {
+                if (TextUtils.isEmpty(s)) {
+                    callback.onErrorAFAdsID();
+                } else {
+                    callback.onGetAFAdsID(s);
+                }
+            }
+        });
     }
 
+    @Deprecated
     @Override
     public String getGoogleAdId() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE);

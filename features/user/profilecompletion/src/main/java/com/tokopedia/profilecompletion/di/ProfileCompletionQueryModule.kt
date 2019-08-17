@@ -10,10 +10,12 @@ import com.tokopedia.profilecompletion.addbod.data.UserProfileCompletionUpdateBo
 import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
 import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
+import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
 import com.tokopedia.profilecompletion.settingprofile.data.SubmitProfilePictureData
 import com.tokopedia.profilecompletion.settingprofile.data.UserProfileInfoData
+import com.tokopedia.profilecompletion.settingprofile.data.UserProfileRoleData
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -104,4 +106,28 @@ class ProfileCompletionQueryModule {
             : GraphqlUseCase<UserProfileInfoData> = GraphqlUseCase<UserProfileInfoData>(graphqlRepository).apply {
         setTypeClass(UserProfileInfoData::class.java)
     }
+
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.QUERY_PROFILE_ROLE)
+    fun provideRawQueryProfileRole(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_role)
+
+
+    @Provides
+    fun provideUserProfileRoleUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<UserProfileRoleData> = GraphqlUseCase<UserProfileRoleData>(graphqlRepository).apply {
+        setTypeClass(UserProfileRoleData::class.java)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.MUTATION_USER_VALIDATE)
+    fun provideRawQueryUserValidate(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_user_profile_completion_validate)
+
+
+    @Provides
+    fun provideUserValidateGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<UserValidatePojo> = GraphqlUseCase(graphqlRepository)
 }

@@ -475,6 +475,7 @@ class TopChatRoomPresenter @Inject constructor(
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
             attachment.sendTo(messageId, opponentId, listInterceptor)
+            view.sendAnalyticAttachmentSent(attachment)
         }
         view.notifyAttachmentsSent()
     }

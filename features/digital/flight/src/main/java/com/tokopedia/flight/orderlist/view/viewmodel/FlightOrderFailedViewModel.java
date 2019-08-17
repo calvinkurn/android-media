@@ -59,4 +59,8 @@ public class FlightOrderFailedViewModel extends FlightOrderBaseViewModel impleme
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public void setContactUsUrl(String contactUsUrl) { this.contactUsUrl = contactUsUrl; }
+
+    public String getContactUsUrl() { return contactUsUrl; }
 }

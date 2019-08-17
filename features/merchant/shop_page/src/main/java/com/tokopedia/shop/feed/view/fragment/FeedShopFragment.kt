@@ -55,6 +55,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
+import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
@@ -90,6 +91,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     @Inject
     lateinit var postTagAnalytics: PostTagAnalytics
+
+    @Inject
+    lateinit var shopAnalytics: ShopAnalytics
 
     companion object {
         private const val YOUTUBE_URL = "{youtube_url}"
@@ -271,6 +275,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onEmptyFeedButtonClicked() {
         goToCreatePost()
+        shopAnalytics.eventClickCreatePost()
     }
 
     override fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -571,9 +576,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     fun showFAB(whitelistDomain: WhitelistDomain) {
         fab_feed.show()
-        val author = whitelistDomain.authors.get(0)
+        val author = whitelistDomain.authors[0]
         fab_feed.setOnClickListener {
             onGoToLink(author.link)
+            shopAnalytics.eventClickCreatePost()
         }
 
     }
