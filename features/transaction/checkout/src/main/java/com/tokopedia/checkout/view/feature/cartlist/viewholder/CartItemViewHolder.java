@@ -661,8 +661,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerError.setCloseButtonVisibility(View.GONE);
             tickerError.setVisibility(View.VISIBLE);
-            layoutError.setVisibility(View.VISIBLE);
             tickerError.requestLayout();
+            layoutError.setVisibility(View.VISIBLE);
         } else {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart);
@@ -684,8 +684,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
-            layoutWarning.setVisibility(View.VISIBLE);
             tickerWarning.requestLayout();
+            layoutWarning.setVisibility(View.VISIBLE);
         } else {
             tickerWarning.setVisibility(View.GONE);
             layoutWarning.setVisibility(View.GONE);
