@@ -169,7 +169,7 @@
                     android:id="@+id/iv_ticker_logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_ticker_announcement_cropped" />
+                    app:srcCompat="@drawable/ic_ticker_announcement_cropped" />
 
             </android.support.v7.widget.CardView>
         </FrameLayout>

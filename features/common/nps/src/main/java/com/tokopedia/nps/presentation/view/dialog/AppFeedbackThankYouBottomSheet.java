@@ -1,9 +1,8 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -33,7 +32,7 @@ public class AppFeedbackThankYouBottomSheet extends BottomSheets {
 
     @Override
     protected BottomSheetsState state() {
-        return BottomSheetsState.NORMAL;
+        return BottomSheetsState.FLEXIBLE;
     }
 
     @Override
@@ -43,24 +42,20 @@ public class AppFeedbackThankYouBottomSheet extends BottomSheets {
 
     @Override
     public void initView(View view) {
-        if ((int) appRating > NpsConstant.Feedback.GOOD_RATING_THRESHOLD) {
+        Context ctx = getContext();
+
+        if (ctx != null && (int) appRating > NpsConstant.Feedback.GOOD_RATING_THRESHOLD) {
             try {
-                getContext().startActivity(new Intent(
+                ctx.startActivity(new Intent(
                         Intent.ACTION_VIEW,
                         Uri.parse(NpsConstant.Feedback.APPLINK_PLAYSTORE + NpsConstant.Feedback.PACKAGE_CONSUMER_APP)
                 ));
             } catch (ActivityNotFoundException exception) {
-                getContext().startActivity(new Intent(
+                ctx.startActivity(new Intent(
                         Intent.ACTION_VIEW,
                         Uri.parse(NpsConstant.Feedback.URL_PLAYSTORE + NpsConstant.Feedback.PACKAGE_CONSUMER_APP)
                 ));
             }
         }
-    }
-
-    @Override
-    public void setupDialog(Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
-        updateHeight((int) (Resources.getSystem().getDisplayMetrics().heightPixels * 0.75));
     }
 }
