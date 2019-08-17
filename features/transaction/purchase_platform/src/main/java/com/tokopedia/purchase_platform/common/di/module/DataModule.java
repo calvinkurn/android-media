@@ -18,8 +18,8 @@ import com.tokopedia.purchase_platform.features.checkout.data.AddressRepositoryI
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.usecase.GetAddressWithCornerUseCase;
 import com.tokopedia.purchase_platform.common.data.apiservice.CartApi;
-import com.tokopedia.purchase_platform.common.data.apiservice.CartApiInterceptor;
-import com.tokopedia.purchase_platform.common.data.apiservice.CartResponseConverter;
+import com.tokopedia.purchase_platform.common.data.common.api.CartApiInterceptor;
+import com.tokopedia.purchase_platform.common.data.common.api.CartResponseConverter;
 import com.tokopedia.purchase_platform.common.data.apiservice.TransactionDataApiUrl;
 import com.tokopedia.purchase_platform.common.data.repository.CartRepository;
 import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;

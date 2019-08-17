@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.data.apiservice;
+package com.tokopedia.purchase_platform.common.data.common.api;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

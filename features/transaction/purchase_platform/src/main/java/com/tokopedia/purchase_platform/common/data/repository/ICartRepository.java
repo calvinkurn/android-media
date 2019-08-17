@@ -24,33 +24,4 @@ import rx.Observable;
 
 public interface ICartRepository {
 
-    Observable<CartMultipleAddressDataListResponse> getCartList(Map<String, String> param);
-
-    Observable<CartDataListResponse> getShopGroupList(Map<String, String> param);
-
-    Observable<DeleteCartDataResponse> deleteCartData(Map<String, String> param);
-
-    Observable<UpdateCartDataResponse> updateCartData(Map<String, String> param);
-
-    Observable<ShippingAddressDataResponse> setShippingAddress(Map<String, String> param);
-
-    Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(Map<String, String> param);
-
-    Observable<ShipmentAddressFormDataResponse> getShipmentAddressFormOneClickCheckout(Map<String, String> param);
-
-    Observable<ResetCartDataResponse> resetCart(Map<String, String> param);
-
-    Observable<CheckoutDataResponse> checkout(Map<String, String> param);
-
-    Observable<CheckPromoCodeCartListDataResponse> checkPromoCodeCartList(Map<String, String> param);
-
-    Observable<CheckPromoCodeFinalDataResponse> checkPromoCodeCartShipment(Map<String, String> param);
-
-    Observable<CouponDataResponse> getCouponList(Map<String, String> param);
-
-    Observable<NotifCounterCartDataResponse> getNotificationCounter();
-
-    Observable<String> cancelAutoApplyCoupon(String os, Map<String, String> params);
-
-    Observable<SaveShipmentStateResponse> saveShipmentState(Map<String, String> params);
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.data.apiservice;
+package com.tokopedia.purchase_platform.common.data.common.api;
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 

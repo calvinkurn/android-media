@@ -36,7 +36,7 @@ public class GetCartMultipleAddressListUseCase extends UseCase<CartListData> {
     public Observable<CartListData> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> param = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
-        return cartRepository.getCartList(param)
+        return cartRepository.getCartMultipleAddressList(param)
                 .map(new Func1<CartMultipleAddressDataListResponse, CartListData>() {
                     @Override
                     public CartListData call(CartMultipleAddressDataListResponse cartMultipleAddressDataListResponse) {
