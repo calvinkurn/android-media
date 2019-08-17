@@ -269,7 +269,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 });
                 tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
                 List<CartItemHolderData> cartItemDataList = data.getShopGroupData().getCartItemDataList();
-                actionListener.onShowTickerOutOfStock(cartItemDataList.get(cartItemDataList.size() - 1).getCartItemData().getOriginData().getProductId());
+                String lastProductId = cartItemDataList.get(cartItemDataList.size() - 1).getCartItemData().getOriginData().getProductId()
+                actionListener.onShowTickerOutOfStock(lastProductId);
             } else {
                 String errorDescription = data.getShopGroupData().getErrorDescription();
                 if (!TextUtils.isEmpty(errorDescription)) {
@@ -284,8 +285,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerError.setCloseButtonVisibility(View.GONE);
             tickerError.setVisibility(View.VISIBLE);
-            layoutError.setVisibility(View.VISIBLE);
             tickerError.requestLayout();
+            layoutError.setVisibility(View.VISIBLE);
             renderPromoMerchant(data, false);
         } else {
             cbSelectShop.setEnabled(true);
@@ -311,8 +312,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
-            layoutWarning.setVisibility(View.VISIBLE);
             tickerWarning.requestLayout();
+            layoutWarning.setVisibility(View.VISIBLE);
         } else {
             tickerWarning.setVisibility(View.GONE);
             layoutWarning.setVisibility(View.GONE);
