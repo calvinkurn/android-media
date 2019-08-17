@@ -21,6 +21,7 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.FileDataSource
+import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -258,6 +259,10 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        releasePlayer()
+    }
+
+    fun releasePlayer() {
         playerOptions?.release()
     }
 

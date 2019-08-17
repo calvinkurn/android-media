@@ -22,6 +22,9 @@ public class EnhancedECommerceActionField {
     public static final String LIST_WISHLIST = "/wishlist";
     public static final String LIST_RECENT_VIEW = "/recent";
     public static final String LIST_RECOMMENDATION = "/recommendation - primary product";
+    public static final String LIST_CART_RECOMMENDATION = "/cart - rekomendasi untuk anda - ";
+    public static final String LIST_CART_RECOMMENDATION_ON_EMPTY_CART = "/cart - rekomendasi untuk anda - empty_cart - ";
+    public static final String LIST_CART_RECOMMENDATION_TOPADS_TYPE = " - product topads";
 
     private static final String KEY_STEP = "step";
     private static final String KEY_OPTION = "option";

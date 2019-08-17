@@ -25,7 +25,7 @@ class ShopNoteViewHolder(itemView: View,
         ivMenuMore = itemView.findViewById(R.id.ivMenuMore)
         tvNoteName = itemView.findViewById(R.id.tvNoteName)
         tvLastUpdate = itemView.findViewById(R.id.tvLastUpdate)
-        boldColor = ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70))
+        boldColor = ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.font_black_primary_70))
     }
 
     interface OnShopNoteViewHolderListener {

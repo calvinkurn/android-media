@@ -18,6 +18,11 @@ class HotelPromoAdapter(private var viewModels: List<HotelPromoEntity>) : Recycl
         return HotelPromoViewHolder(view)
     }
 
+    fun updateItem(list: List<HotelPromoEntity>) {
+        viewModels = list
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int = viewModels.size
 
     override fun onBindViewHolder(holder: HotelPromoViewHolder, position: Int) {

@@ -103,6 +103,15 @@
             android:text="View Analytics Log"
             android:textColor="@color/white" />
 
+        <CheckBox
+            android:id="@+id/toggle_ui_block_debugger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable ANR Debugger" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
