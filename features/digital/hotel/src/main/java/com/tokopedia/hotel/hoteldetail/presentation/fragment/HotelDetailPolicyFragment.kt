@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyPolicyData
@@ -16,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail_policy.*
 /**
  * @author by furqan on 07/05/19
  */
-class HotelDetailPolicyFragment : BaseListDFFragment<PropertyPolicyData, HotelDetailFacilityAdapterTypeFactory>() {
+class HotelDetailPolicyFragment : BaseListFragment<PropertyPolicyData, HotelDetailFacilityAdapterTypeFactory>() {
 
     lateinit var connector: Connector
 

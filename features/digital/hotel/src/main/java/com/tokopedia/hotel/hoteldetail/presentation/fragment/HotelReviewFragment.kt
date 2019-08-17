@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
@@ -28,7 +28,7 @@ import javax.inject.Inject
  * @author by jessica on 29/04/19
  */
 
-class HotelReviewFragment : BaseListDFFragment<HotelReview, ReviewAdapterTypeFactory>(), ChipAdapter.OnClickListener {
+class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFactory>(), ChipAdapter.OnClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

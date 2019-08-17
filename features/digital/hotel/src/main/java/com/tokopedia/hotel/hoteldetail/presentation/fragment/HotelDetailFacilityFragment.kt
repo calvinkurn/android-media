@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityData
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityAdapterTypeFactory
@@ -12,7 +12,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityA
 /**
  * @author by furqan on 06/05/19
  */
-class HotelDetailFacilityFragment : BaseListDFFragment<FacilityData, HotelDetailFacilityAdapterTypeFactory>() {
+class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFacilityAdapterTypeFactory>() {
 
 
     lateinit var connector: Connector
