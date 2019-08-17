@@ -1,8 +1,9 @@
 package com.tokopedia.vouchergame.list.di
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
 import dagger.Module
 import dagger.Provides
@@ -27,12 +28,12 @@ class VoucherGameListModule {
 
     @VoucherGameListScope
     @Provides
-    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
-            MultiRequestGraphqlUseCase(graphqlRepository)
+    fun provideGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<VoucherGameListData.Response> =
+            GraphqlUseCase(graphqlRepository)
 
     @VoucherGameListScope
     @Provides
-    fun provideVoucherGameListUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase): VoucherGameListUseCase =
-           VoucherGameListUseCase(multiRequestGraphqlUseCase)
+    fun provideVoucherGameListUseCase(graphqlUseCase: GraphqlUseCase<VoucherGameListData.Response>): VoucherGameListUseCase =
+           VoucherGameListUseCase(graphqlUseCase)
 
 }

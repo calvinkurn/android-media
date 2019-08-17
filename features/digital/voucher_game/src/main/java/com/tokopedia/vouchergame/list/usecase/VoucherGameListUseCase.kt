@@ -1,11 +1,9 @@
 package com.tokopedia.vouchergame.list.usecase
 
 import com.tokopedia.graphql.GraphqlConstant
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,32 +14,20 @@ import javax.inject.Inject
  * @author by resakemal on 15/08/19
  */
 
-class VoucherGameListUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
+class VoucherGameListUseCase @Inject constructor(val useCase: GraphqlUseCase<VoucherGameListData.Response>) {
 
     suspend fun getVoucherGameList(rawQuery: String, mapParam: Map<String, Any>): Result<VoucherGameListData> {
-//        launchCatchError(block = {
-//            val data = withContext(Dispatchers.Default) {
-//                val graphqlRequest = GraphqlRequest(rawQuery, VoucherGameListData.Response::class.java, mapParam)
-//                graphqlRepository.getReseponse(listOf(graphqlRequest),
-//
-//            }.getSuccessData<VoucherGameListData.Response>()
-//
-//            voucherGameList = data.response.operators
-//            searchVoucherGameList.value = Success(voucherGameList)
-//        }) {
-//            searchVoucherGameList.value = Fail(it)
-//        }
-
-        useCase.clearRequest()
-
         try {
-            val graphqlRequest = GraphqlRequest(rawQuery, VoucherGameListData::class.java, mapParam)
-            useCase.addRequest(graphqlRequest)
+            useCase.setGraphqlQuery(rawQuery)
+            useCase.setRequestParams(mapParam)
+            useCase.setTypeClass(VoucherGameListData.Response::class.java)
             useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
-            val voucherGameListData = useCase.executeOnBackground().getSuccessData<VoucherGameListData.Response>()
+
+            val voucherGameListData = useCase.executeOnBackground()
             return Success(voucherGameListData.response)
         } catch (throwable: Throwable) {
+            useCase.clearCache()
             return Fail(throwable)
         }
     }
@@ -59,10 +45,5 @@ class VoucherGameListUseCase @Inject constructor(val useCase: MultiRequestGraphq
                     operators = filteredData))
         }
         return response
-    }
-
-    companion object {
-        const val PARAM_MENU_ID = "menuID"
-        const val PARAM_PLATFORM_ID = "platformID"
     }
 }
