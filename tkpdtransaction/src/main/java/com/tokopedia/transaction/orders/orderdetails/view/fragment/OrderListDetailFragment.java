@@ -297,6 +297,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void showSuccessMessageWithAction(String message) {
+
+    }
+
+    @Override
     public void showErrorMessage (String message) {
 
     }

@@ -2,8 +2,7 @@ package com.tokopedia.iris.worker
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.JobIntentService
-import android.util.Log
+import android.support.v4.app.BaseJobIntentService
 import com.tokopedia.iris.DEFAULT_MAX_ROW
 import com.tokopedia.iris.JOB_IRIS_ID
 import com.tokopedia.iris.MAX_ROW
@@ -17,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by meta on 24/05/19.
  */
-class IrisService : JobIntentService(), CoroutineScope {
+class IrisService : BaseJobIntentService(), CoroutineScope {
 
     private lateinit var mContext: Context
 
@@ -49,14 +48,8 @@ class IrisService : JobIntentService(), CoroutineScope {
             try {
                 val trackingRepository = TrackingRepository(applicationContext)
                 trackingRepository.sendRemainingEvent(maxRow)
-            } catch (e: Exception) {
-                Log.d("IRIS startService", e.message)
-            }
+            } catch (ignored: Exception) { }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }
 

@@ -73,7 +73,7 @@ public class FlightOrderFailedViewHolder extends FlightOrderBaseViewHolder<Fligh
 
     @Override
     protected void onHelpOptionClicked() {
-        adapterInteractionListener.onHelpOptionClicked(item.getId(), item.getStatus());
+        adapterInteractionListener.onHelpOptionClicked(item.getContactUsUrl());
     }
 
     @Override

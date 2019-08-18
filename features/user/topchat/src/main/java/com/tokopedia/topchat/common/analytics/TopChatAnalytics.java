@@ -82,6 +82,7 @@ public class TopChatAnalytics {
         public static final String CLICK_ATC_PRODUCT_THUMBNAIL ="click atc on product thumbnail";
         public static final String CLICK_BUY_PRODUCT_THUMBNAIL ="click buy on product thumbnail";
         public static final String SENT_INVOICE_ATTACHMENT = "click kirim after attach invoice";
+        public static final String CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
 
@@ -376,5 +377,14 @@ public class TopChatAnalytics {
         } else {
             return "chat";
         }
+    }
+
+    public void eventClickSeeButtonOnAtcSuccessToaster() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CLICK_CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER,
+                ""
+        );
     }
 }

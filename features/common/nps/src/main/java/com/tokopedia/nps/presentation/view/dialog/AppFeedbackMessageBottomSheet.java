@@ -1,11 +1,20 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.component.EditTextCompat;
@@ -15,15 +24,20 @@ import com.tokopedia.nps.presentation.di.FeedbackComponent;
 import com.tokopedia.nps.presentation.di.FeedbackModule;
 import com.tokopedia.nps.presentation.presenter.FeedbackPresenter;
 import com.tokopedia.nps.presentation.view.FeedbackView;
+import com.tokopedia.unifyprinciples.Typography;
 
 import javax.inject.Inject;
 
 public class AppFeedbackMessageBottomSheet extends BottomSheets implements FeedbackView {
 
     private FrameLayout buttonView;
+    private ContentLoadingProgressBar progressView;
+    private Typography buttonLabel;
+
     private float appRating;
     private String messageDesc;
     private String messageCategory;
+    private boolean isSendingEvent = false;
 
     @Inject
     FeedbackPresenter presenter;
@@ -40,18 +54,39 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
         component.inject(this);
     }
 
-    private void setSendButtonClickListener(FrameLayout button) {
-        if (button != null) {
-            button.setEnabled(false);
+    private void setContainerHandlers(ViewGroup view) {
+        if (view != null) {
+            view.setOnClickListener(v -> {
+                Activity activity = getActivity();
 
-            button.setOnClickListener(view -> {
-                presenter.post(String.valueOf((int) appRating), messageCategory, messageDesc);
+                if (activity != null) {
+                    InputMethodManager inputMethod = (InputMethodManager) activity
+                            .getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethod.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
             });
         }
     }
 
-    private void handleOnTextChanged(EditTextCompat textField) {
+    private void setButtonHandlers(FrameLayout button) {
+        if (button != null) {
+            button.setEnabled(false);
+
+            button.setOnClickListener(view -> {
+                if (!isSendingEvent) {
+                    presenter.post(String.valueOf((int) appRating), messageCategory, messageDesc);
+                    progressView.setVisibility(View.VISIBLE);
+                    buttonLabel.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
+    private void setEditTextHandlers(EditTextCompat textField) {
         if (textField != null) {
+            messageDesc = textField.getText() != null ? textField.getText().toString() : "";
+            textField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            textField.setRawInputType(InputType.TYPE_CLASS_TEXT);
             textField.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -87,7 +122,7 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
 
     @Override
     protected BottomSheetsState state() {
-        return BottomSheetsState.NORMAL;
+        return BottomSheetsState.FLEXIBLE;
     }
 
     @Override
@@ -100,14 +135,24 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
         initInjector();
         this.presenter.setView(this);
 
+        messageCategory = getString(R.string.message_default_category);
+        LinearLayout container = view.findViewById(R.id.dialog_container);
         EditTextCompat messageDescView = view.findViewById(R.id.message_description);
         buttonView = view.findViewById(R.id.send_button);
+        progressView = view.findViewById(R.id.send_progress);
+        buttonLabel = view.findViewById(R.id.button_label);
 
-        messageDesc = messageDescView.getText().toString();
-        messageCategory = getString(R.string.message_default_category);
+        if (progressView != null && getContext() != null) {
+            progressView.getIndeterminateDrawable()
+                    .setColorFilter(
+                            ContextCompat.getColor(getContext(), R.color.Neutral_N0),
+                            PorterDuff.Mode.SRC_IN
+                    );
+        }
 
-        setSendButtonClickListener(buttonView);
-        handleOnTextChanged(messageDescView);
+        setContainerHandlers(container);
+        setButtonHandlers(buttonView);
+        setEditTextHandlers(messageDescView);
     }
 
     @Override
@@ -143,6 +188,10 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
     @Override
     public void successPostFeedback() {
         if (getActivity() != null) {
+            isSendingEvent = false;
+            progressView.setVisibility(View.GONE);
+            buttonLabel.setVisibility(View.VISIBLE);
+
             FragmentManager manager = getActivity().getSupportFragmentManager();
 
             new AppFeedbackThankYouBottomSheet()

@@ -1,5 +1,5 @@
-mutation CrackResult($tokenUserID: Int!, $campaignID: Int!) {
-crackResult(tokenUserID: $tokenUserID, campaignID: $campaignID) {
+mutation CrackResult($tokenUserIDstr: String, $campaignID: Int!) {
+crackResult(tokenUserIDstr: $tokenUserIDstr, campaignID: $campaignID) {
  resultStatus {
        code
        message
