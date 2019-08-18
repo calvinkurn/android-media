@@ -381,7 +381,7 @@ public class TopChatAnalytics {
 
     public void eventClickSeeButtonOnAtcSuccessToaster() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                Name.CLICK_CHAT_DETAIL,
+                Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER,
                 ""
