@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/dp_16"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:padding="@dimen/dp_16">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmeringTv"
@@ -14,6 +14,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:loader_view_corners="dp_8"
         app:width_weight="0.6" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
@@ -22,34 +23,35 @@
         android:layout_height="@dimen/dp_145"
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shimmeringTv" />
+        app:layout_constraintTop_toBottomOf="@id/shimmeringTv"
+        app:loader_view_corners="dp_8" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering_2"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_180"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guideline"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_shimmering"
-        />
+        app:loader_view_corners="dp_8" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering_3"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_180"
-        android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/guideline"
         app:layout_constraintRight_toRightOf="@id/guideline"
+        app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/image_shimmering"
-        />
+        app:loader_view_corners="dp_8" />
 
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
@@ -57,54 +59,54 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_140"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guideline"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_shimmering_2"
-        />
+        app:loader_view_corners="dp_8" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering_5"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_140"
-        android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/guideline"
         app:layout_constraintRight_toRightOf="@id/guideline"
+        app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/image_shimmering_3"
-        />
+        app:loader_view_corners="dp_8" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering_6"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_180"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guideline"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_shimmering_4"
-        />
+        app:loader_view_corners="dp_8" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering_7"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_180"
-        android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/guideline"
         app:layout_constraintRight_toRightOf="@id/guideline"
+        app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/image_shimmering_5"
-        />
+        app:loader_view_corners="dp_8" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -113,7 +115,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_begin="?actionBarSize"
         tools:layout_constraintGuide_percent="0.5" />
-
 
 
 </android.support.constraint.ConstraintLayout>

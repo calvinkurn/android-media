@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
@@ -8,10 +9,12 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        android:layout_margin="@dimen/dp_12" />
+        android:layout_margin="@dimen/dp_12"
+        app:loader_view_corners="dp_8" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8" />
+        android:layout_marginBottom="@dimen/dp_8"
+        app:loader_view_corners="dp_8" />
 </LinearLayout>

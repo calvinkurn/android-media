@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/dp_16">
 
     <com.tokopedia.travel.homepage.presentation.customview.TravelHomepageBannerViewDynamicBackground
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/banner_shimmering"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_121"
-        android:layout_marginTop="@dimen/dp_85"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_85"
         android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         app:corners="8"
-        />
+        app:loader_view_corners="dp_8" />
 </RelativeLayout>
