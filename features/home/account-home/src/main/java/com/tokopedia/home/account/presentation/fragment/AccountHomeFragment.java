@@ -101,7 +101,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             List<AccountFragmentItem> fragmentItems = new ArrayList<>();
 
             AccountFragmentItem item = new AccountFragmentItem();
-            item.setFragment(BuyerAccountFragment.newInstance());
+            item.setFragment(BuyerAccountFragment.Companion.newInstance());
             item.setTitle(getContext().getString(R.string.label_account_buyer));
             fragmentItems.add(item);
 

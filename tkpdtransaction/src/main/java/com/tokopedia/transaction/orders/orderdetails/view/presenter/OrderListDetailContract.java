@@ -90,6 +90,8 @@ public interface OrderListDetailContract {
 
         void showSucessMessage(String message);
 
+        void showSuccessMessageWithAction(String message);
+
         void showErrorMessage(String message);
 
         void clearDynamicViews();

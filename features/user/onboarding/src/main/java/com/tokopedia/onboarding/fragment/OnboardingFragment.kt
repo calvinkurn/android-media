@@ -22,7 +22,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-
+import android.media.MediaPlayer
 
 /**
  * @author by stevenfredian on 14/05/19.
@@ -69,6 +69,8 @@ class OnboardingFragment : BaseDaggerFragment(),
     private var descKey: String = ""
     private var ttlKey: String = ""
     private var remoteConfig: RemoteConfig? = null
+
+    private var isVideoPrepared: Boolean = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -120,8 +122,18 @@ class OnboardingFragment : BaseDaggerFragment(),
         videoView?.setZOrderOnTop(true)
         videoView?.setVideoURI(Uri.parse(videoPath))
         videoView?.setOnErrorListener { _, _, _ -> true }
-        videoView?.setOnPreparedListener {
-            it.isLooping = true
+        videoView?.setOnPreparedListener { mp ->
+            isVideoPrepared = true
+            mp?.isLooping = true
+            mp?.start()
+        }
+
+        videoView?.setOnCompletionListener { mp ->
+            if (mp != null) {
+                mp.setDisplay(null)
+                mp.reset()
+                mp.setDisplay(videoView?.holder)
+            }
         }
 
         return defaultView
@@ -134,7 +146,19 @@ class OnboardingFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
-        videoView?.start()
+        videoView?.let {
+            if (!it.isPlaying) {
+                if (isVideoPrepared) {
+                    it.start()
+                } else {
+                    it.setOnPreparedListener { mp ->
+                        isVideoPrepared = true
+                        mp?.isLooping = true
+                        mp?.start()
+                    }
+                }
+            }
+        }
     }
 
     override fun onPageUnSelected() {
