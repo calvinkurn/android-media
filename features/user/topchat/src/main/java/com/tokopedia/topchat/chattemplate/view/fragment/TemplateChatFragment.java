@@ -98,7 +98,8 @@ public class TemplateChatFragment extends BaseDaggerFragment
         recyclerView.setHasFixedSize(true);
 
         presenter.attachView(this);
-        presenter.getTemplate(isSeller);
+        presenter.setMode(isSeller);
+        presenter.getTemplate();
         setBottomSheetDialog();
         return rootView;
     }
@@ -210,6 +211,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
             } else {
                 bundle.putInt(InboxMessageConstant.PARAM_MODE, EDIT);
             }
+            bundle.putBoolean(PARAM_IS_SELLER, isSeller);
             intent.putExtras(bundle);
             startActivityForResult(intent, 100);
             getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
@@ -294,7 +296,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
         switch (requestCode) {
             case 100:
                 if (resultCode == Activity.RESULT_OK) {
-                    presenter.reloadTemplate(isSeller);
+                    presenter.reloadTemplate();
                     String string = data.getStringExtra(LIST_RESULT);
                     int index = data.getIntExtra(INDEX_RESULT, -1);
                     String text = "";
