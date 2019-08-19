@@ -29,7 +29,7 @@ class VoucherGameListActivity : BaseSimpleActivity(), HasComponent<VoucherGameLi
     }
 
     companion object {
-        fun newInstance(context: Context, menuId: Int = 0, platformId: Int = 0): Intent {
+        fun newInstance(context: Context, menuId: Int, platformId: Int): Intent {
             val intent = Intent(context, VoucherGameListActivity::class.java)
             intent.putExtra(VoucherGameListFragment.EXTRA_MENU_ID, menuId)
             intent.putExtra(VoucherGameListFragment.EXTRA_PLATFORM_ID, platformId)

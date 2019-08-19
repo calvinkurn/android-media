@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -27,6 +25,9 @@ import com.tokopedia.vouchergame.list.view.viewmodel.VoucherGameListViewModel
 import kotlinx.android.synthetic.main.fragment_voucher_game_list.*
 import javax.inject.Inject
 
+/**
+ * Created by resakemal on 12/08/19.
+ */
 class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
         VoucherGameListAdapterFactory>(),
         BaseEmptyViewHolder.Callback,
@@ -69,6 +70,11 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
                 }
             }
         })
+    }
+
+    override fun showGetListError(throwable: Throwable?) {
+        recycler_view.layoutManager = GridLayoutManager(context, 1)
+        super.showGetListError(throwable)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -152,7 +158,7 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
         const val EXTRA_MENU_ID = "EXTRA_MENU_ID"
         const val EXTRA_PLATFORM_ID = "EXTRA_PLATFORM_ID"
 
-        fun createInstance(menuId: Int = 0, platformId: Int = 0): VoucherGameListFragment {
+        fun createInstance(menuId: Int, platformId: Int): VoucherGameListFragment {
             return VoucherGameListFragment().also {
                 it.arguments = Bundle().apply {
                     putInt(EXTRA_MENU_ID, menuId)
