@@ -302,7 +302,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun showToastError(throwable: Throwable) {
-        activity?.run {
+        context?.run {
             Toaster.showError(
                     findViewById(android.R.id.content),
                     RecommendationPageErrorHandler.getErrorMessage(this, throwable),
