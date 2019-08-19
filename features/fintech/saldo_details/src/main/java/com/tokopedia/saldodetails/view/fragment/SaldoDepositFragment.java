@@ -32,11 +32,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
@@ -51,7 +52,6 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -395,7 +395,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private void goToWithdrawActivity() {
         if (getActivity() != null) {
             Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
-            saldoDetailsPresenter.onDrawClicked(intent, statusWithDrawLock,mclLateCount,showMclBlockTickerFirebaseFlag);
+            saldoDetailsPresenter.onDrawClicked(intent, statusWithDrawLock, mclLateCount, showMclBlockTickerFirebaseFlag);
         }
     }
 
@@ -606,29 +606,32 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     public void showTicker() {
 
-        if(showMclBlockTickerFirebaseFlag) {
-            String tickerMsg =getString(R.string.saldolock_tickerDescription);
+        if (showMclBlockTickerFirebaseFlag) {
+            String tickerMsg = getString(R.string.saldolock_tickerDescription);
             int startIndex = tickerMsg.indexOf("Bayar Sekarang");
-            String late=Integer.toString(mclLateCount);
-            tickerMsg  =  String.format(getResources().getString(R.string.saldolock_tickerDescription),late);
+            String late = Integer.toString(mclLateCount);
+            tickerMsg = String.format(getResources().getString(R.string.saldolock_tickerDescription), late);
             SpannableString ss = new SpannableString(tickerMsg);
 
             tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
 
-            ss.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(@NonNull View view) {
-                    RouteManager.route(context, String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW,SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL));
-                }
+            if (startIndex != -1) {
+                ss.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View view) {
+                        RouteManager.route(context, String.format("%s?url=%s",
+                                ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL));
+                    }
 
-                @Override
-                public void updateDrawState(@NonNull TextPaint ds) {
-                    super.updateDrawState(ds);
-                    ds.setUnderlineText(false);
-                    ds.setColor(getResources().getColor(R.color.tkpd_main_green));
-                }
-            }, startIndex-1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    @Override
+                    public void updateDrawState(@NonNull TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                        ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                    }
+                }, startIndex - 1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
 
             tvTickerMessage.setText(ss);
             ivDismissTicker.setOnClickListener(v -> layoutTicker.setVisibility(View.GONE));
