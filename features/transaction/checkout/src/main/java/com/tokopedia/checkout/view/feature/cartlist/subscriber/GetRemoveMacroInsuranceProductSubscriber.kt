@@ -24,7 +24,8 @@ class GetRemoveMacroInsuranceProductSubscriber(val view: ICartListView,
         val removeInsuranceProductGqlResponse: RemoveInsuranceProductGqlResponse?
         if (graphqlResponse?.getData<RemoveInsuranceProductGqlResponse>(RemoveInsuranceProductGqlResponse::class.java) != null) {
             removeInsuranceProductGqlResponse = graphqlResponse.getData(RemoveInsuranceProductGqlResponse::class.java)
-            if (removeInsuranceProductGqlResponse!!.response.removeTransactional.status) {
+
+            if (removeInsuranceProductGqlResponse?.response?.removeTransactional?.status!!) {
                 if (showToaster) {
                     view.showToastMessageGreen("Success in remove insurance product!")
                 }
