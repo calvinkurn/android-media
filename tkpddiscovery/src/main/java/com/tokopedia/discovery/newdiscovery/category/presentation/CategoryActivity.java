@@ -22,6 +22,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.discovery.categoryrevamp.CategoryNavActivity;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
@@ -97,7 +98,8 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
                               boolean removeAnimation,
                               String trackerAttribution) {
         if (context != null) {
-            Intent intent = new Intent(context, CategoryActivity.class);
+            //Intent intent = new Intent(context, CategoryActivity.class);
+            Intent intent = new Intent(context, CategoryNavActivity.class);
             intent.putExtra(EXTRA_CATEGORY_HEADER_VIEW_MODEL, categoryHeaderModel);
             intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
