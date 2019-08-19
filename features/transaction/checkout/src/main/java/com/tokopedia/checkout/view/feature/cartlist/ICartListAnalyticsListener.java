@@ -88,4 +88,7 @@ public interface ICartListAnalyticsListener {
     void sendAnalyticsOnViewProductRecommendationOnCart(Map<String, Object> eeDataLayerCart);
 
     void sendAnalyticsOnClickProductRecommendationOnEmptyCart(String position, Map<String, Object> eeDataLayerCart);
+
+    void sendAnalyticsOnGoToShipmentFailed(String errorMessage);
+
 }
