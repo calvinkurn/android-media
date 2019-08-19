@@ -311,8 +311,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                    trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId
-                            ?: "")
+                    trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)
+                            ?: HotelPromoEntity(), position)
                 }
             }
         })
@@ -337,8 +337,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_container_promo.visibility = View.GONE
     }
 
-    override fun onPromoClicked(promo: HotelPromoEntity) {
-        trackingHotelUtil.hotelClickBanner(promo.promoId)
+    override fun onPromoClicked(promo: HotelPromoEntity, position: Int) {
+        trackingHotelUtil.hotelClickBanner(promo, position)
     }
 
     companion object {

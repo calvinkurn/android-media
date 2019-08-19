@@ -2,6 +2,7 @@ package com.tokopedia.hotel.common.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.hotel.common.util.HotelUtils
+import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
@@ -16,14 +17,46 @@ import kotlin.math.roundToLong
  */
 class TrackingHotelUtil {
 
-    fun hotelBannerImpression(bannerId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(PROMO_VIEW, DIGITAL_NATIVE, BANNER_IMPRESSION,
-                "$HOTEL_LABEL - $bannerId")
+    fun hotelBannerImpression(hotelPromoEntity: HotelPromoEntity, position: Int) {
+
+        val map = mutableMapOf<String, Any?>()
+        map[EVENT] = PROMO_VIEW
+        map[EVENT_CATEGORY] = DIGITAL_NATIVE
+        map[EVENT_ACTION] = BANNER_IMPRESSION
+        map[EVENT_LABEL] = "$HOTEL_LABEL - ${hotelPromoEntity.promoId}"
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(
+                PROMO_VIEW, DataLayer.mapOf(
+                PROMOTIONS_LABEL, getPromoList(hotelPromoEntity, position)
+        )
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickBanner(bannerId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(PROMO_CLICK, DIGITAL_NATIVE, CLICK_BANNER,
-                "$HOTEL_LABEL - $bannerId")
+    fun getPromoList(hotelPromoEntity: HotelPromoEntity, position: Int): List<Any> {
+        val list = ArrayList<Map<String, Any>>()
+
+        val map = HashMap<String, Any>()
+        map["id"] = hotelPromoEntity.promoId
+        map["name"] = "/hotel"
+        map["position"] = position
+        map["creative"] = hotelPromoEntity.attributes.description
+        list.add(map)
+
+        return DataLayer.listOf(*list.toTypedArray<Any>())
+    }
+
+    fun hotelClickBanner(hotelPromoEntity: HotelPromoEntity, position: Int) {
+        val map = mutableMapOf<String, Any?>()
+        map[EVENT] = PROMO_CLICK
+        map[EVENT_CATEGORY] = DIGITAL_NATIVE
+        map[EVENT_ACTION] = CLICK_BANNER
+        map[EVENT_LABEL] = "$HOTEL_LABEL - ${hotelPromoEntity.promoId}"
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(
+                PROMO_CLICK, DataLayer.mapOf(
+                PROMOTIONS_LABEL, getPromoList(hotelPromoEntity, position)
+        )
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
     fun hotelSelectDestination(destType: String, destination: String) {
@@ -140,12 +173,13 @@ class TrackingHotelUtil {
 
     fun hotelViewDetails(hotelName: String, hotelId: Int, available: Boolean, price: String, directPayment: Boolean) {
         val map = mutableMapOf<String, Any?>()
-        map[EVENT] = VIEW_HOTEL
+        map[EVENT] = VIEW_PRODUCT
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = VIEW_HOTEL_PDP
         map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $available - $price - $directPayment"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
-                "view", DataLayer.mapOf(
+                "detail", DataLayer.mapOf(
+                "actionField", DataLayer.mapOf("list", "/hotel"),
                 PRODUCTS_LABEL, DataLayer.listOf(
                 DataLayer.mapOf(
                         "name", hotelName,
