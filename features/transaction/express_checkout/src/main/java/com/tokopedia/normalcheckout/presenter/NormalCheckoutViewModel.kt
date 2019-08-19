@@ -55,7 +55,7 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
 
     fun parseDataFrom(arguments: Bundle?) {
         if (arguments == null) return
-        needRefresh = arguments.getBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, false)
+        needRefresh = arguments.getBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, DEFAULT_NEED_REFRESH)
     }
 
     fun getProductInfo(productParams: ProductParams, resources: Resources) {
