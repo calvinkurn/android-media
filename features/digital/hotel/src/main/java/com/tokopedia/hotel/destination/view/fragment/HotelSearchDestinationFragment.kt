@@ -110,7 +110,7 @@ SearchDestinationListener{
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_no_match_search_suggestion
+        emptyModel.iconRes = R.drawable.hotel_ic_no_match_search_suggestion
         emptyModel.title = getString(R.string.hotel_destination_empty_view_holder_title)
         emptyModel.content = getString(R.string.hotel_destination_empty_view_holder_subtitle)
 
