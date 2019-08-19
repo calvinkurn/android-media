@@ -23,7 +23,7 @@
             android:id="@+id/imageViewCatalog"
             android:layout_width="@dimen/dp_56"
             android:layout_height="@dimen/dp_56"
-            android:src="@color/colorPrimary"/>
+            app:srcCompat="@color/colorPrimary"/>
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textViewName"

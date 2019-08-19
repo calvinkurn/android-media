@@ -20,6 +20,7 @@ buildscript {
 }
 
 dependencies {
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation project(rootProject.ext.libraries.cacheApi)

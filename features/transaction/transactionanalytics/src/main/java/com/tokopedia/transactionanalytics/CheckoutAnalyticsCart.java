@@ -549,7 +549,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_CLICK,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_RECOMMENDATION,
-                Key.EVENT_LABEL, position,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -724,6 +724,16 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 EventAction.VIEW_TICKER_STOCK_DECREASE_AND_ALREADY_ATC_BY_OTHER_USER,
                 productId
         );
+    }
+
+    public void enhancedEcommerceViewRecommendationOnCart(Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_VIEW,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.IMPRESSION_ON_PRODUCT_RECOMMENDATION,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
     }
 
     public void eventViewInformationAndWarningTickerInCart(String tickerId) {

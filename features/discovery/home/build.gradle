@@ -43,7 +43,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.banner)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.feed)
@@ -128,6 +127,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.banner
 }
 
 apply from: '../../../publish_local.gradle'
