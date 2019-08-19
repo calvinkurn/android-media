@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/chips_background"
+    android:background="@drawable/bg_af_chips"
     android:paddingTop="@dimen/dp_8"
     android:paddingBottom="@dimen/dp_8"
     android:paddingLeft="@dimen/dp_12"
@@ -17,9 +17,9 @@
         android:id="@+id/caption_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="reguler"
-        android:textColor="@color/clr_ae31353b"
-        tools:text="@string/af_label_post"/>
+        android:textColor="@color/tkpd_main_green"
+        tools:text="New arrival"/>
 
 </FrameLayout>

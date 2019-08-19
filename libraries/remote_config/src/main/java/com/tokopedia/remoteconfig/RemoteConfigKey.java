@@ -140,4 +140,6 @@ public class RemoteConfigKey {
     public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
 
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
+
+    public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
 }

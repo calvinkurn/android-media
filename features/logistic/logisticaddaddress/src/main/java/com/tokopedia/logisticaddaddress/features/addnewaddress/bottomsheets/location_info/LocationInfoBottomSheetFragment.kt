@@ -35,6 +35,10 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         }
     }
 
+    override fun state(): BottomSheetsState {
+        return BottomSheetsState.FLEXIBLE
+    }
+
     override fun getLayoutResourceId(): Int {
         return R.layout.bottomsheet_location_info
     }
