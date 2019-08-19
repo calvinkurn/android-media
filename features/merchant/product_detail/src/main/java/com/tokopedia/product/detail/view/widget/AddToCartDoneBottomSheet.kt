@@ -15,7 +15,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -46,6 +48,9 @@ class AddToCartDoneBottomSheet :
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
         const val KEY_ADDED_PRODUCT_DATA_MODEL = "addedProductDataModel"
+        const val KEY_SUCCESS_MESSAGE_ATC = "successMessageAtc"
+
+
     }
 
     @Inject
@@ -59,6 +64,7 @@ class AddToCartDoneBottomSheet :
     lateinit var recyclerView: RecyclerView
     lateinit var containerLayout: CoordinatorLayout
     var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
+    var successMessageAtc = ""
 
     override fun getLayoutResourceId(): Int {
         return R.layout.add_to_cart_done_bottomsheet
@@ -76,6 +82,7 @@ class AddToCartDoneBottomSheet :
         initInjector()
         initViewModel()
         getArgumentsData()
+        showSnackbarSuccessAtc()
         context?.let {
             trackingQueue = TrackingQueue(it)
         }
@@ -123,6 +130,7 @@ class AddToCartDoneBottomSheet :
     private fun getArgumentsData() {
         arguments?.let {
             addedProductDataModel = it.getParcelable(KEY_ADDED_PRODUCT_DATA_MODEL)
+            successMessageAtc = it.getString(KEY_SUCCESS_MESSAGE_ATC,"")
         }
     }
 
@@ -160,6 +168,24 @@ class AddToCartDoneBottomSheet :
             )
         }
     }
+
+    private fun showSnackbarSuccessAtc() {
+        activity?.run {
+            val messageString: String = if (successMessageAtc.isNullOrEmpty()) {
+                getString(R.string.default_request_error_unknown_short)
+            } else {
+                successMessageAtc
+            }
+            ToasterNormal.make(containerLayout, messageString.replace("\n", " "), BaseToaster.LENGTH_LONG)
+                    .setAction(getString(R.string.label_atc_open_cart)) { v ->
+                        productDetailTracking.eventAtcClickLihat(addedProductDataModel?.productId)
+                        val intent = RouteManager.getIntent(this, ApplinkConst.CART)
+                        startActivity(intent)
+                    }
+                    .show()
+        }
+    }
+
 
     override fun state(): BottomSheetsState {
         return BottomSheetsState.FLEXIBLE

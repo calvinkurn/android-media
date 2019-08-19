@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.RecommendationProductDataModel
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.unifycomponents.Toaster
 
 class AddToCartDoneRecommendationProductViewHolder(
         itemView: View,
@@ -69,11 +70,8 @@ class AddToCartDoneRecommendationProductViewHolder(
                         if (element.recommendationItem.isWishlist) {
                             showSuccessAddWishlist(
                                     itemView,
-                                    getString(R.string.msg_success_add_wishlist),
-                                    context.getString(R.string.recom_go_to_wishlist)
-                            ) {
-                                RouteManager.route(context, ApplinkConst.WISHLIST)
-                            }
+                                    getString(R.string.msg_success_add_wishlist)
+                            )
                         } else {
                             showSuccessRemoveWishlist(
                                     itemView,
@@ -88,49 +86,19 @@ class AddToCartDoneRecommendationProductViewHolder(
         }
     }
 
-    private fun showSuccessAddWishlist(view: View, message: String, actionMessage: String, action: (() -> Unit)) {
-        val snackBar = Snackbar.make(
-                view,
-                message,
-                Snackbar.LENGTH_LONG)
-        snackBar.setAction(actionMessage) {
-            action.invoke()
-        }
-        val snackBarView = snackBar.view
-        val padding = view.resources.getDimensionPixelSize(R.dimen.dp_16)
-        snackBarView.setPadding(padding, 0, padding, 0)
-        snackBarView.setBackgroundColor(Color.TRANSPARENT)
-        val rootSnackBarView = snackBarView as FrameLayout
-        rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_normal)
-        snackBar.show()
+    private fun showSuccessAddWishlist(view: View, message: String){
+        Toaster.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
+                view.context.getString(R.string.recom_go_to_wishlist), View.OnClickListener {
+            RouteManager.route(view.context, ApplinkConst.WISHLIST)
+        })
     }
 
-    private fun showSuccessRemoveWishlist(view: View, message: String) {
-        val snackBar = Snackbar.make(
-                view,
-                message,
-                Snackbar.LENGTH_LONG)
-        val snackBarView = snackBar.view
-        val padding = view.resources.getDimensionPixelSize(R.dimen.dp_16)
-        snackBarView.setPadding(padding, 0, padding, 0)
-        snackBarView.setBackgroundColor(Color.TRANSPARENT)
-        val rootSnackBarView = snackBarView as FrameLayout
-        rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_normal)
-        snackBar.show()
+    private fun showSuccessRemoveWishlist(view: View, message: String){
+        Toaster.showNormal(view, message, Snackbar.LENGTH_LONG)
     }
 
-    private fun showError(view: View, throwable: Throwable?) {
-        val snackBar = Snackbar.make(
-                view,
-                ErrorHandler.getErrorMessage(view.context, throwable),
-                Snackbar.LENGTH_LONG)
-        val snackBarView = snackBar.view
-        val padding = view.resources.getDimensionPixelSize(R.dimen.dp_16)
-        snackBarView.setPadding(padding, 0, padding, 0)
-        snackBarView.setBackgroundColor(Color.TRANSPARENT)
-        val rootSnackBarView = snackBarView as FrameLayout
-        rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_error)
-        snackBar.show()
+    private fun showError(view: View, throwable: Throwable?){
+        Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
     }
 
 }

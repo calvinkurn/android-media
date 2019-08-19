@@ -12,9 +12,9 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.Banner;
+import com.tokopedia.banner.BannerView;
 import com.tokopedia.banner.Indicator;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 
 import java.util.ArrayList;
