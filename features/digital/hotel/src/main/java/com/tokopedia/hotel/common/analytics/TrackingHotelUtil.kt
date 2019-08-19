@@ -39,7 +39,7 @@ class TrackingHotelUtil {
         map["id"] = hotelPromoEntity.promoId
         map["name"] = "/hotel"
         map["position"] = position
-        map["creative"] = hotelPromoEntity.attributes.description
+        map["creative"] = "DG_${hotelPromoEntity.attributes.promoCode}"
         list.add(map)
 
         return DataLayer.listOf(*list.toTypedArray<Any>())
