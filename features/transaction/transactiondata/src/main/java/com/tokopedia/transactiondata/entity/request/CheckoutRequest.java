@@ -36,6 +36,9 @@ public class CheckoutRequest implements Parcelable {
     @SerializedName("promo_codes")
     @Expose
     public ArrayList<String> promoCodes;
+    @SerializedName("leasing_id")
+    @Expose
+    public int leasingId;
     @SerializedName("has_insurance_product")
     @Expose
     public boolean hasMacroInsurance;
@@ -51,6 +54,7 @@ public class CheckoutRequest implements Parcelable {
         cornerData = in.readParcelable(TokopediaCornerData.class.getClassLoader());
         hasPromoStacking = in.readByte() != 0;
         promoCodes = in.createStringArrayList();
+        leasingId = in.readInt();
         hasMacroInsurance = in.readByte() != 0;
     }
 
@@ -63,6 +67,7 @@ public class CheckoutRequest implements Parcelable {
         dest.writeParcelable(cornerData, flags);
         dest.writeByte((byte) (hasPromoStacking ? 1 : 0));
         dest.writeStringList(promoCodes);
+        dest.writeInt(leasingId);
         dest.writeByte((byte) (hasMacroInsurance ? 1 : 0));
     }
 
@@ -117,6 +122,7 @@ public class CheckoutRequest implements Parcelable {
         private TokopediaCornerData cornerData;
         private boolean hasPromoStacking;
         private ArrayList<String> promoCodes;
+        private int leasingId;
 
         public Builder() {
         }
@@ -158,6 +164,11 @@ public class CheckoutRequest implements Parcelable {
 
         public Builder promoCodes(ArrayList<String> val){
             promoCodes = val;
+            return this;
+        }
+
+        public Builder setLeasingId(int val) {
+            leasingId = val;
             return this;
         }
 

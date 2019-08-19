@@ -647,7 +647,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType)
                 if(::tradeInParams.isInitialized) {
-                    intent.putExtra(NormalCheckoutActivity.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                    intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
                 startActivityForResult(intent,
                         REQUEST_CODE_NORMAL_CHECKOUT)
@@ -1064,7 +1064,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         val selectedWarehouse: MultiOriginWarehouse? = cacheManager.get(NormalCheckoutFragment.RESULT_SELECTED_WAREHOUSE,
                                 MultiOriginWarehouse::class.java)
                         if (selectedProductInfo != null) {
-                            userInputVariant = data.getStringExtra(NormalCheckoutFragment.EXTRA_SELECTED_VARIANT_ID)
+                            userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
                             productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
                             selectedWarehouse?.let {
                                 productInfoViewModel.multiOrigin = it.warehouseInfo
@@ -1079,11 +1079,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     productInfoViewModel.p2General.value?.variantResp?.run {
                         onSuccessGetProductVariantInfo(this)
                     }
-                    userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
-                    userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
+                    userInputNotes = data.getStringExtra(ApplinkConst.Transaction.EXTRA_NOTES)
+                    userInputQuantity = data.getIntExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, 0)
 
-                    if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
-                        val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
+                    if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
+                        val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
                         showSnackbarSuccessAtc(successMessage)
                         shouldShowCartAnimation = true
                         updateCartNotification()
