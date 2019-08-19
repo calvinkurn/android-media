@@ -125,6 +125,7 @@ import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -236,6 +237,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val REQUEST_CODE_NORMAL_CHECKOUT = 566
         const val REQUEST_CODE_ATC_EXPRESS = 567
         const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
+        const val REQUEST_CODE_REPORT = 570
         const val REQUEST_CODE_SHOP_INFO = 998
 
         const val CART_MAX_COUNT = 99
@@ -664,7 +666,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType)
                 if(::tradeInParams.isInitialized) {
-                    intent.putExtra(NormalCheckoutActivity.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                    intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
                 startActivityForResult(intent,
                         REQUEST_CODE_NORMAL_CHECKOUT)
@@ -1081,7 +1083,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         val selectedWarehouse: MultiOriginWarehouse? = cacheManager.get(NormalCheckoutFragment.RESULT_SELECTED_WAREHOUSE,
                                 MultiOriginWarehouse::class.java)
                         if (selectedProductInfo != null) {
-                            userInputVariant = data.getStringExtra(NormalCheckoutFragment.EXTRA_SELECTED_VARIANT_ID)
+                            userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
                             productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
                             selectedWarehouse?.let {
                                 productInfoViewModel.multiOrigin = it.warehouseInfo
@@ -1096,11 +1098,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     productInfoViewModel.p2General.value?.variantResp?.run {
                         onSuccessGetProductVariantInfo(this)
                     }
-                    userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
-                    userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
+                    userInputNotes = data.getStringExtra(ApplinkConst.Transaction.EXTRA_NOTES)
+                    userInputQuantity = data.getIntExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, 0)
 
-                    if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
-                        val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
+                    if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
+                        val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
                         showSnackbarSuccessAtc(successMessage)
                         shouldShowCartAnimation = true
                         updateCartNotification()
@@ -1145,6 +1147,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
                 doBuy()
+            }
+            REQUEST_CODE_REPORT -> {
+                if (resultCode == Activity.RESULT_OK)
+                    showToastSuccessReport()
             }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
@@ -1613,6 +1619,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun showToastSuccessReport() {
+        activity?.run {
+            Toaster.showNormal(findViewById(android.R.id.content),
+                    getString(R.string.success_to_report), Snackbar.LENGTH_LONG)
+        }
+    }
+
     /**
      * Event than happen after owner successfully move the warehoused product back to etalase
      */
@@ -1974,9 +1987,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun reportProduct() {
         productInfo?.run {
             if (productInfoViewModel.isUserSessionActive()) {
-                fragmentManager?.let {
-                    val fragment = ReportDialogFragment.newInstance(basic.id.toString())
-                    fragment.show(it, ReportDialogFragment.TAG)
+                context?.let {
+                    val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.REPORT_PRODUCT,
+                            basic.id.toString())
+                    startActivityForResult(intent, REQUEST_CODE_REPORT)
                 }
 
                 productDetailTracking.eventReportLogin()

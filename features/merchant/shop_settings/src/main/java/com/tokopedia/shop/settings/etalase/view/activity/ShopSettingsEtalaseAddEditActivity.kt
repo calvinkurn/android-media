@@ -3,6 +3,7 @@ package com.tokopedia.shop.settings.etalase.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -46,6 +47,24 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
         }
 
         supportActionBar?.setTitle(if (!isEdit) R.string.shop_settings_add_etalase else R.string.shop_settings_edit_etalase)
+    }
+
+    override fun inflateFragment() {
+        val newFragment = newFragment ?: return
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, newFragment, tagFragment)
+                .commit()
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        setContentView(layoutRes)
+        toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)
+        if (supportActionBar != null) {
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            supportActionBar!!.setDisplayShowTitleEnabled(true)
+            supportActionBar!!.title = this.title
+        }
     }
 
     override fun getNewFragment() = ShopSettingsEtalaseAddEditFragment.createInstance(isEdit, etalase)

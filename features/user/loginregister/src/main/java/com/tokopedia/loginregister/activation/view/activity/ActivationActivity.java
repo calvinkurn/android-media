@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.loginregister.activation.di.DaggerActivationComponent;
 import com.tokopedia.loginregister.activation.view.fragment.ActivationFragment;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
@@ -67,10 +68,11 @@ public class ActivationActivity extends BaseSimpleActivity implements HasCompone
         analytics.trackScreen(this, LoginRegisterAnalytics.Companion.getSCREEN_ACCOUNT_ACTIVATION());
     }
 
-    public static Intent getCallingIntent(Context context, String email, String pw) {
+    public static Intent getCallingIntent(Context context, String email, String pw, String source) {
         Intent callingIntent = new Intent(context, ActivationActivity.class);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_PW, pw);
+        callingIntent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source);
         return callingIntent;
     }
 

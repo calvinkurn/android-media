@@ -12,6 +12,7 @@ include "libraries:common_network"
 include "libraries:core_legacy"
 include "libraries:core_network"
 include 'libraries:date_picker_range'
+include 'libraries:dynamic_features'
 include "libraries:fingerprint"
 include "libraries:image_picker"
 include "libraries:image_preview"
@@ -20,8 +21,8 @@ include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
 include 'libraries:locationmanager'
 include "libraries:logger"
-include 'libraries:iris'
-//include 'libraries:iris_no_op'
+//include 'libraries:iris'
+include 'libraries:iris_no_op'
 include "libraries:pagination"
 include "libraries:oms"
 include "libraries:push_notification"

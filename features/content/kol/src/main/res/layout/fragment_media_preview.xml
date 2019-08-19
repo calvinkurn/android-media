@@ -266,7 +266,7 @@
             tools:text="17 barang"
             tools:visibility="visible"/>
 
-        <com.tokopedia.design.component.UnifyButton
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_tag_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -275,9 +275,9 @@
             android:minWidth="@dimen/dp_85"
             android:textAllCaps="false"
             android:visibility="gone"
-            app:btnSize="small"
-            app:buttonType="main"
-            app:buttonVariant="filled"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"
             app:layout_constraintBottom_toTopOf="@+id/icon_thumb"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
