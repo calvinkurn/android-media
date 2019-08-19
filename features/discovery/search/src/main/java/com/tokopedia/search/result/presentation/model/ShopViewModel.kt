@@ -98,6 +98,10 @@ data class ShopViewModel(
             return typeFactory?.type(this) ?: 0
         }
 
+        override fun toString(): String {
+            return "ShopItem id = $id, position = $position"
+        }
+
         data class ShopItemProduct(
                 val id: Int = 0,
                 val name: String = "",

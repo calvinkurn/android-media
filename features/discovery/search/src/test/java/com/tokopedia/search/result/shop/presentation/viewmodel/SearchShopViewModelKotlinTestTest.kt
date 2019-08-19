@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import android.arch.core.executor.ArchTaskExecutor
+import android.arch.core.executor.TaskExecutor
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
@@ -13,82 +14,72 @@ import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.State
 import com.tokopedia.user.session.UserSessionInterface
+import io.kotlintest.*
+import io.kotlintest.extensions.TopLevelTest
+import io.kotlintest.matchers.asClue
+import io.kotlintest.matchers.collections.shouldNotBeEmpty
+import io.kotlintest.matchers.types.shouldBeInstanceOf
+import io.kotlintest.matchers.types.shouldNotBeNull
+import io.kotlintest.specs.BehaviorSpec
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.After
-import org.junit.Rule
-import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when` as whenever
+import org.mockito.Mockito
 
-@ExperimentalCoroutinesApi
-class SearchShopViewModelTest {
+fun <T> List<T>?.secondElementAndAbove(): List<T>? {
+    if(this?.size ?: 0 < 2) return this
 
-    @Test
-    fun `test search shop successful`() {
-        `given search shop API call will be successful and return search shop data`()
+    return this?.subList(1, this.size)
+}
 
-        `when execute search shop`()
+class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
 
-        `then assert search shop state is success with data contains search shop header and shop items`()
+    init {
+        Given("search shop API call will be successful and return search shop data") {
+            `given search shop API call will be successful and return search shop data`()
+
+            When("execute search shop") {
+                `when execute search shop`()
+
+                Then("assert search shop state is success with data contains search shop header and shop items") {
+
+                    val state = searchShopViewModel.getSearchShopLiveData()
+                    state.asClue {
+
+                        it.value.shouldNotBeNull()
+                        it.value?.data.shouldNotBeNull()
+                        it.value?.data?.shouldNotBeEmpty()
+                        it.value?.data?.first().shouldBeInstanceOf<ShopHeaderViewModel>()
+                        it.value?.data?.secondElementAndAbove().asClue { secondIndexAndAbove ->
+                            secondIndexAndAbove.shouldBeInstanceOf<List<ShopViewModel.ShopItem>>()
+
+                            secondIndexAndAbove?.forEachIndexed { index, shopItem ->
+                                (shopItem as ShopViewModel.ShopItem).position = index + 1
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    @Test
-    fun `test search shop error`() {
-        `given search shop API call will fail`()
+    override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
+        ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
+            override fun executeOnDiskIO(runnable: Runnable) {
+                runnable.run()
+            }
 
-        `when execute search shop`()
+            override fun isMainThread(): Boolean {
+                return true
+            }
 
-        `then assert search shop state is error with no data`()
+            override fun postToMainThread(runnable: Runnable) {
+                runnable.run()
+            }
+        })
     }
 
-    @Test
-    fun `test search shop and search more shop successful`() {
-        `given search shop and search more shop API call will be successful and return search shop data`()
-
-        `when execute search shop, then search more shop`()
-
-        `then assert search shop state is success with data from both search shop and search more shop`()
+    override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+        ArchTaskExecutor.getInstance().setDelegate(null)
     }
-
-    @Test
-    fun `test search shop successful, but search more shop error`() {
-        `given search shop API call will be successful, but search more shop API call will fail`()
-
-        `when execute search shop, then search more shop`()
-
-        `then assert search shop state is error, but still contains data from search shop`()
-    }
-
-    @Test
-    fun `test search shop twice`() {
-        `given search shop API call will return different values between first and second call`()
-
-        `when execute search shop twice`()
-
-        `then assert search shop state is success but only have data from the first search shop API call`()
-    }
-
-    @Test
-    fun `test search more shop but without next page after search shop`() {
-        `given search shop API call will return data with has next page is false`()
-
-        `when execute search shop, then search more shop`()
-
-        `then assert search shop state is success, but only have search shop data`()
-    }
-
-    @Test
-    fun `test search more shop but without next page after search more shop`() {
-        `given search more shop API will return data with has next page is false`()
-
-        `when execute search shop, search more shop, and then search more shop again`()
-
-        `then assert search shop state is success, without data from last search more shop API call`()
-    }
-
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
 
     private abstract class MockShopHeaderViewModelMapper : Mapper<SearchShopModel, ShopHeaderViewModel>
     private abstract class MockShopViewModelMapper : Mapper<SearchShopModel, ShopViewModel>
@@ -129,24 +120,24 @@ class SearchShopViewModelTest {
             SearchApiConst.Q to "samsung"
     )
 
-    private val shopHeaderViewModelMapper = mock(MockShopHeaderViewModelMapper::class.java)
+    private val shopHeaderViewModelMapper = Mockito.mock(MockShopHeaderViewModelMapper::class.java)
 
-    private val shopViewModelMapper = mock(MockShopViewModelMapper::class.java)
+    private val shopViewModelMapper = Mockito.mock(MockShopViewModelMapper::class.java)
 
-    private val userSession = mock(UserSessionInterface::class.java).also {
-        whenever(it.isLoggedIn).thenReturn(true)
-        whenever(it.userId).thenReturn("123456")
+    private val userSession = Mockito.mock(UserSessionInterface::class.java).also {
+        Mockito.`when`(it.isLoggedIn).thenReturn(true)
+        Mockito.`when`(it.userId).thenReturn("123456")
     }
 
-    private val localCacheHandler = mock(LocalCacheHandler::class.java).also {
-        whenever(it.getString(SearchConstant.GCM_ID, "")).thenReturn("MOCK_GCM_ID")
+    private val localCacheHandler = Mockito.mock(LocalCacheHandler::class.java).also {
+        Mockito.`when`(it.getString(SearchConstant.GCM_ID, "")).thenReturn("MOCK_GCM_ID")
     }
 
     private lateinit var searchShopViewModel: SearchShopViewModel
 
     private fun `given search shop API call will be successful and return search shop data`() {
-        whenever(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
-        whenever(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
+        Mockito.`when`(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
+        Mockito.`when`(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
 
         searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
@@ -264,9 +255,9 @@ class SearchShopViewModelTest {
     }
 
     private fun `given search shop and search more shop API call will be successful and return search shop data`() {
-        whenever(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
-        whenever(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
-        whenever(shopViewModelMapper.convert(searchMoreShopModel)).thenReturn(moreShopViewModel)
+        Mockito.`when`(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
+        Mockito.`when`(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
+        Mockito.`when`(shopViewModelMapper.convert(searchMoreShopModel)).thenReturn(moreShopViewModel)
 
         searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
@@ -306,8 +297,8 @@ class SearchShopViewModelTest {
     }
 
     private fun `given search shop API call will be successful, but search more shop API call will fail`() {
-        whenever(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
-        whenever(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
+        Mockito.`when`(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
+        Mockito.`when`(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
 
         val exception = Exception("Mock exception for testing error")
         searchShopViewModel = SearchShopViewModel(
@@ -351,11 +342,11 @@ class SearchShopViewModelTest {
     }
 
     private fun `given search shop API call will return different values between first and second call`() {
-        whenever(shopHeaderViewModelMapper.convert(searchShopModel))
+        Mockito.`when`(shopHeaderViewModelMapper.convert(searchShopModel))
                 .thenReturn(shopHeaderViewModel)
                 .thenReturn(ShopHeaderViewModel())
 
-        whenever(shopViewModelMapper.convert(searchShopModel))
+        Mockito.`when`(shopViewModelMapper.convert(searchShopModel))
                 .thenReturn(shopViewModel)
                 .thenReturn(ShopViewModel())
 
@@ -397,9 +388,9 @@ class SearchShopViewModelTest {
     }
 
     private fun `given search shop API call will return data with has next page is false`() {
-        whenever(shopHeaderViewModelMapper.convert(searchShopModelWithoutNextPage)).thenReturn(shopHeaderViewModel)
-        whenever(shopViewModelMapper.convert(searchShopModelWithoutNextPage)).thenReturn(shopViewModel)
-        whenever(shopViewModelMapper.convert(searchMoreShopModel)).thenReturn(moreShopViewModel)
+        Mockito.`when`(shopHeaderViewModelMapper.convert(searchShopModelWithoutNextPage)).thenReturn(shopHeaderViewModel)
+        Mockito.`when`(shopViewModelMapper.convert(searchShopModelWithoutNextPage)).thenReturn(shopViewModel)
+        Mockito.`when`(shopViewModelMapper.convert(searchMoreShopModel)).thenReturn(moreShopViewModel)
 
         searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
@@ -434,9 +425,9 @@ class SearchShopViewModelTest {
     }
 
     private fun `given search more shop API will return data with has next page is false`() {
-        whenever(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
-        whenever(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
-        whenever(shopViewModelMapper.convert(searchMoreShopModelWithoutNextPage))
+        Mockito.`when`(shopHeaderViewModelMapper.convert(searchShopModel)).thenReturn(shopHeaderViewModel)
+        Mockito.`when`(shopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel)
+        Mockito.`when`(shopViewModelMapper.convert(searchMoreShopModelWithoutNextPage))
                 .thenReturn(moreShopViewModel)
                 .thenReturn(ShopViewModel(shopItemList = moreShopItemViewModelList.map { it.copy() }.toList()))
 
@@ -478,10 +469,5 @@ class SearchShopViewModelTest {
                 "State is null"
             }
         }
-    }
-
-    @After
-    fun tearDown() {
-
     }
 }

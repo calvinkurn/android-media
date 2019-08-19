@@ -13,6 +13,10 @@ data class ShopHeaderViewModel(
 
     var query = ""
 
+    override fun toString(): String {
+        return this.javaClass.canonicalName ?: ""
+    }
+
     override fun type(typeFactory: ShopListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
