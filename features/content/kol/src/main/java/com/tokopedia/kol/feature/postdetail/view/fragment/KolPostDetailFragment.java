@@ -106,7 +106,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
-        RelatedPostAdapter.RelatedPostListener {
+        RelatedPostAdapter.RelatedPostListener,
+        HighlightAdapter.HighlightListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -193,8 +194,18 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this
-                , this, this, this, this, this, this, userSession)
+        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,
+                this,
+                this, this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
 
