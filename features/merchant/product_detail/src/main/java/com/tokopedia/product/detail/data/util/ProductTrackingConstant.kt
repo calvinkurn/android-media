@@ -6,6 +6,8 @@ object ProductTrackingConstant {
     object Category {
         const val PDP = "product detail page"
         const val PRODUCT_PAGE = "Product Page"
+        const val PDP_AFTER_ATC = "product detail page after atc"
+
     }
 
     object Action {
@@ -17,6 +19,7 @@ object ProductTrackingConstant {
         const val CLICK_BY_ME = "click - by.me"
         const val CLICK_SHIPPING = "click - shipping"
         const val CLICK_SHIPPING_RATE_ESTIMATION = "click - shipping rate estimation"
+        const val ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION = " - wishlist on product recommendation"
 
     }
 

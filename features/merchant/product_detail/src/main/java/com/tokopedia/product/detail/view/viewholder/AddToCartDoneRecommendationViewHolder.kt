@@ -6,33 +6,47 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationViewModel
-import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.RecommendationProductViewModel
+import com.tokopedia.product.detail.view.adapter.AddToCartRecommendationProductAdapter
+import com.tokopedia.product.detail.view.adapter.RecommendationProductTypeFactory
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.add_to_cart_done_recommendation_layout.view.*
 
 class AddToCartDoneRecommendationViewHolder(
         itemView: View,
-        val listener : RecommendationProductAdapter.UserActiveListener,
-        val trackingQueue: TrackingQueue
+        val recommendationListener: RecommendationListener
 ) : AbstractViewHolder<AddToCartDoneRecommendationViewModel>(itemView) {
+
+    private val adapter: AddToCartRecommendationProductAdapter by lazy {
+        AddToCartRecommendationProductAdapter(fact)
+    }
+
+    private val fact: RecommendationProductTypeFactory by lazy {
+        RecommendationProductTypeFactory(recommendationListener)
+    }
+
     override fun bind(element: AddToCartDoneRecommendationViewModel) {
-        with(itemView){
+        with(itemView) {
             title_recom.text = element.recommendationWidget.title
             product_recom.layoutManager = LinearLayoutManager(
                     context,
                     LinearLayoutManager.HORIZONTAL,
                     false
             )
-            val adapter = RecommendationProductAdapter(
-                    element.recommendationWidget,
-                    listener,
-                    element.recommendationWidget.pageName,
-                    trackingQueue
-            )
+            for (ls in element.recommendationWidget.recommendationItemList) {
+                adapter.addElement(RecommendationProductViewModel(ls))
+            }
             product_recom.adapter = adapter
-            product_recom.visible()
+            adapter.notifyDataSetChanged()
             visible()
-//            adapter.notifyDataSetChanged()
+        }
+    }
+
+    fun updateWishlist(position: Int, isAddWishlist: Boolean) {
+        if (adapter.data[position] is RecommendationProductViewModel) {
+            adapter.data[position].recommendationItem.isWishlist = isAddWishlist
+            adapter.notifyItemChanged(position)
         }
     }
 

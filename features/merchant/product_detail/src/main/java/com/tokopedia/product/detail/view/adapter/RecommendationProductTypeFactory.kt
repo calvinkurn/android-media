@@ -7,32 +7,25 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductViewModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationViewModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.RecommendationProductViewModel
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
+import com.tokopedia.product.detail.view.viewholder.RecommendationProductViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
-class AddToCartDoneTypeFactory(
-        private val addToCartDoneAddedProductListener: AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
+class RecommendationProductTypeFactory(
         val recommendationListener: RecommendationListener
 ) : BaseAdapterTypeFactory() {
-    fun type(addToCartDoneRecommendationViewModel: AddToCartDoneRecommendationViewModel): Int {
-        return AddToCartDoneRecommendationViewHolder.LAYOUT_RES
-    }
-
-    fun type(addToCartDoneAddedProductViewModel: AddToCartDoneAddedProductViewModel): Int {
-        return AddToCartDoneAddedProductViewHolder.LAYOUT_RES
+    fun type(recommendationProductViewModel: RecommendationProductViewModel): Int {
+        return RecommendationProductViewHolder.LAYOUT_RES
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            AddToCartDoneRecommendationViewHolder.LAYOUT_RES -> AddToCartDoneRecommendationViewHolder(
+            RecommendationProductViewHolder.LAYOUT_RES -> RecommendationProductViewHolder(
                     parent,
                     recommendationListener
-            )
-            AddToCartDoneAddedProductViewHolder.LAYOUT_RES -> AddToCartDoneAddedProductViewHolder(
-                    parent,
-                    addToCartDoneAddedProductListener
             )
             else -> return super.createViewHolder(parent, type)
         }

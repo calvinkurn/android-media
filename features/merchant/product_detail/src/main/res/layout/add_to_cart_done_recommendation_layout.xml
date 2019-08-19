@@ -39,9 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:descendantFocusability="blocksDescendants"
-            android:scrollbars="none"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:scrollbars="none"/>
 
     </FrameLayout>
 

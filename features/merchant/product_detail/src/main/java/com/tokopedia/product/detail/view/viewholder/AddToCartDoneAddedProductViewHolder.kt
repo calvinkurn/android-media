@@ -25,17 +25,6 @@ class AddToCartDoneAddedProductViewHolder(
             }
         }
     }
-//
-//    private fun gotoCart() {
-//        if (productInfoViewModel.isUserSessionActive()) {
-//            startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
-//        } else {
-//            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-//                    REQUEST_CODE_LOGIN)
-//        }
-//        productDetailTracking.eventCartMenuClicked(generateVariantString())
-//    }
-
     companion object {
         val LAYOUT_RES = R.layout.add_to_cart_done_added_product_layout
     }

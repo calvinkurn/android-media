@@ -1,0 +1,140 @@
+package com.tokopedia.product.detail.view.viewholder
+
+import android.app.Activity
+import android.graphics.Color
+import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
+import android.widget.FrameLayout
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationViewModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.RecommendationProductViewModel
+import com.tokopedia.product.detail.view.adapter.AddToCartRecommendationProductAdapter
+import com.tokopedia.productcard.v2.ProductCardView
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import kotlinx.android.synthetic.main.add_to_cart_done_recommendation_layout.view.*
+
+class RecommendationProductViewHolder(
+        itemView: View,
+        val recommendationListener: RecommendationListener
+) : AbstractViewHolder<RecommendationProductViewModel>(itemView) {
+    private val productCardView: ProductCardView by lazy { itemView.findViewById<ProductCardView>(R.id.productCardView) }
+
+    override fun bind(element: RecommendationProductViewModel) {
+        productCardView.run {
+            removeAllShopBadges()
+            setImageProductVisible(true)
+            setProductNameVisible(true)
+            setPriceVisible(true)
+            setSlashedPriceVisible(element.recommendationItem.discountPercentage > 0)
+            setLabelDiscountVisible(element.recommendationItem.discountPercentage > 0)
+            setImageRatingVisible(element.recommendationItem.rating > 0 && element.recommendationItem.countReview > 0)
+            setReviewCountVisible(element.recommendationItem.rating > 0 && element.recommendationItem.countReview > 0)
+//            setShopBadgesVisible(element.recommendationItem.badges.isNotEmpty())
+            setShopLocationVisible(true)
+            setButtonWishlistVisible(true)
+            setButtonWishlistImage(element.recommendationItem.isWishlist)
+            setImageProductUrl(element.recommendationItem.imageUrl)
+            setProductNameText(element.recommendationItem.name)
+            setPriceText(element.recommendationItem.price)
+            setImageTopAdsVisible(element.recommendationItem.isTopAds)
+            setSlashedPriceText(element.recommendationItem.slashedPrice)
+            setLabelDiscountText(element.recommendationItem.discountPercentage)
+            setRating(element.recommendationItem.rating)
+            setReviewCount(element.recommendationItem.countReview)
+//            mapBadges(element.recommendationItem.badges)
+            setShopLocationText(element.recommendationItem.location)
+            setImageProductViewHintListener(element.recommendationItem, object : ViewHintListener {
+                override fun onViewHint() {
+                    recommendationListener.onProductImpression(element.recommendationItem)
+                }
+            })
+            realignLayout()
+            setOnClickListener {
+                recommendationListener.onProductClick(element.recommendationItem, null, adapterPosition)
+            }
+            setButtonWishlistOnClickListener {
+                recommendationListener.onWishlistClick(element.recommendationItem, !element.recommendationItem.isWishlist) { success, throwable ->
+                    if (success) {
+                        element.recommendationItem.isWishlist = !element.recommendationItem.isWishlist
+                        setButtonWishlistImage(element.recommendationItem.isWishlist)
+                        if (element.recommendationItem.isWishlist) {
+                            showSuccessAddWishlist(
+                                    itemView,
+                                    getString(R.string.msg_success_add_wishlist),
+                                    context.getString(R.string.recom_go_to_wishlist)
+                            ) {
+                                RouteManager.route(context, ApplinkConst.WISHLIST)
+                            }
+                        } else {
+                            showSuccessRemoveWishlist(
+                                    itemView,
+                                    getString(R.string.msg_success_remove_wishlist)
+                            )
+                        }
+                    } else {
+                        showError(rootView, throwable)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showSuccessAddWishlist(view: View, message: String, actionMessage: String, action: (() -> Unit)) {
+        val snackBar = Snackbar.make(
+                view,
+                message,
+                Snackbar.LENGTH_LONG)
+        snackBar.setAction(actionMessage) {
+            action.invoke()
+        }
+        val snackBarView = snackBar.view
+        val padding = view.resources.getDimensionPixelSize(R.dimen.dp_16)
+        snackBarView.setPadding(padding, 0, padding, 0)
+        snackBarView.setBackgroundColor(Color.TRANSPARENT)
+        val rootSnackBarView = snackBarView as FrameLayout
+        rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_normal)
+        snackBar.show()
+    }
+
+    private fun showSuccessRemoveWishlist(view: View, message: String) {
+        val snackBar = Snackbar.make(
+                view,
+                message,
+                Snackbar.LENGTH_LONG)
+        val snackBarView = snackBar.view
+        val padding = view.resources.getDimensionPixelSize(R.dimen.dp_16)
+        snackBarView.setPadding(padding, 0, padding, 0)
+        snackBarView.setBackgroundColor(Color.TRANSPARENT)
+        val rootSnackBarView = snackBarView as FrameLayout
+        rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_normal)
+        snackBar.show()
+    }
+
+    private fun showError(view: View, throwable: Throwable?) {
+        val snackBar = Snackbar.make(
+                view,
+                ErrorHandler.getErrorMessage(view.context, throwable),
+                Snackbar.LENGTH_LONG)
+        val snackBarView = snackBar.view
+        val padding = view.resources.getDimensionPixelSize(R.dimen.dp_16)
+        snackBarView.setPadding(padding, 0, padding, 0)
+        snackBarView.setBackgroundColor(Color.TRANSPARENT)
+        val rootSnackBarView = snackBarView as FrameLayout
+        rootSnackBarView.getChildAt(0).setBackgroundResource(R.drawable.bg_toaster_error)
+        snackBar.show()
+    }
+
+
+    companion object {
+        val LAYOUT_RES = R.layout.item_product_recommendation_add_to_cart
+    }
+}

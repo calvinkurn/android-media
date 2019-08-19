@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.di
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -9,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @ProductDetailScope
-@Module (includes = [ProductRestModule::class])
+@Module(includes = [ProductRestModule::class])
 class ProductDetailModule {
 
     @ProductDetailScope
@@ -23,4 +24,25 @@ class ProductDetailModule {
     @Provides
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+//    @ProductDetailScope
+//    @Provides
+//    fun provideGetRecommendationUseCase(
+//            @Named("recommendationQuery")
+//            query: String,
+//            graphqlUseCase: GraphqlUseCase,
+//            userSessionInterface: UserSessionInterface
+//    ): GetRecommendationUseCase {
+//        return GetRecommendationUseCase(
+//                query,
+//                graphqlUseCase,
+//                userSessionInterface
+//        )
+//    }
+
+    @ProductDetailScope
+    @Provides
+    fun provideProductDetailTracking(): ProductDetailTracking {
+        return ProductDetailTracking()
+    }
 }
