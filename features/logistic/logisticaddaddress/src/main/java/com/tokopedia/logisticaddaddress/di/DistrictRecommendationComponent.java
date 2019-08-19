@@ -10,7 +10,7 @@ import dagger.Component;
  * Created by Irfan Khoirul on 20/11/17.
  */
 @DistrictRecommendationScope
-@Component(modules = DistrictRecommendationModule.class, dependencies = BaseAppComponent.class)
+@Component(modules = {DistrictRecommendationModule.class, GqlQueryModule.class}, dependencies = BaseAppComponent.class)
 public interface DistrictRecommendationComponent {
     void inject(DiscomFragment discomFragment);
     void inject(DiscomBottomSheetFragment fragment);
