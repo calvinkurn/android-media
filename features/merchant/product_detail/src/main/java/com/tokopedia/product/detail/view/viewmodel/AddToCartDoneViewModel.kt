@@ -31,9 +31,7 @@ class AddToCartDoneViewModel @Inject constructor(
         @Named("Main")
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher
 ) {
-
-    val loadTopAdsProduct = MutableLiveData<RequestDataState<List<RecommendationWidget>>>()
-    var lazyNeedForceUpdate = false
+    val recommendationProduct = MutableLiveData<RequestDataState<List<RecommendationWidget>>>()
 
     companion object {
         object TopAdsDisplay {
@@ -48,34 +46,29 @@ class AddToCartDoneViewModel @Inject constructor(
             const val DEFAULT_PAGE_NUMBER = 1
             const val DEFAULT_PAGE_NAME = "pdp_atc_1,pdp_atc_2"
         }
-
     }
 
     fun getRecommendationProduct(productId: String) {
         launch {
             val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
-                    (loadTopAdsProduct.value as? Loaded)?.data as? Success == null) {
-                loadTopAdsProduct.value = Loading
+                    (recommendationProduct.value as? Loaded)?.data as? Success == null) {
+                recommendationProduct.value = Loading
                 loadRecommendationProduct(productId)
-
             } else null
 
             topAdsProductDef?.await()?.let {
                 val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data
                         ?: return@launch)
-                loadTopAdsProduct.value = Loaded(Success(recommendationWidget))
+                recommendationProduct.value = Loaded(Success(recommendationWidget))
             }
         }
-
     }
 
     private fun loadRecommendationProduct(productId: String) = async(Dispatchers.IO) {
         val topadsParams = generateRecommendationProductParams(productId)
         val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
                 RecomendationEntity::class.java, topadsParams)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(if (lazyNeedForceUpdate) CacheType.ALWAYS_CLOUD
-        else CacheType.CACHE_FIRST).build()
-
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         try {
             Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
                     .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data

@@ -78,7 +78,7 @@ import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductViewModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
@@ -102,6 +102,7 @@ import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.*
+import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_ADDED_PRODUCT_DATA_MODEL
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
@@ -1133,13 +1134,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
             val productName = it.basic.name
             val productImageUrl = it.firstThumbnailPicture
-            val model = AddToCartDoneAddedProductViewModel(
+            val addedProductDataModel = AddToCartDoneAddedProductDataModel(
                     it.basic.id.toString(),
                     productName,
                     productImageUrl
             )
             val bundleData = Bundle()
-            bundleData.putParcelable("model", model)
+            bundleData.putParcelable(KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
             addToCartDoneBottomSheet.arguments = bundleData
             addToCartDoneBottomSheet.show(
                     fragmentManager, "TAG"

@@ -5,8 +5,9 @@ import com.tokopedia.product.detail.view.adapter.RecommendationProductTypeFactor
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-data class RecommendationProductViewModel(
-        val recommendationItem: RecommendationItem
+data class RecommendationProductDataModel(
+        val recommendationItem: RecommendationItem,
+        val parentAdapterPosition: Int
 ) : Visitable<RecommendationProductTypeFactory>{
     override fun type(productTypeFactory: RecommendationProductTypeFactory): Int {
         return productTypeFactory.type(this)

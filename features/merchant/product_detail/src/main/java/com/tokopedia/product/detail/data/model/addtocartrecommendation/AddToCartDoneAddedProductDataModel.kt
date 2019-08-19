@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
 
-data class AddToCartDoneAddedProductViewModel(
+data class AddToCartDoneAddedProductDataModel(
         val productId: String?,
         val productName: String?,
         val productImageUr: String?
@@ -32,12 +32,12 @@ data class AddToCartDoneAddedProductViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<AddToCartDoneAddedProductViewModel> {
-        override fun createFromParcel(parcel: Parcel): AddToCartDoneAddedProductViewModel {
-            return AddToCartDoneAddedProductViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<AddToCartDoneAddedProductDataModel> {
+        override fun createFromParcel(parcel: Parcel): AddToCartDoneAddedProductDataModel {
+            return AddToCartDoneAddedProductDataModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<AddToCartDoneAddedProductViewModel?> {
+        override fun newArray(size: Int): Array<AddToCartDoneAddedProductDataModel?> {
             return arrayOfNulls(size)
         }
     }

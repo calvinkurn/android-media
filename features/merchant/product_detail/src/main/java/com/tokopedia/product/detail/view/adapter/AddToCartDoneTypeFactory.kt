@@ -1,26 +1,23 @@
 package com.tokopedia.product.detail.view.adapter
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductViewModel
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationViewModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class AddToCartDoneTypeFactory(
         private val addToCartDoneAddedProductListener: AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
         val recommendationListener: RecommendationListener
 ) : BaseAdapterTypeFactory() {
-    fun type(addToCartDoneRecommendationViewModel: AddToCartDoneRecommendationViewModel): Int {
+    fun type(addToCartDoneRecommendationDataModel: AddToCartDoneRecommendationDataModel): Int {
         return AddToCartDoneRecommendationViewHolder.LAYOUT_RES
     }
 
-    fun type(addToCartDoneAddedProductViewModel: AddToCartDoneAddedProductViewModel): Int {
+    fun type(addToCartDoneAddedProductDataModel: AddToCartDoneAddedProductDataModel): Int {
         return AddToCartDoneAddedProductViewHolder.LAYOUT_RES
     }
 

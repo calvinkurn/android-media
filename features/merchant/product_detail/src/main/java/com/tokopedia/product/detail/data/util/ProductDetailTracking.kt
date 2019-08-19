@@ -13,6 +13,8 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.PRODUCT_VIEW
+import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.RECOMMENDATION_CLICK
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
@@ -277,35 +279,33 @@ class ProductDetailTracking() {
         else ""
         val listValue = LIST_PRODUCT_AFTER_ATC + LIST_RECOMMENDATION + valueLoginOrNotLogin +
                 product.recommendationType + (if (product.isTopAds) " - product topads" else "")
-        // send it here
-//        TrackApp.getInstance().gtm.pushEECommerce(ProductTrackingConstant.Action.PRODUCT_CLICK, Bundle().apply {
-//            putBundle("items", Bundle().apply {
-//                putString(FirebaseAnalytics.Param.ITEM_NAME, product.name)
-//                putString(FirebaseAnalytics.Param.ITEM_ID, product.productId.toString())
-//                putDouble(FirebaseAnalytics.Param.PRICE, removeCurrencyPrice(product.price).toDouble())
-//                putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE)
-//                putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
-//                putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
-//                putLong(FirebaseAnalytics.Param.INDEX, position.toLong())
-//            })
-//            putString(LIST, listValue)
-//            putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
-//            putString(KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK +
-//                    (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""))
-//            putString(KEY_LABEL, pageTitle)
-//        })
         val actionValuePostfix = if (!isSessionActive)
             " - ${ProductTrackingConstant.USER_NON_LOGIN}"
         else
             ""
+        // send it here
+        TrackApp.getInstance().gtm.pushEECommerce(ProductTrackingConstant.Action.PRODUCT_CLICK, Bundle().apply {
+            putBundle("items", Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_NAME, product.name)
+                putString(FirebaseAnalytics.Param.ITEM_ID, product.productId.toString())
+                putDouble(FirebaseAnalytics.Param.PRICE, removeCurrencyPrice(product.price).toDouble())
+                putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
+                putLong(FirebaseAnalytics.Param.INDEX, position .toLong())
+            })
+            putString(LIST, listValue)
+            putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC)
+            putString(KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK + actionValuePostfix)
+            putString(KEY_LABEL, pageTitle)
+        })
+
         val data = DataLayer.mapOf(
                 KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC,
                 KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK + actionValuePostfix,
                 KEY_LABEL, pageTitle,
-                KEY_ECOMMERCE, DataLayer.mapOf(
-                CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
-                ProductTrackingConstant.Action.CLICK, DataLayer.mapOf(
+                KEY_ECOMMERCE, DataLayer.mapOf(ProductTrackingConstant.Action.CLICK, DataLayer.mapOf(
                 ACTION_FIELD, DataLayer.mapOf(LIST, listValue),
                 PRODUCTS, DataLayer.listOf(
                 DataLayer.mapOf(
@@ -327,7 +327,7 @@ class ProductDetailTracking() {
                 (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
-        TrackApp.getInstance().gtm.pushEECommerce("productView", Bundle().apply {
+        TrackApp.getInstance().gtm.pushEECommerce(PRODUCT_VIEW, Bundle().apply {
             putBundle("items", Bundle().apply {
                 putString(FirebaseAnalytics.Param.ITEM_NAME, product.name)
                 putString(FirebaseAnalytics.Param.ITEM_ID, product.productId.toString())
@@ -344,7 +344,7 @@ class ProductDetailTracking() {
             putString(KEY_LABEL, pageTitle)
         })
 
-        val enhanceEcommerceData = DataLayer.mapOf(KEY_EVENT, "productView",
+        val enhanceEcommerceData = DataLayer.mapOf(KEY_EVENT, PRODUCT_VIEW,
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                 KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
                 (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
@@ -354,7 +354,7 @@ class ProductDetailTracking() {
 
                 CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
 
-                "impressions", DataLayer.listOf(
+                IMPRESSIONS, DataLayer.listOf(
                 DataLayer.mapOf(PROMO_NAME, product.name,
                         ID, product.productId.toString(),
                         PRICE, removeCurrencyPrice(product.price),
@@ -374,33 +374,33 @@ class ProductDetailTracking() {
         else ""
         val listValue = LIST_PRODUCT_AFTER_ATC + LIST_RECOMMENDATION + valueLoginOrNotLogin +
                 product.recommendationType + (if (product.isTopAds) " - product topads" else "")
-//        TrackApp.getInstance().gtm.pushEECommerce("productView", Bundle().apply {
-//            putBundle("items", Bundle().apply {
-//                putString(FirebaseAnalytics.Param.ITEM_NAME, product.name)
-//                putString(FirebaseAnalytics.Param.ITEM_ID, product.productId.toString())
-//                putDouble(FirebaseAnalytics.Param.PRICE, removeCurrencyPrice(product.price).toDouble())
-//                putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE)
-//                putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
-//                putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
-//                putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
-//            })
-//            putString(LIST, listValue)
-//            putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
-//            putString(KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
-//                    (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""))
-//            putString(KEY_LABEL, pageTitle)
-//        })
         val valueActionPostfix = if (!isSessionActive)
             " - ${ProductTrackingConstant.USER_NON_LOGIN}"
         else ""
+        TrackApp.getInstance().gtm.pushEECommerce(PRODUCT_VIEW, Bundle().apply {
+            putBundle("items", Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_NAME, product.name)
+                putString(FirebaseAnalytics.Param.ITEM_ID, product.productId.toString())
+                putDouble(FirebaseAnalytics.Param.PRICE, removeCurrencyPrice(product.price).toDouble())
+                putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
+                putLong(FirebaseAnalytics.Param.INDEX, position.toLong())
+            })
+            putString(LIST, listValue)
+            putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC)
+            putString(KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION + valueActionPostfix)
+            putString(KEY_LABEL, pageTitle)
+        })
+
         val enhanceEcommerceData = DataLayer.mapOf(
-                KEY_EVENT, "productView",
+                KEY_EVENT, PRODUCT_VIEW,
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC,
                 KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION + valueActionPostfix,
                 KEY_LABEL, pageTitle,
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
-                "impressions", DataLayer.listOf(
+                IMPRESSIONS, DataLayer.listOf(
                 DataLayer.mapOf(
                         PROMO_NAME, product.name,
                         ID, product.productId.toString(),
@@ -417,28 +417,27 @@ class ProductDetailTracking() {
     }
 
     fun eventAddToCartRecommendationWishlist(product: RecommendationItem, isSessionActive: Boolean, isAddWishlist: Boolean) {
-//        TrackApp.getInstance().gtm.pushEECommerce("productView", Bundle().apply {
-//            putBundle("items", Bundle().apply {
-//                putString(FirebaseAnalytics.Param.ITEM_NAME, product.name)
-//                putString(FirebaseAnalytics.Param.ITEM_ID, product.productId.toString())
-//                putDouble(FirebaseAnalytics.Param.PRICE, removeCurrencyPrice(product.price).toDouble())
-//                putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE)
-//                putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
-//                putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
-//                putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
-//            })
-//            putString(LIST, listValue)
-//            putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
-//            putString(KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
-//                    (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""))
-//            putString(KEY_LABEL, pageTitle)
-//        })
         val valueActionPostfix = if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}"
         else ""
         val valueActionPrefix = if (isAddWishlist) "add"
         else "remove"
+        TrackApp.getInstance().gtm.pushEECommerce("productView", Bundle().apply {
+            putBundle("items", Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_NAME, product.name)
+                putString(FirebaseAnalytics.Param.ITEM_ID, product.productId.toString())
+                putDouble(FirebaseAnalytics.Param.PRICE, removeCurrencyPrice(product.price).toDouble())
+                putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
+            })
+            putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC)
+            putString(KEY_ACTION, valueActionPrefix + ProductTrackingConstant.Action.ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION + valueActionPostfix)
+            putString(KEY_LABEL, product.header)
+
+        })
+
         val enhanceEcommerceData = DataLayer.mapOf(
-                KEY_EVENT, "clickRecommendation",
+                KEY_EVENT, RECOMMENDATION_CLICK,
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC,
                 KEY_ACTION, valueActionPrefix + ProductTrackingConstant.Action.ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION + valueActionPostfix,
                 KEY_LABEL, product.header
@@ -777,6 +776,7 @@ class ProductDetailTracking() {
         private const val ACTION_FIELD = "actionField"
         private const val LIST = "list"
         private const val PRODUCTS = "products"
+        private const val IMPRESSIONS = "impressions"
         private const val PRICE = "price"
         private const val BRAND = "brand"
         private const val DEFAULT_VALUE = "none / other"

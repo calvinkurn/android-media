@@ -1,34 +1,31 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.app.Activity
 import android.graphics.Color
 import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationViewModel
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.RecommendationProductViewModel
-import com.tokopedia.product.detail.view.adapter.AddToCartRecommendationProductAdapter
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.RecommendationProductDataModel
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.android.synthetic.main.add_to_cart_done_recommendation_layout.view.*
 
-class RecommendationProductViewHolder(
+class AddToCartDoneRecommendationProductViewHolder(
         itemView: View,
         val recommendationListener: RecommendationListener
-) : AbstractViewHolder<RecommendationProductViewModel>(itemView) {
+) : AbstractViewHolder<RecommendationProductDataModel>(itemView) {
+
+    companion object {
+        val LAYOUT_RES = R.layout.item_product_recommendation_add_to_cart
+    }
+
     private val productCardView: ProductCardView by lazy { itemView.findViewById<ProductCardView>(R.id.productCardView) }
 
-    override fun bind(element: RecommendationProductViewModel) {
+    override fun bind(element: RecommendationProductDataModel) {
         productCardView.run {
             removeAllShopBadges()
             setImageProductVisible(true)
@@ -38,7 +35,6 @@ class RecommendationProductViewHolder(
             setLabelDiscountVisible(element.recommendationItem.discountPercentage > 0)
             setImageRatingVisible(element.recommendationItem.rating > 0 && element.recommendationItem.countReview > 0)
             setReviewCountVisible(element.recommendationItem.rating > 0 && element.recommendationItem.countReview > 0)
-//            setShopBadgesVisible(element.recommendationItem.badges.isNotEmpty())
             setShopLocationVisible(true)
             setButtonWishlistVisible(true)
             setButtonWishlistImage(element.recommendationItem.isWishlist)
@@ -50,7 +46,6 @@ class RecommendationProductViewHolder(
             setLabelDiscountText(element.recommendationItem.discountPercentage)
             setRating(element.recommendationItem.rating)
             setReviewCount(element.recommendationItem.countReview)
-//            mapBadges(element.recommendationItem.badges)
             setShopLocationText(element.recommendationItem.location)
             setImageProductViewHintListener(element.recommendationItem, object : ViewHintListener {
                 override fun onViewHint() {
@@ -59,7 +54,12 @@ class RecommendationProductViewHolder(
             })
             realignLayout()
             setOnClickListener {
-                recommendationListener.onProductClick(element.recommendationItem, null, adapterPosition)
+                recommendationListener.onProductClick(
+                        element.recommendationItem,
+                        null,
+                        element.parentAdapterPosition,
+                        adapterPosition
+                )
             }
             setButtonWishlistOnClickListener {
                 recommendationListener.onWishlistClick(element.recommendationItem, !element.recommendationItem.isWishlist) { success, throwable ->
@@ -133,8 +133,4 @@ class RecommendationProductViewHolder(
         snackBar.show()
     }
 
-
-    companion object {
-        val LAYOUT_RES = R.layout.item_product_recommendation_add_to_cart
-    }
 }
