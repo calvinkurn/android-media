@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.RecommendationProductDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationProductDataModel
 import com.tokopedia.product.detail.view.adapter.AddToCartRecommendationProductAdapter
 import com.tokopedia.product.detail.view.adapter.RecommendationProductTypeFactory
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -38,7 +38,7 @@ class AddToCartDoneRecommendationViewHolder(
                     false
             )
             for (ls in element.recommendationWidget.recommendationItemList) {
-                adapter.addElement(RecommendationProductDataModel(
+                adapter.addElement(AddToCartDoneRecommendationProductDataModel(
                         ls,
                         adapterPosition
                 ))
@@ -49,7 +49,7 @@ class AddToCartDoneRecommendationViewHolder(
     }
 
     fun updateWishlist(position: Int, isAddWishlist: Boolean) {
-        if (adapter.data[position] is RecommendationProductDataModel) {
+        if (adapter.data[position] is AddToCartDoneRecommendationProductDataModel) {
             adapter.data[position].recommendationItem.isWishlist = isAddWishlist
             adapter.notifyItemChanged(position)
         }

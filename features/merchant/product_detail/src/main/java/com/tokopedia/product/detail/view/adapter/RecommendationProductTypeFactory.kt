@@ -3,14 +3,14 @@ package com.tokopedia.product.detail.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.RecommendationProductDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationProductDataModel
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationProductViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 class RecommendationProductTypeFactory(
         val recommendationListener: RecommendationListener
 ) : BaseAdapterTypeFactory() {
-    fun type(recommendationProductDataModel: RecommendationProductDataModel): Int {
+    fun type(addToCartDoneRecommendationProductDataModel: AddToCartDoneRecommendationProductDataModel): Int {
         return AddToCartDoneRecommendationProductViewHolder.LAYOUT_RES
     }
 

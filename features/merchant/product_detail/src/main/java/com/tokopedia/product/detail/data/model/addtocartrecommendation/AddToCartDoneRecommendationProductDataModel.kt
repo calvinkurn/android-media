@@ -5,7 +5,7 @@ import com.tokopedia.product.detail.view.adapter.RecommendationProductTypeFactor
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-data class RecommendationProductDataModel(
+data class AddToCartDoneRecommendationProductDataModel(
         val recommendationItem: RecommendationItem,
         val parentAdapterPosition: Int
 ) : Visitable<RecommendationProductTypeFactory>{

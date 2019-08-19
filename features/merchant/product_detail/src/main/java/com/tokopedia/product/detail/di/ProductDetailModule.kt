@@ -25,21 +25,6 @@ class ProductDetailModule {
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
-//    @ProductDetailScope
-//    @Provides
-//    fun provideGetRecommendationUseCase(
-//            @Named("recommendationQuery")
-//            query: String,
-//            graphqlUseCase: GraphqlUseCase,
-//            userSessionInterface: UserSessionInterface
-//    ): GetRecommendationUseCase {
-//        return GetRecommendationUseCase(
-//                query,
-//                graphqlUseCase,
-//                userSessionInterface
-//        )
-//    }
-
     @ProductDetailScope
     @Provides
     fun provideProductDetailTracking(): ProductDetailTracking {

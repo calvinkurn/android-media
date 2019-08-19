@@ -1,16 +1,14 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.graphics.Color
 import android.support.design.widget.Snackbar
 import android.view.View
-import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.RecommendationProductDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationProductDataModel
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.unifycomponents.Toaster
@@ -18,7 +16,7 @@ import com.tokopedia.unifycomponents.Toaster
 class AddToCartDoneRecommendationProductViewHolder(
         itemView: View,
         val recommendationListener: RecommendationListener
-) : AbstractViewHolder<RecommendationProductDataModel>(itemView) {
+) : AbstractViewHolder<AddToCartDoneRecommendationProductDataModel>(itemView) {
 
     companion object {
         val LAYOUT_RES = R.layout.item_product_recommendation_add_to_cart
@@ -26,7 +24,7 @@ class AddToCartDoneRecommendationProductViewHolder(
 
     private val productCardView: ProductCardView by lazy { itemView.findViewById<ProductCardView>(R.id.productCardView) }
 
-    override fun bind(element: RecommendationProductDataModel) {
+    override fun bind(element: AddToCartDoneRecommendationProductDataModel) {
         productCardView.run {
             removeAllShopBadges()
             setImageProductVisible(true)
