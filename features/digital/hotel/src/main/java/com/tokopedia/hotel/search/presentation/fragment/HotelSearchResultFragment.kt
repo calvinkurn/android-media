@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
-import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
@@ -44,7 +44,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
 import javax.inject.Inject
 
-class HotelSearchResultFragment : BaseListDFFragment<Property, PropertyAdapterTypeFactory>(),
+class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener {
 
     @Inject
