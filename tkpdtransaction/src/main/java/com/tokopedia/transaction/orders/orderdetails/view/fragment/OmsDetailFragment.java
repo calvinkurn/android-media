@@ -35,7 +35,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
@@ -494,8 +493,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void showAddToCartSucessMessage(String message) {
-        Toaster.Companion.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.lihat_text), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+    public void showSuccessMessageWithAction(String message) {
+
     }
 
     @Override

@@ -43,6 +43,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -454,8 +455,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public void showAddToCartSucessMessage(String message) {
-        Toaster.Companion.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.lihat_text), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+    public void showSuccessMessageWithAction(String message) {
+        Toaster.Companion.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
     }
 
     @Override

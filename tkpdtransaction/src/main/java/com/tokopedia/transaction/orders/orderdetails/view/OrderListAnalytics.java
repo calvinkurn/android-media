@@ -20,6 +20,7 @@ public class OrderListAnalytics {
 
     private static final String PRODUCT_EVENT_NAME = "clickPurchaseList";
     private static final String PRODUCT_EVENT_CATEGORY = "my purchase list - mp";
+    private static final String PRODUCT_EVENT_DETAIL = "my purchase list detail - mp";
     private static final String PRODUCT_EVENT_ACTION = "click product";
     private static final String FILTER_EVENT_ACTION = "click quick filter";
     private static final String DATE_EVENT_ACTION = "submit date filter";
@@ -63,6 +64,7 @@ public class OrderListAnalytics {
     private static final String KEY_PURCHASE = "purchase";
     private static final String KEY_ACTION_FIELD = "actionField";
     private static final String SCREEN_NAME = "/digital/deals/thanks";
+    private static final String ACTION_CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
     private static final String NONE = "none/other";
 
 
