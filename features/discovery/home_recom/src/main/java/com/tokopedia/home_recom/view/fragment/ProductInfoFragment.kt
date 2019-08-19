@@ -302,7 +302,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun showToastError(throwable: Throwable) {
-        context?.run {
+        activity?.run {
             Toaster.showError(
                     findViewById(android.R.id.content),
                     RecommendationPageErrorHandler.getErrorMessage(this, throwable),
@@ -311,7 +311,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun showToastSuccess(message: String) {
-        view?.run {
+        activity?.run {
             Toaster.showNormal(
                     findViewById(android.R.id.content),
                     message,
