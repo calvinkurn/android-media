@@ -529,6 +529,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             } else {
                 showToastMessageRed(message);
                 sendAnalyticsOnButtonCheckoutClickedFailed();
+                sendAnalyticsOnGoToShipmentFailed(message);
             }
         };
     }
@@ -705,6 +706,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onButtonAddToCartClicked(@NotNull Object productModel) {
         dPresenter.processAddToCart(productModel);
+    }
+
+    @Override
+    public void onShowTickerOutOfStock(@NotNull String productId) {
+        cartPageAnalytics.eventViewTickerOutOfStock(productId);
+    }
+
+    @Override
+    public void onSimilarProductUrlClicked(@NotNull String similarProductUrl) {
+        RouteManager.route(getContext(), similarProductUrl);
+        cartPageAnalytics.eventClickMoreLikeThis();
     }
 
     @NonNull
@@ -994,6 +1006,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId) {
         cartPageAnalytics.eventViewTickerStockDecreaseAndAlreadyAtcByOtherUser(productId);
+    }
+
+    @Override
+    public void onCartItemShowTickerOutOfStock(String productId) {
+        cartPageAnalytics.eventViewTickerOutOfStock(productId);
+    }
+
+    @Override
+    public void onCartItemSimilarProductUrlClicked(String similarProductUrl) {
+        RouteManager.route(getContext(), similarProductUrl);
+        cartPageAnalytics.eventClickMoreLikeThis();
     }
 
     @Override
@@ -1313,6 +1336,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void renderErrorToShipmentForm(String message) {
         sendAnalyticsOnButtonCheckoutClickedFailed();
+        sendAnalyticsOnGoToShipmentFailed(message);
         showToastMessageRed(message);
     }
 
@@ -1841,6 +1865,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void sendAnalyticsOnButtonCheckoutClickedFailed() {
         cartPageAnalytics.eventClickCheckoutCartClickCheckoutFailed();
+    }
+
+    @Override
+    public void sendAnalyticsOnGoToShipmentFailed(String errorMessage) {
+        cartPageAnalytics.eventViewErrorWhenCheckout(errorMessage);
     }
 
     @Override

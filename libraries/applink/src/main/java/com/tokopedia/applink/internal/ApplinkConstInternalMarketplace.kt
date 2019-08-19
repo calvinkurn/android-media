@@ -34,6 +34,9 @@ object ApplinkConstInternalMarketplace {
     // CartActivity
     @JvmField
     val CART = "$INTERNAL_MARKETPLACE/cart"
+    // NormalCheckoutActivity
+    @JvmField
+    val NORMAL_CHECKOUT = "$INTERNAL_MARKETPLACE/normal-checkout"
 
     // ProductDetailActivity
     @JvmField
@@ -117,12 +120,15 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
 
-    // SettingFieldActivity
+    // SettingField for old push notification page(phase 1)
     @JvmField
     val USER_PUSH_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-push-notification-setting"
+
+    //Report Product
+    @JvmField
+    val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product/{id}/report"
 
     // ShopScoreDetailActivity
     @JvmField
     val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
-
 }
