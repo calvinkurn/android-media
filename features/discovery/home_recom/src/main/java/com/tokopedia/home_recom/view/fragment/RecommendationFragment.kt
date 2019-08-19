@@ -21,6 +21,13 @@ import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.PDP_EXTRA_PRODUCT_ID
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.PDP_EXTRA_UPDATED_POSITION
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.REQUEST_FROM_PDP
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SAVED_PRODUCT_ID
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SHARE_PRODUCT_TITLE
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SPAN_COUNT
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import com.tokopedia.linker.LinkerManager
@@ -33,9 +40,10 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
 import com.tokopedia.recommendation_widget_common.TYPE_CUSTOM_HORIZONTAL
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
-import com.tokopedia.home_recom.view.listener.TrackingListener
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
@@ -47,6 +55,7 @@ import javax.inject.Inject
  * @property viewModelFactory the factory for ViewModel provide by Dagger.
  * @property trackingQueue the queue util for handle tracking.
  * @property productId the productId of ProductDetail.
+ * @property ref the ref code for know source page.
  * @property lastClickLayoutType for handling last click product layout type.
  * @property lastParentPosition for handling last click product and get know parent position for nested recyclerView.
  * @property viewModelProvider the viewModelProvider by Dagger
@@ -63,12 +72,13 @@ import javax.inject.Inject
  * @property REQUEST_FROM_PDP the const value for set request calling startActivityForResult ProductDetailActivity.
  * @constructor Creates an empty recommendation.
  */
-class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), TrackingListener {
+class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var productId: String
+    private lateinit var ref: String
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
@@ -86,8 +96,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
-        fun newInstance(productId: String = "") = RecommendationFragment().apply {
+        fun newInstance(productId: String = "", source: String = "") = RecommendationFragment().apply {
             this.productId = productId
+            this.ref = source
         }
     }
 
@@ -103,6 +114,22 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         }
         activity?.let {
             trackingQueue = TrackingQueue(it)
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if(productId.isEmpty()) {
+            RecommendationPageTracking.sendScreenRecommendationPage(
+                    "/rekomendasi",
+                    null,
+                    ref)
+        }
+        else {
+            RecommendationPageTracking.sendScreenRecommendationPage(
+                    "/rekomendasi",
+                    productId,
+                    ref)
         }
     }
 
@@ -198,7 +225,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
 
     /**
-     * This void from Callback [TrackingListener]
+     * This void from Callback [RecommendationListener]
      * It handling wishlist click from item
      * @param item the item clicked
      * @param isAddWishlist the wishlist is selected or not
@@ -208,33 +235,33 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         if(recommendationWidgetViewModel.isLoggedIn()){
             if(isAddWishlist){
                 recommendationWidgetViewModel.addWishlist(item, callback)
-                RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item))
+                RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item), ref)
             } else {
                 recommendationWidgetViewModel.removeWishlist(item, callback)
-                RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item))
+                RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item), ref)
             }
         }else{
             RouteManager.route(context, ApplinkConst.LOGIN)
-            RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item))
+            RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item), ref)
         }
     }
 
     /**
-     * This void from Callback [TrackingListener]
+     * This void from Callback [RecommendationListener]
      * It handling product impression item
      * @param item the item clicked
      */
     override fun onProductImpression(item: RecommendationItem) {
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString())
+            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
         } else {
-            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString())
+            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
         }
     }
 
 
     /**
-     * This void from Callback [TrackingListener]
+     * This void from Callback [RecommendationListener]
      * It handling item click
      * @param item the item clicked
      * @param layoutType the layoutType is type layout where item placed
@@ -291,7 +318,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
      */
     private fun displayProductInfo(dataModel: ProductInfoDataModel){
         childFragmentManager.beginTransaction()
-                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(dataModel))
+                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(dataModel, ref))
                 .commit()
     }
 
@@ -330,9 +357,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
      */
     private fun eventTrackerClickListener(item: RecommendationItem){
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString())
+            RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString(), ref)
         }else{
-            RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString())
+            RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString(), ref)
         }
     }
 
