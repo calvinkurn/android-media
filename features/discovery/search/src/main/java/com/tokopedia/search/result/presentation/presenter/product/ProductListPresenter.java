@@ -27,6 +27,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ import rx.Subscriber;
 final class ProductListPresenter
         extends SearchSectionPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
+
+    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
 
     @Inject
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
@@ -539,12 +542,7 @@ final class ProductListPresenter
     private void getViewToProcessSearchResult(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
-        String alternativeKeyword = "";
-        if (productViewModel.getRelatedSearchModel() != null) {
-            alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
-        }
-
-        getView().sendTrackingForResultCode(productViewModel.getResponseCode(), alternativeKeyword);
+        sendTrackingNoSearchResult(productViewModel);
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToShowEmptySearch(productViewModel);
@@ -556,6 +554,21 @@ final class ProductListPresenter
 
         if (isFirstTimeLoad) {
             getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+        }
+    }
+
+    private void sendTrackingNoSearchResult(ProductViewModel productViewModel) {
+        try {
+            String alternativeKeyword = "";
+            if (productViewModel.getRelatedSearchModel() != null) {
+                alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+            }
+            int resultCode = Integer.parseInt(productViewModel.getResponseCode());
+            if (searchNoResultCodeList.contains(resultCode)) {
+                getView().sendTrackingForNoResult(productViewModel.getResponseCode(), alternativeKeyword);
+            }
+        } catch (NumberFormatException e) {
+
         }
     }
 

@@ -94,7 +94,7 @@ public interface ProductListSectionContract {
 
         void redirectSearchToAnotherPage(String applink);
 
-        void sendTrackingForResultCode(String resultCode, String alternativeKeyword);
+        void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
