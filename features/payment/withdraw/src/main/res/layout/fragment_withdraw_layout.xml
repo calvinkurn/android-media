@@ -323,11 +323,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:lineSpacingExtra="5sp"
+                android:lineSpacingExtra="@dimen/sp_5"
                 android:text="@string/saldolock_info_text"
-                android:textColor="#8a000000"
-                android:textSize="12sp"
-                android:visibility="gone" />
+                android:textColor="@color/black_40"
+                android:textSize="@dimen/sp_12"
+                android:visibility="visible" />
 
         </RelativeLayout>
 

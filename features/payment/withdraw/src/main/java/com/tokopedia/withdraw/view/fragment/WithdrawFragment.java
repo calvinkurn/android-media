@@ -45,7 +45,6 @@ import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
@@ -67,7 +66,6 @@ import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
-import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
@@ -134,7 +132,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private TextView saldoWithdrawHintTV;
     private static final String IS_WITHDRAW_LOCK = "is_lock";
     private static final String MCL_LATE_COUNT = "late_count";
-    private static final String FIREBASE_FLAG_STATUS="is_on";
+    private static final String FIREBASE_FLAG_STATUS = "is_on";
 
     private int statusWithDrawLock;
     private int mclLateCount;
@@ -246,7 +244,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bankAdapter.setList(listBank);
 
         if (getArguments() != null) {
-            showMclBlockTickerFirebaseFlag=getArguments().getBoolean(FIREBASE_FLAG_STATUS);
+            showMclBlockTickerFirebaseFlag = getArguments().getBoolean(FIREBASE_FLAG_STATUS);
             buyerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
             sellerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
             statusWithDrawLock = getArguments().getInt(IS_WITHDRAW_LOCK);
@@ -328,7 +326,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         sellerSaldoWithDrawTvStatus = true;
                         SpannableString ss = new SpannableString(getString(R.string.saldolock_info_text));
                         String tickerMsg = getString(R.string.saldolock_info_text);
-                        int startIndex = tickerMsg.indexOf("hubungi kami");
+                        int startIndex = tickerMsg.indexOf("di sini");
                         tvWithDrawInfo.setMovementMethod(LinkMovementMethod.getInstance());
                         ss.setSpan(new ClickableSpan() {
                             @Override
@@ -348,10 +346,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         tvWithDrawInfo.setText(ss);
                         tvWithDrawInfo.setVisibility(View.VISIBLE);
                     }
-                        totalWithdrawal.setText("");
-                        sellerWithdrawal = true;
-                        currentState = SELLER_STATE;
-                        enableSellerSaldoView();
+                    totalWithdrawal.setText("");
+                    sellerWithdrawal = true;
+                    currentState = SELLER_STATE;
+                    enableSellerSaldoView();
                 }
             }
         });
@@ -453,8 +451,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         String tickerMsg = getString(R.string.saldolock_tickerDescription);
         int startIndex = tickerMsg.indexOf("Bayar Sekarang");
-        String late=Integer.toString(mclLateCount);
-        tickerMsg  =  String.format(getResources().getString(R.string.saldolock_tickerDescription),late);
+        String late = Integer.toString(mclLateCount);
+        tickerMsg = String.format(getResources().getString(R.string.saldolock_tickerDescription), late);
         SpannableString ss = new SpannableString(tickerMsg);
 
         tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
@@ -471,7 +469,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 ds.setUnderlineText(false);
                 ds.setColor(getResources().getColor(R.color.tkpd_main_green));
             }
-        }, startIndex-1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, startIndex - 1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tvTickerMessage.setText(ss);
         ivDismissTicker.setOnClickListener(v -> tickerLayout.setVisibility(View.GONE));
@@ -639,7 +637,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @Override
     public void onDestroy() {
         presenter.detachView();
-        if(subscription!=null) {
+        if (subscription != null) {
             subscription.unsubscribe();
         }
         super.onDestroy();
