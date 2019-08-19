@@ -20,7 +20,7 @@ class HelperTextInputLayout @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : TextInputLayout(context, attrs, defStyleAttr){
 
-    var helperTextEnabled = false
+    var helperTextInputEnabled = false
         set(value) {
             if (field == value) return
             field = value
@@ -28,15 +28,15 @@ class HelperTextInputLayout @JvmOverloads constructor(
         }
     private var errorTextEnabled = false
     private var helperTextAnimator: ViewPropertyAnimator? = null
-    var helperText: CharSequence = ""
+    var helperTextInput: CharSequence = ""
         set(value) {
             if (field == value) return
 
             field = value
-            helperTextEnabled = value.isNotBlank()
+            helperTextInputEnabled = value.isNotBlank()
             setHelperTextOnHelperView(value)
         }
-    var helperTextColor: ColorStateList? = null
+    var helperTextInputColor: ColorStateList? = null
         set(value) {
             field = value
             if (value != null)
@@ -62,7 +62,7 @@ class HelperTextInputLayout @JvmOverloads constructor(
         val a = context.obtainStyledAttributes(attrs, R.styleable.HelperTextInputLayout)
         try {
             helperText = a.getText(R.styleable.HelperTextInputLayout_helperText)
-            helperTextColor = a.getColorStateList(R.styleable.HelperTextInputLayout_helperTextColor)
+            helperTextInputColor = a.getColorStateList(R.styleable.HelperTextInputLayout_helperTextColor)
         } finally {
             a.recycle()
         }
@@ -83,7 +83,7 @@ class HelperTextInputLayout @JvmOverloads constructor(
         if (errorTextEnabled == enabled) return
         errorTextEnabled = enabled
 
-        if (errorTextEnabled && helperTextEnabled)
+        if (errorTextEnabled && helperTextInputEnabled)
             switchHelperText()
         super.setErrorEnabled(enabled)
         if (!errorTextEnabled)
@@ -109,10 +109,10 @@ class HelperTextInputLayout @JvmOverloads constructor(
     }
 
     private fun switchHelperText(){
-        if (errorTextEnabled || !helperTextEnabled){
+        if (errorTextEnabled || !helperTextInputEnabled){
             setHelperTextOnHelperView(null)
-        } else if (!errorTextEnabled && helperTextEnabled){
-            setHelperTextOnHelperView(if (helperText.isNotBlank()) helperText else null)
+        } else if (!errorTextEnabled && helperTextInputEnabled){
+            setHelperTextOnHelperView(if (helperTextInput.isNotBlank()) helperText else null)
         }
     }
 
