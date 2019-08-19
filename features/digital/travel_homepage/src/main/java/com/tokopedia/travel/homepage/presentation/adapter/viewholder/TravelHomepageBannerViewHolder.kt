@@ -1,24 +1,22 @@
 package com.tokopedia.travel.homepage.presentation.adapter.viewholder
 
-import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.banner.BannerView
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageBannerModel
-import com.tokopedia.travel.homepage.presentation.listener.ActivityStateListener
 import com.tokopedia.travel.homepage.presentation.customview.TravelHomepageBannerViewDynamicBackground
+import com.tokopedia.travel.homepage.presentation.listener.ActivityStateListener
 import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
 import kotlinx.android.synthetic.main.travel_homepage_banner.view.*
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageBannerViewHolder(itemView: View, val onBindListener: OnItemBindListener) : AbstractViewHolder<TravelHomepageBannerModel>(itemView), BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
+class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener: OnItemBindListener) : AbstractViewHolder<TravelHomepageBannerModel>(itemView), BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener {
 
     private val bannerView: TravelHomepageBannerViewDynamicBackground = itemView.findViewById(R.id.banner)
-    private val context: Context = itemView.context
     private lateinit var bannerList: List<TravelHomepageBannerModel.Banner>
 
     init {

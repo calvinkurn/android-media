@@ -4,15 +4,21 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.travel.homepage.data.*
-import com.tokopedia.travel.homepage.presentation.adapter.viewholder.*
+import com.tokopedia.travel.homepage.data.TravelHomepageBannerModel
+import com.tokopedia.travel.homepage.data.TravelHomepageCategoryListModel
+import com.tokopedia.travel.homepage.data.TravelHomepageDestinationModel
+import com.tokopedia.travel.homepage.data.TravelHomepageSectionViewModel
+import com.tokopedia.travel.homepage.presentation.adapter.viewholder.TravelHomepageBannerViewHolder
+import com.tokopedia.travel.homepage.presentation.adapter.viewholder.TravelHomepageCategoryViewHolder
+import com.tokopedia.travel.homepage.presentation.adapter.viewholder.TravelHomepageDestinationViewHolder
+import com.tokopedia.travel.homepage.presentation.adapter.viewholder.TravelHomepageSectionViewHolder
 import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
 import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageAdapterTypeFactory(val onBindListener: OnItemBindListener, val onItemClickListener: OnItemClickListener) : BaseAdapterTypeFactory(), TravelHomepageTypeFactory {
+class TravelHomepageAdapterTypeFactory(private val onBindListener: OnItemBindListener, private val onItemClickListener: OnItemClickListener) : BaseAdapterTypeFactory(), TravelHomepageTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {

@@ -25,7 +25,7 @@ class TravelHomepageCategoryListAdapter(private var list: List<TravelHomepageCat
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(list.get(position), position, listener)
+        holder.bind(list[position], position, listener)
     }
 
 

@@ -27,7 +27,7 @@ class TravelHomepageViewModel @Inject constructor(
     : BaseViewModel(dispatcher) {
 
     val travelItemList = MutableLiveData<List<TravelHomepageItemModel>>()
-    val mapper = TravelHomepageMapper()
+    private val mapper = TravelHomepageMapper()
 
     fun getIntialList() {
         val list: List<TravelHomepageItemModel> = getEmptyViewModelsUseCase.requestEmptyViewModels()

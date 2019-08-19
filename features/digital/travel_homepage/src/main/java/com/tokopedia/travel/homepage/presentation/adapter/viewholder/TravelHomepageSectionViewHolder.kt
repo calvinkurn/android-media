@@ -16,8 +16,8 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_destination_list.vi
  * @author by furqan on 06/08/2019
  */
 class TravelHomepageSectionViewHolder(itemView: View,
-                                      val onItemBindListener: OnItemBindListener,
-                                      val onItemClickListener: OnItemClickListener)
+                                      private val onItemBindListener: OnItemBindListener,
+                                      private val onItemClickListener: OnItemClickListener)
     : AbstractViewHolder<TravelHomepageSectionViewModel>(itemView) {
 
     lateinit var orderAdapter: TravelHomepageSectionAdapter
