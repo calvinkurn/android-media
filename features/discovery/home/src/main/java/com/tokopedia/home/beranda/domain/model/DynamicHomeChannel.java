@@ -661,6 +661,9 @@ public class DynamicHomeChannel {
             );
         }
 
+        /**
+         * Banner always in position 1 because only 1 banner shown
+         */
         public Map<String, Object> getEnhanceClickBannerChannelMix() {
             return DataLayer.mapOf(
                     "event", "promoClick",
@@ -676,7 +679,7 @@ public class DynamicHomeChannel {
                                                     "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().getName(),
                                                     "creative", banner.getAttribution(),
                                                     "creative_url", banner.getImageUrl(),
-                                                    "position", String.valueOf(position)
+                                                    "position", String.valueOf(1)
                                             )
                                     )
                             )
