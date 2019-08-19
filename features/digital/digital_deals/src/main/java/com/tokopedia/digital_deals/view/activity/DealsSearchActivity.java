@@ -210,7 +210,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstTime) {
-        Fragment fragment = SelectLocationBottomSheet.createInstance(tvCityName.getText().toString());
+        Location location = Utils.getSingletonInstance().getLocation(this);
+        Fragment fragment = SelectLocationBottomSheet.createInstance(tvCityName.getText().toString(), location);
         getSupportFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(SEARCH_PAGE).commit();
     }
 

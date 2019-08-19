@@ -585,8 +585,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (!TextUtils.isEmpty(location.getCoordinates())) {
             requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
         }
-        if (!TextUtils.isEmpty(location.getLocType())) {
-            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType());
+        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
         }
         return requestParams;
     }
@@ -604,8 +604,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (!TextUtils.isEmpty(location.getCoordinates())) {
             requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
         }
-        if (!TextUtils.isEmpty(location.getLocType())) {
-            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType());
+        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
         }
         return requestParams;
     }
@@ -712,7 +712,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
-        Fragment fragment = SelectLocationBottomSheet.createInstance(tvLocationName.getText().toString());
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        Fragment fragment = SelectLocationBottomSheet.createInstance(tvLocationName.getText().toString(), location);
         getChildFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(HOME_FRAGMENT).commit();
     }
 

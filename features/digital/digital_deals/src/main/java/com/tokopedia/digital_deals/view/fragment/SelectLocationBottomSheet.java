@@ -29,6 +29,7 @@ import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.DealsLocationPresenter;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.usecase.RequestParams;
 
@@ -55,10 +56,11 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
     private LinearLayoutManager layoutManager;
     private DealsPopularLocationAdapter dealsPopularLocationAdapter;
 
-    public static Fragment createInstance(String selectedLocation) {
+    public static Fragment createInstance(String selectedLocation, Location location) {
         Fragment fragment = new SelectLocationBottomSheet();
         Bundle bundle = new Bundle();
         bundle.putString("selectedLocation", selectedLocation);
+        bundle.putParcelable(Utils.LOCATION_OBJECT, location);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -77,7 +79,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         noLocationLayout = locationView.findViewById(R.id.no_location);
         popularLocationTitle = locationView.findViewById(R.id.popular_location_heading);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        dealsPopularLocationAdapter = new DealsPopularLocationAdapter(getContext(), this, mAdapterCallbacks);
+        dealsPopularLocationAdapter = new DealsPopularLocationAdapter(getContext(), this, mAdapterCallbacks, getArguments().getParcelable(Utils.LOCATION_OBJECT));
         this.selectedLocation = selectedLocation;
         searchInputView.setListener(this);
         searchInputView.setFocusChangeListener(this);

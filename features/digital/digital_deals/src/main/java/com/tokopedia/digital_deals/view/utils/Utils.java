@@ -58,6 +58,7 @@ import java.util.TimeZone;
 public class Utils {
     private static Utils singleInstance;
     private static Location location;
+    public static String LOCATION_OBJECT = "loc_obj";
     public static String LOCATION_NAME_PARAM = "location_name";
     public static String LOCATION_ID_PARAM = "id";
     public static String LOCATION_TYPE = "type";

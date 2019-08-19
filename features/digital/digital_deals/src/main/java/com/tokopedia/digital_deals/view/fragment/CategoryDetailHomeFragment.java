@@ -517,7 +517,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public void startLocationFragment(List<Location> locations) {
-        Fragment fragment = SelectLocationBottomSheet.createInstance(toolbarTitle.getText().toString());
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        Fragment fragment = SelectLocationBottomSheet.createInstance(toolbarTitle.getText().toString(), location);
         getChildFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(CATEGORY_FRAGMENT).commit();
     }
 

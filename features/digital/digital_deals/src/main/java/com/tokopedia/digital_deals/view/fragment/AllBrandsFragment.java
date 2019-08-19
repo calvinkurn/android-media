@@ -221,8 +221,8 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             if (!TextUtils.isEmpty(location.getCoordinates())) {
                 requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
             }
-            if (!TextUtils.isEmpty(location.getLocType())) {
-                requestParams.putString(Utils.LOCATION_TYPE, location.getLocType());
+            if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+                requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
             }
         }
         if (categoriesModel.getPosition() != 0) {

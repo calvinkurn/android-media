@@ -252,7 +252,8 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
 
     @Override
     public void startLocationFragment(List<Location> locations) {
-        Fragment fragment = SelectLocationBottomSheet.createInstance(toolbarTitle.getText().toString());
+        Location location = Utils.getSingletonInstance().getLocation(this);
+        Fragment fragment = SelectLocationBottomSheet.createInstance(toolbarTitle.getText().toString(), location);
         getSupportFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(ALL_BRANDS).commit();
     }
 

@@ -51,7 +51,7 @@ public class Location extends BaseItem implements Parcelable {
     private String address;
     @SerializedName("location_type")
     @Expose
-    private String locType;
+    private LocationType locType;
     @SerializedName("coordinates")
     @Expose
     private String coordinates;
@@ -93,7 +93,7 @@ public class Location extends BaseItem implements Parcelable {
         this.url = in.readString();
         this.imageApp = in.readString();
         this.address = in.readString();
-        this.locType = in.readString();
+        this.locType = in.readParcelable(LocationType.class.getClassLoader());
         this.coordinates = in.readString();
         this.cityId = in.readInt();
         this.cityName = in.readString();
@@ -206,11 +206,11 @@ public class Location extends BaseItem implements Parcelable {
         this.address = address;
     }
 
-    public String getLocType() {
+    public LocationType getLocType() {
         return locType;
     }
 
-    public void setLocType(String locType) {
+    public void setLocType(LocationType locType) {
         this.locType = locType;
     }
 
@@ -254,7 +254,7 @@ public class Location extends BaseItem implements Parcelable {
         dest.writeString(url);
         dest.writeString(imageApp);
         dest.writeString(address);
-        dest.writeString(locType);
+        dest.writeParcelable(locType, flags);
         dest.writeString(coordinates);
         dest.writeInt(cityId);
         dest.writeString(cityName);

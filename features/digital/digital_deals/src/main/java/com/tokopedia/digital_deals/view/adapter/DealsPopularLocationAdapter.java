@@ -2,7 +2,10 @@ package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +30,7 @@ import com.tokopedia.usecase.RequestParams;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import rx.Subscriber;
@@ -39,11 +43,13 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
     private String url = "";
     private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
     private String searchText = "";
+    private Location location;
 
-    public DealsPopularLocationAdapter(Context context, SelectPopularLocationListener selectPopularLocationListener, AdapterCallback callback) {
+    public DealsPopularLocationAdapter(Context context, SelectPopularLocationListener selectPopularLocationListener, AdapterCallback callback, Location location) {
         super(callback);
         this.context = context;
         this.actionListener = selectPopularLocationListener;
+        this.location = location;
         getSearchLocationListRequestUseCase = new GetLocationListRequestUseCase();
     }
 
@@ -55,6 +61,11 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
             requestParams.putString("url", url);
         } else if (pageNumber == 1 && !TextUtils.isEmpty(searchText)) {
             requestParams.putString("name", searchText);
+        }
+        if (location.getCityId() == 0) {
+            requestParams.putInt(Utils.LOCATION_ID_PARAM, location.getId());
+        } else {
+            requestParams.putInt(Utils.LOCATION_CITY_ID, location.getCityId());
         }
         getSearchLocationListRequestUseCase.setRequestParams(requestParams);
         getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -95,8 +106,8 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
     @Override
     protected BaseVH getItemViewHolder(ViewGroup parent, LayoutInflater inflater, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.popular_location_item, parent, false);
-            return new DealsPopularLocationAdapter.ItemViewHolder(itemView);
+                .inflate(R.layout.popular_location_item, parent, false);
+        return new DealsPopularLocationAdapter.ItemViewHolder(itemView);
 
     }
 
@@ -104,7 +115,7 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
         this.searchText = text;
     }
 
-    private class ItemViewHolder extends BaseVH implements View.OnClickListener{
+    private class ItemViewHolder extends BaseVH implements View.OnClickListener {
 
         private int index;
         private TextView locationName, locAddress, locType;
@@ -136,14 +147,36 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
 
         void bindData(Location location, int position) {
             this.index = position;
-            locationName.setText(location.getName());
-            locAddress.setText(location.getAddress());
-            if (!TextUtils.isEmpty(location.getLocType())) {
-                locType.setVisibility(View.VISIBLE);
-                locType.setText(location.getLocType());
-                locType.setBackground(context.getResources().getDrawable(R.drawable.rect_grey_loc_type_background));
+            if (!TextUtils.isEmpty(searchText)) {
+                int startIndex = indexOfSearchQuery(location.getName(), searchText);
+                if (startIndex == -1) {
+                    locationName.setText(location.getName());
+                } else {
+                    SpannableString highlightedTitle = new SpannableString(location.getName());
+                    highlightedTitle.setSpan(new TextAppearanceSpan(itemView.getContext(), R.style.searchTextHiglight),
+                            0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    highlightedTitle.setSpan(new TextAppearanceSpan(itemView.getContext(), R.style.searchTextHiglight),
+                            startIndex + searchText.length(), location.getName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    locationName.setText(highlightedTitle);
+                }
+            } else {
+                locationName.setText(location.getName());
             }
-            ImageHandler.loadImage(context, locImage, location.getImageApp(), R.color.grey_1100, R.color.grey_1100);
+            locAddress.setText(location.getAddress());
+            if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+                locType.setVisibility(View.VISIBLE);
+                locType.setText(location.getLocType().getName());
+                locType.setBackground(context.getResources().getDrawable(R.drawable.rect_grey_loc_type_background));
+                ImageHandler.loadImage(context, locImage, location.getLocType().getIcon(), R.color.grey_1100, R.color.grey_1100);
+            }
+
+        }
+
+        private int indexOfSearchQuery(String displayName, String searchTerm) {
+            if (!TextUtils.isEmpty(searchTerm)) {
+                return displayName.toLowerCase(Locale.getDefault()).indexOf(searchTerm.toLowerCase(Locale.getDefault()));
+            }
+            return -1;
         }
 
         @Override
