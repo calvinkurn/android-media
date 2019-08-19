@@ -34,6 +34,9 @@ object ApplinkConstInternalMarketplace {
     // CartActivity
     @JvmField
     val CART = "$INTERNAL_MARKETPLACE/cart"
+    // NormalCheckoutActivity
+    @JvmField
+    val NORMAL_CHECKOUT = "$INTERNAL_MARKETPLACE/normal-checkout"
 
     // ProductDetailActivity
     @JvmField
@@ -82,28 +85,28 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val GOLD_MERCHANT_MEMBERSHIP = "$INTERNAL_MARKETPLACE/gold-merchant-membership"
 
-    // CustomerApp only: GoldMerchantRedirectActivity
+    /**
+     * This will be pattern to shop settings module
+     * In the future, If there is a new shop settings deeplink, start with this base
+     */
     @JvmField
-    val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
+    val SHOP_SETTINGS_BASE = "$INTERNAL_MARKETPLACE/shop-settings"
 
     //ShopSettingsInfoActivity
     @JvmField
-    val SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/shop/setting"
+    val SHOP_SETTINGS_INFO = "$SHOP_SETTINGS_BASE-info"
 
-    //ShopSettingsNoteActivity
+    //ShopSettingsNotesActivity
     @JvmField
-    val SHOP_NOTE_SETTING = "$INTERNAL_MARKETPLACE/shop/setting/notes"
-
-    @JvmField
-    val SHOP_SHIPPING_SETTING = "$INTERNAL_MARKETPLACE/shop/setting/shipping"
+    val SHOP_SETTINGS_NOTES = "$SHOP_SETTINGS_BASE-notes"
 
     //ShopSettingsEtalaseActivity
     @JvmField
-    val SHOP_SETTINGS_ETALASE = "$INTERNAL_MARKETPLACE/shop/setting/etalase"
+    val SHOP_SETTINGS_ETALASE = "$SHOP_SETTINGS_BASE-etalase"
 
     //ShopSettingsAddressActivity
     @JvmField
-    val SHOP_SETTINGS_ADDRESS = "$INTERNAL_MARKETPLACE/shop/setting/address"
+    val SHOP_SETTINGS_ADDRESS = "$SHOP_SETTINGS_BASE-address"
 
     //DistrictRecommendationShopSettingsActivity
     @JvmField
@@ -113,8 +116,11 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
 
+    //Report Product
+    @JvmField
+    val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product/{id}/report"
+  
     // ShopScoreDetailActivity
     @JvmField
     val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
-
 }

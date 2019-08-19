@@ -5,7 +5,6 @@ import android.graphics.Typeface
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.ImageButton
 import android.widget.TextView
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.hotel.R
@@ -47,4 +46,6 @@ class HotelClosedSortBottomSheets: BottomSheets() {
         val title = getDialog().findViewById<TextView>(R.id.tv_title)
         title.typeface = Typeface.DEFAULT_BOLD
     }
+
+    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
 }
