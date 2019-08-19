@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.activity;
+package com.tokopedia.saldodetails.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
