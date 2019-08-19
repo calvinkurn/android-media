@@ -136,6 +136,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public static final int GO_TO_LIST = 1;
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
     private boolean FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
+    private boolean FLAG_IS_CART_EMPTY = false;
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -675,6 +676,28 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onProductClicked(@NotNull String productId) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
+        startActivityForResult(intent, NAVIGATION_PDP);
+    }
+
+    @Override
+    public void onRecommendationProductClicked(@NotNull String productId) {
+        int index = 0, position = 0;
+        RecommendationItem recommendationItemClick = null;
+        for (CartRecommendationItemHolderData recommendation : recommendationList) {
+            if (String.valueOf(recommendation.getRecommendationItem().getProductId()).equalsIgnoreCase(productId)) {
+                position = index;
+                recommendationItemClick = recommendation.getRecommendationItem();
+                break;
+            }
+            index++;
+        }
+
+        if (recommendationItemClick != null) {
+            sendAnalyticsOnClickProductRecommendationOnEmptyCart(String.valueOf(position),
+                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
+        }
+
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
         startActivityForResult(intent, NAVIGATION_PDP);
     }
@@ -1329,6 +1352,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     private void onCartEmpty() {
+        FLAG_IS_CART_EMPTY = true;
         enableSwipeRefresh();
         sendAnalyticsOnDataCartIsEmpty();
         checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
@@ -1343,6 +1367,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     private void onCartNotEmpty() {
+        FLAG_IS_CART_EMPTY = false;
         if (cartRecyclerView.getItemDecorationCount() == 0) {
             cartRecyclerView.addItemDecoration(cartItemDecoration);
         }
@@ -1856,6 +1881,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
+    public void sendAnalyticsOnViewProductRecommendationOnCart(Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceViewRecommendationOnCart(eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductRecommendationOnEmptyCart(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(position, eeDataLayerCart);
+    }
+
+    @Override
     public void sendAnalyticsOnViewPromoAutoApply() {
         cartPageAnalytics.eventViewPromoAutoApply();
     }
@@ -2153,6 +2188,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (cartRecommendationItemHolderDataList.size() > 0) {
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
             recommendationList = cartRecommendationItemHolderDataList;
+
+            sendAnalyticsOnViewProductRecommendationOnCart(
+                    dPresenter.generateRecommendationDataAnalytics(recommendationList, FLAG_IS_CART_EMPTY)
+            );
         }
     }
 
@@ -2185,10 +2224,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             eventLabel = "";
             stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecentViewItemHolderData) productModel, addToCartDataResponseModel);
         } else if (productModel instanceof CartRecommendationItemHolderData) {
-            eventCategory = ConstantTransactionAnalytics.EventCategory.RECOMMENDATION_PAGE;
-            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT;
+            eventCategory = ConstantTransactionAnalytics.EventCategory.CART;
+            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_ADD_TO_CART;
             eventLabel = "";
-            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecommendationItemHolderData) productModel, addToCartDataResponseModel);
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecommendationItemHolderData) productModel, addToCartDataResponseModel, FLAG_IS_CART_EMPTY);
         }
 
         if (stringObjectMap != null) {
