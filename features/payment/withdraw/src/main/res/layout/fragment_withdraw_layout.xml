@@ -15,7 +15,8 @@
             android:visibility="gone"
             layout="@layout/layout_holdwithdrawl_ticker"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:visibility="visible"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -327,7 +328,8 @@
                 android:text="@string/saldolock_info_text"
                 android:textColor="@color/black_40"
                 android:textSize="@dimen/sp_12"
-                android:visibility="visible" />
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
         </RelativeLayout>
 
