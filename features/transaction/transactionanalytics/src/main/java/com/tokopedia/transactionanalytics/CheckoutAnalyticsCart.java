@@ -736,6 +736,23 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    public void eventViewTickerOutOfStock(String productId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_OUT_OF_STOCK,
+                productId
+        );
+    }
+
+    public void eventClickMoreLikeThis() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_MORE_LIKE_THIS
+        );
+    }
+
     public void eventViewErrorWhenCheckout(String errorMessage) {
         sendEventCategoryActionLabel(
                 EventName.VIEW_ATC,
