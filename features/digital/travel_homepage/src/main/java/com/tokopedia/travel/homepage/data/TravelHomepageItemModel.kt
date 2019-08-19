@@ -7,6 +7,7 @@ import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepage
  * @author by jessica on 2019-08-09
  */
 
-abstract class TravelHomepageItemModel(var isLoaded: Boolean = false): Visitable<TravelHomepageAdapterTypeFactory> {
+abstract class TravelHomepageItemModel(var isLoaded: Boolean = false,
+                                       var isSuccess: Boolean = true): Visitable<TravelHomepageAdapterTypeFactory> {
     abstract override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int
 }

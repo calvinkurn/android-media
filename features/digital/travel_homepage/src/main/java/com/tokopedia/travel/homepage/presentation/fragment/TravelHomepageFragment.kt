@@ -23,7 +23,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, OnItemClickListener {
+class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, OnItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -49,15 +49,9 @@ class TravelHomepageFragment: BaseListFragment<TravelHomepageItemModel, TravelHo
 
         travelHomepageViewModel.getIntialList()
         travelHomepageViewModel.travelItemList.observe(this, Observer {
-            when (it?.second) {
-                true -> {
-                    clearAllData()
-                    renderList(it.first)
-                }
-                false -> {
 
-                }
-            }
+            clearAllData()
+            it?.run { renderList(this) }
         })
     }
 
