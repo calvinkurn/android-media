@@ -3,9 +3,9 @@ package com.tokopedia.tradein.model
 import com.google.gson.annotations.SerializedName
 
 data class MoneyInScheduleOptionResponse(
-        val data: Data?
+        val data: ResponseData?
 ) {
-    data class Data(
+    data class ResponseData(
             val getPickupScheduleOption: GetPickupScheduleOption?
     ) {
         data class GetPickupScheduleOption(

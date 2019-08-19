@@ -5,15 +5,15 @@ import com.google.gson.annotations.SerializedName
 
 data class MoneyInKeroGetAddressResponse(
     @SerializedName("data")
-    val `data`: Data?
+    val data: ResponseData
 ) {
-    data class Data(
+    data class ResponseData(
         @SerializedName("kero_get_address")
-        val keroGetAddress: KeroGetAddress?
+        val keroGetAddress: KeroGetAddress
     ) {
         data class KeroGetAddress(
             @SerializedName("data")
-            val `data`: List<Data?>?,
+            val data: List<Data?>?,
             @SerializedName("config")
             val config: String?,
             @SerializedName("server_process_time")

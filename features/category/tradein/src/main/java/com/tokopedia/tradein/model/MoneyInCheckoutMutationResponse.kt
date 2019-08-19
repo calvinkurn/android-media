@@ -5,28 +5,36 @@ import com.google.gson.annotations.SerializedName
 
 data class MoneyInCheckoutMutationResponse(
     @SerializedName("data")
-    val `data`: Data?
+    val data: ResponseData?
 ) {
-    data class Data(
-        @SerializedName("checkout")
-        val checkout: Checkout?
+    data class ResponseData(
+        @SerializedName("checkout_general")
+        val checkoutGeneral: CheckoutGeneral?
     ) {
-        data class Checkout(
+        data class CheckoutGeneral(
             @SerializedName("data")
-            val `data`: Data?,
+            val data: CheckoutData?,
             @SerializedName("header")
             val header: Header?
         ) {
             data class Header(
+                @SerializedName("error_code")
+                val errorCode: String?,
                 @SerializedName("messages")
-                val messages: List<Any?>?
+                val messages: List<Any?>?,
+                @SerializedName("process_time")
+                val processTime: Double?,
+                @SerializedName("reason")
+                val reason: String?
             )
 
-            data class Data(
+            data class CheckoutData(
                 @SerializedName("data")
-                val `data`: Data?,
+                val data: Data?,
                 @SerializedName("error")
                 val error: String?,
+                @SerializedName("error_state")
+                val errorState: Int?,
                 @SerializedName("message")
                 val message: String?,
                 @SerializedName("success")
@@ -37,8 +45,8 @@ data class MoneyInCheckoutMutationResponse(
                     val callbackUrl: String?,
                     @SerializedName("parameter")
                     val parameter: Parameter?,
-                    @SerializedName("product_list")
-                    val productList: List<Product?>?,
+                    @SerializedName("payment_type")
+                    val paymentType: Int?,
                     @SerializedName("query_string")
                     val queryString: String?,
                     @SerializedName("redirect_url")
@@ -47,6 +55,8 @@ data class MoneyInCheckoutMutationResponse(
                     data class Parameter(
                         @SerializedName("amount")
                         val amount: Int?,
+                        @SerializedName("back_url")
+                        val backUrl: String?,
                         @SerializedName("currency")
                         val currency: String?,
                         @SerializedName("customer_email")
@@ -57,8 +67,6 @@ data class MoneyInCheckoutMutationResponse(
                         val customerMsisdn: String?,
                         @SerializedName("customer_name")
                         val customerName: String?,
-                        @SerializedName("device_info")
-                        val deviceInfo: DeviceInfo?,
                         @SerializedName("gateway_code")
                         val gatewayCode: String?,
                         @SerializedName("language")
@@ -83,24 +91,6 @@ data class MoneyInCheckoutMutationResponse(
                         val transactionId: String?,
                         @SerializedName("user_defined_value")
                         val userDefinedValue: String?
-                    ) {
-                        data class DeviceInfo(
-                            @SerializedName("device_name")
-                            val deviceName: String?,
-                            @SerializedName("device_version")
-                            val deviceVersion: String?
-                        )
-                    }
-
-                    data class Product(
-                        @SerializedName("id")
-                        val id: String?,
-                        @SerializedName("name")
-                        val name: String?,
-                        @SerializedName("price")
-                        val price: Int?,
-                        @SerializedName("quantity")
-                        val quantity: Int?
                     )
                 }
             }

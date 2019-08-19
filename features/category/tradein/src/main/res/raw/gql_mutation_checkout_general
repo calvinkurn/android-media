@@ -11,6 +11,33 @@ mutation checkout_general($params: CheckoutGeneralParams) {
       error
       error_state
       message
+      data {
+        redirect_url
+        callback_url
+        query_string
+        payment_type
+        parameter {
+          merchant_code
+          profile_code
+          customer_id
+          customer_name
+          customer_email
+          customer_msisdn
+          transaction_id
+          transaction_date
+          gateway_code
+          pid
+          nid
+          user_defined_value
+          amount
+          currency
+          language
+          signature
+          payment_metadata
+          merchant_type
+          back_url
+        }
+      }
     }
   }
 }
