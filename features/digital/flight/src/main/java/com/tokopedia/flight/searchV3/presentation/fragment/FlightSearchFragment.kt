@@ -801,8 +801,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private val SAVED_IS_COMBINE_DONE = "svd_is_combine_done"
         private val DEFAULT_DIMENS_MULTIPLIER = 0.5f
         private val PADDING_SEARCH_LIST = 60
-        private val FLIGHT_SEARCH_P1_TRACE = "mp_flight_search_p1"
-        private val FLIGHT_SEARCH_P2_TRACE = "mp_flight_search_p2"
+        private val FLIGHT_SEARCH_P1_TRACE = "tr_flight_search_p1"
+        private val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
         private val MAX_DATE_ADDITION_YEAR = 1
 
         fun newInstance(passDataViewModel: FlightSearchPassDataViewModel): FlightSearchFragment {
