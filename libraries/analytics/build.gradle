@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -34,6 +34,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.firebase.performance
@@ -43,9 +45,14 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
 
 }
