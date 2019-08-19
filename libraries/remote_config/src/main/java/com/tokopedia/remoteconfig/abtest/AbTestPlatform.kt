@@ -96,7 +96,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         // Gql request
         val payloads = HashMap<String, Any>()
         payloads[REVISION]=revision
-        payloads[CLIENTID]=1
+        payloads[CLIENTID]= ANDROID_CLIENTID
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.gql_rollout_feature_variant), AbTestVariantPojo::class.java, payloads, false)
@@ -132,13 +132,14 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
         })
 
-        // Send tracking
+        // Next === Send tracking
 
     }
 
     companion object {
         val REVISION = "rev"
         val CLIENTID = "client_id"
+        val ANDROID_CLIENTID = 1
         val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
     }
