@@ -90,6 +90,8 @@ public interface OrderListDetailContract {
 
         void showSucessMessage(String message);
 
+        void showAddToCartSucessMessage(String message);
+
         void showErrorMessage(String message);
 
         void clearDynamicViews();
@@ -104,7 +106,9 @@ public interface OrderListDetailContract {
 
         List<ActionButton> getActionList();
 
-        void onBuyAgain(Resources resources);
+        void onBuyAgainAllItems();
+
+        void onBuyAgainItems(List<Items> item);
 
         void assignInvoiceDataTo(Intent intent);
     }
