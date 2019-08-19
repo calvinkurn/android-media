@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ResolveInfo
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -21,7 +20,7 @@ import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
-import java.util.*
+import com.tokopedia.videoplayer.utils.showToast
 import kotlin.collections.ArrayList
 
 /**
@@ -33,22 +32,22 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     val KEY_ADDING = ".isAddingProduct"
     val KEY_LISTENER = ".listener"
 
-    private val PACKAGENAME_WHATSAPP = "com.whatsapp.ContactPicker"
-    private val PACKAGENAME_FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias"
-    private val PACKAGENAME_LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity"
-    private val PACKAGENAME_TWITTER = "com.twitter.composer.ComposerShareActivity"
-    private val PACKAGENAME_GPLUS = "com.google.android.apps.plus.GatewayActivityAlias"
-    private val PACKAGENAME_INSTAGRAM = "com.instagram.android";
-
-
-    private val ClassNameApplications = arrayOf(PACKAGENAME_WHATSAPP,
-            PACKAGENAME_FACEBOOK,
-            PACKAGENAME_LINE,
-            PACKAGENAME_TWITTER,
-            PACKAGENAME_GPLUS,
-            PACKAGENAME_INSTAGRAM)
+    private val classNameApplications = arrayOf(CLASS_NAME_WHATSAPP,
+            CLASS_NAME_FACEBOOK,
+            CLASS_NAME_LINE,
+            CLASS_NAME_TWITTER,
+            CLASS_NAME_GPLUS,
+            CLASS_NAME_INSTAGRAM)
 
     companion object {
+
+        private const val CLASS_NAME_WHATSAPP = "com.whatsapp.ContactPicker"
+        private const val CLASS_NAME_FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias"
+        private const val CLASS_NAME_LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity"
+        private const val CLASS_NAME_TWITTER = "com.twitter.composer.ComposerShareActivity"
+        private const val CLASS_NAME_GPLUS = "com.google.android.apps.plus.GatewayActivityAlias"
+        private const val CLASS_NAME_INSTAGRAM = "com.instagram.direct.share.handler.DirectShareHandlerActivity";
+        private const val CLASS_NAME_INSTAGRAM_STORY = "com.instagram.direct.share.handler.DirectShareHandlerActivity";
 
         fun constructShareData(name: String, avatar: String, link: String, shareFormat: String, shareTitle: String): LinkerData {
             val linkerData = LinkerData()
@@ -128,7 +127,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
         mLayoutError = view.findViewById(R.id.layout_error)
         mTextViewError = view.findViewById(R.id.message_error)
 
-        val mLayoutManager = LinearLayoutManager(getActivity())
+        val mLayoutManager = LinearLayoutManager(activity)
         mRecyclerView.layoutManager = mLayoutManager
 
         broadcastAddProduct()
@@ -145,11 +144,9 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
         activity?.let {
             val resolvedActivities = it.packageManager
                     .queryIntentActivities(intent, 0)
-            if (!resolvedActivities.isEmpty()) {
+            if (resolvedActivities.isNotEmpty()) {
                 val showApplications: ArrayList<ResolveInfo> = validate(resolvedActivities)
-//                showApplications.addAll(getInstagramApps()) //for next development
-                adapter = ShareAdapter(showApplications, it
-                        .getPackageManager())
+                adapter = ShareAdapter(showApplications, it.packageManager)
                 mRecyclerView.adapter = adapter
                 adapter.notifyDataSetChanged()
                 adapter.setOnItemClickListener(this)
@@ -162,31 +159,13 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
 
     private fun validate(resolvedActivities: List<ResolveInfo>): ArrayList<ResolveInfo> {
         val showApplications = ArrayList<ResolveInfo>()
-        for (resolveInfo in resolvedActivities) {
-            if (Arrays.asList(*ClassNameApplications)
-                            .contains(resolveInfo.activityInfo.name)) {
-                showApplications.add(resolveInfo)
-            }
-        }
-        return showApplications
-    }
-
-    fun getInstagramApps(): ArrayList<ResolveInfo> {
-        val showApplications = ArrayList<ResolveInfo>()
-        val pm = activity!!.getPackageManager()
-        val shareIntent = Intent()
-        shareIntent.action = Intent.ACTION_SEND
-        shareIntent.type = "text/plain"
-        // mainIntent.setType("image/*");
-        val resolveInfos = pm.queryIntentActivities(shareIntent, 0) // returns all applications which can listen to the SEND Intent
-        if (resolveInfos != null && !resolveInfos.isEmpty()) {
-            for (info in resolveInfos) {
-                if (Arrays.asList(*ClassNameApplications)
-                                .contains(info.activityInfo.packageName)) {
-                    showApplications.add(info)
-                }
-            }
-        }
+        showApplications
+                .addAll(
+                        resolvedActivities
+                                .filter {
+                                    classNameApplications.contains(it.activityInfo.name)
+                                }
+                )
         return showApplications
     }
 
@@ -197,9 +176,6 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
             }
             KEY_COPY -> {
                 actionCopy()
-            }
-            KEY_INSTAGRAM -> {
-
             }
             KEY_YOUTUBE -> {
 
@@ -212,7 +188,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun actionCopy() {
-        data.setSource(COPY)
+        data.source = COPY
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0,
                         DataMapper().getLinkerShareData(data),
@@ -229,14 +205,14 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
                         })
         )
 
-        Toast.makeText(getActivity(), getString(R.string.msg_copy), Toast.LENGTH_SHORT).show()
+        showToast(getString(R.string.msg_copy))
     }
 
     private fun actionShare(packageName: String) {
         val media = constantMedia(packageName)
-        data.setSource(media)
+        data.source = media
         activity?.let {
-            ShareSocmedHandler(it).ShareData(it, packageName,
+            ShareSocmedHandler(it).shareData(it, packageName,
                     TYPE, data.originalTextContent, "", null , "")
             sendTracker(packageName)
         }
@@ -262,13 +238,11 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun getIntent(contains: String): Intent {
-        val mIntent = Intent(Intent.ACTION_SEND)
-        mIntent.type = TYPE
-
-        mIntent.putExtra(Intent.EXTRA_TITLE, data.getName())
-        mIntent.putExtra(Intent.EXTRA_SUBJECT, data.getName())
-        mIntent.putExtra(Intent.EXTRA_TEXT, contains)
-        return mIntent
+        return Intent(Intent.ACTION_SEND)
+                .setType(TYPE)
+                .putExtra(Intent.EXTRA_TITLE, data.name)
+                .putExtra(Intent.EXTRA_SUBJECT, data.name)
+                .putExtra(Intent.EXTRA_TEXT, contains)
     }
 
     private var addProductReceiver: BroadcastReceiver? = null
@@ -291,8 +265,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
             override fun onReceive(context: Context, intent: Intent) {
                 val bundle = intent.extras
                 if (bundle != null) {
-                    val status = bundle.getInt(STATUS_FLAG, STATUS_ERROR)
-                    when (status) {
+                    when (bundle.getInt(STATUS_FLAG, STATUS_ERROR)) {
                         STATUS_DONE -> {
                             setData(bundle)
                             stateProgress(false)
@@ -320,25 +293,25 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     fun setData(data: Bundle) {
-        this.data = LinkerData()
-        this.data.setType(LinkerData.PRODUCT_TYPE)
-        this.data.setName(data.getString(PRODUCT_NAME))
-        val imageUri = data.getString(IMAGE_URI)
-        this.data.setImgUri(data.getString(IMAGE_URI))
-        this.data.setDescription(data.getString(PRODUCT_DESCRIPTION))
-        this.data.setUri(data.getString(PRODUCT_URI))
-        this.data.setId(data.getString(PRODUCT_ID))
+        this.data = LinkerData().apply {
+            type = LinkerData.PRODUCT_TYPE
+            name = data.getString(PRODUCT_NAME)
+            imgUri = data.getString(IMAGE_URI)
+            description = data.getString(PRODUCT_DESCRIPTION)
+            uri = data.getString(PRODUCT_URI)
+            id = data.getString(PRODUCT_ID)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        activity!!.registerReceiver(addProductReceiver,
+        activity?.registerReceiver(addProductReceiver,
                 IntentFilter(BROADCAST_ADD_PRODUCT))
     }
 
     override fun onPause() {
         super.onPause()
-        activity!!.unregisterReceiver(addProductReceiver)
+        activity?.unregisterReceiver(addProductReceiver)
     }
 
     /**
@@ -346,7 +319,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
      * @param packageName
      * @return String media tracking
      */
-    fun constantMedia(packageName: String): String {
+    private fun constantMedia(packageName: String): String {
         return when {
             packageName.contains(KEY_WHATSAPP) -> KEY_WHATSAPP
             packageName.contains(KEY_LINE) -> KEY_LINE
