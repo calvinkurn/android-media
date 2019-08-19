@@ -130,5 +130,7 @@
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="mau_akses_semua_fitur">Mau akses semua fitur?</string>
     <string name="masuk_yuk">Masuk yuk</string>
+    <string name="atc_done_add_product_success">Produk berhasil ditambahkan</string>
+    <string name="atc_done_see_cart">Lihat Keranjang</string>
 
 </resources>
