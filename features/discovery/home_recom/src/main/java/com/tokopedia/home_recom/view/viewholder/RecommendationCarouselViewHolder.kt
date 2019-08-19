@@ -12,6 +12,11 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataMo
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
+/**
+ * Created by lukas on 21/05/2019
+ *
+ * A class for holder view Recommendation Carousel
+ */
 class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
 
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
