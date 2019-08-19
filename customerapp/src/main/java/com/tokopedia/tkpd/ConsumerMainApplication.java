@@ -212,8 +212,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         // 2. Jika timestamp yg tersimpan lebih dari sejam, fetch gql AbTestVariant + update sharedPref timestamp
         // 3. Jika sukses request, update SharedPref timestamp nya
 
-        SharedPreferences sharedPreferences = getSharedPreferences(CustomerAppConstants.SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE);
-        Long timestamp_ab_test = sharedPreferences.getLong(CustomerAppConstants.KEY_SP_TIMESTAMP_AB_TEST, 0);
+        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
+        Long timestamp_ab_test = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
         RemoteConfigInstance.initAbTestPlatform(this);
 
         if (timestamp_ab_test == 0) {
@@ -223,8 +223,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             long diff = new Date().getTime() - timestamp_ab_test;        // Validate time differences
             long diffHours = diff / (60 * 60 * 1000) % 24;
 
-            if (diffHours >= 1) {
-                // Jika ya, fetch gql
+            if (diffHours >= 1) { // If the time differences is more than 1 hour then Fetch gql
                 RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
             }
         }

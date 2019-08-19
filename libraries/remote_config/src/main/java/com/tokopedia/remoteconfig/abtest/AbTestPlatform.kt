@@ -17,14 +17,9 @@ import kotlin.collections.HashMap
 
 class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteConfig {
 
-    //    val SHARED_PREFERENCE_NAME = "tkpd_ab_test_platform"
-//    private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
-    val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test";
-    val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
     var editor = sharedPreferences.edit()
-//    lateinit var editor: SharedPreferences.Editor
 
     override fun getBoolean(key: String?): Boolean {
         return getBoolean(key, false)
@@ -35,7 +30,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (cacheValue.equals(defaultValue.toString(), ignoreCase = true) &&  !cacheValue.isEmpty()) {
             return cacheValue.equals("true", ignoreCase = true)
         }
-
         return defaultValue
     }
 
@@ -77,16 +71,19 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
     override fun setString(key: String?, value: String?) {
         if (editor != null) {
-            editor.putString(key, value).apply()
+            editor.putString(key, value)
+            editor.commit()
         }
     }
 
     override fun fetch(listener: RemoteConfig.Listener?) {
-
         // =================== ToDo =================== //
         // 1. Request gql
         // 2. Save the result to sharedPref and replace the existing
         // 3. Send analytics data from gql response
+
+        // Get existing revision for next Gql request
+        val revision = sharedPreferences.getInt(REVISION, 0)
 
         // Reset sharedPref
         editor.clear().commit()
@@ -94,11 +91,11 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         // Set timestamp when request gql
         val currentTimestamp = Date().time
         editor.putLong(KEY_SP_TIMESTAMP_AB_TEST, currentTimestamp)
-        editor.apply()
+        editor.commit()
 
         // Gql request
         val payloads = HashMap<String, Any>()
-        payloads[REVISION]=0
+        payloads[REVISION]=revision
         payloads[CLIENTID]=1
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
@@ -107,8 +104,22 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         graphqlUseCase.addRequest(graphqlRequest)
 
         graphqlUseCase.execute(RequestParams.EMPTY, object : Subscriber<GraphqlResponse>() {
-            override fun onNext(t: GraphqlResponse?) {
-                Log.d("onNext: ", "onNext")
+            override fun onNext(response: GraphqlResponse) {
+                val responseData = response.getData<AbTestVariantPojo>(AbTestVariantPojo::class.java)
+                val featureVariants = responseData.dataRollout.featureVariants
+                val globalRevision = responseData.dataRollout.globalRev
+                val status = responseData.dataRollout.status
+
+                // Save response to sharedPref
+                if (featureVariants != null) {
+                    for(a in featureVariants) {
+                        setString(a.feature, a.variant)
+                    }
+                }
+
+                if(globalRevision != null) {
+                    editor.putInt(REVISION, globalRevision).commit()
+                }
             }
 
             override fun onCompleted() {
@@ -123,32 +134,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
         // Send tracking
 
-
-//        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-//        R.raw.gql_rollout_feature_variant), AbTestVariantPojo::class.java, createRequestParams(0, 1))
-//        val graphqlUseCase = GraphqlUseCase()
-//        graphqlUseCase.addRequest(graphqlRequest)
-//        graphqlUseCase.execute(createRequestParams(0, 1), subscriber)
     }
-
-//    fun execute(requestParams: RequestParams, subscriber: Subscriber<GraphqlResponse>) {
-//        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-//                R.raw.gql_rollout_feature_variant), AbTestVariantPojo::class.java, requestParams.parameters)
-//        val graphqlUseCase = GraphqlUseCase()
-//        graphqlUseCase.addRequest(graphqlRequest)
-//        graphqlUseCase.execute(requestParams, subscriber)
-//    }
-
-//    fun createRequestParams(rev: Int, client_id: Int): RequestParams {
-//        val requestParams = RequestParams.create()
-//        requestParams.putInt(REVISION, rev)
-//        requestParams.putInt(CLIENTID, client_id)
-//        return requestParams
-//    }
 
     companion object {
         val REVISION = "rev"
         val CLIENTID = "client_id"
+        val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test"
+        val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
     }
 
 }
