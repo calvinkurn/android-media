@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.viewmodel.shop
+package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -68,7 +68,7 @@ class SearchShopViewModelTest {
 
         `then assert search shop state is success but only have data from the first search shop API call`()
     }
-    
+
     @Test
     fun `test search more shop but without next page after search shop`() {
         `given search shop API call will return data with has next page is false`()

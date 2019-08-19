@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.viewmodel.shop
+package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider

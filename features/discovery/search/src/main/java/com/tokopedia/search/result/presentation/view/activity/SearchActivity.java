@@ -53,9 +53,8 @@ import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
-import com.tokopedia.search.result.presentation.viewmodel.shop.SearchShopViewModel;
-import com.tokopedia.search.result.presentation.viewmodel.shop.SearchShopViewModelFactory;
-import com.tokopedia.search.result.presentation.viewmodel.shop.SearchShopViewModelFactoryModule;
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;

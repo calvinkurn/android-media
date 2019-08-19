@@ -102,6 +102,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.testDependencies.archCoreTesting
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+
+    //Test
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.kotlinMockito
+    testImplementation rootProject.ext.testDependencies.spekApi
+    testImplementation rootProject.ext.testDependencies.platformEngine
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
 }
 
 apply from: '../../../publish_local.gradle'

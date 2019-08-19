@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.fragment
+package com.tokopedia.search.result.shop.presentation.fragment
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.viewmodel.shop.SearchShopViewModel
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
 import com.tokopedia.search.utils.State
 
 class ShopListFragmentKt: BaseDaggerFragment() {

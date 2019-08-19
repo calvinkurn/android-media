@@ -5,8 +5,7 @@ import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.search.di.module.LocalCacheHandlerModule;
 import com.tokopedia.search.di.module.SearchTrackingModule;
 import com.tokopedia.search.di.module.UserSessionModule;
-import com.tokopedia.search.result.presentation.viewmodel.shop.SearchShopViewModelFactory;
-import com.tokopedia.search.result.presentation.viewmodel.shop.SearchShopViewModelFactoryModule;
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 
 import dagger.Component;
 
