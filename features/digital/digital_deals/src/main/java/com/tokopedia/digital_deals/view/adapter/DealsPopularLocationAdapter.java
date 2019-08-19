@@ -61,11 +61,12 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
             requestParams.putString("url", url);
         } else if (pageNumber == 1 && !TextUtils.isEmpty(searchText)) {
             requestParams.putString("name", searchText);
-        }
-        if (location.getCityId() == 0) {
-            requestParams.putInt(Utils.LOCATION_ID_PARAM, location.getId());
         } else {
-            requestParams.putInt(Utils.LOCATION_CITY_ID, location.getCityId());
+            if (location.getCityId() == 0) {
+                requestParams.putInt(Utils.LOCATION_ID_PARAM, location.getId());
+            } else {
+                requestParams.putInt(Utils.LOCATION_CITY_ID, location.getCityId());
+            }
         }
         getSearchLocationListRequestUseCase.setRequestParams(requestParams);
         getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
