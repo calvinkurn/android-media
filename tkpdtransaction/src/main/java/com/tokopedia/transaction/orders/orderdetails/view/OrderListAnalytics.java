@@ -153,8 +153,8 @@ public class OrderListAnalytics {
             product.put(QUANTITY, item.getQuantity());
             product.put(BRAND, metaDataInfo != null && metaDataInfo.getEntityBrandName() != null ? metaDataInfo.getEntityBrandName() : NONE);
             product.put(VARIANT, NONE);
-            product.put(KEY_CATEGORY_ID, item.getCategoryID());
-            product.put(KEY_SHOP_ID, shopInfo.getShopId());
+            product.put(KEY_CATEGORY_ID, String.valueOf(item.getCategoryID()));
+            product.put(KEY_SHOP_ID, String.valueOf(shopInfo.getShopId()));
             product.put(KEY_SHOP_NAME, shopInfo.getShopName());
             product.put(KEY_SHOP_TYPE, NONE);
             String cartId = NONE;
