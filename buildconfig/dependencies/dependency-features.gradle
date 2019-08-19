@@ -81,14 +81,12 @@ ext {
 
     //SCOPE LOGISTIC
     groupIdLogistic = 'com.tokopedia.logistic'
-    artifactIdLogisticCod = 'logisticCod'
     artifactIdLogisticData = 'logisticdata'
     artifactIdLogisticInputReceiptShipment = 'logisticinputreceiptshipment'
     artifactIdLogisticUploadAwb = 'logisticuploadawb'
     artifactIdLogisticTracking = 'tracking'
     artifactIdLogisticAddAddress = 'logisticaddaddress'
     artifactIdLogisticListAddress = 'logisticlistaddress'
-    artifactIdLogisticInsurance = 'logisticinsurance'
     logisticGroupVersion = '2.22'
 
     groupIdPayment = 'com.tokopedia.payment'
@@ -252,10 +250,7 @@ ext {
 //            tracking                      : ":features:logistic:tracking_no_op",
             logisticuploadawb               : ":features:logistic:logisticuploadawb",
 //            logisticuploadawb               : ":features:logistic:logisticuploadawb_no_op",
-            logisticinsurance               : ":features:logistic:logisticinsurance",
-//            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
-            logisticCod                     : ":features:logistic:cod",
-            shippingRecommendation          : ":features:logistic:shipping_recommendation",
+            logisticcart                    : ":features:logistic:logisticcart",
 
             goldMerchant                    : ":features:merchant:gold_merchant",
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
@@ -272,6 +267,7 @@ ext {
             productManageList               : ":features:merchant:product_manage_list",
             productManageDetail             : ":features:merchant:product_detail",
             productShare                    : ":features:merchant:product_share",
+            report                          : ":features:merchant:report",
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
 
@@ -288,6 +284,7 @@ ext {
             officialStore                  : ":features:merchant:official_store",
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
+            csat_rating                       : ":features:operational:csat_rating",
 //            contactUs                       : ":features:operational:contact_us_no_op",
 
             payment                         : ":features:payment:payment",

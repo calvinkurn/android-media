@@ -102,7 +102,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
 
     private String getCommentText(KolCommentViewModel element) {
         return "<b>" + element.getName() + "</b>" + " "
-                + element.getReview().replaceAll("(\r\n|\n)", "<br />");
+                + element.getReview().toString().replaceAll("(\r\n|\n)", "<br />");
     }
 
     private String constructProfileApplink(String userId) {

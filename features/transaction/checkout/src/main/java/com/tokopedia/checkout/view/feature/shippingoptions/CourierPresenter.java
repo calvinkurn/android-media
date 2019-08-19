@@ -7,12 +7,12 @@ import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentTickerInfoData;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentTypeData;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentOptionData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentItemData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentOptionData;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 
 import java.util.ArrayList;
 import java.util.List;

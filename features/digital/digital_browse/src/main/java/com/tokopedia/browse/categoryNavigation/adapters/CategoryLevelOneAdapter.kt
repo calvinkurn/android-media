@@ -38,7 +38,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
 
         holder.parent_layout.setOnClickListener {
             listener.onItemClicked(categoryList[position].id!!, position, categoryList[position].name!!, categoryList[position].applinks)
-            CategoryAnalytics.createInstance().eventCategoryLevelOneClick(holder.itemView.context,categoryList[position], position)
+            CategoryAnalytics.createInstance().eventCategoryLevelOneClick(categoryList[position], position)
         }
         if (categoryList[position].isSelected) {
             holder.unselected_overlay.hide()
@@ -53,7 +53,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
         val position = holder.adapterPosition
         if (!viewMap.containsKey(position)) {
             viewMap[position] = true
-            CategoryAnalytics.createInstance().eventCategoryLevelOneView(holder.itemView.context,categoryList[position], position)
+            CategoryAnalytics.createInstance().eventCategoryLevelOneView(categoryList[position], position)
         }
     }
 

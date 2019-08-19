@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.Date;
 
@@ -38,7 +39,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
     private static final String TAG = SixGridChannelViewHolder.class.getSimpleName();
     private final Context context;
     private View channelTitleContainer;
-    private TextView channelTitle;
+    private Typography channelTitle;
     private TextView seeAllButton;
     private ItemAdapter itemAdapter;
     private RecyclerView recyclerView;
@@ -78,8 +79,6 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
             String titleText = element.getChannel().getHeader().getName();
             if (!TextUtils.isEmpty(titleText)) {
                 channelTitleContainer.setVisibility(View.VISIBLE);
-                Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
-                channelTitle.setTypeface(typeface);
                 channelTitle.setText(titleText);
             } else {
                 channelTitleContainer.setVisibility(View.GONE);
@@ -91,8 +90,10 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
             }
             if (isSprintSale(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
-                countDownView.setVisibility(View.VISIBLE);
+                if (!DateHelper.isExpired(element.getServerTimeOffset(), expiredTime)){
+                    countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
+                    countDownView.setVisibility(View.VISIBLE);
+                }
             } else {
                 countDownView.setVisibility(View.GONE);
             }

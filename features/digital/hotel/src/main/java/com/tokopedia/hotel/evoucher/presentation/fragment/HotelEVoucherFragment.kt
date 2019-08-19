@@ -117,7 +117,6 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
         val b = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
         val c = Canvas(b)
-        v.layout(0, 0, v.width, v.height)
         v.draw(c)
         return b
     }
@@ -185,6 +184,13 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                     propertyDetail.checkInOut[0].checkInOut.date,
                     propertyDetail.checkInOut[1].checkInOut.date,
                     propertyDetail.stayLength.content)
+
+            rdv_checkin_checkout_date.setRoomCheckTimes(
+                    getString(R.string.hotel_order_detail_day_and_time, propertyDetail.checkInOut[0].checkInOut.day,
+                            propertyDetail.checkInOut[0].checkInOut.time),
+                    getString(R.string.hotel_order_detail_day_and_time, propertyDetail.checkInOut[1].checkInOut.day,
+                            propertyDetail.checkInOut[1].checkInOut.time)
+            )
 
             for (i in 1..propertyDetail.propertyInfo.starRating) {
                 context?.run {

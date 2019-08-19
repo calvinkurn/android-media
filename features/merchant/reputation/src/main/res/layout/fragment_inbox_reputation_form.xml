@@ -179,7 +179,7 @@
                 android:id="@+id/upload_info"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
-                android:src="@drawable/info_icon"/>
+                app:srcCompat="@drawable/info_icon"/>
 
         </LinearLayout>
 
