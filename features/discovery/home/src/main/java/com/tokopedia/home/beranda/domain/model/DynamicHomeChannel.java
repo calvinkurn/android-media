@@ -505,13 +505,16 @@ public class DynamicHomeChannel {
         private List<Object> convertPromoEnhanceBannerChannelMix() {
             List<Object> list = new ArrayList<>();
 
+            /**
+             * Banner always in position 1 because only 1 banner shown
+             */
             list.add(
                     DataLayer.mapOf(
                             "id", getBanner().getId(),
                             "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().name,
                             "creative", getBanner().getAttribution(),
                             "creative_url", getBanner().getImageUrl(),
-                            "position", String.valueOf(position)
+                            "position", String.valueOf(1)
                     )
             );
             return list;
@@ -721,7 +724,7 @@ public class DynamicHomeChannel {
                             )
 
                     ),
-                    "attribution", getHomeAttribution(position, getHeader().getName())
+                    "attribution", getHomeAttribution(1, getHeader().getName())
             );
         }
 
