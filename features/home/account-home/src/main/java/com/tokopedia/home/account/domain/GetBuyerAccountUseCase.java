@@ -9,8 +9,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
+import com.tokopedia.home.account.data.util.BuyerEmptyMapper;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
-import com.tokopedia.navigation_common.model.DebitInstantModel;
 import com.tokopedia.navigation_common.model.SaldoModel;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
@@ -36,6 +36,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
     private GraphqlUseCase graphqlUseCase;
     private BuyerAccountMapper mapper;
+    private BuyerEmptyMapper emptyBuyerMapper;
     private Observable<WalletModel> tokocashAccountBalance;
     private WalletPref walletPref;
     private UserSession userSession;
@@ -45,12 +46,14 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
     public GetBuyerAccountUseCase(GraphqlUseCase graphqlUseCase,
                                   Observable<WalletModel> tokocashAccountBalance,
                                   BuyerAccountMapper mapper,
+                                  BuyerEmptyMapper emptyMapper,
                                   WalletPref walletPref,
                                   UserSession userSession,
                                   CheckAffiliateUseCase checkAffiliateUseCase) {
         this.graphqlUseCase = graphqlUseCase;
         this.tokocashAccountBalance = tokocashAccountBalance;
         this.mapper = mapper;
+        this.emptyBuyerMapper = emptyMapper;
         this.walletPref = walletPref;
         this.userSession = userSession;
         this.checkAffiliateUseCase = checkAffiliateUseCase;
@@ -72,7 +75,8 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .doOnNext(this::savePhoneVerified)
                 .doOnNext(this::saveIsAffiliateStatus)
                 .doOnNext(this::saveDebitInstantData)
-                .map(mapper);
+                .map(mapper)
+                .onErrorReturn(emptyBuyerMapper);
     }
 
     private Observable<AccountModel> getAccountData(RequestParams requestParams) {

@@ -10,6 +10,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
+import com.tokopedia.home.account.data.util.BuyerEmptyMapper;
 import com.tokopedia.home.account.di.scope.BuyerAccountScope;
 import com.tokopedia.home.account.domain.GetBuyerAccountUseCase;
 import com.tokopedia.home.account.presentation.BuyerAccount;
@@ -82,6 +83,7 @@ public class BuyerAccountModule {
     GetBuyerAccountUseCase provideGetBuyerAccountUseCase(@ApplicationContext Context context,
                                                          GraphqlUseCase graphqlUseCase,
                                                          BuyerAccountMapper buyerAccountMapper,
+                                                         BuyerEmptyMapper buyerEmptyMapper,
                                                          WalletPref walletPref,
                                                          UserSession userSession,
                                                          CheckAffiliateUseCase checkAffiliateUseCase) {
@@ -89,6 +91,7 @@ public class BuyerAccountModule {
                 graphqlUseCase,
                 ((AccountHomeRouter) context).getTokoCashAccountBalance(),
                 buyerAccountMapper,
+                buyerEmptyMapper,
                 walletPref,
                 userSession,
                 checkAffiliateUseCase
