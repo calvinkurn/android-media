@@ -334,4 +334,23 @@ public interface ApplinkConst {
     interface Profile {
         String PARAM_USER_ID = "{user_id}";
     }
+
+    interface Transaction {
+        String EXTRA_SHOP_ID = "shop_id";
+        String EXTRA_PRODUCT_ID = "product_id";
+        String EXTRA_NOTES = "notes";
+        String EXTRA_QUANTITY = "quantity";
+        String EXTRA_SELECTED_VARIANT_ID = "selected_variant_id";
+        String EXTRA_ACTION = "action";
+        String EXTRA_PRODUCT_IMAGE = "product_image";
+        String EXTRA_SHOP_TYPE = "shop_type";
+        String EXTRA_SHOP_NAME = "shop_name";
+        String EXTRA_OCS = "ocs";
+        String EXTRA_TRADE_IN_PARAMS = "trade_in_params";
+        String EXTRA_NEED_REFRESH = "extra_need_refresh";
+        String TRACKER_ATTRIBUTION = "tracker_attribution";
+        String TRACKER_LIST_NAME = "tracker_list_name";
+
+        String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
+    }
 }

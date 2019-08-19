@@ -177,6 +177,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BELI_ON_RECENT_VIEW_PAGE = "click - beli on recent view page";
         String CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT = "click add to cart on primary product";
         String IMPRESSION_ERROR_COURIER_NO_AVAILABLE = "impression error courier no available";
+        String CLICK_MORE_LIKE_THIS = "click more like this";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -187,6 +188,7 @@ public interface ConstantTransactionAnalytics {
 
         String VIEW_TICKER_PRICE_DECREASE = "view ticker price decrease";
         String VIEW_TICKER_STOCK_DECREASE_AND_ALREADY_ATC_BY_OTHER_USER = "view ticker stock decrease and already atc by other user";
+        String VIEW_TICKER_OUT_OF_STOCK = "view ticker out of stock";
         String VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART = "view informaton and warning ticker in cart";
 
         //PHASE 2
@@ -208,6 +210,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU = "click tambah from tambah alamat baru";
 
         String VIEW_PROMO_ELIGBLE_APPLY = "view promo eligible apply";
+        String VIEW_ERROR_ON_CHECKOUT = "view error when checkout";
 
         //ROBINHOOD
         String CLICK_BUTTON_DURASI_PENGIRIMAN = "click button durasi pengiriman";

@@ -41,4 +41,8 @@ interface ActionListener {
     fun onRecommendationProductClicked(productId: String)
 
     fun onButtonAddToCartClicked(productModel: Any)
+
+    fun onShowTickerOutOfStock(productId: String)
+
+    fun onSimilarProductUrlClicked(similarProductUrl: String)
 }
