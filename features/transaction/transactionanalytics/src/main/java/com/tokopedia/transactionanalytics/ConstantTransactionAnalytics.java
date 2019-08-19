@@ -209,6 +209,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU = "click tambah from tambah alamat baru";
 
         String VIEW_PROMO_ELIGBLE_APPLY = "view promo eligible apply";
+        String VIEW_ERROR_ON_CHECKOUT = "view error when checkout";
 
         //ROBINHOOD
         String CLICK_BUTTON_DURASI_PENGIRIMAN = "click button durasi pengiriman";
