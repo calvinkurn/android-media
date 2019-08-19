@@ -269,7 +269,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 });
                 tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
                 List<CartItemHolderData> cartItemDataList = data.getShopGroupData().getCartItemDataList();
-                String lastProductId = cartItemDataList.get(cartItemDataList.size() - 1).getCartItemData().getOriginData().getProductId()
+                String lastProductId = cartItemDataList.get(cartItemDataList.size() - 1).getCartItemData().getOriginData().getProductId();
                 actionListener.onShowTickerOutOfStock(lastProductId);
             } else {
                 String errorDescription = data.getShopGroupData().getErrorDescription();
