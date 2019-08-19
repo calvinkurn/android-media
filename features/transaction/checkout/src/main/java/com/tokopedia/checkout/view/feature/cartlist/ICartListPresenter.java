@@ -10,6 +10,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -52,6 +53,10 @@ public interface ICartListPresenter {
 
     Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList, String enhancedECommerceAction);
 
+    Map<String, Object> generateRecommendationDataAnalytics(List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList, boolean isEmptyCart);
+
+    Map<String, Object> generateRecommendationDataOnClickAnalytics(RecommendationItem recommendationItem, boolean isEmptyCart, int position);
+
     CartListData getCartListData();
 
     void setCartListData(CartListData cartListData);
@@ -76,6 +81,6 @@ public interface ICartListPresenter {
 
     Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData, AddToCartDataModel addToCartDataResponseModel);
 
-    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData, AddToCartDataModel addToCartDataResponseModel);
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData, AddToCartDataModel addToCartDataResponseModel, boolean isCartEmpty);
 
 }

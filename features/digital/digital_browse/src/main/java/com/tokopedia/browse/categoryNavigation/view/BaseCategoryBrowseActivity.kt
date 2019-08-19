@@ -166,10 +166,10 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_search) {
             onSearchClicked()
-            CategoryAnalytics.createInstance().eventSearchBarClick(this)
+            CategoryAnalytics.createInstance().eventSearchBarClick()
             return true
-        } else if (item.itemId == R.id.home) {
-            CategoryAnalytics.createInstance().eventBackButtonClick(this)
+        } else if (item.itemId == android.R.id.home) {
+            CategoryAnalytics.createInstance().eventBackButtonClick()
             onBackPressed()
             return true
         }

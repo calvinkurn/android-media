@@ -31,15 +31,9 @@ import javax.inject.Inject
 class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener,
         SearchInputView.ResetListener {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var destinationViewModel: HotelDestinationViewModel
-
     var isSearching: Boolean = false
 
     private var searchTemp = ""
-
-    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     override fun shouldShowOptionMenu(): Boolean = false
 
@@ -59,14 +53,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
         initInjector()
         initView()
-
-        run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
-        }
-
-        permissionCheckerHelper = PermissionCheckerHelper()
-        destinationViewModel.setPermissionChecker(permissionCheckerHelper)
     }
 
     fun initView() {
@@ -115,16 +101,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
                 //search
                 doSearch(text)
             }
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(this,
-                    requestCode, permissions,
-                    grantResults)
         }
     }
 
