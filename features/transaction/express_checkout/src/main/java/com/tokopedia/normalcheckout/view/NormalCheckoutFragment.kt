@@ -135,7 +135,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            isOneClickShipment: Boolean,
                            isNeedRefresh: Boolean,
                            tradeInParams: TradeInParams?,
-                           isLeasing: Boolean, ): NormalCheckoutFragment {
+                           isLeasing: Boolean ): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
