@@ -150,6 +150,15 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         rvQuickReply.visibility = View.GONE
     }
 
+    /**
+     * IN LIST OF CHAT MESSAGES,
+     * IF
+     * FIRST ELEMENT IS TYPE OF  ConnectionDividerViewModel
+     * I AM REPLACING THE ELEMENT
+     * ELSE
+     * ADDING A NEW ELEMENT
+     */
+
     override fun showDividerViewOnConnection(connectionDividerViewModel: ConnectionDividerViewModel) {
         if (connectionDividerViewModel.type.equals(SHOW_TEXT,true)) {
             if (getAdapter().list[0] is ConnectionDividerViewModel) {

@@ -71,9 +71,9 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun onBackPressed() {
         val fragments = supportFragmentManager.fragments
-        for (f in fragments) {
-            if (f != null && f is ChatbotFragment) {
-                f.onBackPressed()
+        for (mFragment in fragments) {
+            if (mFragment != null && mFragment is ChatbotFragment) {
+                mFragment.onBackPressed()
             }
         }
     }

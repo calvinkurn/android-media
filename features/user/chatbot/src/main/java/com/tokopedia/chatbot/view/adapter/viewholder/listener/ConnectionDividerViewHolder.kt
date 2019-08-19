@@ -16,6 +16,11 @@ class ConnectionDividerViewHolder(itemView: View) : AbstractViewHolder<Connectio
     private var dividerMessage: TextView = itemView.findViewById(R.id.chatbot_tv_divider_message)
     private var dividerButton: TextView = itemView.findViewById(R.id.chatbot_tv_divider_button)
 
+    companion object {
+
+        @LayoutRes
+        val LAYOUT = R.layout.chatbot_connection_divider_layout
+    }
 
     override fun bind(element: ConnectionDividerViewModel) {
         dividerMessage.text = element.message ?: ""
@@ -38,11 +43,5 @@ class ConnectionDividerViewHolder(itemView: View) : AbstractViewHolder<Connectio
             dialog.show()
         }
 
-    }
-
-    companion object {
-
-        @LayoutRes
-        val LAYOUT = R.layout.chatbot_connection_divider_layout
     }
 }

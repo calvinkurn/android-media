@@ -26,12 +26,12 @@ class LeaveQueueUseCase @Inject constructor(val resources: Resources,
     companion object {
 
         private val MESSAGE_ID: String = "msgID"
-        private val TIME_STMAP: String = "timestamp"
+        private val TIME_STAMP: String = "timestamp"
 
         fun generateParam(msgId:String,timestamp:String): Map<String, String> {
             val requestParams = HashMap<String, String>()
             requestParams[MESSAGE_ID] = msgId
-            requestParams[TIME_STMAP] = timestamp
+            requestParams[TIME_STAMP] = timestamp
             return requestParams
         }
     }
