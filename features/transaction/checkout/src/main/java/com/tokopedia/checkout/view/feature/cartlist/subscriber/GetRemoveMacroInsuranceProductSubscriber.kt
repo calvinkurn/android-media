@@ -18,15 +18,11 @@ class GetRemoveMacroInsuranceProductSubscriber(val view: ICartListView,
 
     override fun onCompleted() {
 
-
     }
 
-
     override fun onNext(graphqlResponse: GraphqlResponse?) {
-
         val removeInsuranceProductGqlResponse: RemoveInsuranceProductGqlResponse?
-        if (graphqlResponse != null && graphqlResponse.getData<RemoveInsuranceProductGqlResponse>(RemoveInsuranceProductGqlResponse::class.java) != null) {
-
+        if (graphqlResponse?.getData<RemoveInsuranceProductGqlResponse>(RemoveInsuranceProductGqlResponse::class.java) != null) {
             removeInsuranceProductGqlResponse = graphqlResponse.getData(RemoveInsuranceProductGqlResponse::class.java)
             if (removeInsuranceProductGqlResponse!!.response.removeTransactional.status) {
                 if (showToaster) {
@@ -35,11 +31,10 @@ class GetRemoveMacroInsuranceProductSubscriber(val view: ICartListView,
                 view.removeInsuranceProductItem(productId)
             } else {
                 view.showToastMessageRed(
-                        removeInsuranceProductGqlResponse!!.response.removeTransactional.errorMessage)
+                        removeInsuranceProductGqlResponse.response.removeTransactional.errorMessage)
             }
         }
         view.hideProgressLoading()
     }
-
 
 }

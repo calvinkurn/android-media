@@ -13,7 +13,7 @@ class GetSubscriberUpdateInsuranceProductData(val view: ICartListView,
     override fun onNext(graphqlResponse: GraphqlResponse?) {
 
         val updateInsuranceDataGqlResponse: UpdateInsuranceDataGqlResponse?
-        if (graphqlResponse != null && graphqlResponse.getData<UpdateInsuranceDataGqlResponse>(UpdateInsuranceDataGqlResponse::class.java) != null) {
+        if (graphqlResponse?.getData<UpdateInsuranceDataGqlResponse>(UpdateInsuranceDataGqlResponse::class.java) != null) {
             updateInsuranceDataGqlResponse = graphqlResponse.getData(UpdateInsuranceDataGqlResponse::class.java)
             if (updateInsuranceDataGqlResponse!!.data.updateCart.status.equals("ok", ignoreCase = true)) {
                 view.showToastMessageGreen("insurance data updated")
@@ -22,7 +22,7 @@ class GetSubscriberUpdateInsuranceProductData(val view: ICartListView,
                 view.removeInsuranceProductItem(productIdList)
                 presenter.getInsuranceTechCart()
             } else {
-                view.showToastMessageRed(updateInsuranceDataGqlResponse!!.data.updateTransactional.errorMessage)
+                view.showToastMessageRed(updateInsuranceDataGqlResponse.data.updateTransactional.errorMessage)
             }
         }
         view.hideProgressLoading()

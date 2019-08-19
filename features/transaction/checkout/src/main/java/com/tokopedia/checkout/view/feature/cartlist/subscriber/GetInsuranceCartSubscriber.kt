@@ -17,8 +17,7 @@ class GetInsuranceCartSubscriber(val view: ICartListView) : Subscriber<GraphqlRe
 
     override fun onNext(graphqlResponse: GraphqlResponse?) {
         var insuranceCartGqlResponse: InsuranceCartGqlResponse? = null
-        if (graphqlResponse != null &&
-                graphqlResponse.getData<InsuranceCartGqlResponse>(InsuranceCartGqlResponse::class.java) != null) {
+        if (graphqlResponse?.getData<InsuranceCartGqlResponse>(InsuranceCartGqlResponse::class.java) != null) {
             insuranceCartGqlResponse = graphqlResponse.getData(InsuranceCartGqlResponse::class.java)
             view.renderInsuranceCartData(insuranceCartGqlResponse!!.data, false)
         } else {
