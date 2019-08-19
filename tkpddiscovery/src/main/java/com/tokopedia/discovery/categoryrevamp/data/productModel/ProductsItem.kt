@@ -1,0 +1,187 @@
+package com.tokopedia.discovery.categoryrevamp.data.productModel
+
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory.ProductTypeFactory
+import com.tokopedia.topads.sdk.domain.model.ImpressHolder
+
+data class ProductsItem(
+
+        @field:SerializedName("imageURL500")
+        val imageURL500: String? = null,
+
+        @field:SerializedName("imageURL700")
+        val imageURL700: String = "",
+
+        @field:SerializedName("shop")
+        val shop: Shop? = null,
+
+        @field:SerializedName("originalPrice")
+        val originalPrice: String = "",
+
+        @field:SerializedName("wishlist")
+        val wishlist: Boolean = false,
+
+        @field:SerializedName("rating")
+        val rating: Int? = null,
+
+        //@field:SerializedName("childs")
+        //val childs: List<Int?>? = null,
+
+        @field:SerializedName("categoryName")
+        val categoryName: String? = null,
+
+        @field:SerializedName("discountPercentage")
+        val discountPercentage: Int = 0,
+
+        @field:SerializedName("countReview")
+        val countReview: Int = 0,
+
+        @field:SerializedName("price")
+        val price: String = "",
+
+        @field:SerializedName("imageURL")
+        val imageURL: String = "",
+
+        @field:SerializedName("id")
+        val id: Int? = null,
+
+        @field:SerializedName("categoryBreadcrumb")
+        val categoryBreadcrumb: String? = null,
+
+        @field:SerializedName("isFeatured")
+        val isFeatured: Int? = null,
+
+        @field:SerializedName("stock")
+        val stock: Int? = null,
+
+        // @field:SerializedName("wholesalePrice")
+        // val wholesalePrice: List<Any?>? = null,
+
+        @field:SerializedName("categoryID")
+        val categoryID: Int? = null,
+
+        @field:SerializedName("GAKey")
+        val gAKey: String? = null,
+
+        @field:SerializedName("courierCount")
+        val courierCount: Int? = null,
+
+        @field:SerializedName("url")
+        val url: String? = null,
+
+        @field:SerializedName("labels")
+        val labels: List<LabelsItem?> = arrayListOf(),
+
+        @field:SerializedName("badges")
+        val badges: List<BadgesItem> = arrayListOf(),
+
+        @field:SerializedName("condition")
+        val condition: Int? = null,
+
+        @field:SerializedName("labelGroups")
+        val labelGroups: List<LabelGroupsItem?> = arrayListOf(),
+
+        @field:SerializedName("name")
+        val name: String = "",
+
+        @field:SerializedName("category")
+        val category: Int? = null,
+
+        @field:SerializedName("priceRange")
+        val priceRange: String = "",
+
+        @field:SerializedName("imageURL300")
+        val imageURL300: String? = null,
+
+        @field:SerializedName("preorder")
+        val preorder: Boolean? = null
+) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
+
+
+    override fun type(typeFactory: ProductTypeFactory?): Int {
+        return typeFactory!!.type(this)
+    }
+
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readParcelable(Shop::class.java.classLoader),
+            parcel.readString(),
+            parcel.readValue(Boolean::class.java.classLoader) as Boolean,
+            parcel.readInt(),
+            // TODO("childs"),
+            parcel.readString(),
+            parcel.readValue(Int::class.java.classLoader) as Int,
+            parcel.readValue(Int::class.java.classLoader) as Int,
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString(),
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            //TODO("wholesalePrice"),
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString(),
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString(),
+            parcel.createTypedArrayList(LabelsItem.CREATOR) ?: arrayListOf(),
+            parcel.createTypedArrayList(BadgesItem.CREATOR) ?: arrayListOf(),
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.createTypedArrayList(LabelGroupsItem.CREATOR) ?: arrayListOf(),
+            parcel.readString(),
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readValue(Boolean::class.java.classLoader) as? Boolean)
+
+    override fun writeToParcel(dest: Parcel?, flags: Int) {
+        dest?.writeString(this.imageURL500)
+        dest?.writeString(this.imageURL700)
+        dest?.writeParcelable(this.shop, flags)
+        dest?.writeString(this.imageURL500)
+        dest?.writeString(this.originalPrice)
+        dest?.writeValue(this.wishlist)
+        dest?.writeInt(this.rating ?: 0)
+        dest?.writeString(this.categoryName)
+        dest?.writeInt(this.discountPercentage)
+        dest?.writeInt(this.countReview ?: 0)
+        dest?.writeString(this.price)
+        dest?.writeString(this.imageURL)
+        dest?.writeInt(this.id ?: 0)
+        dest?.writeString(this.categoryBreadcrumb)
+        dest?.writeInt(this.isFeatured ?: 0)
+        dest?.writeInt(this.stock ?: 0)
+        dest?.writeInt(this.categoryID ?: 0)
+        dest?.writeString(this.gAKey)
+        dest?.writeInt(this.courierCount ?: 0)
+        dest?.writeString(this.url)
+        dest?.writeTypedList(this.labels)
+        dest?.writeTypedList(this.badges)
+        dest?.writeInt(this.condition ?: 0)
+        dest?.writeTypedList(this.labelGroups)
+        dest?.writeString(this.name)
+        dest?.writeInt(this.category ?: 0)
+        dest?.writeString(this.priceRange)
+        dest?.writeString(this.imageURL300)
+        dest?.writeValue(this.preorder)
+
+
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ProductsItem> {
+        override fun createFromParcel(parcel: Parcel): ProductsItem {
+            return ProductsItem(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ProductsItem?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
