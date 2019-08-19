@@ -1,11 +1,17 @@
 package com.tokopedia.loginregister.registerinitial.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.telephony.SubscriptionManager
+import android.telephony.TelephonyManager
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
@@ -34,21 +40,23 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract
 import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
@@ -120,6 +128,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     @Inject
     lateinit var registerAnalytics: RegisterAnalytics
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     lateinit var callbackManager: CallbackManager
     lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -272,6 +283,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             registerButton.visibility = View.GONE
             partialRegisterInputView.visibility = View.GONE
             partialRegisterInputView.setButtonValidator(true)
+            checkPermissionGetPhoneNumber()
 
             if (!GlobalConfig.isSellerApp()) {
                 optionTitle.setText(R.string.register_option_title)
@@ -846,6 +858,53 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         error.printStackTrace()
     }
 
+    fun checkPermissionGetPhoneNumber(){
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE, object: PermissionCheckerHelper.PermissionCheckListener{
+            override fun onPermissionDenied(permissionText: String) {
+                context?.let {
+                    permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                }
+            }
+
+            override fun onNeverAskAgain(permissionText: String) {
+                context?.let {
+                    permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                }
+            }
+
+            override fun onPermissionGranted() {
+                getPhoneNumber()
+            }
+
+        })
+    }
+
+    @SuppressLint("MissingPermission", "HardwareIds")
+    fun getPhoneNumber(){
+        activity?.let {
+            val phoneNumbers = arrayListOf<String>()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                for (info in subscription.activeSubscriptionInfoList) {
+                    if(!info.number.isNullOrEmpty() &&
+                            PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                            PartialRegisterInputUtils.isValidPhone(info.number))
+                        phoneNumbers.add(info.number)
+                }
+            }else{
+                val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
+                if(!telephony.line1Number.isNullOrEmpty() &&
+                        PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                        PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
+                    phoneNumbers.add(telephony.line1Number)
+            }
+
+            if(!phoneNumbers.isEmpty())
+                partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
@@ -859,5 +918,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     override fun onBackPressed() {
         registerAnalytics.trackClickOnBackButtonRegister()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        context?.let {
+            permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+        }
     }
 }

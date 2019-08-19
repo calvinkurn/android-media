@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class UploadIdentificationPojo {
 
     @Expose
-    @SerializedName("kycUpload")
+    @SerializedName("kycUploadV3")
     private KycUpload kycUpload;
 
     public KycUpload getKycUpload() {
