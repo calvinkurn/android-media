@@ -19,8 +19,10 @@ import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuVi
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
@@ -146,6 +148,19 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     private fun hideQuickReply() {
         quickReplyAdapter.clearData()
         rvQuickReply.visibility = View.GONE
+    }
+
+    override fun showDividerViewOnConnection(connectionDividerViewModel: ConnectionDividerViewModel) {
+        if (connectionDividerViewModel.type.equals(SHOW_TEXT,true)) {
+            if (getAdapter().list[0] is ConnectionDividerViewModel) {
+                getAdapter().setElement(0, connectionDividerViewModel)
+            } else {
+                getAdapter().addElement(0, connectionDividerViewModel)
+            }
+            getAdapter().removeTyping()
+        } else {
+            getAdapter().removeElement(connectionDividerViewModel)
+        }
     }
 
 }
