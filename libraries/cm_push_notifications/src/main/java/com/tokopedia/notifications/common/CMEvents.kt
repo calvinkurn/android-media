@@ -50,7 +50,7 @@ object IrisAnalyticsEvents {
             values[NOTIFICATION_ID] = baseNotificationModel.notificationId.toString()
             values[SOURCE] = CMNotificationUtils.getApplicationName(context)
             values[PARENT_ID] = baseNotificationModel.parentId.toString()
-            values[PUSH_TYPE] = baseNotificationModel.type.let { baseNotificationModel.type } ?: ""
+            values[PUSH_TYPE] = baseNotificationModel.type?.let { baseNotificationModel.type } ?: ""
             values[IS_SILENT] = CMConstant.NotificationType.SILENT_PUSH == baseNotificationModel.type
 
         }

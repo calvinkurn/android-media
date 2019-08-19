@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.cartsingleshipment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentData;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -29,6 +29,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private int totalPromoStackAmount;
     private String totalPromoStackAmountStr;
     private int TotalDiscWithoutCashback;
+    private int bookingFee;
 
     public int getTotalItem() {
         return totalItem;
@@ -174,6 +175,10 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.totalPromoStackAmountStr = totalPromoStackAmountStr;
     }
 
+    public int getBookingFee() { return bookingFee; }
+
+    public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -195,6 +200,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeDouble(this.emasPrice);
         dest.writeDouble(this.tradeInPrice);
         dest.writeInt(this.totalPromoStackAmount);
+        dest.writeInt(this.bookingFee);
     }
 
     public ShipmentCostModel() {
@@ -215,6 +221,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.emasPrice = in.readDouble();
         this.tradeInPrice = in.readDouble();
         this.totalPromoStackAmount = in.readInt();
+        this.bookingFee = in.readInt();
     }
 
     public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {
