@@ -43,6 +43,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -453,6 +454,18 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
+    public void showSuccessMessageWithAction(String message) {
+        ToasterNormal.make(getView(),
+                message.replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.bom_check_cart), v -> {
+                    orderListAnalytics.sendActionClickButtonSeeOnAtcSuccessToasterEvent();
+                    if (getActivity() != null && getActivity().getApplication() != null) {
+                        getActivity().startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
+                                .getCartIntent(getActivity()));
+                    }
+        }).show();
+    }
+
+    @Override
     public void showErrorMessage(String message) {
         ToasterError.make(getView(), message, Snackbar.LENGTH_LONG).show();
     }
@@ -625,7 +638,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         invoiceUrl = uri.getQueryParameter("invoiceUrl");
                         String applink = "tokopedia://topchat/askseller/" + shopId;
                         Intent intent = RouteManager.getIntent(getContext(), applink);
-                        intent.putExtra(ApplinkConst.Chat.CUSTOM_MESSAGE, invoiceUrl);
+                        presenter.assignInvoiceDataTo(intent);
                         intent.putExtra(ApplinkConst.Chat.SOURCE, "tx_ask_seller");
                         startActivity(intent);
                     }

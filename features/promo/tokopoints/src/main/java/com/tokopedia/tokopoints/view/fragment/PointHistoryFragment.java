@@ -1,12 +1,9 @@
 package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -31,11 +29,7 @@ import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
 import com.tokopedia.tokopoints.view.presenter.PointHistoryPresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-import java.util.concurrent.atomic.LongAdder;
-
 import javax.inject.Inject;
-
-import okhttp3.Route;
 
 public class PointHistoryFragment extends BaseDaggerFragment implements PointHistoryContract.View, AdapterCallback, View.OnClickListener {
     private static final int CONTAINER_LOADER = 0;
@@ -71,7 +65,7 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
         mContainerMain.setDisplayedChild(1);
 
         if (mRecyclerView.getItemDecorationCount() == 0) {
-            mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_4), 0, 0));
+            mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_2), 0, 0));
         }
 
         mAdapter = new PointHistoryListAdapter(getContext(), this);
@@ -120,11 +114,9 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
 
         getView().findViewById(R.id.con_header).setVisibility(View.VISIBLE);
         TextView point = getView().findViewById(R.id.text_my_points_value);
-        point.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_87));
-        point.setText(data.getRewardStr());
+        point.setText(CurrencyFormatUtil.convertPriceValue(data.getReward(), false));
         TextView loyalty = getView().findViewById(R.id.text_loyalty_value);
-        loyalty.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_87));
-        loyalty.setText(data.getLoyaltyStr());
+        loyalty.setText(CurrencyFormatUtil.convertPriceValue(data.getLoyalty(), false));
         mStrPointExpInfo = data.getRewardExpiryInfo();
         mStrLoyaltyExpInfo = data.getLoyaltyExpiryInfo();
         mContainerMain.setDisplayedChild(CONTAINER_DATA);
@@ -207,14 +199,15 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
     }
 
     private void showHistoryExpiryBottomSheet(String pointInfo, String loyaltyInfo) {
-        CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View view = getLayoutInflater().inflate(R.layout.tp_point_history_info, null, false);
         TextView textPoint = view.findViewById(R.id.text_point_exp_info);
         TextView textLoyalty = view.findViewById(R.id.text_loyalty_exp_info);
         textPoint.setText(MethodChecker.fromHtml(pointInfo));
         textLoyalty.setText(MethodChecker.fromHtml(loyaltyInfo));
         view.findViewById(R.id.btn_help_history).setOnClickListener(v -> ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.INFO_EXPIRED_POINTS, getString(R.string.tp_title_tokopoints)));
-        dialog.setCustomContentView(view, getString(R.string.tp_title_history_bottomshet), true);
+        dialog.setCustomContentView(view, getString(R.string.tp_title_history_bottomshet), false);
         dialog.show();
+        view.findViewById(R.id.close_button).setOnClickListener(v -> dialog.dismiss());
     }
 }

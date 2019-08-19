@@ -40,6 +40,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import kotlinx.coroutines.Dispatchers;
+
 /**
  * Created by hadi.putra on 04/05/18.
  */
@@ -179,6 +181,18 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
             bottomSheetsSelectGroup.resetDialog();
             bottomSheetsSelectGroup.setGroupAds(groupAds);
         }
+    }
+
+    @Override
+    public void onAutoAdsActive() {
+        setHasOptionsMenu(false);
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onAutoAdsInactive() {
+        setHasOptionsMenu(true);
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override

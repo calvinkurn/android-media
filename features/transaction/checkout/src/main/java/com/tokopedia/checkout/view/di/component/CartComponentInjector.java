@@ -3,8 +3,6 @@ package com.tokopedia.checkout.view.di.component;
 import android.app.Application;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.checkout.domain.usecase.AddToCartOneClickShipmentUseCase;
-import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
@@ -32,10 +30,6 @@ public class CartComponentInjector {
 
     @Inject
     UpdateCartUseCase updateCartUseCase;
-    @Inject
-    AddToCartUseCase addToCartUseCase;
-    @Inject
-    AddToCartOneClickShipmentUseCase addToCartUseCaseOneClickShipment;
     @Inject
     CheckoutUseCase checkoutUseCase;
     @Inject
@@ -84,14 +78,6 @@ public class CartComponentInjector {
             cartApiServiceComponent.inject(this);
         }
         return this;
-    }
-
-    public AddToCartUseCase getAddToCartUseCase() {
-        return addToCartUseCase;
-    }
-
-    public AddToCartOneClickShipmentUseCase getAddToCartUseCaseOneClickShipment() {
-        return addToCartUseCaseOneClickShipment;
     }
 
     public CheckoutUseCase getCheckoutUseCase() {

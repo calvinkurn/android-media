@@ -8,9 +8,9 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
 
 import java.net.MalformedURLException;
@@ -145,7 +145,7 @@ public class AnalyticsLog {
 
     public static void logNotification(Context context, SessionHandler sessionHandler, String notificationId, String notificationCode) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.NOTIFICATION_LOGGER, false)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_LOGGER, false)) {
             AnalyticsLog.log(context, "Notification Received. User: " + sessionHandler.getLoginID()
                     + " Notification Id: " + notificationId
                     + " Notification Code: " + notificationCode

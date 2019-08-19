@@ -17,8 +17,6 @@ import javax.inject.Inject;
 
 public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<DigitalCartDefaultContract.View> implements DigitalCartDefaultContract.Presenter {
 
-    private RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase;
-
     @Inject
     public DigitalCartDefaultPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                        DigitalAnalytics digitalAnalytics,
@@ -36,9 +34,8 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase,
-                digitalPostPaidLocalCache);
-
-        this.rechargePushEventRecommendationUseCase = rechargePushEventRecommendationUseCase;
+                digitalPostPaidLocalCache,
+                rechargePushEventRecommendationUseCase);
     }
 
     @Override
@@ -57,9 +54,5 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                 renderBaseCart(cartDigitalInfoData);
                 break;
         }
-    }
-
-    public void trackRechargePushEventRecommendation(int categoryId, String actionType) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, actionType), null);
     }
 }

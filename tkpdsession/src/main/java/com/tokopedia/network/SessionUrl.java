@@ -1,13 +1,15 @@
 package com.tokopedia.network;
 
+import com.tokopedia.url.TokopediaUrl;
+
 /**
  * @author by nisie on 1/30/18.
  */
 
 public class SessionUrl {
-    public static String BASE_DOMAIN = "https://ws.tokopedia.com/";
-    public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
-    public static String CHANGE_PHONE_DOMAIN = "https://m.tokopedia.com/";
+    public static String BASE_DOMAIN = TokopediaUrl.Companion.getInstance().getWS();
+    public static String ACCOUNTS_DOMAIN = TokopediaUrl.Companion.getInstance().getACCOUNTS();
+    public static String CHANGE_PHONE_DOMAIN = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
 
     public static final String PATH_GET_TOKEN = "token";
     public static final String PATH_GET_INFO = "info";

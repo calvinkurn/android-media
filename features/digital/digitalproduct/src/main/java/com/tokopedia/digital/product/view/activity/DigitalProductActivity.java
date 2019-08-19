@@ -9,9 +9,15 @@ import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.Objects;
 
@@ -44,8 +50,9 @@ public class DigitalProductActivity extends BaseSimpleActivity
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({ DIGITAL_PRODUCT })
+    @DeepLink({DIGITAL_PRODUCT})
     public static Intent getcallingIntent(Context context, Bundle extras) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         if (extras.getBoolean(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), false)) {
@@ -71,7 +78,14 @@ public class DigitalProductActivity extends BaseSimpleActivity
                 .build();
 
         Intent destination = DigitalProductActivity.newInstance(context, passData);
-        destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
+
+        if (!TextUtils.isEmpty(extras.getString(DigitalCategoryDetailPassData.PARAM_MENU_ID)) &&
+                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_TELCO_PDP, true)) {
+            destination = RouteManager.getIntent(context, ApplinkConsInternalDigital.TELCO_DIGITAL);
+            destination.putExtra(DigitalExtraParam.EXTRA_PARAM_TELCO, extras);
+        } else {
+            destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
+        }
         taskStackBuilder.addNextIntent(destination);
         return destination;
     }

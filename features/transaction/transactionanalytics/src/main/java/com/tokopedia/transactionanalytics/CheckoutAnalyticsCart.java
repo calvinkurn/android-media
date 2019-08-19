@@ -549,7 +549,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_CLICK,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_RECOMMENDATION,
-                Key.EVENT_LABEL, position,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -705,6 +705,60 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 EventCategory.CART,
                 EventAction.CLICK_SUBMIT_PROMO_CONFLICT,
                 ""
+        );
+    }
+
+    public void eventViewTickerPriceDecrease(String productId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_PRICE_DECREASE,
+                productId
+        );
+    }
+
+    public void eventViewTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_STOCK_DECREASE_AND_ALREADY_ATC_BY_OTHER_USER,
+                productId
+        );
+    }
+
+    public void enhancedEcommerceViewRecommendationOnCart(Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_VIEW,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.IMPRESSION_ON_PRODUCT_RECOMMENDATION,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void eventViewTickerOutOfStock(String productId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_OUT_OF_STOCK,
+                productId
+        );
+    }
+
+    public void eventClickMoreLikeThis() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_MORE_LIKE_THIS
+        );
+    }
+
+    public void eventViewErrorWhenCheckout(String errorMessage) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_ERROR_ON_CHECKOUT,
+                EventLabel.NOT_SUCCESS + " - " + errorMessage
         );
     }
 

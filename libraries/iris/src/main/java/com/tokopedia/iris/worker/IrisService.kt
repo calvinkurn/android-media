@@ -2,33 +2,27 @@ package com.tokopedia.iris.worker
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.JobIntentService
+import android.support.v4.app.BaseJobIntentService
 import com.tokopedia.iris.DEFAULT_MAX_ROW
 import com.tokopedia.iris.JOB_IRIS_ID
 import com.tokopedia.iris.MAX_ROW
 import com.tokopedia.iris.data.TrackingRepository
-import com.tokopedia.iris.data.db.mapper.TrackingMapper
-import com.tokopedia.iris.data.db.table.Tracking
-import com.tokopedia.iris.data.network.ApiService
-import com.tokopedia.iris.launchCatchError
+import com.tokopedia.iris.worker.IrisExecutor.handler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by meta on 24/05/19.
  */
-class IrisService : JobIntentService(), CoroutineScope {
+class IrisService : BaseJobIntentService(), CoroutineScope {
 
     private lateinit var mContext: Context
-    private val job: Job = Job()
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + job
+    override val coroutineContext: CoroutineContext by lazy {
+        IrisExecutor.executor + handler
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -45,39 +39,16 @@ class IrisService : JobIntentService(), CoroutineScope {
         try {
             val maxRow = intent.getIntExtra(MAX_ROW, DEFAULT_MAX_ROW)
             startService(maxRow)
-        } catch (e: java.lang.Exception) {}
-    }
-
-    private fun startService(maxRow: Int) {
-        launchCatchError {
-            val trackingRepository = TrackingRepository(applicationContext)
-
-            val trackings: List<Tracking> = trackingRepository.getFromOldest(maxRow)
-
-            if (trackings.isNotEmpty()) {
-                val request: String = TrackingMapper().transformListEvent(trackings)
-
-                val service = ApiService(mContext).makeRetrofitService()
-                val requestBody = ApiService.parse(request)
-                service.sendMultiEvent(requestBody).enqueue(object : Callback<String> {
-                    override fun onFailure(call: Call<String>, t: Throwable) {}
-
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        if (response.isSuccessful && response.code() == 200) {
-                            trackingRepository.delete(trackings)
-                        }
-                    }
-                })
-            }
+        } catch (e: java.lang.Exception) {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if(!job.isCancelled) {
-            job.children.forEach {
-                it.cancel()
-            }
+    private fun startService(maxRow: Int) {
+        launch(coroutineContext + Dispatchers.IO) {
+            try {
+                val trackingRepository = TrackingRepository(applicationContext)
+                trackingRepository.sendRemainingEvent(maxRow)
+            } catch (ignored: Exception) { }
         }
     }
 }

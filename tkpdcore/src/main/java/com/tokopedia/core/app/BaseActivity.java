@@ -11,15 +11,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -35,12 +32,12 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -164,7 +161,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                         return true;
                     }
                 })
-                .subscribe();
+                .subscribe(ignored -> {}, throwable -> {});
     }
 
     @Override
@@ -327,4 +324,5 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             ((AbstractionRouter) getApplication()).unregisterShake();
         }
     }
+
 }

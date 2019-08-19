@@ -34,7 +34,7 @@ class ProductInfoViewHolder(private val view: View) : AbstractViewHolder<Product
     private fun setRatingReviewCount(rating: Int, review: Int){
         if (rating in 1..5) {
             ratingView.setImageResource(getRatingDrawable(rating))
-            ratingCountView.text = view.context.getString(R.string.review_count, review)
+            ratingCountView.text = view.context.getString(R.string.recom_review_count, review)
         } else {
             ratingView.visibility = View.INVISIBLE
             ratingCountView.visibility = View.INVISIBLE

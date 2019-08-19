@@ -34,6 +34,7 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_DIMENSION_45 = "dimension45";
     private static final String KEY_DIMENSION_54 = "dimension54";
     private static final String KEY_DIMENSION_52 = "dimension52";
+    private static final String KEY_DIMENSION_53 = "dimension53";
     private static final String KEY_DIMENSION_57 = "dimension57";
     private static final String KEY_DIMENSION_59 = "dimension59";
     private static final String KEY_DIMENSION_77 = "dimension77";
@@ -54,7 +55,9 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_PICTURE = "picture";
     private static final String KEY_URL = "url";
 
-    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
+
+    public static final String RECOMMENDATION_ATTRIBUTION = "recommendation";
 
     public EnhancedECommerceProductCartMapData() {
 
@@ -111,11 +114,11 @@ public class EnhancedECommerceProductCartMapData {
     }
 
     public void setBrand(String brand) {
-        Product.put(KEY_BRAND, !TextUtils.isEmpty(brand) ? brand : DEFAULT_VALUE_NONE_OTHER);
+        Product.put(KEY_BRAND, brand != null ? brand : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public void setVariant(String variant) {
-        Product.put(KEY_VARIANT, !TextUtils.isEmpty(variant) ? variant : DEFAULT_VALUE_NONE_OTHER);
+        Product.put(KEY_VARIANT, variant != null ? variant : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public Map<String, Object> getProduct() {
@@ -135,7 +138,7 @@ public class EnhancedECommerceProductCartMapData {
     }
 
     public void setCategoryId(String categoryId) {
-        Product.put(KEY_CATEGORY_ID, !TextUtils.isEmpty(categoryId) ? categoryId : DEFAULT_VALUE_NONE_OTHER);
+        Product.put(KEY_CATEGORY_ID, categoryId != null ? categoryId : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public void setCartId(String cartId) {
@@ -204,6 +207,10 @@ public class EnhancedECommerceProductCartMapData {
 
     public void setDimension52(String shopId) {
         Product.put(KEY_DIMENSION_52, !TextUtils.isEmpty(shopId) ? shopId : "");
+    }
+
+    public void setDimension53(boolean isDiscountPrice) {
+        Product.put(KEY_DIMENSION_53, String.valueOf(isDiscountPrice));
     }
 
     public void setDimension57(String shopName) {

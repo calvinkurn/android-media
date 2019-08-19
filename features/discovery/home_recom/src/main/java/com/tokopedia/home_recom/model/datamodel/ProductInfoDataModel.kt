@@ -4,7 +4,7 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
 
-class ProductInfoDataModel(
+open class ProductInfoDataModel(
         val productDetailData: ProductDetailData
 ) : HomeRecommendationDataModel {
 
@@ -13,5 +13,4 @@ class ProductInfoDataModel(
     }
 
     override fun type(typeFactory: HomeRecommendationTypeFactory): Int = typeFactory.type(this)
-
 }

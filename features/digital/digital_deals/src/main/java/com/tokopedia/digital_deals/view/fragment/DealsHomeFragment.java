@@ -437,6 +437,13 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
             this.categoryItem = categoryItem;
             trendingDeals.setVisibility(View.VISIBLE);
+            noContent.setVisibility(View.GONE);
+            categoryAdapter.clearList();
+            categoryAdapter.setDealsHomeLayout(true);
+            categoryAdapter.setDealType(DealsAnalytics.TRENDING_DEALS);
+            rvTrendingDeals.setAdapter(categoryAdapter);
+            categoryAdapter.addAll(categoryItem.getItems(), true);
+            rvTrendingDeals.setVisibility(View.VISIBLE);
             if (categoryItem.getItems().size() >= 9) {
                 tvSeeAllTrendingDeals.setVisibility(View.VISIBLE);
                 tvSeeAllTrendingDeals.setOnClickListener(new View.OnClickListener() {
@@ -449,13 +456,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     }
                 });
             }
-            noContent.setVisibility(View.GONE);
-            categoryAdapter.clearList();
-            categoryAdapter.setDealsHomeLayout(true);
-            categoryAdapter.setDealType(DealsAnalytics.TRENDING_DEALS);
-            rvTrendingDeals.setAdapter(categoryAdapter);
-            categoryAdapter.addAll(categoryItem.getItems(), true);
-            rvTrendingDeals.setVisibility(View.VISIBLE);
             categoryAdapter.notifyDataSetChanged();
         } else {
             mPresenter.sendEventView(DealsAnalytics.EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION,

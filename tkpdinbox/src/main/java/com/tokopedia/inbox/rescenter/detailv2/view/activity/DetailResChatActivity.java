@@ -47,8 +47,8 @@ public class DetailResChatActivity extends BasePresenterActivity<DetailResChatAc
     private static Intent getApplinkIntent(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             if (GlobalConfig.isSellerApp()) {
-                return ((ResolutionRouter) context.getApplicationContext()).getSellerWebViewIntent(context,
-                        String.format(ResolutionUrl.RESO_DETAIL, resolutionId));
+            return ((ResolutionRouter)context.getApplicationContext()).getSellerWebViewIntent(context,
+                    String.format(ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
             } else {
                 return ((ResolutionRouter) context.getApplicationContext()).getApplinkIntent(context,
                         String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));

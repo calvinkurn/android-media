@@ -36,7 +36,7 @@ import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresent
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
@@ -751,13 +751,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     break;
                 case REQUEST_CODE_PICK_NATIONALITY:
                     if (data != null) {
-                        FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        CountryPhoneCode flightPassportNationalityViewModel = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
                         presenter.onNationalityChanged(flightPassportNationalityViewModel);
                     }
                     break;
                 case REQUEST_CODE_PICK_ISSUER_COUNTRY:
                     if (data != null) {
-                        FlightBookingPhoneCodeViewModel flightPassportIssuerCountry = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        CountryPhoneCode flightPassportIssuerCountry = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
                         presenter.onIssuerCountryChanged(flightPassportIssuerCountry);
                     }
             }

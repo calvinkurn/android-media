@@ -3,7 +3,7 @@
     <application>
         <activity
             android:name=".HomeRecommendationActivity"
-            android:label="@string/home_recommendation"
+            android:label="@string/recom_home_recommendation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">

@@ -32,9 +32,11 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 
@@ -51,6 +53,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_MERCHANT;
 
 /**
  * @author okasurya on 7/26/18.
@@ -95,8 +99,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
         } else if (applink.equals(AccountConstants.Navigation.TOPADS)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard
-                    (getContext());
+            ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard(getContext());
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
@@ -441,6 +444,31 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onShopStatusInfoButtonClicked() {
         RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
+    }
+
+    public void sendProductImpressionTracking(TrackingQueue trackingQueue,
+                                              RecommendationItem recommendationItem,
+                                              int position) {
+        accountAnalytics.eventAccountProductView(trackingQueue, recommendationItem, position);
+    }
+
+    public void sendProductClickTracking(RecommendationItem recommendationItem,
+                                         int position,
+                                         String widgetTitle) {
+        accountAnalytics.eventAccountProductClick(recommendationItem, position, widgetTitle);
+    }
+
+    public void sendProductWishlistClickTracking(boolean wishlistStatus) {
+        accountAnalytics.eventClickWishlistButton(wishlistStatus);
+    }
+    @Override
+    public void onPowerMerchantSettingClicked(){
+        sendTracking(
+                PENJUAL,
+                SECTION_OTHER_FEATURE,
+                ITEM_POWER_MERCHANT
+        );
+        RouteManager.route(getActivity(), ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
     }
 
 }

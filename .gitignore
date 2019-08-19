@@ -50,6 +50,8 @@ gradlew.bat
 node_modules/
 jsconfig.json
 reactnative-apps/
+yarn.lock
+package-lock.json
 
 
 # buck

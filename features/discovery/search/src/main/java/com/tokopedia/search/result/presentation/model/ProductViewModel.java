@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
@@ -59,7 +60,7 @@ public class ProductViewModel implements Parcelable {
         return isQuerySafe;
     }
 
-    public void setQuerySafe(boolean querySafe) {
+    public void setIsQuerySafe(boolean querySafe) {
         isQuerySafe = querySafe;
     }
 

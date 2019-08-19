@@ -248,5 +248,9 @@ class ShopOpenTracking(private val sellerModuleRouter: SellerModuleRouter, priva
                 "")
     }
 
+    fun eventShopCreatedSuccessfully(dataMap:Map<String, Any>){
+        TrackApp.getInstance().appsFlyer.sendTrackEvent(ShopOpenTrackingConstant.EVENT_SHOP_CREATED, dataMap)
+    }
+
 
 }

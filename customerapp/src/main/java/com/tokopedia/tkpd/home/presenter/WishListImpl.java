@@ -1,60 +1,61 @@
 package com.tokopedia.tkpd.home.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
-
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
-import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
-import com.tokopedia.kotlin.util.ContainNullException;
-import com.tokopedia.kotlin.util.NullCheckerKt;
-import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
-import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.network.entity.wishlist.WishlistPaging;
-import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
-import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.transaction.common.TransactionRouter;
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
-import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistProductViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomTitleViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistTopAdsViewModel;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
+import com.tokopedia.tkpd.home.wishlist.mapper.WishlistProductMapper;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
-
 import org.parceler.Parcels;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -63,13 +64,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import kotlin.Unit;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -87,10 +81,12 @@ public class WishListImpl implements WishList {
     public static final int TOPADS_INDEX = 4;
     public static final String TOPADS_ITEM = "5";
     public static final String TOPADS_SRC = "wishlist";
+    public static final String X_SOURCE_RECOM_WIDGET = "recom_widget";
+    public static final String EMPTY_WISHLIST = "empty_wishlist";
 
     WishListView wishListView;
 
-    List<RecyclerViewItem> data = new ArrayList<>();
+    List<Visitable> data = new ArrayList<>();
 
     WishlistPaging mPaging;
 
@@ -112,6 +108,10 @@ public class WishListImpl implements WishList {
     Context context;
     private String query = "";
 
+    private AddToCartUseCase addToCartUseCase;
+
+    private final GetRecommendationUseCase getRecommendationUseCase;
+
     public WishListImpl(Context context, WishListView wishListView) {
         this.wishListView = wishListView;
         mPaging = new WishlistPaging();
@@ -123,12 +123,13 @@ public class WishListImpl implements WishList {
         removeWishListUseCase = new RemoveWishListUseCase(context);
         this.context = context;
         userSession = new UserSession(context);
+        addToCartUseCase = new AddToCartUseCase(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart),
+                new GraphqlUseCase()
+        );
+        getRecommendationUseCase = new GetRecommendationUseCase(GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.query_recommendation_widget), new GraphqlUseCase(), new UserSession(context));
     }
-
-    private com.tokopedia.core.base.common.service.MojitoService initNewMojitoService() {
-        return null;
-    }
-
 
     @Override
     public void initDataInstance(Context context) {
@@ -143,9 +144,87 @@ public class WishListImpl implements WishList {
     }
 
     @Override
+    public void clearData() {
+        data.clear();
+    }
+
+    @Override
+    public void loadMoreRecomendation(int page) {
+        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(
+                page,
+                X_SOURCE_RECOM_WIDGET,
+                EMPTY_WISHLIST,
+                new ArrayList<>()),
+                new Subscriber<List<? extends RecommendationWidget>>() {
+                    @Override
+                    public void onStart() {
+                        wishListView.displayLoadMore(true);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        wishListView.displayLoadMore(false);
+                    }
+
+                    @Override
+                    public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
+                        wishListView.displayLoadMore(false);
+                        RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
+                        wishListView.onRenderRecomInbox(getRecommendationVisitables(recommendationWidget));
+                        wishListView.loadDataChange();
+                    }
+                });
+    }
+
+    public void getFirstRecomData() {
+        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
+                X_SOURCE_RECOM_WIDGET,
+                EMPTY_WISHLIST,
+                new ArrayList<>()),
+                new Subscriber<List<? extends RecommendationWidget>>() {
+                    @Override
+                    public void onStart() {
+                        wishListView.displayLoadMore(true);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        wishListView.displayLoadMore(false);
+                    }
+
+                    @Override
+                    public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
+                        wishListView.displayLoadMore(false);
+                        List<Visitable> visitables = new ArrayList<>();
+                        RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
+                        visitables.add(new WishlistRecomTitleViewModel(recommendationWidget.getTitle()));
+                        visitables.addAll(getRecommendationVisitables(recommendationWidget));
+                        wishListView.onRenderRecomInbox(visitables);
+                        wishListView.loadDataChange();
+                    }
+                });
+    }
+
+    @NonNull
+    private List<Visitable> getRecommendationVisitables(RecommendationWidget recommendationWidget) {
+        List<Visitable> recomendationList = new ArrayList<>();
+        for (RecommendationItem item : recommendationWidget.getRecommendationItemList()) {
+            recomendationList.add(new WishlistRecomendationViewModel(item));
+        }
+        return recomendationList;
+    }
+
+    @Override
     public void fetchSavedsInstance(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            //mPaging.onCreate(savedInstanceState);
             if (savedInstanceState.containsKey(WISHLIST_MODEL)) {
                 data = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_MODEL));
                 dataWishlist = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_ENTITY));
@@ -159,10 +238,6 @@ public class WishListImpl implements WishList {
 
     @Override
     public void initAnalyticsHandler(Context context) {
-        if (context != null) {
-
-        }
-
     }
 
     @Override
@@ -178,14 +253,8 @@ public class WishListImpl implements WishList {
         wishListView.displayLoadMore(false);
         wishListView.loadDataChange();
         mPaging.resetPage();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (context != null)
-                    fetchDataFromInternet(context);
-            }
-        }, 200);
-
+        if (context != null)
+            fetchDataFromInternet(context);
     }
 
     @Override
@@ -204,14 +273,11 @@ public class WishListImpl implements WishList {
         wishListView.setPullEnabled(false);
         mPaging.nextPage();
         params.putInt(PAGE_NO, mPaging.getPage());
-
-        getWishListDataSearch(context, new SearchWishlistSubscriber());
-
+        getWishListDataSearch(context, new LoadMoreSearchWishlistSubscriber());
     }
 
     @Override
     public void saveDataBeforeRotate(Bundle saved) {
-        //mPaging.onSavedInstanceState(saved);
         Bundle bundle = new Bundle();
         bundle.putParcelable(WISHLIST_MODEL, Parcels.wrap(data));
         bundle.putParcelable(WISHLIST_ENTITY, Parcels.wrap(dataWishlist));
@@ -230,17 +296,21 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public List<RecyclerViewItem> getData() {
+    public List<Visitable> getData() {
         return data;
     }
 
     @Override
     public void fetchDataFromInternet(final Context context) {
 
-        Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
+        Subscriber<GqlWishListDataResponse> subscriber = new Subscriber<GqlWishListDataResponse>() {
             @Override
             public void onCompleted() {
+            }
 
+            @Override
+            public void onStart() {
+                wishListView.displayLoadMore(true);
             }
 
             @Override
@@ -252,10 +322,17 @@ public class WishListImpl implements WishList {
             }
 
             @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
-                    GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
-                    setData(gqlWishListDataResponse);
+            public void onNext(GqlWishListDataResponse response) {
+                wishListView.displayLoadMore(false);
+                wishListView.displayPull(false);
+                if (response != null) {
+                    if (response.getGqlWishList().getWishlistDataList().size() == 0 && isFirstPage()) {
+                        data.clear();
+                        wishListView.setEmptyState();
+                        setData();
+                    } else {
+                        setData(response);
+                    }
                 } else {
                     setData();
                 }
@@ -272,7 +349,6 @@ public class WishListImpl implements WishList {
         variables.put(QUERY, params.getString(QUERY, ""));
         variables.put(PAGE_NO, params.getInt(PAGE_NO, 0));
         variables.put(ITEM_COUNT, 10);
-        variables.put(TopAdsParams.KEY_PARAMS, UrlParamHelper.generateUrlParamString(getTopAdsParameterMap()));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_search_wishlist),
@@ -285,9 +361,9 @@ public class WishListImpl implements WishList {
         GraphqlCacheStrategy graphqlCacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
 
-        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
-                graphqlCacheStrategy);
-
+        Observable observable = Observable.zip(ObservableFactory.create(graphqlRequestList,
+                graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(getRecommendationUseCase.getRecomParams(params.getInt(PAGE_NO, 0),
+                X_SOURCE_RECOM_WIDGET, TOPADS_SRC, new ArrayList<>())), new WishlistProductMapper());
 
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -315,7 +391,6 @@ public class WishListImpl implements WishList {
 
         variables.put(PAGE_NO, mPaging.getPage());
         variables.put(ITEM_COUNT, 10);
-        variables.put(TopAdsParams.KEY_PARAMS, UrlParamHelper.generateUrlParamString(getTopAdsParameterMap()));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
@@ -328,9 +403,9 @@ public class WishListImpl implements WishList {
         GraphqlCacheStrategy graphqlCacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
 
-        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
-                graphqlCacheStrategy);
-
+        Observable observable = Observable.zip(ObservableFactory.create(graphqlRequestList,
+                graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(getRecommendationUseCase.getRecomParams(mPaging.getPage(),
+                X_SOURCE_RECOM_WIDGET, TOPADS_SRC, new ArrayList<>())), new WishlistProductMapper());
 
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -342,27 +417,13 @@ public class WishListImpl implements WishList {
     @Override
     public void setData(GqlWishListDataResponse gqlWishListDataResponse) {
         GqlWishListDataResponse.GqlWishList wishlistData = gqlWishListDataResponse.getGqlWishList();
-        if (mPaging.getPage() == 1) {
-            data.clear();
-            if (wishlistData.getWishlistDataList().size() == 0)
-                wishListView.setSearchNotFound(query);
-        }
         wishListView.displayPull(false);
-
         wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
-
         dataWishlist.addAll(wishlistData.getWishlistDataList());
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList(),
-                gqlWishListDataResponse.getTopAdsModel(), query));
+                gqlWishListDataResponse.getTopAdsModel(), query, gqlWishListDataResponse.getTitle()));
         mPaging.setPagination(wishlistData.getPagination());
-
-        if (mPaging.CheckNextPage() && wishlistData.isHasNextPage()) {
-            wishListView.displayLoadMore(true);
-        } else {
-            wishListView.displayLoadMore(false);
-        }
         wishListView.setPullEnabled(true);
-
         wishListView.loadDataChange();
         wishListView.displayContentList(true);
         wishListView.displayLoading(false);
@@ -400,48 +461,36 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void addToCart(Activity activity, String productId) {
+    public void addToCart(String productId) {
         for (int i = 0; i < dataWishlist.size(); i++) {
             if (productId.equals(dataWishlist.get(i).getId())) {
                 Wishlist dataDetail = dataWishlist.get(i);
-                routeToNewCheckout(activity, dataDetail);
+                routeToNewCheckout(dataDetail);
                 return;
             }
         }
     }
 
-    private void routeToNewCheckout(Activity activity, Wishlist dataDetail) {
+    private void routeToNewCheckout(Wishlist dataDetail) {
         wishListView.showProgressDialog();
-        ((TransactionRouter) activity.getApplication()).addToCartProduct(
-                new AddToCartRequest.Builder()
-                        .productId(Integer.parseInt(dataDetail.getId()))
-                        .notes("")
-                        .quantity(dataDetail.getMinimumOrder())
-                        .shopId(Integer.parseInt(dataDetail.getShop().getId()))
-                        .build(),
-                false).subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+        AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
+        addToCartRequestParams.setProductId(Integer.parseInt(dataDetail.getId()));
+        addToCartRequestParams.setShopId(Integer.parseInt(dataDetail.getShop().getId()));
+        addToCartRequestParams.setQuantity(dataDetail.getMinimumOrder());
+        addToCartRequestParams.setNotes("");
+
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams);
+        addToCartUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(addToCartSubscriber(dataDetail));
     }
 
-    private void routeToOldCheckout(Activity activity, Wishlist dataDetail) {
-        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                .setImageUri(dataDetail.getImageUrl())
-                .setMinOrder(dataDetail.getMinimumOrder())
-                .setProductId(dataDetail.getId())
-                .setProductName(dataDetail.getName())
-                .setShopId(dataDetail.getShop().getId())
-                .setPrice(dataDetail.getPriceFmt()).build();
-
-        activity.startActivity(
-                TransactionAddToCartRouter.createInstanceAddToCartActivity(activity, pass)
-        );
-    }
-
     @Override
-    public boolean isLoadedFirstPage() {
-        return mPaging.getPage() >= 1;
+    public boolean isFirstPage() {
+        return mPaging.getPage() == 1;
     }
 
     @Override
@@ -450,8 +499,7 @@ public class WishListImpl implements WishList {
         mPaging.resetPage();
         params.putString(QUERY, query);
         params.putInt(PAGE_NO, mPaging.getPage());
-        getWishListDataSearch(context, new SearchWishlistSubscriber());
-
+        getWishListDataSearch(context, new FirstSearchWishlistSubscriber());
     }
 
     @Override
@@ -466,6 +514,9 @@ public class WishListImpl implements WishList {
         if (removeWishListUseCase != null) {
             removeWishListUseCase.unsubscribe();
         }
+        if (addToCartUseCase != null) {
+            addToCartUseCase.unsubscribe();
+        }
     }
 
     @Override
@@ -474,10 +525,9 @@ public class WishListImpl implements WishList {
         params = RequestParams.create();
 
 
-        Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
+        Subscriber<GqlWishListDataResponse> subscriber = new Subscriber<GqlWishListDataResponse>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
@@ -489,27 +539,24 @@ public class WishListImpl implements WishList {
             }
 
             @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
-                    GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
+            public void onStart() {
+                wishListView.displayLoadMore(true);
+            }
+
+            @Override
+            public void onNext(GqlWishListDataResponse gqlWishListDataResponse) {
+                wishListView.displayLoadMore(false);
+                if (gqlWishListDataResponse != null) {
                     data.clear();
                     dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                     data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
-                            gqlWishListDataResponse.getTopAdsModel(), query));
+                            gqlWishListDataResponse.getTopAdsModel(), query, gqlWishListDataResponse.getTitle()));
                     mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
                     wishListView.loadDataChange();
                     wishListView.displayContentList(true);
-
-                    if (mPaging.CheckNextPage() && gqlWishListDataResponse.getGqlWishList().isHasNextPage()) {
-                        wishListView.displayLoadMore(true);
-                    } else {
-                        wishListView.displayLoadMore(false);
-                    }
                     wishListView.setPullEnabled(true);
                     if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                         wishListView.setEmptyState();
-                    } else {
-                        data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel(), query));
                     }
                 } else {
                     setData();
@@ -522,27 +569,9 @@ public class WishListImpl implements WishList {
 
     @Override
     public void refreshDataOnSearch(CharSequence query) {
-        mPaging.resetPage();
+        wishListView.displayLoadMore(false);
+        wishListView.loadDataChange();
         searchWishlist(query.toString());
-    }
-
-    @Override
-    public void onResume(Context context) {
-        if (isAfterRotation()) {
-            handleAfterRotation(context);
-        } else {
-            fetchDataFromCache(context);
-        }
-    }
-
-    private void handleAfterRotation(Context context) {
-        if (!isLoadedFirstPage()) {
-            refreshData(context);
-        } else {
-            wishListView.displayLoadMore(mPaging.CheckNextPage());
-            wishListView.displayContentList(true);
-            wishListView.displayLoading(false);
-        }
     }
 
     @Override
@@ -579,12 +608,8 @@ public class WishListImpl implements WishList {
         }
     }
 
-    public Boolean isNextPage(Pagination pagination) {
-        return pagination != null;
-    }
-
-    public List<RecyclerViewItem> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel, String query) {
-        List<RecyclerViewItem> products = new ArrayList<>();
+    public List<Visitable> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel, String query, String title) {
+        List<Visitable> products = new ArrayList<>();
         for (int i = 0; i < wishlists.size(); i++) {
             ProductItem product = new ProductItem();
             product.setId(wishlists.get(i).getId());
@@ -604,10 +629,10 @@ public class WishListImpl implements WishList {
             product.setLabels(wishlists.get(i).getLabels());
             product.setShopLocation(wishlists.get(i).getShop().getLocation());
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
-            products.add(product);
+            products.add(new WishlistProductViewModel(product));
         }
-        if (products.size() >= TOPADS_INDEX && adsModel!=null && !adsModel.getData().isEmpty()) {
-            products.add(TOPADS_INDEX, new TopAdsWishlistItem(adsModel, query));
+        if (products.size() >= TOPADS_INDEX && adsModel != null && !adsModel.getData().isEmpty()) {
+            products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query, title));
         }
         return products;
     }
@@ -624,50 +649,50 @@ public class WishListImpl implements WishList {
         }, REMOVE_WISHLIST_ON_SUCCESS_DELAY);
     }
 
-    private class SearchWishlistSubscriber extends Subscriber<GraphqlResponse> {
+    private void setDataWishlistOnSearch(GqlWishListDataResponse gqlWishListDataResponse) {
+        gqlWishListDataResponse.getGqlWishList().getPagination().setNextUrl("search");
+        wishListView.sendWishlistImpressionAnalysis(gqlWishListDataResponse.getGqlWishList()
+                , dataWishlist.size());
 
+        dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
+        data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
+                gqlWishListDataResponse.getTopAdsModel(), query, gqlWishListDataResponse.getTitle()));
+        mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
+        wishListView.setPullEnabled(true);
+        wishListView.loadDataChange();
+        wishListView.displayContentList(true);
+        wishListView.displayLoading(false);
+    }
+
+
+    private class FirstSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
 
         @Override
-        public void onNext(GraphqlResponse graphqlResponse) {
-            if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
-                GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
-                wishListView.displayPull(false);
-                if (mPaging.getPage() == 1 || gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
-                    data.clear();
-                    dataWishlist.clear();
-                    if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0)
-                        wishListView.setSearchNotFound(query);
-                }
-                gqlWishListDataResponse.getGqlWishList().getPagination().setNextUrl("search");
+        public void onStart() {
+            wishListView.displayLoadMore(true);
+        }
 
-                wishListView.sendWishlistImpressionAnalysis(gqlWishListDataResponse.getGqlWishList()
-                        , dataWishlist.size());
-
-                dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
-                data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
-                        gqlWishListDataResponse.getTopAdsModel(), query));
-                mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
-                if (gqlWishListDataResponse.getGqlWishList().isHasNextPage()) {
-                    wishListView.displayLoadMore(true);
+        @Override
+        public void onNext(GqlWishListDataResponse gqlWishListDataResponse) {
+            wishListView.displayPull(false);
+            if (gqlWishListDataResponse != null) {
+                data.clear();
+                dataWishlist.clear();
+                if (mPaging.getPage() == 1 && gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
+                    wishListView.setSearchNotFound(query);
                 } else {
-                    wishListView.displayLoadMore(false);
+                    setDataWishlistOnSearch(gqlWishListDataResponse);
                 }
-                wishListView.setPullEnabled(true);
-                wishListView.loadDataChange();
-                wishListView.displayContentList(true);
-                wishListView.displayLoading(false);
             }
         }
 
 
         @Override
         public void onCompleted() {
-
         }
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "onError: ", e);
             if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
                 wishListView.displayPull(false);
             }
@@ -676,8 +701,38 @@ public class WishListImpl implements WishList {
 
     }
 
-    private Subscriber<AddToCartResult> addToCartSubscriber(Wishlist dataDetail) {
-        return new Subscriber<AddToCartResult>() {
+    private class LoadMoreSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
+
+        @Override
+        public void onStart() {
+            wishListView.displayLoadMore(true);
+        }
+
+        @Override
+        public void onNext(GqlWishListDataResponse gqlWishListDataResponse) {
+            wishListView.displayLoadMore(false);
+            if (gqlWishListDataResponse != null) {
+                setDataWishlistOnSearch(gqlWishListDataResponse);
+            }
+        }
+
+
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
+                wishListView.displayPull(false);
+            }
+            wishListView.displayErrorNetwork(false);
+        }
+
+    }
+
+    private Subscriber<AddToCartDataModel> addToCartSubscriber(Wishlist dataDetail) {
+        return new Subscriber<AddToCartDataModel>() {
             @Override
             public void onCompleted() {
 
@@ -713,20 +768,12 @@ public class WishListImpl implements WishList {
             }
 
             @Override
-            public void onNext(AddToCartResult addToCartResult) {
-                NullCheckerKt.isContainNull(addToCartResult, s -> {
-                    ContainNullException exception = new ContainNullException("Found " + s + " on " + WishListImpl.class.getSimpleName());
-                    if (!BuildConfig.DEBUG) {
-                        Crashlytics.logException(exception);
-                    }
-                    return Unit.INSTANCE;
-                });
-
+            public void onNext(AddToCartDataModel addToCartResult) {
                 wishListView.dismissProgressDialog();
-                if (addToCartResult.getCartId().isEmpty()) {
-                    wishListView.showAddToCartErrorMessage(addToCartResult.getMessage());
+                if (addToCartResult.getStatus().equalsIgnoreCase(AddToCartDataModel.STATUS_OK) && addToCartResult.getData().getSuccess() == 1) {
+                    wishListView.showAddToCartMessage(addToCartResult.getData().getMessage().get(0));
                 } else {
-                    wishListView.showAddToCartMessage(addToCartResult.getMessage());
+                    wishListView.showAddToCartErrorMessage(addToCartResult.getErrorMessage().get(0));
                 }
                 wishListView.sendAddToCartAnalytics(dataDetail, addToCartResult);
             }

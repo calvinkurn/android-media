@@ -24,6 +24,7 @@ import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -34,7 +35,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     public static final int LAYOUT = R.layout.home_channel_hero_4_image;
     private static final String TAG = DynamicChannelHeroViewHolder.class.getSimpleName();
     private final Context context;
-    private TextView channelTitle;
+    private Typography channelTitle;
     private ImageView channelHeroImage;
     private TextView seeAllButton;
     private HomeCategoryListener listener;
@@ -71,8 +72,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
             String titleText = element.getChannel().getHeader().getName();
             if (!TextUtils.isEmpty(titleText)) {
                 channelTitleContainer.setVisibility(View.VISIBLE);
-                Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
-                channelTitle.setTypeface(typeface);
                 channelTitle.setText(titleText);
             } else {
                 channelTitleContainer.setVisibility(View.GONE);

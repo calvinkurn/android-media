@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.fragment
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
@@ -23,9 +24,15 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
-import android.support.v7.widget.Toolbar
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.ScaleAnimation
+import android.widget.ImageView
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -42,6 +49,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
@@ -63,18 +71,24 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
+import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_READY
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
+import com.tokopedia.product.detail.view.activity.CourierActivity
 import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
@@ -88,6 +102,8 @@ import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.CountDrawable
 import com.tokopedia.product.detail.view.widget.PictureScrollingView
+import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
+import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
@@ -98,18 +114,26 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.tradein.model.TradeInParams
+import com.tokopedia.tradein.view.customview.TradeInTextView
+import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_product_detail.*
+import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_most_helpful_review_view.*
 import kotlinx.android.synthetic.main.partial_product_detail_header.*
@@ -124,13 +148,9 @@ import kotlinx.android.synthetic.main.partial_product_recom_2.*
 import kotlinx.android.synthetic.main.partial_product_recom_3.*
 import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
+import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import com.tokopedia.tradein.model.TradeInParams
-import com.tokopedia.tradein.view.customview.TradeInTextView
-import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
-import com.tokopedia.discovery.common.manager.AdultManager
-import com.tokopedia.product.detail.common.data.model.product.Category
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
@@ -156,6 +176,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationFirstView: PartialRecommendationFirstView
     lateinit var recommendationThirdView: PartialRecommendationThirdView
     lateinit var recommendationFourthView: PartialRecommendationFourthView
+    lateinit var valuePropositionView: PartialValuePropositionView
+    lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -174,6 +196,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var useVariant = true
     private lateinit var varToolbar: Toolbar
     private lateinit var varPictureImage: PictureScrollingView
+    private lateinit var bottomSheet: ValuePropositionBottomSheet
 
     private var userCod: Boolean = false
     private var shopCod: Boolean = false
@@ -190,6 +213,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var userInputQuantity = 0
     private var userInputVariant: String? = null
     private var delegateTradeInTracking = false
+
+    private var shouldShowCartAnimation = false
 
     private lateinit var initToolBarMethod:()-> Unit
     private val productDetailTracking: ProductDetailTracking by lazy {
@@ -214,7 +239,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val REQUEST_CODE_NORMAL_CHECKOUT = 566
         const val REQUEST_CODE_ATC_EXPRESS = 567
         const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
+        const val REQUEST_CODE_REPORT = 570
         const val REQUEST_CODE_SHOP_INFO = 998
+
+        const val CART_MAX_COUNT = 99
+        const val CART_ALPHA_ANIMATION_FROM = 1f
+        const val CART_ALPHA_ANIMATION_TO = 0f
+        const val CART_SCALE_ANIMATION_FROM = 1f
+        const val CART_SCALE_ANIMATION_TO = 2f
+        const val CART_SCALE_ANIMATION_PIVOT = 0.5f
+        const val CART_ANIMATION_DURATION = 700L
 
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
@@ -290,10 +324,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
             productWarehouseViewModel = viewModelProvider.get(ProductWarehouseViewModel::class.java)
             remoteConfig = FirebaseRemoteConfigImpl(this)
+            trackingQueue = TrackingQueue(this)
             if (!remoteConfig.getBoolean(ENABLE_VARIANT))
                 useVariant = false
         }
         setHasOptionsMenu(true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::trackingQueue.isInitialized) { trackingQueue?.run { sendAll() }}
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -407,6 +447,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
          et_search.setOnClickListener { v ->
             RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
         }
+        et_search.hint = String.format(getString(R.string.pdp_search_hint),"")
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -417,7 +458,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
             trackTradeIn(it)
-
         }
         context?.let {
             LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
@@ -545,6 +585,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     productInfo?.variant?.isVariant ?: false)
             doBuy()
         }
+        valuePropositionView.hideBackgroundResource = {
+            base_attribute.setBackgroundResource(0)
+        }
+        headerView.onGuaranteeOsClicked = {
+            onValuePropositionClick(R.id.layout_guarantee)
+        }
+
 
         open_shop.setOnClickListener {
             activity?.let {
@@ -596,7 +643,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.goldOS?.shopTypeString,
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType)
-                intent.putExtra(NormalCheckoutActivity.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                if(::tradeInParams.isInitialized) {
+                    intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                }
                 startActivityForResult(intent,
                         REQUEST_CODE_NORMAL_CHECKOUT)
             }
@@ -631,9 +680,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun addLoadMoreImpression(view:View){
+    private fun addLoadMoreImpression(){
         val impressionHolder = ImpressHolder()
-        view.addOnImpressionListener(impressionHolder, object : ViewHintListener {
+        title_product_desc_label.addOnImpressionListener(impressionHolder, object : ViewHintListener {
             override fun onViewHint() {
                 productInfoViewModel.loadMore()
             }
@@ -662,7 +711,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         if (!::productDescrView.isInitialized) {
             productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity)
-            addLoadMoreImpression(title_product_desc_label)
+            addLoadMoreImpression()
         }
 
         if (!::actionButtonView.isInitialized) {
@@ -690,19 +739,23 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
 
         if (!::recommendationSecondView.isInitialized) {
-            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this)
+            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this, trackingQueue)
         }
 
         if (!::recommendationFirstView.isInitialized) {
-            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this)
+            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this, trackingQueue)
         }
 
         if (!::recommendationThirdView.isInitialized) {
-            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this)
+            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this, trackingQueue)
         }
 
         if (!::recommendationFourthView.isInitialized) {
-            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this)
+            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this, trackingQueue)
+        }
+
+        if (!::valuePropositionView.isInitialized) {
+            valuePropositionView = PartialValuePropositionView.build(layout_value_proposition, onViewClickListener)
         }
 
     }
@@ -729,6 +782,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             R.id.btn_favorite -> onShopFavoriteClick()
             R.id.send_msg_shop, R.id.btn_topchat -> onShopChatClicked()
             R.id.shop_ava, R.id.shop_name -> gotoShopDetail()
+            R.id.container_ready -> onValuePropositionClick(R.id.container_ready)
+            R.id.container_ori -> onValuePropositionClick(R.id.container_ori)
+            R.id.container_guarantee_7_days -> onValuePropositionClick(R.id.container_guarantee_7_days)
+
             else -> {
             }
         }
@@ -756,13 +813,46 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
     }
+
+    private fun onValuePropositionClick(view: Int) {
+        val title: String
+        val desc: String
+        val url: String
+        when (view) {
+            R.id.container_ready -> {
+                title = getString(R.string.value_proposition_title_ready)
+                desc = getString(R.string.value_proposition_desc_ready)
+                url = URL_VALUE_PROPOSITION_READY
+            }
+            R.id.container_ori -> {
+                title = getString(R.string.value_proposition_title_original)
+                desc = getString(R.string.value_proposition_desc_original)
+                url = URL_VALUE_PROPOSITION_ORI
+            }
+            R.id.container_guarantee_7_days -> {
+                title = getString(R.string.value_proposition_title_guarantee_7_days)
+                desc = getString(R.string.value_proposition_desc_guarantee_7_days)
+                url = URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
+            }
+            else -> {
+                title = getString(R.string.value_proposition_title_guarantee)
+                desc = getString(R.string.value_proposition_desc_guarantee)
+                url = URL_VALUE_PROPOSITION_GUARANTEE
+            }
+        }
+
+        bottomSheet = ValuePropositionBottomSheet.newInstance(title, desc, url)
+        bottomSheet.show(fragmentManager, "pdp_bs")
+    }
+
     private fun isViewVisible(view: View): Boolean {
         val scrollBounds = Rect()
         nested_scroll.getDrawingRect(scrollBounds)
         val top = view.y
         val bottom = top + view.height - 100;
-        return !(scrollBounds.top > bottom)
+        return scrollBounds.top <= bottom
     }
+
     private fun initView() {
         val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
         if(appShowSearchPDP) {
@@ -806,17 +896,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         varPictureImage = view_picture_search_bar
         initToolBarMethod  =  ::initToolbarLight
         fab_detail.setAnchor(R.id.view_picture_search_bar)
-        nested_scroll.viewTreeObserver.addOnScrollChangedListener(ViewTreeObserver.OnScrollChangedListener {
+        nested_scroll.viewTreeObserver.addOnScrollChangedListener {
             activity?.run {
                 if(isAdded) {
                     if (isViewVisible(varPictureImage)) {
-                        fab_detail.show()
+                        showFabDetailAfterLoadData()
+                        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.VISIBLE else View.GONE
                     } else {
                         fab_detail.hide()
+                        label_cod?.visibility = View.GONE
                     }
                 }
             }
-        })
+        }
 
     }
 
@@ -840,7 +932,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initStatusBarDark()
         initToolBarMethod()
         showFabDetailAfterLoadData()
-        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
+        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.VISIBLE else View.GONE
     }
 
     private fun initToolbarLight() {
@@ -855,7 +947,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_dark)
                         val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
+                        menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_dark
                         setBadgeMenuCart(menuCart)
                     }
                 }
@@ -886,7 +978,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_light)
                         val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_light)
+                        menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_light
                         setBadgeMenuCart(menuCart)
                     }
                 }
@@ -931,6 +1023,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
         if (productId != null || (productKey != null && shopDomain != null)) {
             productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
+            // Add new Impression after refresh for lazy load
+            addLoadMoreImpression()
         }
     }
 
@@ -967,7 +1061,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         val selectedWarehouse: MultiOriginWarehouse? = cacheManager.get(NormalCheckoutFragment.RESULT_SELECTED_WAREHOUSE,
                                 MultiOriginWarehouse::class.java)
                         if (selectedProductInfo != null) {
-                            userInputVariant = data.getStringExtra(NormalCheckoutFragment.EXTRA_SELECTED_VARIANT_ID)
+                            userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
                             productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
                             selectedWarehouse?.let {
                                 productInfoViewModel.multiOrigin = it.warehouseInfo
@@ -982,12 +1076,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     productInfoViewModel.p2General.value?.variantResp?.run {
                         onSuccessGetProductVariantInfo(this)
                     }
-                    userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
-                    userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
+                    userInputNotes = data.getStringExtra(ApplinkConst.Transaction.EXTRA_NOTES)
+                    userInputQuantity = data.getIntExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, 0)
 
-                    if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
-                        val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
+                    if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
+                        val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
                         showSnackbarSuccessAtc(successMessage)
+                        shouldShowCartAnimation = true
                         updateCartNotification()
                     }
 
@@ -1030,6 +1125,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
                 doBuy()
+            }
+            REQUEST_CODE_REPORT -> {
+                if (resultCode == Activity.RESULT_OK)
+                    showToastSuccessReport()
             }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
@@ -1089,10 +1188,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
         userCod = productInfoP3.userCod
-        if (shouldShowCod && shopCod && userCod) label_cod.visible() else label_cod.gone()
-        headerView.renderCod(shouldShowCod && shopCod && userCod)
+        if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
+        headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
         productInfoP3.rateEstSummarizeText?.let {
-            partialVariantAndRateEstView.renderRateEstimation(it) { gotoRateEstimation(false) }
+            partialVariantAndRateEstView.renderRateEstimation(it) {
+                productDetailTracking.eventShippingRateEstimationClicked()
+                gotoRateEstimation(false)
+            }
         }
     }
 
@@ -1120,16 +1222,28 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productDetailTracking.eventClickAffiliate(productInfoViewModel.userId, productInfo!!.basic.shopID,
                     pdpAffiliate.productId.toString(), isRegularPdp)
             if (productInfoViewModel.isUserSessionActive()) {
-                RouteManager.route(it,
+                RouteManager.getIntent(it,
                         ApplinkConst.AFFILIATE_CREATE_POST,
                         pdpAffiliate.productId.toString(),
                         pdpAffiliate.adId.toString())
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .let(::startActivity)
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
             }
+        }
+    }
+
+    private fun goToCourier(
+            productId : String,
+            shipment: List<ShopShipment>,
+            bbInfos: List<BBInfo>
+    ) {
+        activity?.let {
+            startActivity(CourierActivity.createIntent(it, productId, shipment, bbInfos))
         }
     }
 
@@ -1157,15 +1271,22 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
+            valuePropositionView.renderData(shopInfo.goldOS)
             varPictureImage.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 val userSession = UserSession(it)
-                if (userSession.isLoggedIn) {
-                    productStatsView.renderClickShipmentForLoggedInUser(it) { gotoRateEstimation(true) }
-                } else {
-                    productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString()
-                            ?: "", shopInfo.shipments, shopInfo.bbInfo)
+                productStatsView.renderClickShipping(it) {
+                    productDetailTracking.eventShippingClicked()
+                    if (userSession.isLoggedIn) {
+                        gotoRateEstimation(true)
+                    } else {
+                        goToCourier(
+                                productInfo?.basic?.id?.toString()?: "",
+                                shopInfo.shipments,
+                                shopInfo.bbInfo
+                        )
+                    }
                 }
             }
             productDetailTracking.sendScreen(shopInfo.shopCore.shopID, shopInfo.goldOS.shopTypeString,
@@ -1241,6 +1362,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }*/
 
         partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
+        productInfo?.run {
+            productDetailTracking.eventBranchItemView(this, (UserSession(activity)).userId)
+        }
 
     }
 
@@ -1258,11 +1382,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun updateWishlist(wishlisted: Boolean) {
         context?.let {
             if (wishlisted) {
+                fab_detail.hide()
                 fab_detail.isActivated = true
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
+                fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_checked))
+                fab_detail.show()
             } else {
+                fab_detail.hide()
                 fab_detail.isActivated = false
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                fab_detail.show()
             }
         }
     }
@@ -1469,6 +1597,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun showToastSuccessReport() {
+        activity?.run {
+            Toaster.showNormal(findViewById(android.R.id.content),
+                    getString(R.string.success_to_report), Snackbar.LENGTH_LONG)
+        }
+    }
+
     /**
      * Event than happen after owner successfully move the warehoused product back to etalase
      */
@@ -1512,6 +1647,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         productInfoViewModel.p2Login.value?.isWishlisted = true
         updateWishlist(true)
+        productDetailTracking.eventBranchAddToWishlist(productInfo, (UserSession(activity)).userId)
         //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
@@ -1702,18 +1838,80 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun setBadgeMenuCart(menuCart: MenuItem) {
         activity?.run {
+            val actionView = menuCart.actionView
+            val cartImageView = actionView.cart_image_view
+            val lottieCartView = actionView.cart_lottie_view
+            cartImageView.setOnClickListener {
+                gotoCart()
+            }
+            if (shouldShowCartAnimation) {
+                if (actionView is SquareHFrameLayout) {
+                    if (lottieCartView.visibility != View.VISIBLE) {
+                        lottieCartView.addAnimatorListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(animator: Animator?) {}
+
+                            override fun onAnimationEnd(animator: Animator?) {
+                                showBadgeMenuCart(cartImageView, lottieCartView, true)
+                                shouldShowCartAnimation = false
+                            }
+
+                            override fun onAnimationCancel(animator: Animator?) {}
+
+                            override fun onAnimationStart(animator: Animator?) {}
+                        })
+                        cartImageView.visibility = View.INVISIBLE
+                        lottieCartView.visibility = View.VISIBLE
+                        if (!lottieCartView.isAnimating) {
+                            lottieCartView.playAnimation()
+                        }
+                    }
+                }
+            } else {
+                showBadgeMenuCart(cartImageView, lottieCartView, false)
+            }
+        }
+    }
+
+    private fun showBadgeMenuCart(cartImageView: ImageView, lottieCartView: LottieAnimationView, animate: Boolean) {
+        activity?.run {
             val cartCount = (application as ProductDetailRouter).getCartCount(this)
-            if (cartCount > 0) {
-                if (menuCart.icon is LayerDrawable) {
-                    val icon = menuCart.icon as LayerDrawable
-                    val badge = CountDrawable(context)
-                    badge.setCount(if (cartCount > 99) {
-                        getString(R.string.pdp_label_cart_count_max)
-                    } else {
-                        cartCount.toString()
+            val icon = ContextCompat.getDrawable(this, cartImageView.tag as Int)
+            if (icon is LayerDrawable) {
+                val badge = CountDrawable(this)
+                badge.setCount(if (cartCount > CART_MAX_COUNT) {
+                    getString(R.string.pdp_label_cart_count_max)
+                } else {
+                    cartCount.toString()
+                })
+                icon.mutate()
+                icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
+                cartImageView.setImageDrawable(icon)
+                if (animate) {
+                    val alphaAnimation = AlphaAnimation(CART_ALPHA_ANIMATION_FROM, CART_ALPHA_ANIMATION_TO)
+                    val scaleAnimation = ScaleAnimation(CART_SCALE_ANIMATION_FROM, CART_SCALE_ANIMATION_TO, CART_SCALE_ANIMATION_FROM, CART_SCALE_ANIMATION_TO, Animation.RELATIVE_TO_SELF, CART_SCALE_ANIMATION_PIVOT, Animation.RELATIVE_TO_SELF, CART_SCALE_ANIMATION_PIVOT)
+                    scaleAnimation.fillAfter = false
+                    val animationSet = AnimationSet(false)
+                    animationSet.addAnimation(alphaAnimation)
+                    animationSet.addAnimation(scaleAnimation)
+                    animationSet.duration = CART_ANIMATION_DURATION
+                    animationSet.fillAfter = false
+                    animationSet.fillBefore = false
+                    animationSet.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationRepeat(p0: Animation?) {}
+
+                        override fun onAnimationEnd(p0: Animation?) {
+                            lottieCartView.clearAnimation()
+                            cartImageView.clearAnimation()
+                            lottieCartView.visibility = View.INVISIBLE
+                            cartImageView.visibility = View.VISIBLE
+                        }
+
+                        override fun onAnimationStart(p0: Animation?) {}
                     })
-                    icon.mutate()
-                    icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
+                    lottieCartView.startAnimation(animationSet)
+                } else {
+                    lottieCartView.visibility = View.INVISIBLE
+                    cartImageView.visibility = View.VISIBLE
                 }
             }
         }
@@ -1767,9 +1965,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun reportProduct() {
         productInfo?.run {
             if (productInfoViewModel.isUserSessionActive()) {
-                fragmentManager?.let {
-                    val fragment = ReportDialogFragment.newInstance(basic.id.toString())
-                    fragment.show(it, ReportDialogFragment.TAG)
+                context?.let {
+                    val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.REPORT_PRODUCT,
+                            basic.id.toString())
+                    startActivityForResult(intent, REQUEST_CODE_REPORT)
                 }
 
                 productDetailTracking.eventReportLogin()

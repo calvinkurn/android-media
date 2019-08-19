@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
+import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
@@ -660,6 +661,9 @@ public class ExploreFragment
 
     @Override
     public void onSuccessGetData(List<Visitable<?>> products, String cursor, boolean isSearch) {
+        if (isSearch)
+            trackImpressionNonEE(products);
+
         trackImpression(products);
 
         exploreParams.setLoading(false);
@@ -854,6 +858,7 @@ public class ExploreFragment
 
     @Override
     public void onAutoCompleteItemClicked(String keyword) {
+        affiliateAnalytics.onAutoCompleteClicked(keyword);
         clearAutoCompleteAdapter(keyword);
         onSearchSubmitted(keyword);
         autoCompleteLayout.setVisibility(View.GONE);
@@ -951,6 +956,24 @@ public class ExploreFragment
         presenter.detachView();
     }
 
+    private void trackImpressionNonEE(List<Visitable<?>> visitables){
+        for (int i = 0; i < visitables.size(); i++) {
+            Visitable visitable = visitables.get(i);
+
+            if (visitable instanceof ExploreProductViewModel) {
+                ExploreProductViewModel model = (ExploreProductViewModel) visitable;
+                if (!TextUtils.isEmpty(model.getExploreCardViewModel().getProductId()))
+                    affiliateAnalytics.trackProductImpressionNonEE(model.getExploreCardViewModel().getProductId());
+            } else if (visitable instanceof RecommendationViewModel) {
+                RecommendationViewModel model = (RecommendationViewModel) visitable;
+                for (ExploreCardViewModel card : model.getCards()) {
+                    if (!TextUtils.isEmpty(card.getProductId()))
+                        affiliateAnalytics.trackProductImpressionNonEE(card.getProductId());
+                }
+            }
+        }
+    }
+
     private void trackImpression(List<Visitable<?>> visitables) {
         for (int i = 0; i < visitables.size(); i++) {
             Visitable visitable = visitables.get(i);
@@ -986,6 +1009,10 @@ public class ExploreFragment
                 card.getSectionName(),
                 position
         );
+
+        if (!TextUtils.isEmpty(exploreParams.getKeyword())){
+            affiliateAnalytics.onProductSearchClicked(card.getProductId());
+        }
     }
 
     private void showError(String message) {

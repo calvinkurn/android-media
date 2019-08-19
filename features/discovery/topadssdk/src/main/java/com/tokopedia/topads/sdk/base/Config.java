@@ -1,5 +1,6 @@
 package com.tokopedia.topads.sdk.base;
 
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 
@@ -9,7 +10,7 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 
 public class Config {
 
-    public static String TOPADS_BASE_URL = "https://ta.tokopedia.com/";
+    public static String TOPADS_BASE_URL = TokopediaUrl.Companion.getInstance().getTA();
     public static final int ERROR_CODE_INVALID_RESPONSE = 911;
     public static final String DEFAULT_DEVICE = "android";
     public static final String DEFAULT_CLIENT_ID = "12";

@@ -28,16 +28,19 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.productName.text = list!![position].name
 
+        val marginThirty = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_10)
+        val marginZero = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_0)
+
         if (list[position].iconImageUrl == null) {
-
             holder.productImage.setImageResource(R.drawable.ic_see_more)
-
+            holder.productImage.setPadding(marginThirty, marginThirty, marginThirty, marginThirty)
         } else {
+            holder.productImage.setPadding(marginZero, marginZero, marginZero, marginZero)
             ImageHandler.loadImage(holder.itemView.context, holder.productImage, list[position].iconImageUrl, R.drawable.loading_page)
         }
 
         holder.productImage.setOnClickListener {
-            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoClick(holder.itemView.context,list[position], position)
+            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoClick(list[position], position)
             RouteManager.route(holder.productImage.context, list[position].applinks)
         }
         holder.productName.setOnClickListener {
@@ -50,7 +53,7 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
         val position = holder.adapterPosition
         if (!viewMap.containsKey(position)) {
             viewMap[position] = true
-            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoView(holder.itemView.context,list?.get(position)!!, position)
+            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoView(list?.get(position)!!, position)
         }
     }
 
