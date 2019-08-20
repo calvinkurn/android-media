@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.cartlist;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -101,7 +102,6 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
-import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
@@ -154,7 +154,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private CardView cardFooter;
     private LinearLayout llNetworkErrorView;
     private LinearLayout llCartContainer;
-    private Ticker cartTicker;
 
     private ProgressDialog progressDialog;
 
@@ -357,7 +356,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
         llCartContainer = view.findViewById(R.id.ll_cart_container);
-        cartTicker = view.findViewById(R.id.cart_ticker);
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -368,6 +366,27 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecyclerView.setLayoutManager(layoutManager);
         cartRecyclerView.setAdapter(cartAdapter);
         cartRecyclerView.addItemDecoration(cartItemDecoration);
+        cartRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDrawOver(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                super.onDrawOver(c, parent, state);
+                RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+                if (layoutManager instanceof GridLayoutManager) {
+                    int cartSelectAllViewHolderPosition = cartAdapter.getCartSelectAllViewHolderPosition();
+                    if (cartSelectAllViewHolderPosition > -1) {
+                        if (((GridLayoutManager) layoutManager).findFirstVisibleItemPosition() >= cartSelectAllViewHolderPosition) {
+                            if (cardHeader != null && cardHeader.getVisibility() != View.VISIBLE) {
+                                cardHeader.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            if (cardHeader != null && cardHeader.getVisibility() != View.GONE) {
+                                cardHeader.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                }
+            }
+        });
         cartRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -510,19 +529,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     private View.OnClickListener getOnClickCheckboxSelectAll() {
-        return v -> {
-            boolean checked = !dPresenter.getCartListData().isAllSelected();
-            if (checked) {
-                sendAnalyticsOnButtonSelectAllChecked();
-            } else {
-                sendAnalyticsOnButtonSelectAllUnchecked();
-            }
-            dPresenter.getCartListData().setAllSelected(checked);
-            cbSelectAll.setChecked(checked);
-            cartAdapter.setAllShopSelected(checked);
-            cartAdapter.notifyDataSetChanged();
-            dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-        };
+        return v -> onSelectAllClicked();
     }
 
     @NonNull
@@ -722,6 +729,27 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void onSimilarProductUrlClicked(@NotNull String similarProductUrl) {
         RouteManager.route(getContext(), similarProductUrl);
         cartPageAnalytics.eventClickMoreLikeThis();
+    }
+
+    @Override
+    public void onSelectAllClicked() {
+        boolean checked = !dPresenter.getCartListData().isAllSelected();
+        if (checked) {
+            sendAnalyticsOnButtonSelectAllChecked();
+        } else {
+            sendAnalyticsOnButtonSelectAllUnchecked();
+        }
+        dPresenter.getCartListData().setAllSelected(checked);
+        cbSelectAll.setChecked(checked);
+        cartAdapter.addCartSelectAll(checked);
+        cartAdapter.setAllShopSelected(checked);
+        cartAdapter.notifyDataSetChanged();
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+    }
+
+    @Override
+    public void onShowCartTicker(@NotNull String tickerId) {
+        cartPageAnalytics.eventViewInformationAndWarningTickerInCart(tickerId);
     }
 
     @NonNull
@@ -1136,6 +1164,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 onCartEmpty();
             } else {
                 cartAdapter.removeCartEmptyData();
+
+                CartTickerData tickerData = cartListData.getTicker();
+                if (tickerData != null) {
+                    cartAdapter.addCartTicker(tickerData);
+                }
+                cartAdapter.addCartSelectAll(true);
                 cartAdapter.addPromoStackingVoucherData(promoStackingData);
 
                 if (cartListData.getCartPromoSuggestion().isVisible()) {
@@ -1157,6 +1191,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
                 if (cbSelectAll != null) {
                     cbSelectAll.setChecked(cartListData.isAllSelected());
+                    cartAdapter.addCartSelectAll(cartListData.isAllSelected());
                 }
 
                 cartAdapter.checkForShipmentForm();
@@ -1189,28 +1224,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     mIsMenuVisible = true;
                     getActivity().invalidateOptionsMenu();
                 }
-            }
-
-            CartTickerData tickerData = cartListData.getTicker();
-            if (tickerData != null) {
-                if (cartTicker != null) {
-                    cartTicker.setTickerType(Ticker.TYPE_ANNOUNCEMENT);
-                    cartTicker.setTickerShape(Ticker.SHAPE_FULL);
-                    cartTicker.setCloseButtonVisibility(View.GONE);
-                    cartTicker.setHtmlDescription(tickerData.getMessage());
-                    cartTicker.setVisibility(View.VISIBLE);
-
-                    // Ticker Wrap_Content workaround - remove TickerViewPager
-                    View view = cartTicker.findViewById(com.tokopedia.unifycomponents.R.id.ticker_content_multiple);
-                    if (view != null) {
-                        view.setVisibility(View.GONE);
-                    }
-
-                    cartTicker.requestLayout();
-                    cartPageAnalytics.eventViewInformationAndWarningTickerInCart(String.valueOf(tickerData.getId()));
-                }
-            } else if (cartTicker != null) {
-                cartTicker.setVisibility(View.GONE);
             }
         }
     }
@@ -1261,7 +1274,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
         cardFooter.setVisibility(View.VISIBLE);
-        cardHeader.setVisibility(View.VISIBLE);
+//        cardHeader.setVisibility(View.VISIBLE);
     }
 
     public void showErrorContainer() {
@@ -1453,6 +1466,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             dPresenter.getCartListData().setAllSelected(selectAllCartItem);
         }
         cbSelectAll.setChecked(selectAllCartItem);
+        cartAdapter.addCartSelectAll(selectAllCartItem);
         tvTotalPrice.setText(subtotalPrice);
         btnToShipment.setText(String.format(getString(R.string.cart_item_button_checkout_count_format), qty));
     }

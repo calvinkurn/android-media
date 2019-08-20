@@ -189,7 +189,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_TICKER_PRICE_DECREASE = "view ticker price decrease";
         String VIEW_TICKER_STOCK_DECREASE_AND_ALREADY_ATC_BY_OTHER_USER = "view ticker stock decrease and already atc by other user";
         String VIEW_TICKER_OUT_OF_STOCK = "view ticker out of stock";
-        String VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART = "view informaton and warning ticker in cart";
+        String VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART = "view information and warning ticker in cart";
 
         //PHASE 2
         String CLICK_PILIH_ALAMAT_LAIN = "click pilih alamat lain";
