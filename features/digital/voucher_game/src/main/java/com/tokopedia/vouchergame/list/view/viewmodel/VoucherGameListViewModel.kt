@@ -25,35 +25,19 @@ import javax.inject.Inject
  * Created by resakemal on 12/08/19.
  */
 class VoucherGameListViewModel @Inject constructor(private val voucherGameUseCase: VoucherGameListUseCase,
-                                                   val dispatcher: CoroutineDispatcher)
+                                                   dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val voucherGameList = MutableLiveData<Result<VoucherGameListData>>()
 
-    fun getVoucherGameList(rawQuery: String, mapParam: Map<String, Any>) {
+    fun getVoucherGameList(rawQuery: String, mapParam: Map<String, Any>, searchQuery: String, isForceRefresh: Boolean = false) {
         launch {
-            voucherGameList.value = voucherGameUseCase.getVoucherGameList(rawQuery, mapParam)
+            voucherGameList.value = voucherGameUseCase.getVoucherGameList(rawQuery, mapParam, searchQuery, isForceRefresh)
         }
     }
 
-    fun searchVoucherGame(searchQuery: String, rawQuery: String, mapParam: Map<String, Any>) {
-        launch {
-            voucherGameList.value = voucherGameUseCase.searchVoucherGame(searchQuery, rawQuery, mapParam)
-        }
-    }
-
-    fun createParams(menuID: Int, platformID: Int): Map<String,Any> {
-        val params: MutableMap<String, Any> = mutableMapOf()
-//        params.put(PARAM_MENU_ID, menuID)
-//        params.put(PARAM_PLATFORM_ID, platformID)
-        params.put(PARAM_MENU_ID, 10)
-        params.put(PARAM_PLATFORM_ID, 7)
-        return params
-    }
-
-    companion object {
-        const val PARAM_MENU_ID = "menuID"
-        const val PARAM_PLATFORM_ID = "platformID"
+    fun createParams(menuID: Int, platformID: Int): Map<String, Any> {
+        return voucherGameUseCase.createParams(menuID, platformID)
     }
 
 }

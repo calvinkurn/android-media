@@ -28,12 +28,7 @@ class VoucherGameListModule {
 
     @VoucherGameListScope
     @Provides
-    fun provideGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<VoucherGameListData.Response> =
-            GraphqlUseCase(graphqlRepository)
-
-    @VoucherGameListScope
-    @Provides
-    fun provideVoucherGameListUseCase(graphqlUseCase: GraphqlUseCase<VoucherGameListData.Response>): VoucherGameListUseCase =
-           VoucherGameListUseCase(graphqlUseCase)
+    fun provideVoucherGameListUseCase(graphqlRepository: GraphqlRepository): VoucherGameListUseCase =
+           VoucherGameListUseCase(graphqlRepository)
 
 }

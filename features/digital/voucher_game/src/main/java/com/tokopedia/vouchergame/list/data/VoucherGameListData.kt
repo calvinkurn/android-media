@@ -22,7 +22,7 @@ class VoucherGameListData(
         val text: String = "",
         @SerializedName("operators")
         @Expose
-        val operators: List<VoucherGameOperator> = listOf()
+        var operators: List<VoucherGameOperator> = listOf()
 
 ) {
         class Response(

@@ -2,6 +2,7 @@ package com.tokopedia.vouchergame.list.usecase
 
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.usecase.coroutines.Fail
@@ -14,36 +15,38 @@ import javax.inject.Inject
  * @author by resakemal on 15/08/19
  */
 
-class VoucherGameListUseCase @Inject constructor(val useCase: GraphqlUseCase<VoucherGameListData.Response>) {
+class VoucherGameListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<VoucherGameListData.Response>(graphqlRepository) {
 
-    suspend fun getVoucherGameList(rawQuery: String, mapParam: Map<String, Any>): Result<VoucherGameListData> {
+    suspend fun getVoucherGameList(rawQuery: String, mapParam: Map<String, Any>, searchQuery: String, isForceRefresh: Boolean): Result<VoucherGameListData> {
         try {
-            useCase.setGraphqlQuery(rawQuery)
-            useCase.setRequestParams(mapParam)
-            useCase.setTypeClass(VoucherGameListData.Response::class.java)
-            useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+            this.setGraphqlQuery(rawQuery)
+            this.setRequestParams(mapParam)
+            this.setTypeClass(VoucherGameListData.Response::class.java)
+            this.setCacheStrategy(GraphqlCacheStrategy.Builder(if (isForceRefresh) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
 
-            val voucherGameListData = useCase.executeOnBackground()
+            val voucherGameListData = this.executeOnBackground()
+            if(searchQuery.isNotEmpty()){
+                voucherGameListData.response.operators = voucherGameListData.response.operators.filter { it.attributes.name.contains(searchQuery, true) }
+            }
             return Success(voucherGameListData.response)
         } catch (throwable: Throwable) {
-            useCase.clearCache()
+            this.clearCache()
             return Fail(throwable)
         }
     }
 
-    suspend fun searchVoucherGame(searchQuery: String, rawQuery: String, mapParam: Map<String, Any>): Result<VoucherGameListData> {
-        var response = getVoucherGameList(rawQuery, mapParam)
-        if (response is Success) {
-            val data = response.data
-            val filteredData = data.operators.filter{ it.attributes.name.contains(searchQuery, true) }
-            response = Success(VoucherGameListData(
-                    componentID = data.componentID,
-                    name = data.name,
-                    paramName = data.paramName,
-                    text = data.text,
-                    operators = filteredData))
-        }
-        return response
+    fun createParams(menuID: Int, platformID: Int): Map<String,Any> {
+        val params: MutableMap<String, Any> = mutableMapOf()
+//        params.put(PARAM_MENU_ID, menuID)
+//        params.put(PARAM_PLATFORM_ID, platformID)
+        params.put(PARAM_MENU_ID, 10)
+        params.put(PARAM_PLATFORM_ID, 7)
+        return params
+    }
+
+    companion object {
+        const val PARAM_MENU_ID = "menuID"
+        const val PARAM_PLATFORM_ID = "platformID"
     }
 }

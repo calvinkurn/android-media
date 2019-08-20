@@ -15,6 +15,7 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
+import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import com.tokopedia.vouchergame.list.di.VoucherGameListComponent
@@ -43,6 +44,7 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -70,11 +72,6 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
                 }
             }
         })
-    }
-
-    override fun showGetListError(throwable: Throwable?) {
-        recycler_view.layoutManager = GridLayoutManager(context, 1)
-        super.showGetListError(throwable)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -120,12 +117,17 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
 
     override fun loadData(page: Int) {
         voucherGameViewModel.getVoucherGameList(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
-                voucherGameViewModel.createParams(menuId, platformId))
+                voucherGameViewModel.createParams(menuId, platformId), "", true)
     }
 
     override fun onItemClicked(voucherGameOperator: VoucherGameOperator) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        context?.run {
+            val intent = VoucherGameDetailActivity.newInstance(this, menuId, platformId, voucherGameOperator.id.toString())
+            startActivityForResult(intent, REQUEST_VOUCHER_GAME_DETAIL)
+        }
     }
+
+    override fun hasInitialSwipeRefresh(): Boolean { return true }
 
     override fun onEmptyContentItemTextClicked() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -148,15 +150,15 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
     }
 
     private fun searchVoucherGame(query: String) {
-        voucherGameViewModel.searchVoucherGame(query,
-                GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
-                voucherGameViewModel.createParams(menuId, platformId))
+        voucherGameViewModel.getVoucherGameList(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
+                voucherGameViewModel.createParams(menuId, platformId), query)
     }
 
     companion object {
 
         const val EXTRA_MENU_ID = "EXTRA_MENU_ID"
         const val EXTRA_PLATFORM_ID = "EXTRA_PLATFORM_ID"
+        const val REQUEST_VOUCHER_GAME_DETAIL = 300
 
         fun createInstance(menuId: Int, platformId: Int): VoucherGameListFragment {
             return VoucherGameListFragment().also {
