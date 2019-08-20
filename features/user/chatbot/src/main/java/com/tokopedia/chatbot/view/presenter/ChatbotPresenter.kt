@@ -223,13 +223,13 @@ class ChatbotPresenter @Inject constructor(
     private fun onSuccess(): (String) -> Unit {
         return { str ->
             if (view!=null){
+                view.isBackAllowed(true)
                 if(str==ERROR_CODE){
                     isErrorOnLeaveQueue = true
                     val model = ConnectionDividerViewModel("",false, TEXT_HIDE, null)
                     view.onReceiveConnectionEvent(model)
                 }else{
-                    view.isBackAllowed(true)
-                    val model = ConnectionDividerViewModel(view.context?.getString(R.string.you_left_the_queue),false, SHOW_TEXT, null)
+                    val model = ConnectionDividerViewModel(view.context?.getString(R.string.cb_bot_you_left_the_queue),false, SHOW_TEXT, null)
                     view.onReceiveConnectionEvent(model)
                 }
             }

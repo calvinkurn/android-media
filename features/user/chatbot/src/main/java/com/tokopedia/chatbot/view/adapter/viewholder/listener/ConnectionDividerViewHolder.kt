@@ -28,10 +28,10 @@ class ConnectionDividerViewHolder(itemView: View) : AbstractViewHolder<Connectio
         dividerButton.setOnClickListener {
             val mContext = itemView.context
             val dialog = Dialog(mContext as Activity, Dialog.Type.PROMINANCE)
-            dialog.setTitle(mContext.getString(R.string.leave_the_queue))
-            dialog.setDesc(mContext.getString(R.string.leave_the_queue_desc_two))
-            dialog.setBtnOk(mContext.getString(R.string.ok_text))
-            dialog.setBtnCancel(mContext.getString(R.string.cancel_text))
+            dialog.setTitle(mContext.getString(R.string.cb_bot_leave_the_queue))
+            dialog.setDesc(mContext.getString(R.string.cb_bot_leave_the_queue_desc_two))
+            dialog.setBtnOk(mContext.getString(R.string.cb_bot_ok_text))
+            dialog.setBtnCancel(mContext.getString(R.string.cb_bot_cancel_text))
             dialog.setOnOkClickListener {
                 element.leaveQueue?.invoke()
                 dialog.dismiss()

@@ -32,10 +32,10 @@ class QuickReplyAdapter(private var quickReplyListViewModel: QuickReplyListViewM
             if(model.text.equals(END_CHAT,true)){
                 val mContext = holder.itemView.context
                 val dialog = Dialog(mContext as Activity, Dialog.Type.PROMINANCE)
-                dialog.setTitle(mContext.getString(R.string.end_live_chat))
-                dialog.setDesc(mContext.getString(R.string.end_live_chat_desc))
-                dialog.setBtnOk(mContext.getString(R.string.yes_end_text))
-                dialog.setBtnCancel(mContext.getString(R.string.ok_text))
+                dialog.setTitle(mContext.getString(R.string.cb_bot_end_live_chat))
+                dialog.setDesc(mContext.getString(R.string.cb_bot_end_live_chat_desc))
+                dialog.setBtnOk(mContext.getString(R.string.cb_bot_yes_end_text))
+                dialog.setBtnCancel(mContext.getString(R.string.cb_bot_ok_text))
                 dialog.setOnOkClickListener{
                     listener.onQuickReplyClicked(quickReplyListViewModel, model)
                     dialog.dismiss()

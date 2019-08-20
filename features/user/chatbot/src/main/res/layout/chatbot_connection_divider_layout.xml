@@ -50,7 +50,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/ineractive_button_background"
         android:gravity="center"
-        android:text="@string/leave_queue"
+        android:text="@string/cb_bot_leave_queue"
         android:textColor="@color/tkpd_main_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

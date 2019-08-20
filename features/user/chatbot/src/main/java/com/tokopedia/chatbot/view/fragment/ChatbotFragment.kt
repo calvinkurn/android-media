@@ -574,10 +574,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onBackPressed() {
         if(!isBackAllowed){
             val dialog = Dialog(context as Activity, Dialog.Type.PROMINANCE)
-            dialog.setTitle(context?.getString(R.string.leave_the_queue))
-            dialog.setDesc(context?.getString(R.string.leave_the_queue_desc_one))
-            dialog.setBtnOk(context?.getString(R.string.ok_text))
-            dialog.setBtnCancel(context?.getString(R.string.cancel_text))
+            dialog.setTitle(context?.getString(R.string.cb_bot_leave_the_queue))
+            dialog.setDesc(context?.getString(R.string.cb_bot_leave_the_queue_desc_one))
+            dialog.setBtnOk(context?.getString(R.string.cb_bot_ok_text))
+            dialog.setBtnCancel(context?.getString(R.string.cb_bot_cancel_text))
             dialog.setOnOkClickListener{
                 presenter.OnClickLeaveQueue()
                 (activity as ChatbotActivity).finish()
