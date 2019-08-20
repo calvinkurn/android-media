@@ -87,7 +87,7 @@ class StickyTextView : FrameLayout {
                 }
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                 leftImage = styleable.getDrawable(R.styleable.StickyTextView_sticky_left_icon)!!
             } else {
                 val leftImageId = styleable.getResourceId(R.styleable.StickyTextView_sticky_left_icon, -1)
