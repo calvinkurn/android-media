@@ -13,7 +13,6 @@ import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.ekstension.*
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoHeaderViewModel
 import kotlinx.android.synthetic.main.item_flash_sale_info_camp_detail.view.*
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class CampaignInfoHeaderViewHolder(view: View, private val sellerStatus: SellerStatus,
                                    val onClickProductList: () -> Unit): AbstractViewHolder<CampaignInfoHeaderViewModel>(view) {

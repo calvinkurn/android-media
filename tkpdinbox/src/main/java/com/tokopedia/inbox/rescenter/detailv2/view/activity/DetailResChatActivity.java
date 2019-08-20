@@ -14,7 +14,6 @@ import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customView.TextDrawable;
@@ -96,7 +95,7 @@ public class DetailResChatActivity
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             if (GlobalConfig.isSellerApp()) {
             return ((ResolutionRouter)context.getApplicationContext()).getSellerWebViewIntent(context,
-                    String.format(ResolutionUrl.RESO_DETAIL, resolutionId));
+                    String.format(ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
             } else {
                 return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
                         String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));

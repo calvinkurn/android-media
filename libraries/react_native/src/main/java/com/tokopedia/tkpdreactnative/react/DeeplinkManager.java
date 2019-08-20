@@ -7,7 +7,11 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 public class DeeplinkManager extends ReactContextBaseJavaModule {
 
@@ -28,12 +32,18 @@ public class DeeplinkManager extends ReactContextBaseJavaModule {
         // Check if it's applink
         if (!TextUtils.isEmpty(applinks)) {
             if (applinks.toLowerCase().contains("tokopedia://")) {
+                RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+                Boolean isNewRouteEnable = remoteConfig.getBoolean(RemoteConfigKey.CONFIG_ENABLE_NEW_ROUTE_REACT, true);
                 if (!TextUtils.isEmpty(extra)) { // Check if extra params is not empty
                     ((TkpdCoreRouter) context.getApplicationContext())
                             .actionApplink(this.getCurrentActivity(), applinks, extra);
                 } else {
-                    ((TkpdCoreRouter) context.getApplicationContext())
-                            .actionApplinkFromActivity(this.getCurrentActivity(), applinks);
+                    if(isNewRouteEnable){
+                        RouteManager.route(this.getCurrentActivity(), applinks);
+                    }else {
+                        ((TkpdCoreRouter) context.getApplicationContext())
+                                .actionApplinkFromActivity(this.getCurrentActivity(), applinks);
+                    }
                 }
             } else { // Check if it's web url
                 ((TkpdCoreRouter) context.getApplicationContext())
