@@ -2156,9 +2156,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productDetailTracking.eventViewLoginStickyWidget()
         }
 
+        val paddingBottom = resources.getDimension(R.dimen.dp_20)
         if (stickyLoginTextView.isShowing()) {
             actionButtonView.setBackground(R.color.white)
+            nested_scroll.setPadding(0,0,0, (paddingBottom + stickyLoginTextView.height).toInt())
         } else {
+            nested_scroll.setPadding(0,0,0, paddingBottom.toInt())
             ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
         }
     }
