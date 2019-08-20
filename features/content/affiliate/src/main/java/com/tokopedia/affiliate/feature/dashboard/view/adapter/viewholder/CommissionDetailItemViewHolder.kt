@@ -6,12 +6,14 @@ import android.view.animation.AnimationUtils
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetailItemViewModel
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
+import java.net.URLEncoder
 
 /**
  * @author by milhamj on 2019-08-14.
@@ -50,11 +52,11 @@ class CommissionDetailItemViewHolder(v: View) : AbstractViewHolder<CommissionDet
         }
 
         incomeInvoice.setOnClickListener {
-            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}".replace("{url}", element.affInvoiceUrl))
+            RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW.replace("{url}", URLEncoder.encode(element.affInvoiceUrl, "UTF-8")))
         }
 
         feeInvoice.setOnClickListener {
-            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}".replace("{url}", element.tkpdInvoiceUrl))
+            RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW.replace("{url}", URLEncoder.encode(element.tkpdInvoiceUrl, "UTF-8")))
         }
     }
 

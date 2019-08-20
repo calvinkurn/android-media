@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/iv_empty"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="@dimen/dp_200" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
