@@ -5,20 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_margin="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_16"
     android:visibility="gone"
     tools:ignore="RtlSymmetry"
     tools:visibility="visible">
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_recom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title_other_product"
-        app:fontSize="title"
-        app:textViewTheme="lightPrimary"
-        app:weight="medium" />
+        android:singleLine="true"
+        app:typographyType="heading_4"
+        android:textColor="@color/Neutral_N700"
+        tools:text="Blus Lengan pendek Wanita gaya" />
 
     <FrameLayout
         android:layout_width="match_parent"

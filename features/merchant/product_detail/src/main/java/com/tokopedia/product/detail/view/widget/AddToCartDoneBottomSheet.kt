@@ -20,9 +20,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -102,7 +100,6 @@ class AddToCartDoneBottomSheet :
         initInjector()
         initViewModel()
         getArgumentsData()
-        showSnackbarSuccessAtc()
         context?.let {
             trackingQueue = TrackingQueue(it)
         }
@@ -209,23 +206,6 @@ class AddToCartDoneBottomSheet :
         }
     }
 
-    private fun showSnackbarSuccessAtc() {
-        activity?.run {
-            val messageString: String = if (successMessageAtc.isNullOrEmpty()) {
-                getString(R.string.default_request_error_unknown_short)
-            } else {
-                successMessageAtc
-            }
-            ToasterNormal.make(containerLayout, messageString.replace("\n", " "), BaseToaster.LENGTH_LONG)
-                    .setAction(getString(R.string.label_atc_open_cart)) { v ->
-                        productDetailTracking.eventAtcClickLihat(addedProductDataModel?.productId)
-                        val intent = RouteManager.getIntent(this, ApplinkConst.CART)
-                        startActivity(intent)
-                    }
-                    .show()
-        }
-    }
-
     override fun state(): BottomSheetsState {
         return BottomSheetsState.FLEXIBLE
     }
@@ -248,7 +228,7 @@ class AddToCartDoneBottomSheet :
         productDetailTracking.eventAddToCartRecommendationClick(
                 item,
                 item.position,
-                addToCartDoneViewModel.isUserSessionActive(),
+                addToCartDoneViewModel.isLoggedIn(),
                 item.header
         )
         if (position.size > 1) {
@@ -264,7 +244,7 @@ class AddToCartDoneBottomSheet :
         productDetailTracking.eventAddToCartRecommendationImpression(
                 item.position,
                 item,
-                addToCartDoneViewModel.isUserSessionActive(),
+                addToCartDoneViewModel.isLoggedIn(),
                 item.pageName,
                 item.header,
                 trackingQueue
@@ -277,7 +257,7 @@ class AddToCartDoneBottomSheet :
         } else {
             addToCartDoneViewModel.removeWishList(item.productId.toString(), callback)
         }
-        productDetailTracking.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isUserSessionActive(), isAddWishlist)
+        productDetailTracking.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
     }
 
     override fun onButtonGoToCartClicked() {
