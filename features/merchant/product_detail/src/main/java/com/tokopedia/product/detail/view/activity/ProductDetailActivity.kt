@@ -42,7 +42,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
-        private const val PARAM_AFFILIATE_STRING = "affiliate_string"
+        private const val PARAM_AFFILIATE_STRING = "aff"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -124,25 +124,28 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             } else { // affiliate
                 productId = uri.lastPathSegment
             }
-            affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
+            affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
         }
         bundle?.let {
-            if (productId.isNullOrEmpty()) {
+            if (productId.isNullOrBlank()) {
                 productId = it.getString(PARAM_PRODUCT_ID)
             }
-            if (shopDomain.isNullOrEmpty()) {
+            if (shopDomain.isNullOrBlank()) {
                 shopDomain = it.getString(PARAM_SHOP_DOMAIN)
             }
-            if (productKey.isNullOrEmpty()) {
+            if (productKey.isNullOrBlank()) {
                 productKey = it.getString(PARAM_PRODUCT_KEY)
             }
-            if (trackerAttribution.isNullOrEmpty()) {
+            if (trackerAttribution.isNullOrBlank()) {
                 trackerAttribution = it.getString(PARAM_TRACKER_ATTRIBUTION)
             }
-            if (trackerListName.isNullOrEmpty()) {
+            if (trackerListName.isNullOrBlank()) {
                 trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
+            }
+            if (affiliateString.isNullOrBlank()) {
+                affiliateString = it.getString(PARAM_AFFILIATE_STRING)
             }
         }
         isFromAffiliate = if (uri != null && uri.host == AFFILIATE_HOST) {
