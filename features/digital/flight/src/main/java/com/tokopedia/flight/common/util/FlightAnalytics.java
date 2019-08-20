@@ -4,11 +4,13 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.search.data.api.single.response.Route;
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
@@ -32,12 +34,15 @@ public class FlightAnalytics {
     private String ATC_EVENT = "addToCart";
     private String PROMO_CLICK_EVENT = "promoClick";
     private String PRODUCT_CLICK_EVENT = "productClick";
+    private String PRODUCT_VIEW_EVENT = "productView";
     private String GENERIC_CATEGORY = "digital - flight";
     private String EVENT_CATEGORY = "eventCategory";
     private String EVENT_ACTION = "eventAction";
     private String EVENT_LABEL = "eventLabel";
     private String EVENT = "event";
     private String ECOMMERCE = "ecommerce";
+    private String IMPRESSIONS = "impressions";
+    private String PRODUCTS = "products";
 
     @Inject
     public FlightAnalytics(FlightDateUtil flightDateUtil) {
@@ -200,6 +205,52 @@ public class FlightAnalytics {
                                 "actionField", DataLayer.mapOf(
                                         "list", "/flight"
                                 )
+                        )
+                )
+        );
+    }
+
+    public void eventProductViewEnchanceEcommerce(FlightSearchPassDataViewModel searchPassDataViewModel, FlightJourneyViewModel journeyViewModel, int position) {
+        String isRefundable = "false";
+        for (Route route : journeyViewModel.getRouteList()) {
+            if (route.getRefundable()) {
+                isRefundable = "true";
+                break;
+            }
+        }
+
+        List<Object> products = new ArrayList<>();
+        products.add(DataLayer.mapOf(
+                EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
+                EnhanceEccomerce.PRICE, journeyViewModel.getTotalNumeric(),
+                EnhanceEccomerce.DIMENSION66, TravelDateUtil.dateToString(TravelDateUtil.YYYYMMDD, TravelDateUtil.stringToDate(
+                        journeyViewModel.getRouteList().get(0).getDepartureTimestamp(), TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)),
+                EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
+                EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
+                EnhanceEccomerce.DIMENSION69, "",
+                EnhanceEccomerce.DIMENSION70, isRefundable,
+                EnhanceEccomerce.DIMENSION71, journeyViewModel.getTotalTransit() > 0 ? "true" : "false",
+                EnhanceEccomerce.DIMENSION72, journeyViewModel.getBeforeTotal().equals("") ? "normal" : "strike",
+                EnhanceEccomerce.DIMENSION73, searchPassDataViewModel.getFlightPassengerViewModel().getAdult() + " - " +
+                        searchPassDataViewModel.getFlightPassengerViewModel().getChildren() + " - " + searchPassDataViewModel.getFlightPassengerViewModel().getInfant(),
+                EnhanceEccomerce.ID, journeyViewModel.getId(),
+                EnhanceEccomerce.BRAND, journeyViewModel.getRouteList().get(0).getAirlineName(),
+                EnhanceEccomerce.DIMENSION74, journeyViewModel.getRouteList().get(0).getFlightNumber(),
+                EnhanceEccomerce.CATEGORY, Label.FLIGHT,
+                EnhanceEccomerce.DIMENSION75, journeyViewModel.getDepartureTime(),
+                EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime(),
+                EnhanceEccomerce.POSITIONS, position,
+                EnhanceEccomerce.LIST, "/flight"
+        ));
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PRODUCT_VIEW_EVENT,
+                        EVENT_CATEGORY, Category.DIGITAL_FLIGHT,
+                        EVENT_ACTION, Action.PRODUCT_VIEW_ACTION,
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW, searchPassDataViewModel.getDepartureAirport().getAirportCode(),
+                                searchPassDataViewModel.getArrivalAirport().getAirportCode()),
+                        ECOMMERCE, DataLayer.mapOf(IMPRESSIONS, DataLayer.mapOf(
+                                PRODUCTS, DataLayer.listOf(products))
                         )
                 )
         );
@@ -638,6 +689,7 @@ public class FlightAnalytics {
         static String REMOVE_INSURANCE = "remove insurance";
         static String MORE_INSURANCE_INFO = "click more insurance information";
         static String MORE_INSURANCE = "see another insurance benefit";
+        static String DIGITAL_FLIGHT = "digital - flight";
 
     }
 
@@ -645,6 +697,7 @@ public class FlightAnalytics {
         static String PROMOTION_CLICK = "promotion click";
         static String PRODUCT_CLICK_SEARCH_LIST = "product click from flight list";
         static String PRODUCT_CLICK_SEARCH_DETAIL = "click pilih on flight detail";
+        static String PRODUCT_VIEW_ACTION = "product impressions";
     }
 
     private static class Label {
@@ -661,6 +714,7 @@ public class FlightAnalytics {
         static String NOT_REFUNDABLE = "- not refundable";
         static String PARTIALLY_REFUNDABLE = "- partially refundable";
         static String FLIGHT = "Flight";
+        static String PRODUCT_VIEW = "flight - %s-%s";
     }
 
     private static class EnhanceEccomerce {
@@ -677,5 +731,20 @@ public class FlightAnalytics {
         static String REVENUE = "revenue";
         static String TAX = "tax";
         static String SHIPING = "shipping";
+
+        static String DIMENSION66 = "dimension66";
+        static String DIMENSION67 = "dimension67";
+        static String DIMENSION68 = "dimension68";
+        static String DIMENSION69 = "dimension69";
+        static String DIMENSION70 = "dimension70";
+        static String DIMENSION71 = "dimension71";
+        static String DIMENSION72 = "dimension72";
+        static String DIMENSION73 = "dimension73";
+        static String DIMENSION74 = "dimension74";
+        static String DIMENSION75 = "dimension75";
+        static String DIMENSION76 = "dimension76";
+
+        static String POSITIONS = "positions";
+        static String LIST = "list";
     }
 }

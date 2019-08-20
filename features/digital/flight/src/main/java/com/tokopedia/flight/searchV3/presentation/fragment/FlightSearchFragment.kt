@@ -502,6 +502,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         // need in return search
     }
 
+    override fun onProductViewImpression(journeyViewModel: FlightJourneyViewModel, adapterPosition: Int) {
+        flightSearchPresenter.onProductViewImpression(journeyViewModel, adapterPosition)
+    }
+
     override fun onItemClicked(journeyViewModel: FlightJourneyViewModel?) {
         flightSearchPresenter.onSearchItemClicked(journeyViewModel = journeyViewModel)
     }

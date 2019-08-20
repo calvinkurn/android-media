@@ -118,5 +118,7 @@ interface FlightSearchContract {
 
         fun unsubscribeAll()
 
+        fun onProductViewImpression(journeyViewModel: FlightJourneyViewModel, position: Int)
+
     }
 }

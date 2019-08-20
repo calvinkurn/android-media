@@ -392,6 +392,10 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         )
     }
 
+    override fun onProductViewImpression(journeyViewModel: FlightJourneyViewModel, position: Int) {
+        flightAnalytics.eventProductViewEnchanceEcommerce(view.getSearchPassData(), journeyViewModel, position)
+    }
+
     override fun unsubscribeAll() {
         if (compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe()

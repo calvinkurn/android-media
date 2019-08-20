@@ -97,6 +97,8 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         void onShowAllClicked();
 
         void onShowBestPairingClicked();
+
+        void onProductViewImpression(FlightJourneyViewModel journeyViewModel, int adapterPosition);
     }
 
 }
