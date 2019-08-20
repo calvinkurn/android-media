@@ -39,6 +39,7 @@ import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -243,6 +244,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
+        if (item.isTopAds) ImpresionTask().execute(item.clickUrl)
         productDetailTracking.eventAddToCartRecommendationClick(
                 item,
                 item.position,
@@ -258,6 +260,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductImpression(item: RecommendationItem) {
+        if (item.isTopAds) ImpresionTask().execute(item.trackerImageUrl)
         productDetailTracking.eventAddToCartRecommendationImpression(
                 item.position,
                 item,
