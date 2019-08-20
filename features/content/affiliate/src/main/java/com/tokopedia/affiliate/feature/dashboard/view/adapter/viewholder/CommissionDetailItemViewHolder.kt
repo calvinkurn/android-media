@@ -50,11 +50,11 @@ class CommissionDetailItemViewHolder(v: View) : AbstractViewHolder<CommissionDet
         }
 
         incomeInvoice.setOnClickListener {
-            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}?url=" + element.affInvoiceUrl)
+            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}".replace("{url}", element.affInvoiceUrl))
         }
 
         feeInvoice.setOnClickListener {
-            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}?url=w"+ element.tkpdInvoiceUrl)
+            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}".replace("{url}", element.tkpdInvoiceUrl))
         }
     }
 
