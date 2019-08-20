@@ -36,6 +36,7 @@
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
+    <string name="shop_info_title_tab_home">Home</string>
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
@@ -154,5 +155,8 @@
     <string name="empty_feed_title">Tingkatkan Penjualanmu</string>
     <string name="empty_feed_subtitle">Yuk, post promo dan update dari Tokomu \nsupaya makin banyak yang belanja!</string>
     <string name="empty_feed_btn">Post Sekarang</string>
+    
+    <string name="masuk_yuk">Masuk yuk</string>
+    <string name="mau_akses_semua_fitur">Mau akses semua fitur?</string>
 
 </resources>

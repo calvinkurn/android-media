@@ -66,6 +66,7 @@ class RegisterAnalytics @Inject constructor() {
         private val ACTION_CLICK_ON_TICKER_LOGIN = "click on ticker login"
         private val ACTION_CLICK_TICKER_LINK = "click ticker link"
         private val ACTION_CLICK_ON_BUTTON_CLOSE_TICKER = "click on button close ticker"
+        private val ACTION_CLICK_PHONE_NUMBER_SUGGESTION = "click phone number suggestion"
 
         private val LABEL_EMPTY = ""
         private val LABEL_CLICK = "click"
@@ -542,6 +543,12 @@ class RegisterAnalytics @Inject constructor() {
     }
 
     private fun onSuccessRegisterPhone() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_SUCCESS
+        ))
 
     }
 
@@ -572,6 +579,15 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_CLOSE_TICKER,
+                ""
+        ))
+    }
+
+    fun trackClickPhoneNumberSuggestion(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_PHONE_NUMBER_SUGGESTION,
                 ""
         ))
     }

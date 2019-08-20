@@ -4,6 +4,7 @@ package com.tokopedia.topchat.common.analytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -52,7 +53,7 @@ public class TopChatAnalytics {
         public static final String SEND_MESSAGE_PAGE = "ClickMessageRoom";
         public static final String SHOP_PAGE = "ClickShopPage";
         public static final String INBOX_CHAT = "clickInboxChat";
-        public static final String CHAT_DETAIL = "ClickChatDetail";
+        public static final String CHAT_DETAIL = "clickChatDetail";
 
         String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
         String EVENT_NAME_PRODUCT_CLICK = "productClick";
@@ -80,6 +81,8 @@ public class TopChatAnalytics {
         public static final String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
         public static final String CLICK_ATC_PRODUCT_THUMBNAIL ="click atc on product thumbnail";
         public static final String CLICK_BUY_PRODUCT_THUMBNAIL ="click buy on product thumbnail";
+        public static final String SENT_INVOICE_ATTACHMENT = "click kirim after attach invoice";
+        public static final String CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
 
@@ -350,6 +353,17 @@ public class TopChatAnalytics {
         ));
     }
 
+    public void invoiceAttachmentSent(@NotNull InvoicePreviewViewModel invoice) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, Name.CHAT_DETAIL,
+                        EVENT_CATEGORY, Category.CHAT_DETAIL,
+                        EVENT_ACTION, Action.SENT_INVOICE_ATTACHMENT,
+                        EVENT_LABEL, invoice.getId()
+                        )
+        );
+    }
+
     public String getField(String blastId) {
         Long blastIdNum = Long.valueOf(blastId);
         if(blastIdNum == 0) {
@@ -363,5 +377,14 @@ public class TopChatAnalytics {
         } else {
             return "chat";
         }
+    }
+
+    public void eventClickSeeButtonOnAtcSuccessToaster() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER,
+                ""
+        );
     }
 }

@@ -8,15 +8,25 @@ import com.tokopedia.track.TrackApp
 
 class NormalCheckoutTracking {
     companion object {
+        const val VIEW_PDP = "viewPDP"
         const val CLICK_PDP = "clickPDP"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
         const val HARGA_FINAL_TRADEIN = "harga final trade in"
         const val SELECT_COLOR_VARIANT = "select color on variants page"
         const val SELECT_SIZE_VARIANT = "select size on variants page"
         const val NONE_OTHER = "none / other"
+        const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
     }
 
     private var isTrackTradeIn = false
+
+    fun eventViewErrorWhenAddToCart(errorMessage: String) {
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+                VIEW_PDP,
+                PRODUCT_DETAIL_PAGE,
+                ACTION_VIEW_ERROR_WHEN_ADD_TO_CART,
+                "not success - $errorMessage")
+    }
 
     fun eventClickBuyInVariantNotLogin(productId: String?) {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(

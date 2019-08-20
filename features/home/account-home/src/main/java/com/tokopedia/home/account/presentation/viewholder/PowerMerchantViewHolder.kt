@@ -22,7 +22,7 @@ class PowerMerchantViewHolder(val view: View,
         view.txt_pm_desc.text = element?.descText
         view.image_view_pm.setImageResource(element?.iconRes ?: 0)
         view.pm_card_container.setOnClickListener{
-            RouteManager.route(view.context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
+            listener.onPowerMerchantSettingClicked()
         }
     }
 }

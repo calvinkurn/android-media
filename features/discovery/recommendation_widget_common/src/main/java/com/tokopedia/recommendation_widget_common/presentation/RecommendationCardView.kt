@@ -5,9 +5,11 @@ package com.tokopedia.recommendation_widget_common.presentation
  */
 
 import android.content.Context
+import android.support.v7.widget.CardView
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -19,7 +21,7 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
-class RecommendationCardView : ProductCardView {
+open class RecommendationCardView : ProductCardView {
 
     constructor(context: Context) : super(context) {}
 
@@ -34,7 +36,6 @@ class RecommendationCardView : ProductCardView {
         setTopAdsVisible(item.isTopAds)
         setSlashedPrice(item.slashedPrice)
         setDiscount(item.discountPercentage)
-        setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setWishlistButtonVisible(false)
         setRatingReviewCount(item.rating, item.countReview)
         setBadges(item.badgesUrl)

@@ -111,7 +111,10 @@ public class RouteManager {
             mappedDeeplink = uriString;
         }
         Intent intent;
-        if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
+        String dynamicFeatureDeeplink = DeeplinkDFMapper.getDFDeeplinkIfNotInstalled(context, mappedDeeplink);
+        if (dynamicFeatureDeeplink != null) {
+            intent = buildInternalExplicitIntent(context, dynamicFeatureDeeplink);
+        } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
             ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
             return;
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
@@ -120,6 +123,7 @@ public class RouteManager {
                 intent = new Intent();
                 intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
                 intent.setData(Uri.parse(uriString));
+                context.startActivity(intent);
             }
             context.startActivity(intent);
             return;
@@ -146,7 +150,10 @@ public class RouteManager {
             mappedDeeplink = uriString;
         }
         Intent intent;
-        if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
+        String dynamicFeatureDeeplink = DeeplinkDFMapper.getDFDeeplinkIfNotInstalled(context, mappedDeeplink);
+        if (dynamicFeatureDeeplink != null) {
+            intent = buildInternalExplicitIntent(context, dynamicFeatureDeeplink);
+        } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
             ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
             return;
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
@@ -199,6 +206,10 @@ public class RouteManager {
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, deeplink);
         if (TextUtils.isEmpty(mappedDeeplink)) {
             mappedDeeplink = deeplink;
+        }
+        String dynamicFeatureDeeplink = DeeplinkDFMapper.getDFDeeplinkIfNotInstalled(context, mappedDeeplink);
+        if (dynamicFeatureDeeplink != null) {
+            return buildInternalExplicitIntent(context, dynamicFeatureDeeplink);
         }
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, mappedDeeplink);

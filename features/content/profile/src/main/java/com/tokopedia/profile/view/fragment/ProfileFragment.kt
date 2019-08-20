@@ -39,15 +39,17 @@ import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -74,6 +76,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
@@ -90,7 +93,6 @@ import com.tokopedia.profile.view.adapter.viewholder.OtherRelatedProfileViewHold
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
-import com.tokopedia.profile.view.util.ShareBottomSheets
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -109,19 +111,20 @@ import javax.inject.Inject
  * @author by milhamj on 9/17/18.
  */
 class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-    ProfileContract.View, KolPostListener.View.ViewHolder, KolPostListener.View.Like,
-    DynamicPostViewHolder.DynamicPostListener,
-    BannerAdapter.BannerItemListener,
-    TopadsShopViewHolder.TopadsShopListener,
-    RecommendationCardAdapter.RecommendationCardListener,
-    CardTitleView.CardTitleListener,
-    ImagePostViewHolder.ImagePostListener,
-    YoutubeViewHolder.YoutubePostListener,
-    PollAdapter.PollOptionListener,
-    GridPostAdapter.GridItemListener,
-    VideoViewHolder.VideoViewListener,
-    FeedMultipleImageView.FeedMultipleImageViewListener,
-    EmptyAffiliateViewHolder.OnEmptyItemClickedListener {
+        ProfileContract.View, KolPostListener.View.ViewHolder, KolPostListener.View.Like,
+        DynamicPostViewHolder.DynamicPostListener,
+        BannerAdapter.BannerItemListener,
+        TopadsShopViewHolder.TopadsShopListener,
+        RecommendationCardAdapter.RecommendationCardListener,
+        CardTitleView.CardTitleListener,
+        ImagePostViewHolder.ImagePostListener,
+        YoutubeViewHolder.YoutubePostListener,
+        PollAdapter.PollOptionListener,
+        GridPostAdapter.GridItemListener,
+        VideoViewHolder.VideoViewListener,
+        FeedMultipleImageView.FeedMultipleImageViewListener,
+        EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
+        ShareBottomSheets.OnShareItemClickListener {
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -150,7 +153,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
     private var isAppBarCollapse = false
     private var linkerData: LinkerData? = null
-    private var isShareProfile: Boolean? = null
+    private var isShareProfile = false
 
     override lateinit var profileRouter: ProfileModuleRouter
     lateinit var layoutManager: GridLayoutManager
@@ -206,7 +209,56 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         presenter.attachView(this)
         initVar(savedInstanceState)
         super.onViewCreated(view, savedInstanceState)
+        layoutManager = recyclerView.layoutManager as GridLayoutManager
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy < 0) { // going up
+                    if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
+                        showFooterOthers()
+                    }
+                } else if (dy > 0) { // going down
+                    if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
+                }
+            }
 
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                try {
+                    if (hasFeed()
+                            && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        recyclerView?.let {
+                            FeedScrollListener.onFeedScrolled(it, adapter.list)
+                        }
+                    }
+                } catch (e: IndexOutOfBoundsException) {
+                }
+            }
+        })
+        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            val spacing = context!!.resources.getDimensionPixelOffset(R.dimen.dp_16)
+            val halfSpacing = spacing / 2
+            val spanCount = 2
+            override fun getItemOffsets(outRect: Rect, view: View,
+                                        parent: RecyclerView, state: RecyclerView.State) {
+                // if in feed mode, will have no item decoration
+                if (hasFeed()) return
+                val position = parent.getChildAdapterPosition(view)
+                val viewType = adapter.getItemViewType(position)
+                val inGrid = viewType == OtherRelatedProfileViewHolder.LAYOUT
+                if (inGrid) {
+                    val column = position % spanCount
+                    if (column == 0) {
+                        outRect.left = spacing
+                        outRect.right = halfSpacing
+                    } else {
+                        outRect.left = halfSpacing
+                        outRect.right = spacing
+                    }
+                    outRect.bottom = spacing
+                }
+            }
+        })
     }
 
     override fun onStart() {
@@ -334,9 +386,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getUserSession(): UserSession = UserSession(context)
 
-    fun onOtherProfilePostItemClick(applink: String, authorId: String) {
+    fun onOtherProfilePostItemClick(applink: String, position: Int, datum: FeedPostRelated.Datum) {
         RouteManager.route(context, applink)
-        profileAnalytics.eventClickOtherPost(userId.toString(), authorId)
+        profileAnalytics.eventClickOtherPost(userId.toString(), position, datum, userSession.userId, userSession.name)
     }
 
     override fun onSuccessGetProfileFirstPage(element: DynamicFeedProfileViewModel, isFromLogin: Boolean) {
@@ -441,7 +493,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
             }
         } else {
-            showShareBottomSheets()
+            showShareBottomSheets(this)
             profilePreference.setShouldChangeUsername(shouldChange)
         }
     }
@@ -450,33 +502,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         view?.showErrorToaster(errorMessage, R.string.title_try_again) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         }
-    }
-
-    fun onErrorGetRelatedProfile(throwable: Throwable?) {
-        view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable),
-                R.string.title_try_again) {
-            getRelatedProfile()
-        }
-    }
-
-    fun onSuccessGetRelatedProfile(feedPostRelated: FeedPostRelated?) {
-        val visitables: ArrayList<Visitable<*>> = ArrayList()
-        if (feedPostRelated != null && feedPostRelated.meta.totalItems > 0) {
-            visitables.add(TitleViewModel())
-            feedPostRelated.data
-                    .filter { it.content.body.media[0].thumbnail.isNotEmpty() }
-                    .forEach {
-                        //this will be changed later by DA, because efficiency
-                        //profileAnalytics.eventImpressionOtherPost(userId.toString(), it.content.tracking.authorID)
-                        visitables.add(OtherRelatedProfileViewModel(it))
-                    }
-        }
-        renderList(visitables, false)
-    }
-
-    fun getRelatedProfile() {
-        presenter.getRelatedProfile(this::onErrorGetRelatedProfile,
-                this::onSuccessGetRelatedProfile)
     }
 
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -798,7 +823,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
                               url: String, iamgeUrl: String) {
         activity?.let {
-            linkerData = constructShareData("", "", url, String.format("%s %s", description, "%s"), title)
+            linkerData = ShareBottomSheets.constructShareData("", "", url, String.format("%s %s", description, "%s"), title)
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
             checkShouldChangeUsername(url)
@@ -888,6 +913,24 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
+                                  redirectLink: String, isSingleItem: Boolean) {
+        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+            val model = adapter.list[positionInFeed] as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.IMAGE,
+                    redirectLink
+            )
+            if (!isSingleItem){
+                activity?.let { startActivity(MediaPreviewActivity.createIntent(it,
+                        model.id.toString(), contentPosition))}
+            }
+        }
+    }
+
     override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
             if (isClick) {
@@ -896,6 +939,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 presenter.trackPostClickUrl(tracking.viewURL)
             }
         }
+    }
+
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+        presenter.addPostTagItemToCart(postTagItem)
     }
 
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
@@ -951,18 +998,29 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onVideoPlayerClicked(
-            positionInFeed: Int,
-            contentPosition: Int,
-            postId: String) {
+        positionInFeed: Int,
+        contentPosition: Int,
+        postId: String) {
         startActivity(VideoDetailActivity.getInstance(
-                activity!!,
-                postId))
-
+            activity!!,
+            postId))
     }
 
     override fun onEmptyComponentClicked() {
         goToAffiliateExplore()
         profileAnalytics.eventClickEmptyStateCta()
+    }
+
+    override fun onShareItemClicked(packageName: String) {
+        sendTracker(packageName)
+    }
+
+    override fun onAddToCartSuccess() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+    }
+
+    override fun onAddToCartFailed(pdpAppLink: String) {
+        onGoToLink(pdpAppLink)
     }
 
     private fun initVar(savedInstanceState: Bundle?) {
@@ -1001,57 +1059,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         remoteConfig = FirebaseRemoteConfigImpl(context)
 
         isOwner = userId.toString() == userSession.userId
-
-        layoutManager = recyclerView.layoutManager as GridLayoutManager
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy < 0) { // going up
-                    if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
-                        showFooterOthers()
-                    }
-                } else if (dy > 0) { // going down
-                    if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
-                }
-            }
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                try {
-                    if (hasFeed()
-                            && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        recyclerView?.let {
-                            FeedScrollListener.onFeedScrolled(it, adapter.list)
-                        }
-                    }
-                } catch (e: IndexOutOfBoundsException) {
-                }
-            }
-        })
-        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            val spacing = context!!.resources.getDimensionPixelOffset(R.dimen.dp_16)
-            val halfSpacing = spacing / 2
-            val spanCount = 2
-            override fun getItemOffsets(outRect: Rect, view: View,
-                                        parent: RecyclerView, state: RecyclerView.State) {
-                // if in feed mode, will have no item decoration
-                if (hasFeed()) return
-                val position = parent.getChildAdapterPosition(view)
-                val viewType = adapter.getItemViewType(position)
-                val inGrid = viewType == OtherRelatedProfileViewHolder.LAYOUT
-                if (inGrid) {
-                    val column = position % spanCount
-                    if (column == 0) {
-                        outRect.left = spacing
-                        outRect.right = halfSpacing
-                    } else {
-                        outRect.left = halfSpacing
-                        outRect.right = spacing
-                    }
-                    outRect.bottom = spacing
-                }
-            }
-        })
     }
 
     private fun hasFeed(): Boolean {
@@ -1079,7 +1086,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
         footerOthersShare.setOnClickListener {
             profileHeader?.let {
-                linkerData = constructShareData(
+                linkerData = ShareBottomSheets.constructShareData(
                         it.name,
                         it.avatar,
                         it.link,
@@ -1088,7 +1095,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_title)))
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
-                showShareBottomSheets()
+                showShareBottomSheets(this)
             }
         }
     }
@@ -1150,16 +1157,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
             iv_action.gone()
             View.OnClickListener {
-                linkerData = constructShareData(
+                linkerData = ShareBottomSheets.constructShareData(
                         element.name,
                         element.avatar,
                         element.link,
                         String.format(getString(R.string.profile_share_text),
                                 element.link),
-                        String.format(getString(R.string.profile_share_title)))
+                        String.format(getString(R.string.profile_other_share_title)))
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
-                showShareBottomSheets()
+                showShareBottomSheets(this)
             }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_af_graph))
@@ -1241,16 +1248,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         } else {
             followAfterLogin()
         }
-    }
-
-    private fun constructShareData(name: String, avatar: String, link: String, shareFormat: String, shareTitle: String): LinkerData {
-        val linkerData = LinkerData()
-        linkerData.name = name
-        linkerData.imgUri = avatar
-        linkerData.uri = link
-        linkerData.textContent = String.format(shareFormat, link)
-        linkerData.ogTitle = shareTitle
-        return linkerData
     }
 
     private fun getFollowersText(element: ProfileHeaderViewModel): SpannableString {
@@ -1382,7 +1379,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             shareProfile.setOnClickListener {
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
 
-                linkerData = constructShareData(
+                linkerData = ShareBottomSheets.constructShareData(
                         headerViewModel.name,
                         headerViewModel.avatar,
                         headerViewModel.link,
@@ -1447,7 +1444,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (shouldChangeUsername()) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         } else {
-            showShareBottomSheets()
+            showShareBottomSheets(this)
         }
     }
 
@@ -1657,6 +1654,34 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         )
     }
 
+    private fun getRelatedProfile() {
+        presenter.getRelatedProfile(this::onErrorGetRelatedProfile,
+                this::onSuccessGetRelatedProfile)
+    }
+
+    private fun onErrorGetRelatedProfile(throwable: Throwable?) {
+        view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable),
+                R.string.title_try_again) {
+            getRelatedProfile()
+        }
+    }
+
+    private fun onSuccessGetRelatedProfile(feedPostRelated: FeedPostRelated?) {
+        val visitables: ArrayList<Visitable<*>> = ArrayList()
+        if (feedPostRelated != null && feedPostRelated.meta.totalItems > 0) {
+            visitables.add(TitleViewModel())
+            feedPostRelated.data
+                    .filter { it.content.body.media[0].thumbnail.isNotEmpty() }
+                    .also {
+                        profileAnalytics.eventImpressionOtherPost(userId.toString(), it, userSession.userId, userSession.name)
+                    }
+                    .forEachIndexed { index, datum ->
+                        visitables.add(OtherRelatedProfileViewModel(datum, index))
+                    }
+        }
+        renderList(visitables, false)
+    }
+
     private fun registerBroadcastReceiver() {
         context?.applicationContext?.let {
             val intentFilter = IntentFilter()
@@ -1676,22 +1701,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun showShareBottomSheets() {
+    private fun showShareBottomSheets(listener: ShareBottomSheets.OnShareItemClickListener) {
         fragmentManager?.let { fragmentManager ->
             linkerData?.let { linkerData ->
-                isShareProfile?.let { isShareProfile->
-                    ShareBottomSheets().show(
-                            fragmentManager,
-                            linkerData,
-                            isOwner,
-                            userId.toString(),
-                            isShareProfile
-                    )
-                }
+                ShareBottomSheets().show(
+                        fragmentManager,
+                        linkerData,
+                        listener)
             }
         }
         linkerData = null
-        isShareProfile = null
     }
 
+    private fun sendTracker(packageName: String) {
+        if (isShareProfile)
+            profileAnalytics.eventClickShareProfileOpsiIni(isOwner, userId.toString(), packageName)
+        else
+            profileAnalytics.eventClickSharePostOpsiIni(isOwner, userId.toString(), packageName)
+    }
 }

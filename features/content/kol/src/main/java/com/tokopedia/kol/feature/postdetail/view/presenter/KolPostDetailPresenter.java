@@ -5,7 +5,14 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
+import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase;
+import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostItemViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -18,6 +25,9 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,6 +48,8 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
     private final DeletePostUseCase deletePostUseCase;
     private final SendVoteUseCase sendVoteUseCase;
     private final UserSessionInterface userSession;
+    private final AddToCartUseCase atcUseCase;
+    private final GetRelatedPostUseCase getRelatedPostUseCase;
 
     @Inject
     public KolPostDetailPresenter(GetPostDetailUseCase getPostDetailUseCase,
@@ -47,6 +59,8 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                                   SendVoteUseCase sendVoteUseCase,
                                   TrackAffiliateClickUseCase trackAffiliateClickUseCase,
                                   DeletePostUseCase deletePostUseCase,
+                                  AddToCartUseCase atcUseCase,
+                                  GetRelatedPostUseCase getRelatedPostUseCase,
                                   UserSessionInterface userSessionInterface) {
         this.getPostDetailUseCase = getPostDetailUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
@@ -55,6 +69,8 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
         this.deletePostUseCase = deletePostUseCase;
+        this.atcUseCase = atcUseCase;
+        this.getRelatedPostUseCase = getRelatedPostUseCase;
         this.userSession = userSessionInterface;
     }
 
@@ -70,9 +86,11 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         likeKolPostUseCase.unsubscribe();
         followKolPostGqlUseCase.unsubscribe();
         doFavoriteShopUseCase.unsubscribe();
-        sendVoteUseCase.unsubscribe();
         trackAffiliateClickUseCase.unsubscribe();
         deletePostUseCase.unsubscribe();
+        sendVoteUseCase.unsubscribe();
+        atcUseCase.unsubscribe();
+        getRelatedPostUseCase.unsubscribe();
     }
 
     @Override
@@ -254,5 +272,84 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                     }
                 }
         );
+    }
+
+    @Override
+    public void addPostTagItemToCart(int positionInFeed, PostTagItem postTagItem) {
+        boolean isShopEmpty = postTagItem.getShop().isEmpty();
+        if (!isShopEmpty) {
+            atcUseCase.execute(
+                    AddToCartUseCase.getMinimumParams(postTagItem.getId(), postTagItem.getShop().get(0).getShopId()),
+                    new Subscriber<AddToCartDataModel>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            getView().onAddToCartFailed(postTagItem.getApplink());
+                        }
+
+                        @Override
+                        public void onNext(AddToCartDataModel addToCartDataModel) {
+                            if (addToCartDataModel.getData().getSuccess() == 0) {
+                                getView().onAddToCartFailed(postTagItem.getApplink());
+                            } else {
+                                getView().onAddToCartSuccess(positionInFeed, postTagItem);
+                            }
+                        }
+                    }
+            );
+        } else {
+            getView().onAddToCartFailed(postTagItem.getApplink());
+        }
+    }
+
+    @Override
+    public void getRelatedPost(String activityId) {
+        getView().showLoadingMore();
+        getRelatedPostUseCase.execute(
+                GetRelatedPostUseCase.createRequestParams(activityId),
+                new Subscriber<FeedPostRelated>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e.printStackTrace();
+                        }
+                        if (isViewNotAttached()) {
+                            return;
+                        }
+
+                        getView().dismissLoading();
+                    }
+
+                    @Override
+                    public void onNext(FeedPostRelated feedPostRelated) {
+                        if (isViewNotAttached()) {
+                            return;
+                        }
+
+                        getView().dismissLoading();
+                        RelatedPostViewModel relatedPostViewModel = new RelatedPostViewModel(
+                                mapRelatedPost(feedPostRelated.getData())
+                        );
+                        getView().onSuccessGetRelatedPost(relatedPostViewModel);
+                    }
+                }
+        );
+    }
+
+    private List<RelatedPostItemViewModel> mapRelatedPost(List<FeedPostRelated.Datum> data) {
+        List<RelatedPostItemViewModel> list = new ArrayList<>();
+        for (FeedPostRelated.Datum item : data) {
+            list.add(new RelatedPostItemViewModel(item));
+        }
+        return list;
     }
 }

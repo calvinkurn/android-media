@@ -19,6 +19,7 @@ public class ProductViewModel implements Parcelable {
     private String query;
     private String shareUrl;
     private String additionalParams;
+    private String responseCode;
     private SuggestionViewModel suggestionModel;
     private int totalData;
     private int totalItem;
@@ -139,6 +140,14 @@ public class ProductViewModel implements Parcelable {
         this.additionalParams = additionalParams;
     }
 
+    public String getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
     public SuggestionViewModel getSuggestionModel() {
         return suggestionModel;
     }
@@ -179,6 +188,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeString(this.query);
         dest.writeString(this.shareUrl);
         dest.writeString(this.additionalParams);
+        dest.writeString(this.responseCode);
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
         dest.writeInt(this.totalItem);
@@ -199,6 +209,7 @@ public class ProductViewModel implements Parcelable {
         this.query = in.readString();
         this.shareUrl = in.readString();
         this.additionalParams = in.readString();
+        this.responseCode = in.readString();
         this.suggestionModel = in.readParcelable(SuggestionViewModel.class.getClassLoader());
         this.totalData = in.readInt();
         this.totalItem = in.readInt();

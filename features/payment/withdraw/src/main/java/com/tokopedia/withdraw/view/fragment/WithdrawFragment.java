@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
@@ -19,12 +20,19 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -34,6 +42,9 @@ import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
@@ -55,7 +66,7 @@ import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
-import com.tokopedia.withdraw.WithdrawRouter;
+import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
@@ -119,6 +130,24 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private CardView saldoTypeCV;
     private TextView saldoValueTV;
     private TextView saldoWithdrawHintTV;
+    private static final String IS_WITHDRAW_LOCK = "is_lock";
+    private static final String MCL_LATE_COUNT = "late_count";
+    private static final String FIREBASE_FLAG_STATUS = "is_on";
+
+    private int statusWithDrawLock;
+    private int mclLateCount;
+    private ConstraintLayout tickerLayout;
+    private TextView tvTickerMessage;
+    private TextView tvWithDrawInfo;
+    private boolean sellerSaldoWithDrawTvStatus = false;
+    private ImageView ivDismissTicker;
+    private static final int MCL_STATUS_BLOCK1 = 700;
+    private static final int MCL_STATUS_BLOCK3 = 999;
+    private boolean showMclBlockTickerFirebaseFlag = false;
+    private ImageView ivLockButton;
+
+    private boolean buttonSellerSaldoStatus = false;
+    private LinearLayout withdrawButtonWrapper;
 
     private CompositeSubscription subscription;
 
@@ -192,6 +221,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         saldoTypeCV = view.findViewById(R.id.saldo_type_card_view);
         saldoValueTV = view.findViewById(R.id.total_saldo_value);
         saldoWithdrawHintTV = view.findViewById(R.id.saldo_withdraw_hint);
+        tickerLayout = view.findViewById(R.id.layout_ticker);
+        tvTickerMessage = view.findViewById(R.id.tv_desc_info);
+
+        withdrawButtonWrapper = view.findViewById(R.id.custom_button);
+        tvWithDrawInfo = view.findViewById(R.id.tv_info);
+        ivDismissTicker = view.findViewById(R.id.iv_dismiss_ticker);
+        ivLockButton = view.findViewById(R.id.ivButtonLeft);
+
 
         return view;
     }
@@ -207,8 +244,15 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bankAdapter.setList(listBank);
 
         if (getArguments() != null) {
+            showMclBlockTickerFirebaseFlag = getArguments().getBoolean(FIREBASE_FLAG_STATUS);
             buyerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
             sellerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
+            statusWithDrawLock = getArguments().getInt(IS_WITHDRAW_LOCK);
+            mclLateCount = getArguments().getInt(MCL_LATE_COUNT);
+        }
+
+        if ((statusWithDrawLock == MCL_STATUS_BLOCK1 || statusWithDrawLock == MCL_STATUS_BLOCK3) && showMclBlockTickerFirebaseFlag) {
+            showTicker();
         }
 
         saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
@@ -223,7 +267,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 , MethodChecker.getDrawable(getActivity(), R.drawable.divider));
         bankRecyclerView.addItemDecoration(itemDecoration);
 
-        withdrawButton.setOnClickListener(v -> {
+
+        withdrawButtonWrapper.setOnClickListener(v -> {
             KeyboardHandler.hideSoftKeyboard(getActivity());
             float balance;
             if (currentState == SELLER_STATE) {
@@ -238,7 +283,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             );
         });
 
+
         withdrawBuyerSaldoTV.setOnClickListener(v -> {
+
+
             if (currentState != BUYER_STATE) {
 
                 if (buyerSaldoBalance == 0) {
@@ -246,6 +294,13 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 } else if (buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.refund_saldo_less_min));
                 } else {
+                    if (sellerSaldoWithDrawTvStatus) {
+                        sellerSaldoWithDrawTvStatus = false;
+                        withdrawButtonWrapper.setEnabled(true);
+                        withdrawButtonWrapper.setClickable(true);
+                        ivLockButton.setVisibility(View.GONE);
+                        tvWithDrawInfo.setVisibility(View.GONE);
+                    }
                     totalWithdrawal.setText("");
                     currentState = BUYER_STATE;
                     sellerWithdrawal = false;
@@ -255,6 +310,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
 
         withdrawSellerSaldoTV.setOnClickListener(v -> {
+
             if (currentState != SELLER_STATE) {
 
                 if (sellerSaldoBalance == 0) {
@@ -262,14 +318,42 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 } else if (sellerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.seller_saldo_less_min));
                 } else {
+
+                    if ((statusWithDrawLock == MCL_STATUS_BLOCK3 || statusWithDrawLock == MCL_STATUS_BLOCK1) && showMclBlockTickerFirebaseFlag) {
+                        ivLockButton.setVisibility(View.VISIBLE);
+                        withdrawButtonWrapper.setEnabled(false);
+                        withdrawButtonWrapper.setClickable(false);
+                        sellerSaldoWithDrawTvStatus = true;
+                        SpannableString ss = new SpannableString(getString(R.string.saldolock_info_text));
+                        String tickerMsg = getString(R.string.saldolock_info_text);
+                        int startIndex = tickerMsg.indexOf("di sini");
+                        tvWithDrawInfo.setMovementMethod(LinkMovementMethod.getInstance());
+                        ss.setSpan(new ClickableSpan() {
+                            @Override
+                            public void onClick(@NonNull View view) {
+                                RouteManager.route(getContext(), String.format("%s?url=%s",
+                                        ApplinkConst.WEBVIEW, WithdrawConstant.SALDOLOCK_INFO));
+                            }
+
+                            @Override
+                            public void updateDrawState(@NonNull TextPaint ds) {
+                                super.updateDrawState(ds);
+                                ds.setUnderlineText(false);
+                                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                            }
+                        }, startIndex, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                        tvWithDrawInfo.setText(ss);
+                        tvWithDrawInfo.setVisibility(View.VISIBLE);
+                    }
                     totalWithdrawal.setText("");
-                    currentState = SELLER_STATE;
                     sellerWithdrawal = true;
+                    currentState = SELLER_STATE;
                     enableSellerSaldoView();
                 }
-
             }
         });
+
 
         if (buyerSaldoBalance == 0 || buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
             currentState = SELLER_STATE;
@@ -333,8 +417,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         Observable<Boolean> allField = nominalMapper.map(isValidNominal -> isValidNominal && isBankSelected());
 
-        Subscription enableSubscription = allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButton), Throwable::printStackTrace);
-        Subscription proceedSubscription = allField.subscribe(aBoolean -> canProceed((TextView) withdrawButton, aBoolean), Throwable::printStackTrace);
+        Subscription enableSubscription = allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButtonWrapper), Throwable::printStackTrace);
+        Subscription proceedSubscription = allField.subscribe(aBoolean -> canProceed((LinearLayout) withdrawButtonWrapper, aBoolean), Throwable::printStackTrace);
 
         subscription = new CompositeSubscription();
         subscription.add(enableSubscription);
@@ -362,6 +446,36 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         presenter.getWithdrawForm();
 
     }
+
+    public void showTicker() {
+
+        String tickerMsg = getString(R.string.saldolock_tickerDescription);
+        int startIndex = tickerMsg.indexOf("Bayar Sekarang");
+        String late = Integer.toString(mclLateCount);
+        tickerMsg = String.format(getResources().getString(R.string.saldolock_tickerDescription), late);
+        SpannableString ss = new SpannableString(tickerMsg);
+
+        tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
+        ss.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                RouteManager.route(getContext(), String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW, WithdrawConstant.SALDOLOCK_PAYNOW_URL));
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+            }
+        }, startIndex - 1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvTickerMessage.setText(ss);
+        ivDismissTicker.setOnClickListener(v -> tickerLayout.setVisibility(View.GONE));
+        tickerLayout.setVisibility(View.VISIBLE);
+    }
+
 
     private void startShowCase() {
         if (!ShowCasePreference.hasShown(getContext(), WithdrawFragment.class.getName())) {
@@ -509,20 +623,21 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
 
-    public void canProceed(TextView textView, boolean can) {
-        if (can) {
-            textView.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
-            textView.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+    public void canProceed(LinearLayout buttonWrapper, boolean can) {
+        TextView tvButton = (TextView) buttonWrapper.getChildAt(1);
+        if (can && !sellerSaldoWithDrawTvStatus) {
+            buttonWrapper.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
+            tvButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         } else {
-            textView.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_300), PorterDuff.Mode.SRC_IN);
-            textView.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+            buttonWrapper.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_300), PorterDuff.Mode.SRC_IN);
+            tvButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
         }
     }
 
     @Override
     public void onDestroy() {
         presenter.detachView();
-        if(subscription!=null) {
+        if (subscription != null) {
             subscription.unsubscribe();
         }
         super.onDestroy();
@@ -558,8 +673,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 .setMessage(getActivity().getString(R.string.alert_not_verified_yet_body))
                 .setPositiveButton(getActivity().getString(R.string.alert_not_verified_yet_positive), (dialog, which) -> {
                     if (getActivity() != null) {
-                        Intent intent = ((WithdrawRouter) getActivity().getApplicationContext())
-                                .getProfileSettingIntent(getActivity());
+                        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE);
                         startActivity(intent);
                         getActivity().finish();
                     }
@@ -648,8 +762,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         String withdrawalString = totalWithdrawal.getText().toString();
         int withdrawal = (int) StringUtils.convertToNumeric(withdrawalString, false);
         boolean isValid = checkMinimumWithdrawal(withdrawal);
-        canProceed((TextView) withdrawButton, isValid);
-        withdrawButton.setEnabled(isValid);
+        canProceed((LinearLayout) withdrawButtonWrapper, isValid);
+        withdrawButtonWrapper.setEnabled(isValid);
+
+
     }
 
     @Override

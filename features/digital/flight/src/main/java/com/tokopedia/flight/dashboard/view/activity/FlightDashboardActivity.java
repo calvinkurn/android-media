@@ -27,6 +27,7 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
     private static final String EXTRA_CHILD = "EXTRA_CHILD";
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
     private static final String EXTRA_CLASS = "EXTRA_CLASS";
+    private static final String EXTRA_AUTO_SEARCH = "EXTRA_AUTO_SEARCH";
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, FlightDashboardActivity.class);
@@ -50,6 +51,7 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
         intent.putExtra(EXTRA_CHILD, extras.getString("c"));
         intent.putExtra(EXTRA_INFANT, extras.getString("i"));
         intent.putExtra(EXTRA_CLASS, extras.getString("s"));
+        intent.putExtra(EXTRA_AUTO_SEARCH, extras.getString("auto_search"));
 
         return intent
                 .setData(uri.build());
@@ -57,13 +59,15 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
 
     @Override
     protected Fragment getNewFragment() {
-        if (getIntent().hasExtra(EXTRA_TRIP) && getIntent().hasExtra(EXTRA_ADULT) && getIntent().hasExtra(EXTRA_CHILD) && getIntent().hasExtra(EXTRA_INFANT) && getIntent().hasExtra(EXTRA_CLASS)) {
+        if (getIntent().hasExtra(EXTRA_TRIP) && getIntent().hasExtra(EXTRA_ADULT) && getIntent().hasExtra(EXTRA_CHILD)
+                && getIntent().hasExtra(EXTRA_INFANT) && getIntent().hasExtra(EXTRA_CLASS) && getIntent().hasExtra(EXTRA_AUTO_SEARCH)) {
             return FlightDashboardFragment.getInstance(
-                getIntent().getStringExtra(EXTRA_TRIP),
-                getIntent().getStringExtra(EXTRA_ADULT),
-                getIntent().getStringExtra(EXTRA_CHILD),
-                getIntent().getStringExtra(EXTRA_INFANT),
-                getIntent().getStringExtra(EXTRA_CLASS)
+                    getIntent().getStringExtra(EXTRA_TRIP),
+                    getIntent().getStringExtra(EXTRA_ADULT),
+                    getIntent().getStringExtra(EXTRA_CHILD),
+                    getIntent().getStringExtra(EXTRA_INFANT),
+                    getIntent().getStringExtra(EXTRA_CLASS),
+                    getIntent().getStringExtra(EXTRA_AUTO_SEARCH)
             );
         } else {
             return FlightDashboardFragment.getInstance();

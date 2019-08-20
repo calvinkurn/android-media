@@ -62,6 +62,7 @@ public interface ConstantTransactionAnalytics {
     }
 
     interface EventAction {
+        String CLICK_ALL_COURIER_SELECTED = "click all courier selected";
         String CLICK_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click gunakan kode promo atau kupon";
         String CLICK_GUNAKAN_KODE_PROMO = "click gunakan kode promo";
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
@@ -176,6 +177,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BELI_ON_RECENT_VIEW_PAGE = "click - beli on recent view page";
         String CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT = "click add to cart on primary product";
         String IMPRESSION_ERROR_COURIER_NO_AVAILABLE = "impression error courier no available";
+        String CLICK_MORE_LIKE_THIS = "click more like this";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -186,6 +188,7 @@ public interface ConstantTransactionAnalytics {
 
         String VIEW_TICKER_PRICE_DECREASE = "view ticker price decrease";
         String VIEW_TICKER_STOCK_DECREASE_AND_ALREADY_ATC_BY_OTHER_USER = "view ticker stock decrease and already atc by other user";
+        String VIEW_TICKER_OUT_OF_STOCK = "view ticker out of stock";
 
         //PHASE 2
         String CLICK_PILIH_ALAMAT_LAIN = "click pilih alamat lain";
@@ -206,6 +209,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU = "click tambah from tambah alamat baru";
 
         String VIEW_PROMO_ELIGBLE_APPLY = "view promo eligible apply";
+        String VIEW_ERROR_ON_CHECKOUT = "view error when checkout";
 
         //ROBINHOOD
         String CLICK_BUTTON_DURASI_PENGIRIMAN = "click button durasi pengiriman";
@@ -225,7 +229,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LIHAT_SEMUA_LAST_SEEN = "click lihat semua last seen on empty cart";
         String CLICK_PRODUCT_WISHLIST = "click product wishlist on empty cart";
         String CLICK_PRODUCT_LAST_SEEN = "click product last seen on empty cart";
-        String CLICK_PRODUCT_RECOMMENDATION = "click product recommendation on empty cart";
+        String CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation";
         String VIEW_PRODUCT = "view product";
 
         //PURCHASE PROTECTION
@@ -281,6 +285,10 @@ public interface ConstantTransactionAnalytics {
         String VIEW_POP_UP_ERROR_PROMO_CONFIRMATION = "view pop up error promo confirmation";
 
         String SEARCH_NOT_FOUND = "search result not found";
+
+        //WIDGET_RECOMMENDATION
+        String IMPRESSION_ON_PRODUCT_RECOMMENDATION = "impression on product recommendation";
+        String CLICK_ADD_TO_CART = "click add to cart";
     }
 
     interface EventLabel {

@@ -15,6 +15,7 @@
     <string name="profile_share_profile">Bagikan Profil</string>
     <string name="profile_share_this_profile">Bagikan Profile Ini</string>
     <string name="profile_share_title">Bagikan Postmu untuk raih Komisi!</string>
+    <string name="profile_other_share_title">Suka profil ini? Share, yuk!</string>
     <string name="profile_share_text">Lihat profil ini, deh! Ada produk pilihan buatmu, lho: %s</string>
     <string name="profile_add_recommendation">Mulai Post Produk Kesukaanmu dan Raih
         Komisinya!</string>
@@ -80,7 +81,6 @@
     <string name="sticky_footer_follow">Dapetin update-nya!</string>
     <string name="sticky_footer_following">Kasih tahu temanmu yuk!</string>
 
-    <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
     <string name="no_post">Belum ada post</string>
     <string name="af_see_other_post">Lihat Post Lainnya</string>
     <string name="follow_x_fox_inspiration">Follow %1$s yuk untuk inspirasimu!</string>

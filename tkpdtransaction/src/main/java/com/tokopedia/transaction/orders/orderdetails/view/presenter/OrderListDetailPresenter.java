@@ -2,7 +2,7 @@ package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.res.Resources;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -51,7 +52,6 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import kotlin.jvm.functions.Function0;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -210,10 +210,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public static final String SHOP_ID = "shop_id";
 
 
-    private JsonArray generateInputQueryBuyAgain(OrderDetails data) {
-        List<Items> orderDetailItemData = data.getItems();
+    private JsonArray generateInputQueryBuyAgain(List<Items> items) {
         JsonArray jsonArray = new JsonArray();
-        for (Items item : orderDetailItemData) {
+        for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
             int productId = 0;
@@ -223,7 +222,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             try {
                 productId = item.getId();
                 quantity = item.getQuantity();
-                shopId = data.getShopInfo().getShopId();
+                shopId = orderDetails.getShopInfo().getShopId();
                 notes = item.getDescription();
             } catch (Exception e) {
                 Log.e("error parse", e.getMessage());
@@ -242,16 +241,21 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return actionButtonList;
     }
 
+    @Override
+    public void onBuyAgainAllItems() {
+        onBuyAgainItems(orderDetails.getItems());
+    }
+
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
-    public void onBuyAgain(Resources resources) {
+    public void onBuyAgainItems(List<Items> items) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
+        variables.put(PARAM, generateInputQueryBuyAgain(items));
 
-        variables.put(PARAM, generateInputQueryBuyAgain(orderDetails));
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.buy_again), ResponseBuyAgain.class, variables, false);
 
         buyAgainUseCase = new GraphqlUseCase();
@@ -278,14 +282,39 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     getView().hideProgressBar();
                     ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
                     if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
-                        getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
+                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1);
                 }
 
             }
         });
+    }
+
+    @Override
+    public void assignInvoiceDataTo(Intent intent) {
+        if (orderDetails == null) return;
+        String id = orderDetails.getInvoiceId();
+        String invoiceCode = orderDetails.getInvoiceCode();
+        String productName = orderDetails.getProductName();
+        String date = orderDetails.getBoughtDate();
+        String imageUrl = orderDetails.getProductImageUrl();
+        String invoiceUrl = orderDetails.getInvoiceUrl();
+        String statusId = orderDetails.getStatusId();
+        String status = orderDetails.getStatusInfo();
+        String totalPriceAmount = orderDetails.getTotalPriceAmount();
+
+        intent.putExtra(ApplinkConst.Chat.INVOICE_ID, id);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, date);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, imageUrl);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, status);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, totalPriceAmount);
     }
 
     private void setDetailsData(OrderDetails details) {

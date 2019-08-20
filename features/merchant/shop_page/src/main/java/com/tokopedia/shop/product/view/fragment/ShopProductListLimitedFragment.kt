@@ -19,7 +19,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -54,19 +53,17 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
-import com.tokopedia.shop.analytic.model.ListTitleTypeDef
-import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FEATURED_PRODUCT
+import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION
+import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
 import com.tokopedia.shop.page.view.activity.ShopPageActivity
-import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
@@ -75,18 +72,10 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.model.BaseShopProductViewModel
-import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel
-import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel
-import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel
-import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel
-import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel
-import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel
-import com.tokopedia.shop.product.view.model.ShopProductViewModel
+import com.tokopedia.shop.product.view.model.*
 import com.tokopedia.shop.product.view.viewmodel.ShopProductLimitedViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
@@ -94,22 +83,15 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-
-import javax.inject.Inject
-
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FEATURED_PRODUCT
-import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION
-import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
 import kotlinx.android.synthetic.main.fragment_shop_product_limited_list.*
-import kotlin.collections.ArrayList
+import javax.inject.Inject
 
 /**
  * Created by nathan on 2/15/18.
  */
 
 class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
-        WishListActionListener, BaseEmptyViewHolder.Callback,
-        ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedListener,
+        WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener,
         ShopCarouselSeeAllClickedListener, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
         MerchantVoucherListView {
@@ -164,7 +146,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             if (TextUtils.isEmpty(selectedEtalaseId)) {
                 return true
             }
-            val etalaseViewModelList = shopProductAdapter.shopProductEtalaseListViewModel?.etalaseModelList ?: return false
+            val etalaseViewModelList = shopProductAdapter.shopProductEtalaseListViewModel?.etalaseModelList
+                    ?: return false
             return etalaseViewModelList.size > 0 && etalaseViewModelList[0].etalaseId.equals(selectedEtalaseId, ignoreCase = true)
         }
 
@@ -176,21 +159,21 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.featuredProductResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessGetProductFeature(it.data)
                 is Fail -> onErrorGetProductFeature(it.throwable)
             }
         })
 
         viewModel.etalaseResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessGetEtalaseListByShop(ArrayList(it.data))
                 is Fail -> onErrorGetEtalaseListByShop(it.throwable)
             }
         })
 
         viewModel.productResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> renderProductList(it.data.second, it.data.first)
                 is Fail -> showGetListError(it.throwable)
             }
@@ -240,6 +223,12 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
         bottom_action_view.gone()
         bottom_action_view.hide(false)
+        if (!viewModel.isLogin) {
+            bottom_action_view.setPadding(bottom_action_view.paddingLeft,
+                    bottom_action_view.paddingTop,
+                    bottom_action_view.paddingRight,
+                    resources.getDimensionPixelOffset(R.dimen.dp_36))
+        }
 
         progressDialog = ProgressDialog(activity)
         progressDialog?.setMessage(getString(R.string.title_loading))
@@ -321,7 +310,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
             showLoading()
             shopId = it.shopCore.shopID
-            if (viewModel.isEtalaseEmpty){
+            if (viewModel.isEtalaseEmpty) {
                 viewModel.getShopEtalase(shopId!!)
             } else {
                 loadData(defaultInitialPage)
@@ -334,10 +323,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     protected fun loadTopData() {
         shopInfo?.let {
-            shopProductAdapter.clearPromoData()
             shopProductAdapter.clearMerchantVoucherData()
             shopProductAdapter.clearFeaturedData()
-            viewModel.renderProductPromoModel(getOfficialWebViewUrl(shopInfo), this::renderShopProductPromo)
             loadVoucherList()
 
             viewModel.getFeaturedProduct(it.shopCore.shopID, false)
@@ -364,10 +351,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
-    private fun renderShopProductPromo(shopProductPromoViewModel: ShopProductPromoViewModel) {
-        shopProductAdapter.setShopProductPromoViewModel(shopProductPromoViewModel)
-    }
-
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return gridLayoutManager
     }
@@ -388,8 +371,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         val displaymetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
-        return ShopProductAdapterTypeFactory(this,
-                this, this, this,
+        return ShopProductAdapterTypeFactory(this, this, this,
                 this, this,
                 true, deviceWidth, ShopTrackProductTypeDef.PRODUCT
         )
@@ -672,7 +654,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         RouteManager.route(activity, ApplinkConst.PRODUCT_ADD)
     }
 
-    override fun promoClicked(url: String?) {
+    fun promoClicked(url: String?) {
         activity?.let {
             val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopInfo!!.shopCore.shopID,
                     viewModel.isLogin,
@@ -755,7 +737,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                                 shopProductViewModel.id))
             }
         }
-        if (!viewModel.isLogin){
+        if (!viewModel.isLogin) {
             onErrorAddToWishList(UserNotLoginException())
             return
         }
@@ -809,7 +791,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             }
         }
         goToPDP(shopProductViewModel.id, attribution,
-                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName) ?: "")
+                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName)
+                        ?: "")
 
 
     }
@@ -878,7 +861,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                     return
 
                 shopPageTracking?.clickSortBy(viewModel.isMyShop(shopId!!),
-                            sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant))
+                        sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant))
 
                 startActivity(ShopProductListActivity.createIntent(activity, shopId,
                         "", selectedEtalaseId, "", sortName))

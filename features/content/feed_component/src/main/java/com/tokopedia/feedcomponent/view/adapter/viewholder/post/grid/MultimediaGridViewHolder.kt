@@ -51,12 +51,15 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
         itemView.feedMultipleImageView.setFeedMultipleImageViewListener(feedMultipleImageViewListener)
 
         if (isSingleItemVideo(element)) {
+            itemView.layout_dummy.visibility = View.VISIBLE
             val mediaItem = element.mediaItemList.get(0)
             if (canPlayVideo(mediaItem) && ContentNetworkListener.getInstance(itemView.context).isWifiEnabled()) {
                 playVideo(mediaItem.videos.get(0).url)
             } else {
                 stopVideo()
             }
+        } else {
+            itemView.layout_dummy.visibility = View.GONE
         }
 
         itemView.layout_dummy.setOnClickListener{

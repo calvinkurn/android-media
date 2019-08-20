@@ -19,8 +19,6 @@ import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel
 import com.tokopedia.shop.product.view.model.ShopProductViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -235,17 +233,6 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
         return ShopEtalaseViewModel(_id, name, useAce, type, highlighted).also {
             it.etalaseCount = count.toLong()
             it.etalaseBadge = badge
-        }
-    }
-
-    fun renderProductPromoModel(contentUrl: String, listener: (ShopProductPromoViewModel)-> Unit) {
-        if (contentUrl.isNotBlank()){
-            val url = if(userSession.isLoggedIn){
-                ShopProductOfficialStoreUtils.getLogInUrl(contentUrl, userSession.deviceId, userSession.userId)
-            } else contentUrl
-
-            val promo = ShopProductPromoViewModel(url, userId, userSession.accessToken, isLogin)
-            listener.invoke(promo)
         }
     }
 
