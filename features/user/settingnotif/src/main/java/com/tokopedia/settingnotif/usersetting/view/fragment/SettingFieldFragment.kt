@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.support.annotation.RawRes
 import android.support.annotation.StringRes
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
@@ -126,11 +128,16 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         renderList(emptyList())
     }
 
-    protected fun showMessage(@StringRes message: Int) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    protected fun showMessage(@StringRes messageRes: Int) {
+        val message = getString(messageRes)
+        view?.let {
+            Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
+        }
     }
 
     protected fun showMessage(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        view?.let {
+            Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
+        }
     }
 }
