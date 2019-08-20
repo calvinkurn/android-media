@@ -681,6 +681,23 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         startActivityForResult(intent, NAVIGATION_PDP);
     }
 
+    public void onWishlistClicked(@NotNull String productId) {
+        int index = 0, position = 0;
+        Wishlist wishlistItemClick = null;
+
+        for (CartWishlistItemHolderData wishlist : wishLists) {
+            if (wishlist.getId().equalsIgnoreCase(productId)) {
+                position = index;
+                wishlistItemClick = wishlist;
+            }
+        }
+
+        dPresenter.generateWishlistDataOnClickAnalytics()
+
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
+        startActivityForResult(intent, NAVIGATION_PDP);
+    }
+
     @Override
     public void onRecommendationProductClicked(@NotNull String productId) {
         int index = 0, position = 0;

@@ -57,6 +57,14 @@ public interface ICartListPresenter {
 
     Map<String, Object> generateRecommendationDataOnClickAnalytics(RecommendationItem recommendationItem, boolean isEmptyCart, int position);
 
+    Map<String, Object> generateWishlistDataImpressionAnalytics(List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList, boolean isEmptyCart);
+
+    Map<String, Object> generateWishlistDataOnClickAnalytics(RecommendationItem recommendationItem, boolean isEmptyCart, int position);
+
+    Map<String, Object> generateRecentViewDataImpressionAnalytics(List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList, boolean isEmptyCart);
+
+    Map<String, Object> generateRecentViewDataOnClickAnalytics(RecommendationItem recommendationItem, boolean isEmptyCart, int position);
+
     CartListData getCartListData();
 
     void setCartListData(CartListData cartListData);

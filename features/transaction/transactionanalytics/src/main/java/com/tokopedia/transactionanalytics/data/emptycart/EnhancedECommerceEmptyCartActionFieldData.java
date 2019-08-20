@@ -11,7 +11,9 @@ public class EnhancedECommerceEmptyCartActionFieldData {
 
     private static final String KEY_LIST = "list";
     public static final String VALUE_SECTION_NAME_WISHLIST = "/cart - wishlist";
+    public static final String VALUE_SECTION_NAME_WISHLIST_EMPTY_CART = "/cart empty - wishlist";
     public static final String VALUE_SECTION_NAME_RECENT_VIEW = "/cart - recent view";
+    public static final String VALUE_SECTION_NAME_RECENT_VIEW_EMPTY_CART = "/cart empty - recent view";
     public static final String VALUE_SECTION_NAME_RECOMMENDATION = "/cart - rekomendasi untuk anda";
 
     private Map<String, Object> data = new HashMap<>();
