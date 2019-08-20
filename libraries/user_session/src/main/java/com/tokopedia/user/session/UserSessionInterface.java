@@ -63,6 +63,8 @@ public interface UserSessionInterface {
 
     String getShopAvatar();
 
+    boolean isPowerMerchantIdle();
+  
     String getAutofillUserData();
 
     String getLoginMethod();
@@ -75,9 +77,9 @@ public interface UserSessionInterface {
 
     boolean getTwitterShouldPost();
 
-        /**
-         * SETTER METHOD
-         */
+    /**
+     * SETTER METHOD
+     */
 
     void setUUID(String uuid);
 
@@ -139,6 +141,8 @@ public interface UserSessionInterface {
 
     void setShopAvatar(String shopAvatar);
 
+    void setIsPowerMerchantIdle(boolean powerMerchantIdle);
+  
     void setAutofillUserData(String autofillUserData);
 
     void setLoginMethod(@NotNull String loginMethod);

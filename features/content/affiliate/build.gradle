@@ -59,6 +59,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
