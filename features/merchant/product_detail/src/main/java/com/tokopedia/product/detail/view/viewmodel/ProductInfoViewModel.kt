@@ -619,8 +619,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             const val SHOP_ID_PARAM = "shopId"
             const val PRODUCT_ID_PARAM = "productId"
             const val INCLUDE_UI_PARAM = "includeUI"
-            const val UNIQUE_STRING = "uniqueString"
-            const val TRACKER_ID = "trackerID"
         }
     }
 }
