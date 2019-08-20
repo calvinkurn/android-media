@@ -100,10 +100,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
-import com.tokopedia.product.detail.view.widget.CountDrawable
-import com.tokopedia.product.detail.view.widget.PictureScrollingView
-import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
-import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
+import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
@@ -177,6 +174,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationThirdView: PartialRecommendationThirdView
     lateinit var recommendationFourthView: PartialRecommendationFourthView
     lateinit var valuePropositionView: PartialValuePropositionView
+    lateinit var stickyLoginTextView: StickyTextView
     lateinit var trackingQueue: TrackingQueue
 
     @Inject
@@ -249,6 +247,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val CART_SCALE_ANIMATION_TO = 2f
         const val CART_SCALE_ANIMATION_PIVOT = 0.5f
         const val CART_ANIMATION_DURATION = 700L
+
+        private const val STICKY_SHOW_DELAY: Long = 3 * 60 * 1000
 
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
@@ -469,7 +469,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
         appbar.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0)})
-        refreshLayout?.setOnRefreshListener { loadProductData(true) }
+        refreshLayout?.setOnRefreshListener {
+            loadProductData(true)
+            updateStickyState()
+        }
 
         if (isAffiliate) {
             actionButtonView.gone()
@@ -606,6 +609,25 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
         loadProductData()
+
+        stickyLoginTextView = view.findViewById(R.id.sticky_login_text)
+        stickyLoginTextView.setOnClickListener {
+            productDetailTracking.eventClickOnStickyLogin(true)
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+        }
+        stickyLoginTextView.setOnDismissListener(View.OnClickListener {
+            stickyLoginTextView.dismiss()
+            productDetailTracking.eventClickOnStickyLogin(false)
+            ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
+        })
+
+        updateStickyState()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        updateStickyState()
     }
 
     private fun doBuy() {
@@ -2116,6 +2138,28 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         super.onStop()
         context?.let {
             LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
+        }
+    }
+
+    private fun updateStickyState() {
+        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
+        if (!isCanShowing) {
+            stickyLoginTextView.visibility = View.GONE
+            return
+        }
+
+        val userSession = UserSession(activity)
+        if (userSession.isLoggedIn) {
+            stickyLoginTextView.dismiss()
+        } else {
+            stickyLoginTextView.show()
+            productDetailTracking.eventViewLoginStickyWidget()
+        }
+
+        if (stickyLoginTextView.isShowing()) {
+            actionButtonView.setBackground(R.color.white)
+        } else {
+            ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
         }
     }
 }
