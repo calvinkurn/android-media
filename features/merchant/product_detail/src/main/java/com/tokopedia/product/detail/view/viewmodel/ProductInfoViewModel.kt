@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.data.pojo.trackaffiliate.TrackAffiliateResponse
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -72,6 +73,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                private val rawQueries: Map<String, String>,
                                                private val addWishListUseCase: AddWishListUseCase,
                                                private val removeWishlistUseCase: RemoveWishListUseCase,
+                                               private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -580,8 +582,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
-        launchCatchError(block = {
-
+        trackAffiliateUseCase.params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
+        trackAffiliateUseCase.execute({
+            //no op
         }) {
             it.debugTrace()
         }

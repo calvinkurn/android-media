@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
 data class TrackAffiliateResponse(
         @SerializedName("topadsAffiliateTracker")
         @Expose
-        val topadsAffiliateTracker: TopadsAffiliateTracker = TopadsAffiliateTracker()
+        val topadsAffiliateTracker: TopadsAffiliateTracker? = TopadsAffiliateTracker()
 )

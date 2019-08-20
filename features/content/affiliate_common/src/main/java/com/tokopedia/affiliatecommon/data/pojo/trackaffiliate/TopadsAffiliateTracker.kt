@@ -10,11 +10,11 @@ data class TopadsAffiliateTracker(
         val errors: List<Any> = listOf(),
         @SerializedName("message")
         @Expose
-        val message: String = "",
+        val message: String? = "",
         @SerializedName("success")
         @Expose
-        val success: String = ""
+        val success: String? = ""
 ) {
         val isSuccess: Boolean
-                get() = success.toLowerCase() == "true"
+                get() = success?.toLowerCase() == "true"
 }
