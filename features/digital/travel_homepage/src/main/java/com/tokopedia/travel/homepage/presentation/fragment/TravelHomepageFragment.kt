@@ -79,16 +79,10 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         }
 
         if (offsetAlpha >= 255) {
-            offsetAlpha = 255f
             travel_homepage_toolbar.toOnScrolledMode()
         } else {
             travel_homepage_toolbar.toInitialMode()
         }
-
-//        if (offsetAlpha >= 0 && offsetAlpha <= 255) {
-//            homeMainToolbar.setBackgroundAlpha(offsetAlpha)
-//            setStatusBarAlpha(offsetAlpha)
-//        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

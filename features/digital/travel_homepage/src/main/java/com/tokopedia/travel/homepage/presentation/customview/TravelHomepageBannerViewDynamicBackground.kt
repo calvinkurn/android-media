@@ -37,11 +37,11 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
 
     private var currentBitmapDrawable: BitmapDrawable? = null
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun init() {
         val view = View.inflate(context, R.layout.travel_homepage_card_banner_dynamic_background, this)
@@ -80,7 +80,7 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
     }
 
     override fun buildView() {
-        bannerSeeAll.setTextColor(ContextCompat.getColor(context, R.color.medium_green));
+        bannerSeeAll.setTextColor(ContextCompat.getColor(context, R.color.medium_green))
         bannerSeeAll.typeface = Typeface.DEFAULT
         super.buildView()
         banner_root.visibility = View.VISIBLE
