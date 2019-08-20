@@ -119,6 +119,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.0'
     testImplementation 'org.slf4j:slf4j-simple:1.7.26'
+    testImplementation rootProject.ext.testDependencies.mockk
 }
 
 apply from: '../../../publish_local.gradle'
