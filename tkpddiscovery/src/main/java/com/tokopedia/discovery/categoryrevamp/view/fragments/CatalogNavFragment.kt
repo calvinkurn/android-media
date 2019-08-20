@@ -43,7 +43,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
 
     lateinit var catalogTypeFactory: CatalogTypeFactory
 
-    lateinit var catalogNavListAdapter: CatalogNavListAdapter
+    var catalogNavListAdapter: CatalogNavListAdapter? = null
 
     lateinit var categoryNavComponent: CategoryNavComponent
 
@@ -100,13 +100,15 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
 
             when (it) {
                 is Success -> {
-                    catalogNavListAdapter.removeLoading()
+                    catalogNavListAdapter?.removeLoading()
                     list.addAll(it.data.items as ArrayList<Visitable<CatalogTypeFactory>>)
                     catalog_recyclerview.adapter?.notifyDataSetChanged()
+                    hideRefreshLayout()
                 }
 
                 is Fail -> {
-                    catalogNavListAdapter.removeLoading()
+                    catalogNavListAdapter?.removeLoading()
+                    hideRefreshLayout()
                 }
             }
         })
@@ -129,8 +131,8 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                catalogNavViewModel.fetchCatalogDetail(getCatalogListParams(page))
-                catalogNavListAdapter.addLoading()
+                fetchCatalogData(getCatalogListParams(page))
+                catalogNavListAdapter?.addLoading()
             }
         }
     }
@@ -139,7 +141,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             catalogNavViewModel = viewModelProvider.get(CatalogNavViewModel::class.java)
-            catalogNavViewModel.fetchCatalogDetail(getCatalogListParams(0))
+            fetchCatalogData(getCatalogListParams(0))
         }
     }
 
@@ -171,5 +173,26 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
 
 
     data class AceFilterInput(var pmin: String, var pmax: String, var sc: String)
+
+
+    override fun onSwipeToRefresh() {
+        reloadData()
+    }
+
+    private fun reloadData() {
+        if (catalogNavListAdapter == null) {
+            return
+        }
+        showRefreshLayout()
+        catalogNavListAdapter?.clearData()
+        staggeredGridLayoutLoadMoreTriggerListener?.resetState()
+        fetchCatalogData(getCatalogListParams(0))
+
+    }
+
+
+    private fun fetchCatalogData(paramMap: RequestParams) {
+        catalogNavViewModel.fetchCatalogDetail(paramMap)
+    }
 
 }

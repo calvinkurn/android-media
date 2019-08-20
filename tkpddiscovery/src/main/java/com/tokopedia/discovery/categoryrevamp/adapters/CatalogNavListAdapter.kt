@@ -53,4 +53,10 @@ class CatalogNavListAdapter(val catalogTypeFactory: CatalogTypeFactory,
             notifyItemRangeChanged(loadingModelPosition, 1)
         }
     }
+
+    fun clearData() {
+        val itemSizeBeforeCleared = itemCount
+        visitables.clear()
+        notifyItemRangeRemoved(0, itemSizeBeforeCleared)
+    }
 }

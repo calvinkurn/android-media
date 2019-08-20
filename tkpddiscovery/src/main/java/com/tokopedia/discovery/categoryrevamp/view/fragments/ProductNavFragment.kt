@@ -51,7 +51,7 @@ class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
 
     lateinit var productTypeFactory: ProductTypeFactory
 
-    lateinit var productNavListAdapter: ProductNavListAdapter
+    var productNavListAdapter: ProductNavListAdapter? = null
 
     lateinit var subCategoryAdapter: SubCategoryAdapter
 
@@ -139,10 +139,15 @@ class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                productNavViewModel.fetchProductList(getParamMap(page))
-                productNavListAdapter.addLoading()
+                fetchProductData(getParamMap(page))
+                productNavListAdapter?.addLoading()
             }
         }
+    }
+
+
+    private fun fetchProductData(paramMap: RequestParams) {
+        productNavViewModel.fetchProductList(paramMap)
     }
 
     private fun observeData() {
@@ -151,13 +156,15 @@ class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
             when (it) {
                 is Success -> {
                     list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
-                    productNavListAdapter.removeLoading()
+                    productNavListAdapter?.removeLoading()
                     product_recyclerview.adapter?.notifyDataSetChanged()
                     staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
+                    hideRefreshLayout()
                 }
 
                 is Fail -> {
-                    productNavListAdapter.removeLoading()
+                    productNavListAdapter?.removeLoading()
+                    hideRefreshLayout()
                 }
 
             }
@@ -190,7 +197,7 @@ class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
-            productNavViewModel.fetchProductList(getParamMap(start))
+            fetchProductData(getParamMap(start))
             productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
         }
     }
@@ -222,4 +229,18 @@ class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
             AuthUtil.md5(gcmHandler.registrationId)
     }
 
+    override fun onSwipeToRefresh() {
+        reloadData()
+    }
+
+    private fun reloadData() {
+        if (productNavListAdapter == null) {
+            return
+        }
+        showRefreshLayout()
+        productNavListAdapter?.clearData()
+        staggeredGridLayoutLoadMoreTriggerListener?.resetState()
+        fetchProductData(getParamMap(0))
+
+    }
 }

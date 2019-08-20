@@ -58,4 +58,10 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             notifyItemRangeChanged(loadingModelPosition, 1)
         }
     }
+
+    fun clearData() {
+        val itemSizeBeforeCleared = itemCount
+        visitables.clear()
+        notifyItemRangeRemoved(0, itemSizeBeforeCleared)
+    }
 }

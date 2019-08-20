@@ -28,7 +28,15 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     private val PORTRAIT_COLUMN_MAIN = 2
 
 
-    protected fun onSwipeToRefresh() {
+    protected open fun onSwipeToRefresh() {
+    }
+
+    protected fun showRefreshLayout() {
+        refreshLayout?.isRefreshing = true
+    }
+
+    fun hideRefreshLayout() {
+        refreshLayout?.setRefreshing(false)
     }
 
     protected abstract fun getAdapter(): BaseCategoryAdapter?
