@@ -26,6 +26,7 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent;
+import com.tokopedia.affiliate.feature.dashboard.view.activity.CommissionDetailActivity;
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.DashboardAdapter;
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
@@ -301,6 +302,13 @@ public class DashboardFragment
     @Override
     public void goToAffiliateExplore() {
         RouteManager.route(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
+    }
+
+    @Override
+    public void onItemClicked(DashboardItemViewModel model) {
+        Bundle bundle = new Bundle();
+        bundle.putString(CommissionDetailActivity.PARAM_AFF_ID, model.getId());
+        startActivity(CommissionDetailActivity.Companion.newInstance(getActivity(), bundle));
     }
 
     @Override

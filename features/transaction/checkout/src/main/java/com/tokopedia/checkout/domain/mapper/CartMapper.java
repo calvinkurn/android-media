@@ -95,7 +95,7 @@ public class CartMapper implements ICartMapper {
         cartListData.setDefaultPromoDialogTab(cartDataListResponse.getDefaultPromoDialogTab());
 
         List<ShopGroupData> shopGroupDataList = new ArrayList<>();
-        boolean isDisableAllProducts = false;
+        boolean isDisableAllProducts = true;
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             ShopGroupData shopGroupData = new ShopGroupData();
 
@@ -267,6 +267,7 @@ public class CartMapper implements ICartMapper {
                 if (data.getErrors() != null && data.getErrors().size() > 0) {
                     cartItemData.setError(true);
                     cartItemData.setErrorMessageTitle(data.getErrors().get(0));
+                    cartItemData.setSimilarProductUrl(data.getSimilarProductUrl());
 
                     if (data.getErrors().size() > 1) {
                         cartItemData.setErrorMessageDescription(mapperUtil.convertToString(
@@ -295,6 +296,7 @@ public class CartMapper implements ICartMapper {
                     shopGroupData.setError(true);
                     shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
                     shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
+                    shopGroupData.setSimilarProductUrl(cartItemData.getSimilarProductUrl());
                 } else if (cartItemData.isWarning()) {
                     shopGroupData.setWarning(true);
                     shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
