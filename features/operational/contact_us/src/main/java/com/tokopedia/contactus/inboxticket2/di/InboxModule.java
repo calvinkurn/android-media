@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.tokopedia.contactus.inboxticket2.domain.usecase.CloseTicketByUserUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketDetailUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.InboxOptionUseCase;
@@ -55,8 +56,10 @@ public class InboxModule {
     InboxDetailContract.InboxDetailPresenter provideInboxListPresenter(GetTicketDetailUseCase useCase,
                                                                        PostMessageUseCase messageUseCase,
                                                                        PostMessageUseCase2 messageUseCase2,
-                                                                       PostRatingUseCase ratingUseCase,InboxOptionUseCase inboxOptionUseCase) {
-        return new InboxDetailPresenterImpl(useCase, messageUseCase, messageUseCase2, ratingUseCase,inboxOptionUseCase);
+                                                                       PostRatingUseCase ratingUseCase, InboxOptionUseCase inboxOptionUseCase,
+                                                                       SubmitRatingUseCase submitRatingUseCase,
+                                                                       CloseTicketByUserUseCase closeTicketByUserUseCase) {
+        return new InboxDetailPresenterImpl(useCase, messageUseCase, messageUseCase2, ratingUseCase,inboxOptionUseCase,submitRatingUseCase,closeTicketByUserUseCase);
     }
 
     @InboxScope

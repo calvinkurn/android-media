@@ -1,12 +1,14 @@
 package com.tokopedia.changephonenumber;
 
+import com.tokopedia.url.TokopediaUrl;
+
 /**
  * @author by alvinatin on 26/09/18.
  */
 
 public class ChangePhoneNumberUrl {
 
-    public static String BASE_URL = "https://accounts.tokopedia.com/";
+    public static String BASE_URL = TokopediaUrl.Companion.getInstance().getACCOUNTS();
 
     public class MSISDN {
         public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";

@@ -19,6 +19,8 @@ import com.google.android.gms.common.api.Status;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 public class SmartLockActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -46,7 +48,8 @@ public class SmartLockActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        analytics = new LoginRegisterAnalytics();
+        UserSessionInterface userSessionInterface = new UserSession(this);
+        analytics = new LoginRegisterAnalytics(userSessionInterface);
 
         setContentView(R.layout.activity_smartlock);
 

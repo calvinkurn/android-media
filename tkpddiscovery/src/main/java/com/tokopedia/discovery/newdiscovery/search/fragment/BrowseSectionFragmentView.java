@@ -37,4 +37,6 @@ public interface BrowseSectionFragmentView extends CustomerView {
     void setTotalSearchResultCount(String formattedResultCount);
 
     Context getContext();
+
+    void setOfficialSelected(Boolean officialSelectedFlag);
 }

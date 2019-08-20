@@ -1,8 +1,7 @@
 package com.tokopedia.core.network.apiservices.product;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.product.apis.ReputationReviewApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
-import com.tokopedia.core.network.retrofit.services.BaseService;
 
 import retrofit2.Retrofit;
 
@@ -19,7 +18,7 @@ public class ReputationReviewService extends AuthService<ReputationReviewApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.BASE_DOMAIN;
+        return TokopediaUrl.Companion.getInstance().getWS();
     }
 
     @Override

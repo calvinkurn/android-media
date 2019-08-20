@@ -207,7 +207,7 @@ public class EventReviewTicketPresenter
                 tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(getView().getActivity(),
                         Utils.Constants.EVENTS,
                         Utils.Constants.EVENTS,
-                        "");
+                        com.tokopedia.oms.view.utils.Utils.LOYALTY_DEFAULT_TAB);
         loyaltyIntent.putExtra(Utils.Constants.CHECKOUTDATA, requestBody.toString());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID,
                 checkoutData.getDigitalProductID());
@@ -600,7 +600,7 @@ public class EventReviewTicketPresenter
         String jsonResponse = intent.getStringExtra(EXTRA_VERIFY_RESPONSE);
         if (!StringUtils.isBlank(jsonResponse))
             this.verifiedSeatResponse = (JsonObject) new JsonParser().parse(jsonResponse);
-        mView.renderFromPackageVM(checkoutData, selectedSeatViewModel);
+        mView.renderFromPackageVM(checkoutData, selectedSeatViewModel, this.eventsDetailsViewModel.getCustomText1());
         getAndInitForms();
     }
 }

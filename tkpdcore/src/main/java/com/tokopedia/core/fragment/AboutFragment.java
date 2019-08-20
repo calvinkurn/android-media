@@ -7,17 +7,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 
-import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core2.R;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core2.R;
 
 /**
  * Created by Angga.Prasetiyo on 13/01/2016.
@@ -138,7 +139,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
             prefDevOpt.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    getActivity().startActivity(new Intent(getActivity(), DeveloperOptions.class));
+                    RouteManager.route(getActivity(), ApplinkConst.DEVELOPER_OPTIONS);
                     return false;
                 }
             });

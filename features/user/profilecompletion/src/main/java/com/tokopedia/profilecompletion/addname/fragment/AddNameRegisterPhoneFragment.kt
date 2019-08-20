@@ -153,6 +153,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         KeyboardHandler.DropKeyboard(activity, view)
         phoneNumber?.let{
             registerPhoneAndName(etName.text.toString(), it)
+            analytics.trackClickFinishAddNameButton()
         }
     }
 
@@ -166,10 +167,12 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         context?.let{
             if (name.length < MIN_NAME) {
                 showValidationError(it.getResources().getString(R.string.error_name_too_short))
+                analytics.trackErrorFinishAddNameButton(it.getResources().getString(R.string.error_name_too_short))
                 return false
             }
             if (name.length > MAX_NAME) {
                 showValidationError(it.getResources().getString(R.string.error_name_too_long))
+                analytics.trackErrorFinishAddNameButton(it.getResources().getString(R.string.error_name_too_long))
                 return false
             }
             hideValidationError()
@@ -252,6 +255,8 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         userSession.clearToken()
         dismissLoading()
         showValidationError(ErrorHandler.getErrorMessage(context, throwable))
+        analytics.trackErrorFinishAddNameButton(ErrorHandler.getErrorMessage(context, throwable))
+
     }
 
     override fun onSuccessRegister(registerInfo: RegisterInfo) {

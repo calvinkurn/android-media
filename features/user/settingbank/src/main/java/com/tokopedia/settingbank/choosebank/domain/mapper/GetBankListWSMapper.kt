@@ -17,12 +17,17 @@ class GetBankListWSMapper @Inject constructor() : Func1<Response<DataResponse<Ba
         BankListViewModel> {
 
     override fun call(response: Response<DataResponse<BankListPojo>>): BankListViewModel {
-        if (response.body().header.messages.isEmpty() ||
-                response.body().header.messages[0].isBlank()) {
-            val pojo: BankListPojo = response.body().data
-            return mapToViewModel(pojo)
+        val body = response.body()
+        if(body != null) {
+            if (body.header.messages.isEmpty() ||
+                    body.header.messages[0].isBlank()) {
+                val pojo: BankListPojo = body.data
+                return mapToViewModel(pojo)
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 

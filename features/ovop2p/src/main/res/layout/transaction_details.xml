@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/sucs_img"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_27"
+        app:srcCompat="@drawable/ic_group_4"
+        app:layout_constraintEnd_toStartOf="@+id/sucs_ttl"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/sucs_ttl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/dp_10"
+        android:text="@string/ovop2p_brhsl"
+        android:textColor="@color/clr_73bd00"
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintBottom_toBottomOf="@+id/sucs_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sucs_img"
+        app:layout_constraintTop_toTopOf="@+id/sucs_img" />
+
+    <TextView
+        android:id="@+id/trnsfr_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_7"
+        android:gravity="center_horizontal"
+        android:textColor="@color/clr_6b767e"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sucs_ttl" />
+
+    <TextView
+        android:id="@+id/from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_6"
+        android:text="@string/ovop2p_dri"
+        android:textColor="@color/clr_6b767e"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trnsfr_date" />
+
+    <ImageView
+        android:id="@+id/ic_ovo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_ovo_purple"
+        app:layout_constraintStart_toStartOf="@+id/from"
+        app:layout_constraintTop_toBottomOf="@+id/from" />
+
+    <TextView
+        android:id="@+id/name_sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_10"
+        android:textColor="@color/clr_2d263b"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/ic_ovo"
+        app:layout_constraintTop_toTopOf="@+id/ic_ovo" />
+
+    <TextView
+        android:id="@+id/num_sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_10"
+        android:textColor="@color/clr_2d263b"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toEndOf="@+id/ic_ovo"
+        app:layout_constraintTop_toBottomOf="@+id/name_sender" />
+
+    <TextView
+        android:id="@+id/to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_6"
+        android:text="@string/ovop2p_trnk"
+        android:textColor="@color/clr_6b767e"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/num_sender" />
+
+    <ImageView
+        android:id="@+id/ic_ovo_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_ovo_purple"
+        app:layout_constraintStart_toStartOf="@+id/to"
+        app:layout_constraintTop_toBottomOf="@+id/to" />
+
+    <TextView
+        android:id="@+id/name_rcvr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_10"
+        android:textColor="@color/clr_2d263b"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
+        app:layout_constraintTop_toTopOf="@+id/ic_ovo_to" />
+
+    <TextView
+        android:id="@+id/num_rcvr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_10"
+        android:textColor="@color/clr_2d263b"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
+        app:layout_constraintTop_toBottomOf="@+id/name_rcvr" />
+
+    <TextView
+        android:id="@+id/ttl_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:text="@string/ovop2p_psn"
+        android:textColor="@color/clr_6b767e"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/num_rcvr" />
+
+    <TextView
+        android:id="@+id/txt_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/bottom_border"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        android:textColor="@color/clr_2d263b"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ttl_msg" />
+
+    <TextView
+        android:id="@+id/num_ref"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:text="@string/ovop2p_no_ref"
+        android:textColor="@color/clr_6b767e"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_msg" />
+
+    <TextView
+        android:id="@+id/txt_ref_no"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/bottom_border"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        android:textColor="@color/clr_2d263b"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/num_ref" />
+
+    <TextView
+        android:id="@+id/ttl_src_fnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:text="@string/ovop2p_sumdan"
+        android:textColor="@color/clr_6b767e"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_ref_no" />
+
+    <TextView
+        android:id="@+id/txt_src_fnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:text="@string/ovop2p_ovocsh"
+        android:textColor="@color/clr_2d263b"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ttl_src_fnd" />
+
+    <TextView
+        android:id="@+id/txt_amt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="end"
+        android:paddingTop="@dimen/dp_8"
+        android:textColor="@color/clr_73bd00"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_src_fnd" />
+
+    <View
+        android:id="@+id/vw_dvdr"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_24"
+        android:background="@color/clr_eef0f3"
+        app:layout_constraintTop_toBottomOf="@+id/txt_src_fnd" />
+
+    <include
+        android:id="@+id/branding_lauout"
+        layout="@layout/branding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

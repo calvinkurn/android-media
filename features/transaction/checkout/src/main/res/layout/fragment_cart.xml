@@ -81,13 +81,14 @@
                             android:paddingRight="@dimen/dp_8"
                             android:theme="@style/TransactionCheckbox" />
 
-                        <TextView
-                            style="@style/TextSmallNormalBlack54"
+                        <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:lineSpacingExtra="@dimen/sp_5"
                             android:text="@string/label_select_all_product"
                             android:textSize="@dimen/sp_12"
+                            app:typographyType="body_3"
+                            app:typographyWeight="reguler"
                             tools:ignore="RelativeOverlap" />
 
                     </LinearLayout>
@@ -149,38 +150,40 @@
                                 android:orientation="vertical"
                                 android:padding="@dimen/dp_16">
 
-                                <TextView
+                                <com.tokopedia.unifyprinciples.Typography
                                     android:id="@+id/tv_item_count"
-                                    style="@style/TextSmallMediumBlack38"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:lineSpacingExtra="4sp"
+                                    android:textColor="@color/text_black"
+                                    app:typographyType="body_2"
+                                    app:typographyWeight="bold"
                                     android:text="@string/label_price_total" />
 
-                                <TextView
+                                <com.tokopedia.unifyprinciples.Typography
                                     android:id="@+id/tv_total_prices"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-medium"
                                     android:gravity="end"
-                                    android:textColor="@color/orange_red"
-                                    android:textSize="@dimen/sp_16"
+                                    android:textColor="@color/price_label"
+                                    app:typographyType="heading_4"
+                                    app:typographyWeight="bold"
                                     tools:text="Rp600.000" />
 
                             </LinearLayout>
 
-                            <TextView
+                            <com.tokopedia.unifyprinciples.Typography
                                 android:id="@+id/go_to_courier_page_button"
                                 android:layout_width="@dimen/dp_150"
                                 android:layout_height="@dimen/dp_40"
                                 android:layout_gravity="center_vertical"
                                 android:layout_margin="@dimen/dp_10"
-                                android:background="@drawable/transaction_checkout_orange_button_rounded"
-                                android:fontFamily="sans-serif-medium"
+                                android:background="@drawable/transaction_checkout_red_button_rounded"
                                 android:gravity="center"
                                 android:textAllCaps="false"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/sp_14"
+                                app:typographyType="heading_5"
+                                app:typographyWeight="bold"
                                 tools:text="Checkout" />
 
                         </LinearLayout>

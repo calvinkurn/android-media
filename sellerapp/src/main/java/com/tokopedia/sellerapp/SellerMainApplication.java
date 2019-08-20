@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatDelegate;
 import android.webkit.URLUtil;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -26,6 +27,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
@@ -61,6 +63,7 @@ import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -73,6 +76,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     public static SellerMainApplication get(Context context) {
         return (SellerMainApplication) context.getApplicationContext();
+    }
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     @Override
@@ -147,7 +154,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        generateSellerAppBaseUrl();
         generateSellerAppNetworkKeys();
 
         TrackApp.initTrackApp(this);
@@ -169,6 +175,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GraphqlClient.init(this);
         NetworkClient.init(this);
         InstabugInitalize.init(this);
+        TokopediaUrl.Companion.init(this);
     }
 
     @Override
@@ -187,69 +194,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
             com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         }
-    }
-
-    private void generateSellerAppBaseUrl() {
-        TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL = SellerAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
-        TkpdBaseURL.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
-        TkpdBaseURL.ACE_DOMAIN = SellerAppBaseUrl.BASE_ACE_DOMAIN;
-        TkpdBaseURL.BASE_API_DOMAIN = SellerAppBaseUrl.BASE_API_DOMAIN;
-        TkpdBaseURL.TOPADS_DOMAIN = SellerAppBaseUrl.BASE_TOPADS_DOMAIN;
-        TopAdsCommonConstant.BASE_DOMAIN_URL = SellerAppBaseUrl.BASE_TOPADS_DOMAIN;
-        TkpdBaseURL.MOJITO_DOMAIN = SellerAppBaseUrl.BASE_MOJITO_DOMAIN;
-        TkpdBaseURL.HADES_DOMAIN = SellerAppBaseUrl.BASE_HADES_DOMAIN;
-        TkpdBaseURL.DIGITAL_API_DOMAIN = SellerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
-        TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN = SellerAppBaseUrl.BASE_DIGITAL_WEBSITE_DOMAIN;
-        TkpdBaseURL.ACCOUNTS_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
-        TkpdBaseURL.INBOX_DOMAIN = SellerAppBaseUrl.BASE_INBOX_DOMAIN;
-        TkpdBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
-        TkpdBaseURL.KERO_DOMAIN = SellerAppBaseUrl.BASE_KERO_DOMAIN;
-        TkpdBaseURL.JAHE_DOMAIN = SellerAppBaseUrl.BASE_JAHE_DOMAIN;
-        TkpdBaseURL.PULSA_WEB_DOMAIN = SellerAppBaseUrl.BASE_PULSA_WEB_DOMAIN;
-        TkpdBaseURL.GOLD_MERCHANT_DOMAIN = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
-        TkpdBaseURL.TOKOPEDIA_CART_DOMAIN = SellerAppBaseUrl.TOKOPEDIA_CART_DOMAIN;
-        TkpdBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
-        TkpdBaseURL.MOBILE_DOMAIN = SellerAppBaseUrl.BASE_MOBILE_DOMAIN;
-        TkpdBaseURL.BASE_CONTACT_US = SellerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
-        TkpdBaseURL.TOME_DOMAIN = SellerAppBaseUrl.BASE_TOME_DOMAIN;
-        TkpdBaseURL.SCROOGE_DOMAIN = SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
-        TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = SellerAppBaseUrl.BASE_SCROOGE_CREDIT_CARD_DOMAIN;
-        TkpdBaseURL.CHAT_DOMAIN = SellerAppBaseUrl.CHAT_DOMAIN;
-        TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = SellerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
-        TkpdBaseURL.WALLET_DOMAIN = SellerAppBaseUrl.BASE_WALLET;
-        SessionUrl.ACCOUNTS_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
-        SessionUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
-        ShopUrl.BASE_ACE_URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
-        ShopCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_TOME_DOMAIN;
-        ShopCommonUrl.BASE_WS_URL = SellerAppBaseUrl.BASE_DOMAIN;
-        ProductDetailConstant.BASE_REST_URL = SellerAppBaseUrl.BASE_DOMAIN;
-        ReputationCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
-        AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
-        CatalogConstant.URL_HADES = SellerAppBaseUrl.BASE_HADES_DOMAIN;
-
-        MitraToppersBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
-        MitraToppersBaseURL.PATH_MITRA_TOPPERS = SellerAppBaseUrl.PATH_MITRA_TOPPERS;
-        DigitalUrl.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
-        PaymentFingerprintConstant.ACCOUNTS_DOMAIN = SellerAppBaseUrl.ACCOUNTS_DOMAIN;
-        PaymentFingerprintConstant.TOP_PAY_DOMAIN = SellerAppBaseUrl.TOP_PAY_DOMAIN;
-        TkpdBaseURL.HOME_DATA_BASE_URL = SellerAppBaseUrl.HOME_DATA_BASE_URL;
-        CotpUrl.BASE_URL = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
-        GMCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
-        SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
-        GraphqlUrl.BASE_URL = SellerAppBaseUrl.GRAPHQL_DOMAIN;
-        ImageUploaderUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
-        LogoutUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_DOMAIN);
-        SettingBankUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
-        BankListUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
-        ChangePasswordUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
-        PaymentSettingUrlKt.setPAYMENT_SETTING_URL(SellerAppBaseUrl.PAYMENT_DOMAIN);
-        AttachProductUrl.URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
-        TalkUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_INBOX_DOMAIN);
-        LoginRegisterUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
-        SessionCommonUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
-        SessionCommonUrl.BASE_WS_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
-        ChatUrl.Companion.setTOPCHAT(SellerAppBaseUrl.CHAT_DOMAIN);
-
     }
 
     private void generateSellerAppNetworkKeys() {
@@ -295,9 +239,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
-    //@Override
+    @Override
     public Intent getInboxTicketCallingIntent(Context context) {
-        return null;
+        return new Intent(context, InboxListActivity.class);
     }
 
 }

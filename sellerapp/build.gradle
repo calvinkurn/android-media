@@ -160,11 +160,6 @@ android {
 //                    }
 //                }
 //            } else {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
-                    }
-                }
 //            }
         }
     }
@@ -185,10 +180,7 @@ android {
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
-        packagingOptions {
-            exclude "lib/arm64-v8a/libgnustl_shared.so"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
 
@@ -245,6 +237,7 @@ afterEvaluate {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.cacheApi)
@@ -263,8 +256,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.shopPage)
@@ -296,6 +291,7 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.saldodetails)
+    implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.linker)
@@ -336,6 +332,7 @@ dependencies {
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
 
     implementation rootProject.ext.unifyDependencies.icon
@@ -427,4 +424,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation rootProject.ext.testDependencies.junit
+    implementation project(rootProject.ext.libraries.url)
 }

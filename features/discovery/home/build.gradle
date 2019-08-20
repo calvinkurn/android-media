@@ -38,6 +38,8 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
