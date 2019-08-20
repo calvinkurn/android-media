@@ -1451,6 +1451,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             if (label_desc_installment.isVisible) base_view_wholesale.visibility = View.VISIBLE
             else base_view_wholesale.gone()
         }
+
         if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isUserHasShop) {
             open_shop.visible()
         } else {
@@ -1508,10 +1509,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
                 }
             }
+
         // if when first time and the product is actually a variant product, then select the default variant
         if (userInputVariant == null && data.variant.isVariant && data.variant.parentID != productId) {
             userInputVariant = productId
         }
+
+        productInfoViewModel.hitAffiliateTracker("", productInfoViewModel.deviceId)
+
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)
                         || shopInfo?.allowManage == true),

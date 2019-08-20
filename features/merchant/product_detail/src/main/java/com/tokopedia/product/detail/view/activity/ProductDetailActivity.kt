@@ -13,10 +13,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
-import com.tokopedia.product.detail.R
 
 
 /**
@@ -33,6 +33,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
     private var isSpecialPrize: Boolean = false
+    private var affiliateUniqueString: String? = null
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -42,7 +43,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
-        private const val PARAM_IS_SPECIAL_PRIZE = "is_special_prize"
+        private const val PARAM_AFFILIATE_UNIQUE_STRING = "affiliate_unique_string"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -124,9 +125,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             }
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
-//            if (PARAM_IS_SPECIAL_PRIZE in uri.queryParameterNames){
-//                isSpecialPrize = uri.getBooleanQueryParameter(PARAM_IS_SPECIAL_PRIZE, false)
-//            }
         }
         bundle?.let {
             if (productId.isNullOrEmpty()) {
@@ -144,14 +142,11 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             if (trackerListName.isNullOrEmpty()) {
                 trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
             }
-//            if (it.containsKey(PARAM_IS_SPECIAL_PRIZE)){
-//                isSpecialPrize = it.getString(PARAM_IS_SPECIAL_PRIZE, "").toLowerCase() == "true"
-//            }
         }
-        if (uri != null && uri.host == AFFILIATE_HOST) {
-            isFromAffiliate = true
+        isFromAffiliate = if (uri != null && uri.host == AFFILIATE_HOST) {
+            true
         } else {
-            isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
+            intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
         }
 
         super.onCreate(savedInstanceState)

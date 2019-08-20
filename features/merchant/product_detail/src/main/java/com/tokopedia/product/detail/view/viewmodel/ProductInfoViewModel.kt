@@ -89,6 +89,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val isUserHasShop: Boolean
         get() = userSessionInterface.hasShop()
 
+    val deviceId: String
+        get() = userSessionInterface.deviceId
+
     private var lazyNeedForceUpdate = false
 
     fun getProductInfo(productParams: ProductParams, forceRefresh: Boolean = false) {
