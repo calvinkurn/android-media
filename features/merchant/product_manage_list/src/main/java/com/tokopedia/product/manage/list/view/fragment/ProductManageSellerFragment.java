@@ -5,9 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -35,15 +39,16 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
 
     private TextView tvDraftProductInfo;
 
+    @Nullable
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.activity_manage_product_seller;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_manage_product_seller, container, false);
     }
 
     @Override
-    protected void initView(View view) {
-        super.initView(view);
-        tvDraftProductInfo = (TextView) view.findViewById(R.id.tv_draft_product);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        tvDraftProductInfo = view.findViewById(R.id.tv_draft_product);
         tvDraftProductInfo.setVisibility(View.GONE);
     }
 

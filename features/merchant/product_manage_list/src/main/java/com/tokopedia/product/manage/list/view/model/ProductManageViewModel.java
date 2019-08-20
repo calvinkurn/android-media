@@ -3,13 +3,15 @@ package com.tokopedia.product.manage.list.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 import com.tokopedia.base.list.seller.common.util.ItemIdType;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public class ProductManageViewModel implements ItemIdType, Parcelable {
+public class ProductManageViewModel implements ItemIdType, Parcelable, Visitable<BaseListCheckableTypeFactory<ProductManageViewModel>> {
     public static final int TYPE = 1934;
     public static final String STOCK_READY_VALUE = "1";
 
@@ -31,7 +33,14 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     private int productUsingStock;
     private int productStock;
     private int productVariant;
+    private boolean isFeatureProduct;
     private String productShopId;
+
+
+    @Override
+    public int type(BaseListCheckableTypeFactory<ProductManageViewModel> typeFactory) {
+        return typeFactory.type(this);
+    }
 
     @Override
     public int getType() {
@@ -139,7 +148,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productShopId = productShopId;
     }
 
-    public boolean isStockOrImageEmpty(){
+    public boolean isStockOrImageEmpty() {
         return productStatus != null && !productStatus.equals(STOCK_READY_VALUE);
     }
 
@@ -202,7 +211,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         return productVariant;
     }
 
-    public boolean isProductVariant(){
+    public boolean isProductVariant() {
         return productVariant == 1;
     }
 
@@ -236,6 +245,8 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeInt(this.productStock);
         dest.writeInt(this.productVariant);
         dest.writeString(this.productShopId);
+        dest.writeByte((byte) (this.isFeatureProduct ? 1 : 0));
+
     }
 
     protected ProductManageViewModel(Parcel in) {
@@ -258,6 +269,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productStock = in.readInt();
         this.productVariant = in.readInt();
         this.productShopId = in.readString();
+        this.isFeatureProduct = in.readByte() != 0;
     }
 
     public static final Creator<ProductManageViewModel> CREATOR = new Creator<ProductManageViewModel>() {
@@ -278,5 +290,13 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
 
     public void setImageFullUrl(String imageFullUrl) {
         this.imageFullUrl = imageFullUrl;
+    }
+
+    public boolean getIsFeatureProduct() {
+        return isFeatureProduct;
+    }
+
+    public void setIsFeatureProduct(boolean isFeatureProduct) {
+        this.isFeatureProduct = isFeatureProduct;
     }
 }

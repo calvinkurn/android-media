@@ -17,8 +17,6 @@ public interface ProductManagePresenter extends CustomerPresenter<ProductManageV
 
     void getGoldMerchantStatus();
 
-    void getListFeaturedProduct();
-
     void getProductList(int page, String keywordFilter, @CatalogProductOption String catalogOption,
                         @ConditionProductOption String conditionOption, int etalaseId,
                         @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption,

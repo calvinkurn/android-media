@@ -14,15 +14,11 @@ import java.util.List;
 
 public interface ProductManageView extends CustomerView {
 
-    void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem);
+    void onLoadListEmpty();
 
-    void onLoadSearchError(Throwable t);
-
-    void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage);
+    void onSuccessGetProductList(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage);
 
     void onSuccessGetShopInfo(boolean goldMerchant, boolean officialStore, String shopDomain);
-
-    void onSuccessGetFeaturedProductList(List<String> data);
 
     void onErrorEditPrice(Throwable t, String productId, String price, String currencyId, String currencyText);
 

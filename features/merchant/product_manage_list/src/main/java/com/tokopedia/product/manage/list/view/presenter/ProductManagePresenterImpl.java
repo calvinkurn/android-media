@@ -24,7 +24,6 @@ import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
-import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase;
@@ -192,12 +191,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
-    public void getListFeaturedProduct() {
-        getFeatureProductListUseCase.execute(GetFeatureProductListUseCase.createRequestParam(userSession.getShopId()),
-                getSubscriberGetListFeaturedProduct());
-    }
-
-    @Override
     public void editPrice(final String productId, final String price, final String currencyId, final String currencyText) {
         getView().showLoadingProgress();
         editPriceProductUseCase.execute(EditPriceProductUseCase.createRequestParams(price, currencyId, productId), new Subscriber<Boolean>() {
@@ -292,61 +285,21 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().onLoadSearchError(e);
+                    getView().onLoadListEmpty();
                 }
             }
 
             @Override
             public void onNext(ProductListResponse productListResponse) {
-                ProductListManageModelView productListManageModelView = productListMapperView.mapIntoViewModel(productListResponse);
-                getView().onSearchLoaded(productListManageModelView.getProductManageViewModels(),
-                        productListManageModelView.getProductManageViewModels().size(),
-                        productListManageModelView.isHasNextPage());
-            }
-
-        };
-    }
-
-    private Subscriber<ProductListSellerModel> getSubscriberGetListProduct() {
-        return new Subscriber<ProductListSellerModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onLoadSearchError(e);
+                if (productListResponse.getGetProductList().getData().isEmpty()) {
+                    getView().onLoadListEmpty();
                 }
-            }
-
-            @Override
-            public void onNext(ProductListSellerModel productListSellerModel) {
-                ProductListManageModelView productListManageModelView = getProductListManageMapperView.transform(productListSellerModel);
-                getView().onSearchLoaded(productListManageModelView.getProductManageViewModels(),
+                ProductListManageModelView productListManageModelView = productListMapperView.mapIntoViewModel(productListResponse);
+                getView().onSuccessGetProductList(productListManageModelView.getProductManageViewModels(),
                         productListManageModelView.getProductManageViewModels().size(),
                         productListManageModelView.isHasNextPage());
             }
-        };
-    }
 
-    private Subscriber<List<GMFeaturedProduct>> getSubscriberGetListFeaturedProduct() {
-        return new Subscriber<List<GMFeaturedProduct>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(List<GMFeaturedProduct> gmFeaturedProducts) {
-                getView().onSuccessGetFeaturedProductList(transform(gmFeaturedProducts));
-            }
         };
     }
 

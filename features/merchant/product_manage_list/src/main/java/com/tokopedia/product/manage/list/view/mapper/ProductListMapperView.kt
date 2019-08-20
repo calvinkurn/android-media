@@ -56,6 +56,7 @@ class ProductListMapperView @Inject constructor() {
             productStock = data.stock
             productUsingStock = if (data.stock == 0) 0 else 1
             productVariant = booleanToInt(data.flags.isVariant)
+            isFeatureProduct = data.flags.isFeatured
         }
 
         return productManageViewModel

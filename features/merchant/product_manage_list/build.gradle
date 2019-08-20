@@ -56,6 +56,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

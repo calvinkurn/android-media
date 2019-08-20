@@ -11,11 +11,13 @@ import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DividerItemDecoration;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -24,34 +26,32 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.ActionMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter;
+import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
+import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
-import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
-import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
-import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
-import com.tokopedia.base.list.seller.view.fragment.BaseSearchListFragment;
-import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
-import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -78,6 +78,8 @@ import com.tokopedia.product.manage.list.di.ProductManageModule;
 import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivity;
 import com.tokopedia.product.manage.list.view.activity.ProductManageSortActivity;
 import com.tokopedia.product.manage.list.view.adapter.ProductManageListAdapter;
+import com.tokopedia.product.manage.list.view.adapter.ProductManageListViewHolder;
+import com.tokopedia.product.manage.list.view.factory.ProductManageFragmentFactoryImpl;
 import com.tokopedia.product.manage.list.view.listener.ProductManageView;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
@@ -103,6 +105,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -120,15 +123,19 @@ import static com.tokopedia.product.manage.list.view.fragment.ProductManageSelle
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public class ProductManageFragment extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
+public class ProductManageFragment extends BaseSearchListFragment<ProductManageViewModel, ProductManageFragmentFactoryImpl>
         implements ProductManageView,
-        ProductManageListAdapter.ClickOptionCallback,
-        BaseMultipleCheckListAdapter.CheckedCallback<ProductManageViewModel>,
-        MerchantCommonBottomSheet.BottomSheetListener {
+        BaseListCheckableAdapter.OnCheckableAdapterListener<ProductManageViewModel>,
+        MerchantCommonBottomSheet.BottomSheetListener,
+        BaseCheckableViewHolder.CheckableInteractionListener,
+        ProductManageListViewHolder.ProductManageViewHolderListener {
 
     public static final String ERROR_CODE_LIMIT_CASHBACK = "422";
     public static final int REQUEST_CODE_ADD_IMAGE = 3859;
     public static final int INSTAGRAM_SELECT_REQUEST_CODE = 3860;
+
+    private List<ProductManageViewModel> productManageViewModels = null;
+    private List<ProductManageViewModel> productManageCheckedModel = null;
 
     @Inject
     ProductManagePresenter productManagePresenter;
@@ -138,6 +145,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ProgressDialog progressDialog;
     private CoordinatorLayout coordinatorLayout;
     private TopAdsWidgetFreeClaim topAdsWidgetFreeClaim;
+
+    protected ProductManageListAdapter adapter;
+
 
     private boolean hasNextPage;
     private boolean filtered;
@@ -152,6 +162,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private Button btnGoToPdp;
     private TextView txtTipsTrick;
     private Dialog dialog;
+    private CheckBox bulkCheckBox;
+    private TextView bulkCountTxt;
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -161,14 +173,65 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 getActivity().runOnUiThread(() -> {
                     String productId = intent.getExtras().getString(TkpdState.ProductService.PRODUCT_ID);
                     productManagePresenter.getPopupsInfo(productId);
-                    resetPageAndRefresh();
+                    loadInitialData();
                 });
 
             }
         }
     };
 
-    private Dialog initPopUpDialog(String productId){
+    @Override
+    public void loadData(int page) {
+        productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
+
+        if (goldMerchant == null) {
+            productManagePresenter.getGoldMerchantStatus();
+        }
+
+        productManagePresenter.getProductList(page, searchInputView.getSearchText(),
+                productManageFilterModel.getCatalogProductOption(), productManageFilterModel.getConditionProductOption(),
+                productManageFilterModel.getEtalaseProductOption(), productManageFilterModel.getPictureStatusOption(),
+                sortProductOption, productManageFilterModel.getCategoryId());
+    }
+
+    @Override
+    protected ProductManageFragmentFactoryImpl getAdapterTypeFactory() {
+        return new ProductManageFragmentFactoryImpl(this, this);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return "";
+    }
+
+
+    @Override
+    public void onSearchTextChanged(String text) {
+    }
+
+    @Override
+    public void onLoadListEmpty() {
+        renderList(new ArrayList<>());
+    }
+
+    @Override
+    public boolean isChecked(int position) {
+        return adapter.isChecked(position);
+    }
+
+    @Override
+    public void updateListByCheck(boolean isChecked, int position) {
+        adapter.updateListByCheck(isChecked, position);
+    }
+
+    @NonNull
+    @Override
+    protected com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter<ProductManageViewModel, ProductManageFragmentFactoryImpl> createAdapterInstance() {
+        adapter = new ProductManageListAdapter(getAdapterTypeFactory(), this);
+        return adapter;
+    }
+
+    private Dialog initPopUpDialog(String productId) {
         dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -180,7 +243,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
         btnSubmit.setOnClickListener(v -> {
             trackerManageCourierButton();
-            RouteManager.route(getContext(),ApplinkConst.SELLER_SHIPPING_EDITOR);
+            RouteManager.route(getContext(), ApplinkConst.SELLER_SHIPPING_EDITOR);
             getActivity().finish();
         });
 
@@ -211,7 +274,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         return dialog;
     }
 
-    private void trackerManageCourierButton(){
+    private void trackerManageCourierButton() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 ManageTrackingConstant.EVENT_ADD_PRODUCT,
                 ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
@@ -219,7 +282,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 "");
     }
 
-    private void trackerSeeProduct(){
+    private void trackerSeeProduct() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 ManageTrackingConstant.EVENT_ADD_PRODUCT,
                 ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
@@ -227,7 +290,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 "");
     }
 
-    private void trackerLinkClick(){
+    private void trackerLinkClick() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 ManageTrackingConstant.EVENT_ADD_PRODUCT,
                 ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
@@ -238,7 +301,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     protected void initInjector() {
         GraphqlClient.init(getContext());
-        super.initInjector();
         DaggerProductManageComponent.builder()
                 .productManageModule(new ProductManageModule())
                 .productComponent(getComponent(ProductComponent.class))
@@ -247,9 +309,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         productManagePresenter.attachView(this);
     }
 
+    @Nullable
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_product_manage;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_product_manage, container, false);
     }
 
     @Override
@@ -259,79 +322,97 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    protected void initView(View view) {
-        super.initView(view);
-        searchInputView.clearFocus();
-        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
-        bottomActionView = (BottomActionView) view.findViewById(R.id.bottom_action_view);
-        bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = ProductManageSortActivity.createIntent(getActivity(), sortProductOption);
-                startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_SORT);
-            }
-        });
-        bottomActionView.setButton2OnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = ProductManageFilterActivity.createIntent(getActivity(), productManageFilterModel);
-                startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_FILTER);
-            }
-        });
-        topAdsWidgetFreeClaim = view.findViewById(R.id.topads_free_claim_widget);
-    }
-
-    @Override
-    protected NoResultDataBinder getEmptyViewNoResultBinder() {
-        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty);
-        emptyDataBinder.setEmptyTitleText(getString(R.string.title_no_result));
-        emptyDataBinder.setEmptyContentText(getString(R.string.product_manage_label_change_search));
-        return emptyDataBinder;
-    }
-
-    @Override
-    protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
-        emptyDataBinder.setEmptyTitleText(getString(R.string.product_manage_label_product_list_empty));
-        emptyDataBinder.setEmptyContentText(getString(R.string.pml_product_manage_label_add_product_to_sell));
-        emptyDataBinder.setEmptyButtonItemText(getString(R.string.pml_product_manage_label_add_product));
-        emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
-            @Override
-            public void onEmptyContentItemTextClicked() {
-                // do nothing
-            }
-
-            @Override
-            public void onEmptyButtonClicked() {
-                startActivity(new Intent(getActivity(), ProductAddNameCategoryActivity.class));
-            }
-        });
-        return emptyDataBinder;
-    }
-
-    @Override
-    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error);
-    }
-
-    @Override
-    public void onSearchSubmitted(String text) {
-        UnifyTracking.eventProductManageSearch(getActivity());
-        super.onSearchSubmitted(text);
-    }
-
-    @Override
-    protected void initialVar() {
-        super.initialVar();
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         sortProductOption = SortProductOption.POSITION;
         productManageFilterModel = new ProductManageFilterModel();
         productManageFilterModel.reset();
         hasNextPage = false;
 
         userSession = new UserSession(getActivity());
-        productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
+        super.onViewCreated(view, savedInstanceState);
+        getRecyclerView(view).addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        searchInputView.clearFocus();
+        bulkCheckBox = view.findViewById(R.id.bulk_check_box);
+        coordinatorLayout = view.findViewById(R.id.coordinator_layout);
+        bottomActionView = view.findViewById(R.id.bottom_action_view);
+        bulkCountTxt = view.findViewById(R.id.bulk_count_txt);
+        bottomActionView.setButton1OnClickListener(v -> {
+            Intent intent = ProductManageSortActivity.createIntent(getActivity(), sortProductOption);
+            startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_SORT);
+        });
+        bottomActionView.setButton2OnClickListener(v -> {
+            Intent intent = ProductManageFilterActivity.createIntent(getActivity(), productManageFilterModel);
+            startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_FILTER);
+        });
+        topAdsWidgetFreeClaim = view.findViewById(R.id.topads_free_claim_widget);
+
+        bulkCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            for (int i = 0; i < productManageViewModels.size(); i++) {
+                adapter.updateListByCheck(isChecked, i);
+            }
+        });
+    }
+
+
+//    @Override
+//    protected NoResultDataBinder getEmptyViewNoResultBinder() {
+//        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty);
+//        emptyDataBinder.setEmptyTitleText(getString(R.string.title_no_result));
+//        emptyDataBinder.setEmptyContentText(getString(R.string.product_manage_label_change_search));
+//        return emptyDataBinder;
+//    }
+
+//    @Override
+//    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+//        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
+//        emptyDataBinder.setEmptyTitleText(getString(R.string.product_manage_label_product_list_empty));
+//        emptyDataBinder.setEmptyContentText(getString(R.string.pml_product_manage_label_add_product_to_sell));
+//        emptyDataBinder.setEmptyButtonItemText(getString(R.string.pml_product_manage_label_add_product));
+//        emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
+//            @Override
+//            public void onEmptyContentItemTextClicked() {
+//                // do nothing
+//            }
+//
+//            @Override
+//            public void onEmptyButtonClicked() {
+//                startActivity(new Intent(getActivity(), ProductAddNameCategoryActivity.class));
+//            }
+//        });
+//        return emptyDataBinder;
+//    }
+
+//    @Override
+//    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
+//        return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error);
+//    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+        UnifyTracking.eventProductManageSearch(getActivity());
+        isLoadingInitialData = true;
+        ArrayList<ProductManageViewModel> tempShopEtalaseViewModels = new ArrayList<>();
+        if (productManageViewModels != null &&
+                productManageViewModels.size() > 0) {
+            String textLowerCase = text.toLowerCase();
+            for (ProductManageViewModel data : productManageViewModels) {
+                if (data.getProductName().toLowerCase().contains(textLowerCase)) {
+                    tempShopEtalaseViewModels.add(data);
+                }
+            }
+        }
+        renderList(tempShopEtalaseViewModels, false);
+        showSearchViewWithDataSizeCheck();
+    }
+
+    @Override
+    public void renderList(@NonNull List<ProductManageViewModel> list) {
+        super.renderList(list);
+        HashSet<Integer> checkedPositionList = new HashSet<>();
+        for (int i = 0; i < list.size(); i++) {
+            checkedPositionList.add(i);
+        }
+        adapter.setCheckedPositionList(checkedPositionList);
     }
 
     @Override
@@ -367,7 +448,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             });
         } else if (itemId == R.id.checklist_product_menu) {
             UnifyTracking.eventProductManageTopNav(getActivity(), item.getTitle().toString());
-            getActivity().startActionMode(getCallbackActionMode());
         }
         return super.onOptionsItemSelected(item);
     }
@@ -382,56 +462,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onErrorGetPopUp(Throwable e) {
         onSuccessGetPopUp(false, null);
-    }
-
-    @NonNull
-    protected ActionMode.Callback getCallbackActionMode() {
-        return new ActionMode.Callback() {
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                mode.setTitle(String.valueOf(((ProductManageListAdapter) adapter).getTotalChecked()));
-                actionMode = mode;
-                if (GlobalConfig.isCustomerApp()) {
-                    getActivity().getMenuInflater().inflate(R.menu.menu_product_manage_action_mode_dark, menu);
-                } else {
-                    getActivity().getMenuInflater().inflate(R.menu.menu_product_manage_action_mode, menu);
-                }
-                setAdapterActionMode(true);
-                return true;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
-                if (item.getItemId() == R.id.delete_product_menu) {
-                    final List<String> productIdList = ((ProductManageListAdapter) adapter).getListChecked();
-                    showDialogActionDeleteProduct(productIdList, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            mode.finish();
-                            productManagePresenter.deleteProduct(productIdList);
-                        }
-                    }, null);
-                }
-                return false;
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {
-                ((ProductManageListAdapter) adapter).resetCheckedItemSet();
-                setAdapterActionMode(false);
-                actionMode = null;
-            }
-        };
-    }
-
-    protected void setAdapterActionMode(boolean isActionMode) {
-        ((ProductManageListAdapter) adapter).setActionMode(isActionMode);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -450,9 +480,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             case ProductManageConstant.REQUEST_CODE_FILTER:
                 if (resultCode == Activity.RESULT_OK) {
                     productManageFilterModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
-                    resetPageAndRefresh();
+                    loadInitialData();
                     filtered = true;
-                    setSearchMode(true);
                     trackingFilter(productManageFilterModel);
                 }
                 break;
@@ -460,7 +489,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 if (resultCode == Activity.RESULT_OK) {
                     ProductManageSortModel productManageSortModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_SORT_SELECTED);
                     sortProductOption = productManageSortModel.getId();
-                    resetPageAndRefresh();
+                    loadInitialData();
                     trackingSort(productManageSortModel);
                 }
                 break;
@@ -500,99 +529,47 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     protected void resetPageAndRefresh() {
-        resetPageAndSearch();
+        loadData(getDefaultInitialPage());
         swipeToRefresh.setRefreshing(true);
     }
 
     @Override
-    protected void setSearchMode(boolean searchMode) {
-        if (filtered) {
-            super.setSearchMode(true);
-            return;
-        }
-        super.setSearchMode(searchMode);
-    }
-
-    @Override
-    protected void showSearchView(boolean show) {
-        super.showSearchView(show);
-        bottomActionView.setVisibility(show ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    protected BaseListAdapter<ProductManageViewModel> getNewAdapter() {
-        ProductManageListAdapter productManageListAdapter = new ProductManageListAdapter();
-        productManageListAdapter.setClickOptionCallback(this);
-        productManageListAdapter.setCheckedCallback(this);
-        return productManageListAdapter;
-    }
-
-    @Override
-    protected void onPullToRefresh() {
-        productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
-        goldMerchant = null;
-        ((ProductManageListAdapter) adapter).setFeaturedProduct(null);
-        super.onPullToRefresh();
-    }
-
-    @Override
-    protected void searchForPage(int page) {
-        if (goldMerchant == null) {
-            productManagePresenter.getGoldMerchantStatus();
-        }
-        if (((ProductManageListAdapter) adapter).getFeaturedProduct() == null) {
-            productManagePresenter.getListFeaturedProduct();
-        }
-//        productManagePresenter.getListProduct(page, searchInputView.getSearchText(),
-//                productManageFilterModel.getCatalogProductOption(), productManageFilterModel.getConditionProductOption(),
-//                productManageFilterModel.getEtalaseProductOption(), productManageFilterModel.getPictureStatusOption(),
-//                sortProductOption, productManageFilterModel.getCategoryId());
-
-        productManagePresenter.getProductList(page, searchInputView.getSearchText(),
-                productManageFilterModel.getCatalogProductOption(), productManageFilterModel.getConditionProductOption(),
-                productManageFilterModel.getEtalaseProductOption(), productManageFilterModel.getPictureStatusOption(),
-                sortProductOption, productManageFilterModel.getCategoryId());
-
-        hasNextPage = false;
-    }
-
-    @Override
     public void onItemClicked(ProductManageViewModel productManageViewModel) {
-        if (actionMode == null) {
-            ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
-            adapter.notifyDataSetChanged();
-            goToPDP(productManageViewModel.getProductId());
-            UnifyTracking.eventProductManageClickDetail(getActivity());
-        }
+        adapter.notifyDataSetChanged();
+        goToPDP(productManageViewModel.getProductId());
+        UnifyTracking.eventProductManageClickDetail(getActivity());
+    }
+
+    @Override
+    public void onProductClicked(ProductManageViewModel productManageViewModel) {
+        adapter.notifyDataSetChanged();
+        goToPDP(productManageViewModel.getProductId());
+        UnifyTracking.eventProductManageClickDetail(getActivity());
     }
 
     /**
      * This function is temporary for testing to avoid router and applink
      * For Dynamic Feature Support
      */
-      private void goToPDP(String productId) {
-        if (getContext() != null && productId != null){
-            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+    private void goToPDP(String productId) {
+        if (getContext() != null && productId != null) {
+            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         }
     }
 
     @Override
     public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
-        if (actionMode != null) {
-            int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
-            actionMode.setTitle(String.valueOf(totalChecked));
-            MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
-            deleteMenuItem.setVisible(totalChecked > 0);
-        } else {
-            ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), checked);
-            adapter.notifyDataSetChanged();
-        }
+        productManageCheckedModel = adapter.getCheckedDataList();
+        String totalChecked = String.valueOf(adapter.getTotalChecked());
+        bulkCountTxt.setText(MethodChecker.fromHtml(getString(R.string.product_manage_bulk_count, totalChecked)));
     }
 
     @Override
-    public void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage) {
-        onSearchLoaded(list, totalItem);
+    public void onSuccessGetProductList(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage) {
+        productManageViewModels = list;
+        renderList(list, hasNextPage);
         this.hasNextPage = hasNextPage;
+        productManageFilterModel.reset();
     }
 
     @Override
@@ -603,14 +580,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onSuccessGetFeaturedProductList(List<String> data) {
-        ((ProductManageListAdapter) adapter).setFeaturedProduct(data);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void onSuccessEditPrice(String productId, String price, String currencyId, String currencyText) {
-        ((ProductManageListAdapter) adapter).updatePrice(productId, price, currencyId, currencyText);
+        adapter.updatePrice(productId, price, currencyId, currencyText);
     }
 
     @Override
@@ -626,7 +597,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onSuccessSetCashback(String productId, int cashback) {
-        ((ProductManageListAdapter) adapter).updateCashback(productId, cashback);
+        adapter.updateCashback(productId, cashback);
     }
 
     @Override
@@ -697,13 +668,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onSuccessMultipleDeleteProduct() {
-        resetPageAndSearch();
+        loadInitialData();
     }
 
     @Override
     public void onErrorMultipleDeleteProduct(Throwable t, List<String> productIdDeletedList, final List<String> productIdFailToDeleteList) {
         if (productIdDeletedList.size() > 0) {
-            resetPageAndSearch();
+            loadInitialData();
         }
         NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
                 ViewUtils.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
@@ -712,11 +683,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                         productManagePresenter.deleteProduct(productIdFailToDeleteList);
                     }
                 }).showRetrySnackbar();
-    }
-
-    @Override
-    protected boolean hasNextPage() {
-        return hasNextPage;
     }
 
     @Override
@@ -748,11 +714,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public boolean isActionModeActive() {
-        return actionMode != null;
-    }
-
-    @Override
     public void showLoadingProgress() {
         progressDialog.show();
     }
@@ -778,7 +739,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         } else {
             topAdsWidgetFreeClaim.setVisibility(View.GONE);
         }
-
     }
 
     private void showActionProductDialog(ProductManageViewModel productManageViewModel) {
