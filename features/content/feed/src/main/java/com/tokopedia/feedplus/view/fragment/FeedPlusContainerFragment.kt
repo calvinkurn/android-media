@@ -80,11 +80,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     override fun onScrollToTop() {
-        val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
-        if (fragment is FeedPlusFragment) {
-            fragment.scrollToTop()
-        } else if (fragment is ContentExploreFragment) {
-            fragment.scrollToTop()
+        try {
+            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            if (fragment is FeedPlusFragment) {
+                fragment.scrollToTop()
+            } else if (fragment is ContentExploreFragment) {
+                fragment.scrollToTop()
+            }
+        } catch (e: IllegalStateException) {
+            //no op
         }
     }
 

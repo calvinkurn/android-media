@@ -33,6 +33,10 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         this.isActive = isActive;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }
