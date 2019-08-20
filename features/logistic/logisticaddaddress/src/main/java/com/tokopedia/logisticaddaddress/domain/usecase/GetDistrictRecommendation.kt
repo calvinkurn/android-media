@@ -3,11 +3,13 @@ package com.tokopedia.logisticaddaddress.domain.usecase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.di.RawQueryConstant
+import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper
 import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
+import rx.Scheduler
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
@@ -15,7 +17,8 @@ import javax.inject.Inject
 class GetDistrictRecommendation @Inject constructor(
         val queryMap: Map<String, String>,
         val gql: GraphqlUseCase,
-        val mapper: DistrictRecommendationMapper) {
+        val mapper: DistrictRecommendationMapper,
+        val scheduler: SchedulerProvider) {
 
     private val gqlQuery: String = queryMap[RawQueryConstant.GET_DISTRICT_RECOMMENDATION]
             ?: throw QueryNotFoundException()
@@ -38,8 +41,8 @@ class GetDistrictRecommendation @Inject constructor(
                     )
                 }
                 .map { mapper.transform(it) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
     }
 
     fun unsubscribe() {

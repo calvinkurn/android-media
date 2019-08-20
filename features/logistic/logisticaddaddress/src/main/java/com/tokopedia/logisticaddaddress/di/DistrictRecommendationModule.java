@@ -16,6 +16,8 @@ import com.tokopedia.logisticaddaddress.data.service.KeroApi;
 import com.tokopedia.logisticaddaddress.data.service.MyShopAddressApi;
 import com.tokopedia.logisticaddaddress.data.source.DistrictRecommendationDataStore;
 import com.tokopedia.logisticaddaddress.data.source.ShopAddressDataSource;
+import com.tokopedia.logisticaddaddress.domain.executor.MainSchedulerProvider;
+import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecomToken;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
@@ -202,6 +204,12 @@ public class DistrictRecommendationModule {
     DiscomContract.Presenter provideDistrictRecommendationPresenter(
             GetDistrictRequestUseCase getDistrictRequestUseCase, GetDistrictRecommendation getDistrictRecommendation) {
         return new DiscomPresenter(getDistrictRequestUseCase, getDistrictRecommendation);
+    }
+
+    @Provides
+    @DistrictRecommendationScope
+    SchedulerProvider provideSchedulerProvider() {
+        return new MainSchedulerProvider();
     }
 
 }
