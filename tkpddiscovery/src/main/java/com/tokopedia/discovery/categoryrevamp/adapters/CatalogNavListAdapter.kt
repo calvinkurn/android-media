@@ -19,7 +19,6 @@ class CatalogNavListAdapter(val catalogTypeFactory: CatalogTypeFactory,
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(viewType, parent, false)
         val viewHolder = catalogTypeFactory.createViewHolder(view, viewType)
-        //setTopAdsSwitcherForTopAdsViewHolder(viewHolder)p1
         return viewHolder
     }
 
