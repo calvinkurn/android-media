@@ -53,7 +53,6 @@ import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -602,6 +601,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void onShowBestPairingClicked() {
         // need in return search
+    }
+
+    @Override
+    public void onProductViewImpression(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
+        // do nothing, will delete soon
     }
 
     @Override
