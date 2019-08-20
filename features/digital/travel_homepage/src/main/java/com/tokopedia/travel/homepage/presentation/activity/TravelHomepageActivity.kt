@@ -17,6 +17,7 @@ class TravelHomepageActivity : BaseSimpleActivity(), HasComponent<TravelHomepage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
 
         initInjector()
         GraphqlClient.init(this)

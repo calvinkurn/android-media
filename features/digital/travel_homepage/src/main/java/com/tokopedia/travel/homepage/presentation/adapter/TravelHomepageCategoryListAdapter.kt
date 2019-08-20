@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageCategoryListModel
+import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
 import kotlinx.android.synthetic.main.travel_homepage_category_list_item.view.*
 
 /**
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.travel_homepage_category_list_item.view.*
  */
 
 class TravelHomepageCategoryListAdapter(private var list: List<TravelHomepageCategoryListModel.Category>,
-                                        var listener: CategoryViewHolder.OnCategoryClickListener?):
+                                        var onItemClickListener: OnItemClickListener):
         RecyclerView.Adapter<TravelHomepageCategoryListAdapter.CategoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): CategoryViewHolder {
@@ -25,26 +26,22 @@ class TravelHomepageCategoryListAdapter(private var list: List<TravelHomepageCat
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(list[position], position, listener)
+        holder.bind(list[position], position, onItemClickListener)
     }
 
 
     class CategoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        fun bind(category: TravelHomepageCategoryListModel.Category, position: Int, listener: OnCategoryClickListener?) {
+        fun bind(category: TravelHomepageCategoryListModel.Category, position: Int, listener: OnItemClickListener) {
             with(itemView) {
                 category_image.loadImage(category.attributes.imageUrl)
                 category_name.text = category.product
             }
-            if (listener != null) itemView.setOnClickListener { listener.onCategoryClick(category, position) }
+            itemView.setOnClickListener { listener.onItemClick(category.attributes.appUrl) }
         }
 
         companion object {
             val LAYOUT = R.layout.travel_homepage_category_list_item
-        }
-
-        interface OnCategoryClickListener {
-            fun onCategoryClick(category: TravelHomepageCategoryListModel.Category, position: Int)
         }
     }
 }

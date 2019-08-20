@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="?actionBarSize"
-        tools:layout_constraintGuide_begin="50dp" />
+        tools:layout_constraintGuide_begin="30dp" />
 
     <com.tokopedia.banner.Banner
         android:id="@+id/card_banner_view"

@@ -8,16 +8,20 @@ import com.tokopedia.travel.homepage.data.TravelHomepageBannerModel
 import com.tokopedia.travel.homepage.presentation.customview.TravelHomepageBannerViewDynamicBackground
 import com.tokopedia.travel.homepage.presentation.listener.ActivityStateListener
 import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
+import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
 import kotlinx.android.synthetic.main.travel_homepage_banner.view.*
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener: OnItemBindListener) : AbstractViewHolder<TravelHomepageBannerModel>(itemView), BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
+class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener: OnItemBindListener,
+                                     private val onItemClickListener: OnItemClickListener)
+    : AbstractViewHolder<TravelHomepageBannerModel>(itemView), BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener {
 
     private val bannerView: TravelHomepageBannerViewDynamicBackground = itemView.findViewById(R.id.banner)
     private lateinit var bannerList: List<TravelHomepageBannerModel.Banner>
+    private var showAllUrl: String = ""
 
     init {
         bannerView.onPromoAllClickListener = this
@@ -34,6 +38,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
                 bannerView.shouldShowSeeAllButton(bannerList.isNotEmpty())
 
                 val promoUrls = arrayListOf<String>()
+                showAllUrl = element.meta.appUrl
                 for (slidesModel in bannerList) {
                     promoUrls.add(slidesModel.attribute.imageUrl)
                 }
@@ -48,35 +53,35 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     }
 
     override fun onPromoLoaded() {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onPromoClick(position: Int) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onItemClickListener.onItemClick(bannerList.get(position).attribute.appUrl)
     }
 
     override fun onPromoScrolled(position: Int) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onPromoAllClick() {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onItemClickListener.onItemClick(showAllUrl)
     }
 
     override fun onPromoDragStart() {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onPromoDragEnd() {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onPause() {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onResume() {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     companion object {
