@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationProductDataModel
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
 
 class AddToCartDoneRecommendationProductViewHolder(
@@ -48,6 +49,9 @@ class AddToCartDoneRecommendationProductViewHolder(
             setShopLocationText(element.recommendationItem.location)
             setImageProductViewHintListener(element.recommendationItem, object : ViewHintListener {
                 override fun onViewHint() {
+                    if(element.recommendationItem.isTopAds){
+                        ImpresionTask().execute(element.recommendationItem.trackerImageUrl)
+                    }
                     recommendationListener.onProductImpression(element.recommendationItem)
                 }
             })
@@ -59,6 +63,7 @@ class AddToCartDoneRecommendationProductViewHolder(
                         element.parentAdapterPosition,
                         adapterPosition
                 )
+                if (element.recommendationItem.isTopAds) ImpresionTask().execute(element.recommendationItem.clickUrl)
             }
             setButtonWishlistOnClickListener {
                 recommendationListener.onWishlistClick(element.recommendationItem, !element.recommendationItem.isWishlist) { success, throwable ->

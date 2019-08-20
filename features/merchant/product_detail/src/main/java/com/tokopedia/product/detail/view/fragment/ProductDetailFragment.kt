@@ -1168,7 +1168,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val addedProductDataModel = AddToCartDoneAddedProductDataModel(
                     it.basic.id.toString(),
                     productName,
-                    productImageUrl
+                    productImageUrl,
+                    it.variant.isVariant
             )
             val bundleData = Bundle()
             bundleData.putParcelable(KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)

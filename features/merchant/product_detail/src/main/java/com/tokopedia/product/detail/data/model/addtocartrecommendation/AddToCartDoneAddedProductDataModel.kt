@@ -8,14 +8,16 @@ import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
 data class AddToCartDoneAddedProductDataModel(
         val productId: String?,
         val productName: String?,
-        val productImageUr: String?
+        val productImageUr: String?,
+        val isVariant: Boolean?
 ) : Visitable<AddToCartDoneTypeFactory>, Parcelable {
 
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
-            parcel.readString()) {
+            parcel.readString(),
+            parcel.readValue(Boolean::class.java.classLoader) as? Boolean) {
     }
 
     override fun type(typeFactory: AddToCartDoneTypeFactory): Int {
@@ -26,6 +28,7 @@ data class AddToCartDoneAddedProductDataModel(
         parcel.writeString(productId)
         parcel.writeString(productName)
         parcel.writeString(productImageUr)
+        parcel.writeValue(isVariant)
     }
 
     override fun describeContents(): Int {

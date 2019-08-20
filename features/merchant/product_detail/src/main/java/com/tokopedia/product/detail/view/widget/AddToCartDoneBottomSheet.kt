@@ -5,10 +5,15 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -70,6 +75,10 @@ class AddToCartDoneBottomSheet :
         return R.layout.add_to_cart_done_bottomsheet
     }
 
+    override fun getBaseLayoutResourceId(): Int {
+        return R.layout.widget_bottomsheet_add_to_cart_done
+    }
+
     override fun initView(view: View?) {
         view?.let {
             recyclerView = it.findViewById(R.id.recycler_view_add_to_cart_done)
@@ -77,8 +86,18 @@ class AddToCartDoneBottomSheet :
         }
     }
 
+    override fun title(): String {
+        return ""
+    }
+
     override fun setupDialog(dialog: Dialog?, style: Int) {
         super.setupDialog(dialog, style)
+        dialog?.run {
+            findViewById<FrameLayout>(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent)
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
         initViewModel()
         getArgumentsData()
@@ -89,7 +108,7 @@ class AddToCartDoneBottomSheet :
         initAdapter()
         observeRecommendationProduct()
         getRecommendationProduct()
-
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun getRecommendationProduct() {
@@ -124,13 +143,33 @@ class AddToCartDoneBottomSheet :
                     }
                 }
             }
+            configBottomSheetHeight()
         })
+    }
+
+    private fun configBottomSheetHeight() {
+        dialog?.run {
+            val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val displaymetrics = DisplayMetrics()
+            parent.measure(0, 0)
+            activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
+            val screenHeight = displaymetrics.heightPixels
+            val contentHeight = parent.measuredHeight
+            val finalHeight = if (contentHeight >= screenHeight)
+                (screenHeight * 0.9f).toInt()
+            else {
+                contentHeight
+            }
+            val params = parent.layoutParams
+            params.height = finalHeight
+            parent.layoutParams = params
+        }
     }
 
     private fun getArgumentsData() {
         arguments?.let {
             addedProductDataModel = it.getParcelable(KEY_ADDED_PRODUCT_DATA_MODEL)
-            successMessageAtc = it.getString(KEY_SUCCESS_MESSAGE_ATC,"")
+            successMessageAtc = it.getString(KEY_SUCCESS_MESSAGE_ATC, "")
         }
     }
 
@@ -186,7 +225,6 @@ class AddToCartDoneBottomSheet :
         }
     }
 
-
     override fun state(): BottomSheetsState {
         return BottomSheetsState.FLEXIBLE
     }
@@ -240,6 +278,8 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onButtonGoToCartClicked() {
+        productDetailTracking.eventClickAddToCart(addedProductDataModel?.productId ?: "",
+                addedProductDataModel?.isVariant ?: false)
         goToCart()
     }
 
