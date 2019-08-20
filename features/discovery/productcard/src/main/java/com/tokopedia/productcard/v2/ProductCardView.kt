@@ -34,8 +34,6 @@ import com.tokopedia.unifyprinciples.Typography
  * 2. Configure the components of the ProductCardView from the provided public methods,
  *    e.g. setImageProductUrl, setProductNameVisible, setProductNameText, etc.
  * 3. Call method realignLayout() after configuring the required ProductCardView components.
- *
- * Test CODEOWNERS
  */
 abstract class ProductCardView: BaseCustomView {
 
