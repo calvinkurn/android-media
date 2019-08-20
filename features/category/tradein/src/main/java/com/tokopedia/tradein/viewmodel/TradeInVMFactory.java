@@ -16,11 +16,6 @@ public class TradeInVMFactory extends ViewModelProvider.AndroidViewModelFactory 
     private Application application;
     private Intent intent;
 
-    /**
-     * Creates a {@code AndroidViewModelFactory}
-     *
-     * @param application an application to pass in {@link AndroidViewModel}
-     */
     private TradeInVMFactory(@NonNull Application application, Intent intent) {
         super(application);
         this.application = application;
@@ -30,7 +25,7 @@ public class TradeInVMFactory extends ViewModelProvider.AndroidViewModelFactory 
     @NotNull
     public static TradeInVMFactory getInstance(@NotNull Application application, Intent intent) {
         if (sInstance == null)
-            sInstance = new TradeInVMFactory(application);
+            sInstance = new TradeInVMFactory(application,intent);
         return sInstance;
     }
 
@@ -64,7 +59,7 @@ public class TradeInVMFactory extends ViewModelProvider.AndroidViewModelFactory 
             }
         } else if (FinalPriceViewModel.class.isAssignableFrom(modelClass)) {
             try {
-                return modelClass.getConstructor(FragmentActivity.class).newInstance(activityWeakReference.get());
+                return modelClass.getConstructor(FragmentActivity.class).newInstance(application);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("Cannot create an instance of " + modelClass, e);
             } catch (InstantiationException e) {

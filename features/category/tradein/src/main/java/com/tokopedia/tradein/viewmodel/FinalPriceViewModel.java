@@ -1,5 +1,6 @@
 package com.tokopedia.tradein.viewmodel;
 
+import android.app.Application;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.MutableLiveData;
@@ -33,8 +34,8 @@ public class FinalPriceViewModel extends BaseViewModel implements LifecycleObser
     private WeakReference<FragmentActivity> activityWeakReference;
     private TradeInParams tradeInParams;
 
-    public FinalPriceViewModel(FragmentActivity activity) {
-        activityWeakReference = new WeakReference<>(activity);
+    public FinalPriceViewModel(Application application) {
+        super(application);
         deviceDiagData = new MutableLiveData<>();
     }
 

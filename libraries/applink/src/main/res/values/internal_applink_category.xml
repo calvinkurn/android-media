@@ -2,4 +2,5 @@
 <resources>
     <string name="host_category" translatable="false">category</string>
     <string name="path_age_restriction" translatable="false">/age_restriction</string>
+    <string name="path_tradein" translatable="false">/tradein</string>
 </resources>

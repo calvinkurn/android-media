@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.constraint.Group;
 import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -17,21 +18,21 @@ import android.widget.TextView;
 
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tradein.R;
-import com.tokopedia.tradein_common.Constants;
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.tokopedia.tradein.model.DeviceDataResponse;
 import com.tokopedia.tradein.model.KYCDetails;
 import com.tokopedia.tradein.model.TradeInParams;
-import tradein_common.router.TradeInRouter;
 import com.tokopedia.tradein.viewmodel.FinalPriceViewModel;
+import com.tokopedia.tradein_common.Constants;
+import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
+
+import java.util.List;
+
+import tradein_common.router.TradeInRouter;
 
 public class FinalPriceActivity extends BaseTradeInActivity implements Observer<DeviceDataResponse> {
     public static final int FINAL_PRICE_REQUEST_CODE = 22456;
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
+    private final static int FLAG_ACTIVITY_MONEYIN_CHECKOUT = 1302;
     private FinalPriceViewModel viewModel;
     /**
      * price_valid_until
@@ -45,8 +46,8 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private TextView mTvPriceExchange;
     private TextView mTvFinalAmount;
     private TextView mTvTnc;
+    private Group activeGroup;
 
-    private ArrayList<View> viewArrayList;
     /**
      * buy_now
      */
@@ -58,35 +59,21 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
 
     @Override
     protected void initView() {
-        viewArrayList = new ArrayList<>();
         mTvValidTill = findViewById(R.id.tv_valid_till);
-        viewArrayList.add(mTvValidTill);
         mTvModelName = findViewById(R.id.tv_model_name);
-        viewArrayList.add(mTvModelName);
         mTvSellingPrice = findViewById(R.id.tv_selling_price);
-        viewArrayList.add(mTvSellingPrice);
         mTvDeviceReview = findViewById(R.id.tv_device_review);
-        viewArrayList.add(mTvDeviceReview);
         mTvModelNew = findViewById(R.id.tv_model_new);
-        viewArrayList.add(mTvModelNew);
         mTvPriceNew = findViewById(R.id.tv_price_new);
-        viewArrayList.add(mTvPriceNew);
         mTvPriceExchange = findViewById(R.id.tv_price_exchange);
-        viewArrayList.add(mTvPriceExchange);
         mTvFinalAmount = findViewById(R.id.tv_final_amount);
-        viewArrayList.add(mTvFinalAmount);
         mTvButtonPayOrKtp = findViewById(R.id.tv_button_pay_or_ktp);
-        viewArrayList.add(mTvButtonPayOrKtp);
         mTvTnc = findViewById(R.id.tv_tnc);
-        viewArrayList.add(mTvTnc);
-        viewArrayList.add(findViewById(R.id.carc_background_white));
-        viewArrayList.add(findViewById(R.id.tv_model));
-        viewArrayList.add(findViewById(R.id.tv_exchange));
-        viewArrayList.add(findViewById(R.id.tv_final_price));
-        viewArrayList.add(findViewById(R.id.tv_price));
-        viewArrayList.add(findViewById(R.id.tv_title));
-        viewArrayList.add(findViewById(R.id.divider1));
-        viewArrayList.add(findViewById(R.id.divider2));
+        if (TRADEIN_TYPE == 2)
+            activeGroup = findViewById(R.id.group_moneyin);
+        else
+            activeGroup = findViewById(R.id.group_tradein);
+
     }
 
     @Override
@@ -143,7 +130,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
 
     private void renderDetails(DeviceDataResponse deviceDataResponse) {
         TradeInParams tradeInData = viewModel.getTradeInParams();
-        if (tradeInData != null) {
+        if (tradeInData != null && TRADEIN_TYPE != 2) {
             mTvModelNew.setText(tradeInData.getProductName());
             mTvPriceNew.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInData.getNewPrice(), true));
         }
@@ -176,14 +163,8 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
                 }
             }
         }
-        setVisibilityGroup(View.VISIBLE);
+        activeGroup.setVisibility(View.VISIBLE);
         hideProgressBar();
-    }
-
-    private void setVisibilityGroup(int visibility) {
-        for (View v : viewArrayList) {
-            v.setVisibility(visibility);
-        }
     }
 
     private void goToKycActivity() {
@@ -200,13 +181,20 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
                 setbuttonCheckout();
                 goToCheckout();
             }
+        } else if (requestCode == FLAG_ACTIVITY_MONEYIN_CHECKOUT){
+            //do something here
         }
     }
 
     private void goToCheckout() {
         String deviceid = getDeviceId();
-        setResult(Activity.RESULT_OK, new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid));
-        finish();
+        if (TRADEIN_TYPE == 2) {
+            navigateToActivityRequest(new Intent().putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid), FLAG_ACTIVITY_MONEYIN_CHECKOUT);
+        } else {
+            setResult(Activity.RESULT_OK, new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid));
+            finish();
+        }
+
     }
 
     private void setbuttonCheckout() {
@@ -265,7 +253,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     @Override
     public void onBackPressed() {
         if (isTncShowing) {
-            setVisibilityGroup(View.VISIBLE);
+            activeGroup.setVisibility(View.VISIBLE);
         }
         super.onBackPressed();
     }
@@ -274,7 +262,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             if (isTncShowing) {
-                setVisibilityGroup(View.VISIBLE);
+                activeGroup.setVisibility(View.VISIBLE);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -282,7 +270,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
 
     private void showtnc() {
         showTnC(R.string.tradein_tnc);
-        setVisibilityGroup(View.INVISIBLE);
+        activeGroup.setVisibility(View.INVISIBLE);
         sendGeneralEvent("clickTradeIn",
                 "harga final trade in",
                 "click syarat dan ketentuan",

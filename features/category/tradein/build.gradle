@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -26,7 +26,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.basemvvm)
+    implementation project(rootProject.ext.features.logisticaddaddress)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation (rootProject.ext.miscDependencies.laku6Sdk){
         exclude group: 'com.android.support'
         exclude group: 'com.squareup.retrofit2'
