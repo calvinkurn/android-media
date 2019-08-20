@@ -1,23 +1,42 @@
 package com.tokopedia.search.result.shop.presentation.adapter
 
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
+import com.tokopedia.search.result.shop.presentation.diffutil.ShopListDiffUtilCallback
+import java.util.ArrayList
 
 open class ShopListAdapter(
         private val shopListTypeFactory: ShopListTypeFactory
-): RecyclerView.Adapter<AbstractViewHolder<*>>() {
+): RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): AbstractViewHolder<*> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private val list = ArrayList<Visitable<*>>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>> {
+        val context = parent.context
+        val view = LayoutInflater.from(context).inflate(viewType, parent, false)
+        return shopListTypeFactory.createViewHolder(view, viewType) as AbstractViewHolder<Visitable<*>>
     }
 
     override fun getItemCount(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return list.size
     }
 
-    override fun onBindViewHolder(p0: AbstractViewHolder<*>, p1: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
+        val data = list[position]
+        holder.bind(data)
+    }
+
+    fun updateList(newList: List<Visitable<*>>) {
+        val diffResult = DiffUtil.calculateDiff(ShopListDiffUtilCallback(list, newList))
+
+        list.clear()
+        list.addAll(newList)
+
+        diffResult.dispatchUpdatesTo(this)
     }
 }

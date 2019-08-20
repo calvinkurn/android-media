@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.view.typefactory
 
 import android.view.View
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel

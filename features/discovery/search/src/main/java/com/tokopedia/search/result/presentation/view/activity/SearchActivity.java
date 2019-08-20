@@ -53,6 +53,7 @@ import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
+import com.tokopedia.search.result.shop.presentation.fragment.ShopListFragmentKt;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -473,6 +474,7 @@ public class SearchActivity extends BaseActivity
         searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
         searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
+        searchSectionItemList.add(new SearchSectionItem(shopTabTitle, ShopListFragmentKt.newInstance()));
     }
 
     private void initTabLayout() {

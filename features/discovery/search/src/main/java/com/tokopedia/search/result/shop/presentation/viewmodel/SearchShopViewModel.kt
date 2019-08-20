@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.search.result.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
@@ -68,14 +69,11 @@ class SearchShopViewModel(
     }
 
     fun searchShop() {
-        launch {
-            try {
-                trySearchShop()
-            }
-            catch(e: Throwable) {
-                catchSearchShopError(e)
-            }
-        }
+        launchCatchError(coroutineContext, {
+            trySearchShop()
+        }, {
+            catchSearchShopError(it)
+        })
     }
 
     private suspend fun trySearchShop() {

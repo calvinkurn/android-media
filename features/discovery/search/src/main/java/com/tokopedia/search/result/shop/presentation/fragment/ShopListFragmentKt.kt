@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.common.data.Option
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ShopViewModel
@@ -69,6 +70,7 @@ class ShopListFragmentKt:
 
     private fun initViews() {
         initRefreshLayout()
+        initGridLayoutManager()
         initLoadMoreListener()
         initRecyclerView()
     }
@@ -77,13 +79,12 @@ class ShopListFragmentKt:
         refreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
 
         refreshLayout?.setOnRefreshListener {
-            showRefreshLayout()
             reloadSearchShop()
         }
     }
 
-    private fun showRefreshLayout() {
-        refreshLayout?.isRefreshing = true
+    private fun initGridLayoutManager() {
+        gridLayoutManager = GridLayoutManager(activity, 1)
     }
 
     private fun initLoadMoreListener() {
@@ -98,24 +99,21 @@ class ShopListFragmentKt:
 
     private fun initRecyclerView() {
         activity?.let { activity ->
-            recyclerView = view?.findViewById(R.id.recyclerview)
-            recyclerView?.layoutManager = createGridLayoutManager(activity)
-            recyclerView?.adapter = createShopListAdapter()
-            recyclerView?.addItemDecoration(createShopItemDecoration(activity))
+            initShopListAdapter()
 
+            recyclerView = view?.findViewById(R.id.recyclerview)
+            recyclerView?.layoutManager = gridLayoutManager
+            recyclerView?.adapter = shopListAdapter
+            recyclerView?.addItemDecoration(createShopItemDecoration(activity))
             gridLayoutLoadMoreTriggerListener?.let {
                 recyclerView?.addOnScrollListener(it)
             }
         }
     }
 
-    private fun createGridLayoutManager(activity: Activity): RecyclerView.LayoutManager {
-        return GridLayoutManager(activity, 1)
-    }
-
-    private fun createShopListAdapter(): RecyclerView.Adapter<AbstractViewHolder<*>> {
+    private fun initShopListAdapter() {
         val shopListTypeFactory = createShopListTypeFactory()
-        return ShopListAdapter(shopListTypeFactory)
+        shopListAdapter = ShopListAdapter(shopListTypeFactory)
     }
 
     private fun createShopListTypeFactory(): ShopListTypeFactory {
@@ -160,15 +158,20 @@ class ShopListFragmentKt:
     private fun updateAdapter(searchShopLiveData: State<List<Visitable<*>>>?) {
         when(searchShopLiveData) {
             is State.Loading -> {
-
+                showRefreshLayout()
             }
             is State.Success -> {
-
+                shopListAdapter?.updateList(searchShopLiveData.data ?: listOf())
             }
             is State.Error -> {
-
+                val retryClickedListener = NetworkErrorHelper.RetryClickedListener { this.searchMoreShop() }
+                NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
             }
         }
+    }
+
+    private fun showRefreshLayout() {
+        refreshLayout?.isRefreshing = true
     }
 
     override fun getScreenName(): String {
