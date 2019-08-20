@@ -1,11 +1,14 @@
 package com.tokopedia.analytics.debugger
 
 import android.content.Context
+import com.tokopedia.analytics.debugger.data.mapper.TetraMapper
 import com.tokopedia.analytics.debugger.data.network.TetraService
+import com.tokopedia.analytics.debugger.data.source.TetraDataSource
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -16,6 +19,10 @@ import kotlin.coroutines.CoroutineContext
 class TetraDebugger(private val context: Context) : CoroutineScope {
 
     val job = Job()
+    val dataSource = TetraDataSource(context)
+    val mapper = TetraMapper()
+
+    var userId: String = ""
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
@@ -26,27 +33,34 @@ class TetraDebugger(private val context: Context) : CoroutineScope {
     fun init() {
         launchCatchError(coroutineContext, {
             val service = TetraService(context).makeRetrofitService()
-            // TODO create request
-            val request = TetraService.parse("")
+            val request = TetraService.parse(mapper.parseInitRequest())
             val response = service.init(request).await()
-            // TODO parse response, save to shared preferences
+            val parseResponse = mapper.parseInitResponse(response.body())
+            dataSource.putStatus(parseResponse)
         }, {
-
+            Timber.d(it)
         })
     }
 
     /**
      * send each data layer (currently only support gtm) to testing server
      */
-    fun send(userId: String, data: Map<String, Any>) {
-        // get status from shared preferences
-        // send data to server
+    fun send(data: Map<String, Any>) {
+        launchCatchError(coroutineContext, {
+            if (dataSource.isWhitelisted()) {
+                val service = TetraService(context).makeRetrofitService()
+                val request = TetraService.parse(mapper.parseDebugRequest(userId, data))
+                val response = service.init(request).await()
+                mapper.parseDebugResponse(response.body())
+            }
+        }, {
+            Timber.d(it)
+        })
     }
 
     fun cancel() {
         if (!job.isCancelled) {
             job.cancel()
         }
-
     }
 }

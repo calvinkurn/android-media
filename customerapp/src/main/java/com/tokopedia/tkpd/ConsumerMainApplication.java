@@ -145,7 +145,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
 
-        if (!GlobalConfig.DEBUG) {
+        if (!com.tokopedia.config.GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         } else {
             tetraDebugger = new TetraDebugger(this);
@@ -159,6 +159,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         LogWrapper.init(this);
         TimberWrapper.init(this);
+    }
+
+    @Override
+    public void doLogoutAccount(Activity activity) {
+        super.doLogoutAccount(activity);
+        tetraDebugger.setUserId("");
     }
 
     @Override
@@ -384,11 +390,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }
         }
         return md5StrBuff.toString();
-    }
-
-
-    public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
-
     }
 
     public Class<?> getDeeplinkClass() {

@@ -14,6 +14,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.analytics.debugger.GtmLogger;
+import com.tokopedia.analytics.debugger.TetraDebugger;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.model.Hotlist;
@@ -56,12 +57,14 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
     private final Iris iris;
+    private final TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
 
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
         super(context);
+        tetraDebugger = new TetraDebugger(context);
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
@@ -173,9 +176,10 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneral(map);
     }
 
-    private static void log(Context context, String eventName, Map<String, Object> values) {
+    private void log(Context context, String eventName, Map<String, Object> values) {
         String name = eventName == null ? (String) values.get("event") : eventName;
         GtmLogger.getInstance(context).save(name, values);
+        tetraDebugger.send(values);
     }
 
     public GTMAnalytics sendCampaign(Campaign campaign) {
@@ -393,6 +397,7 @@ public class GTMAnalytics extends ContextAnalytics {
                     Map<String, Object> maps = new HashMap<>();
                     maps.put("user_id", uid);
                     getTagManager().getDataLayer().push(maps);
+                    tetraDebugger.setUserId(userId);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
