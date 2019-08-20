@@ -1,5 +1,6 @@
 package com.tokopedia.affiliatecommon.domain
 
+import android.text.TextUtils
 import com.tokopedia.affiliatecommon.MUTATION_AFFILIATE_TRACKING
 import com.tokopedia.affiliatecommon.data.pojo.trackaffiliate.TrackAffiliateResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -7,6 +8,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
@@ -32,6 +34,12 @@ class TrackAffiliateUseCase @Inject constructor(
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(request)
         val graphqlResponse: GraphqlResponse = graphqlUseCase.executeOnBackground()
+
+        val error = graphqlResponse.getError(TrackAffiliateResponse::class.java)
+        if (error != null && !TextUtils.isEmpty(error.firstOrNull()?.message)) {
+            throw MessageErrorException(error.first().message)
+        }
+
         val trackAffiliateResponse = graphqlResponse.getData<TrackAffiliateResponse>(TrackAffiliateResponse::class.java)
         return trackAffiliateResponse.topadsAffiliateTracker?.isSuccess ?: false
     }
