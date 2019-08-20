@@ -19,12 +19,12 @@ class TetraMapper {
         return request.toString()
     }
 
-    fun parseInitResponse(response: String?): String {
+    fun parseInitResponse(response: String?): Boolean {
         try {
             val result = JSONObject(response)
-            return result.optString("isWhitelisted")
+            return result.optBoolean("isWhitelisted")
         } catch (exception: JSONException) {}
-        return ""
+        return false
     }
 
     fun parseDebugRequest(userId: String, event: Map<String, Any>): String {

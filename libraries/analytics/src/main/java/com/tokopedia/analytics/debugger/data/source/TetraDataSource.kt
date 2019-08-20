@@ -10,11 +10,11 @@ class TetraDataSource(context: Context) {
 
     private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    fun putStatus(status: String) {
-        preferences.edit().putBoolean(STATUS, status.contentEquals("true")).apply()
+    fun putStatus(status: Boolean) {
+        preferences.edit().putBoolean(STATUS, status).apply()
     }
 
     fun isWhitelisted(): Boolean {
-        return preferences.getBoolean(STATUS, false)
+        return preferences.getBoolean(STATUS, true) // set true for debugging
     }
 }

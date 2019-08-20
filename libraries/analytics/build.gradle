@@ -55,4 +55,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation 'org.json:json:20140107'
 }
