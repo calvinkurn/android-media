@@ -8,6 +8,7 @@ query SearchProduct(
         source
         shareUrl
         isFilter
+        response_code
         count
         count_text
         additional_params

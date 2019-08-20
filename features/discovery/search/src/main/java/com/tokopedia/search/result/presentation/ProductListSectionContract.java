@@ -95,6 +95,8 @@ public interface ProductListSectionContract {
         void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction);
 
         void redirectSearchToAnotherPage(String applink);
+
+        void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
