@@ -157,11 +157,11 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         var emptyModel = EmptyModel()
         
         if (indonesia_review_switch.isChecked) {
-            emptyModel.iconRes = R.drawable.ic_no_indonesian_review
+            emptyModel.urlRes = getString(R.string.hotel_url_no_indonesian_review)
             emptyModel.title = getString(R.string.hotel_review_indonesia_not_found_title)
             emptyModel.content = getString(R.string.hotel_review_indonesia_not_found_subtitle)
         } else {
-            emptyModel.iconRes = R.drawable.ic_no_review
+            emptyModel.urlRes = getString(R.string.hotel_url_no_review)
             emptyModel.title = getString(R.string.hotel_review_filter_review_not_found_title)
             emptyModel.content = getString(R.string.hotel_review_filter_review_not_found_subtitle)
         }

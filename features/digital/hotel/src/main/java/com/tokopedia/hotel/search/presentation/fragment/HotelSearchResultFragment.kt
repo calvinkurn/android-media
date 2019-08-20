@@ -233,7 +233,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_search_result
+        emptyModel.urlRes = getString(R.string.hotel_url_empty_search_result)
         emptyModel.title = getString(R.string.hotel_search_empty_title)
 
         if (!searchResultviewModel.isFilter) {
