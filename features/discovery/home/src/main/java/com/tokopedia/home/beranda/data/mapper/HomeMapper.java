@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.*;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
@@ -60,7 +61,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             if (homeData.getTicker() != null
                     && homeData.getTicker().getTickers() != null
-                    && !homeData.getTicker().getTickers().isEmpty()) {
+                    && !homeData.getTicker().getTickers().isEmpty()
+                    && !HomeFragment.HIDE_TICKER) {
                 list.add(mappingTicker(homeData.getTicker().getTickers()));
             }
 
