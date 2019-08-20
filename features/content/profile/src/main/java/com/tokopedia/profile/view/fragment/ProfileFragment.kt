@@ -5,7 +5,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.content.LocalBroadcastManager
@@ -23,11 +25,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.feature.onboarding.view.fragment.UsernameInputFragment
@@ -77,6 +82,8 @@ import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
+import com.tokopedia.kotlin.extensions.media.toTempFile
+import com.tokopedia.kotlin.extensions.media.toUri
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.profile.ProfileModuleRouter
@@ -1152,16 +1159,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
             iv_action.gone()
             View.OnClickListener {
-                linkerData = ShareBottomSheets.constructShareData(
-                        element.name,
-                        element.avatar,
-                        element.link,
-                        String.format(getString(R.string.profile_share_text),
-                                element.link),
-                        String.format(getString(R.string.profile_other_share_title)))
-                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
-                isShareProfile = true
-                showShareBottomSheets(this)
+                ImageHandler.loadImageWithTarget(context, "https://blogsimages.adobe.com/creativecloud/files/2014/06/creativecloud_wallpaper_2880x1800.jpg", object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
+                        ShareBottomSheets.newInstance(
+                                this@ProfileFragment,
+                                element.name,
+                                element.avatar,
+                                element.link,
+                                String.format(getString(R.string.profile_share_text),
+                                        element.link),
+                                String.format(getString(R.string.profile_other_share_title)),
+                                context?.let { ctx -> resource?.toTempFile("test")?.toUri(ctx)?.toString() }
+                                ).show(fragmentManager)
+                        profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
+                        isShareProfile = true
+                    }
+                })
             }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_af_graph))
