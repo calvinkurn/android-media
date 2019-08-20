@@ -157,9 +157,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var shopDomain: String? = null
     private var trackerAttribution: String? = ""
     private var trackerListName: String? = ""
+    private var affiliateString: String? = null
     private var isFromDeeplink: Boolean = false
     private var isAffiliate: Boolean = false
-    private var isSpecialPrize: Boolean = false
 
     lateinit var headerView: PartialHeaderView
     lateinit var productStatsView: PartialProductStatisticView
@@ -266,7 +266,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         private const val ARG_TRACKER_LIST_NAME = "ARG_TRACKER_LIST_NAME"
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
         private const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
-        private const val ARG_IS_SPECIAL_PRIZE = "ARG_IS_SPECIAL_PRIZE"
+        private const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
 
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
@@ -276,9 +276,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         productKey: String? = null,
                         isFromDeeplink: Boolean = false,
                         isAffiliate: Boolean = false,
-                        isSpecialPrize: Boolean = false,
                         trackerAttribution: String? = null,
-                        trackerListName: String? = null) =
+                        trackerListName: String? = null,
+                        affiliateString: String? = null) =
                 ProductDetailFragment().also {
                     it.arguments = Bundle().apply {
                         productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
@@ -286,9 +286,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopDomain?.let { domain -> putString(ARG_SHOP_DOMAIN, domain) }
                         trackerAttribution?.let { attribution -> putString(ARG_TRACKER_ATTRIBUTION, attribution) }
                         trackerListName?.let { listName -> putString(ARG_TRACKER_LIST_NAME, listName) }
+                        affiliateString?.let { affiliateString -> putString(ARG_AFFILIATE_STRING, affiliateString) }
                         putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
                         putBoolean(ARG_FROM_AFFILIATE, isAffiliate)
-                        putBoolean(ARG_IS_SPECIAL_PRIZE, isSpecialPrize)
                     }
                 }
     }
@@ -313,9 +313,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             shopDomain = it.getString(ARG_SHOP_DOMAIN)
             trackerAttribution = it.getString(ARG_TRACKER_ATTRIBUTION)
             trackerListName = it.getString(ARG_TRACKER_LIST_NAME)
+            affiliateString = it.getString(ARG_AFFILIATE_STRING)
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
-//            isSpecialPrize = it.getBoolean(ARG_IS_SPECIAL_PRIZE, false)
         }
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -714,7 +714,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         if (!::actionButtonView.isInitialized) {
             actionButtonView = PartialButtonActionView.build(base_btn_action, onViewClickListener)
-            actionButtonView.isSpecialPrize = isSpecialPrize
         }
 
         if (!::productShopView.isInitialized) {
@@ -1515,7 +1514,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             userInputVariant = productId
         }
 
-        productInfoViewModel.hitAffiliateTracker("", productInfoViewModel.deviceId)
+        if (affiliateString.hasValue()) {
+            productInfoViewModel.hitAffiliateTracker(affiliateString ?: "", productInfoViewModel.deviceId)
+        }
 
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)

@@ -32,8 +32,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var productId: String? = null
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
-    private var isSpecialPrize: Boolean = false
-    private var affiliateUniqueString: String? = null
+    private var affiliateString: String? = null
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -43,7 +42,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
-        private const val PARAM_AFFILIATE_UNIQUE_STRING = "affiliate_unique_string"
+        private const val PARAM_AFFILIATE_STRING = "affiliate_string"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -91,9 +90,11 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment = ProductDetailFragment
-        .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate, isSpecialPrize,
-                trackerAttribution, trackerListName)
+    override fun getNewFragment(): Fragment =
+            ProductDetailFragment.newInstance(productId, shopDomain,
+                    productKey, isFromDeeplink,
+                    isFromAffiliate, trackerAttribution,
+                    trackerListName, affiliateString)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
         .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -123,6 +124,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             } else { // affiliate
                 productId = uri.lastPathSegment
             }
+            affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
         }
