@@ -1,6 +1,9 @@
 package com.tokopedia.settingnotif.usersetting.view.activity
 
+import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -10,6 +13,23 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 
 class UserNotificationSettingActivity : BaseSimpleActivity(),
         SettingTypeFragment.SettingTypeContract {
+
+    var fragmentContainer: FrameLayout? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        bindView()
+        setupView()
+    }
+
+    private fun bindView() {
+        fragmentContainer = findViewById(R.id.parent_view)
+    }
+
+    private fun setupView() {
+        val color = ContextCompat.getColor(this, R.color.white)
+        fragmentContainer?.setBackgroundColor(color)
+    }
 
     override fun getNewFragment(): Fragment {
         return SettingTypeFragment()

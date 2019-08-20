@@ -21,6 +21,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdLibDependencies.showcase
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
