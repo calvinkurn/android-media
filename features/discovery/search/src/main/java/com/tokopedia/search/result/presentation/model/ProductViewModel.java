@@ -147,6 +147,7 @@ public class ProductViewModel implements Parcelable {
 
     public void setAutocompleteApplink(String autocompleteApplink) {
         this.autocompleteApplink = autocompleteApplink;
+    }
 
     public String getResponseCode() {
         return responseCode;
