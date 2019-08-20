@@ -85,11 +85,7 @@ public class ProductManageListViewHolder extends BaseCheckableViewHolder<Product
         );
         boolean statusUnderSupervision = productManageViewModel.getProductStatus().equals(StatusProductOption.UNDER_SUPERVISION);
         boolean statusStockEmpty = productManageViewModel.getProductStatus().equals(StatusProductOption.EMPTY);
-//        itemView.setOnClickListener(v -> {
-//            if (viewListener != null) {
-//                viewListener.onProductClicked(productManageViewModel);
-//            }
-//        });
+
         optionImageButton.setOnClickListener(v -> {
             if (viewListener != null) {
                 viewListener.onClickOptionItem(productManageViewModel);
@@ -129,11 +125,11 @@ public class ProductManageListViewHolder extends BaseCheckableViewHolder<Product
         } else {
             textViewVariant.setVisibility(View.GONE);
         }
-//        if (statusUnderSupervision) {
-//            checkBoxProduct.setEnabled(false);
-//        } else {
-//            checkBoxProduct.setEnabled(true);
-//        }
+        if (statusUnderSupervision) {
+            checkBoxProduct.setEnabled(false);
+        } else {
+            checkBoxProduct.setEnabled(true);
+        }
 
         if (productManageViewModel.getIsFeatureProduct()) {
             featuredImageView.setVisibility(View.VISIBLE);

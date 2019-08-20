@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -34,6 +35,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
@@ -57,9 +59,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet;
-import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
@@ -134,7 +136,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     public static final int INSTAGRAM_SELECT_REQUEST_CODE = 3860;
 
     private List<ProductManageViewModel> productManageViewModels = null;
-    private List<ProductManageViewModel> productManageCheckedModel = null;
 
     @Inject
     ProductManagePresenter productManagePresenter;
@@ -160,6 +161,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     private Dialog dialog;
     private CheckBox bulkCheckBox;
     private TextView bulkCountTxt;
+    private Button btnBulk;
+    private LinearLayout containerBtnBulk;
+    private LinearLayout containerChechBoxBulk;
+    private View checkBoxView;
+    private CloseableBottomSheetDialog bulkBottomSheet;
+
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -351,10 +358,20 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         bottomActionView = view.findViewById(R.id.bottom_action_view);
         bulkCountTxt = view.findViewById(R.id.bulk_count_txt);
         topAdsWidgetFreeClaim = view.findViewById(R.id.topads_free_claim_widget);
+        btnBulk = view.findViewById(R.id.btn_bulk_edit);
+        containerBtnBulk = view.findViewById(R.id.container_btn_bulk);
+        containerChechBoxBulk = view.findViewById(R.id.container_bulk_check_box);
+        checkBoxView = view.findViewById(R.id.line_check_box);
+        bulkBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getContext());
+        setupBottomSheet();
 
         if (adapter.getTotalChecked() > 0) {
+            containerBtnBulk.setVisibility(View.VISIBLE);
             bulkCountTxt.setVisibility(View.VISIBLE);
+            checkBoxView.setVisibility(View.VISIBLE);
         } else {
+            containerBtnBulk.setVisibility(View.GONE);
+            checkBoxView.setVisibility(View.GONE);
             bulkCountTxt.setVisibility(View.GONE);
         }
 
@@ -373,6 +390,19 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                 adapter.updateListByCheck(isChecked, i);
             }
         });
+
+        btnBulk.setOnClickListener(v->{
+
+        });
+    }
+
+    private void setupBottomSheet(){
+        View infoDialogView = getLayoutInflater().inflate(R.layout.fragment_bs_bulk_edit, null);
+        bulkBottomSheet.setContentView(infoDialogView,"");
+    }
+
+    private void setupAdapter(){
+
     }
 
     @Override
@@ -512,13 +542,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         UnifyTracking.eventProductManageClickDetail(getActivity());
     }
 
-//    @Override
-//    public void onProductClicked(ProductManageViewModel productManageViewModel) {
-//        adapter.notifyDataSetChanged();
-//        goToPDP(productManageViewModel.getProductId());
-//        UnifyTracking.eventProductManageClickDetail(getActivity());
-//    }
-
     /**
      * This function is temporary for testing to avoid router and applink
      * For Dynamic Feature Support
@@ -531,9 +554,32 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
     @Override
     public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
-        productManageCheckedModel = adapter.getCheckedDataList();
         String totalChecked = String.valueOf(adapter.getTotalChecked());
+        updateBulkLayout();
         bulkCountTxt.setText(MethodChecker.fromHtml(getString(R.string.product_manage_bulk_count, totalChecked)));
+    }
+
+    private void updateBulkLayout() {
+        AppBarLayout.LayoutParams containerFlags = (AppBarLayout.LayoutParams) containerChechBoxBulk.getLayoutParams();
+        if (adapter.getTotalChecked() == 1) {
+            containerBtnBulk.setVisibility(View.VISIBLE);
+            btnBulk.setVisibility(View.VISIBLE);
+            checkBoxView.setVisibility(View.VISIBLE);
+            btnBulk.setText("Ubah");
+            containerFlags.setScrollFlags(0);
+        } else if (adapter.getTotalChecked() > 1) {
+            containerBtnBulk.setVisibility(View.VISIBLE);
+            btnBulk.setVisibility(View.VISIBLE);
+            checkBoxView.setVisibility(View.VISIBLE);
+            btnBulk.setText("Ubah Sekaligus");
+            containerFlags.setScrollFlags(0);
+        } else {
+            containerBtnBulk.setVisibility(View.GONE);
+            checkBoxView.setVisibility(View.GONE);
+            btnBulk.setVisibility(View.GONE);
+            containerFlags.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+
+        }
     }
 
     @Override
@@ -755,12 +801,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                             UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.label_delete));
                             productManagePresenter.deleteProduct(productIdList);
                         }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.title_cancel));
-                            dialog.dismiss();
-                        }
+                    }, (dialog, which) -> {
+                        UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.title_cancel));
+                        dialog.dismiss();
                     });
                 } else if (itemId == R.id.change_price_product_menu) {
                     if (productManageViewModel.isProductVariant()) {
@@ -911,23 +954,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         alertDialog.setMessage(R.string.dialog_delete_product);
         alertDialog.setPositiveButton(R.string.label_delete, onClickListener);
         alertDialog.setNegativeButton(R.string.title_cancel, onCancelListener);
-        alertDialog.show();
-    }
-
-    private void showDialogActionGoToGMSubscribe() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setTitle(R.string.product_manage_cashback_limited_title);
-        alertDialog.setMessage(getString(R.string.product_manage_cashback_limited_desc,
-                getString(GMConstant.getGMTitleResource(getContext()))));
-        alertDialog.setPositiveButton(R.string.pml_label_subscribe, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (getActivity().getApplication() instanceof SellerModuleRouter) {
-                    ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
-                }
-            }
-        });
-        alertDialog.setNegativeButton(R.string.title_cancel, null);
         alertDialog.show();
     }
 
