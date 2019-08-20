@@ -17,13 +17,12 @@ import javax.inject.Inject
 class GetDistrictRecommendation @Inject constructor(
         val queryMap: Map<String, String>,
         val gql: GraphqlUseCase,
-        val mapper: DistrictRecommendationMapper,
         val scheduler: SchedulerProvider) {
 
     private val gqlQuery: String = queryMap[RawQueryConstant.GET_DISTRICT_RECOMMENDATION]
             ?: throw QueryNotFoundException()
 
-    fun execute(query: String, page: Int): Observable<AddressResponse> {
+    fun execute(query: String, page: Int): Observable<DistrictRecommendationResponse> {
         val param: Map<String, String> = mapOf(
                 "query" to query,
                 "page" to page.toString()
@@ -40,7 +39,6 @@ class GetDistrictRecommendation @Inject constructor(
                             gqlResponse.getError(DistrictRecommendationResponse::class.java)[0].message
                     )
                 }
-                .map { mapper.transform(it) }
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
     }

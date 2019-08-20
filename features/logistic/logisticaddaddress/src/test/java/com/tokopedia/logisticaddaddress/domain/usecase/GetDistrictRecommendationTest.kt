@@ -3,8 +3,7 @@ package com.tokopedia.logisticaddaddress.domain.usecase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.di.RawQueryConstant
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
-import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper
-import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
+import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
 import com.tokopedia.logisticaddaddress.helper.DiscomDummyProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -13,7 +12,6 @@ import org.junit.Before
 import org.junit.Test
 import rx.Observable
 import rx.Scheduler
-import rx.internal.schedulers.TrampolineScheduler
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 
@@ -21,7 +19,6 @@ class GetDistrictRecommendationTest {
 
     lateinit var usecaseUt: GetDistrictRecommendation
     val gqlUsecaseMock: GraphqlUseCase = mockk(relaxed = true)
-    val mapper: DistrictRecommendationMapper = DistrictRecommendationMapper()
     val queryMapMock: Map<String, String> = mockk()
     val testSchedProvider = object: SchedulerProvider {
         override fun io(): Scheduler {
@@ -36,12 +33,12 @@ class GetDistrictRecommendationTest {
     @Before
     fun setup() {
         every { queryMapMock.get(RawQueryConstant.GET_DISTRICT_RECOMMENDATION) } answers { queryTest }
-        usecaseUt = GetDistrictRecommendation(queryMapMock, gqlUsecaseMock, mapper, testSchedProvider)
+        usecaseUt = GetDistrictRecommendation(queryMapMock, gqlUsecaseMock, testSchedProvider)
     }
 
     @Test
     fun executeSuccessResponse_returnObjectResponse() {
-        val subscriber = TestSubscriber<AddressResponse>()
+        val subscriber = TestSubscriber<DistrictRecommendationResponse>()
         every { gqlUsecaseMock.getExecuteObservable(null) } answers {
             Observable.just(DiscomDummyProvider.getSuccessGqlResponse())
         }
@@ -51,7 +48,7 @@ class GetDistrictRecommendationTest {
 
         subscriber.assertCompleted()
         subscriber.assertNoErrors()
-        assertTrue(subscriber.onNextEvents[0].addresses.size > 0)
+        assertTrue(subscriber.onNextEvents[0].keroDistrictRecommendation.district.isNotEmpty())
     }
 
 }

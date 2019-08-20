@@ -1,6 +1,8 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
+import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper
 import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
+import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase
 import com.tokopedia.logisticdata.data.entity.address.Token
@@ -10,7 +12,8 @@ import javax.inject.Inject
 
 class DiscomPresenter @Inject constructor(
         private val restUsecase: GetDistrictRequestUseCase,
-        private val gqlUsecase: GetDistrictRecommendation) : DiscomContract.Presenter {
+        private val gqlUsecase: GetDistrictRecommendation,
+        private val mapper: DistrictRecommendationMapper) : DiscomContract.Presenter {
 
     private var view: DiscomContract.View? = null
 
@@ -32,7 +35,16 @@ class DiscomPresenter @Inject constructor(
     override fun loadData(query: String, page: Int) {
         gqlUsecase.execute(query, page)
                 .doOnSubscribe { view?.setLoadingState(true) }
-                .subscribe(getLoadDataObserver())
+                .subscribe(
+                        {
+                            val model = mapper.transform(it)
+                            deliverToView(model)
+                        },
+                        {
+                            view?.setLoadingState(false)
+                            view?.showGetListError(it)
+                        }, {}
+                )
     }
 
     /**
@@ -51,16 +63,20 @@ class DiscomPresenter @Inject constructor(
         restUsecase.execute(params, getLoadDataObserver())
     }
 
+    private fun deliverToView(response: AddressResponse) {
+        view?.let {
+            it.setLoadingState(false)
+            if (!response.addresses.isEmpty()) {
+                it.renderData(response.addresses, response.isNextAvailable)
+            } else {
+                it.showEmpty()
+            }
+        }
+    }
+
     private fun getLoadDataObserver() = object : Subscriber<AddressResponse>() {
         override fun onNext(response: AddressResponse?) {
-            view?.let {
-                it.setLoadingState(false)
-                if (!response?.addresses.isNullOrEmpty()) {
-                    it.renderData(response!!.addresses, response.isNextAvailable)
-                } else {
-                    it.showEmpty()
-                }
-            }
+            response?.let { deliverToView(it) }
         }
 
         override fun onError(e: Throwable?) {
