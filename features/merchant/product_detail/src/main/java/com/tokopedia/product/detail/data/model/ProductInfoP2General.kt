@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.data.model
 
-import com.tokopedia.affiliatecommon.data.pojo.trackaffiliate.TrackAffiliateResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Rating
@@ -26,6 +25,5 @@ data class ProductInfoP2General (
         var latestTalk: Talk = Talk(),
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
         var variantResp: ProductVariant? = null,
-        var shopFeature: ShopFeatureData = ShopFeatureData(),
-        var trackAffiliate: TrackAffiliateResponse? = null
+        var shopFeature: ShopFeatureData = ShopFeatureData()
 )

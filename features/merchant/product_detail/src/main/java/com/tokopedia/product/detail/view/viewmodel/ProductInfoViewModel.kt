@@ -532,6 +532,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         super.clear()
         removeWishlistUseCase.unsubscribe()
         addWishListUseCase.unsubscribe()
+        trackAffiliateUseCase.cancelJobs()
     }
 
     fun loadMore() {
