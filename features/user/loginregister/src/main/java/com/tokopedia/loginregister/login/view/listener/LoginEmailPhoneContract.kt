@@ -99,7 +99,7 @@ interface LoginEmailPhoneContract {
 
         fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager)
 
-        fun getUserInfo()
+        fun getUserInfo(shouldGoToCreatePassword : Boolean = true)
 
         fun discoverLogin(context: Context)
 

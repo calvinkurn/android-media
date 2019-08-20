@@ -98,6 +98,11 @@ public class ShippingDurationBottomsheet extends BottomSheets
         return new ShippingDurationBottomsheet();
     }
 
+    @Override
+    protected BottomSheetsState state() {
+        return BottomSheetsState.FLEXIBLE;
+    }
+
     public void setShippingDurationBottomsheetListener(ShippingDurationBottomsheetListener shippingDurationBottomsheetListener) {
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener;
     }

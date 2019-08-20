@@ -16,13 +16,12 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
 import com.tokopedia.useridentification.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.useridentification.domain.usecase.UploadIdentificationUseCase;
+import com.tokopedia.useridentification.util.AppSchedulerProvider;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 import com.tokopedia.useridentification.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.useridentification.view.presenter.UserIdentificationInfoPresenter;
 import com.tokopedia.useridentification.view.presenter.UserIdentificationUploadImagePresenter;
 import com.tokopedia.useridentification.view.viewmodel.AttachmentImageModel;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -68,13 +67,14 @@ public class UserIdentificationModule {
     UserIdentificationUploadImage.Presenter provideUploadImagePresenter(UploadImageUseCase<AttachmentImageModel> uploadImageUseCase,
                                                                         UploadIdentificationUseCase uploadIdentificationUseCase,
                                                                         RegisterIdentificationUseCase registerIdentificationUseCase,
-                                                                        com.tokopedia.user.session.UserSession userSession,
+                                                                        UserSession userSession,
                                                                         CompositeSubscription compositeSubscription) {
         return new UserIdentificationUploadImagePresenter(uploadImageUseCase,
                 uploadIdentificationUseCase,
                 registerIdentificationUseCase,
                 userSession,
-                compositeSubscription);
+                compositeSubscription,
+                new AppSchedulerProvider());
     }
 
     @UserIdentificationScope

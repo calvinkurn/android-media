@@ -148,7 +148,7 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
         if (imagePickerBuilder == null) {
 
             imagePickerBuilder = new ImagePickerBuilder(getString(R.string.choose_image),
-                    new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, MAX_IMAGE_SIZE_IN_KB,
+                    new int[]{ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, MAX_IMAGE_SIZE_IN_KB,
                     DEFAULT_MIN_RESOLUTION, null, true,
                     null, null);
         }

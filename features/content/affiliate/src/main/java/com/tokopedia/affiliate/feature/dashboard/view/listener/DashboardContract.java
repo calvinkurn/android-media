@@ -41,6 +41,8 @@ public interface DashboardContract {
         void goToAffiliateExplore();
 
         void goToDeposit();
+
+        void onItemClicked(DashboardItemViewModel model);
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/dp_16"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingBottom="@dimen/dp_16">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,15 +22,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/charcoal_grey_88"
-            app:typographyType="heading_5"
+            app:typographyType="heading_3"
             />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/globalNavSeeAllButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextView.Micro.Bold"
             android:textColor="#03ac0e"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             android:text="@string/global_nav_see_all_text"
             />
 
