@@ -16,26 +16,20 @@ import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 
 abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
-    var spanCount: Int = 0
-
-    val LANDSCAPE_COLUMN_MAIN = 3
-    val PORTRAIT_COLUMN_MAIN = 2
+    private lateinit var categoryNavigationListener: CategoryNavigationListener
 
     private var gridLayoutManager: GridLayoutManager? = null
     private var linearLayoutManager: LinearLayoutManager? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
-
     private var refreshLayout: SwipeRefreshLayout? = null
+    private var spanCount: Int = 0
 
-    private lateinit var categoryNavigationListener: CategoryNavigationListener
+    private val LANDSCAPE_COLUMN_MAIN = 3
+    private val PORTRAIT_COLUMN_MAIN = 2
 
 
     protected fun onSwipeToRefresh() {
     }
-
-    /* protected abstract fun getProductTypeFactory(): ProductTypeFactory?
-
-     protected abstract fun getCatalogTypeFactory(): CatalogTypeFactory?*/
 
     protected abstract fun getAdapter(): BaseCategoryAdapter?
 
@@ -77,14 +71,9 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
 
     private fun initLayoutManager() {
-
         linearLayoutManager = LinearLayoutManager(activity)
-
         gridLayoutManager = GridLayoutManager(activity, spanCount)
-        // gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup())
-
         staggeredGridLayoutManager = StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL)
-        // staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE)
     }
 
     private fun initSpan() {
@@ -117,23 +106,12 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     private fun switchLayoutType() {
-        // switchProductCategory()
         switchCatalogcategory()
-    }
-
-    private fun getCurrentLayout(value: Int): Int {
-        when (value) {
-            CategoryNavConstants.RecyclerView.VIEW_PRODUCT -> return 0
-            CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_2 -> return 1
-            CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_1 -> return 2
-            else -> return 1
-        }
-
     }
 
     private fun switchCatalogcategory() {
 
-        when (getAdapter()?.getCurrentLayoutType()/*getCurrentLayout(it.getRecyclerViewItem())*/) {
+        when (getAdapter()?.getCurrentLayoutType()) {
             CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
                 spanCount = 1
                 gridLayoutManager?.spanCount = spanCount
@@ -145,7 +123,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
                 spanCount = 1
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
-                //product_recyclerview.requestLayout()
                 getAdapter()?.changeListView()
 
             }
@@ -153,7 +130,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
                 spanCount = 2
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
-                // product_recyclerview.requestLayout()
                 getAdapter()?.changeDoubleGridView()
 
             }
@@ -162,7 +138,4 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     }
 
-
-    private fun switchProductCategory() {
-    }
 }
