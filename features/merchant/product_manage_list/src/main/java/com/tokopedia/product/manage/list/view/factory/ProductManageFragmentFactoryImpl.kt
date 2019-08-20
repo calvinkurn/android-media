@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableType
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.product.manage.list.view.adapter.ProductManageEmptyList
 import com.tokopedia.product.manage.list.view.adapter.ProductManageListViewHolder
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
@@ -20,7 +19,7 @@ class ProductManageFragmentFactoryImpl(val listener: BaseCheckableViewHolder.Che
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return if (type == ProductManageListViewHolder.LAYOUT) {
             ProductManageListViewHolder(view, listener, clickOptionListenerListener)
-        } else if (type == EmptyViewHolder.LAYOUT) {
+        } else if (type == ProductManageEmptyList.LAYOUT) {
             ProductManageEmptyList(view)
         } else {
             super.createViewHolder(view, type)

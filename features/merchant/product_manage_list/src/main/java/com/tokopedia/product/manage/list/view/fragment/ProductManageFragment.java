@@ -25,7 +25,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -147,14 +146,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     private TopAdsWidgetFreeClaim topAdsWidgetFreeClaim;
 
     protected ProductManageListAdapter adapter;
-
-
     private boolean hasNextPage;
     private boolean filtered;
     @SortProductOption
     private String sortProductOption;
     private ProductManageFilterModel productManageFilterModel;
-    private ActionMode actionMode;
     private Boolean goldMerchant;
     private boolean isOfficialStore;
     private String shopDomain;
@@ -212,6 +208,24 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     @Override
     public void onLoadListEmpty() {
         renderList(new ArrayList<>());
+    }
+
+    @Override
+    public void renderList(@NonNull List<ProductManageViewModel> list) {
+        super.renderList(list);
+        if (adapter.getTotalChecked() != 0) {
+            List<ProductManageViewModel> listChecked = adapter.getCheckedDataList();
+            HashSet<Integer> listPositionChecked = new HashSet<>();
+            for (int i = 0; i < list.size(); i++) {
+                for (int j = 0; j < list.size(); j++) {
+                    if (list.get(i) == listChecked.get(j)) {
+                        listPositionChecked.add(i);
+                    }
+                }
+            }
+            adapter.setCheckedPositionList(listPositionChecked);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -336,15 +350,23 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         coordinatorLayout = view.findViewById(R.id.coordinator_layout);
         bottomActionView = view.findViewById(R.id.bottom_action_view);
         bulkCountTxt = view.findViewById(R.id.bulk_count_txt);
+        topAdsWidgetFreeClaim = view.findViewById(R.id.topads_free_claim_widget);
+
+        if (adapter.getTotalChecked() > 0) {
+            bulkCountTxt.setVisibility(View.VISIBLE);
+        } else {
+            bulkCountTxt.setVisibility(View.GONE);
+        }
+
         bottomActionView.setButton1OnClickListener(v -> {
             Intent intent = ProductManageSortActivity.createIntent(getActivity(), sortProductOption);
             startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_SORT);
         });
+
         bottomActionView.setButton2OnClickListener(v -> {
             Intent intent = ProductManageFilterActivity.createIntent(getActivity(), productManageFilterModel);
             startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_FILTER);
         });
-        topAdsWidgetFreeClaim = view.findViewById(R.id.topads_free_claim_widget);
 
         bulkCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             for (int i = 0; i < productManageViewModels.size(); i++) {
@@ -352,40 +374,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
             }
         });
     }
-
-
-//    @Override
-//    protected NoResultDataBinder getEmptyViewNoResultBinder() {
-//        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty);
-//        emptyDataBinder.setEmptyTitleText(getString(R.string.title_no_result));
-//        emptyDataBinder.setEmptyContentText(getString(R.string.product_manage_label_change_search));
-//        return emptyDataBinder;
-//    }
-
-//    @Override
-//    protected NoResultDataBinder getEmptyViewDefaultBinder() {
-//        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
-//        emptyDataBinder.setEmptyTitleText(getString(R.string.product_manage_label_product_list_empty));
-//        emptyDataBinder.setEmptyContentText(getString(R.string.pml_product_manage_label_add_product_to_sell));
-//        emptyDataBinder.setEmptyButtonItemText(getString(R.string.pml_product_manage_label_add_product));
-//        emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
-//            @Override
-//            public void onEmptyContentItemTextClicked() {
-//                // do nothing
-//            }
-//
-//            @Override
-//            public void onEmptyButtonClicked() {
-//                startActivity(new Intent(getActivity(), ProductAddNameCategoryActivity.class));
-//            }
-//        });
-//        return emptyDataBinder;
-//    }
-
-//    @Override
-//    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-//        return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error);
-//    }
 
     @Override
     public void onSearchSubmitted(String text) {
@@ -403,16 +391,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         }
         renderList(tempShopEtalaseViewModels, false);
         showSearchViewWithDataSizeCheck();
-    }
-
-    @Override
-    public void renderList(@NonNull List<ProductManageViewModel> list) {
-        super.renderList(list);
-        HashSet<Integer> checkedPositionList = new HashSet<>();
-        for (int i = 0; i < list.size(); i++) {
-            checkedPositionList.add(i);
-        }
-        adapter.setCheckedPositionList(checkedPositionList);
     }
 
     @Override
@@ -481,7 +459,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                 if (resultCode == Activity.RESULT_OK) {
                     productManageFilterModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
                     loadInitialData();
-                    filtered = true;
                     trackingFilter(productManageFilterModel);
                 }
                 break;
@@ -528,11 +505,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         UnifyTracking.eventProductManageFilterProduct(getActivity(), TextUtils.join(",", filters));
     }
 
-    protected void resetPageAndRefresh() {
-        loadData(getDefaultInitialPage());
-        swipeToRefresh.setRefreshing(true);
-    }
-
     @Override
     public void onItemClicked(ProductManageViewModel productManageViewModel) {
         adapter.notifyDataSetChanged();
@@ -540,12 +512,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         UnifyTracking.eventProductManageClickDetail(getActivity());
     }
 
-    @Override
-    public void onProductClicked(ProductManageViewModel productManageViewModel) {
-        adapter.notifyDataSetChanged();
-        goToPDP(productManageViewModel.getProductId());
-        UnifyTracking.eventProductManageClickDetail(getActivity());
-    }
+//    @Override
+//    public void onProductClicked(ProductManageViewModel productManageViewModel) {
+//        adapter.notifyDataSetChanged();
+//        goToPDP(productManageViewModel.getProductId());
+//        UnifyTracking.eventProductManageClickDetail(getActivity());
+//    }
 
     /**
      * This function is temporary for testing to avoid router and applink
@@ -873,28 +845,25 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     }
 
     private BottomSheetItemClickListener onOptionCashbackClicked(final String productId) {
-        return new BottomSheetItemClickListener() {
-            @Override
-            public void onBottomSheetItemClick(MenuItem item) {
-                int itemId = item.getItemId();
-                switch (itemId) {
-                    case CashbackOption.CASHBACK_OPTION_3:
-                        productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_3);
-                        break;
-                    case CashbackOption.CASHBACK_OPTION_4:
-                        productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_4);
-                        break;
-                    case CashbackOption.CASHBACK_OPTION_5:
-                        productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_5);
-                        break;
-                    case CashbackOption.CASHBACK_OPTION_NONE:
-                        productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_NONE);
-                        break;
-                    default:
-                        break;
-                }
-                UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(R.string.product_manage_cashback_title) + " - " + item.getTitle());
+        return item -> {
+            int itemId = item.getItemId();
+            switch (itemId) {
+                case CashbackOption.CASHBACK_OPTION_3:
+                    productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_3);
+                    break;
+                case CashbackOption.CASHBACK_OPTION_4:
+                    productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_4);
+                    break;
+                case CashbackOption.CASHBACK_OPTION_5:
+                    productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_5);
+                    break;
+                case CashbackOption.CASHBACK_OPTION_NONE:
+                    productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_NONE);
+                    break;
+                default:
+                    break;
             }
+            UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(R.string.product_manage_cashback_title) + " - " + item.getTitle());
         };
     }
 
