@@ -24,8 +24,7 @@
             app:layout_constraintEnd_toStartOf="@id/section_see_all"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_2"
-            app:typographyWeight="bold"
+            app:typographyType="heading_3"
             tools:text="Travel Activity" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -37,9 +36,9 @@
             android:text="@string/travel_homepage_section_see_all"
             android:textColor="@color/green_500"
             app:layout_constraintBottom_toBottomOf="@id/section_title"
+            android:layout_marginBottom="@dimen/dp_4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
+            app:typographyType="heading_6"
             android:visibility="gone"/>
 
         <android.support.v7.widget.RecyclerView

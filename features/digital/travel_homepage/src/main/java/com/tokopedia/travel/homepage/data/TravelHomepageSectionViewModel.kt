@@ -29,5 +29,8 @@ data class TravelHomepageSectionViewModel(
         val TYPE_ORDER_LIST = 1
         val TYPE_RECENT_SEARCH = 2
         val TYPE_RECOMMENDATION = 3
+
+        val PREFIX_STYLE_STRIKETHROUGH = "strikethrough"
+        val PREFIX_STYLE_NORMAL = "normal"
     }
 }

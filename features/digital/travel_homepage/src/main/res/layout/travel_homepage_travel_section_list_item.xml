@@ -43,7 +43,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_1"
+            app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Hotel di Jakarta Selatan hehe" />
 
@@ -60,7 +60,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toBottomOf="@id/title"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             tools:text="Indonesia Tanah Air Beta Pu" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -78,7 +78,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toBottomOf="@id/subtitle"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             tools:text="2000+ hotel" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

@@ -39,8 +39,7 @@
             app:layout_constraintBottom_toTopOf="@id/subtitle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:typographyType="body_1"
-            app:typographyWeight="bold"
+            app:typographyType="heading_3"
             tools:text="Hotel di Jakarta Selatan hehe"
             />
 
@@ -58,7 +57,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             tools:text="Indonesia Tanah Air Beta Pu"
            />
 

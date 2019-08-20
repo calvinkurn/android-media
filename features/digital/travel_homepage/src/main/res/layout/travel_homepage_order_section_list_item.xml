@@ -54,13 +54,13 @@
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:ellipsize="end"
-            android:lines="2"
-            android:maxLines="2"
+            android:lines="1"
+            android:maxLines="1"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_1"
+            app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Hotel di Jakarta Selatan hehe dnf sfnsjnfjdfnsknfskdnf" />
 
@@ -77,7 +77,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/title"
             app:layout_constraintTop_toBottomOf="@id/title"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             tools:text="Indonesia Tanah Air Beta Pu" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -95,7 +95,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/title"
             app:layout_constraintTop_toBottomOf="@id/subtitle"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             tools:text="2000+ hotel" />
 
     </android.support.constraint.ConstraintLayout>

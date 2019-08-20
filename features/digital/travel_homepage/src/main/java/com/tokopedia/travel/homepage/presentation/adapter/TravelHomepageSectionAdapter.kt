@@ -1,9 +1,11 @@
 package com.tokopedia.travel.homepage.presentation.adapter
 
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageSectionViewModel
@@ -23,11 +25,11 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
         val item = list.get(position)
         lateinit var view: View
         if (type == TravelHomepageSectionViewModel.TYPE_ORDER_LIST) {
-            view = if (item.subtitle.isNotBlank())
+            view = if (item.subtitle.isNotEmpty())
                 LayoutInflater.from(parent.context).inflate(ViewHolder.ORDER_LAYOUT, parent, false)
             else LayoutInflater.from(parent.context).inflate(ViewHolder.ORDER_LAYOUT_WITHOUT_SUBTITLE, parent, false)
         } else {
-            view = if (item.subtitle.isNotBlank())
+            view = if (item.subtitle.isNotEmpty())
                 LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false)
             else LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT_WITHOUT_SUBTITLE, parent, false)
         }
@@ -48,7 +50,12 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
                 image.loadImage(item.imageUrl)
                 title.text = item.title
                 if (item.subtitle.isNotBlank()) subtitle.text = item.subtitle
-                prefix.text = item.value
+
+                prefix.text = when (item.prefixStyling) {
+                    TravelHomepageSectionViewModel.PREFIX_STYLE_STRIKETHROUGH -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_strikethrough, item.prefix, item.value))
+                    TravelHomepageSectionViewModel.PREFIX_STYLE_NORMAL -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_normal, item.prefix, item.value))
+                    else -> resources.getString(R.string.travel_prefix_nostyle, item.prefix, item.value)
+                }
             }
             if (listener != null) itemView.setOnClickListener {
                 listener.onItemClick(item.appUrl)

@@ -35,7 +35,7 @@ class TravelHomepageCategoryListAdapter(private var list: List<TravelHomepageCat
         fun bind(category: TravelHomepageCategoryListModel.Category, position: Int, listener: OnItemClickListener) {
             with(itemView) {
                 category_image.loadImage(category.attributes.imageUrl)
-                category_name.text = category.product
+                category_name.text = category.attributes.title
             }
             itemView.setOnClickListener { listener.onItemClick(category.attributes.appUrl) }
         }
