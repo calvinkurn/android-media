@@ -61,7 +61,7 @@
                 android:layout_marginRight="@dimen/dp_4"
                 android:layout_marginEnd="@dimen/dp_4"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/searchbar_ic_camera" />
+                app:srcCompat="@drawable/ic_product_discovery_imagesearch_normal_24" />
 
         </LinearLayout>
 
