@@ -22,7 +22,6 @@ class TetraDebugger(private val context: Context) : CoroutineScope {
     val dataSource = TetraDataSource(context)
     val mapper = TetraMapper()
 
-    var userId: String = ""
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
@@ -49,13 +48,17 @@ class TetraDebugger(private val context: Context) : CoroutineScope {
         launchCatchError(coroutineContext, {
             if (dataSource.isWhitelisted()) {
                 val service = TetraService(context).makeRetrofitService()
-                val request = TetraService.parse(mapper.parseDebugRequest(userId, data))
+                val request = TetraService.parse(mapper.parseDebugRequest(dataSource.getUserId(), data))
                 val response = service.init(request).await()
                 mapper.parseDebugResponse(response.body())
             }
         }, {
             Timber.d(it)
         })
+    }
+
+    fun setUserId(value: String) {
+        dataSource.putUserId(value)
     }
 
     fun cancel() {
