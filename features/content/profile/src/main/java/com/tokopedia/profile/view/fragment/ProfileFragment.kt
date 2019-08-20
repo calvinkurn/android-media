@@ -1158,7 +1158,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         element.link,
                         String.format(getString(R.string.profile_share_text),
                                 element.link),
-                        String.format(getString(R.string.profile_share_title)))
+                        String.format(getString(R.string.profile_other_share_title)))
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
                 showShareBottomSheets(this)
