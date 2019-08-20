@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/price_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/dp_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/price_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_1"
+            tools:text="Harga HP kamu" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/price_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@string/checkout_module_title_shipping_dest"
+            android:textColor="@color/clr_f531353b"
+            app:layout_constraintLeft_toRightOf="@id/price_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
+            tools:text="Rp 66.000" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/address_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/price_container"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/white"
+        android:padding="@dimen/dp_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shipment_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/checkout_module_title_shipping_dest"
+            android:textColor="@color/clr_f531353b"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_3" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_address_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginBottom="3dp"
+            android:lineSpacingExtra="4sp"
+            android:maxWidth="180dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_shipment_address"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Alamat Maximum Chars 350 karakter Jika Bisa" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_address_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:background="@drawable/bg_outline_address_identifier"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_4"
+            android:text="@string/label_main_address"
+            android:textColor="@color/green_nob"
+            android:visibility="gone"
+            app:layout_constraintLeft_toRightOf="@id/tv_address_name"
+            app:layout_constraintTop_toTopOf="@id/tv_address_name"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_recipient_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_3"
+            android:lineSpacingExtra="@dimen/dp_3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_address_name"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Agus Maulana" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_recipient_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_3"
+            android:lineSpacingExtra="@dimen/dp_3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_recipient_name"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="080989999" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_recipient_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="6sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_recipient_phone"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:ignore="SmallSp"
+            tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_change_recipient_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:background="@drawable/bg_green_border_rect"
+            android:foreground="?selectableItemBackground"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12"
+            android:text="@string/label_button_change_address_new"
+            android:textColor="@color/bg_button_green_border_outline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_recipient_address"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/courier_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/address_container"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/white"
+        android:padding="@dimen/dp_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/courier_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_courier"
+            android:textColor="@color/clr_f531353b"
+            app:layout_constraintBottom_toBottomOf="@+id/courier_btn"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/courier_btn"
+            app:layout_constraintTop_toTopOf="@+id/courier_btn"
+            app:typographyType="heading_5" />
+
+        <Button
+            android:id="@+id/courier_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_32"
+            android:background="@drawable/bg_green_rounded_tradein"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:text="@string/choose"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/retrieval_time_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/courier_container"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/white"
+        android:padding="@dimen/dp_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/retriever_time_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/retrieval_time"
+            android:textColor="@color/clr_f531353b"
+            app:layout_constraintBottom_toBottomOf="@+id/retrival_time_btn"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/retrival_time_btn"
+            app:layout_constraintTop_toTopOf="@+id/retrival_time_btn"
+            app:typographyType="heading_5" />
+
+        <Button
+            android:id="@+id/retrival_time_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_32"
+            android:background="@drawable/bg_green_rounded_tradein"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:text="@string/choose"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/terms_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/retrieval_time_container"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/white"
+        android:padding="@dimen/dp_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/terms_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/terms_and_conditions_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/rl_bottom_action_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_16">
+
+        <TextView
+            android:id="@+id/tv_total_payment_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:text="@string/label_wording_payment_total"
+            android:textColor="@color/font_black_secondary_54"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_total_payment_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_1"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/orange_red"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_payment_label"
+            tools:text="Rp 66.000" />
+
+        <Button
+            android:id="@+id/bt_buy"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:background="@drawable/bg_button_orange_enabled"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:text="@string/select_payment"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</RelativeLayout>

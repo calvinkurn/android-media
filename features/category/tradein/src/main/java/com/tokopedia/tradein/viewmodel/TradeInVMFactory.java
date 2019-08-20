@@ -69,6 +69,18 @@ public class TradeInVMFactory extends ViewModelProvider.AndroidViewModelFactory 
             } catch (InvocationTargetException e) {
                 throw new RuntimeException("Cannot create an instance of " + modelClass, e);
             }
+        } else if (MoneyInCheckoutViewModel.class.isAssignableFrom(modelClass)) {
+            try {
+                return modelClass.getConstructor().newInstance();
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (InstantiationException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            }
         }
         return super.create(modelClass);
     }
