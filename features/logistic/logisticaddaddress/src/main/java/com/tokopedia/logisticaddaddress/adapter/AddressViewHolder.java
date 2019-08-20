@@ -42,7 +42,6 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
     private MapView mapView;
     private View editBtn, deleteBtn, defaultBtn, layoutMap, noLocationLabel, bottomView;
     private GoogleMap googleMap;
-    private Context context;
 
     private String mCurrentLat = DEFAULT_LATITUDE;
     private String mCurrentLong = DEFAULT_LONGITUDE;
@@ -53,7 +52,6 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
     public AddressViewHolder(View itemView, ManageAddressListener listener) {
         super(itemView);
         this.listener = listener;
-        this.context = itemView.getContext();
         addressName = itemView.findViewById(R.id.address_name);
         addressDetail = itemView.findViewById(R.id.address_detail);
         mapView = itemView.findViewById(R.id.mapView);
@@ -84,11 +82,8 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        if (context != null) {
-            MapsInitializer.initialize(context);
-            this.googleMap = googleMap;
-            setGoogleMap();
-        }
+        this.googleMap = googleMap;
+        setGoogleMap();
     }
 
     private void setVisibility(AddressViewModel viewModel) {
