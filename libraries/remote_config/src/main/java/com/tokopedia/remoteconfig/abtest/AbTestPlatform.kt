@@ -10,8 +10,10 @@ import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
+import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
+import rx.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -100,46 +102,112 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
         // Gql request
         val payloads = HashMap<String, Any>()
-        payloads[REVISION]=revision
-        payloads[CLIENTID]= ANDROID_CLIENTID
+        payloads[REVISION] = revision
+        payloads[CLIENTID] = ANDROID_CLIENTID
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.gql_rollout_feature_variant), AbTestVariantPojo::class.java, payloads, false)
 
+        graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase
+                .createObservable(RequestParams.EMPTY)
+                .map { graphqlResponse ->
+                    val responseData: AbTestVariantPojo = graphqlResponse.getData(AbTestVariantPojo::class.java)
+                    val featureVariants = responseData?.dataRollout?.featureVariants
+                    val globalRevision = responseData.dataRollout.globalRev
+                    val status = responseData.dataRollout.status
 
-        graphqlUseCase.execute(RequestParams.EMPTY, object : Subscriber<GraphqlResponse>() {
-            override fun onNext(response: GraphqlResponse) {
-                val responseData = response.getData<AbTestVariantPojo>(AbTestVariantPojo::class.java)
-                val featureVariants = responseData.dataRollout.featureVariants
-                val globalRevision = responseData.dataRollout.globalRev
-                val status = responseData.dataRollout.status
-
-                // Save response to sharedPref
-                if (featureVariants != null) {
-                    for(a in featureVariants) {
-                        setString(a.feature, a.variant)
+                    // Save response to sharedPref
+                    if (featureVariants != null) {
+                        for (a in featureVariants) {
+                            setString(a.feature, a.variant)
+                        }
                     }
+
+                    if (globalRevision != null) {
+                        editor.putInt(REVISION, globalRevision).commit()
+                    }
+
                 }
+                .doOnError{ error -> {
+                    Log.d("adasda", error.toString())
+                }}
+                .doOnNext({
+                    val dataLayerAbTest = mapOf(
+                            "event" to "abtesting",
+                            "eventCategory" to "abtesting",
+                            "user_id" to "..."
+                    )
+                    Log.d("Track: ", dataLayerAbTest.toString())
+                    // TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe { object : Subscriber<GraphqlResponse>() {
+                    override fun onNext(t: GraphqlResponse?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
 
-                if(globalRevision != null) {
-                    editor.putInt(REVISION, globalRevision).commit()
-                }
-            }
+                    override fun onCompleted() {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
 
-            override fun onCompleted() {
-                Log.d("onCompleted: ", "onCompleted")
-            }
+                    override fun onError(e: Throwable?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
 
-            override fun onError(e: Throwable?) {
-                Log.d("onError: ", "onError")
-            }
+                }}
 
-        })
-
-        // Next === Send tracking
-
+//        graphqlUseCase.execute(RequestParams.EMPTY, object : Subscriber<GraphqlResponse>() {
+//            override fun onNext(response: GraphqlResponse) {
+//                val responseData = response.getData<AbTestVariantPojo>(AbTestVariantPojo::class.java)
+//                val featureVariants = responseData.dataRollout.featureVariants
+//                val globalRevision = responseData.dataRollout.globalRev
+//                val status = responseData.dataRollout.status
+//
+//                // Save response to sharedPref
+//                if (featureVariants != null) {
+//                    for (a in featureVariants) {
+//                        setString(a.feature, a.variant)
+//                    }
+//                }
+//
+//                if (globalRevision != null) {
+//                    editor.putInt(REVISION, globalRevision).commit()
+//                }
+//
+////                val dataLayerAbTest = mapOf(
+////                        "event" to "abtesting",
+////                        "eventCategory" to "abtesting",
+////                        "user_id" to "...",
+////                        "feature" to featureVariants
+////                )
+////
+////                TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
+//            }
+//
+//            override fun onCompleted() {
+//                Log.d("onCompleted: ", "onCompleted")
+//            }
+//
+//            override fun onError(e: Throwable?) {
+//                Log.d("onError: ", "onError")
+//            }
+//
+//        })
     }
+
+//    private fun sendTracking() {
+//        TrackApp.getInstance().gtm.sendGeneralEvent(
+//                mapOf(
+//                        "event" to "abtesting",
+//                        "eventCategory" to "abtesting",
+//                        "user_id" to "...",
+//                        "feature" to
+//                )
+//        )
+//    }
 
     companion object {
         val REVISION = "rev"
