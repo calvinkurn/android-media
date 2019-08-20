@@ -27,7 +27,7 @@ class VoucherGameListViewHolder(val view: View, val listener: OnClickListener) :
     }
 
     interface OnClickListener {
-        fun onItemClicked(voucherGameOperator: VoucherGameOperator)
+        fun onItemClicked(operator: VoucherGameOperator)
     }
 
 }

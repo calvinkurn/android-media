@@ -8,6 +8,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -29,7 +30,7 @@ import javax.inject.Inject
 /**
  * Created by resakemal on 12/08/19.
  */
-class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
+class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         VoucherGameListAdapterFactory>(),
         BaseEmptyViewHolder.Callback,
         SearchInputView.ResetListener,
@@ -63,7 +64,6 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
             it.run {
                 when(it) {
                     is Success -> {
-                        // TODO: Process header data
                         renderOperators(it.data)
                     }
                     is Fail -> {
@@ -94,6 +94,14 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
         searchInputView.setResetListener(this)
 
         val layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(p0: Int): Int {
+                return when (adapter.getItemViewType(p0)) {
+                    VoucherGameListViewHolder.LAYOUT -> 1
+                    else -> 3
+                }
+            }
+        }
         recycler_view.layoutManager = layoutManager
         recycler_view.addItemDecoration(VoucherGameListDecorator(8, resources))
 
@@ -120,9 +128,11 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
                 voucherGameViewModel.createParams(menuId, platformId), "", true)
     }
 
-    override fun onItemClicked(voucherGameOperator: VoucherGameOperator) {
+    override fun onItemClicked(item: Visitable<*>) { }
+
+    override fun onItemClicked(operator: VoucherGameOperator) {
         context?.run {
-            val intent = VoucherGameDetailActivity.newInstance(this, menuId, platformId, voucherGameOperator.id.toString())
+            val intent = VoucherGameDetailActivity.newInstance(this, menuId, platformId, operator.id.toString())
             startActivityForResult(intent, REQUEST_VOUCHER_GAME_DETAIL)
         }
     }
@@ -158,6 +168,7 @@ class VoucherGameListFragment: BaseSearchListFragment<VoucherGameOperator,
 
         const val EXTRA_MENU_ID = "EXTRA_MENU_ID"
         const val EXTRA_PLATFORM_ID = "EXTRA_PLATFORM_ID"
+
         const val REQUEST_VOUCHER_GAME_DETAIL = 300
 
         fun createInstance(menuId: Int, platformId: Int): VoucherGameListFragment {
