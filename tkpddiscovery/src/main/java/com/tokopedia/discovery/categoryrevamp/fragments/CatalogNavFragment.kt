@@ -6,13 +6,11 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.CatalogNavListAdapter
@@ -29,7 +27,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_nav.*
 import javax.inject.Inject
 
-class CatalogNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseCategoryAdapter.OnItemChangeView {
+class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.OnItemChangeView {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -45,6 +43,7 @@ class CatalogNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseC
 
     lateinit var catalogNavListAdapter: CatalogNavListAdapter
 
+    lateinit var categoryNavComponent: CategoryNavComponent
 
     companion object {
         private val EXTRA_CATEGORY_HEADER_MODEL = "categoryheadermodel"
@@ -58,6 +57,17 @@ class CatalogNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseC
         }
     }
 
+    override fun getAdapter(): BaseCategoryAdapter? {
+        return catalogNavListAdapter
+    }
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        categoryNavComponent = DaggerCategoryNavComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -67,7 +77,7 @@ class CatalogNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        component.inject(this)
+        categoryNavComponent.inject(this)
         if (arguments != null && arguments!!.containsKey(EXTRA_CATEGORY_HEADER_MODEL)) {
             categoryHeaderModel = arguments!!.getParcelable(EXTRA_CATEGORY_HEADER_MODEL)
         }
@@ -76,6 +86,7 @@ class CatalogNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseC
         initView()
         setUpAdapter()
         observeData()
+        setUpNavigation()
     }
 
     private fun observeData() {
@@ -103,9 +114,8 @@ class CatalogNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseC
     private fun setUpAdapter() {
         catalogTypeFactory = CatalogTypeFactoryImpl()
         catalogNavListAdapter = CatalogNavListAdapter(catalogTypeFactory, list, this)
-        val staggeredGridLayoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         catalog_recyclerview.adapter = catalogNavListAdapter
-        catalog_recyclerview.layoutManager = staggeredGridLayoutManager
+        catalog_recyclerview.layoutManager = getStaggeredGridLayoutManager()
 
     }
 
@@ -130,17 +140,16 @@ class CatalogNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseC
 
     }
 
-
-    override fun getComponent(): CategoryNavComponent = DaggerCategoryNavComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
-
-
     override fun onChangeList() {
+        catalog_recyclerview.requestLayout()
     }
 
     override fun onChangeDoubleGrid() {
+        catalog_recyclerview.requestLayout()
     }
 
     override fun onChangeSingleGrid() {
+        catalog_recyclerview.requestLayout()
     }
 
 

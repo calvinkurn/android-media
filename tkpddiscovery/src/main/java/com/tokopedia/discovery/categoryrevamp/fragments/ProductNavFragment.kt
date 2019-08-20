@@ -6,16 +6,13 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
@@ -38,25 +35,14 @@ import kotlinx.android.synthetic.main.fragment_product_nav.*
 import javax.inject.Inject
 
 
-class ProductNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseCategoryAdapter.OnItemChangeView {
+class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.OnItemChangeView {
 
-    override fun onChangeList() {
-    }
-
-    override fun onChangeDoubleGrid() {
-    }
-
-    override fun onChangeSingleGrid() {
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var productNavViewModel: ProductNavViewModel
-
-
-    var categoryHeaderModel: CategoryHeaderModel? = null
 
     lateinit var userSession: UserSession
 
@@ -68,13 +54,11 @@ class ProductNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseC
 
     lateinit var subCategoryAdapter: SubCategoryAdapter
 
+    lateinit var categoryNavComponent: CategoryNavComponent
+
     var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
 
-    var spanCount: Int = 2
-
-    lateinit var gridLayoutManager: GridLayoutManager
-    lateinit var linearLayoutManager: LinearLayoutManager
-    lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
+    var categoryHeaderModel: CategoryHeaderModel? = null
 
 
     companion object {
@@ -89,8 +73,6 @@ class ProductNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseC
         }
     }
 
-    override fun getComponent(): CategoryNavComponent = DaggerCategoryNavComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -101,33 +83,49 @@ class ProductNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        component.inject(this)
+        categoryNavComponent.inject(this)
         if (arguments != null && arguments!!.containsKey(EXTRA_CATEGORY_HEADER_MODEL)) {
             categoryHeaderModel = arguments!!.getParcelable(EXTRA_CATEGORY_HEADER_MODEL)
         }
-
         initView()
         observeData()
-        initLayoutmanagers()
         setUpAdapter()
+        setUpNavigation()
     }
 
-    private fun initLayoutmanagers() {
-        linearLayoutManager = LinearLayoutManager(activity)
 
-        gridLayoutManager = GridLayoutManager(activity, spanCount)
-        // gridLayoutManager.spanSizeLookup = onSpanSizeLookup()
-
-        staggeredGridLayoutManager = StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL)
-        //staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+    override fun getAdapter(): BaseCategoryAdapter? {
+        return productNavListAdapter
     }
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        categoryNavComponent = DaggerCategoryNavComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
+
+
+    }
+
+    override fun onChangeList() {
+        product_recyclerview.requestLayout()
+    }
+
+    override fun onChangeDoubleGrid() {
+        product_recyclerview.requestLayout()
+    }
+
+    override fun onChangeSingleGrid() {
+        product_recyclerview.requestLayout()
+    }
+
 
     private fun setUpAdapter() {
         productTypeFactory = ProductTypeFactoryImpl()
         productNavListAdapter = ProductNavListAdapter(productTypeFactory, list, this)
-        // val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         product_recyclerview.adapter = productNavListAdapter
-        product_recyclerview.layoutManager = staggeredGridLayoutManager
+        product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
 
     }
 
@@ -205,52 +203,5 @@ class ProductNavFragment : Fragment(), HasComponent<CategoryNavComponent>, BaseC
         else
             AuthUtil.md5(gcmHandler.registrationId)
     }
-
-
-    private fun getCurrentLayout(): Int {
-
-        // productTypeFactory.getRecyclerViewItem()
-
-        when (productTypeFactory.getRecyclerViewItem()) {
-            CategoryNavConstants.RecyclerView.VIEW_PRODUCT -> return 0
-            CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_2 -> return 1
-            CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_1 -> return 2
-            else -> return 1
-        }
-
-    }
-
-    fun switchLayout() {
-
-        when (getCurrentLayout()) {
-
-            0 -> {
-                spanCount = 1
-                gridLayoutManager.spanCount = spanCount
-                staggeredGridLayoutManager.spanCount = spanCount
-                productTypeFactory.setRecyclerViewItem(CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_1)
-                product_recyclerview.requestLayout()
-
-            }
-            1 -> {
-                spanCount = 1
-                gridLayoutManager.spanCount = spanCount
-                staggeredGridLayoutManager.spanCount = spanCount
-                productTypeFactory.setRecyclerViewItem(CategoryNavConstants.RecyclerView.VIEW_PRODUCT)
-                product_recyclerview.requestLayout()
-
-
-            }
-            2 -> {
-                spanCount = 2
-                gridLayoutManager.spanCount = spanCount
-                staggeredGridLayoutManager.spanCount = spanCount
-                productTypeFactory.setRecyclerViewItem(CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_2)
-                product_recyclerview.requestLayout()
-
-            }
-        }
-    }
-
 
 }

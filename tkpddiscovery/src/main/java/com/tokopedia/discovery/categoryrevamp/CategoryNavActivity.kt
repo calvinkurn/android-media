@@ -8,31 +8,27 @@ import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.fragments.CatalogNavFragment
+import com.tokopedia.discovery.categoryrevamp.fragments.CategoryNavigationListener
 import com.tokopedia.discovery.categoryrevamp.fragments.ProductNavFragment
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem
 import kotlinx.android.synthetic.main.activity_category_nav.*
-import java.util.*
 
 
-class CategoryNavActivity : BaseActivity() {
+class CategoryNavActivity : BaseActivity(), CategoryNavigationListener {
 
     private var searchSectionPagerAdapter: SearchSectionPagerAdapter? = null
     private var isForceSwipeToShop: Boolean = false
     private var activeTabPosition: Int = 0
 
     private val EXTRA_CATEGORY_HEADER_VIEW_MODEL = "CATEGORY_HADES_MODEL"
-    private val EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION"
-
-    private var departmentId: String? = null
-    private var categoryName: String? = null
-    private var categoryUrl: String? = null
-    private var trackerAttribution: String? = null
 
     private lateinit var categoryHeaderModel: CategoryHeaderModel
 
     val searchSectionItemList = ArrayList<SearchSectionItem>()
+
+    private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
 
     private val STATE_GRID = 1
     private val STATE_LIST = 2
@@ -49,8 +45,10 @@ class CategoryNavActivity : BaseActivity() {
     private fun initSwitchButton() {
         img_display_button.tag = STATE_GRID
         img_display_button.setOnClickListener {
-            (searchSectionItemList[0].fragment as ProductNavFragment).switchLayout()
 
+            for (navListener in navigationListenerList) {
+                navListener.onChangeGridClick()
+            }
             when (img_display_button.tag) {
 
                 STATE_GRID -> {
@@ -82,10 +80,6 @@ class CategoryNavActivity : BaseActivity() {
         val bundle = intent.extras
         if (bundle.getParcelable<Parcelable>(EXTRA_CATEGORY_HEADER_VIEW_MODEL) != null) run {
             categoryHeaderModel = bundle.getParcelable<CategoryHeaderModel>(EXTRA_CATEGORY_HEADER_VIEW_MODEL)
-            //trackerAttribution = bundle.getString(EXTRA_TRACKER_ATTRIBUTION, "")
-            //departmentId = categoryHeaderModel!!.getDepartementId()
-            //categoryName = categoryHeaderModel!!.getHeaderModel().getCategoryName()
-            //categoryPresenter.getCategoryPage1(categoryHeaderModel)
         }
     }
 
@@ -147,49 +141,11 @@ class CategoryNavActivity : BaseActivity() {
     }
 
     private fun initToolbar() {
-        // setSupportActionBar(toolbar)
-/*
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
-            supportActionBar!!.setHomeButtonEnabled(true)
-        }*/
-
-        // toolbar.setOnClickListener { moveToAutoCompleteActivity() }
+        et_search.text = categoryHeaderModel.headerModel.categoryName;
     }
 
+    override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {
+        navigationListenerList.add(clickListener)
+    }
 
-    /* private fun moveToAutoCompleteActivity() {
-         ActivityCompat.startActivityForResult(
-                 this,
-                 getAutoCompleteIntent(),
-                 AUTO_COMPLETE_ACTIVITY_REQUEST_CODE,
-                 getOptionsForTransitionAnimation().toBundle())
-     }*/
-
-
-    /* private fun getAutoCompleteIntent(): Intent {
-         val autoCompleteSearchParameter = SearchParameter()
-         autoCompleteSearchParameter.setSearchQuery(searchParameter.getSearchQuery())
-
-         val intent = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
-         intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, autoCompleteSearchParameter)
-
-         return intent
-     }*/
-
-    /*  private fun findViews() {
-          var toolbar = findViewById<Toolbar>(R.id.toolbar)
-          var container = findViewById<FrameLayout>(R.id.container)
-          var loadingView = findViewById<ProgressBar>(R.id.progressBar)
-          var tabLayout = findViewById<TabLayout>(R.id.tabs)
-          var viewPager = findViewById<ViewPager>(R.id.pager)
-          //bottomSheetFilterView = findViewById<BottomSheetFilterView>(R.id.bottomSheetFilter)
-          var buttonFilter = findViewById<TextView>(R.id.button_filter)
-          var iconFilter = findViewById<View>(R.id.icon_filter)
-          var buttonSort = findViewById<TextView>(R.id.button_sort)
-          var iconSort = findViewById<View>(R.id.icon_sort)
-          var searchNavDivider = findViewById<View>(R.id.search_nav_divider)
-          var searchNavContainer = findViewById<View>(R.id.search_nav_container)
-      }*/
 }

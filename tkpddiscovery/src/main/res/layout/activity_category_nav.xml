@@ -54,10 +54,8 @@
                         android:enabled="true"
                         android:focusable="false"
                         android:gravity="center_vertical"
-                        android:hint="outwear"
                         android:inputType="none"
                         android:maxLines="1"
-                        android:text="outwear"
                         android:textColorHint="@android:color/black"
                         android:textSize="@dimen/sp_16" />
 
