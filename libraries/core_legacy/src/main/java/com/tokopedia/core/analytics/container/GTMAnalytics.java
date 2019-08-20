@@ -143,13 +143,14 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
-        Observable.just(values)
+        Map<String, Object> data = new HashMap<>(values);
+        Observable.just(data)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .map(uid -> {
-                    log(getContext(), eventName, values);
-                    getTagManager().getDataLayer().pushEvent(eventName, values);
-                    pushIris(eventName, values);
+                .map(it -> {
+                    log(getContext(), eventName, it);
+                    getTagManager().getDataLayer().pushEvent(eventName, it);
+                    pushIris(eventName, it);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
@@ -373,13 +374,14 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void pushGeneral(Map<String, Object> values) {
-        Observable.just(values)
+        Map<String, Object> data = new HashMap<>(values);
+        Observable.just(data)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .map(map -> {
-                    log(getContext(), null, values);
-                    TagManager.getInstance(getContext()).getDataLayer().push(values);
-                    pushIris("", values);
+                .map(it -> {
+                    log(getContext(), null, it);
+                    TagManager.getInstance(getContext()).getDataLayer().push(it);
+                    pushIris("", it);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
