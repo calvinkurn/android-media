@@ -63,7 +63,7 @@ public class RemoteConfigInstance {
         Preconditions.checkState(!deleted.get(), "AB Test Instance was deleted!");
     }
 
-    public RemoteConfig getABTestPlatform() {
+    public AbTestPlatform getABTestPlatform() {
         checkNotDeleted();
         getInstance();
 

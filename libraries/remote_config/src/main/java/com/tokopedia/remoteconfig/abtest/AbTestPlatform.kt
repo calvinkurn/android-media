@@ -76,6 +76,11 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         }
     }
 
+    fun fetchByType(listener: RemoteConfig.Listener?) {
+        editor.clear().commit()
+        fetch(listener)
+    }
+
     override fun fetch(listener: RemoteConfig.Listener?) {
         // =================== ToDo =================== //
         // 1. Request gql
