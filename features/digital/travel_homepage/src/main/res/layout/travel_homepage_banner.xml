@@ -31,7 +31,7 @@
                 android:id="@+id/img_banner_background"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/travel_homepage_banner_background_height"
-                android:scaleType="centerCrop" />
+                android:background="@color/tkpd_main_green"/>
 
             <ImageView
                 android:id="@+id/overlay_img"
@@ -71,7 +71,11 @@
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_121"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/banner_margin_top"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
