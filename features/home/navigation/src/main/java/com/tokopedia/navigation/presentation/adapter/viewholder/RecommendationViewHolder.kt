@@ -2,6 +2,7 @@ package com.tokopedia.navigation.presentation.adapter.viewholder
 
 import android.app.Activity
 import android.support.annotation.LayoutRes
+import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -12,9 +13,10 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.InboxGtmTracker
 import com.tokopedia.navigation.domain.model.Recommendation
-import com.tokopedia.navigation.util.RecomSnackBar
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * Author errysuprayogi on 13,March,2019
@@ -86,17 +88,18 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
     }
 
     private fun showSuccessAddWishlist(view: View, message: String){
-        RecomSnackBar.showSuccessWithAction(view, message, view.context.getString(R.string.recom_go_to_wishlist)){
+        Toaster.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
+                view.context.getString(R.string.recom_go_to_wishlist), View.OnClickListener {
             RouteManager.route(view.context, ApplinkConst.WISHLIST)
-        }
+        })
     }
 
     private fun showSuccessRemoveWishlist(view: View, message: String){
-        RecomSnackBar.showSuccess(view, message)
+        Toaster.showNormal(view, message, Snackbar.LENGTH_LONG)
     }
 
     private fun showError(view: View, throwable: Throwable?){
-        RecomSnackBar.showError(view, throwable)
+        Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
     }
 
     companion object {

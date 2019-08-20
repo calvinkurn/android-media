@@ -28,8 +28,8 @@ import retrofit2.Retrofit;
 public class SellerDashboardGMCommonModule {
 
     @Provides
-    public CacheApiInterceptor provideCacheApiInterceptor() {
-        return new CacheApiInterceptor();
+    public CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
+        return new CacheApiInterceptor(context);
     }
 
     @Provides
