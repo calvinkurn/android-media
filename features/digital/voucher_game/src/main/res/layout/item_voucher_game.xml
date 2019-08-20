@@ -52,11 +52,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_title"
+        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
-        android:textColor="@color/black_70"
         android:layout_gravity="center"
+        android:textColor="@color/black_70"
         app:typographyType="small"
         tools:text="PUBG: Mobile" />
 
