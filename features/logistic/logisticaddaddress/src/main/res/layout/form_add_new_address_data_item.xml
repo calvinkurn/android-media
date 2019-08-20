@@ -47,7 +47,7 @@
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
             android:textColor="#ae31353b"
-            android:textSize="@dimen/sp_12" />
+            android:textSize="@dimen/sp_14" />
 
     </android.support.design.widget.TextInputLayout>
 
