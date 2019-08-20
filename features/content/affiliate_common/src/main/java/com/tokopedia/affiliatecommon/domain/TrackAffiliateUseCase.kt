@@ -1,5 +1,6 @@
 package com.tokopedia.affiliatecommon.domain
 
+import com.tokopedia.affiliatecommon.MUTATION_AFFILIATE_TRACKING
 import com.tokopedia.affiliatecommon.data.pojo.trackaffiliate.TrackAffiliateResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -7,12 +8,15 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * @author by milhamj on 2019-08-20.
  */
-class TrackAffiliateUseCase(val query: String,
-                            val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<Boolean>() {
+class TrackAffiliateUseCase @Inject constructor(
+        @Named(MUTATION_AFFILIATE_TRACKING) val query: String,
+        val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<Boolean>() {
 
     var params: Map<String, Any> = mapOf()
 

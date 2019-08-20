@@ -7,7 +7,6 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
-import com.tokopedia.affiliatecommon.data.pojo.trackaffiliate.TrackAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -17,7 +16,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.debugTrace
-import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -47,8 +45,6 @@ import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
-import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel.Companion.ParamAffiliate.TRACKER_ID
-import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel.Companion.ParamAffiliate.UNIQUE_STRING
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -92,9 +88,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     val isUserHasShop: Boolean
         get() = userSessionInterface.hasShop()
-
-    var affiliateUniqueString: String? = null
-    var trackerId: String? = null
 
     private var lazyNeedForceUpdate = false
 
@@ -299,15 +292,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val requests = mutableListOf(variantRequest, ratingRequest, wishlistCountRequest, voucherRequest,
                     shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
                     helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest, shopFeatureRequest)
-
-            if (affiliateUniqueString.hasValue() && trackerId.hasValue()){
-                val affiliateTrackerParams = mapOf(UNIQUE_STRING to affiliateUniqueString,
-                        TRACKER_ID to trackerId)
-                val affiliateTrackerequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.MUTATION_AFFILIATE_TRACKING],
-                        TrackAffiliateResponse::class.java,
-                        affiliateTrackerParams)
-                requests.add(affiliateTrackerequest)
-            }
 
             val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
             try {

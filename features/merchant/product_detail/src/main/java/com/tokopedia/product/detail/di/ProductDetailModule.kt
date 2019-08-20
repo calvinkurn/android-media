@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.di
 
+import com.tokopedia.affiliatecommon.di.AffiliateCommonModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import dagger.Module
 import dagger.Provides
@@ -9,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @ProductDetailScope
-@Module (includes = [ProductRestModule::class])
+@Module (includes = [ProductRestModule::class, AffiliateCommonModule::class])
 class ProductDetailModule {
 
     @ProductDetailScope
@@ -23,4 +26,10 @@ class ProductDetailModule {
     @Provides
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @ProductDetailScope
+    @Provides
+    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
+        return MultiRequestGraphqlUseCase(graphqlRepository)
+    }
 }
