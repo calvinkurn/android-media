@@ -35,7 +35,7 @@ class QuickReplyAdapter(private var quickReplyListViewModel: QuickReplyListViewM
                 dialog.setTitle(mContext.getString(R.string.cb_bot_end_live_chat))
                 dialog.setDesc(mContext.getString(R.string.cb_bot_end_live_chat_desc))
                 dialog.setBtnOk(mContext.getString(R.string.cb_bot_yes_end_text))
-                dialog.setBtnCancel(mContext.getString(R.string.cb_bot_ok_text))
+                dialog.setBtnCancel(mContext.getString(R.string.cb_bot_cancel_text))
                 dialog.setOnOkClickListener{
                     listener.onQuickReplyClicked(quickReplyListViewModel, model)
                     dialog.dismiss()
