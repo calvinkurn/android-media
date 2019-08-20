@@ -1,16 +1,13 @@
 package com.tokopedia.feedcomponent.util.util
 
 import android.content.Context
-import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
-import android.graphics.drawable.Drawable
-import android.support.v7.content.res.AppCompatResources
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 
 /**
@@ -35,47 +32,8 @@ class ShareAdapter(private val mShareTypes : List<ShareBottomSheets.ShareType>)
         this.onItemClickListener = onItemClickListener
     }
 
-//    private fun getYoutubePosition(): Int {
-//        return mResolveActivities.size
-//    }
-//
-//    private fun getCopyPosition(): Int {
-//        return mResolveActivities.size
-//    }
-//
-//    private fun getOtherPosition(): Int {
-//        return mResolveActivities.size + 1
-//    }
-
     override fun onBindViewHolder(holder: ShareViewHolder, position: Int) {
         holder.bind(mShareTypes[position], onItemClickListener)
-
-//        when(position) {
-////            getYoutubePosition() -> { //for next development
-////                resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_copy_clipboard)
-////                title = holder.itemView.context.getString(R.string.title_youtube)
-////                type = ShareBottomSheets.KEY_YOUTUBE
-////            }
-//            getCopyPosition() -> {
-//                resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_copy_clipboard)
-//                title = holder.itemView.context.getString(R.string.copy)
-//                type = ShareBottomSheets.KEY_COPY
-//            }
-//            getOtherPosition() -> {
-//                resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_btn_more)
-//                title = holder.itemView.context.getString(R.string.other)
-//                type = ShareBottomSheets.KEY_OTHER
-//            }
-//            else -> {
-//                val resolveActivity = mResolveActivities[position]
-//                resources = resolveActivity.loadIcon(mPackageManager)
-//                title = resolveActivity.loadLabel(mPackageManager)
-//                type = resolveActivity.activityInfo.packageName
-//                if (title == ShareBottomSheets.KEY_INSTAGRAM_DIRECT) {
-//                    title = ShareBottomSheets.NAME_INSTAGRAM
-//                }
-//            }
-//        }
     }
 
     override fun getItemCount(): Int {
@@ -94,7 +52,7 @@ class ShareAdapter(private val mShareTypes : List<ShareBottomSheets.ShareType>)
             iconView.setImageDrawable(
                     when (type) {
                         is ShareBottomSheets.ShareType.ActivityShare -> type.getActivityIcon(context)
-                        is ShareBottomSheets.ShareType.ActionShare -> AppCompatResources.getDrawable(context, type.imageResource)
+                        is ShareBottomSheets.ShareType.ActionShare -> MethodChecker.getDrawable(context, type.imageResource)
                     }
             )
 
@@ -102,22 +60,5 @@ class ShareAdapter(private val mShareTypes : List<ShareBottomSheets.ShareType>)
 
             itemView.setOnClickListener { clickListener?.onItemClick(type) }
         }
-
-//        fun bindItem(resource: Drawable?, title: CharSequence?, type: String?, clickListener: OnItemClickListener?) {
-//            resource.let {
-//                iconView.setImageDrawable(it)
-//            }
-//            title.let {
-//                labelView.text = it
-//            }
-//            type?.let {typeString ->
-//                clickListener?.let {listener ->
-//                    itemView.setOnClickListener{
-//                        listener.onItemClick(typeString)
-//                    }
-//                }
-//            }
-//        }
-
     }
 }

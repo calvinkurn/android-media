@@ -7,7 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.net.Uri
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.content.LocalBroadcastManager
@@ -83,7 +83,6 @@ import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kotlin.extensions.media.toTempFile
-import com.tokopedia.kotlin.extensions.media.toUri
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.profile.ProfileModuleRouter
@@ -109,6 +108,7 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -352,22 +352,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return ProfileTypeFactoryImpl(
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
                 this,
-            this,
-            this::onOtherProfilePostItemClick,
-            userSession)
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this::onOtherProfilePostItemClick,
+                userSession)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -930,9 +930,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     ProfileAnalytics.Element.IMAGE,
                     redirectLink
             )
-            if (!isSingleItem){
-                activity?.let { startActivity(MediaPreviewActivity.createIntent(it,
-                        model.id.toString(), contentPosition))}
+            if (!isSingleItem) {
+                activity?.let {
+                    startActivity(MediaPreviewActivity.createIntent(it,
+                            model.id.toString(), contentPosition))
+                }
             }
         }
     }
@@ -1004,12 +1006,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onVideoPlayerClicked(
-        positionInFeed: Int,
-        contentPosition: Int,
-        postId: String) {
+            positionInFeed: Int,
+            contentPosition: Int,
+            postId: String) {
         startActivity(VideoDetailActivity.getInstance(
-            activity!!,
-            postId))
+                activity!!,
+                postId))
     }
 
     override fun onEmptyComponentClicked() {
@@ -1161,18 +1163,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             View.OnClickListener {
                 ImageHandler.loadImageWithTarget(context, "https://blogsimages.adobe.com/creativecloud/files/2014/06/creativecloud_wallpaper_2880x1800.jpg", object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                        ShareBottomSheets.newInstance(
-                                this@ProfileFragment,
-                                element.name,
-                                element.avatar,
-                                element.link,
-                                String.format(getString(R.string.profile_share_text),
-                                        element.link),
-                                String.format(getString(R.string.profile_other_share_title)),
-                                context?.let { ctx -> resource?.toTempFile("test")?.toUri(ctx)?.toString() }
-                                ).show(fragmentManager)
-                        profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
-                        isShareProfile = true
+                        showShareBottomSheet(element, resource)
+                    }
+
+                    override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
+                        showShareBottomSheet(element, null)
                     }
                 })
             }
@@ -1719,6 +1714,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         }
         linkerData = null
+    }
+
+    private fun showShareBottomSheet(element: ProfileHeaderViewModel, imageBitmap: Bitmap?) {
+        ShareBottomSheets.newInstance(
+                this@ProfileFragment,
+                element.name,
+                element.avatar,
+                element.link,
+                String.format(getString(R.string.profile_share_text),
+                        element.link),
+                String.format(getString(R.string.profile_other_share_title)),
+                MethodChecker.getUri(context, imageBitmap?.toTempFile("test")).toString()
+        ).show(fragmentManager)
+        profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
+        isShareProfile = true
     }
 
     private fun sendTracker(packageName: String) {

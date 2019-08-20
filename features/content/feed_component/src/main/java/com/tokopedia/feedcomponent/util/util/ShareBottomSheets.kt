@@ -2,12 +2,10 @@ package com.tokopedia.feedcomponent.util.util
 
 import android.app.Dialog
 import android.content.*
-import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO
 import android.support.annotation.DrawableRes
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
@@ -109,6 +107,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         val IMAGE_URI = "IMAGE_URI"
         val PRODUCT_DESCRIPTION = "PRODUCT_DESCRIPTION"
         val PRODUCT_URI = "PRODUCT_URI"
+
         private const val KEY_WHATSAPP = "whatsapp"
         private const val KEY_LINE = "line"
         private const val KEY_TWITTER = "twitter"
@@ -116,11 +115,12 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         private const val KEY_GOOGLE = "google"
         private const val KEY_INSTAGRAM = "instagram"
         private const val KEY_INSTAGRAM_STORY = "instagram_story"
+        private const val KEY_OTHER = "lainnya"
+        private const val KEY_COPY = "salinlink"
+
         val KEY_INSTAGRAM_DIRECT = "Direct"
         val NAME_INSTAGRAM = "Instagram"
         val KEY_YOUTUBE = "youtube"
-        val KEY_OTHER = "lainnya"
-        val KEY_COPY = "salinlink"
 
         /**
          * Content Type
@@ -152,7 +152,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                 override val key: String,
                 override val displayName: String,
                 override val mimeType: MimeType,
-                @DrawableRes val imageResource: Int
+                @DrawableRes val imageResource: Int,
+                val handler: () -> Unit
         ) : ShareType()
     }
 
@@ -162,14 +163,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         VIDEO(TYPE_VIDEO)
     }
 
-    private val textShareApps = arrayOf(CLASS_NAME_WHATSAPP,
-            CLASS_NAME_FACEBOOK,
-            CLASS_NAME_LINE,
-            CLASS_NAME_TWITTER,
-            CLASS_NAME_INSTAGRAM)
-
     private lateinit var data: LinkerData
-    private lateinit var adapter: ShareAdapter
     private var isAdding: Boolean = false
     private lateinit var listener: OnShareItemClickListener
 
@@ -199,10 +193,6 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         return arguments?.getString(EXTRA_TITLE) ?: getString(R.string.title_share)
     }
 
-    override fun configView(parentView: View) {
-        super.configView(parentView)
-    }
-
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mProgressBar: ProgressBar
     private lateinit var mLayoutError: LinearLayout
@@ -227,53 +217,16 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun init() {
-        /*activity?.let {
-            val textIntent = getIntent("", TYPE_TEXT)
-            val textResolvedActivities = it.packageManager
-                    .queryIntentActivities(textIntent, 0)
-
-            val mediaIntent = getIntent("", TYPE_IMAGE)
-            val mediaResolvedActivities = it.packageManager
-                    .queryIntentActivities(mediaIntent, 0)
-
-            val media: List<ResolveInfo> = (validate(textResolvedActivities) + validate(mediaResolvedActivities)).distinctBy { resolveInfo -> resolveInfo.activityInfo.packageName }
-            adapter = ShareAdapter(media, it.packageManager)
-            mRecyclerView.adapter = adapter
-            adapter.notifyDataSetChanged()
-            adapter.setOnItemClickListener(this)
-        }*/
-
-        adapter = ShareAdapter(generateAvailableShareTypes(MimeType.IMAGE))
+        val adapter = ShareAdapter(generateAvailableShareTypes(MimeType.IMAGE))
         mRecyclerView.adapter = adapter
         adapter.setOnItemClickListener(this)
     }
 
-    private fun validate(resolvedActivities: List<ResolveInfo>): List<ResolveInfo> {
-        return resolvedActivities
-                .filter {
-                    textShareApps.contains(it.activityInfo.name)
-                }
-    }
-
     override fun onItemClick(type: ShareType) {
-//        when (packageName) {
-//            KEY_OTHER -> {
-//                actionMore(packageName)
-//            }
-//            KEY_COPY -> {
-//                actionCopy()
-//            }
-//            KEY_YOUTUBE -> {
-//
-//            }
-//            else -> {
-//                actionShare(packageName)
-//            }
-//        }
         when (type) {
-            is ShareType.ActivityShare -> activity?.startActivityForResult(type.intent, 0)
+            is ShareType.ActivityShare -> doActivityShare(type)
+            is ShareType.ActionShare -> doActionShare(type)
         }
-//        showToast("${type.displayName} - ${type.mimeType}")
     }
 
     private fun actionCopy() {
@@ -297,17 +250,16 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         showToast(getString(R.string.msg_copy))
     }
 
-    private fun actionShare(packageName: String) {
-        val media = constantMedia(packageName)
-        data.source = media
-        activity?.let {
-            ShareSocmedHandler(it).shareData(it, packageName,
-                    TYPE_TEXT, data.originalTextContent, "", null, "")
-            sendTracker(packageName)
-        }
+    private fun doActivityShare(type: ShareType.ActivityShare) {
+        startActivity(type.intent)
+        sendTracker(type.key)
     }
 
-    private fun actionMore(packageName: String) {
+    private fun doActionShare(type: ShareType.ActionShare) {
+        type.handler()
+    }
+
+    private fun actionMore() {
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(
                         0, DataMapper().getLinkerShareData(data),
@@ -315,7 +267,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                             override fun urlCreated(linkerShareData: LinkerShareResult) {
                                 val intent = getIntent(data.originalTextContent, TYPE_TEXT)
                                 startActivity(Intent.createChooser(intent, getString(R.string.other)))
-                                sendTracker(packageName)
+                                sendTracker(KEY_OTHER)
                             }
 
                             override fun onError(linkerError: LinkerError) {
@@ -326,20 +278,21 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         )
     }
 
-    private fun getIntent(contains: String, type: String): Intent {
+    private fun getIntent(textToShare: String, type: String): Intent {
         return Intent(Intent.ACTION_SEND)
                 .setType(type)
                 .putExtra(Intent.EXTRA_TITLE, data.name)
                 .putExtra(Intent.EXTRA_SUBJECT, data.name)
-                .putExtra(Intent.EXTRA_TEXT, contains)
+                .putExtra(Intent.EXTRA_TEXT, textToShare)
     }
 
     private fun getTextIntent(packageName: String, className: String): Intent {
-        return Intent()
+        return Intent(Intent.ACTION_SEND)
                 .setType(MimeType.TEXT.typeString)
                 .setComponent(ComponentName(packageName, className))
                 .putExtra(Intent.EXTRA_TITLE, data.name)
                 .putExtra(Intent.EXTRA_SUBJECT, data.name)
+                .putExtra(Intent.EXTRA_TEXT, arguments?.getString(EXTRA_SHARE_FORMAT).orEmpty())
     }
 
     private fun getInstagramStoryIntent(mimeType: MimeType, mediaUri: Uri, destinationUrl: String): Intent {
@@ -423,17 +376,18 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
 
     private fun generateAvailableShareTypes(type: MimeType): List<ShareType> {
         return mutableListOf<ShareType>().apply {
-            add(ShareType.ActivityShare(KEY_WHATSAPP, "WhatsApp", MimeType.TEXT, getTextIntent(PACKAGE_NAME_WHATSAPP, CLASS_NAME_WHATSAPP)))
-            add(ShareType.ActivityShare(KEY_FACEBOOK, "Facebook", MimeType.TEXT, getTextIntent(PACKAGE_NAME_FACEBOOK, CLASS_NAME_FACEBOOK)))
-            add(ShareType.ActivityShare(KEY_LINE, "LINE", MimeType.TEXT, getTextIntent(PACKAGE_NAME_LINE, CLASS_NAME_LINE)))
-            add(ShareType.ActivityShare(KEY_TWITTER, "Twitter", MimeType.TEXT, getTextIntent(PACKAGE_NAME_TWITTER, CLASS_NAME_TWITTER)))
-            add(ShareType.ActivityShare(KEY_INSTAGRAM, "Instagram", MimeType.TEXT, getTextIntent(PACKAGE_NAME_INSTAGRAM, CLASS_NAME_INSTAGRAM)))
+            add(ShareType.ActivityShare(KEY_WHATSAPP, getString(R.string.share_whatsapp), MimeType.TEXT, getTextIntent(PACKAGE_NAME_WHATSAPP, CLASS_NAME_WHATSAPP)))
+            add(ShareType.ActivityShare(KEY_FACEBOOK, getString(R.string.share_facebook), MimeType.TEXT, getTextIntent(PACKAGE_NAME_FACEBOOK, CLASS_NAME_FACEBOOK)))
+            add(ShareType.ActivityShare(KEY_LINE, getString(R.string.share_line).toUpperCase(), MimeType.TEXT, getTextIntent(PACKAGE_NAME_LINE, CLASS_NAME_LINE)))
+            add(ShareType.ActivityShare(KEY_TWITTER, getString(R.string.share_twitter), MimeType.TEXT, getTextIntent(PACKAGE_NAME_TWITTER, CLASS_NAME_TWITTER)))
+            add(ShareType.ActivityShare(KEY_INSTAGRAM, getString(R.string.share_instagram), MimeType.TEXT, getTextIntent(PACKAGE_NAME_INSTAGRAM, CLASS_NAME_INSTAGRAM)))
 
-            if (type != MimeType.TEXT && arguments?.getString(EXTRA_MEDIA_URL) != null)
-                add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, "Instagram Story", type, getInstagramStoryIntent(type, Uri.parse(arguments!!.getString(EXTRA_MEDIA_URL)), "https://www.tokopedia.com/")))
+            val mediaUrl: String? = arguments?.getString(EXTRA_MEDIA_URL)
+            if (type != MimeType.TEXT && mediaUrl != null)
+                add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, getString(R.string.share_instagram_story), type, getInstagramStoryIntent(type, Uri.parse(mediaUrl), "https://www.tokopedia.com/")))
 
-            add(ShareType.ActionShare(KEY_COPY, "Salin Link", MimeType.TEXT, R.drawable.ic_copy_clipboard))
-            add(ShareType.ActionShare(KEY_OTHER, "Lainnya", MimeType.TEXT, R.drawable.ic_btn_more))
+            add(ShareType.ActionShare(KEY_COPY, getString(R.string.copy), MimeType.TEXT, R.drawable.ic_copy_clipboard, ::actionCopy))
+            add(ShareType.ActionShare(KEY_OTHER, getString(R.string.other), MimeType.TEXT, R.drawable.ic_btn_more, ::actionMore))
         }.filterNot { shareType -> shareType is ShareType.ActivityShare && shareType.getResolveActivity(context as Context) == null }
     }
 
