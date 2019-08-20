@@ -1,8 +1,8 @@
 package com.tokopedia.discovery.categoryrevamp.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.discovery.categoryrevamp.view.fragments.activity.CatalogNavFragment
-import com.tokopedia.discovery.categoryrevamp.view.fragments.activity.ProductNavFragment
+import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
+import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import dagger.Component
 
 

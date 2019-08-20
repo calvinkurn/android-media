@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categoryrevamp.view.fragments.activity
+package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 
 import android.arch.lifecycle.Observer

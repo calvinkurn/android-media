@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categoryrevamp.view.fragments.activity
+package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 import android.content.Context
 import android.content.res.Configuration
@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
-
+import com.tokopedia.discovery.categoryrevamp.view.CategoryNavigationListener
 
 abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
