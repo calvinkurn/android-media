@@ -26,6 +26,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetail
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionTransactionViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyCommissionViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.coroutinedata.CommissionData
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -159,7 +160,7 @@ class CommissionDetailFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFa
     fun onErrorGetFirstData(throwable: Throwable) {
         val dataList: MutableList<Visitable<*>> = ArrayList()
         val errorNetworkModel = ErrorNetworkModel()
-        errorNetworkModel.errorMessage = throwable.localizedMessage
+        errorNetworkModel.errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         errorNetworkModel.onRetryListener = this
         dataList.add(ErrorNetworkModel())
         renderList(dataList)
