@@ -91,6 +91,9 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private VoucherOrdersItemUiModel voucherOrdersItemUiModel;
     private VoucherLogisticItemUiModel voucherLogisticItemUiModel;
 
+    private boolean isLeasingProduct;
+    private int bookingFee;
+
     public ShipmentCartItemModel() {
     }
 
@@ -146,6 +149,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         hasPromoList = in.readByte() != 0;
         voucherOrdersItemUiModel = in.readParcelable(VoucherOrdersItemUiModel.class.getClassLoader());
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
+        isLeasingProduct = in.readByte() != 0;
+        bookingFee = in.readInt();
     }
 
     @Override
@@ -201,6 +206,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeParcelable(voucherOrdersItemUiModel, flags);
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
+        dest.writeByte((byte) (isLeasingProduct ? 1 : 0));
+        dest.writeInt(bookingFee);
     }
 
     @Override
@@ -272,6 +279,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
         newShipmentCartItemModel.setVoucherOrdersItemUiModel(shipmentCartItemModel.getVoucherOrdersItemUiModel());
         newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
+        newShipmentCartItemModel.setIsLeasingProduct(shipmentCartItemModel.getIsLeasingProduct());
         return newShipmentCartItemModel;
     }
 
@@ -672,6 +680,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     public void setSaveStateFlag(boolean saveStateFlag) {
         this.saveStateFlag = saveStateFlag;
     }
+
+    public boolean getIsLeasingProduct() { return isLeasingProduct; }
+
+    public void setIsLeasingProduct(boolean leasingProduct) { isLeasingProduct = leasingProduct; }
+
+    public int getBookingFee() { return bookingFee; }
+
+    public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
 
     @Override
     public boolean equals(Object o) {

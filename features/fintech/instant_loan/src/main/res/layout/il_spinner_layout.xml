@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
-        android:src="@drawable/ic_arrow_down_grey"
+        app:srcCompat="@drawable/ic_arrow_down_grey"
         app:layout_constraintBottom_toBottomOf="@+id/tv_label_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_label_text" />
