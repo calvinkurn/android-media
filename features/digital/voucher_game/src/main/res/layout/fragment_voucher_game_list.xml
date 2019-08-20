@@ -14,7 +14,8 @@
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:siv_search_hint="Search any games" />
+            app:siv_search_hint="Search any games"
+            app:layout_scrollFlags="scroll|enterAlways" />
 
     </android.support.design.widget.AppBarLayout>
 
