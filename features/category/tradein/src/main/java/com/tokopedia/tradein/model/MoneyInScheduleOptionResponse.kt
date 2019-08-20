@@ -6,7 +6,7 @@ data class MoneyInScheduleOptionResponse(
         val data: ResponseData?
 ) {
     data class ResponseData(
-            val getPickupScheduleOption: GetPickupScheduleOption?
+            val getPickupScheduleOption: GetPickupScheduleOption
     ) {
         data class GetPickupScheduleOption(
                 @SerializedName("ScheduleDate")

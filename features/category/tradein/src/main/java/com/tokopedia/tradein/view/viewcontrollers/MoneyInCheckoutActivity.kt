@@ -1,12 +1,11 @@
 package com.tokopedia.tradein.view.viewcontrollers
 
 import android.arch.lifecycle.Observer
-import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.View
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.Utils
+import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
 import com.tokopedia.tradein.viewmodel.MoneyInCheckoutViewModel
@@ -20,6 +19,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity() {
 
     override fun initView() {
         moneyInCheckoutViewModel.getAddress(getMeGQlString(R.raw.gql_kero_get_address))
+        moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
         setObservers()
     }
 
@@ -44,6 +44,28 @@ class MoneyInCheckoutActivity : BaseTradeInActivity() {
                 }
             }
         })
+        moneyInCheckoutViewModel.getCourierRatesLiveData().observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    setCourierRatesBottomSheet(it.data)
+                }
+                is Fail -> {
+                }
+            }
+        })
+        moneyInCheckoutViewModel.getCheckoutDataLiveData().observe(this, Observer {
+            when (it) {
+                is Success -> {
+
+                }
+                is Fail -> {
+                }
+            }
+        })
+    }
+
+    private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
+        data.error
     }
 
     private fun setScheduleBottomSheet(scheduleDate: List<ScheduleDate?>) {

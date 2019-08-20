@@ -5,15 +5,15 @@ import com.google.gson.annotations.SerializedName
 
 data class MoneyInCheckoutMutationResponse(
     @SerializedName("data")
-    val data: ResponseData?
+    val data: ResponseData
 ) {
     data class ResponseData(
         @SerializedName("checkout_general")
-        val checkoutGeneral: CheckoutGeneral?
+        val checkoutGeneral: CheckoutGeneral
     ) {
         data class CheckoutGeneral(
             @SerializedName("data")
-            val data: CheckoutData?,
+            val data: CheckoutData,
             @SerializedName("header")
             val header: Header?
         ) {
@@ -30,7 +30,7 @@ data class MoneyInCheckoutMutationResponse(
 
             data class CheckoutData(
                 @SerializedName("data")
-                val data: Data?,
+                val data: Data,
                 @SerializedName("error")
                 val error: String?,
                 @SerializedName("error_state")

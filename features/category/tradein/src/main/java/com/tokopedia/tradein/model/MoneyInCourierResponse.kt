@@ -9,11 +9,11 @@ data class MoneyInCourierResponse(
 ) {
     data class ResponseData(
         @SerializedName("ratesV4")
-        val ratesV4: RatesV4?
+        val ratesV4: RatesV4
     ) {
         data class RatesV4(
             @SerializedName("data")
-            val data: Data?
+            val data: Data
         ) {
             data class Data(
                 @SerializedName("error")
