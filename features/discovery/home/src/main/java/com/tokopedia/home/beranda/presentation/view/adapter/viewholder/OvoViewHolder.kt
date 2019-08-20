@@ -41,7 +41,7 @@ import kotlin.math.roundToInt
  * Created by Lukas on 2019-08-20
  */
 class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : AbstractViewHolder<HeaderViewModel>(itemView) {
-
+    private val context = itemView.context
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.layout_item_widget_ovo_tokopoint_login
@@ -68,7 +68,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val container = itemView.findViewById<View>(R.id.container_nonlogin)
         val imgNonLogin = itemView.findViewById<AppCompatImageView>(R.id.bg_container_nonlogin)
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
-        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.white, R.dimen.button_corner_radius_micro, R.color.shadow_color_1, R.dimen.banner_card_elevation, Gravity.CENTER)
+        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.white, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         val radius = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 8f, itemView.resources.displayMetrics).roundToInt()
 
@@ -84,10 +84,9 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         scanHolder.setOnClickListener{ goToScanner() }
     }
 
-
     private fun renderLogin(element: HeaderViewModel){
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
-        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.white, R.dimen.dp_4, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
+        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.white, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         renderOvoLayout(element)
         renderTokoPoint(element)
     }
@@ -127,7 +126,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                 tokocashProgressBar.visibility = View.GONE
                 tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
                 tvActionTokocash.setOnClickListener{ goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkActionButton) }
-                tokoCashHolder.setOnClickListener{ goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkActionButton) }
+                tokoCashHolder.setOnClickListener{ goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkBalance) }
 
                 if (homeHeaderWalletAction.isLinked) {
                     tvTitleTokocash.text = homeHeaderWalletAction.cashBalance
@@ -297,10 +296,10 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
     }
 
     private fun goToOvoAppLink(linkedOvo: Boolean, applinkString: String){
-        if (RouteManager.isSupportApplink(itemView.context, applinkString)) {
+        if (RouteManager.isSupportApplink(context, applinkString)) {
             if (!linkedOvo) {
-                if (itemView.context !is Activity && itemView.context is ContextWrapper) {
-                    val context = (itemView.context as ContextWrapper).baseContext
+                if (context !is Activity && context is ContextWrapper) {
+                    val context = context.baseContext
                     val activity = context as Activity
                     activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
                 }
@@ -308,8 +307,8 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             } else {
                 HomePageTracking.eventOvo(itemView.context)
             }
-            val intentBalanceWalet = RouteManager.getIntent(itemView.context, applinkString)
-            itemView.context.startActivity(intentBalanceWalet)
+            val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
+            context.startActivity(intentBalanceWallet)
         }
     }
 
