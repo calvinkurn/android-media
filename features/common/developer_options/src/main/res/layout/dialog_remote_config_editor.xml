@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_lvl4">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/edited_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textColor="#273238"
+        android:textSize="@dimen/fontSize_lvl4" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/new_config_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textSize="@dimen/fontSize_lvl4"
+        android:lines="1"
+        android:gravity="center_vertical"
+        android:inputType="text"
+        android:hint="@string/remote_config_edit_placeholder"
+        app:backgroundTint="@color/Green_G500" />
+
+    <FrameLayout
+        android:id="@+id/save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:background="@color/Green_G500">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remote_config_edit_btn_save"
+            android:textColor="@color/Neutral_N0"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+</LinearLayout>

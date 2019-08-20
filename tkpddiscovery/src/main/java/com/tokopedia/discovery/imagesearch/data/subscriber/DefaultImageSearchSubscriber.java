@@ -19,17 +19,9 @@ import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by sachinbansal on 1/18/18.
- */
 
 public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         extends DefaultSearchSubscriber {
-
-    List<String> productIDList = new ArrayList<>();
 
     public DefaultImageSearchSubscriber(D2 discoveryView) {
         super(null, discoveryView, true);
@@ -85,7 +77,6 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
             return;
         }
 
-        discoveryView.onHandleImageSearchResponseSuccess();
         discoveryView.onHandleImageResponseSearch(model);
     }
 }
