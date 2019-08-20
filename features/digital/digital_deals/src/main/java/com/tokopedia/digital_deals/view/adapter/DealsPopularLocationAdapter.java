@@ -63,7 +63,7 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
             requestParams.putString("name", searchText);
         } else {
             if (location.getCityId() == 0) {
-                requestParams.putInt(Utils.LOCATION_ID_PARAM, location.getId());
+                requestParams.putInt(Utils.LOCATION_CITY_ID, location.getId());
             } else {
                 requestParams.putInt(Utils.LOCATION_CITY_ID, location.getCityId());
             }
@@ -166,7 +166,7 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
             locAddress.setText(location.getAddress());
             if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
                 locType.setVisibility(View.VISIBLE);
-                locType.setText(location.getLocType().getName());
+                locType.setText(location.getLocType().getDisplayName());
                 locType.setBackground(context.getResources().getDrawable(R.drawable.rect_grey_loc_type_background));
                 ImageHandler.loadImage(context, locImage, location.getLocType().getIcon(), R.color.grey_1100, R.color.grey_1100);
             }

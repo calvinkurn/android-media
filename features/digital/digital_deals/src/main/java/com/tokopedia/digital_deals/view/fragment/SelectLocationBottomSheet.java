@@ -166,6 +166,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
             dealsPopularLocationAdapter.setCurrentPageIndex(1);
             dealsPopularLocationAdapter.startDataLoading();
         } else {
+            dealsPopularLocationAdapter.setSearchText("");
             dealsPopularLocationAdapter.startDataLoading();
             popularCityTitle.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.VISIBLE);

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
+import com.tokopedia.digital_deals.view.adapter.TrendingDealsAdapter;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.ProductItem;
@@ -86,7 +87,7 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
-                            mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), dealTitle.getText().toString());
+                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), dealTitle.getText().toString(), categoryItem.getItems(), homePosition);
                         }
                     }
                 });

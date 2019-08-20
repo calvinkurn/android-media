@@ -551,49 +551,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         getView().startLocationFragment(mTopLocations, false);
     }
 
-    public void getAllTrendingDeals(String url, String title) {
-        if (isViewAttached()) {
-            RequestParams requestParams = RequestParams.create();
-            requestParams.putString(DealsHomePresenter.TAG, url);
-            getCategoryDetailRequestUseCase.setRequestParams(url);
-            getCategoryDetailRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable throwable) {
-                    if (getView() == null) {
-                        return;
-                    }
-                    CommonUtils.dumper("enter error");
-                    throwable.printStackTrace();
-                    getView().hideProgressBar();
-                    NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            getAllTrendingDeals(url, title);
-                        }
-                    });
-                }
-
-                @Override
-                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                    if (getView() == null) {
-                        return;
-                    }
-                    Type token = new TypeToken<DataResponse<CategoryDetailsResponse>>() {
-                    }.getType();
-                    RestResponse restResponse = typeRestResponseMap.get(token);
-                    DataResponse dataResponse = restResponse.getData();
-                    CategoryDetailsResponse dealEntity = (CategoryDetailsResponse) dataResponse.getData();
-                    getView().renderAllTrendingDeals(dealEntity.getDealItems(), title);
-                }
-            });
-        }
-    }
-
     public void sendScreenNameEvent(String screenName) {
         dealsAnalytics.sendScreenNameEvent(screenName);
     }
