@@ -57,6 +57,8 @@ public class EnhancedECommerceProductCartMapData {
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
 
+    public static final String RECOMMENDATION_ATTRIBUTION = "recommendation";
+
     public EnhancedECommerceProductCartMapData() {
 
     }

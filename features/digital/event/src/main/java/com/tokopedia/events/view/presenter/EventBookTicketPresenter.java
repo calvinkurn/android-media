@@ -104,15 +104,17 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
                 getParcelableExtra(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL);
         hasSeatLayout = mView.getActivity().getIntent().getIntExtra(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, 0);
         generateLocationDateModels();
-        mView.renderFromDetails(dataModel);
-        if (dataModel.getSchedulesViewModels() != null && dataModel.getSchedulesViewModels().size() > 0) {
-            selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
-            schedulesList = dataModel.getSchedulesViewModels();
+        if (dataModel != null) {
+            mView.renderFromDetails(dataModel);
+            if (dataModel.getSchedulesViewModels() != null && dataModel.getSchedulesViewModels().size() > 0) {
+                selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
+                schedulesList = dataModel.getSchedulesViewModels();
+            }
+            if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
+                mView.renderSeatmap(dataModel.getSeatMapImage());
+            else
+                mView.hideSeatmap();
         }
-        if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
-            mView.renderSeatmap(dataModel.getSeatMapImage());
-        else
-            mView.hideSeatmap();
     }
 
     @Override
