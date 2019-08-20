@@ -4,7 +4,6 @@ import android.support.v7.util.DiffUtil;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
@@ -19,11 +18,8 @@ import java.util.List;
 
 public class KolPostDetailAdapter extends BaseAdapter<KolPostDetailTypeFactory> {
 
-    private EmptyModel emptyModel;
-
     public KolPostDetailAdapter(KolPostDetailTypeFactory typeFactory) {
         super(typeFactory, new ArrayList<>());
-        this.emptyModel = new EmptyModel();
     }
 
     public void setList(List<Visitable> list) {

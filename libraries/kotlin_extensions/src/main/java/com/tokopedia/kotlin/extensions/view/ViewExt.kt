@@ -192,6 +192,15 @@ fun View.getDimens(@DimenRes id: Int): Int {
     return this.context.resources.getDimension(id).toInt()
 }
 
+
+fun ImageView.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
+    addOnImpressionListener(holder, object : ViewHintListener{
+        override fun onViewHint() {
+            onView.invoke()
+        }
+    })
+}
+
 fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
     if (!holder.isInvoke) {
         viewTreeObserver.addOnScrollChangedListener(
@@ -205,6 +214,14 @@ fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintL
                     }
                 })
     }
+}
+
+fun View.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
+    addOnImpressionListener(holder, object : ViewHintListener{
+        override fun onViewHint() {
+            onView.invoke()
+        }
+    })
 }
 
 fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
