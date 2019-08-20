@@ -1,10 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -16,13 +14,11 @@ import android.widget.FrameLayout;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
-import com.tokopedia.discovery.categoryrevamp.CategoryNavActivity;
+import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
@@ -32,7 +28,6 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.util.MoEngageEventTracking;
-import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.discovery.common.manager.AdultManager;
 
 import java.util.ArrayList;

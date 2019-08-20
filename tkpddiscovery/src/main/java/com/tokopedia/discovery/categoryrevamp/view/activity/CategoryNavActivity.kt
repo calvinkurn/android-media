@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categoryrevamp
+package com.tokopedia.discovery.categoryrevamp.view.activity
 
 import android.os.Bundle
 import android.os.Parcelable
@@ -7,9 +7,9 @@ import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.fragments.CatalogNavFragment
-import com.tokopedia.discovery.categoryrevamp.fragments.CategoryNavigationListener
-import com.tokopedia.discovery.categoryrevamp.fragments.ProductNavFragment
+import com.tokopedia.discovery.categoryrevamp.view.fragments.activity.CatalogNavFragment
+import com.tokopedia.discovery.categoryrevamp.view.fragments.activity.CategoryNavigationListener
+import com.tokopedia.discovery.categoryrevamp.view.fragments.activity.ProductNavFragment
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem
