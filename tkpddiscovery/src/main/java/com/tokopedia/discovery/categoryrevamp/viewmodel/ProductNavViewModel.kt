@@ -2,7 +2,6 @@ package com.tokopedia.discovery.categoryrevamp.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
@@ -32,7 +31,6 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
             }
 
             override fun onCompleted() {
-                Log.d("ProductNavViewModel", "onCompleted")
             }
 
             override fun onError(e: Throwable) {

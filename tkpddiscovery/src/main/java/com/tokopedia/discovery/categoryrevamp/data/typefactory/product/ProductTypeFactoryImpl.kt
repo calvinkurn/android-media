@@ -21,7 +21,6 @@ class ProductTypeFactoryImpl : BaseProductTypeFactoryImpl(), ProductTypeFactory 
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        //super.createViewHolder(view, type)
         val viewHolder: AbstractViewHolder<*>
         if (type == ListProductCardViewHolder.LAYOUT) {
             viewHolder = ListProductCardViewHolder(view)
@@ -29,13 +28,12 @@ class ProductTypeFactoryImpl : BaseProductTypeFactoryImpl(), ProductTypeFactory 
         } else if (type == BigGridProductCardViewHolder.LAYOUT) {
             viewHolder = BigGridProductCardViewHolder(view)
 
-        } else /*(type == SmallGridProductCardViewHolder.LAYOUT) */ {
+        } else if (type == SmallGridProductCardViewHolder.LAYOUT) {
             viewHolder = SmallGridProductCardViewHolder(view)
 
-        } /*else {
+        } else {
             viewHolder = super.createViewHolder(view, type)
-        }*/
-
+        }
         return viewHolder
 
     }

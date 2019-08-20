@@ -30,12 +30,12 @@ class CatalogTypeFactoryImpl : BaseProductTypeFactoryImpl(), CatalogTypeFactory 
         } else if (type == BigGridCatalogCardViewHolder.LAYOUT) {
             viewHolder = BigGridCatalogCardViewHolder(view)
 
-        } else /*(type == SmallGridProductCardViewHolder.LAYOUT) */ {
+        } else if (type == SmallGridCatalogCardViewHolder.LAYOUT) {
             viewHolder = SmallGridCatalogCardViewHolder(view)
 
-        } /*else {
+        } else {
             viewHolder = super.createViewHolder(view, type)
-        }*/
+        }
 
         return viewHolder
 

@@ -6,11 +6,13 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.CatalogNavListAdapter
@@ -44,6 +46,8 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
     lateinit var catalogNavListAdapter: CatalogNavListAdapter
 
     lateinit var categoryNavComponent: CategoryNavComponent
+
+    private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     companion object {
         private val EXTRA_CATEGORY_HEADER_MODEL = "categoryheadermodel"
@@ -96,17 +100,15 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
 
             when (it) {
                 is Success -> {
+                    catalogNavListAdapter.removeLoading()
                     list.addAll(it.data.items as ArrayList<Visitable<CatalogTypeFactory>>)
                     catalog_recyclerview.adapter?.notifyDataSetChanged()
                 }
 
                 is Fail -> {
-
+                    catalogNavListAdapter.removeLoading()
                 }
-
             }
-
-
         })
 
     }
@@ -116,20 +118,35 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
         catalogNavListAdapter = CatalogNavListAdapter(catalogTypeFactory, list, this)
         catalog_recyclerview.adapter = catalogNavListAdapter
         catalog_recyclerview.layoutManager = getStaggeredGridLayoutManager()
+        getStaggeredGridLayoutManager()?.let {
+            staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(it)
+        }
+        staggeredGridLayoutLoadMoreTriggerListener?.let {
+            catalog_recyclerview.addOnScrollListener(it)
+        }
+    }
 
+    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                catalogNavViewModel.fetchCatalogDetail(getCatalogListParams(page))
+                catalogNavListAdapter.addLoading()
+            }
+        }
     }
 
     private fun initView() {
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             catalogNavViewModel = viewModelProvider.get(CatalogNavViewModel::class.java)
-            catalogNavViewModel.fetchCatalogDetail(getCatalogListParams())
+            catalogNavViewModel.fetchCatalogDetail(getCatalogListParams(0))
         }
     }
 
-    private fun getCatalogListParams(): RequestParams {
+    private fun getCatalogListParams(page: Int): RequestParams {
 
         val catalogMap = RequestParams()
+        catalogMap.putInt(CategoryNavConstants.START, page * 10)
         catalogMap.putString(CategoryNavConstants.QUERY, "")
         catalogMap.putString(CategoryNavConstants.SOURCE, "directory")
         catalogMap.putString(CategoryNavConstants.ST, "catalog")

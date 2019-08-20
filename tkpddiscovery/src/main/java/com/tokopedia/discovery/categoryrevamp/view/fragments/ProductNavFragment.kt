@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
@@ -60,6 +61,8 @@ class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
 
     var categoryHeaderModel: CategoryHeaderModel? = null
 
+    var start = 0
+    private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     companion object {
         private val EXTRA_CATEGORY_HEADER_MODEL = "categoryheadermodel"
@@ -126,7 +129,20 @@ class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
         productNavListAdapter = ProductNavListAdapter(productTypeFactory, list, this)
         product_recyclerview.adapter = productNavListAdapter
         product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
+        getStaggeredGridLayoutManager()?.let {
+            staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(it)
 
+        }
+        product_recyclerview.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener!!)
+    }
+
+    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                productNavViewModel.fetchProductList(getParamMap(page))
+                productNavListAdapter.addLoading()
+            }
+        }
     }
 
     private fun observeData() {
@@ -135,11 +151,13 @@ class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
             when (it) {
                 is Success -> {
                     list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
+                    productNavListAdapter.removeLoading()
                     product_recyclerview.adapter?.notifyDataSetChanged()
+                    staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
                 }
 
                 is Fail -> {
-
+                    productNavListAdapter.removeLoading()
                 }
 
             }
@@ -172,7 +190,7 @@ class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
-            productNavViewModel.fetchProductList(getParamMap())
+            productNavViewModel.fetchProductList(getParamMap(start))
             productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
         }
     }
@@ -185,9 +203,9 @@ class ProductNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
         return subCategoryMap
     }
 
-    private fun getParamMap(): RequestParams {
+    private fun getParamMap(start: Int): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString(CategoryNavConstants.START, "0")
+        requestParams.putString(CategoryNavConstants.START, (start * 10).toString())
         requestParams.putString(CategoryNavConstants.SC, categoryHeaderModel?.departementId)
         requestParams.putString(CategoryNavConstants.DEVICE, "android")
         requestParams.putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
