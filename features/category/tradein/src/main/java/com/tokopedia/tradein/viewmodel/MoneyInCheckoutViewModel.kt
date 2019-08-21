@@ -54,7 +54,7 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
         })
     }
 
-    fun getCourierRates(query: String, destination: String, orderValue: String) {
+    fun getCourierRates(query: String, destination: String) {
         launchCatchError(block = {
             val request = HashMap<String, Any>()
             val input = HashMap<String, String>()
@@ -63,7 +63,6 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
             input["destination"] = destination
             input["from"] = "client"
             input["type"] = "android"
-            input["order_value"] = orderValue
             input["lang"] = "en"
             request["input"] = input
 

@@ -2,6 +2,7 @@ package com.tokopedia.tradein.view.viewcontrollers
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
 import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.OnValueChangeListener
@@ -16,6 +17,9 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
     private val timeAdapter = TimeAdapter()
     private var currentTime: String? = null
     private var currentDate: String? = null
+    private var timeSpinner: NumberPicker? = null
+    private var dateSpinner: NumberPicker? = null
+    private var actionListener: ActionListener? = null
 
     companion object {
         private const val KEY_SCHEDULE_DATA = "KEY_SCHEDULE_DATA"
@@ -43,13 +47,13 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         for (date in scheduleDate) {
             dateAdapter.date.add(date.dateFmt)
         }
-        val daySpinner: NumberPicker? = view?.findViewById(R.id.date_spinner)
-        val timeSpinner: NumberPicker? = view?.findViewById(R.id.time_spinner)
-        daySpinner?.setAdapter(dateAdapter)
+        dateSpinner = view?.findViewById(R.id.date_spinner)
+        timeSpinner = view?.findViewById(R.id.time_spinner)
+        dateSpinner?.setAdapter(dateAdapter)
         timeSpinner?.setAdapter(timeAdapter)
-        currentDate = daySpinner?.getCurrentItem()
+        currentDate = dateSpinner?.getCurrentItem()
         changeTimeByDate()
-        daySpinner?.setOnValueChangedListener(object : OnValueChangeListener {
+        dateSpinner?.setOnValueChangedListener(object : OnValueChangeListener {
             override fun onValueChange(oldVal: String, newVal: String) {
                 currentDate = newVal
                 changeTimeByDate()
@@ -61,14 +65,47 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
                 currentTime = newVal
             }
         })
+        val courierButton = view?.findViewById<Button>(R.id.courier_btn)
+        courierButton?.setOnClickListener {
+            scheduleDate.forEach {
+                if(it.dateFmt == currentDate) {
+                    it.scheduleTime.forEach { time ->
+                        if (time.timeFmt == currentTime) {
+                            actionListener?.onCourierButtonClick(time)
+                            dismiss()
+                        }
+                    }
+                }
+            }
+        }
         updateHeight()
     }
 
     private fun changeTimeByDate() {
         scheduleDate.forEach {
-            if (it.dateFmt == currentDate)
+            if (it.dateFmt == currentDate) {
+                timeAdapter.time.clear()
                 for (time in it.scheduleTime)
                     timeAdapter.time.add(time.timeFmt)
+            }
         }
+        timeSpinner?.setMaxValue(timeAdapter.getMaxIndex())
+        timeSpinner?.setMinValue(timeAdapter.getMinIndex())
+        if (timeAdapter.time.size < 3) {
+            timeSpinner?.setWheelItemCount(timeAdapter.time.size)
+            timeSpinner?.setWrapSelectorWheel(false)
+        } else {
+            timeSpinner?.setWrapSelectorWheel(true)
+            timeSpinner?.setWheelItemCount(3)
+        }
+        timeAdapter.notifyDataSetChanged()
+    }
+
+    fun setActionListener(actionListener: ActionListener?){
+        this.actionListener = actionListener
+    }
+
+    interface ActionListener {
+        fun onCourierButtonClick(scheduleTime: ScheduleDate.ScheduleTime)
     }
 }

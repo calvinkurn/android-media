@@ -17,10 +17,10 @@ class TimeAdapter(var time: ArrayList<String> = arrayListOf()) : NumberPickerAda
         if (position >= getMinIndex() && position <= getMaxIndex())
             return time[position]
 
-        if (position <= getMaxIndex())
+        if (position <= getMaxIndex() && position + getSize() >= getMinIndex() && position + getSize() <= getMaxIndex())
             return time[position + getSize()]
 
-        if (position >= getMinIndex())
+        if (position >= getMinIndex() && position - getSize() >= getMinIndex() && position - getSize() <= getMaxIndex())
             return time[position - getSize()]
 
         return ""

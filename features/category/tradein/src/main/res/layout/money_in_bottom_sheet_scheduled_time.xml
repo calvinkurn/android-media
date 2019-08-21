@@ -4,15 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/divider_top"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_margin="@dimen/dp_16"
-        android:background="@color/grey_200"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
         android:id="@+id/date_spinner"
@@ -25,13 +16,15 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_top"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.5"
         app:np_align="CENTER"
         app:np_fadingEdgeEnabled="false"
         app:np_selectedTextColor="@android:color/black"
         app:np_textColor="@color/unify_N700_44"
-        app:np_textSize="14sp"/>
+        app:np_textSize="14sp"
+        app:np_wheelItemCount="3"
+        app:np_wrapSelectorWheel="true" />
 
     <com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
         android:id="@+id/time_spinner"
@@ -44,17 +37,19 @@
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_top"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.5"
         app:np_align="CENTER"
         app:np_fadingEdgeEnabled="false"
         app:np_selectedTextColor="@android:color/black"
         app:np_textColor="@color/unify_N700_44"
-        app:np_textSize="14sp"/>
+        app:np_textSize="14sp"
+        app:np_wheelItemCount="3"
+        app:np_wrapSelectorWheel="true"  />
 
 
     <View
-        android:id="@+id/divider_bottom"
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginLeft="@dimen/dp_16"
@@ -82,6 +77,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_bottom" />
+        app:layout_constraintTop_toBottomOf="@id/divider" />
 
 </android.support.constraint.ConstraintLayout>

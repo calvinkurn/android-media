@@ -1,7 +1,9 @@
 package com.tokopedia.tradein.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class MoneyInCourierResponse(
     @SerializedName("data")
@@ -83,6 +85,7 @@ data class MoneyInCourierResponse(
                             @SerializedName("money_in")
                             val moneyIn: MoneyIn?
                         ) {
+                            @Parcelize
                             data class MoneyIn(
                                 @SerializedName("shipper_name")
                                 val shipperName: String?,
@@ -90,7 +93,7 @@ data class MoneyInCourierResponse(
                                 val textPrice: String?,
                                 @SerializedName("value_price")
                                 val valuePrice: Int?
-                            )
+                            ) : Parcelable
                         }
 
                         data class Error(

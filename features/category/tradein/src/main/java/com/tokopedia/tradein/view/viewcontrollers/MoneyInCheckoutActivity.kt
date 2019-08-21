@@ -15,8 +15,10 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
-class MoneyInCheckoutActivity : BaseTradeInActivity() {
+class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBottomSheet.ActionListener {
+
     private lateinit var moneyInCheckoutViewModel: MoneyInCheckoutViewModel
+    private var scheduleTime: ScheduleDate.ScheduleTime? = null
 
     override fun initView() {
         moneyInCheckoutViewModel.getAddress(getMeGQlString(R.raw.gql_kero_get_address))
@@ -66,15 +68,26 @@ class MoneyInCheckoutActivity : BaseTradeInActivity() {
     }
 
     private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
-        data.error
+        val courierBtn = findViewById<Button>(R.id.courier_btn)
+        val moneyInCourierBottomSheet = MoneyInCourierBottomSheet.newInstance(
+                data.services?.get(0)?.products?.get(0)?.features?.moneyIn,
+                data.services?.get(0)?.products?.get(0)?.shipper?.shipperProduct?.description)
+        courierBtn.setOnClickListener {
+            moneyInCourierBottomSheet.show(supportFragmentManager, "")
+        }
     }
 
     private fun setScheduleBottomSheet(scheduleDate: ArrayList<ScheduleDate>) {
-        val courierBtn = findViewById<Button>(R.id.courier_btn)
+        val retrievalBtn = findViewById<Button>(R.id.retrival_time_btn)
         val moneyInScheduledTimeBottomSheet = MoneyInScheduledTimeBottomSheet.newInstance(scheduleDate)
-        courierBtn.setOnClickListener {
+        retrievalBtn.setOnClickListener {
             moneyInScheduledTimeBottomSheet.show(supportFragmentManager, "")
         }
+        moneyInScheduledTimeBottomSheet.setActionListener(this)
+    }
+
+    override fun onCourierButtonClick(scheduleTime: ScheduleDate.ScheduleTime) {
+        this.scheduleTime = scheduleTime
     }
 
     private fun setAddressView(recipientAddress: KeroGetAddress.Data?) {
@@ -98,6 +111,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity() {
         tvChangeRecipientAddress.setOnClickListener {
             //TODO change address activity
         }
+        val destination = "${(recipientAddress?.district).toString()}|${(recipientAddress?.postalCode).toString()}|${(recipientAddress?.latitude)},${(recipientAddress?.longitude)}"
+        moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
     }
 
     private fun getFullAddress(recipientAddress: KeroGetAddress.Data?): String {
