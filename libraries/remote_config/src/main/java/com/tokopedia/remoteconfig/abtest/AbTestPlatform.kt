@@ -14,6 +14,8 @@ import com.tokopedia.remoteconfig.abtest.data.FeatureVariant
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import rx.schedulers.Schedulers
 import java.util.*
@@ -136,16 +138,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                     Log.d("doOnError", error.toString())
                 }
                 .doOnNext {
-                    val dataLayerAbTest = mapOf(
-                            "event" to "abtesting",
-                            "eventCategory" to "abtesting",
-                            "user_id" to "...",
-                            "session_id" to "...",
-                            "feature" to it.featureVariants
-                    )
-                    System.out.println(dataLayerAbTest)
-//                    // Log.d("Track: ", dataLayerAbTest.toString())
-//                    // TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
+                    sendTracking(it)
                 }
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -157,6 +150,20 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                     override fun onError(e: Throwable?) { }
 
                 }}
+    }
+
+    private fun sendTracking(featureVariants: RolloutFeatureVariants) {
+        val userSession : UserSessionInterface = UserSession(context)
+
+        val dataLayerAbTest = mapOf(
+                "event" to "abtesting",
+                "eventCategory" to "abtesting",
+                "user_id" to if (userSession.isLoggedIn) userSession.userId else null,
+                "session_id" to userSession.deviceId,
+                "feature" to featureVariants
+        )
+        System.out.println(dataLayerAbTest)
+        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
     }
 
     companion object {
