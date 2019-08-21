@@ -4,8 +4,8 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'user_session'
     groupId = 'com.tokopedia.user.session'
-    versionName = "1"
-    artifactName = "user_session-release"
+    versionName = "2.0"
+    artifactName = "user_session"
 }
 
 apply from: '../publish_local.gradle'

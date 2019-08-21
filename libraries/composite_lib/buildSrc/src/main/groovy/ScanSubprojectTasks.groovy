@@ -8,7 +8,6 @@ class ScanSubprojectTasks extends DefaultTask{
     void scanSubProject(){
         project.subprojects.each { p ->
             listModule.add(p.path.substring(1))
-            println p.path.substring(1)
         }
     }
 
