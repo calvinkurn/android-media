@@ -1,9 +1,7 @@
-package com.tokopedia.gm.subscribe.tracking
+package com.tokopedia.power_merchant.subscribe.tracking
 
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 
 class GMTracking(){
 

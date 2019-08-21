@@ -269,7 +269,6 @@ dependencies {
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.goldMerchant)
-    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
