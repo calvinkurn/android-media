@@ -33,7 +33,6 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
 
     override fun getItemViewType(position: Int): Int {
         val item = list.get(position)
-        lateinit var view: View
         if (type == TravelHomepageSectionViewModel.TYPE_ORDER_LIST) {
             return if (item.subtitle.isBlank()) ViewHolder.ORDER_LAYOUT_WITHOUT_SUBTITLE else ViewHolder.ORDER_LAYOUT
         } else {
