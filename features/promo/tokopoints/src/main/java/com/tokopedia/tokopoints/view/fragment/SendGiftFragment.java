@@ -33,6 +33,7 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.contract.SendGiftContract;
+import com.tokopedia.tokopoints.view.model.section.Image;
 import com.tokopedia.tokopoints.view.presenter.SendGiftPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
@@ -93,9 +94,14 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
         mEditNotes = view.findViewById(R.id.edit_notes);
         mBtnSendGift = view.findViewById(R.id.button_send);
         mBtnSendNow = view.findViewById(R.id.button_send_now);
+
+        ImageView ivCancelInitial = getView().findViewById(R.id.iv_cancel);
+        ImageView ivCancelPreConfirm=getView().findViewById(R.id.iv_cancel_preconfirmation);
+        ivCancelInitial.setOnClickListener(view1 -> {dismiss();});
+        ivCancelPreConfirm.setOnClickListener(view1 -> dismiss());
+
         mEditEmail.addTextChangedListener(this);
         mEditNotes.addTextChangedListener(this);
-
         mBtnSendGift.setOnClickListener(this::onClick);
         mBtnSendNow.setOnClickListener(this::onClick);
     }
@@ -255,15 +261,11 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
             TextView tvTitle = viewSentSuccess.findViewById(R.id.tv_title);
             TextView tvContent = viewSentSuccess.findViewById(R.id.content);
             TextView btnSuccess = viewSentSuccess.findViewById(R.id.btn_sentSuccess);
-            ImageView ivCancel = viewSentSuccess.findViewById(R.id.iv_cancel);
 
             btnSuccess.setOnClickListener(view -> {
                 getActivity().finish();
             });
 
-            ivCancel.setOnClickListener(view -> {
-                dismiss();
-            });
             tvTitle.setText(title);
             tvContent.setText(message);
             adb.setView(viewSentSuccess);
@@ -272,11 +274,6 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
             TextView tvContent = viewSentFail.findViewById(R.id.content);
             TextView tvRoute = viewSentFail.findViewById(R.id.tv_route);
             TextView btnFailed = viewSentFail.findViewById(R.id.btn_sentFail);
-            ImageView ivCancel = viewSentSuccess.findViewById(R.id.iv_cancel);
-
-            ivCancel.setOnClickListener(view -> {
-                dismiss();
-            });
 
             btnFailed.setOnClickListener(view -> {
                 getActivity().finish();
