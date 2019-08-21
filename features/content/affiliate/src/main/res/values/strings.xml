@@ -5,7 +5,7 @@
     <!--DASHBOARD-->
     <string name="title_af_dashboard">Pencapaian Saya</string>
     <string name="title_af_dashboard_detail">Riwayat</string>
-    <string name="title_af_dashboard_saldo">Total Komisi masuk ke Saldo Tokopedia</string>
+    <string name="title_af_dashboard_saldo">Total Komisi masuk ke Saldo Penghasilan</string>
     <string name="title_af_dashboard_saldo_sub">sebelum dipotong <i>service fee</i></string>
     <string name="title_profil_dilihat">Profil Dilihat</string>
     <string name="title_klik_produk">Klik Produk</string>
