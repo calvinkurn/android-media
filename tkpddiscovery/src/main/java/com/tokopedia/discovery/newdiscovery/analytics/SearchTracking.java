@@ -135,7 +135,7 @@ public class SearchTracking {
     }
 
     public void trackImpressionSearchResultShop(List<Object> shopItemList, String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoView",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "impression - shop",
@@ -150,7 +150,7 @@ public class SearchTracking {
     }
 
     public void trackSearchResultShopItemClick(Object shopItem, String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoClick",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "click - shop",
@@ -165,7 +165,7 @@ public class SearchTracking {
     }
 
     public void trackImpressionSearchResultShopProductPreview(List<Object> shopItemProductList, String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "productView",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "impression - product - shop tab",
@@ -179,7 +179,7 @@ public class SearchTracking {
     }
 
     public void trackSearchResultShopProductPreviewClick(Object shopItemProduct, String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "productClick",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "click - product - shop tab",
@@ -195,7 +195,7 @@ public class SearchTracking {
     }
 
     public void trackSearchResultShopItemClosedClick(Object shopItemClosed, String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoClick",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "click - shop - inactive",
@@ -235,7 +235,7 @@ public class SearchTracking {
     }
 
     public static void trackEventClickImageSearchResultProduct(Object item) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                 EVENT_CATEGORY, SearchEventTracking.Category.IMAGE_SEARCH_RESULT,
                 EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT,
