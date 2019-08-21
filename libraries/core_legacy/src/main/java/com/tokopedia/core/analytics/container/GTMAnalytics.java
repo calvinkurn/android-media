@@ -440,7 +440,8 @@ public class GTMAnalytics extends ContextAnalytics {
                         "products", null,
                         "promotions", null,
                         "ecommerce", null,
-                        "currentSite", null
+                        "currentSite", null,
+                        "channelId", null
                 )
         );
     }
