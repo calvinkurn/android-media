@@ -42,6 +42,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private String deviceId = "";
     private int checkoutString = R.string.buy_now;
     private int hargeTncString = R.string.harga_tnc;
+    private int tncStringId = R.string.tradein_tnc;
     /**
      * price_valid_until
      */
@@ -90,6 +91,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         if (TRADEIN_TYPE == 2) {
             checkoutString = R.string.sell_now;
             hargeTncString = R.string.harga_tnc_moneyin;
+            tncStringId = R.string.money_in_tnc;
         }
         viewModel.getDeviceDiagData().observe(this, this);
         viewModel.getAddressLiveData().observe(this, result -> {
@@ -315,7 +317,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     }
 
     private void showtnc() {
-        showTnC(R.string.tradein_tnc);
+        showTnC(tncStringId);
         activeGroup.setVisibility(View.INVISIBLE);
         sendGeneralEvent("clickTradeIn",
                 "harga final trade in",
