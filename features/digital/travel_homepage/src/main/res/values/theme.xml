@@ -2,7 +2,6 @@
 <resources>
     <style name="Theme.White.StatusBarTransparent" parent="Theme.White">
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 </resources>
