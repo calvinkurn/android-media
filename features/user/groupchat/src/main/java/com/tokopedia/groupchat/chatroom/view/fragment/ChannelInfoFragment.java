@@ -142,8 +142,6 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         analytics.eventActionClickOfficialPartner(
                 String.format("%s - %s", channelInfoViewModel.getChannelId(), channelPartnerChildViewModel.getPartnerUrl()));
 
-        GroupChatModuleRouter router = ((GroupChatModuleRouter) getActivity().getApplicationContext());
-
         RouteManager.route(getActivity(), ApplinkConst.WEBVIEW,
                 ((GroupChatContract.View) getActivity()).generateAttributeApplink(
                         channelPartnerChildViewModel.getPartnerUrl(),
