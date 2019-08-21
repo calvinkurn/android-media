@@ -22,21 +22,21 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
     }
 
     fun toInitialMode() {
+        hideShadow()
         setTitleTextColor(resources.getColor(R.color.white))
         setBackgroundColor(resources.getColor(R.color.transparent))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             navigationIcon?.setTint(resources.getColor(R.color.white))
         } else navigationIcon = resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_white_24)
-        hideShadow()
     }
 
     fun toOnScrolledMode() {
+        showShadow()
         setTitleTextColor(resources.getColor(R.color.grey_800))
-        setBackgroundColor(resources.getColor(R.color.white))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             navigationIcon?.setTint(resources.getColor(R.color.grey_800))
         } else navigationIcon =  resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
-        showShadow()
+
     }
 
     private fun hideShadow() {
@@ -48,7 +48,7 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
                 pT = getStatusBarHeight(context)
             }
             val pR = this.paddingRight
-            val pB = this.paddingBottom
+            val pB = resources.getDimensionPixelSize(R.dimen.toolbar_padding)
             this.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
             this.setPadding(pL, pT, pR, pB)
         }
@@ -63,7 +63,7 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
                 pT = getStatusBarHeight(context)
             }
             val pR = this.paddingRight
-            val pB = this.paddingBottom
+            val pB = resources.getDimensionPixelSize(R.dimen.toolbar_padding)
 
             this.background = ContextCompat.getDrawable(context, R.drawable.travel_homepage_toolbar_bg_shadow_bottom)
             this.setPadding(pL, pT, pR, pB)
@@ -76,7 +76,7 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
         if (resId > 0) {
             height = context.resources.getDimensionPixelSize(resId)
         }
-        return height
+        return height + 16
     }
 
 }

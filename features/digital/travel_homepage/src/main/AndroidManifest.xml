@@ -7,7 +7,7 @@
             android:name=".presentation.activity.TravelHomepageActivity"
             android:label="@string/travel_subhomepage_app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White.StatusBarTransparent">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

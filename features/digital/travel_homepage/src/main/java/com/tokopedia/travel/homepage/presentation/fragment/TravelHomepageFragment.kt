@@ -55,6 +55,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        travel_homepage_toolbar.toInitialMode()
         travel_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
