@@ -10,6 +10,8 @@ import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
+import com.tokopedia.remoteconfig.abtest.data.FeatureVariant
+import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -118,8 +120,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                     val globalRevision = responseData.dataRollout.globalRev
                     val status = responseData.dataRollout.status
 
-                    // Save response to sharedPref
-                    if (featureVariants != null) {
+                    if (featureVariants != null) {  // Save response to sharedPref
                         for (a in featureVariants) {
                             setString(a.feature, a.variant)
                         }
@@ -129,85 +130,34 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                         editor.putInt(REVISION, globalRevision).commit()
                     }
 
+                    return@map RolloutFeatureVariants(featureVariants)
                 }
-                .doOnError{ error -> {
-                    Log.d("adasda", error.toString())
-                }}
-                .doOnNext({
+                .doOnError { error ->
+                    Log.d("doOnError", error.toString())
+                }
+                .doOnNext {
                     val dataLayerAbTest = mapOf(
                             "event" to "abtesting",
                             "eventCategory" to "abtesting",
-                            "user_id" to "..."
+                            "user_id" to "...",
+                            "session_id" to "...",
+                            "feature" to it.featureVariants
                     )
-                    Log.d("Track: ", dataLayerAbTest.toString())
-                    // TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
-                })
+                    System.out.println(dataLayerAbTest)
+//                    // Log.d("Track: ", dataLayerAbTest.toString())
+//                    // TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
+                }
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe { object : Subscriber<GraphqlResponse>() {
-                    override fun onNext(t: GraphqlResponse?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
+                    override fun onNext(t: GraphqlResponse?) { }
 
-                    override fun onCompleted() {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
+                    override fun onCompleted() { }
 
-                    override fun onError(e: Throwable?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
+                    override fun onError(e: Throwable?) { }
 
                 }}
-
-//        graphqlUseCase.execute(RequestParams.EMPTY, object : Subscriber<GraphqlResponse>() {
-//            override fun onNext(response: GraphqlResponse) {
-//                val responseData = response.getData<AbTestVariantPojo>(AbTestVariantPojo::class.java)
-//                val featureVariants = responseData.dataRollout.featureVariants
-//                val globalRevision = responseData.dataRollout.globalRev
-//                val status = responseData.dataRollout.status
-//
-//                // Save response to sharedPref
-//                if (featureVariants != null) {
-//                    for (a in featureVariants) {
-//                        setString(a.feature, a.variant)
-//                    }
-//                }
-//
-//                if (globalRevision != null) {
-//                    editor.putInt(REVISION, globalRevision).commit()
-//                }
-//
-////                val dataLayerAbTest = mapOf(
-////                        "event" to "abtesting",
-////                        "eventCategory" to "abtesting",
-////                        "user_id" to "...",
-////                        "feature" to featureVariants
-////                )
-////
-////                TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
-//            }
-//
-//            override fun onCompleted() {
-//                Log.d("onCompleted: ", "onCompleted")
-//            }
-//
-//            override fun onError(e: Throwable?) {
-//                Log.d("onError: ", "onError")
-//            }
-//
-//        })
     }
-
-//    private fun sendTracking() {
-//        TrackApp.getInstance().gtm.sendGeneralEvent(
-//                mapOf(
-//                        "event" to "abtesting",
-//                        "eventCategory" to "abtesting",
-//                        "user_id" to "...",
-//                        "feature" to
-//                )
-//        )
-//    }
 
     companion object {
         val REVISION = "rev"
