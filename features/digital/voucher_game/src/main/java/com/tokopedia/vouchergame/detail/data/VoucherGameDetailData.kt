@@ -2,7 +2,6 @@ package com.tokopedia.vouchergame.detail.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.vouchergame.list.data.VoucherGameProductData
 
 /**
  * Created by resakemal on 12/08/19.
@@ -24,7 +23,7 @@ class VoucherGameDetailData(
 
 ) {
         class Response(
-                @SerializedName("rechargeCatalogVoucherGameInput")
+                @SerializedName("rechargeCatalogProductInput")
                 @Expose
                 val response: VoucherGameDetailData = VoucherGameDetailData()
         )
