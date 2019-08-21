@@ -4,17 +4,15 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.inbox.rescenter.create.customadapter.TroubleCategorySpinnerAdapter;
 import com.tokopedia.inbox.rescenter.create.listener.ChooseTroubleListener;
 import com.tokopedia.inbox.rescenter.create.model.responsedata.CreateResCenterFormData;
-
-import butterknife.BindView;
 
 /**
  * Created on 6/16/16.
@@ -23,8 +21,7 @@ public class ChooseCategorySectionCreateResCenterView extends BaseView<CreateRes
 
     public static final String TAG = ChooseCategorySectionCreateResCenterView.class.getSimpleName();
 
-    @BindView(R2.id.spinner_trouble_category)
-    Spinner categoryTroubleSpinner;
+    private Spinner categoryTroubleSpinner;
 
     private ChooseTroubleListener listener;
 
@@ -93,4 +90,11 @@ public class ChooseCategorySectionCreateResCenterView extends BaseView<CreateRes
         return (CreateResCenterFormData.TroubleCategoryData) categoryTroubleSpinner.getItemAtPosition(categoryTroubleSpinner.getSelectedItemPosition() - 1);
     }
 
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        categoryTroubleSpinner = view.findViewById(R.id.spinner_trouble_category);
+    }
 }
