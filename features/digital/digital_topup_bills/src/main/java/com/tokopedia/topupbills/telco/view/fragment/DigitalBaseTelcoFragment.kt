@@ -166,6 +166,14 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
+    fun processToCart() {
+        if (userSession.isLoggedIn) {
+            navigateToCart()
+        } else {
+            navigateToLoginPage()
+        }
+    }
+
     private fun navigateToCart() {
         if (::checkoutPassData.isInitialized) {
             checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()

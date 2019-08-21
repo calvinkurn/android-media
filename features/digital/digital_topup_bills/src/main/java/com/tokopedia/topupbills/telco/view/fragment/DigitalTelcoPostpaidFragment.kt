@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsCheckoutFragment
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.network.utils.ErrorHandler
@@ -28,6 +27,7 @@ import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewMode
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
+import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
 import com.tokopedia.unifycomponents.Toaster
 
 /**
@@ -36,7 +36,7 @@ import com.tokopedia.unifycomponents.Toaster
 class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     private lateinit var postpaidClientNumberWidget: DigitalPostpaidClientNumberWidget
-    private lateinit var buyWidget: TopupBillsCheckoutFragment
+    private lateinit var buyWidget: DigitalTelcoBuyWidget
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var layoutProgressBar: RelativeLayout
 
@@ -76,7 +76,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         recentNumbersWidget = view.findViewById(R.id.recent_numbers)
         postpaidClientNumberWidget = view.findViewById(R.id.telco_input_number)
         promoListWidget = view.findViewById(R.id.promo_widget)
-        buyWidget = childFragmentManager.findFragmentById(R.id.buy_widget) as TopupBillsCheckoutFragment
+        buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
         layoutProgressBar = view.findViewById(R.id.layout_progress_bar)
         return view
@@ -180,7 +180,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 postpaidClientNumberWidget.resetClientNumberPostpaid()
                 recentNumbersWidget.visibility = View.VISIBLE
                 promoListWidget.visibility = View.VISIBLE
-                if (::buyWidget.isInitialized) buyWidget.setVisibilityLayout(false)
+                buyWidget.setVisibilityLayout(false)
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
@@ -275,10 +275,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         recentNumbersWidget.visibility = View.GONE
         promoListWidget.visibility = View.GONE
 
-        if (::buyWidget.isInitialized) {
-            buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
-            buyWidget.setVisibilityLayout(true)
-        }
+        buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
+        buyWidget.setVisibilityLayout(true)
+        buyWidget.setListener(object : DigitalTelcoBuyWidget.ActionListener {
+            override fun onClickNextBuyButton() {
+                processToCart()
+            }
+        })
     }
 
     fun onErrorEnquiry(throwable: Throwable) {
