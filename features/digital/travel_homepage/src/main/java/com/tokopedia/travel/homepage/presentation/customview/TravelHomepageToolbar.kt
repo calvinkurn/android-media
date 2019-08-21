@@ -17,10 +17,6 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
 
     var shadowApplied: Boolean = false
 
-    init {
-        toInitialMode()
-    }
-
     fun toInitialMode() {
         hideShadow()
         setTitleTextColor(resources.getColor(R.color.white))
@@ -76,7 +72,7 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
         if (resId > 0) {
             height = context.resources.getDimensionPixelSize(resId)
         }
-        return height + 16
+        return height + 32
     }
 
 }
