@@ -13,6 +13,7 @@ query SearchProduct(
         count_text
         additional_params
         isQuerySafe
+        autocomplete_applink
         redirection {
             redirect_applink
         }
