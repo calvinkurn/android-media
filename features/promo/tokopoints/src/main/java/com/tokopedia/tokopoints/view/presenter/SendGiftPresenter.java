@@ -24,6 +24,8 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
         implements SendGiftContract.Presenter {
     private GraphqlUseCase mRedeemCouponUseCase;
     private GraphqlUseCase mStartSendGift;
+    private int success=0;
+
 
     @Inject
     public SendGiftPresenter(GraphqlUseCase startSendGift,
@@ -77,7 +79,6 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
             public void onNext(GraphqlResponse response) {
                 getView().hideLoadingSendNow();
                 RedeemCouponBaseEntity redeemCouponBaseEntity = response.getData(RedeemCouponBaseEntity.class);
-                int success=0;
                 String title;
                 String message;
                 if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem() != null) {

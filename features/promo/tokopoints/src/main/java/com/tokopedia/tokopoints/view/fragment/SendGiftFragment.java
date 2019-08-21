@@ -11,35 +11,25 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
-import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.contract.SendGiftContract;
-import com.tokopedia.tokopoints.view.model.section.Image;
 import com.tokopedia.tokopoints.view.presenter.SendGiftPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
-
-import java.util.zip.Inflater;
 
 import javax.inject.Inject;
 
@@ -314,10 +304,10 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
 
         if (charSequence.length() == 0) {
             mBtnSendGift.setEnabled(false);
-            mBtnSendGift.setTextColor(getResources().getColor(R.color.clr_5131353b));
+            mBtnSendGift.setTextColor(getResources().getColor(R.color.tp_btn_sent_gift_color));
         } else {
             mBtnSendGift.setEnabled(true);
-            mBtnSendGift.setTextColor(getResources().getColor(R.color.bg_button_orange_border));
+            mBtnSendGift.setTextColor(getResources().getColor(R.color.tp_bg_button_orange_border));
         }
 
     }

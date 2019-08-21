@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.util;
 import static com.tokopedia.tokopoints.view.util.CommonConstant.BaseUrl.WEB_DOMAIN_MOBILE;
 
 public interface CommonConstant {
+    String FRAGMENT_DETAIL_TOKOPOINT="sendFragment";
     String PREF_TOKOPOINTS = "pref_tokopoints";
     String PREF_KEY_ON_BOARDED = "pref_key_on_boarded";
     String ARGS_CATEGORY_ID = "category_id";
