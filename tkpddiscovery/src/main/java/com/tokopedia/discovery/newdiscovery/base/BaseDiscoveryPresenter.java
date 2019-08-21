@@ -43,11 +43,6 @@ public class BaseDiscoveryPresenter<T extends CustomerView, D extends BaseDiscov
     }
 
     @Override
-    public void initiateSearch(SearchParameter searchParameter, InitiateSearchListener initiateSearchListener) {
-        checkDiscoveryViewAttached();
-    }
-
-    @Override
     public void requestImageSearch(String imageByteArray) {
         checkDiscoveryViewAttached();
     }
