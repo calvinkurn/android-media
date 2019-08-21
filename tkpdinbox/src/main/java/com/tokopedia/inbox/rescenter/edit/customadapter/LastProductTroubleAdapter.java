@@ -8,13 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 /**
  * Created on 8/30/16.
@@ -31,16 +29,15 @@ public class LastProductTroubleAdapter extends RecyclerView.Adapter<LastProductT
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.title_product)
         public TextView productView;
-        @BindView(R2.id.title_trouble)
         public TextView troubleView;
-        @BindView(R2.id.title_remark)
         public TextView remarkView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            productView = itemView.findViewById(R.id.title_product);
+            troubleView = itemView.findViewById(R.id.title_trouble);
+            remarkView = itemView.findViewById(R.id.title_remark);
         }
     }
 
