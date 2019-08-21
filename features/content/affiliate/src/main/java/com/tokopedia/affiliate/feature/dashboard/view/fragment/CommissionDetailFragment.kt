@@ -158,6 +158,7 @@ class CommissionDetailFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFa
     }
 
     fun onErrorGetFirstData(throwable: Throwable) {
+        adapter.clearAllElements()
         val dataList: MutableList<Visitable<*>> = ArrayList()
         val errorNetworkModel = ErrorNetworkModel()
         errorNetworkModel.errorMessage = ErrorHandler.getErrorMessage(context, throwable)
