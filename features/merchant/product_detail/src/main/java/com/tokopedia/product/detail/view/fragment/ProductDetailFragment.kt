@@ -609,6 +609,22 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
         loadProductData()
+
+        stickyLoginTextView = view.findViewById(R.id.sticky_login_text)
+        stickyLoginTextView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            updateStickyState()
+        }
+        stickyLoginTextView.setOnClickListener {
+            productDetailTracking.eventClickOnStickyLogin(true)
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+        }
+        stickyLoginTextView.setOnDismissListener(View.OnClickListener {
+            productDetailTracking.eventClickOnStickyLogin(false)
+            stickyLoginTextView.dismiss()
+            updateStickyState()
+        })
+
+        updateStickyState()
     }
 
     override fun onResume() {
