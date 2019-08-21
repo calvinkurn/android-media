@@ -3,4 +3,13 @@
     <color name="label_color">#868686</color>
     <color name="tkpd_dark_green">#5eba46</color>
     <color name="red">#ff0000</color>
+    <color name="separator_color">#e0e0e0</color>
+    <color name="disable_map">#90FFFFFF</color>
+    <color name="ic_grey_color">#9fa6b0</color>
+    <color name="title_search_location_color">#f531353b</color>
+    <color name="label_grey">#ae31353b</color>
+    <color name="hint_et">#3331353b</color>
+    <color name="tkpd_green">#87d58b</color>
+    <color name="tkpd_view_green_bg">#f3fef3</color>
+    <color name="polygon_map">#99FF66</color>
 </resources>

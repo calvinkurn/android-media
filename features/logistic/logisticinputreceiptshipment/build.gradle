@@ -26,13 +26,11 @@ project.ext {
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.userSession)
-    implementation project(rootProject.ext.libraries.network)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticCommon)
-    implementation project(rootProject.ext.features.logisticanalytics)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation rootProject.ext.miscDependencies.scannerZxing

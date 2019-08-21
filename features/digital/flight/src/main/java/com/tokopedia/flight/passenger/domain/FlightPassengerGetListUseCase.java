@@ -1,7 +1,7 @@
 package com.tokopedia.flight.passenger.domain;
 
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.passenger.domain.model.ListPassengerViewModelMapper;
 import com.tokopedia.usecase.RequestParams;
@@ -61,7 +61,7 @@ public class FlightPassengerGetListUseCase extends UseCase<List<FlightBookingPas
                         return Observable.zip(Observable.just(flightBookingPassengerViewModel1),
                                 flightRepository.getAirportByCountryId(flightBookingPassengerViewModel1.getPassportNationality().getCountryId()),
                                 (flightBookingPassengerViewModel11, nationality) -> {
-                                    FlightBookingPhoneCodeViewModel passportNationality = new FlightBookingPhoneCodeViewModel();
+                                    CountryPhoneCode passportNationality = new CountryPhoneCode();
                                     passportNationality.setCountryId(nationality.getCountryId());
                                     passportNationality.setCountryName(nationality.getCountryName());
                                     passportNationality.setCountryPhoneCode(String.valueOf(nationality.getPhoneCode()));
@@ -77,7 +77,7 @@ public class FlightPassengerGetListUseCase extends UseCase<List<FlightBookingPas
                     if (flightBookingPassengerViewModel12.getPassportIssuerCountry() != null) {
                         return Observable.zip(Observable.just(flightBookingPassengerViewModel12), flightRepository.getAirportByCountryId(flightBookingPassengerViewModel12.getPassportIssuerCountry().getCountryId()),
                                 (flightBookingPassengerViewModel121, issuerCountry) -> {
-                                    FlightBookingPhoneCodeViewModel passportIssuerCountry = new FlightBookingPhoneCodeViewModel();
+                                    CountryPhoneCode passportIssuerCountry = new CountryPhoneCode();
                                     passportIssuerCountry.setCountryId(issuerCountry.getCountryId());
                                     passportIssuerCountry.setCountryName(issuerCountry.getCountryName());
                                     passportIssuerCountry.setCountryPhoneCode(String.valueOf(issuerCountry.getPhoneCode()));

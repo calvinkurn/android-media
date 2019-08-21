@@ -43,6 +43,7 @@ public class EventDetailsViewModelMapper {
         target.setSeatMapImage(source.getSeatMapImage());
         target.setForms(source.getForms());
         target.setCityName(source.getCityName());
+        target.setCustomText1(source.getCustomText1());
         String dateRange = "";
         if (source.getMinStartDate() != 0) {
             if (source.getMinStartDate() == source.getMaxEndDate()) {
@@ -62,7 +63,7 @@ public class EventDetailsViewModelMapper {
                 schedulesViewModel.setaDdress(item.getAddressDetail().getAddress());
                 schedulesViewModel.setStartDate(item.getSchedule().getStartDate());
                 schedulesViewModel.setEndDate(item.getSchedule().getEndDate());
-                schedulesViewModel.setCityName(item.getSchedule().getTitle());
+                schedulesViewModel.setCityName(item.getAddressDetail().getCity());
                 String timerange;
                 if (source.getMinStartDate() > 0) {
                     if (item.getSchedule().getStartDate() == item.getSchedule().getEndDate()) {

@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsEventTracking;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.api.ContactUsURL;
@@ -46,42 +45,30 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
 public class ContactUsHomeFragment extends BaseDaggerFragment
-        implements ContactUsHomeContract.View, HasComponent<ContactUsComponent> {
+        implements ContactUsHomeContract.View, HasComponent<ContactUsComponent> , View.OnClickListener {
 
     @Inject
     ContactUsHomePresenter presenter;
-    @BindView(R2.id.linearlayout_popular_article)
-    LinearLayout linearlayoutPopularArticle;
-    @BindView(R2.id.order_list)
-    CardView orderList;
-    @BindView(R2.id.no_orders)
-    CardView noOrders;
-    @BindView(R2.id.order_list_viewpager)
-    ViewPager orderListViewpager;
-    CardPagerAdapter cardAdapter;
-    @BindView(R2.id.toped_bot)
-    View btnChat;
-    @BindView(R2.id.view_full_purchaselist)
-    TextView btnFullPurchaseList;
-    @BindView(R2.id.txt_hi_user)
-    TextView txtHiUser;
 
-    @BindView(R2.id.txt_user_info)
-    TextView txtUserMessage;
-
+    private LinearLayout linearlayoutPopularArticle;
+    private CardView orderList;
+    private CardView noOrders;
+    private ViewPager orderListViewpager;
+    private CardPagerAdapter cardAdapter;
+    private View btnChat;
+    private TextView btnFullPurchaseList;
+    private TextView txtHiUser;
+    private TextView txtUserMessage;
     String msgId;
-    @BindView(R2.id.pager_indicator)
     CirclePageIndicator pagerIndicator;
 
     private ContactUsComponent campaignComponent;
 
     private int MIN_BUYER_LIST_SIZE = 4;
+
 
     public ContactUsHomeFragment() {
         // Required empty public constructor
@@ -99,7 +86,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.layout_home, container, false);
         presenter.attachView(this);
         initInjector();
-        ButterKnife.bind(this, view);
+        findingViewsId(view);
+        settingClickListener(view);
         cardAdapter = new CardPagerAdapter();
         ShadowTransformer shadowTransformer = new ShadowTransformer(orderListViewpager, cardAdapter);
         orderListViewpager.setPageTransformer(false, shadowTransformer);
@@ -107,6 +95,25 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
         orderListViewpager.setOffscreenPageLimit(3);
         setHasOptionsMenu(true);
         return view;
+    }
+
+    private void findingViewsId(View view) {
+        linearlayoutPopularArticle = view.findViewById(R.id.linearlayout_popular_article);
+        orderList = view.findViewById(R.id.order_list);
+        noOrders = view.findViewById(R.id.no_orders);
+        orderListViewpager = view.findViewById(R.id.order_list_viewpager);
+        btnChat = view.findViewById(R.id.toped_bot);
+        btnFullPurchaseList = view.findViewById(R.id.view_full_purchaselist);
+        txtHiUser = view.findViewById(R.id.txt_hi_user);
+        txtUserMessage = view.findViewById(R.id.txt_user_info);
+        pagerIndicator = view.findViewById(R.id.pager_indicator);
+    }
+
+    private void settingClickListener(View view) {
+        view.findViewById(R.id.btn_view_more).setOnClickListener(this);
+        btnFullPurchaseList.setOnClickListener(this);
+        view.findViewById(R.id.btn_contact_us).setOnClickListener(this);
+        view.findViewById(R.id.btn_chat_toped).setOnClickListener(this);
     }
 
     @Override
@@ -202,21 +209,16 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
         txtHiUser.setText(String.format(getResources().getString(R.string.hai_user), userName));
     }
 
-
-    @OnClick(R2.id.btn_view_more)
     public void onViewClicked() {
         ContactUsTracking.eventLihatBantuanClick();
         RouteManager.route(getContext(), ContactUsURL.ARTICLE_POPULAR_URL);
     }
 
-    @OnClick(R2.id.view_full_purchaselist)
     public void onViewFullClicked() {
         ContactUsTracking.eventLihatTransaksiClick();
         startActivity(BuyerPurchaseListActivity.getInstance(getContext()));
     }
 
-
-    @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
         ContactUsTracking.eventHomeHubungiKamiClick();
         String encodedUrl;
@@ -229,7 +231,6 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
         startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), encodedUrl, "Hubungi Kami"));
     }
 
-    @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
         ContactUsTracking.eventChatBotOkClick();
         startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext()))
@@ -240,5 +241,19 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.btn_view_more){
+            onViewClicked();
+        }else if(id==R.id.view_full_purchaselist){
+            onViewFullClicked();
+        }else if(id==R.id.btn_contact_us){
+            onBtnContactUsClicked();
+        }else if(id==R.id.btn_chat_toped){
+            onBtnChatClicked();
+        }
     }
 }

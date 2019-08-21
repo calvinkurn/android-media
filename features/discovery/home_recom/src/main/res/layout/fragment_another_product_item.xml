@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.productcard.v2.ProductCardViewSmallGrid
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/product_item"
+        android:layout_width="@dimen/dp_180"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_2"
+        app:fixedHeight="true" />

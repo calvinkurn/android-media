@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 
@@ -21,13 +22,13 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
@@ -36,8 +37,11 @@ import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -55,8 +59,10 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_C
 public abstract class SearchSectionFragment
         extends BaseDaggerFragment
         implements
-        SearchSectionContract.View {
+        SearchSectionContract.View,
+        BannerAdsListener {
 
+    private static final String SHOP = "shop";
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
     public static final int REQUEST_CODE_LOGIN = 561;
 
@@ -78,9 +84,10 @@ public abstract class SearchSectionFragment
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
-    private RedirectionListener redirectionListener;
+    protected RedirectionListener redirectionListener;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout refreshLayout;
     private boolean showBottomBar;
     public int spanCount;
@@ -98,25 +105,17 @@ public abstract class SearchSectionFragment
     SearchTracking searchTracking;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (getUserVisibleHint()) {
-            setupSearchNavigation();
-        }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initSpan();
+        initLayoutManager();
+        initSwipeToRefresh(view);
 
         if (savedInstanceState == null) {
             refreshLayout.post(this::onFirstTimeLaunch);
         } else {
             onRestoreInstanceState(savedInstanceState);
         }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initSpan();
-        initLayoutManager();
-        initSwipeToRefresh(view);
     }
 
     private void initSwipeToRefresh(View view) {
@@ -153,8 +152,12 @@ public abstract class SearchSectionFragment
 
     private void initLayoutManager() {
         linearLayoutManager = new LinearLayoutManager(getActivity());
+
         gridLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
+
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(getSpanCount(), StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
     }
 
     @Override
@@ -188,7 +191,7 @@ public abstract class SearchSectionFragment
         }
     }
 
-    private void setupSearchNavigation() {
+    protected void setupSearchNavigation() {
         searchNavigationListener
                 .setupSearchNavigation(new SearchNavigationListener.ClickListener() {
                     @Override
@@ -217,35 +220,43 @@ public abstract class SearchSectionFragment
         return linearLayoutManager;
     }
 
+    protected StaggeredGridLayoutManager getStaggeredGridLayoutManager() {
+        return staggeredGridLayoutManager;
+    }
+
     protected void switchLayoutType() {
-        if (!getUserVisibleHint()) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
             return;
         }
 
         switch (getAdapter().getCurrentLayoutType()) {
             case GRID_1:
-                setSpanCount(2);
+                setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
-                getAdapter().changeDoubleGridView();
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
+                staggeredGridLayoutManager.setSpanCount(spanCount);
+                getAdapter().changeSingleGridView();
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
-                getAdapter().changeSingleGridView();
-                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
-                break;
-            case GRID_3:
-                setSpanCount(1);
+                staggeredGridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeListView();
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
+                break;
+            case GRID_3:
+                setSpanCount(2);
+                gridLayoutManager.setSpanCount(spanCount);
+                staggeredGridLayoutManager.setSpanCount(spanCount);
+                getAdapter().changeDoubleGridView();
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
         }
         refreshMenuItemGridIcon();
     }
 
     public void refreshMenuItemGridIcon() {
-        if(searchNavigationListener == null) return;
+        if(searchNavigationListener == null || getAdapter() == null) return;
 
         searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
     }
@@ -453,8 +464,14 @@ public abstract class SearchSectionFragment
         HashMap<String, String> selectedSort = new HashMap<>(
                 SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
         );
-
+        addDefaultSelectedSort(selectedSort);
         setSelectedSort(selectedSort);
+    }
+
+    private void addDefaultSelectedSort(HashMap<String, String> selectedSort) {
+        if (selectedSort.isEmpty()) {
+            selectedSort.put(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT);
+        }
     }
 
     protected abstract void refreshAdapterForEmptySearch();
@@ -467,7 +484,7 @@ public abstract class SearchSectionFragment
     }
 
     public void performNewProductSearch(String query) {
-        redirectionListener.performNewProductSearch(query);
+        redirectionListener.startActivityWithApplink(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + query);
     }
 
     public void showSearchInputView() {
@@ -506,11 +523,6 @@ public abstract class SearchSectionFragment
 
     protected void onFirstTimeLaunch() {
 
-    }
-
-    protected void disableSwipeRefresh() {
-        refreshLayout.setEnabled(false);
-        refreshLayout.setRefreshing(false);
     }
 
     protected void onSwipeToRefresh() {
@@ -619,5 +631,27 @@ public abstract class SearchSectionFragment
     @Override
     public void logDebug(String tag, String message) {
         Log.d(tag, message);
+    }
+
+    @Override
+    public void onBannerAdsClicked(int position, String applink, CpmData cpmData) {
+        if(getActivity() == null || redirectionListener == null) return;
+
+        redirectionListener.startActivityWithApplink(applink);
+
+        trackBannerAdsClicked(position, applink, cpmData);
+    }
+
+    private void trackBannerAdsClicked(int position, String applink, CpmData data) {
+        if (applink.contains(SHOP)) {
+            TopAdsGtmTracker.eventSearchResultPromoShopClick(getActivity(), data, position);
+        } else {
+            TopAdsGtmTracker.eventSearchResultPromoProductClick(getActivity(), data, position);
+        }
+    }
+
+    @Override
+    public void onBannerAdsImpressionListener(int position, CpmData data) {
+        TopAdsGtmTracker.eventSearchResultPromoView(getActivity(), data, position);
     }
 }

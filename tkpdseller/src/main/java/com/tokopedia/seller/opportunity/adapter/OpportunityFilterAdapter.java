@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
@@ -131,7 +132,8 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private void bindParentViewHolder(ParentViewHolder holder, final int position) {
         holder.title.setText(filterViewModel.getListChild().get(position).getName());
-
+        holder.title.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (holder.title.getContext(), R.drawable.arrow_drop_down), null);
     }
 
 

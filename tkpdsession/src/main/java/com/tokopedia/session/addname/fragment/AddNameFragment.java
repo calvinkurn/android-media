@@ -10,7 +10,6 @@ import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameR
  */
 public class AddNameFragment extends AddNameRegisterPhoneFragment {
 
-
     public static AddNameRegisterPhoneFragment newInstance(Bundle bundle) {
         AddNameFragment fragment = new AddNameFragment();
         fragment.setArguments(bundle);

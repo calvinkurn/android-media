@@ -1,7 +1,9 @@
 package com.tokopedia.abstraction.base.app;
 
+import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.AppModule;
@@ -29,4 +31,10 @@ public class BaseMainApplication extends MultiDexApplication {
     }
 
     public boolean checkAppSignature(){return false;}
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        SplitCompat.install(this);
+    }
 }

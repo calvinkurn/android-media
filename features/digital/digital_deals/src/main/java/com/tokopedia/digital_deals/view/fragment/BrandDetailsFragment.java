@@ -52,6 +52,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDetailsContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
     private final boolean isShortLayout = true;
+    private static final String SCREEN_NAME = "/digital/deals/pdp brand";
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
@@ -133,6 +134,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
         dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.BRAND_PAGE, this, !isShortLayout, true);
+        dealsAdapter.setDealType(DealsAnalytics.BRAND_DEALS);
         recyclerViewDeals.setAdapter(dealsAdapter);
 
     }
@@ -152,6 +154,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public void renderBrandDetails(List<ProductItem> productItems, Brand brand, int count) {
+        dealsAnalytics.sendScreenNameEvent(getScreenName());
         collapsingToolbarLayout.setTitle(brand.getTitle());
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null) {
@@ -325,7 +328,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override

@@ -15,7 +15,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.customadapter.ImageUploadAdapter;
 import com.tokopedia.core.util.DataBindAdapter;
@@ -28,8 +27,6 @@ import com.tokopedia.contactus.inboxticket.presenter.InboxTicketDetailFragmentPr
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Nisie on 4/25/16.
@@ -41,43 +38,39 @@ public class HeaderTicketDataBinder extends DataBinder<HeaderTicketDataBinder.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.status)
-        TextView status;
 
-        @BindView(R2.id.title)
-        TextView title;
-
-        @BindView(R2.id.user_ava)
-        ImageView userAva;
-
-        @BindView(R2.id.user_name)
-        TextView userName;
-
-        @BindView(R2.id.create_time)
-        TextView createTime;
-
-        @BindView(R2.id.image_upload_layout)
-        RecyclerView imageUploadLayout;
-
-        @BindView(R2.id.message)
-        TextView message;
-
-        @BindView(R2.id.view_more_layout)
-        View viewMoreLayout;
-
-        @BindView(R2.id.view_more)
-        TextView viewMore;
+        private TextView status;
+        private TextView title;
+        private ImageView userAva;
+        private TextView userName;
+        private TextView createTime;
+        private RecyclerView imageUploadLayout;
+        private TextView message;
+        private View viewMoreLayout;
+        private TextView viewMore;
 
         LabelUtils label;
         ImageUploadAdapter adapter;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            findingViewsId(itemView);
             label = LabelUtils.getInstance(itemView.getContext(), userName);
             adapter = ImageUploadAdapter.createAdapter(itemView.getContext());
             imageUploadLayout.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false));
             imageUploadLayout.setAdapter(adapter);
+        }
+
+        private void findingViewsId(View view) {
+            status = view.findViewById(R.id.status);
+            title = view.findViewById(R.id.title);
+            userAva = view.findViewById(R.id.user_ava);
+            userName = view.findViewById(R.id.user_name);
+            createTime = view.findViewById(R.id.create_time);
+            imageUploadLayout = view.findViewById(R.id.image_upload_layout);
+            message = view.findViewById(R.id.message);
+            viewMoreLayout = view.findViewById(R.id.view_more_layout);
+            viewMore = view.findViewById(R.id.view_more);
         }
     }
 

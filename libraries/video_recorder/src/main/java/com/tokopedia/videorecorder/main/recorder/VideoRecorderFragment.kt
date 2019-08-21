@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cameraview.*
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.permissionchecker.request
@@ -205,9 +206,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     private fun setUIFlashCamera(flashEnum: Int) {
         when (flashEnum) {
-            Flash.AUTO.ordinal -> btnFlash.setImageResource(R.drawable.ic_auto_flash)
-            Flash.ON.ordinal -> btnFlash.setImageResource(R.drawable.ic_on_flash)
-            Flash.OFF.ordinal -> btnFlash.setImageResource(R.drawable.ic_off_flash)
+            Flash.AUTO.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(),R.drawable.ic_auto_flash))
+            Flash.ON.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(),R.drawable.ic_on_flash))
+            Flash.OFF.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(),R.drawable.ic_off_flash))
         }
     }
 

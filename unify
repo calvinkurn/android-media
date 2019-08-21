@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+#
+# Helps develop Unify Component
+# @core-team
+#
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#  Required!
+#  - Have GIT installed
+#  - Already clone https://github.com/tokopedia/android-tokopedia-core.git
+#
+#  List unify module available:
+#  - icon
+#  - principle
+#  - component
+#  - calendar
+#  - coachmark
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+#
+# Showing list of action items
+#
+help() {
+    echo "start <username>      => Start Development"
+    echo "commit <message>      => Add + Commit to Unify"
+    echo "push                  => Push to Unify"
+    echo "checkver <project>    => Check current version of Project"
+    echo "devwith [aar/module] => Testing / Developing SampleApp with aar / module"
+}
+
+#
+# Helps start develop unify
+#
+# 1 Write your username for branch_name to <unifyconfig/unifyproject.config>
+# 2 Check if your branch already exist
+# 3 Creating new branch from <feature/unify/dev> and name it by your username
+# 4 Gradle clean > build
+#
+start( ) {
+    if [ -z "$1" ]; then
+        echo "Please input your username"
+        exit 1
+    fi
+
+    if [ ! -f git ]; then
+        echo "Please install git"
+    fi
+
+    echo "Starting development..."
+    echo "Please wait..."
+
+    echo "user_name=$1" > unifyconfig/unifyproject.config
+    source unifyconfig/unifyproject.config
+    branchname="feature/unify/${user_name}"
+
+    if [ `git branch | egrep "^[[:space:]]+${branchname}$"` ];
+    then
+        echo "Checkout branch $branchname..."
+        git checkout $branchname
+    else
+        echo "Creating new branch..."
+        git checkout -b $branchname feature/unify/dev
+    fi
+
+    ./gradlew clean
+    ./gradlew build -p unifysample
+
+    echo "Finish!"
+}
+
+#
+# Helps commit your changes to your branch
+#
+# 1 Git add > commit
+#
+commit( ) {
+    if [ -z "$1" ]; then
+        echo "Please input commit message"
+        exit 1
+    fi
+
+    git add .
+    git commit -m "$1"
+}
+
+#
+# Helps push your changes to your branch
+#
+# 1 Get your branch name
+# 2 Push to your branch
+#
+push( ) {
+    source unifyproject.config
+    branchname="feature/unify/$user_name"
+
+    git push origin $branchname
+}
+
+#
+# Give information bout latest version of unify module
+#
+# 1 Get version by specify module
+#
+checkVersion( ) {
+
+    if [ -z "$1" ]; then
+        echo "Please specify project:"
+        echo "icon"
+        echo "principle"
+        echo "component"
+        echo "calendar"
+        echo "coachmark"
+        exit 1
+    fi
+
+    if [ $1 = "icon" ];
+        then
+            versionname="unify_icon"
+        elif [ $1 = "principle" ];
+        then
+            versionname="unify_principles"
+        elif [ $1 = "component" ];
+        then
+            versionname="unify_components"
+        elif [ $1 = "calendar" ];
+        then
+            versionname="unify_calendar"
+        elif [ $1 = "coachmark" ];
+        then
+            versionname="unify_coach_mark"
+        else
+            echo "This $1 project not available yet. Please contact core-team for help"
+            exit 1
+        fi
+
+    name="${versionname}_version"
+    source unifyconfig/version.properties
+
+    echo "${!name}"
+}
+
+#
+# Helps choose environment what you want to use
+#
+# 1 Change some build.gradle by param
+#
+chooseEnvironment( ) {
+
+    if [ -z "$1" ] && [ "$1" != "aar" ] && [ "$1" != "module" ]; then
+        echo "Please choose environment! [aar/module]"
+        exit 1
+    fi
+
+    environment=$1
+    cat libraries/unify/unify_components/build.gradle."${environment}" > libraries/unify/unify_components/build.gradle
+    cat libraries/unify/unify_compositions/calendar/build.gradle."${environment}" > libraries/unify/unify_compositions/calendar/build.gradle
+    cat libraries/unify/unify_compositions/coach_mark/build.gradle."${environment}" > libraries/unify/unify_compositions/coach_mark/build.gradle
+    cat unifysample/build.gradle."${environment}" > unifysample/build.gradle
+}
+
+if [ -z "$1" ]; then
+    help
+    exit 1
+fi
+
+if [ $1 = "start" ]; then
+    start $2
+elif [ $1 = "commit" ]; then
+    commit "$2"
+elif [ $1 = "push" ]; then
+    push
+elif [ $1 = "checkver" ]; then
+    checkVersion $2
+elif [ $1 = "devwith" ]; then
+    chooseEnvironment $2
+else
+    help
+fi

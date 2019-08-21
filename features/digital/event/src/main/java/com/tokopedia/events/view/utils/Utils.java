@@ -1,5 +1,6 @@
 package com.tokopedia.events.view.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,7 +17,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
+import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
@@ -34,7 +37,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -109,7 +111,7 @@ public class Utils {
         List<CategoryViewModel> categoryViewModels = new ArrayList<>();
         if (categoryList != null) {
             for (EventsCategoryDomain eventsCategoryDomain : categoryList
-                    ) {
+            ) {
                 if ("top".equalsIgnoreCase(eventsCategoryDomain.getName())) {
                     categoryViewModels.add(0, new CategoryViewModel(eventsCategoryDomain.getTitle(),
                             eventsCategoryDomain.getName(),
@@ -367,15 +369,9 @@ public class Utils {
 
     }
 
-    public void shareEvent(Context context, String title, String URL) {
-        Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("text/plain");
-        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        share.putExtra(Intent.EXTRA_SUBJECT,
-                String.format(context.getResources().getString(R.string.check_this_out),
-                        title));
-        share.putExtra(Intent.EXTRA_TEXT, "https://www.tokopedia.com/events/detail/" + URL);
-        context.startActivity(Intent.createChooser(share, "Share Event!"));
+    public void shareEvent(Context context, String title, String URL, String imageUrl) {
+        String url = EventsUrl.AppLink.EVENTS + "/" + URL;
+        ((EventModuleRouter) ((Activity) context).getApplication()).shareEvent(context, url, title, imageUrl);
     }
 
     public static class Constants {

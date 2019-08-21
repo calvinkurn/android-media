@@ -10,12 +10,14 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.LabelGroup;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -25,6 +27,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +40,8 @@ import rx.Subscriber;
 final class ProductListPresenter
         extends SearchSectionPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
+
+    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
 
     @Inject
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
@@ -66,7 +71,7 @@ final class ProductListPresenter
 
         component.inject(this);
 
-        enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,false);
+        enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,true);
         changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
     }
 
@@ -111,6 +116,7 @@ final class ProductListPresenter
                 addWishlist(productItem.getProductID(), getView().getUserId());
             }
         } else {
+            getView().sendTrackingWishlistNonLogin(productItem.getProductID(), !productItem.isWishlisted());
             getView().launchLoginActivity(productItem.getProductID());
         }
     }
@@ -377,6 +383,11 @@ final class ProductListPresenter
                     item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
+                    item.setIsShopOfficialStore(topAds.getShop().isShop_is_official());
+                    item.setShopName(topAds.getShop().getName());
+                    item.setOriginalPrice(topAds.getProduct().getCampaign().getOriginalPrice());
+                    item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
+                    item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     list.add(i, item);
                     j++;
                 }
@@ -387,7 +398,7 @@ final class ProductListPresenter
         return list;
     }
 
-    private static int convertCountReviewFormatToInt(String countReviewFormat) {
+    private int convertCountReviewFormatToInt(String countReviewFormat) {
         String countReviewString = countReviewFormat.replaceAll("[^\\d]", "");
 
         try {
@@ -399,12 +410,26 @@ final class ProductListPresenter
         }
     }
 
-    private static List<BadgeItemViewModel> mapBadges(List<Badge> badges) {
+    private List<BadgeItemViewModel> mapBadges(List<Badge> badges) {
         List<BadgeItemViewModel> items = new ArrayList<>();
         for (Badge b:badges) {
             items.add(new BadgeItemViewModel(b.getImageUrl(), b.getTitle(), b.isShow()));
         }
         return items;
+    }
+
+    private List<LabelGroupViewModel> mapLabelGroupList(List<LabelGroup> labelGroupList) {
+        List<LabelGroupViewModel> labelGroupViewModelList = new ArrayList<>();
+
+        for(LabelGroup labelGroup : labelGroupList) {
+            labelGroupViewModelList.add(
+                    new LabelGroupViewModel(
+                            labelGroup.getPosition(), labelGroup.getType(), labelGroup.getTitle()
+                    )
+            );
+        }
+
+        return labelGroupViewModelList;
     }
 
     private void loadMoreDataSubscriberOnCompleteIfViewAttached() {
@@ -491,31 +516,79 @@ final class ProductListPresenter
 
     private void loadDataSubscriberOnNextIfViewAttached(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
         if (isViewAttached()) {
-            getView().clearLastProductItemPositionFromCache();
-
-            int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
-
-            ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
-
-            saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
-
-            if (productViewModel.getProductList().isEmpty()) {
-                getViewToShowEmptySearch();
-            } else {
-                getViewToShowProductList(productViewModel);
+            if(isSearchRedirected(searchProductModel)) {
+                getViewToRedirectSearch(searchProductModel);
             }
-
-            getView().storeTotalData(productViewModel.getTotalData());
-
-            if(isFirstTimeLoad) {
-                getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+            else {
+                getViewToProcessSearchResult(searchProductModel, isFirstTimeLoad);
             }
         }
     }
 
-    private void getViewToShowEmptySearch() {
+    private boolean isSearchRedirected(SearchProductModel searchProductModel) {
+        SearchProductModel.Redirection redirection = searchProductModel.getSearchProduct().getRedirection();
+
+        return redirection != null
+                && redirection.getRedirectApplink() != null
+                && redirection.getRedirectApplink().length() > 0;
+    }
+
+    private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
+        String applink = searchProductModel.getSearchProduct().getRedirection().getRedirectApplink();
+
+        getView().redirectSearchToAnotherPage(applink);
+    }
+
+    private void getViewToProcessSearchResult(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
+        ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
+
+        sendTrackingNoSearchResult(productViewModel);
+
+        if (productViewModel.getProductList().isEmpty()) {
+            getViewToShowEmptySearch(productViewModel);
+        } else {
+            getViewToShowProductList(productViewModel);
+        }
+
+        getView().storeTotalData(productViewModel.getTotalData());
+
+        if (isFirstTimeLoad) {
+            getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+        }
+    }
+
+    private void sendTrackingNoSearchResult(ProductViewModel productViewModel) {
+        try {
+            String alternativeKeyword = "";
+            if (productViewModel.getRelatedSearchModel() != null) {
+                alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+            }
+            int resultCode = Integer.parseInt(productViewModel.getResponseCode());
+            if (searchNoResultCodeList.contains(resultCode)) {
+                getView().sendTrackingForNoResult(productViewModel.getResponseCode(), alternativeKeyword);
+            }
+        } catch (NumberFormatException e) {
+
+        }
+    }
+
+    private ProductViewModel createProductViewModelWithPosition(SearchProductModel searchProductModel) {
+        getView().clearLastProductItemPositionFromCache();
+
+        int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
+
+        ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
+
+        saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
+
+        return productViewModel;
+    }
+
+    private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
+        boolean isGlobalNavWidgetAvailable
+                = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
         getView().removeLoading();
-        getView().setEmptyProduct();
+        getView().setEmptyProduct(isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null);
         getView().setTotalSearchResultCount("0");
     }
 
@@ -524,6 +597,9 @@ final class ProductListPresenter
 
         HeaderViewModel headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
+        if (!productViewModel.isQuerySafe()) {
+            getView().showAdultRestriction();
+        }
         if (productViewModel.getGuidedSearchViewModel() != null) {
             headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
             getView().sendImpressionGuidedSearch();
@@ -535,7 +611,7 @@ final class ProductListPresenter
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
         if (isGlobalNavWidgetAvailable) {
-            headerViewModel.setGlobalNavViewModel(productViewModel.getGlobalNavViewModel());
+            list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
         if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable) {
@@ -548,10 +624,12 @@ final class ProductListPresenter
         }
 
         getView().setAdditionalParams(productViewModel.getAdditionalParams());
+        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().removeLoading();
         getView().setProductList(list);
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
         getView().addLoading();
+
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
     }
@@ -586,9 +664,10 @@ final class ProductListPresenter
     @Override
     public void detachView() {
         super.detachView();
-        searchProductFirstPageUseCase.unsubscribe();
-        searchProductLoadMoreUseCase.unsubscribe();
-        addWishlistActionUseCase.unsubscribe();
-        removeWishlistActionUseCase.unsubscribe();
+        if(searchProductFirstPageUseCase != null) searchProductFirstPageUseCase.unsubscribe();
+        if(searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
+        if(productWishlistUrlUseCase != null) productWishlistUrlUseCase.unsubscribe();
+        if(addWishlistActionUseCase != null) addWishlistActionUseCase.unsubscribe();
+        if(removeWishlistActionUseCase != null) removeWishlistActionUseCase.unsubscribe();
     }
 }

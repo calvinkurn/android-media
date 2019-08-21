@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -27,6 +27,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
@@ -52,6 +53,7 @@ import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListen
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
@@ -75,10 +77,8 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.json.JSONArray;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -101,6 +101,7 @@ public class ProductListFragment
         WishListActionListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
+    private static final String SHOP = "shop";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
@@ -119,8 +120,8 @@ public class ProductListFragment
     @Inject
     UserSessionInterface userSession;
 
-    private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
-    private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
+    private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
+    private SearchPerformanceMonitoringListener searchPerformanceMonitoringListener;
 
     private Config topAdsConfig;
     private ProductListAdapter adapter;
@@ -195,13 +196,27 @@ public class ProductListFragment
         initTopAdsParams();
         setupAdapter();
         setupListener();
+        if (getUserVisibleHint()) {
+            setupSearchNavigation();
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        searchPerformanceMonitoringListener = castContextToSearchPerformanceMonitoring(context);
+
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
+    }
+
+    private SearchPerformanceMonitoringListener castContextToSearchPerformanceMonitoring(Context context) {
+        if(context instanceof SearchPerformanceMonitoringListener) {
+            return (SearchPerformanceMonitoringListener) context;
+        }
+
+        return null;
     }
 
     @Override
@@ -233,29 +248,29 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 this, this,
-                topAdsConfig, getQueryKey());
-        adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
-        recyclerView.setLayoutManager(getGridLayoutManager());
+                topAdsConfig);
+        adapter = new ProductListAdapter(this, productListTypeFactory);
+        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new ProductItemDecoration(
-                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getColor(R.color.white)
-        ));
+        recyclerView.addItemDecoration(createProductItemDecoration());
         setHeaderTopAds(true);
+    }
+
+    @NonNull
+    private ProductItemDecoration createProductItemDecoration() {
+        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16));
     }
 
     private void setupListener() {
         recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
 
-        gridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getGridLayoutManager());
+        staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
 
-        linearLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getLinearLayoutManager());
-
-        recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
+        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
     }
 
-    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(LinearLayoutManager linearLayoutManager) {
-        return new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(RecyclerView.LayoutManager recyclerViewLayoutManager) {
+        return new EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
@@ -297,16 +312,6 @@ public class ProductListFragment
     }
 
     @Override
-    public boolean isEvenPage() {
-        return adapter.isEvenPage();
-    }
-
-    @Override
-    public int getStartFrom() {
-        return adapter.getStartFrom();
-    }
-
-    @Override
     public void setHeaderTopAds(boolean hasHeader) {
 
     }
@@ -323,11 +328,26 @@ public class ProductListFragment
     public void setProductList(List<Visitable> list) {
         adapter.clearDataBeforeSet();
 
+        stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
 
         if (similarSearchManager.isSimilarSearchEnable()){
             startShowCase();
         }
+    }
+
+    private void stopSearchResultPagePerformanceMonitoring() {
+        recyclerView.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if(searchPerformanceMonitoringListener != null) {
+                            searchPerformanceMonitoringListener.stopPerformanceMonitoring();
+                        }
+
+                        recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
@@ -337,7 +357,9 @@ public class ProductListFragment
             if (object instanceof ProductItemViewModel) {
                 ProductItemViewModel item = (ProductItemViewModel) object;
                 if (!item.isTopAds()) {
-                    dataLayerList.add(item.getProductAsObjectDataLayer(userId));
+                    String filterSortParams
+                            = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+                    dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams));
                 }
             }
         }
@@ -386,28 +408,6 @@ public class ProductListFragment
     }
 
     @Override
-    protected void switchLayoutType() {
-        super.switchLayoutType();
-
-        if (!getUserVisibleHint()) {
-            return;
-        }
-        recyclerView.clearOnScrollListeners();
-
-        recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
-
-        switch (getAdapter().getCurrentLayoutType()) {
-            case GRID_1: // List
-                recyclerView.addOnScrollListener(linearLayoutLoadMoreTriggerListener);
-                break;
-            case GRID_2: // Grid 2x2
-            case GRID_3: // Grid 1x1
-                recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
-                break;
-        }
-    }
-
-    @Override
     protected GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -448,6 +448,10 @@ public class ProductListFragment
             boolean isWishlist = data.getExtras().getBoolean(SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST, false);
 
             updateWishlistFromPDP(position, isWishlist);
+
+        }
+        if (getActivity() != null) {
+            AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
         }
     }
 
@@ -479,27 +483,33 @@ public class ProductListFragment
 
     @Override
     public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
-        if (!TextUtils.isEmpty(item.getApplink())) {
-            RouteManager.route(getActivity(), item.getApplink());
-        } else {
-            RouteManager.route(getActivity(), item.getUrl());
-        }
-        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(), keyword);
+        redirectionStartActivity(item.getApplink(), item.getUrl());
+
+        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(),
+                keyword, item.getName(), item.getApplink());
     }
 
     @Override
-    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
+    public void onGlobalNavWidgetClickSeeAll(GlobalNavViewModel model) {
+        redirectionStartActivity(model.getSeeAllApplink(), model.getSeeAllUrl());
+
+        SearchTracking.eventUserClickSeeAllGlobalNavWidget(model.getKeyword(),
+                model.getTitle(), model.getSeeAllApplink());
+    }
+
+    private void redirectionStartActivity(String applink, String url) {
+        if(redirectionListener == null) return;
+
         if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(getActivity(), applink);
+            redirectionListener.startActivityWithApplink(applink);
         } else {
-            RouteManager.route(getActivity(), url);
+            redirectionListener.startActivityWithUrl(url);
         }
-        SearchTracking.eventUserClickSeeAllGlobalNavWidget();
     }
 
     @Override
     public void onItemClicked(ProductItemViewModel item, int adapterPosition) {
-        Intent intent = getProductIntent(item.getProductID());
+        Intent intent = getProductIntent(item.getProductID(), item.getWarehouseID());
 
         if(intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
@@ -508,11 +518,15 @@ public class ProductListFragment
         }
     }
 
-    private Intent getProductIntent(String productId){
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        } else {
+    private Intent getProductIntent(String productId, String warehouseId){
+        if (getContext() == null) {
             return null;
+        }
+        
+        if (!TextUtils.isEmpty(warehouseId)) {
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID, productId, warehouseId);
+        } else {
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         }
     }
 
@@ -528,13 +542,14 @@ public class ProductListFragment
         if (item.isTopAds()) {
             sendItemClickTrackingEventForTopAdsItem(item, pos);
         } else {
+            String filterSortParams
+                    = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
             SearchTracking.trackEventClickSearchResultProduct(
                     getActivity(),
-                    item.getProductAsObjectDataLayer(userId),
+                    item.getProductAsObjectDataLayer(userId, filterSortParams),
                     item.getPageNumber(),
                     getQueryKey(),
-                    getSelectedFilter(),
-                    getSelectedSort()
+                    filterSortParams
             );
         }
     }
@@ -565,19 +580,6 @@ public class ProductListFragment
     @Override
     public void onSuggestionClicked(String queryParams) {
         performNewProductSearch(queryParams);
-    }
-
-    @Override
-    public void onBannerAdsClicked(String appLink) {
-        if(getActivity() == null) return;
-
-        DiscoveryRouter router = ((DiscoveryRouter) getActivity().getApplicationContext());
-
-        if (router.isSupportApplink(appLink)) {
-            router.goToApplinkActivity(getActivity(), appLink);
-        } else if (!TextUtils.isEmpty(appLink)) {
-            router.actionOpenGeneralWebView(getActivity(), appLink);
-        }
     }
 
     @Override
@@ -659,18 +661,10 @@ public class ProductListFragment
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        searchTracking.sendGeneralEventWithUserId(SearchEventTracking.Event.PRODUCT_VIEW,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.CLICK_WISHLIST,
-                generateWishlistClickEventLabel(true));
+        searchTracking.eventSuccessAddWishlistSearchResultProduct(getQueryKey(), productId);
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
-    }
-
-    private String generateWishlistClickEventLabel(boolean isWishlisted) {
-        String action = isWishlisted ? "add" : "remove";
-        return action + " - " + getQueryKey() + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
     }
 
     @Override
@@ -681,11 +675,7 @@ public class ProductListFragment
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        searchTracking.sendGeneralEventWithUserId(
-                SearchEventTracking.Event.PRODUCT_VIEW,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.CLICK_WISHLIST,
-                generateWishlistClickEventLabel(false));
+        searchTracking.eventSuccessRemoveWishlistSearchResultProduct(getQueryKey(), productId);
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
@@ -729,10 +719,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void setEmptyProduct() {
+    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel) {
         isListEmpty = true;
+        adapter.setGlobalNavViewModel(globalNavViewModel);
         adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
-        SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
     }
 
     @Override
@@ -789,17 +779,17 @@ public class ProductListFragment
 
     @Override
     public void onChangeList() {
-        recyclerView.setLayoutManager(getLinearLayoutManager());
+        recyclerView.requestLayout();
     }
 
     @Override
     public void onChangeDoubleGrid() {
-        recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.requestLayout();
     }
 
     @Override
     public void onChangeSingleGrid() {
-        recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.requestLayout();
     }
 
     public SearchParameter getSearchParameter() {
@@ -846,6 +836,7 @@ public class ProductListFragment
 
     @Override
     public void removeLoading() {
+        redirectionListener.onProductLoadingFinished();
         adapter.removeLoading();
     }
 
@@ -860,6 +851,13 @@ public class ProductListFragment
     public void setAdditionalParams(String additionalParams) {
         if (!TextUtils.isEmpty(additionalParams)) {
             this.additionalParams = additionalParams;
+        }
+    }
+
+    @Override
+    public void setAutocompleteApplink(String autocompleteApplink) {
+        if (redirectionListener != null) {
+            redirectionListener.setAutocompleteApplink(autocompleteApplink);
         }
     }
 
@@ -929,8 +927,7 @@ public class ProductListFragment
 
     @Override
     public void updateScrollListener() {
-        gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
-        linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+        staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }
 
     public void startShowCase() {
@@ -958,7 +955,7 @@ public class ProductListFragment
                 if (itemView != null) {
                     showCaseList.add(
                             new ShowCaseObject(
-                                    itemView.findViewById(R.id.container),
+                                    itemView.findViewById(R.id.productCardView),
                                     getString(R.string.view_similar_item),
                                     getString(R.string.press_to_see_similar),
                                     ShowCaseContentPosition.BOTTOM));
@@ -1003,14 +1000,9 @@ public class ProductListFragment
         if (recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
             recyclerView.stopScroll();
             recyclerView.getLayoutManager().scrollToPosition(PRODUCT_POSITION + PRODUCT_POSITION);
-            return ((GridLayoutManager) recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
+            return recyclerView.getLayoutManager().findViewByPosition(PRODUCT_POSITION);
         }
         return null;
-    }
-
-    @Override
-    public Map<String, Object> getSearchParameterMap() {
-        return searchParameter.getSearchParameterMap();
     }
 
     @Override
@@ -1039,5 +1031,46 @@ public class ProductListFragment
                 currentKey,
                 currentPage
         );
+    }
+
+    @Override
+    public void showAdultRestriction() {
+        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
+    }
+
+    @Override
+    public void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction) {
+        searchTracking.sendGeneralEventWithUserId(
+                SearchEventTracking.Event.CLICK_WISHLIST,
+                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                generateWishlistClickEventActionNonLogin(wishlistAction),
+                generateWishlistClickEventLabelNonLogin(productId)
+        );
+    }
+
+    private String generateWishlistClickEventActionNonLogin(boolean isWishlisted) {
+        String action = isWishlisted ? "add" : "remove";
+        return action + " wishlist - non logged in";
+    }
+
+    private String generateWishlistClickEventLabelNonLogin(String productId) {
+        return productId + " - " + getQueryKey();
+    }
+
+    @Override
+    public void redirectSearchToAnotherPage(String applink) {
+        redirectionListener.startActivityWithApplink(applink);
+        finishActivity();
+    }
+
+    @Override
+    public void sendTrackingForNoResult(String resultCode, String alternativeKeyword) {
+        SearchTracking.eventSearchNoResult(getQueryKey(), getScreenName(), getSelectedFilter(), alternativeKeyword, resultCode);
+    }
+
+    private void finishActivity() {
+        if(getActivity() != null) {
+            getActivity().finish();
+        }
     }
 }

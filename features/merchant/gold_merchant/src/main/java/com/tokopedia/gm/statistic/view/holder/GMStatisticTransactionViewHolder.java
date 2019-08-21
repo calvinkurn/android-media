@@ -5,9 +5,14 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.db.williamchart.base.BaseWilliamChartConfig;
+import com.db.williamchart.base.BaseWilliamChartModel;
+import com.db.williamchart.util.GMStatisticUtil;
+import com.db.williamchart.view.LineChartView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
+import com.tokopedia.gm.R;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticTransactionActivity;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
@@ -15,12 +20,7 @@ import com.tokopedia.gm.statistic.view.widget.ArrowPercentageView;
 import com.tokopedia.gm.statistic.view.widget.config.DataTransactionChartConfig;
 import com.tokopedia.gm.statistic.view.widget.config.DataTransactionDataSetConfig;
 import com.tokopedia.gm.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.utils.KMNumbers;
-import com.db.williamchart.base.BaseWilliamChartConfig;
-import com.db.williamchart.base.BaseWilliamChartModel;
-import com.db.williamchart.util.GMStatisticUtil;
-import com.db.williamchart.view.LineChartView;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
     private TextView tvTransactionCount;
     private ArrowPercentageView arrowPercentageView;
     private View seeDetailView;
-    View viewNotGM;
+    private View viewNotGM;
 
     private String[] monthNamesAbrev;
 
@@ -68,17 +68,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         tvTransactionCount = (TextView) transactionDataCardView.findViewById(R.id.tv_transaction_count);
         arrowPercentageView = (ArrowPercentageView) transactionDataCardView.findViewById(R.id.view_arrow_percentage);
         seeDetailView = transactionDataCardView.findViewById(R.id.see_detail_container);
-        seeDetailView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = transactionDataCardView.getContext();
-                // force to move to new statistic
-                Intent intent = new Intent(context, GMStatisticTransactionActivity.class);
-                context.startActivity(intent);
 
-                UnifyTracking.eventClickGMStatSeeDetailTransaction(view.getContext());
-            }
-        });
         monthNamesAbrev = transactionDataCardView.getContext().getResources()
                 .getStringArray(R.array.lib_date_picker_month_entries);
 
@@ -88,14 +78,15 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
     }
 
     public void bindData(GMGraphViewWithPreviousModel totalTransactionModel, boolean isGoldMerchant) {
-        if (!isGoldMerchant) {
-            setViewNoGM();
-            setEmptyStatePercentage();
-            seeDetailView.setClickable(false);
-            return;
-        }
-
         viewNotGM.setVisibility(View.GONE);
+
+        seeDetailView.setOnClickListener(v -> {
+            if (!isGoldMerchant) {
+                goToGm();
+            } else {
+                goToDetail();
+            }
+        });
 
         /* empty state */
         if (totalTransactionModel.values == null || totalTransactionModel.amount == 0) {
@@ -147,6 +138,22 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
                     baseWilliamChartModel, new DataTransactionDataSetConfig());
         }
         baseWilliamChartConfig.buildChart(transactionChart);
+    }
+
+    private void goToDetail() {
+        Context context = transactionDataCardView.getContext();
+        // force to move to new statistic
+        Intent intent = new Intent(context, GMStatisticTransactionActivity.class);
+        context.startActivity(intent);
+
+        UnifyTracking.eventClickGMStatSeeDetailTransaction(context);
+    }
+
+    private void goToGm() {
+        if (listener != null) {
+            listener.onViewNotGmClicked();
+        }
+        UnifyTracking.eventClickGMStatBuyGMDetailTransaction(transactionDataCardView.getContext());
     }
 
     @Override

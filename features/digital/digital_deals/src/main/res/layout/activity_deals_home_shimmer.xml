@@ -32,10 +32,10 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/location_arrow_down_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
-                    android:drawableRight="@drawable/location_arrow_down"
                     android:gravity="center"
                     android:text="@string/deals_toolbar_title"
                     android:textColor="@color/toolbar_title_color"

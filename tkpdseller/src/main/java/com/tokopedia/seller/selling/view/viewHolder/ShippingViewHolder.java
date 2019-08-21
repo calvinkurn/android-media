@@ -2,10 +2,7 @@ package com.tokopedia.seller.selling.view.viewHolder;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Build;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,14 +11,10 @@ import android.widget.TextView;
 
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core2.R;
-
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Toped10 on 7/29/2016.
@@ -54,11 +47,6 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
     public ImageView CameraBut;
     public View MainView;
     View deadlineColoredBorder;
-//
-//    public ShippingViewHolder(View itemView) {
-//        super(itemView);
-//        ButterKnife.bind(this, itemView);
-//    }
 
     public ShippingViewHolder(View itemView, MultiSelector multiSelector) {
         super(itemView, multiSelector);

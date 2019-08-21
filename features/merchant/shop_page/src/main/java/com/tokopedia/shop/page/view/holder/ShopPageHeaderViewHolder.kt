@@ -270,7 +270,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             view.shopLabel.visibility = View.GONE
             view.shopReputationView.visibility = View.VISIBLE
 
-            ImageHandler.loadImage(view.context, view.shopReputationView, shopBadge.badgeHD, -1)
+            ImageHandler.loadImage2(view.shopReputationView, shopBadge.badgeHD, R.drawable.ic_loading_image)
         } else {
             view.shopLabel.visibility = View.VISIBLE
             view.shopReputationView.visibility = View.GONE

@@ -8,18 +8,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 /**
@@ -33,28 +28,22 @@ public class DrawerGroupDataBinder extends DataBinder<DrawerGroupDataBinder.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.label)
         TextView label;
-
-        @BindView(R2.id.icon)
         ImageView icon;
-
-        @BindView(R2.id.toggle_notif)
         TextView notificationAlert;
-
-        @BindView(R2.id.notif)
         TextView notification;
-
-        @BindView(R2.id.drawer_item)
         RelativeLayout layout;
-
-        @BindView(R2.id.arrow)
         ImageView arrow;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            label = (TextView) itemView.findViewById(R.id.label);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
+            notificationAlert = (TextView) itemView.findViewById(R.id.toggle_notif);
+            notification = (TextView) itemView.findViewById(R.id.notif);
+            layout = (RelativeLayout) itemView.findViewById(R.id.drawer_item);
+            arrow = (ImageView) itemView.findViewById(R.id.arrow);
         }
     }
 

@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
@@ -21,7 +22,6 @@ import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
 import java.util.regex.Matcher;
@@ -30,21 +30,32 @@ import java.util.regex.Pattern;
 
 /**
  * @author by nisie on 11/29/17.
+ * * For navigate: use {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal.COTP}
+ * please pass :
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_OTP_TYPE} //refer to type in {@link RequestOtpUseCase}
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD} //true if user can pick other method
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_EMAIL}
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_MSISDN}
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE} // Use MODE from@see{@link RequestOtpUseCase}. Default is sms
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal.IS_SHOW_CHOOSE_METHOD} //true if showing choose method page first
  */
 
 public class VerificationActivity extends BaseSimpleActivity {
 
     public static final String PASS_MODEL = "VerificationPassModel";
 
-    public static final String PARAM_REQUEST_OTP_MODE = "fragmentType";
-
     protected static final String FIRST_FRAGMENT_TAG = "first";
     protected static final String CHOOSE_FRAGMENT_TAG = "choose";
-    protected static final String IS_SHOW_CHOOSE_METHOD = "is_show_choose_method";
     protected static final String REGEX_MASK_PHONE_NUMBER =
             "(0...|62...|\\+62...)(\\d{3,4})(\\d{3,4})(\\d{0,4})";
 
-    protected VerificationPassModel passModel;
+    private String phoneNumber;
+    private String email;
+    private int otpType;
+    private boolean canUseOtherMethod;
+    private boolean isShowChooseMethod;
+    private String requestOtpMode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,25 +76,22 @@ public class VerificationActivity extends BaseSimpleActivity {
 
     @Override
     protected void setupFragment(Bundle savedInstance) {
-        setupPassdata();
+        setupPassdata(savedInstance);
         inflateFragment();
     }
 
     @Override
     protected void inflateFragment() {
+
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment;
 
-        if (passModel.canUseOtherMethod()
-                && getIntent().getExtras()!= null
-                && getIntent().getExtras().getBoolean(IS_SHOW_CHOOSE_METHOD, true)) {
-            fragment = ChooseVerificationMethodFragment.createInstance(passModel);
+        if (canUseOtherMethod && isShowChooseMethod) {
+            fragment = ChooseVerificationMethodFragment.createInstance(phoneNumber, email, otpType, canUseOtherMethod);
             fragmentTransaction.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
         } else {
-            fragment = getDefaultFragment(
-                    getIntent().getExtras().getString(PARAM_REQUEST_OTP_MODE, ""),
-                    passModel);
+            fragment = getDefaultFragment(requestOtpMode);
             fragmentTransaction.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
         }
@@ -91,32 +99,54 @@ public class VerificationActivity extends BaseSimpleActivity {
         fragmentTransaction.commit();
     }
 
-    protected void setupPassdata() {
-        VerificationPassModel tempPassModel = getIntent().getParcelableExtra(PASS_MODEL);
-        if (tempPassModel != null) {
-            passModel = tempPassModel;
+    protected void setupPassdata(Bundle savedInstanceState) {
+
+        Bundle bundle = getIntent().getExtras();
+
+        if (savedInstanceState != null) {
+            canUseOtherMethod = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false);
+            phoneNumber = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "");
+            email = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "");
+            otpType = savedInstanceState.getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 0);
+            isShowChooseMethod = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true);
+            requestOtpMode = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_SMS);
+        } else if (bundle != null) {
+            canUseOtherMethod = bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false);
+            phoneNumber = bundle.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "");
+            email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "");
+            otpType = bundle.getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 0);
+            isShowChooseMethod = bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true);
+            requestOtpMode = bundle.getString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_SMS);
         } else {
             Log.d(VerificationActivity.class.getSimpleName(), "Error no pass data");
             finish();
         }
     }
 
-    protected Fragment getDefaultFragment(String mode, VerificationPassModel passModel) {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, canUseOtherMethod);
+        outState.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email);
+        outState.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
+        outState.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType);
+        outState.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, isShowChooseMethod);
+        outState.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, requestOtpMode);
+    }
+
+    protected Fragment getDefaultFragment(String mode) {
         Fragment fragment;
         switch (mode) {
             case RequestOtpUseCase.MODE_SMS: {
-                String phoneNumber = passModel.getPhoneNumber();
-                int otpType = passModel.getOtpType();
-                fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber, otpType));
+                fragment = VerificationFragment.createInstance(createSmsBundle());
                 break;
             }
             case RequestOtpUseCase.MODE_EMAIL: {
-                String email = passModel.getEmail();
-                fragment = VerificationFragment.createInstance(createEmailBundle(email));
+                fragment = VerificationFragment.createInstance(createEmailBundle());
                 break;
             }
             default: {
-                fragment = ChooseVerificationMethodFragment.createInstance(passModel);
+                fragment = ChooseVerificationMethodFragment.createInstance(phoneNumber, email, otpType, canUseOtherMethod);
                 break;
             }
         }
@@ -133,7 +163,7 @@ public class VerificationActivity extends BaseSimpleActivity {
                 ChooseVerificationMethodFragment)) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-            Fragment fragment = ChooseVerificationMethodFragment.createInstance(passModel);
+            Fragment fragment = ChooseVerificationMethodFragment.createInstance(phoneNumber, email, otpType, canUseOtherMethod);
             fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, 0, 0,
                     R.animator.slide_out_right);
             fragmentTransaction.add(R.id.parent_view, fragment, CHOOSE_FRAGMENT_TAG);
@@ -161,31 +191,31 @@ public class VerificationActivity extends BaseSimpleActivity {
         }
     }
 
-    protected VerificationViewModel createSmsBundle(String phoneNumber, int otpType) {
+    protected VerificationViewModel createSmsBundle() {
 
         return new VerificationViewModel(
-                passModel.getPhoneNumber(),
-                passModel.getEmail(),
-                passModel.getOtpType(),
+                phoneNumber,
+                email,
+                otpType,
                 RequestOtpUseCase.MODE_SMS,
                 R.drawable.ic_verification_sms,
                 createSmsMessage(phoneNumber, otpType),
                 OTPAnalytics.Screen.SCREEN_COTP_SMS,
-                passModel.canUseOtherMethod()
+                canUseOtherMethod
         );
     }
 
-    private VerificationViewModel createEmailBundle(String email) {
+    private VerificationViewModel createEmailBundle() {
 
         return new VerificationViewModel(
-                passModel.getPhoneNumber(),
-                passModel.getEmail(),
-                passModel.getOtpType(),
+                phoneNumber,
+                email,
+                otpType,
                 RequestOtpUseCase.MODE_EMAIL,
                 R.drawable.ic_verification_email,
                 createEmailMessage(email),
                 OTPAnalytics.Screen.SCREEN_COTP_EMAIL,
-                passModel.canUseOtherMethod()
+                canUseOtherMethod
         );
     }
 
@@ -193,14 +223,14 @@ public class VerificationActivity extends BaseSimpleActivity {
 
 
         return new VerificationViewModel(
-                passModel.getPhoneNumber(),
-                passModel.getEmail(),
-                passModel.getOtpType(),
+                phoneNumber,
+                email,
+                otpType,
                 methodItem.getModeName(),
                 methodItem.getImageUrl(),
                 methodItem.getVerificationText(),
                 getDynamicAppScreen(methodItem.getModeName()),
-                passModel.canUseOtherMethod()
+                canUseOtherMethod
         );
     }
 
@@ -277,15 +307,15 @@ public class VerificationActivity extends BaseSimpleActivity {
                                                                String phoneNumber,
                                                                String email) {
 
-        VerificationPassModel passModel = new VerificationPassModel(
-                phoneNumber, email,
-                otpType, true
-        );
-
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PASS_MODEL, passModel);
-        bundle.putBoolean(IS_SHOW_CHOOSE_METHOD, true);
+
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email);
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType);
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true);
+
         intent.putExtras(bundle);
         return intent;
     }
@@ -308,17 +338,17 @@ public class VerificationActivity extends BaseSimpleActivity {
     public static Intent getCallingIntent(Context context, String phoneNumber, String email,
                                           int otpType, boolean canUseOtherMethod,
                                           String defaultRequestMode) {
-        VerificationPassModel passModel = new VerificationPassModel(
-                phoneNumber,
-                email,
-                otpType,
-                canUseOtherMethod);
 
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PASS_MODEL, passModel);
-        bundle.putString(PARAM_REQUEST_OTP_MODE, defaultRequestMode);
-        bundle.putBoolean(IS_SHOW_CHOOSE_METHOD, false);
+
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, canUseOtherMethod);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email);
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType);
+
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, defaultRequestMode);
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false);
         intent.putExtras(bundle);
         return intent;
     }
@@ -339,15 +369,17 @@ public class VerificationActivity extends BaseSimpleActivity {
     public static Intent getCallingIntent(Context context, String phoneNumber, int otpType,
                                           boolean canUseOtherMethod,
                                           String defaultRequestMode) {
-        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
-                otpType,
-                canUseOtherMethod);
 
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PASS_MODEL, passModel);
-        bundle.putString(PARAM_REQUEST_OTP_MODE, defaultRequestMode);
-        bundle.putBoolean(IS_SHOW_CHOOSE_METHOD, false);
+
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, canUseOtherMethod);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "");
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType);
+
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, defaultRequestMode);
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false);
         intent.putExtras(bundle);
         return intent;
     }

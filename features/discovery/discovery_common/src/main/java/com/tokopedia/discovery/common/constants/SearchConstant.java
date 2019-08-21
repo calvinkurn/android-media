@@ -2,10 +2,8 @@ package com.tokopedia.discovery.common.constants;
 
 public interface SearchConstant {
 
-    String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
     String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
-    String EXTRA_HAS_CATALOG = "EXTRA_HAS_CATALOG";
     String EXTRA_FORCE_SWIPE_TO_SHOP = "EXTRA_FORCE_SWIPE_TO_SHOP";
 
     String EXTRA_ACTIVE_TAB_POSITION = "EXTRA_ACTIVE_TAB_POSITION";
@@ -13,20 +11,17 @@ public interface SearchConstant {
     String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
-    String DEEP_LINK_URI = "deep_link_uri";
 
     String SEARCH_RESULT_TRACE = "search_result_trace";
 
     String GCM_ID = "gcm_id";
     String GCM_STORAGE = "GCM_STORAGE";
 
-    String TRANSITION = "transition";
-
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
 
     int AUTO_COMPLETE_ACTIVITY_REQUEST_CODE = 14332;
-    int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY = 12323;
+    int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY = 12323;
 
     interface RecyclerView {
         int VIEW_PRODUCT = 3;
@@ -52,15 +47,6 @@ public interface SearchConstant {
         String KEY_HEADLINE_PARAMS = "headline_params";
     }
 
-    interface SearchProduct {
-        String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
-        String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
-        String PARAMETER_ROWS = "8";
-        String HEADLINE = "headline";
-        String HEADLINE_TEMPLATE_VALUE = "3,4";
-        String HEADLINE_ITEM_VALUE = "1";
-    }
-
     interface RemoteConfigKey {
         String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
     }
@@ -74,12 +60,7 @@ public interface SearchConstant {
     interface Ace {
         String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
-        String PATH_BROWSE_SHOP = "search/v1/shop";
         String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
-    }
-
-    interface Tome {
-        String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
     }
 
     interface DynamicFilter {
@@ -90,10 +71,30 @@ public interface SearchConstant {
         String DYNAMIC_FILTER_REPOSITORY_V4 = "dynamic_filter_repository_v4";
     }
 
+    interface SearchProduct {
+        String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
+        String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
+        String PARAMETER_ROWS = "8";
+        String HEADLINE = "headline";
+        String HEADLINE_TEMPLATE_VALUE = "3,4";
+        String HEADLINE_ITEM_VALUE = "1";
+    }
+
     interface SearchShop {
-        String SEARCH_SHOP_USE_CASE = "search_shop_use_case";
-        String TOGGLE_FAVORITE_SHOP_USE_CASE = "toggle_favorite_shop_use_case";
-        String TOGGLE_FAVORITE_SHOP_ID = "SHOP_ID";
+        String SEARCH_SHOP_FIRST_PAGE_USE_CASE = "search_shop_first_page_use_case";
+        String SEARCH_SHOP_LOAD_MORE_USE_CASE = "search_shop_load_more_use_case";
+        String HEADLINE = "headline";
+        String HEADLINE_TEMPLATE_VALUE = "3";
+        String HEADLINE_ITEM_VALUE = "1";
+        String ADS_SOURCE = "search";
+        int SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT = 3;
+    }
+
+    interface ShopStatus {
+        int KEY_SHOP_IS_GOLD = 1;
+        int KEY_SHOP_STATUS_CLOSED = 2;
+        int KEY_SHOP_STATUS_MODERATED = 3;
+        int KEY_SHOP_STATUS_INACTIVE = 4;
     }
 
     interface SearchCatalog {

@@ -41,10 +41,12 @@ import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
+import com.tokopedia.home_recom.HomeRecommendationActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.referral.view.activity.ReferralActivity;
@@ -61,6 +63,7 @@ import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -173,10 +176,22 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openDiscoveryPage(uriData.toString());
                     screenName = AppScreen.SCREEN_DISCOVERY_PAGE;
                     break;
-                case DeepLinkChecker.PRODUCT:
-                    openProduct(linkSegment, uriData);
-                    screenName = AppScreen.SCREEN_PRODUCT_INFO;
+                case DeepLinkChecker.CONTACT_US:
+                    URLParser urlParser = new URLParser(uriData.toString());
+                    RouteManager.route(context,ApplinkConstInternalMarketplace.CONTACT_US, urlParser.getSetQueryValue().get(1));
+                    screenName = AppScreen.SCREEN_CONTACT_US;
                     break;
+                case DeepLinkChecker.PRODUCT:
+                    if (linkSegment.size() >= 2
+                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment))) {
+                        openShopInfo(linkSegment, uriData);
+                        screenName = AppScreen.SCREEN_SHOP_INFO;
+                    } else {
+                        openProduct(linkSegment, uriData);
+                        screenName = AppScreen.SCREEN_PRODUCT_INFO;
+                    }
+                    break;
+                case DeepLinkChecker.ETALASE:
                 case DeepLinkChecker.SHOP:
                     openShopInfo(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_SHOP_INFO;
@@ -188,6 +203,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         context.finish();
                     }
                     screenName = AppScreen.SCREEN_LOGIN;
+                    break;
+                case DeepLinkChecker.RECOMMENDATION:
+                    openHomeRecommendation(linkSegment, uriData);
+                    screenName = AppScreen.SCREEN_RECOMMENDATION;
                     break;
                 case DeepLinkChecker.OTHER:
                     prepareOpenWebView(uriData);
@@ -304,9 +323,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         } else {
             intent = router.getPromoDetailIntent(context, linkSegment.get(1));
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         context.startActivity(intent);
         context.finish();
@@ -497,8 +513,22 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopInfo shopInfo) {
                 viewListener.finishLoading();
                 if (shopInfo != null && shopInfo.getInfo() != null) {
-                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopInfo.getInfo().getShopId());
-                    context.startActivity(intent);
+                    String shopId = shopInfo.getInfo().getShopId();
+                    String lastSegment = linkSegment.get(linkSegment.size() - 1);
+                    if (isEtalase(linkSegment)){
+                        RouteManager.route(context,
+                                ApplinkConst.SHOP_ETALASE,
+                                shopId,
+                                lastSegment);
+                    } else if (lastSegment.equals("info")) {
+                        RouteManager.route(context,
+                                ApplinkConst.SHOP_INFO,
+                                shopId);
+                    } else {
+                        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopId);
+                        context.startActivity(intent);
+                    }
+
                     context.finish();
                 } else {
                     if (!GlobalConfig.DEBUG) {
@@ -508,6 +538,22 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 }
             }
         });
+    }
+
+    private boolean isEtalase(List<String> linkSegment) {
+        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+        return lastSegment.equals("preorder")
+                || lastSegment.equals("sold")
+                || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
+    }
+
+    private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
+        String source = uriData.getQueryParameter("ref");
+        Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
+                linkSegment.size() > 1 ? linkSegment.get(1) : "",
+                source == null ? "" : source);
+        context.startActivity(intent);
+        context.finish();
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData) {
@@ -522,7 +568,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             @Override
             public void onError(Throwable e) {
                 viewListener.finishLoading();
-                Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
+                Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
                 context.startActivity(intent);
                 context.finish();
             }
@@ -538,7 +584,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                         Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
                     }
-                    Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
+                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
                     context.startActivity(intent);
                 }
                 context.finish();
@@ -547,8 +593,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
-        viewListener.inflateFragment(DetailProductRouter
-                .getCatalogDetailFragment(context, linkSegment.get(1)), TAG_FRAGMENT_CATALOG_DETAIL);
+        try {
+            String catalogId = linkSegment.get(1);
+            viewListener.inflateFragment(
+                    CatalogDetailListFragment.newInstance(catalogId),
+                    TAG_FRAGMENT_CATALOG_DETAIL
+            );
+        } catch (Exception e) {
+            Crashlytics.log(e.getLocalizedMessage());
+        }
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
@@ -616,14 +669,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openBrowseProduct(List<String> linkSegment, Uri uriData) {
         Bundle bundle = new Bundle();
         String departmentId = uriData.getQueryParameter("sc");
-        String searchQuery = uriData.getQueryParameter("q");
-        String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = RouteManager.getIntent(context, constructSearchApplink(searchQuery, departmentId));
+            intent = RouteManager.getIntent(context, constructSearchApplink(uriData));
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -635,15 +686,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private static String constructSearchApplink(String query, String departmentId) {
-        String applink = TextUtils.isEmpty(query) ?
+    private static String constructSearchApplink(Uri uriData) {
+        String q = uriData.getQueryParameter("q");
+        
+        String applink = TextUtils.isEmpty(q) ?
                 ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
                 ApplinkConst.DISCOVERY_SEARCH;
 
-        return applink
-                + "?"
-                + "q=" + query
-                + "&sc=" + departmentId;
+        return applink + "?" + uriData.getQuery();
     }
 
     private void openReferralScreen(Uri uriData) {

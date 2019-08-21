@@ -19,7 +19,7 @@ data class ShopSatisfaction(
 ){
 
         data class Response(
-                @SerializedName("ShopSatisfaction")
+                @SerializedName("ShopSatisfactionQuery")
                 @Expose
                 val shopSatisfaction: ShopSatisfaction = ShopSatisfaction()
         )

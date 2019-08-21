@@ -38,6 +38,7 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
             view?.textMinTrans?.text = element?.minimumUsage
         }
         setDateUsage(element)
+        view?.timerUsage?.visibility = View.GONE
         if ((element?.usage?.activeCountdown ?: 0 > 0 &&
                         element?.usage?.activeCountdown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
             timerUsage?.listener = object : TimerPromoCheckout.Listener {

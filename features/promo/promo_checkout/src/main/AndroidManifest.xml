@@ -10,7 +10,18 @@
             android:name=".list.view.activity.PromoCheckoutListDigitalActivity"
             android:label="@string/activity_promo_list_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White" >
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_promo"
+                    android:path="@string/path_promo_list_digital" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".list.view.activity.PromoCheckoutListMarketplaceActivity"
@@ -24,5 +35,22 @@
             android:label="@string/activity_promo_detail_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".detail.view.activity.PromoCheckoutDetailDigitalActivity"
+            android:label="@string/activity_promo_detail_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_promo"
+                    android:path="@string/path_promo_detail_digital" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

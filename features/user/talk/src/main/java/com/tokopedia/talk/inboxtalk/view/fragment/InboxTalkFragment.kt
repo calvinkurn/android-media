@@ -142,7 +142,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
         talk_rv.layoutManager = linearLayoutManager
         talk_rv.adapter = adapter
         talk_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val index = linearLayoutManager.findLastVisibleItemPosition()
                 if (index != -1 && adapter.checkCanLoadMore(index)) {

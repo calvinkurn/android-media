@@ -11,55 +11,71 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventFilterActivity;
 import com.tokopedia.events.view.contractor.ICloseFragement;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
-import butterknife.Unbinder;
-
 import static com.tokopedia.events.view.contractor.EventFilterContract.CATEGORY_ID;
-import static com.tokopedia.events.view.contractor.EventFilterContract.EVERYDAY;
 
 /**
  * Created by pranaymohapatra on 16/01/18.
  */
 
-public class CategoryFilterFragment extends Fragment {
+public class CategoryFilterFragment extends Fragment implements View.OnClickListener, AppCompatRadioButton.OnCheckedChangeListener {
 
+
+    @Override
+    public void onCheckedChanged(CompoundButton button, boolean selected) {
+
+        if (selected) {
+            if (currentToggled != null)
+                currentToggled.setChecked(false);
+            currentToggled = (RadioButton) button;
+            int id = button.getId();
+            if (id == R.id.rb_hiburan)
+                selectedCategoryId = CATEGORY_ID[0];
+            else if (id == R.id.rb_aktivitas)
+                selectedCategoryId = CATEGORY_ID[1];
+            else if (id == R.id.rb_musik)
+                selectedCategoryId = CATEGORY_ID[2];
+            else if (id == R.id.rb_olahraga)
+                selectedCategoryId = CATEGORY_ID[3];
+            else if (id == R.id.rb_teater)
+                selectedCategoryId = CATEGORY_ID[4];
+            else if (id == R.id.rb_seminar)
+                selectedCategoryId = CATEGORY_ID[5];
+            else if (id == R.id.rb_internasional)
+                selectedCategoryId = CATEGORY_ID[6];
+            else if (id == R.id.rb_opentrip)
+                selectedCategoryId = CATEGORY_ID[7];
+        }
+
+
+    }
 
     public interface CategorySelectedListener {
         void setCategory(String selectedCategory);
     }
 
 
-    Unbinder unbinder;
     private CategorySelectedListener listener;
     private ICloseFragement closeSelf;
 
     private static final String INDEX_CATEGORY = "index_category";
-    @BindView(R2.id.rb_musik)
     AppCompatRadioButton rbMusik;
-    @BindView(R2.id.rb_seminar)
     AppCompatRadioButton rbSeminar;
-    @BindView(R2.id.rb_olahraga)
     AppCompatRadioButton rbOlahraga;
-    @BindView(R2.id.rb_teater)
     AppCompatRadioButton rbTeater;
-    @BindView(R2.id.rb_hiburan)
     AppCompatRadioButton rbHiburan;
-    @BindView(R2.id.rb_aktivitas)
     AppCompatRadioButton rbAktivitas;
-    @BindView(R2.id.rb_internasional)
     AppCompatRadioButton rbInternasional;
-    @BindView(R2.id.rb_opentrip)
     AppCompatRadioButton rbOpentrip;
+    ImageView ivCloseFilter;
+    TextView resetBtn;
 
     private RadioButton currentToggled;
 
@@ -92,7 +108,19 @@ public class CategoryFilterFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View maincontent = inflater.inflate(R.layout.layout_fragment_filter_category, container, false);
-        unbinder = ButterKnife.bind(this, maincontent);
+        rbMusik = maincontent.findViewById(R.id.rb_musik);
+        rbSeminar = maincontent.findViewById(R.id.rb_seminar);
+        rbOlahraga = maincontent.findViewById(R.id.rb_olahraga);
+        rbTeater = maincontent.findViewById(R.id.rb_teater);
+        rbHiburan = maincontent.findViewById(R.id.rb_hiburan);
+        rbAktivitas = maincontent.findViewById(R.id.rb_aktivitas);
+        rbInternasional = maincontent.findViewById(R.id.rb_internasional);
+        rbOpentrip = maincontent.findViewById(R.id.rb_opentrip);
+        ivCloseFilter = maincontent.findViewById(R.id.iv_close_filter);
+        resetBtn = maincontent.findViewById(R.id.tv_reset);
+        ivCloseFilter.setOnClickListener(this);
+        resetBtn.setOnClickListener(this);
+
         rbMusik.setSupportButtonTintList(
                 ContextCompat.getColorStateList(getActivity(),
                         R.color.color_state_list_radio));
@@ -173,61 +201,21 @@ public class CategoryFilterFragment extends Fragment {
 
     }
 
-    @OnCheckedChanged({
-            R2.id.rb_musik,
-            R2.id.rb_seminar,
-            R2.id.rb_olahraga,
-            R2.id.rb_teater,
-            R2.id.rb_hiburan,
-            R2.id.rb_aktivitas,
-            R2.id.rb_internasional,
-            R2.id.rb_opentrip
-    })
-    public void onSelectCategory(CompoundButton button, boolean selected) {
-        if (selected) {
-            if (currentToggled != null)
-                currentToggled.setChecked(false);
-            currentToggled = (RadioButton) button;
-            int id = button.getId();
-            if (id == R.id.rb_hiburan)
-                selectedCategoryId = CATEGORY_ID[0];
-            else if (id == R.id.rb_aktivitas)
-                selectedCategoryId = CATEGORY_ID[1];
-            else if (id == R.id.rb_musik)
-                selectedCategoryId = CATEGORY_ID[2];
-            else if (id == R.id.rb_olahraga)
-                selectedCategoryId = CATEGORY_ID[3];
-            else if (id == R.id.rb_teater)
-                selectedCategoryId = CATEGORY_ID[4];
-            else if (id == R.id.rb_seminar)
-                selectedCategoryId = CATEGORY_ID[5];
-            else if (id == R.id.rb_internasional)
-                selectedCategoryId = CATEGORY_ID[6];
-            else if (id == R.id.rb_opentrip)
-                selectedCategoryId = CATEGORY_ID[7];
-        }
-    }
-
-    @OnClick({R2.id.iv_close_filter,
-            R2.id.tv_reset})
-    void onClick(View v) {
+    @Override
+    public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.iv_close_filter) {
             closeSelf.closeFragmentSelf();
         } else if (id == R.id.tv_reset) {
             selectedCategoryId = "";
             listener.setCategory(selectedCategoryId);
+        } else if (id == R.id.tv_simpan) {
+            listener.setCategory(selectedCategoryId);
         }
-    }
-
-    @OnClick(R2.id.tv_simpan)
-    void onClickSimpan() {
-        listener.setCategory(selectedCategoryId);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 }

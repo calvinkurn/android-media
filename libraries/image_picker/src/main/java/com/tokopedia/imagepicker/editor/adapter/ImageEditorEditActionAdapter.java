@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by hendry on 19/04/18.
@@ -56,27 +57,27 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
             view.setId(tabTypeDefItem);
             switch (tabTypeDefItem) {
                 case ImageEditActionTypeDef.ACTION_CROP:
-                    ivEdit.setImageResource(R.drawable.ic_crop);
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop));
                     tvEdit.setText(context.getString(R.string.crop));
                     break;
                 case ImageEditActionTypeDef.ACTION_ROTATE:
-                    ivEdit.setImageResource(R.drawable.ic_rotate);
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_rotate));
                     tvEdit.setText(context.getString(R.string.rotate));
                     break;
                 case ImageEditActionTypeDef.ACTION_WATERMARK:
-                    ivEdit.setImageResource(R.drawable.ic_crop_rotate);
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop_rotate));
                     tvEdit.setText(context.getString(R.string.watermark));
                     break;
                 case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
-                    ivEdit.setImageResource(R.drawable.ic_crop_rotate);
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop_rotate));
                     tvEdit.setText(context.getString(R.string.crop_and_rotate));
                     break;
                 case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
-                    ivEdit.setImageResource(R.drawable.ic_brightness);
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_brightness));
                     tvEdit.setText(context.getString(R.string.brightness));
                     break;
                 case ImageEditActionTypeDef.ACTION_CONTRAST:
-                    ivEdit.setImageResource(R.drawable.ic_contrast);
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_contrast));
                     tvEdit.setText(context.getString(R.string.contrast));
                     break;
             }

@@ -427,13 +427,12 @@
                         android:padding="@dimen/dp_16">
 
                         <TextView
+                            android:id="@+id/goto_promo_tv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginStart="@dimen/dp_16"
-                            android:drawableLeft="@drawable/promo_code"
                             android:drawablePadding="@dimen/dp_8"
-                            android:drawableStart="@drawable/promo_code"
                             android:gravity="center_vertical"
                             android:includeFontPadding="false"
                             android:text="@string/promo_section"

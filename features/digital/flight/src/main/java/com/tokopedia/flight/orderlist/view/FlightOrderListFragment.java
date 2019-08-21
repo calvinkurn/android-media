@@ -199,16 +199,12 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void onHelpOptionClicked(String invoiceId, int status) {
-        StringBuilder result = new StringBuilder(FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL);
-        result.append("&iv=" + invoiceId);
-        result.append("&ostat=" + status);
-        String url = result.toString();
+    public void onHelpOptionClicked(String contactUsUrl) {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
-                .getDefaultContactUsIntent(getActivity(), url) != null) {
+                .getDefaultContactUsIntent(getActivity(), contactUsUrl) != null) {
             startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getDefaultContactUsIntent(getActivity(), url));
+                    .getDefaultContactUsIntent(getActivity(), contactUsUrl));
         }
     }
 

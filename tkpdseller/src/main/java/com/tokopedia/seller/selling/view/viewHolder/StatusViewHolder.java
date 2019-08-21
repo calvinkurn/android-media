@@ -8,12 +8,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by zulfikarrahman on 11/10/16.
@@ -21,15 +17,15 @@ import butterknife.ButterKnife;
 
 public class StatusViewHolder extends BaseSellingViewHolder<SellingStatusTxModel> {
 
-    ImageView icon;
-    TextView subtitle;
-    TextView title;
     public LinearLayout overflow_btn;
-    LinearLayout deadLineContainer;
-    TextView status;
-    TextView deadlineDate;
-    TextView invoice;
-    LinearLayout itemLayout;
+    private ImageView icon;
+    private TextView subtitle;
+    private TextView title;
+    private LinearLayout deadLineContainer;
+    private TextView status;
+    private TextView deadlineDate;
+    private TextView invoice;
+    private LinearLayout itemLayout;
 
     public StatusViewHolder(View itemView) {
         super(itemView);

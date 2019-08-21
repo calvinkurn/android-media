@@ -43,6 +43,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -72,7 +73,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
-import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -209,9 +210,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         statusLihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = OrderHistoryActivity
-                        .createInstance(getActivity(), getArguments().getString(KEY_ORDER_ID), 1);
-                startActivity(intent);
+                startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
+                        getActivity(), getArguments().getString(KEY_ORDER_ID)
+                ));
             }
         });
     }
@@ -454,6 +455,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
+    public void showSuccessMessageWithAction(String message) {
+        Toaster.Companion.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+    }
+
+    @Override
     public void showErrorMessage(String message) {
         ToasterError.make(getView(), message, Snackbar.LENGTH_LONG).show();
     }
@@ -504,7 +510,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgain(getAppContext().getResources());
+                        presenter.onBuyAgainAllItems();
                     }
                 });
             } else {
@@ -626,7 +632,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         invoiceUrl = uri.getQueryParameter("invoiceUrl");
                         String applink = "tokopedia://topchat/askseller/" + shopId;
                         Intent intent = RouteManager.getIntent(getContext(), applink);
-                        intent.putExtra(ApplinkConst.Chat.CUSTOM_MESSAGE, invoiceUrl);
+                        presenter.assignInvoiceDataTo(intent);
                         intent.putExtra(ApplinkConst.Chat.SOURCE, "tx_ask_seller");
                         startActivity(intent);
                     }
@@ -707,8 +713,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public void setContactUs(final ContactUs contactUs) {
-        String text = Html.fromHtml(contactUs.helpText()).toString();
+    public void setContactUs(final ContactUs contactUs, String helpLink) {
+        String text = getResources().getString(R.string.contact_us_text);
         SpannableString spannableString = new SpannableString(text);
         int startIndexOfLink = text.indexOf("disini");
         spannableString.setSpan(new ClickableSpan() {
@@ -717,7 +723,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 try {
                     startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(contactUs.helpUrl(), ORDER_LIST_URL_ENCODING)));
+                            URLEncoder.encode(helpLink, ORDER_LIST_URL_ENCODING)));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -732,7 +738,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         helpLabel.setHighlightColor(Color.TRANSPARENT);
         helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
-
         helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE);
     }
 

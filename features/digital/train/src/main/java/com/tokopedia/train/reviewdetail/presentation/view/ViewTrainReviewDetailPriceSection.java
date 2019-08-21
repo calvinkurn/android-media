@@ -14,6 +14,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.passenger.domain.model.TrainTrip;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by Rizky on 24/07/18.
@@ -140,13 +141,13 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
             if (!isPriceDetailOpened[0]) {
                 isPriceDetailOpened[0] = true;
                 textLabelSeeDetail.setText(getResources().getString(R.string.train_review_label_close));
-                imageArrow.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
+                imageArrow.setImageDrawable(MethodChecker.getDrawable(imageArrow.getContext(),R.drawable.ic_arrow_up_grey));
                 containerTrainReviewPriceDetail.setVisibility(View.VISIBLE);
                 viewDivider1.setVisibility(VISIBLE);
             } else {
                 isPriceDetailOpened[0] = false;
                 textLabelSeeDetail.setText(getResources().getString(R.string.train_review_label_see_detail));
-                imageArrow.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_down_grey));
+                imageArrow.setImageDrawable(MethodChecker.getDrawable(imageArrow.getContext(),R.drawable.ic_arrow_down_grey));
                 containerTrainReviewPriceDetail.setVisibility(View.GONE);
                 viewDivider1.setVisibility(GONE);
             }

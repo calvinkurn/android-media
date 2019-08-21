@@ -44,7 +44,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import butterknife.Unbinder;
 
 /**
  * @author Kulomady on 1/20/17.
@@ -67,7 +66,6 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Inject
     FavoritePresenter favoritePresenter;
 
-    private Unbinder unbinder;
     private FavoriteAdapter favoriteAdapter;
     private EndlessRecyclerviewListener recylerviewScrollListener;
     private SnackbarRetry messageSnackbar;

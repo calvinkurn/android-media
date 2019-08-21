@@ -1,6 +1,8 @@
 package com.tokopedia.search.result.presentation.view.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +15,12 @@ import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.TopAdsSwitcher;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory;
@@ -27,23 +31,21 @@ import java.util.List;
 
 public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
-    private static final int ADAPTER_POSITION_HEADER = 0;
     private List<Visitable> list = new ArrayList<>();
-    private EmptySearchViewModel emptySearchModel;
     private ProductListTypeFactory typeFactory;
     private int startFrom;
     private int totalData;
-    private Context context;
     private LoadingMoreModel loadingMoreModel;
     private TopAdsSwitcher topAdsSwitcher;
+    private GlobalNavViewModel globalNavViewModel;
 
-    public ProductListAdapter(Context context, OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
+    public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
-        this.context = context;
         this.typeFactory = typeFactory;
         loadingMoreModel = new LoadingMoreModel();
     }
 
+    @NonNull
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -65,7 +67,22 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        setFullSpanForStaggeredGrid(holder, holder.getItemViewType());
+
         holder.bind(list.get(position));
+    }
+
+    private void setFullSpanForStaggeredGrid(AbstractViewHolder holder, int viewType) {
+        if(holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams layoutParams =
+                    (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+
+            layoutParams.setFullSpan(isStaggeredGridFullSpan(viewType));
+        }
+    }
+
+    private boolean isStaggeredGridFullSpan(int viewType) {
+        return viewType != SmallGridProductItemViewHolder.LAYOUT;
     }
 
     @Override
@@ -219,20 +236,6 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         return checkDataSize(position) && getItemList().get(position) instanceof TopAdsViewModel;
     }
 
-    @Override
-    public int getIconTypeRecyclerView() {
-        switch (getTypeFactory().getRecyclerViewItem()) {
-            case SearchConstant.RecyclerView.VIEW_PRODUCT:
-                return R.drawable.ic_list_green;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return R.drawable.ic_grid_default_green;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
-                return R.drawable.ic_grid_box_green;
-            default:
-                return R.drawable.ic_grid_default_green;
-        }
-    }
-
     public void addLoading() {
         int loadingModelPosition = this.list.size();
 
@@ -243,9 +246,43 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     public void removeLoading() {
         int loadingModelPosition = this.list.indexOf(loadingMoreModel);
 
-        this.list.remove(loadingMoreModel);
+        if(loadingModelPosition != -1) {
+            this.list.remove(loadingMoreModel);
 
-        notifyItemRemoved(loadingModelPosition);
-        notifyItemRangeChanged(loadingModelPosition, 1);
+            notifyItemRemoved(loadingModelPosition);
+            notifyItemRangeChanged(loadingModelPosition, 1);
+        }
+    }
+
+    @Override
+    public void showEmptyState(Context context, String query, boolean isFilterActive, String sectionTitle) {
+        clearData();
+        if (globalNavViewModel != null) {
+            getItemList().add(globalNavViewModel);
+        }
+        getItemList().add(mapEmptySearch(context, query, isFilterActive,
+                globalNavViewModel == null));
+        notifyDataSetChanged();
+    }
+
+    private EmptySearchViewModel mapEmptySearch(Context context, String query,
+                                                boolean isFilterActive,
+                                                boolean isBannerAdsAllowed) {
+        EmptySearchViewModel emptySearchViewModel = new EmptySearchViewModel();
+        emptySearchViewModel.setImageRes(R.drawable.product_search_not_found);
+        emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
+        if (isFilterActive) {
+            emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));
+            emptySearchViewModel.setContent(context.getString(R.string.msg_empty_search_product_content_with_filter));
+        } else {
+            emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));
+            emptySearchViewModel.setContent(context.getString(R.string.msg_empty_search_product_content));
+            emptySearchViewModel.setButtonText(context.getString(R.string.msg_empty_search_product_button));
+        }
+        return emptySearchViewModel;
+    }
+
+    public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
+        this.globalNavViewModel = globalNavViewModel;
     }
 }

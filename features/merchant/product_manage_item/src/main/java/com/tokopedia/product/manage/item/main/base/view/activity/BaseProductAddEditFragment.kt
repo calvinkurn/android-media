@@ -23,6 +23,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE
@@ -61,6 +62,7 @@ import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
+import kotlinx.android.synthetic.main.fragment_product_add_video_recommendation.*
 import javax.inject.Inject
 
 abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : ProductAddView> : BaseDaggerFragment(),
@@ -281,10 +283,10 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun eventClickYesGoldMerchantAddProduct() {
         TrackApp.getInstance()!!.gtm.sendGeneralEvent(
-            AppEventTracking.Event.CLICK_GOLD_MERCHANT,
-            AppEventTracking.Category.GOLD_MERCHANT,
-            AppEventTracking.Action.CLICK,
-            AppEventTracking.EventLabel.BUY_GM_ADD_PRODUCT)
+                AppEventTracking.Event.CLICK_GOLD_MERCHANT,
+                AppEventTracking.Category.GOLD_MERCHANT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.BUY_GM_ADD_PRODUCT)
     }
 
     private fun onCategoryChanged(productCategory: ProductCategory) {
@@ -308,11 +310,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         } else {
             CommonUtils.UniversalToast(activity, getString(R.string.product_draft_product_has_been_saved_as_draft))
         }
-        val intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE)
-        intent?.run {
-            startActivity(this)
-            activity?.finish()
-        }
+        RouteManager.route(context, ApplinkConst.PRODUCT_MANAGE)
+        activity?.finish()
     }
 
     override fun onErrorStoreProductToDraftWhenUpload(errorMessage: String?) {
@@ -448,7 +447,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             }
         }
         currentProductAddViewModel?.productVariantViewModel = productVariantViewModel
-        currentProductAddViewModel?.productPrice?.price = currentProductAddViewModel?.getPrdPriceOrMinVariantProductPrice() ?: 0.00
+        currentProductAddViewModel?.productPrice?.price = currentProductAddViewModel?.getPrdPriceOrMinVariantProductPrice()
+                ?: 0.00
     }
 
     private fun onAddImagePickerClicked() {
@@ -477,7 +477,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     private fun startProductVariantActivity() {
         context?.let {
             val app = it.applicationContext
-            if (app is AbstractionRouter){
+            if (app is AbstractionRouter) {
                 TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(ProductVariantConstant.TRACKING_EVENT,
                         ProductVariantConstant.TRACKING_EVENT_CATEGORY,
                         ProductVariantConstant.TRACKING_EVENT_ACTION, null))
@@ -498,9 +498,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 intent?.run {
                     putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList)
                     putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel)
-                    putExtra(ProductExtraConstant.EXTRA_CURRENCY_TYPE, productPrice?.currencyType ?: CurrencyTypeDef.TYPE_IDR)
+                    putExtra(ProductExtraConstant.EXTRA_CURRENCY_TYPE, productPrice?.currencyType
+                            ?: CurrencyTypeDef.TYPE_IDR)
                     putExtra(ProductExtraConstant.EXTRA_DEFAULT_PRICE, productPrice?.price ?: 0.0)
-                    putExtra(ProductExtraConstant.EXTRA_STOCK_TYPE, getStatusStockViewVariant(productStock ?: ProductStock()))
+                    putExtra(ProductExtraConstant.EXTRA_STOCK_TYPE, getStatusStockViewVariant(productStock
+                            ?: ProductStock()))
                     putExtra(EXTRA_IS_OFFICIAL_STORE, officialStore)
                     putExtra(ProductExtraConstant.EXTRA_DEFAULT_SKU, productStock?.sku)
                     putExtra(ProductExtraConstant.EXTRA_NEED_RETAIN_IMAGE, isEdittingDraft())
@@ -539,18 +541,18 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun eventAddProductAdd(label: String) {
         TrackApp.getInstance()!!.gtm.sendGeneralEvent(
-            AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
-            AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
-            AppEventTracking.AddProduct.EVENT_ACTION_ADD,
-            label)
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ADD,
+                label)
     }
 
     private fun eventAddProductEdit(label: String) {
         TrackApp.getInstance()!!.gtm.sendGeneralEvent(
-            AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
-            AppEventTracking.AddProduct.CATEGORY_EDIT_PRODUCT,
-            AppEventTracking.AddProduct.EVENT_ACTION_EDIT,
-            label)
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_EDIT_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_EDIT,
+                label)
     }
 
     private fun isEdittingDraft() = isEditStatus() && productDraftId > 0
@@ -570,13 +572,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             startCatalogActivity()
         })
         UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY)
-    }
-
-    override fun onErrorEtalase() {
-        showWarning(getString(R.string.product_error_product_etalase_empty), View.OnClickListener {
-            startProductEtalaseActivity()
-        })
-        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE)
     }
 
     override fun onErrorPrice() {
@@ -609,13 +604,12 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         if (currentProductAddViewModel?.productPictureList?.size == 0) {
             return
         }
-        ImageUtils.deleteFilesInTokopediaFolder(currentProductAddViewModel?.productPictureList?.convertToListImageString())
+        FileUtils.deleteFilesInTokopediaFolder(currentProductAddViewModel?.productPictureList?.convertToListImageString())
     }
 
     companion object {
 
         const val DEFAULT_PARENT_STOCK_IF_VARIANT = 1
-
         const val REQUEST_CODE_GET_IMAGES = 1
         const val REQUEST_CODE_GET_CATALOG_CATEGORY = 2
         const val REQUEST_CODE_GET_NAME = 3

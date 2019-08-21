@@ -34,6 +34,9 @@ object ApplinkConstInternalMarketplace {
     // CartActivity
     @JvmField
     val CART = "$INTERNAL_MARKETPLACE/cart"
+    // NormalCheckoutActivity
+    @JvmField
+    val NORMAL_CHECKOUT = "$INTERNAL_MARKETPLACE/normal-checkout"
 
     // ProductDetailActivity
     @JvmField
@@ -42,6 +45,8 @@ object ApplinkConstInternalMarketplace {
     val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
     @JvmField
     val PRODUCT_DETAIL = "$INTERNAL_MARKETPLACE/product-detail/{id}/"
+    @JvmField
+    val PRODUCT_DETAIL_WITH_WAREHOUSE_ID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?warehouse_id={whid}"
     @JvmField
     val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
     // ProductEditActivity
@@ -57,6 +62,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
+    @JvmField
+    val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
+
     // ImageReviewGalleryActivity
     @JvmField
     val IMAGE_REVIEW_GALLERY = "$INTERNAL_MARKETPLACE/product/{id}/review/gallery"
@@ -69,40 +77,50 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
 
+
+    @JvmField
+    val CONTACT_US = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://customercare/{ticket_id}"
+
     // GmMembershipActivity
     @JvmField
     val GOLD_MERCHANT_MEMBERSHIP = "$INTERNAL_MARKETPLACE/gold-merchant-membership"
 
-    // CustomerApp only: GoldMerchantRedirectActivity
+    /**
+     * This will be pattern to shop settings module
+     * In the future, If there is a new shop settings deeplink, start with this base
+     */
     @JvmField
-    val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
+    val SHOP_SETTINGS_BASE = "$INTERNAL_MARKETPLACE/shop-settings"
 
     //ShopSettingsInfoActivity
     @JvmField
-    val SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/shop/setting"
+    val SHOP_SETTINGS_INFO = "$SHOP_SETTINGS_BASE-info"
 
-    //ShopSettingsNoteActivity
+    //ShopSettingsNotesActivity
     @JvmField
-    val SHOP_NOTE_SETTING = "$INTERNAL_MARKETPLACE/shop/setting/notes"
-
-    @JvmField
-    val SHOP_SHIPPING_SETTING = "$INTERNAL_MARKETPLACE/shop/setting/shipping"
+    val SHOP_SETTINGS_NOTES = "$SHOP_SETTINGS_BASE-notes"
 
     //ShopSettingsEtalaseActivity
     @JvmField
-    val SHOP_SETTINGS_ETALASE = "$INTERNAL_MARKETPLACE/shop/setting/etalase"
+    val SHOP_SETTINGS_ETALASE = "$SHOP_SETTINGS_BASE-etalase"
 
     //ShopSettingsAddressActivity
     @JvmField
-    val SHOP_SETTINGS_ADDRESS = "$INTERNAL_MARKETPLACE/shop/setting/address"
+    val SHOP_SETTINGS_ADDRESS = "$SHOP_SETTINGS_BASE-address"
 
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
 
-
     // OnboardingActivity
     @JvmField
     val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
 
+    //Report Product
+    @JvmField
+    val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product/{id}/report"
+  
+    // ShopScoreDetailActivity
+    @JvmField
+    val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
 }

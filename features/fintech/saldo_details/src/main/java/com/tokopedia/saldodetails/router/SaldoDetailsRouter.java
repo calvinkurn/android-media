@@ -14,7 +14,5 @@ public interface SaldoDetailsRouter {
 
     Intent getInboxTicketCallingIntent(Context context);
 
-    Intent getProfileSettingIntent(Context context);
-
     Intent getHomeIntent(Context context);
 }

@@ -5,25 +5,31 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.google.android.gms.location.LocationServices;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -43,10 +49,10 @@ import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragme
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
+import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
@@ -63,8 +69,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeRecommendationFeedViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
@@ -74,14 +80,20 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
+import com.tokopedia.home.widget.StickyTextView;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
+import com.tokopedia.locationmanager.DeviceLocation;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.HomeMainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
@@ -95,6 +107,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -102,6 +116,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import rx.Observable;
 
 /**
@@ -124,12 +140,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
+    public static Boolean HIDE_TICKER = false;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
 
     @Inject
     HomePresenter presenter;
+
+    @Inject
+    PermissionCheckerHelper permissionCheckerHelper;
+
+    RemoteConfig remoteConfig;
 
     private UserSessionInterface userSession;
     private NestedRecyclerView homeRecyclerView;
@@ -141,6 +163,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SnackbarRetry messageSnackbar;
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
+    private StickyTextView stickyLoginTextView;
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
@@ -161,6 +184,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Visitable feedTabVisitable;
     private boolean scrollToRecommendList;
     private long lastSendScreenTimeMillis;
+    private Snackbar homeSnackbar;
+    private SharedPreferences sharedPrefs;
+
+    private int[] positionSticky = new int[2];
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -176,11 +203,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
 
-        searchBarTransitionRange =
-                getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
-        startToTransitionOffset =
-                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/4;
+        searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
+        startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 4;
     }
 
     @Override
@@ -253,9 +279,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         homeRecyclerView = view.findViewById(R.id.list);
         if (homeRecyclerView.getItemDecorationCount() == 0) {
-            homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(
-                    getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)
-            ));
+            homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)));
         }
 
         homeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -274,7 +298,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     refreshLayout.setCanChildScrollUp(true);
                 }
 
-                if (recyclerView.canScrollVertically(1)){
+                if (recyclerView.canScrollVertically(1)) {
                     homeMainToolbar.showShadow();
                     showFeedSectionViewHolderShadow(false);
                     homeRecyclerView.setNestedCanScroll(false);
@@ -298,6 +322,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
+        stickyLoginTextView = view.findViewById(R.id.sticky_login_text);
+
         root = view.findViewById(R.id.root);
 
         if (getArguments() != null) {
@@ -337,6 +363,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
+        updateStickyState();
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -356,6 +383,37 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 floatingTextButton.resetState();
             }
         });
+
+        stickyLoginTextView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                updateStickyState();
+
+                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+                if (floatingEggButtonFragment != null) {
+                    updateEggBottomMargin(floatingEggButtonFragment);
+                }
+            }
+        });
+        stickyLoginTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGoToLogin();
+                HomePageTracking.eventClickOnStickyLogin(true);
+            }
+        });
+        stickyLoginTextView.setOnDismissListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stickyLoginTextView.dismiss();
+                HomePageTracking.eventClickOnStickyLogin(false);
+
+                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+                if (floatingEggButtonFragment != null) {
+                    updateEggBottomMargin(floatingEggButtonFragment);
+                }
+            }
+        });
     }
 
     private void scrollToRecommendList() {
@@ -368,8 +426,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onResume();
         sendScreen();
         presenter.onResume();
+
         if (activityStateListener != null) {
             activityStateListener.onResume();
+        }
+
+        updateStickyState();
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            updateEggBottomMargin(floatingEggButtonFragment);
         }
     }
 
@@ -404,6 +469,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
 
                 if (presenter != null) {
+                    presenter.getSearchHint();
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
                 }
@@ -414,8 +480,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void loadEggData() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-
         if (floatingEggButtonFragment != null) {
+            updateEggBottomMargin(floatingEggButtonFragment);
             floatingEggButtonFragment.loadEggData();
         }
     }
@@ -450,7 +516,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void setStatusBarAlpha(float alpha) {
         Drawable drawable = statusBarBackground.getBackground();
-        drawable.setAlpha((int)alpha);
+        drawable.setAlpha((int) alpha);
         statusBarBackground.setBackground(drawable);
     }
 
@@ -469,8 +535,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (dy == 0) {
                     return;
                 }
+
                 FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
                 if (floatingEggButtonFragment != null) {
+                    updateEggBottomMargin(floatingEggButtonFragment);
                     floatingEggButtonFragment.hideOnScrolling();
                 }
             }
@@ -571,7 +639,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         goToOvo(appLinkBalance);
     }
 
-    private void goToOvo(String appLinkScheme){
+    private void goToOvo(String appLinkScheme) {
         Intent intent = appLinkScheme == null || appLinkScheme.isEmpty() ?
                 RouteManager.getIntent(getActivity(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme)
                 : RouteManager.isSupportApplink(getActivity(), appLinkScheme)
@@ -664,7 +732,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private void showBannerWebViewOnAllPromoClickFromHomeIntent(String url, String title){
+    private void showBannerWebViewOnAllPromoClickFromHomeIntent(String url, String title) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PROMO);
         intent.putExtra(EXTRA_URL, url);
         intent.putExtra(EXTRA_TITLE, title);
@@ -673,6 +741,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCloseTicker(int pos) {
+        HIDE_TICKER = true;
         adapter.getItems().remove(pos);
         adapter.notifyItemRemoved(pos);
     }
@@ -697,9 +766,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         resetFeedState();
         removeNetworkError();
         if (presenter != null) {
+            presenter.getSearchHint();
             presenter.getHomeData();
             presenter.getHeaderData(false);
         }
+
+        if (getActivity() instanceof RefreshNotificationListener) {
+            ((RefreshNotificationListener) getActivity()).onRefreshNotification();
+        }
+        updateStickyState();
         loadEggData();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
     }
@@ -735,21 +810,129 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setItems(List<Visitable> items, int repositoryFlag) {
+    public void setItems(List<Visitable> items, HeaderViewModel headerViewModel, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
-            adapter.setItems(items);
+            adapter.setItems(items, headerViewModel);
+
+            if (needToShowGeolocationComponent()) {
+                adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
+            }
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
-            adapter.setItems(items);
+            adapter.setItems(items, headerViewModel);
         }
     }
 
-    private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable){
+    private boolean needToShowGeolocationComponent() {
+        boolean firebaseShowGeolocationComponent = remoteConfig.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true);
+        if (!firebaseShowGeolocationComponent) {
+            return false;
+        }
+
+        boolean needToShowGeolocationComponent = true;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            boolean userHasDeniedPermissionBefore = ActivityCompat
+                    .shouldShowRequestPermissionRationale(getActivity(),
+                            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION);
+            if (userHasDeniedPermissionBefore) {
+                return false;
+            }
+        }
+
+        if (getActivity() != null) {
+            if (hasGeolocationPermission()) {
+                needToShowGeolocationComponent = false;
+            }
+        }
+        return needToShowGeolocationComponent;
+    }
+
+    @Override
+    public boolean hasGeolocationPermission() {
+        if (getActivity() == null) return false;
+        return permissionCheckerHelper.hasPermission(getActivity(),
+                new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION});
+    }
+
+    private void promptGeolocationPermission() {
+        permissionCheckerHelper.checkPermission(this,
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        HomePageTracking.eventClickNotAllowGeolocation(getActivity());
+                        adapter.removeGeolocationViewModel();
+                        showNotAllowedGeolocationSnackbar();
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        HomePageTracking.eventClickAllowGeolocation(getActivity());
+                        detectAndSendLocation();
+                        adapter.removeGeolocationViewModel();
+                        showAllowedGeolocationSnackbar();
+                    }
+                }, "");
+    }
+
+    @Override
+    public void detectAndSendLocation() {
+        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                permissionCheckerHelper,
+                LocationServices.getFusedLocationProviderClient(getActivity()
+                        .getApplicationContext()),
+                getActivity().getApplicationContext());
+        locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                "");
+    }
+
+    private Function1<DeviceLocation, Unit> onGetLocation() {
+        return (deviceLocation) -> {
+            saveLocation(getActivity(), deviceLocation.getLatitude(), deviceLocation.getLongitude());
+            presenter.sendGeolocationData();
+            return null;
+        };
+    }
+
+    public void saveLocation(Context context, double latitude, double longitude) {
+        SharedPreferences.Editor editor;
+        if (context != null && !TextUtils.isEmpty(ConstantKey.LocationCache.KEY_LOCATION)) {
+            sharedPrefs = context.getSharedPreferences(ConstantKey.LocationCache.KEY_LOCATION, Context.MODE_PRIVATE);
+            editor = sharedPrefs.edit();
+        } else {
+            return;
+        }
+        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LAT, String.valueOf(latitude));
+        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LONG, String.valueOf(longitude));
+        editor.apply();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void setHint(SearchPlaceholder searchPlaceholder) {
+        if (searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null && searchPlaceholder.getData().getKeyword() != null) {
+            homeMainToolbar.setHint(searchPlaceholder.getData().getPlaceholder(), searchPlaceholder.getData().getKeyword());
+        }
+    }
+
+    private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable) {
         this.feedTabVisitable = feedRecommendationVisitable;
         List<Visitable> currentVisitables = adapter.getItems();
 
-        for (int i = 0 ; i<currentVisitables.size() ; i++) {
+        for (int i = 0; i < currentVisitables.size(); i++) {
             if (currentVisitables.get(i) instanceof HomeRecommendationFeedViewModel) {
                 currentVisitables.set(i, feedRecommendationVisitable);
                 adapter.setElement(i, feedRecommendationVisitable);
@@ -769,8 +952,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (feedTabVisitable != null) {
             visitables.add(feedTabVisitable);
         }
-        presenter.getFeedTabData();
-        adapter.updateItems(visitables);
+
+        if (!visitables.isEmpty()) {
+            presenter.getFeedTabData();
+        }
+        if (needToShowGeolocationComponent()) {
+            adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
+        }
+        adapter.updateHomeQueryItems(visitables);
     }
 
     @Override
@@ -790,13 +979,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if (adapter.getItemCount() > 1 && adapter.getItem(1) instanceof HeaderViewModel) {
-            adapter.getItems().set(1, headerViewModel);
-            adapter.notifyItemChanged(1);
-        } else if (adapter.getItemCount() > 2 && adapter.getItem(2) instanceof HeaderViewModel) {
-            adapter.getItems().set(2, headerViewModel);
-            adapter.notifyItemChanged(2);
-        }
+        adapter.setHomeHeaderViewModel(headerViewModel);
     }
 
     @Override
@@ -954,7 +1137,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -1054,12 +1236,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private BroadcastReceiver tokoCashBroadcaseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            String data = extras.getString(getActivity().getString(R.string.broadcast_wallet));
-            if (data != null && !data.isEmpty())
-                presenter.getHeaderData(false); // update header data
-        }
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                String data = extras.getString(getActivity().getString(R.string.broadcast_wallet));
+                if (data != null && !data.isEmpty())
+                    presenter.getHeaderData(false); // update header data
+            }
         }
     };
 
@@ -1079,8 +1261,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (pathSegmentList.size() > 1) {
                 String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
                 String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
-                Intent intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
-                                shopDomain, productKey);
+                Intent intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN, shopDomain, productKey);
                 if (intent != null) {
                     startActivity(intent);
                 } else {
@@ -1146,25 +1327,25 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         list.add(new ShowCaseObject(homeMainToolbar.getBtnNotification(),
                 getString(R.string.sc_notif_title),
                 getString(R.string.sc_notif_desc))
-        .withCustomTarget(new int[]{
-                homeMainToolbar.getBtnNotification().getLeft(),
-                homeMainToolbar.getBtnNotification().getTop()
-                + statusBarHeight,
-                homeMainToolbar.getBtnNotification().getRight(),
-                homeMainToolbar.getBtnNotification().getBottom()
-                + statusBarHeight
-        }));
+                .withCustomTarget(new int[]{
+                        homeMainToolbar.getBtnNotification().getLeft(),
+                        homeMainToolbar.getBtnNotification().getTop()
+                                + statusBarHeight,
+                        homeMainToolbar.getBtnNotification().getRight(),
+                        homeMainToolbar.getBtnNotification().getBottom()
+                                + statusBarHeight
+                }));
         list.add(new ShowCaseObject(homeMainToolbar.getBtnWishlist(),
                 getString(R.string.sc_wishlist_title),
                 getString(R.string.sc_wishlist_desc))
                 .withCustomTarget(new int[]{
-                homeMainToolbar.getBtnWishlist().getLeft(),
-                homeMainToolbar.getBtnWishlist().getTop()
-                        + statusBarHeight,
-                homeMainToolbar.getBtnWishlist().getRight(),
-                homeMainToolbar.getBtnWishlist().getBottom()
-                        + statusBarHeight
-        }));
+                        homeMainToolbar.getBtnWishlist().getLeft(),
+                        homeMainToolbar.getBtnWishlist().getTop()
+                                + statusBarHeight,
+                        homeMainToolbar.getBtnWishlist().getRight(),
+                        homeMainToolbar.getBtnWishlist().getBottom()
+                                + statusBarHeight
+                }));
         return list;
     }
 
@@ -1182,7 +1363,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void fetchTokopointsNotification(String type) {
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
         }
     }
@@ -1213,7 +1394,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private Intent getProductIntent(String productId) {
         if (getActivity() != null) {
-            return RouteManager.getIntent(getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            return RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }
@@ -1267,7 +1448,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (homeMainToolbar != null) {
             height = homeMainToolbar.getHeight();
             if (!homeMainToolbar.isShadowApplied()) {
-                height+=getResources().getDimensionPixelSize(R.dimen.dp_8);
+                height += getResources().getDimensionPixelSize(R.dimen.dp_8);
             }
         }
         return height;
@@ -1300,6 +1481,49 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void launchPermissionChecker() {
+        promptGeolocationPermission();
+    }
+
+    @Override
+    public void onCloseGeolocationView() {
+        adapter.removeGeolocationViewModel();
+    }
+
+    private Snackbar getSnackbar(String text, int duration) {
+        if (homeSnackbar != null) {
+            homeSnackbar.dismiss();
+        }
+        homeSnackbar = Snackbar.make(root, text, duration);
+        return homeSnackbar;
+    }
+
+    public void showNotAllowedGeolocationSnackbar() {
+        getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
+                Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        HomePageTracking.eventClickOnAtur(getActivity());
+                        goToApplicationDetailActivity();
+                    }
+                }).show();
+    }
+
+    public void showAllowedGeolocationSnackbar() {
+        getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_granted_permission),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    private void goToApplicationDetailActivity() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+        intent.setData(uri);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
     public void onPromoDragStart() {
 
     }
@@ -1317,5 +1541,41 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDynamicIconScrollEnd() {
 
+    }
+
+    private void updateStickyState() {
+        boolean isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true);
+        if (!isCanShowing) {
+            stickyLoginTextView.setVisibility(View.GONE);
+            return;
+        }
+
+        if (stickyLoginTextView.isShowing()) {
+            positionSticky = stickyLoginTextView.getLocation();
+        }
+
+        if (isUserLoggedIn()) {
+            stickyLoginTextView.dismiss();
+        } else {
+            stickyLoginTextView.show();
+            HomePageTracking.eventOnStickyLoginShowing();
+        }
+    }
+
+    private void updateEggBottomMargin(FloatingEggButtonFragment floatingEggButtonFragment) {
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) floatingEggButtonFragment.getView().getLayoutParams();
+        if (stickyLoginTextView.isShowing()) {
+            params.setMargins(0, 0, 0, stickyLoginTextView.getHeight());
+
+            int[] positionEgg = new int[2];
+            int eggHeight = floatingEggButtonFragment.getEgg().getHeight();
+            floatingEggButtonFragment.getEgg().getLocationOnScreen(positionEgg);
+
+            if (positionEgg[1] + eggHeight > positionSticky[1]) {
+                floatingEggButtonFragment.moveEgg(positionSticky[1] - eggHeight);
+            }
+        } else {
+            params.setMargins(0, 0, 0, 0);
+        }
     }
 }

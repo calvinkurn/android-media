@@ -1,11 +1,11 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
@@ -50,7 +50,7 @@ public interface OrderListDetailContract {
 
         void setPaymentData(PaymentData paymentData);
 
-        void setContactUs(ContactUs contactUs);
+        void setContactUs(ContactUs contactUs, String helpLink);
 
         void setTopActionButton(ActionButton actionButton);
 
@@ -65,6 +65,8 @@ public interface OrderListDetailContract {
         void setItems(List<Items> items, boolean isTradeIn);
 
         Context getAppContext();
+
+        Context getActivity();
 
         void setPayMethodInfo(PayMethod payMethod);
 
@@ -88,6 +90,8 @@ public interface OrderListDetailContract {
 
         void showSucessMessage(String message);
 
+        void showSuccessMessageWithAction(String message);
+
         void showErrorMessage(String message);
 
         void clearDynamicViews();
@@ -102,7 +106,11 @@ public interface OrderListDetailContract {
 
         List<ActionButton> getActionList();
 
-        void onBuyAgain(Resources resources);
+        void onBuyAgainAllItems();
+
+        void onBuyAgainItems(List<Items> item);
+
+        void assignInvoiceDataTo(Intent intent);
     }
 
     interface ActionInterface {

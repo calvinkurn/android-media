@@ -202,4 +202,16 @@ public class Location implements Parcelable {
         String str = name + "  " + id;
         return str;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        else if (obj == this)
+            return true;
+        else {
+            Location location = (Location) obj;
+            return location.getId() == this.getId();
+        }
+    }
 }

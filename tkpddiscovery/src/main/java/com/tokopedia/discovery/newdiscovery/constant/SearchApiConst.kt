@@ -48,6 +48,7 @@ class SearchApiConst {
         const val PAGE_SIZE = "page_size"
         const val OFFICIAL = "official"
         const val KEYWORD = "keyword"
+        const val HINT = "hint"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"

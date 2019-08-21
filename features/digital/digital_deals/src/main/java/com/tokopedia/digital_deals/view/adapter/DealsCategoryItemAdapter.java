@@ -1,8 +1,6 @@
 package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +11,13 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
-import com.tokopedia.digital_deals.view.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategoryItemAdapter.ViewHolder> {
 
@@ -30,10 +25,12 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
     private Context context;
     DealsAnalytics dealsAnalytics;
     CategorySelected categorySelected;
+    private List<CategoriesModel> categoriesModels;
 
-    public DealsCategoryItemAdapter(List<CategoryItem> categoryItems, CategorySelected categorySelected) {
+    public DealsCategoryItemAdapter(List<CategoryItem> categoryItems, List<CategoriesModel> categoriesModels, CategorySelected categorySelected) {
         this.categoryItems = new ArrayList<>();
         this.categoryItems = categoryItems;
+        this.categoriesModels = categoriesModels;
         this.categorySelected = categorySelected;
     }
 
@@ -77,12 +74,12 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
             categoriesModel.setCategoryUrl(categoryItems.get(getIndex()).getCategoryUrl());
             categoriesModel.setCategoryId(categoryItems.get(getIndex()).getCategoryId());
             categoriesModel.setPosition(getIndex() + 1);
-            categorySelected.openCategoryDetail(categoriesModel);
+            categorySelected.openCategoryDetail(categoriesModel, categoriesModels);
         }
     }
 
     public interface CategorySelected {
-        void openCategoryDetail(CategoriesModel categoriesModel);
+        void openCategoryDetail(CategoriesModel categoriesModel, List<CategoriesModel> categoriesModels);
     }
 
     @Override

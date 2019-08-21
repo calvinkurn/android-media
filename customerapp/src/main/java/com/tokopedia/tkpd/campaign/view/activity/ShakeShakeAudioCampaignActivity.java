@@ -8,26 +8,24 @@ import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
 import com.tokopedia.tkpd.campaign.view.presenter.AudioShakeDetectPresenter;
 
-import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.RuntimePermissions;
+import javax.inject.Inject;
 
 /**
  * Created by sandeepgoyal on 23/01/18.
  */
 
-@RuntimePermissions
 public class ShakeShakeAudioCampaignActivity extends ShakeDetectCampaignActivity {
-
 
     @Inject
     AudioShakeDetectPresenter presenter;
+
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     public static Intent getCapturedAudioCampaignActivity(Context context) {
         Intent i = new Intent(context, ShakeShakeAudioCampaignActivity.class);
@@ -45,7 +43,29 @@ public class ShakeShakeAudioCampaignActivity extends ShakeDetectCampaignActivity
     }
 
     protected void shakeDetect() {
-        ShakeShakeAudioCampaignActivityPermissionsDispatcher.isRequiredPermissionAvailableWithCheck(this);
+        permissionCheckerHelper = new PermissionCheckerHelper();
+        permissionCheckerHelper.checkPermissions(
+                this,
+                new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        requestRequirePermissionDenied();
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        requestCameraPermissionNeverAsk();
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        Toast.makeText(ShakeShakeAudioCampaignActivity.this, "Start Recording", Toast.LENGTH_LONG).show();
+                        presenter.onShakeDetect();
+                    }
+                },
+                ""
+        );
     }
 
     @Override
@@ -56,20 +76,11 @@ public class ShakeShakeAudioCampaignActivity extends ShakeDetectCampaignActivity
         campaignComponent.inject(this);
     }
 
-    @NeedsPermission({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void isRequiredPermissionAvailable() {
-        Toast.makeText(this, "Start Recording", Toast.LENGTH_LONG).show();
-        presenter.onShakeDetect();
-
-    }
-
-    @OnPermissionDenied({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void requestRequirePermissionDenied() {
         Toast.makeText(this, "Please provide required permissions", Toast.LENGTH_LONG).show();
         finish();
     }
 
-    @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void requestCameraPermissionNeverAsk() {
         Toast.makeText(this, "Please provide required permissions", Toast.LENGTH_LONG).show();
         finish();
@@ -78,13 +89,13 @@ public class ShakeShakeAudioCampaignActivity extends ShakeDetectCampaignActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ShakeShakeAudioCampaignActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Toast.makeText(this,"Recording in Progress",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Recording in Progress", Toast.LENGTH_LONG).show();
     }
 
     @Override

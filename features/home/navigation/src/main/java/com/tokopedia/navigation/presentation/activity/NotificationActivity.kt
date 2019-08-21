@@ -16,9 +16,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
-import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
@@ -26,14 +26,14 @@ import com.tokopedia.navigation.presentation.fragment.NotificationFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
-import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import javax.inject.Inject
 
 /**
  * Created by meta on 20/06/18.
  */
-@DeepLink(ApplinkConst.NOTIFICATION)
-class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View {
+
+class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View,
+        NotificationUpdateFragment.NotificationUpdateListener {
 
     @Inject
     lateinit var presenter: NotificationActivityPresenter
@@ -60,10 +60,14 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     }
 
     private fun initView() {
-        initTabLayout()
+        var initialIndexPage = getParamInt(Intent.EXTRA_TITLE, intent.extras, null, INDEX_NOTIFICATION_ACTIVITY)
+        initTabLayout(initialIndexPage)
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
     }
 
+    override fun onSuccessLoadNotifUpdate() {
+        clearNotifCounter(INDEX_NOTIFICATION_UPDATE)
+    }
 
     private fun onSuccessGetUpdateUnreadCounter(): (NotificationUpdateUnread) -> Unit {
         return {
@@ -76,7 +80,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         }
     }
 
-    private fun initTabLayout() {
+    private fun initTabLayout(initialIndexPage: Int) {
         for (i in 0 until tabList.size) {
             tabLayout.addTab(tabLayout.newTab())
         }
@@ -111,6 +115,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
                 resetCircle(tab.customView)
             }
         })
+
+        val tab = tabLayout.getTabAt(initialIndexPage)
+        tab?.select()
     }
 
     private fun clearNotifCounter(position: Int) {
@@ -201,5 +208,23 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         fun start(context: Context): Intent {
             return Intent(context, NotificationActivity::class.java)
         }
+
+        fun createIntentUpdate(context: Context): Intent {
+            var intent = Intent(context, NotificationActivity::class.java)
+            var bundle = Bundle()
+            bundle.putInt(Intent.EXTRA_TITLE, INDEX_NOTIFICATION_UPDATE)
+            intent.putExtras(bundle)
+            return intent
+        }
+    }
+
+    object DeeplinkIntent {
+        @DeepLink(ApplinkConst.NOTIFICATION)
+        @JvmStatic
+        fun createIntent(context: Context, extras: Bundle) = Companion.start(context)
+
+        @DeepLink(ApplinkConst.BUYER_INFO)
+        @JvmStatic
+        fun createIntentUpdate(context: Context, extras: Bundle) = Companion.createIntentUpdate(context)
     }
 }

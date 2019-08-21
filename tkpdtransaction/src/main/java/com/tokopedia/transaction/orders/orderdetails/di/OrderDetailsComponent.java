@@ -9,7 +9,6 @@ import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDe
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListModuleScope;
-import com.tokopedia.transaction.purchase.detail.di.OrderDetailModule;
 
 import dagger.Component;
 

@@ -192,12 +192,16 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.network)
-    implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.cpm)
-    implementation project(rootProject.ext.libraries.config)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.cacheApi)
+
+    implementation rootProject.ext.libraries.unifyComponents
+    implementation rootProject.ext.libraries.unifyIcon
+    implementation rootProject.ext.libraries.unifyPrinciples
 
     implementation rootProject.ext.playServicesDependencies.base
 
@@ -205,6 +209,11 @@ dependencies {
 
     // TO BE ADDED AS FEATURE REQUIREMENT
     implementation project(rootProject.ext.features.shopSettings)
+
+    implementation project(rootProject.ext.libraries.logger)
+    implementation (rootProject.ext.debugToolsDependencies.timber){
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
 }
 
 repositories {

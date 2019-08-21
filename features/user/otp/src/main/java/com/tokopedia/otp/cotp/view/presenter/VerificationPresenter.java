@@ -7,10 +7,8 @@ import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.network.OtpErrorHandler;
 import com.tokopedia.otp.cotp.domain.GetVerificationMethodListUseCase;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.domain.interactor.ValidateOtpLoginUseCase;
 import com.tokopedia.otp.cotp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.cotp.view.subscriber.RequestOtpSubscriber;
-import com.tokopedia.otp.cotp.view.subscriber.ValidateOtpLoginSubscriber;
 import com.tokopedia.otp.cotp.view.subscriber.VerifyOtpSubscriber;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
@@ -30,7 +28,6 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         Verification.Presenter {
 
     private final RequestOtpUseCase requestOtpUseCase;
-    private final ValidateOtpLoginUseCase validateOtpLoginUseCase;
     private final GetVerificationMethodListUseCase getVerificationMethodListUseCase;
     private final ValidateOtpUseCase validateOtpUseCase;
     private final UserSessionInterface userSession;
@@ -38,11 +35,9 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     @Inject
     public VerificationPresenter(UserSessionInterface userSession,
                                  RequestOtpUseCase requestOtpUseCase,
-                                 ValidateOtpLoginUseCase validateOtpLoginUseCase,
                                  ValidateOtpUseCase validateOtpUseCase,
                                  GetVerificationMethodListUseCase getVerificationMethodListUseCase) {
         this.requestOtpUseCase = requestOtpUseCase;
-        this.validateOtpLoginUseCase = validateOtpLoginUseCase;
         this.validateOtpUseCase = validateOtpUseCase;
         this.getVerificationMethodListUseCase = getVerificationMethodListUseCase;
         this.userSession = userSession;
@@ -57,7 +52,6 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         super.detachView();
         requestOtpUseCase.unsubscribe();
         validateOtpUseCase.unsubscribe();
-        validateOtpLoginUseCase.unsubscribe();
         getVerificationMethodListUseCase.unsubscribe();
     }
 
@@ -101,23 +95,19 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     private void handleOtpSecurityQuestion(VerificationViewModel viewModel) {
         switch (viewModel.getType()) {
             case RequestOtpUseCase.MODE_EMAIL:
-                if (!TextUtils.isEmpty(viewModel.getEmail())) {
                     requestOtpUseCase.execute(RequestOtpUseCase.getParamEmail(
                             viewModel.getEmail(),
                             viewModel.getOtpType(),
                             userSession.getTemporaryUserId()
                     ), new RequestOtpSubscriber(getView()));
-                }
                 break;
             default:
-                if (!TextUtils.isEmpty(viewModel.getPhoneNumber())) {
                     requestOtpUseCase.execute(RequestOtpUseCase.getParam(
                             viewModel.getType(),
                             viewModel.getPhoneNumber(),
                             viewModel.getOtpType(),
                             userSession.getTemporaryUserId()
                     ), new RequestOtpSubscriber(getView()));
-                }
                 break;
         }
     }
@@ -127,17 +117,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         getView().dropKeyboard();
         getView().showLoadingProgress();
 
-
         switch (otpType) {
-            case RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION:
-                validateOtpLoginUseCase.execute(ValidateOtpLoginUseCase.getParam(
-                        otpType,
-                        otpCode,
-                        userSession.getTemporaryUserId(),
-                        userSession.getDeviceId(),
-                        phoneNumber
-                ), new ValidateOtpLoginSubscriber(getView()));
-                break;
             case RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER:
                 validateOtpUseCase.execute(ValidateOtpUseCase.getRegisterPhoneNumberParam(
                         phoneNumber,

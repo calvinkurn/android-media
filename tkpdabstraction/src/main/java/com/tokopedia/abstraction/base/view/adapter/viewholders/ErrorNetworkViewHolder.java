@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 
 /**
@@ -34,7 +35,7 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
     @Override
     public void bind(final ErrorNetworkModel errorNetworkModel) {
         if (errorNetworkModel.getIconDrawableRes() != 0) {
-            ivIcon.setImageResource(errorNetworkModel.getIconDrawableRes());
+            ivIcon.setImageDrawable(MethodChecker.getDrawable(ivIcon.getContext(),errorNetworkModel.getIconDrawableRes()));
         }
         if (errorNetworkModel.getErrorMessage() != null && errorNetworkModel.getErrorMessage().length() > 0) {
             tvMessage.setText(errorNetworkModel.getErrorMessage());
