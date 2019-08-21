@@ -145,6 +145,12 @@ public class Product implements Parcelable {
     @Expose
     private List<LabelGroup> labelGroupList = new ArrayList<>();
 
+    private String categoryBreadcrumb = "";
+
+    private boolean topAds = false;
+
+    private String recommendationType = "";
+
     private boolean loaded = false;
 
     public Product() {
@@ -367,6 +373,30 @@ public class Product implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCategoryBreadcrumb() {
+        return categoryBreadcrumb;
+    }
+
+    public void setCategoryBreadcrumb(String categoryBreadcrumb) {
+        this.categoryBreadcrumb = categoryBreadcrumb;
+    }
+
+    public boolean isTopAds() {
+        return topAds;
+    }
+
+    public void setTopAds(boolean topAds) {
+        this.topAds = topAds;
+    }
+
+    public String getRecommendationType() {
+        return recommendationType;
+    }
+
+    public void setRecommendationType(String recommendationType) {
+        this.recommendationType = recommendationType;
     }
 
     public ProductImage getImage() {
