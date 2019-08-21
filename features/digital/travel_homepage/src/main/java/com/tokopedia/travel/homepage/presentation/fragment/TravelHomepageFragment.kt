@@ -33,7 +33,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var travelHomepageViewModel: TravelHomepageViewModel
 
-    private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
 
     override fun getAdapterTypeFactory(): TravelHomepageTypeFactory = TravelHomepageAdapterTypeFactory(this, this)
@@ -70,11 +69,8 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     private fun calculateToolbarView(offset: Int) {
 
-        val endTransitionOffset = startToTransitionOffset + searchBarTransitionRange
-        val maxTransitionOffset = endTransitionOffset - startToTransitionOffset
-
         //mapping alpha to be rendered per pixel for x height
-        var offsetAlpha = 255f / maxTransitionOffset * (offset - startToTransitionOffset)
+        var offsetAlpha = 255f / searchBarTransitionRange * (offset)
         //2.5 is maximum
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
