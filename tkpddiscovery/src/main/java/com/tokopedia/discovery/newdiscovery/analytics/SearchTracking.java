@@ -179,7 +179,7 @@ public class SearchTracking {
     }
 
     public void trackSearchResultShopProductPreviewClick(Object shopItemProduct, String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "productClick",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "click - product - shop tab",
