@@ -39,6 +39,7 @@ import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.util.SpaceItemDecoration
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.*
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -70,6 +71,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var affiliatePref: AffiliatePreference
+
     protected var viewModel: CreatePostViewModel = CreatePostViewModel()
 
     protected val adapter: ProductAttachmentAdapter by lazy {
@@ -95,7 +99,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             shareSheetTitle.text = title
             shareSheetSubtitle.text = subtitle
             shareBtn.setOnClickListener {
-                saveDraftAndSubmit()
+                saveDraftAndSubmit(true)
                 shareDialog.dismiss()
             }
         }
@@ -677,11 +681,19 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    fun saveDraftAndSubmit() {
+    fun saveDraftAndSubmit(skipFirstTimeChecking: Boolean = false) {
         if (isFormInvalid()) {
             return
         }
 
+        if (affiliatePref.isFirstTimePost(userSession.userId) && !skipFirstTimeChecking) openShareBottomSheetDialog()
+        else {
+            submitPost()
+            affiliatePref.setFirstTimePost(userSession.userId)
+        }
+    }
+
+    private fun submitPost() {
         activity?.let {
             affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
             showLoading()
@@ -698,6 +710,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             } else {
                 goToFeed()
             }
+
             it.finish()
         }
     }
