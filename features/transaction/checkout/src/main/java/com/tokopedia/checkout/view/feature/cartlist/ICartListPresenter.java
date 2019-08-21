@@ -57,13 +57,17 @@ public interface ICartListPresenter {
 
     Map<String, Object> generateRecommendationDataOnClickAnalytics(RecommendationItem recommendationItem, boolean isEmptyCart, int position);
 
-    Map<String, Object> generateWishlistDataImpressionAnalytics(List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList, boolean isEmptyCart);
+    Map<String, Object> generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData, int position);
 
-    Map<String, Object> generateWishlistDataOnClickAnalytics(RecommendationItem recommendationItem, boolean isEmptyCart, int position);
+    Map<String, Object> generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData, int position);
 
-    Map<String, Object> generateRecentViewDataImpressionAnalytics(List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList, boolean isEmptyCart);
+    Map<String, Object> generateWishlistProductClickDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData, int position);
 
-    Map<String, Object> generateRecentViewDataOnClickAnalytics(RecommendationItem recommendationItem, boolean isEmptyCart, int position);
+    Map<String, Object> generateWishlistProductClickEmptyCartDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData, int position);
+
+    Map<String, Object> generateWishlistDataImpressionAnalytics(List<CartWishlistItemHolderData> cartWishlistItemHolderDataList, boolean isEmptyCart);
+
+    Map<String, Object> generateRecentViewDataImpressionAnalytics(List<CartRecentViewItemHolderData> cartRecentViewItemHolderDataList, boolean isEmptyCart);
 
     CartListData getCartListData();
 

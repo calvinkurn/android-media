@@ -675,27 +675,49 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         dPresenter.processRemoveFromWishlist(productId, userSession.getUserId(), this);
     }
 
-    @Override
     public void onProductClicked(@NotNull String productId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
         startActivityForResult(intent, NAVIGATION_PDP);
     }
 
-    public void onWishlistClicked(@NotNull String productId) {
-        int index = 0, position = 0;
-        Wishlist wishlistItemClick = null;
+    @Override
+    public void onWishlistProductClicked(@NotNull String productId) {
+        int position = 0;
 
         for (CartWishlistItemHolderData wishlist : wishLists) {
             if (wishlist.getId().equalsIgnoreCase(productId)) {
-                position = index;
-                wishlistItemClick = wishlist;
+                if (FLAG_IS_CART_EMPTY) {
+                    sendAnalyticsOnClickProductWishlistOnEmptyCart(String.valueOf(position),
+                        dPresenter.generateWishlistProductClickEmptyCartDataLayer(wishlist, position));
+                } else {
+                    sendAnalyticsOnClickProductWishlistOnCartList(String.valueOf(position),
+                        dPresenter.generateWishlistProductClickDataLayer(wishlist, position));
+                }
             }
+            position++;
         }
 
-        dPresenter.generateWishlistDataOnClickAnalytics()
+        onProductClicked(productId);
+    }
 
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
-        startActivityForResult(intent, NAVIGATION_PDP);
+    @Override
+    public void onRecentViewProductClicked(@NotNull String productId) {
+        int position = 0;
+
+        for (CartRecentViewItemHolderData recentView : recentViewList) {
+            if (recentView.getId().equalsIgnoreCase(productId)) {
+                if (FLAG_IS_CART_EMPTY) {
+                    sendAnalyticsOnClickProductRecentViewOnEmptyCart(String.valueOf(position),
+                        dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position));
+                } else {
+                    sendAnalyticsOnClickProductRecentViewOnCartList(String.valueOf(position),
+                        dPresenter.generateRecentViewProductClickDataLayer(recentView, position));
+                }
+            }
+            position++;
+        }
+
+        onProductClicked(productId);
     }
 
     @Override
@@ -712,12 +734,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         if (recommendationItemClick != null) {
-            sendAnalyticsOnClickProductRecommendationOnEmptyCart(String.valueOf(position),
-                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
+                sendAnalyticsOnClickProductRecommendation(String.valueOf(position),
+                        dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
         }
 
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
-        startActivityForResult(intent, NAVIGATION_PDP);
+        onProductClicked(productId);
     }
 
     @Override
@@ -1905,13 +1926,43 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendAnalyticsOnViewProductRecommendationOnCart(Map<String, Object> eeDataLayerCart) {
+    public void sendAnalyticsOnViewProductRecommendation(Map<String, Object> eeDataLayerCart) {
         cartPageAnalytics.enhancedEcommerceViewRecommendationOnCart(eeDataLayerCart);
     }
 
     @Override
-    public void sendAnalyticsOnClickProductRecommendationOnEmptyCart(String position, Map<String, Object> eeDataLayerCart) {
+    public void sendAnalyticsOnClickProductRecommendation(String position, Map<String, Object> eeDataLayerCart) {
         cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(position, eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnViewProductWishlist(Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceProductViewWishList(eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductWishlistOnEmptyCart(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductWishListOnEmptyCart(position, eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductWishlistOnCartList(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductWishListOnCartList(position, eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnViewProductRecentView(Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceProductViewLastSeen(eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductRecentViewOnEmptyCart(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(position, eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductRecentViewOnCartList(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnCartList(position, eeDataLayerCart);
     }
 
     @Override
@@ -2136,6 +2187,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
         cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData);
         this.recentViewList = cartRecentViewItemHolderDataList;
+
+        sendAnalyticsOnViewProductRecentView(
+                dPresenter.generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList, FLAG_IS_CART_EMPTY)
+        );
     }
 
     @Override
@@ -2183,6 +2238,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecentViewHolderData.setWishList(cartWishlistItemHolderDataList);
         cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartRecentViewHolderData);
         this.wishLists = cartWishlistItemHolderDataList;
+
+        sendAnalyticsOnViewProductWishlist(
+                dPresenter.generateWishlistDataImpressionAnalytics(cartWishlistItemHolderDataList, FLAG_IS_CART_EMPTY)
+        );
     }
 
     @Override
@@ -2213,7 +2272,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
             recommendationList = cartRecommendationItemHolderDataList;
 
-            sendAnalyticsOnViewProductRecommendationOnCart(
+            sendAnalyticsOnViewProductRecommendation(
                     dPresenter.generateRecommendationDataAnalytics(recommendationList, FLAG_IS_CART_EMPTY)
             );
         }
