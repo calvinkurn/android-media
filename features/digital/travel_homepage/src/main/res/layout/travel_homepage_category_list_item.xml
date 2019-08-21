@@ -8,9 +8,10 @@
 
     <com.tokopedia.design.image.SquareImageView
         android:id="@+id/category_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp_12" />
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_margin="@dimen/dp_12"
+        android:layout_gravity="center"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_name"
