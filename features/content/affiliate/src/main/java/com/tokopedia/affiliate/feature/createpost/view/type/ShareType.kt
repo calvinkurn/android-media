@@ -6,7 +6,7 @@ import android.support.annotation.StringRes
 import com.tokopedia.affiliate.R
 import com.tokopedia.kotlin.extensions.view.toCompactAmountString
 
-typealias ShareSubtitleGenerator = (Context, Int) -> String?
+private typealias ShareSubtitleGenerator = (Context, Int) -> String?
 
 sealed class ShareType(
         @StringRes val keyRes: Int,
