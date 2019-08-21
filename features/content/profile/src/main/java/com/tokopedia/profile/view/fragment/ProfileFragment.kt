@@ -199,6 +199,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val FOLLOW_HEADER = "follow_header"
         private const val FOLLOW_FOOTER = "follow_footer"
 
+        private const val IG_STORY_TEMP = "ig_story_temp"
+
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
             fragment.arguments = bundle
@@ -1730,7 +1732,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 String.format(getString(R.string.profile_share_text),
                         element.link),
                 String.format(getString(R.string.profile_other_share_title)),
-                MethodChecker.getUri(context, imageBitmap?.toTempFile("test")).toString()
+                MethodChecker.getUri(context, imageBitmap?.toTempFile(IG_STORY_TEMP)).toString()
         ).show(fragmentManager)
         profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
         isShareProfile = true

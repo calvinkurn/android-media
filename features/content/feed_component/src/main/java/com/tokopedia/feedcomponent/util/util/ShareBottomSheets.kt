@@ -21,6 +21,8 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.videoplayer.utils.showToast
+import android.content.Intent
+import android.content.ComponentName
 
 /**
  * @author by yfsx on 17/05/19.
@@ -47,8 +49,9 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         private const val CLASS_NAME_FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias"
         private const val CLASS_NAME_LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity"
         private const val CLASS_NAME_TWITTER = "com.twitter.composer.ComposerShareActivity"
-        private const val CLASS_NAME_INSTAGRAM = "com.instagram.direct.share.handler.DirectShareHandlerActivity"
+        private const val CLASS_NAME_INSTAGRAM_DM = "com.instagram.direct.share.handler.DirectShareHandlerActivity"
         private const val CLASS_NAME_INSTAGRAM_STORY = "com.instagram.share.ADD_TO_STORY"
+        private const val CLASS_NAME_INSTAGRAM_FEED = "com.instagram.share.handleractivity.ShareHandlerActivity"
 
         /**
          * Arguments
@@ -114,6 +117,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         private const val KEY_FACEBOOK = "facebook"
         private const val KEY_GOOGLE = "google"
         private const val KEY_INSTAGRAM = "instagram"
+        private const val KEY_INSTAGRAM_FEED = "instagram_feed"
         private const val KEY_INSTAGRAM_STORY = "instagram_story"
         private const val KEY_OTHER = "lainnya"
         private const val KEY_COPY = "salinlink"
@@ -127,7 +131,6 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
          */
         private const val TYPE_TEXT = "text/plain"
         private const val TYPE_IMAGE = "image/*"
-        private const val TYPE_VIDEO = "video/*"
     }
 
     sealed class ShareType {
@@ -159,8 +162,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
 
     enum class MimeType(val typeString: String) {
         TEXT(TYPE_TEXT),
-        IMAGE(TYPE_IMAGE),
-        VIDEO(TYPE_VIDEO)
+        IMAGE(TYPE_IMAGE)
     }
 
     private lateinit var data: LinkerData
@@ -217,7 +219,14 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun init() {
-        val adapter = ShareAdapter(generateAvailableShareTypes(MimeType.IMAGE))
+        val adapter = ShareAdapter(
+                generateAvailableShareTypes(
+                        mutableListOf<MimeType>().apply {
+                            add(MimeType.TEXT)
+                            if (arguments?.get(EXTRA_MEDIA_URL) != null) add(MimeType.IMAGE)
+                        }
+                )
+        )
         mRecyclerView.adapter = adapter
         adapter.setOnItemClickListener(this)
     }
@@ -295,14 +304,18 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                 .putExtra(Intent.EXTRA_TEXT, arguments?.getString(EXTRA_SHARE_FORMAT).orEmpty())
     }
 
-    private fun getInstagramStoryIntent(mimeType: MimeType, mediaUri: Uri, destinationUrl: String): Intent {
-        context?.grantUriPermission(
-                PACKAGE_NAME_INSTAGRAM, mediaUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
+    private fun getInstagramStoryIntent(mediaUri: Uri): Intent {
         return Intent(CLASS_NAME_INSTAGRAM_STORY)
-                .setDataAndType(mediaUri, mimeType.typeString)
+                .setDataAndType(mediaUri, MimeType.IMAGE.typeString)
                 .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                .putExtra("content_url", destinationUrl)
+    }
+
+    private fun getInstagramFeedIntent(mediaUri: Uri): Intent {
+        return Intent(Intent.ACTION_SEND)
+                .setType(MimeType.IMAGE.typeString)
+                .putExtra(Intent.EXTRA_STREAM, mediaUri)
+                .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .setClassName(PACKAGE_NAME_INSTAGRAM, CLASS_NAME_INSTAGRAM_FEED)
     }
 
     private var addProductReceiver: BroadcastReceiver? = null
@@ -374,17 +387,18 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         activity?.unregisterReceiver(addProductReceiver)
     }
 
-    private fun generateAvailableShareTypes(type: MimeType): List<ShareType> {
+    private fun generateAvailableShareTypes(typeList: List<MimeType>): List<ShareType> {
         return mutableListOf<ShareType>().apply {
             add(ShareType.ActivityShare(KEY_WHATSAPP, getString(R.string.share_whatsapp), MimeType.TEXT, getTextIntent(PACKAGE_NAME_WHATSAPP, CLASS_NAME_WHATSAPP)))
             add(ShareType.ActivityShare(KEY_FACEBOOK, getString(R.string.share_facebook), MimeType.TEXT, getTextIntent(PACKAGE_NAME_FACEBOOK, CLASS_NAME_FACEBOOK)))
             add(ShareType.ActivityShare(KEY_LINE, getString(R.string.share_line).toUpperCase(), MimeType.TEXT, getTextIntent(PACKAGE_NAME_LINE, CLASS_NAME_LINE)))
             add(ShareType.ActivityShare(KEY_TWITTER, getString(R.string.share_twitter), MimeType.TEXT, getTextIntent(PACKAGE_NAME_TWITTER, CLASS_NAME_TWITTER)))
-            add(ShareType.ActivityShare(KEY_INSTAGRAM, getString(R.string.share_instagram), MimeType.TEXT, getTextIntent(PACKAGE_NAME_INSTAGRAM, CLASS_NAME_INSTAGRAM)))
 
             val mediaUrl: String? = arguments?.getString(EXTRA_MEDIA_URL)
-            if (type != MimeType.TEXT && mediaUrl != null)
-                add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, getString(R.string.share_instagram_story), type, getInstagramStoryIntent(type, Uri.parse(mediaUrl), "https://www.tokopedia.com/")))
+            if (typeList.contains(MimeType.IMAGE) && mediaUrl != null) {
+                add(ShareType.ActivityShare(KEY_INSTAGRAM_FEED, getString(R.string.share_instagram_feed), MimeType.IMAGE, getInstagramFeedIntent(Uri.parse(mediaUrl))))
+                add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, getString(R.string.share_instagram_story), MimeType.IMAGE, getInstagramStoryIntent(Uri.parse(mediaUrl))))
+            }
 
             add(ShareType.ActionShare(KEY_COPY, getString(R.string.copy), MimeType.TEXT, R.drawable.ic_copy_clipboard, ::actionCopy))
             add(ShareType.ActionShare(KEY_OTHER, getString(R.string.other), MimeType.TEXT, R.drawable.ic_btn_more, ::actionMore))
