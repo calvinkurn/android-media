@@ -50,11 +50,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.card.ToolTipUtils;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
@@ -513,8 +513,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(getContext());
 
-            String NOTIFICATION_GROUP_CHAT =
-                    ((GroupChatModuleRouter) getApplication()).getNotificationPreferenceConstant();
+            String NOTIFICATION_GROUP_CHAT = ApplinkConst.Play.NOTIFICATION_GROUP_CHAT;
 
             boolean isNotificationOn =
                     sharedPreferences.getBoolean(NOTIFICATION_GROUP_CHAT, false);
@@ -617,10 +616,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (userSession.isLoggedIn()) {
             userId = userSession.getUserId();
         }
-
-        ((GroupChatModuleRouter) getApplication()).shareGroupChat(this,
-                viewModel.getChannelInfoViewModel().getChannelId(), viewModel.getChannelName(), description,
-                viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl(), userId, "sharing");
     }
 
     private void setupViewPager() {
@@ -857,7 +852,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                     public void onClick(DialogInterface dialogInterface, int i) {
                         analytics.eventUserExit(getChannelInfoViewModel().getChannelId() + " "+ getDurationOnGroupChat());
                         if (isTaskRoot()) {
-                            startActivity(((GroupChatModuleRouter) getApplicationContext()).getInboxChannelsIntent(context));
+                            startActivity(RouteManager.getIntent(getApplicationContext(), ApplinkConst.GROUPCHAT_LIST));
                         }
                         if (onPlayTime != 0) {
                             analytics.eventWatchVideoDuration(getChannelInfoViewModel().getChannelId(), getDurationWatchVideo());
@@ -1271,7 +1266,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void openSponsor(String adsLink) {
-        ((GroupChatModuleRouter) getApplicationContext()).openRedirectUrl(this, adsLink);
+        RouteManager.route(this, ApplinkConst.WEBVIEW, adsLink);
     }
 
     @Override
@@ -1543,9 +1538,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             findViewById(R.id.card_retry).findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = ((GroupChatModuleRouter) getApplicationContext())
-//                            .getHomeIntent(v.getContext());
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     String adsLink = "tokopedia://webview?url=https://tokopedia.link/playfreezestate";
                     openSponsor(adsLink);
                     finish();
@@ -1933,7 +1925,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (isTaskRoot()) {
-                            startActivity(((GroupChatModuleRouter) getApplicationContext()).getInboxChannelsIntent(context));
+                            startActivity(RouteManager.getIntent(getApplicationContext(), ApplinkConst.GROUPCHAT_LIST));
                         }
                         finish();
                         GroupChatActivity.super.onBackPressed();
@@ -2173,6 +2165,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void reportWebSocket(String url, String error) {
-        ((GroupChatModuleRouter) getApplication()).sendAnalyticsGroupChat(url, error);
+        //no-op
     }
 }

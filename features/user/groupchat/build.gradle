@@ -36,6 +36,7 @@ dependencies {
     
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.vote)
+    implementation project(rootProject.ext.features.core)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.abstraction)
@@ -49,6 +50,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation project(rootProject.ext.libraries.linker)
 
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.libraries.websocket)
