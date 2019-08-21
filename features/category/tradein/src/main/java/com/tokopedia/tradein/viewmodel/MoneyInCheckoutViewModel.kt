@@ -1,5 +1,6 @@
 package com.tokopedia.tradein.viewmodel
 
+import android.app.Application
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.model.MoneyInCheckoutMutationResponse
@@ -19,7 +20,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
 
-class MoneyInCheckoutViewModel : BaseViewModel(), CoroutineScope {
+class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
 
     private val addressLiveData = MutableLiveData<Result<KeroGetAddress>>()
     private val pickupScheduleOptionLiveData = MutableLiveData<Result<GetPickupScheduleOption>>()

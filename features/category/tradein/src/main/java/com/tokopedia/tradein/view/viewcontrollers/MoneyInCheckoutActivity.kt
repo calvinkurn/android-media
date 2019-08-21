@@ -3,6 +3,7 @@ package com.tokopedia.tradein.view.viewcontrollers
 import android.arch.lifecycle.Observer
 import android.support.v4.app.Fragment
 import android.view.View
+import android.widget.Button
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.Utils
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
@@ -38,7 +39,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity() {
             when (it) {
                 is Success -> {
                     if (!it.data.scheduleDate.isNullOrEmpty())
-                        setScheduleBottomSheet(it.data.scheduleDate!!)
+                        setScheduleBottomSheet(it.data.scheduleDate)
                 }
                 is Fail -> {
                 }
@@ -68,8 +69,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity() {
         data.error
     }
 
-    private fun setScheduleBottomSheet(scheduleDate: List<ScheduleDate?>) {
-
+    private fun setScheduleBottomSheet(scheduleDate: ArrayList<ScheduleDate>) {
+        val courierBtn = findViewById<Button>(R.id.courier_btn)
+        val moneyInScheduledTimeBottomSheet = MoneyInScheduledTimeBottomSheet.newInstance(scheduleDate)
+        courierBtn.setOnClickListener {
+            moneyInScheduledTimeBottomSheet.show(supportFragmentManager, "")
+        }
     }
 
     private fun setAddressView(recipientAddress: KeroGetAddress.Data?) {

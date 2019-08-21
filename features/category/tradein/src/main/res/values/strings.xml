@@ -10,4 +10,5 @@
     <string name="retrieval_time">Waktu Pengambilan</string>
     <string name="terms_and_conditions_text">Saya menyetujui syarat dan ketentuan yang berlaku.</string>
     <string name="checkout">Checkout</string>
+    <string name="select_fetch_time">Pilih Waktu Pengambilan</string>
 </resources>
