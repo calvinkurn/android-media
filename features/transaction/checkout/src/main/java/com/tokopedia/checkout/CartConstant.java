@@ -12,6 +12,4 @@ public class CartConstant {
     public static final String SCREEN_NAME_CART_NEW_USER = "/user/address/create/cart";
     public static final String SCREEN_NAME_CART_EXISTING_USER = "/cart/address/create";
     public static final String CHECKOUT_LEASING_ID = "vehicle_leasing_id";
-    public static final String SECTION_WISHLIST = "WISHLIST";
-    public static final String SECTION_RECENT_VIEW = "RECENT_VIEW";
 }

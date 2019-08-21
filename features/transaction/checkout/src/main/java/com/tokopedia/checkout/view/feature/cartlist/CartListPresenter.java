@@ -81,9 +81,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.checkout.CartConstant.SECTION_RECENT_VIEW;
-import static com.tokopedia.checkout.CartConstant.SECTION_WISHLIST;
-
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -1454,7 +1451,7 @@ public class CartListPresenter implements ICartListPresenter {
     public Map<String, Object> generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData, int position) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
-        enhancedECommerceActionField.setList(EnhancedECommerceActionField.VALUE_SECTION_NAME_RECENT_VIEW);
+        enhancedECommerceActionField.setList(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW);
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
 
         enhancedECommerceProductCartMapData.setProductName(cartRecentViewItemHolderData.getName());
@@ -1478,7 +1475,7 @@ public class CartListPresenter implements ICartListPresenter {
     public Map<String, Object> generateWishlistProductClickDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData, int position) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
-        enhancedECommerceActionField.setList(EnhancedECommerceActionField.VALUE_SECTION_NAME_WISHLIST);
+        enhancedECommerceActionField.setList(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST);
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
 
         enhancedECommerceProductCartMapData.setProductName(cartWishlistItemHolderData.getName());
@@ -1512,7 +1509,7 @@ public class CartListPresenter implements ICartListPresenter {
         if (isEmptyCart) {
             enhancedECommerceProductCartMapData.setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW_EMPTY_CART);
         } else {
-            enhancedECommerceProductCartMapData.setListName(EnhancedECommerceActionField.VALUE_SECTION_NAME_RECENT_VIEW);
+            enhancedECommerceProductCartMapData.setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW);
         }
 
         enhancedECommerceProductCartMapData.setPosition(String.valueOf(position));
@@ -1553,7 +1550,7 @@ public class CartListPresenter implements ICartListPresenter {
         if (isEmptyCart) {
             enhancedECommerceProductCartMapData.setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST_EMPTY_CART);
         } else {
-            enhancedECommerceProductCartMapData.setListName(EnhancedECommerceActionField.VALUE_SECTION_NAME_WISHLIST);
+            enhancedECommerceProductCartMapData.setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST);
         }
 
         enhancedECommerceProductCartMapData.setPosition(String.valueOf(position));
