@@ -2,8 +2,14 @@ package com.tokopedia.tradein.view.viewcontrollers
 
 import android.arch.lifecycle.Observer
 import android.support.v4.app.Fragment
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.Utils
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
@@ -19,24 +25,62 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
     private lateinit var moneyInCheckoutViewModel: MoneyInCheckoutViewModel
     private var scheduleTime: ScheduleDate.ScheduleTime? = null
+    private var orderValue :String = ""
+    private var hardwareId : String = ""
+
+    companion object {
+        const val MONEY_IN_DEFAULT_ADDRESS = "MONEY_IN_DEFAULT_ADDRESS"
+        const val MONEY_IN_NEW_ADDRESS = "MONEY_IN_NEW_ADDRESS"
+        const val MONEY_IN_REQUEST_CHECKOUT = 8952
+        const val MONEY_IN_ORDER_VALUE = "MONEY_IN_PRICE"
+        const val MONEY_IN_HARDWARE_ID = "HARDWARE_ID"
+    }
 
     override fun initView() {
-        moneyInCheckoutViewModel.getAddress(getMeGQlString(R.raw.gql_kero_get_address))
+        orderValue = intent.getStringExtra(MONEY_IN_ORDER_VALUE)
+        hardwareId = intent.getStringExtra(MONEY_IN_HARDWARE_ID)
+        if (intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_DEFAULT_ADDRESS) != null) {
+            setAddressView(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_DEFAULT_ADDRESS))
+        } else if(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_NEW_ADDRESS) != null){
+            setAddressView(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_NEW_ADDRESS))
+        }
         moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
         setObservers()
+        val notElligible = getString(R.string.checkout_terms_and_conditions_text)
+        val spannableString = SpannableString(notElligible)
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                showtnc()
+            }
+        }
+        val mTvTnc = findViewById<TextView>(R.id.terms_text) as TextView
+
+        val greenColor = resources.getColor(R.color.green_nob)
+        val foregroundColorSpan = ForegroundColorSpan(greenColor)
+        spannableString.setSpan(clickableSpan, 16, 36, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(foregroundColorSpan, 16, 36, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        mTvTnc.text = spannableString
+        mTvTnc.isClickable = true
+        mTvTnc.movementMethod = LinkMovementMethod.getInstance()
+        val btBuy = findViewById<Button>(R.id.bt_buy)
+        btBuy.setOnClickListener {
+            moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general))
+        }
+    }
+
+    override fun retryOnError() {
+
+    }
+
+    private fun showtnc() {
+        showTnC(R.string.tradein_tnc)
+        sendGeneralEvent("clickTradeIn",
+                "harga final trade in",
+                "click syarat dan ketentuan",
+                "")
     }
 
     private fun setObservers() {
-        moneyInCheckoutViewModel.getMoneyInAddressLiveData().observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    if (!it.data.data.isNullOrEmpty())
-                        setAddressView(it.data.data?.get(0))
-                }
-                is Fail -> {
-                }
-            }
-        })
         moneyInCheckoutViewModel.getPickupScheduleOptionLiveData().observe(this, Observer {
             when (it) {
                 is Success -> {
@@ -97,6 +141,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         val tvRecipientAddress = findViewById<Typography>(R.id.tv_recipient_address) as Typography
         val tvRecipientPhone = findViewById<Typography>(R.id.tv_recipient_phone) as Typography
         val tvChangeRecipientAddress = findViewById<Typography>(R.id.tv_change_recipient_address) as Typography
+        val priceAmount = findViewById<Typography>(R.id.price_amount) as Typography
+        val totalPaymentValue = findViewById<TextView>(R.id.tv_total_payment_value) as TextView
 
         if (recipientAddress?.status == 2) {
             tvAddressStatus.visibility = View.VISIBLE
@@ -107,6 +153,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         tvRecipientName.text = Utils.getHtmlFormat(recipientAddress?.receiverName)
         tvRecipientPhone.text = recipientAddress?.phone
         tvRecipientAddress.text = Utils.getHtmlFormat(getFullAddress(recipientAddress))
+        priceAmount.text = orderValue
+        totalPaymentValue.text = orderValue
 
         tvChangeRecipientAddress.setOnClickListener {
             //TODO change address activity
@@ -135,7 +183,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     override fun getTncFragmentInstance(TncResId: Int): Fragment? {
-        return null
+        return TnCFragment.getInstance(TncResId)
     }
 
     override fun getBottomSheetLayoutRes(): Int {

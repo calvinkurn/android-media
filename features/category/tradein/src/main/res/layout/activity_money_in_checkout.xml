@@ -19,7 +19,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_1"
-            tools:text="Harga HP kamu" />
+            android:text="@string/price_of_cellphone" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/price_amount"

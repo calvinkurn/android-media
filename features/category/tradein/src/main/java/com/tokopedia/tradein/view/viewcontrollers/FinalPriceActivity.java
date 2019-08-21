@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.constraint.Group;
 import android.support.v4.app.Fragment;
@@ -17,6 +19,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.logisticaddaddress.AddressConstants;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.model.DeviceDataResponse;
 import com.tokopedia.tradein.model.KYCDetails;
@@ -32,8 +36,12 @@ import tradein_common.router.TradeInRouter;
 public class FinalPriceActivity extends BaseTradeInActivity implements Observer<DeviceDataResponse> {
     public static final int FINAL_PRICE_REQUEST_CODE = 22456;
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
-    private final static int FLAG_ACTIVITY_MONEYIN_CHECKOUT = 1302;
+    private final static int PINPOINT_ACTIVITY_REQUEST_CODE = 1302;
     private FinalPriceViewModel viewModel;
+    private String orderValue = "";
+    private String deviceId = "";
+    private int checkoutString = R.string.buy_now;
+    private int hargeTncString = R.string.harga_tnc;
     /**
      * price_valid_until
      */
@@ -74,6 +82,34 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         else
             activeGroup = findViewById(R.id.group_tradein);
 
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (TRADEIN_TYPE == 2) {
+            checkoutString = R.string.sell_now;
+            hargeTncString = R.string.harga_tnc_moneyin;
+        }
+        viewModel.getDeviceDiagData().observe(this, this);
+        viewModel.getAddressLiveData().observe(this, result -> {
+            if (result != null) {
+                if (result.getDefaultAddress() != null) {
+                    //start money in checkout with address object
+                    Intent goToCheckout = new Intent(this, MoneyInCheckoutActivity.class);
+                    goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_DEFAULT_ADDRESS, result.getDefaultAddress());
+                    goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_ORDER_VALUE, orderValue);
+                    goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_HARDWARE_ID, deviceId);
+                    navigateToActivityRequest(goToCheckout, MoneyInCheckoutActivity.MONEY_IN_REQUEST_CHECKOUT);
+                } else {
+                    startActivityForResult(PinpointMapActivity.Companion.newInstance(this,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, result.getToken(),
+                            false, false, false, null,
+                            false), PINPOINT_ACTIVITY_REQUEST_CODE);
+                }
+            }
+
+        });
     }
 
     @Override
@@ -122,12 +158,6 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         renderDetails(deviceDataResponse);
     }
 
-    @Override
-    protected void onStart() {
-        viewModel.getDeviceDiagData().observe(this, this);
-        super.onStart();
-    }
-
     private void renderDetails(DeviceDataResponse deviceDataResponse) {
         TradeInParams tradeInData = viewModel.getTradeInParams();
         if (tradeInData != null && TRADEIN_TYPE != 2) {
@@ -136,6 +166,8 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         }
         mTvModelName.setText(deviceDataResponse.getDeviceAttr().getModel());
         mTvPriceExchange.setText(String.valueOf(deviceDataResponse.getOldPrice()));
+        orderValue = deviceDataResponse.getOldPrice().toString();
+        deviceId = deviceDataResponse.getDeviceAttr().getImei().get(0);
         mTvSellingPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true));
         mTvValidTill.setText(String.format(getString(R.string.price_valid_until), deviceDataResponse.getExpiryTimeFmt()));
         List<String> deviceReview = deviceDataResponse.getDeviceReview();
@@ -176,29 +208,43 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FLAG_ACTIVITY_KYC_FORM) {
-            if (resultCode == Activity.RESULT_OK) {
-                setbuttonCheckout();
-                goToCheckout();
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case FLAG_ACTIVITY_KYC_FORM:
+                    setbuttonCheckout();
+                    goToCheckout();
+                    break;
+                case MoneyInCheckoutActivity.MONEY_IN_REQUEST_CHECKOUT:
+                    setResult(Activity.RESULT_OK, null);
+                    finish();
+                    break;
+                case PINPOINT_ACTIVITY_REQUEST_CODE:
+                    Parcelable parcelableExtra = data.getParcelableExtra("EXTRA_ADDRESS_NEW");
+                    if (data.hasExtra("EXTRA_ADDRESS_NEW") && parcelableExtra != null) {
+                        Intent goToCheckout = new Intent(this, MoneyInCheckoutActivity.class);
+                        goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_NEW_ADDRESS, parcelableExtra);
+                        goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_ORDER_VALUE, orderValue);
+                        goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_HARDWARE_ID, deviceId);
+                        navigateToActivityRequest(goToCheckout, MoneyInCheckoutActivity.MONEY_IN_REQUEST_CHECKOUT);
+                    }
+                    break;
+
             }
-        } else if (requestCode == FLAG_ACTIVITY_MONEYIN_CHECKOUT){
-            //do something here
         }
     }
 
     private void goToCheckout() {
-        String deviceid = getDeviceId();
         if (TRADEIN_TYPE == 2) {
-            navigateToActivityRequest(new Intent().putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid), FLAG_ACTIVITY_MONEYIN_CHECKOUT);
+            viewModel.getAddress();
         } else {
-            setResult(Activity.RESULT_OK, new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid));
+            setResult(Activity.RESULT_OK, new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceId));
             finish();
         }
 
     }
 
     private void setbuttonCheckout() {
-        String notElligible = getString(R.string.harga_tnc);
+        String notElligible = getString(hargeTncString);
         SpannableString spannableString = new SpannableString(notElligible);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
@@ -215,7 +261,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         mTvTnc.setClickable(true);
         mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
         mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_orange);
-        mTvButtonPayOrKtp.setText(R.string.buy_now);
+        mTvButtonPayOrKtp.setText(checkoutString);
         mTvButtonPayOrKtp.setOnClickListener(v -> {
             goToCheckout();
         });

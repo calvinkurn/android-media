@@ -30,6 +30,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.domain.model.Token
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
@@ -39,7 +40,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*

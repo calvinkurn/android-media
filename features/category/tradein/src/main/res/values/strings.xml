@@ -13,4 +13,6 @@
     <string name="select_fetch_time">Pilih Waktu Pengambilan</string>
     <string name="select_shipping">Pilih Pengiriman</string>
     <string name="exchange_default_text">Kurir tukar tambah akan menelfon untuk menukarkan HP di tujuan pengiriman dalam 1 - 2 hari.</string>
+    <string name="price_of_cellphone">Harga HP kamu</string>
+    <string name="checkout_terms_and_conditions_text">Saya menyetujui syarat dan ketentuan yang berlaku.</string>
 </resources>

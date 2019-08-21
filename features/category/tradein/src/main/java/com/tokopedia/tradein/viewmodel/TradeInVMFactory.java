@@ -59,7 +59,7 @@ public class TradeInVMFactory extends ViewModelProvider.AndroidViewModelFactory 
             }
         } else if (FinalPriceViewModel.class.isAssignableFrom(modelClass)) {
             try {
-                return modelClass.getConstructor(FragmentActivity.class).newInstance(application);
+                return modelClass.getConstructor(Application.class).newInstance(application);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("Cannot create an instance of " + modelClass, e);
             } catch (InstantiationException e) {
@@ -71,7 +71,7 @@ public class TradeInVMFactory extends ViewModelProvider.AndroidViewModelFactory 
             }
         } else if (MoneyInCheckoutViewModel.class.isAssignableFrom(modelClass)) {
             try {
-                return modelClass.getConstructor().newInstance();
+                return modelClass.getConstructor(Application.class).newInstance(application);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("Cannot create an instance of " + modelClass, e);
             } catch (InstantiationException e) {
