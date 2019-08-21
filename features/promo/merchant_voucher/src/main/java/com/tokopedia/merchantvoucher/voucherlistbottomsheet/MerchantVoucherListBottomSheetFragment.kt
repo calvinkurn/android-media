@@ -101,6 +101,10 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
     }
 
+    override fun state(): BottomSheetsState {
+        return BottomSheetsState.FLEXIBLE
+    }
+
     override fun initView(view: View) {
         bottomsheetView = view
 
