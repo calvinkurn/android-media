@@ -986,6 +986,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else {
                 activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
                         addToCartDataModel.errorMessage[0])
+                normalCheckoutTracking.eventViewErrorWhenAddToCart(addToCartDataModel.errorMessage[0])
             }
         }
 
@@ -993,6 +994,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun onErrorAtc(e: Throwable?, onRetryWhenError: (() -> Unit)) {
         hideLoadingDialog()
+        normalCheckoutTracking.eventViewErrorWhenAddToCart(ErrorHandler.getErrorMessage(context, e))
         showToastError(e) {
             onRetryWhenError()
         }

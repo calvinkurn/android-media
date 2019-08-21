@@ -544,6 +544,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             } else {
                 showToastMessageRed(message);
                 sendAnalyticsOnButtonCheckoutClickedFailed();
+                sendAnalyticsOnGoToShipmentFailed(message);
             }
         };
     }
@@ -1370,6 +1371,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void renderErrorToShipmentForm(String message) {
         sendAnalyticsOnButtonCheckoutClickedFailed();
+        sendAnalyticsOnGoToShipmentFailed(message);
         showToastMessageRed(message);
     }
 
@@ -1922,6 +1924,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void sendAnalyticsOnButtonCheckoutClickedFailed() {
         cartPageAnalytics.eventClickCheckoutCartClickCheckoutFailed();
+    }
+
+    @Override
+    public void sendAnalyticsOnGoToShipmentFailed(String errorMessage) {
+        cartPageAnalytics.eventViewErrorWhenCheckout(errorMessage);
     }
 
     @Override
