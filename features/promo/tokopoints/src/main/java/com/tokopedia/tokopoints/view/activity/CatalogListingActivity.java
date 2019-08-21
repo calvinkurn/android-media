@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,7 +19,10 @@ import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.CatalogListingFragment;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.user.session.UserSession;
+
+import static com.tokopedia.tokopoints.ApplinkConstant.CATALOG_LISTING2;
 
 public class CatalogListingActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent>, onAppBarCollapseListener {
     private static final int REQUEST_CODE_LOGIN = 1;
@@ -30,6 +34,15 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
         mUserSession = new UserSession(getApplicationContext());
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_label_exchange_points));
+        if (getIntent().getData() != null) {
+            String deeplinkText = getIntent().getData().toString();
+            if (deeplinkText != null && deeplinkText.contains("/detail/")) {
+                Bundle bundle = getIntent().getExtras();
+                bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, getIntent().getStringExtra("slug_sub_category"));
+                startActivity(CouponCatalogDetailsActivity.getCatalogDetail(getApplicationContext(), bundle));
+                finish();
+            }
+        }
     }
 
     @Override
@@ -49,7 +62,7 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
     }
 
     @DeepLink({ApplinkConstant.CATALOG_LISTING,
-            ApplinkConstant.CATALOG_LISTING2,
+            CATALOG_LISTING2,
             ApplinkConstant.CATALOG_LISTING3,
             ApplinkConstant.CATALOG_LISTING4,
             ApplinkConstant.CATALOG_LISTING5,
@@ -57,6 +70,8 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
             ApplinkConstant.CATALOG_LISTING7})
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CatalogListingActivity.class);
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        intent.setData(uri.build());
         intent.putExtras(extras);
         return intent;
     }

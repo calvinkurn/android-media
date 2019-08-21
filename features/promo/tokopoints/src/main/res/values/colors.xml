@@ -9,4 +9,7 @@
     <color name="bg_label_grey">#f3f4f5</color>
     <color name="tp_history_item_grey_color">#7031353b</color>
     <color name="clr_31353b">#31353b</color>
+    <color name="red_text_color">#fa591d</color>
+    <color name="discount_color">#7031353b</color>
+    <color name="disabled_color">#5131353b</color>
 </resources>
