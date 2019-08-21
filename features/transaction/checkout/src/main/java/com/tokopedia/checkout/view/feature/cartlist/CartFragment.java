@@ -523,9 +523,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             dPresenter.getCartListData().setAllSelected(checked);
             cbSelectAll.setChecked(checked);
             cartAdapter.setAllShopSelected(checked);
-            cartAdapter.notifyDataSetChanged();
             dPresenter.setAllInsuranceProductsChecked(cartAdapter.getInsuranceCartShops(), checked);
-
+            cartAdapter.notifyDataSetChanged();
             dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
         };
     }
