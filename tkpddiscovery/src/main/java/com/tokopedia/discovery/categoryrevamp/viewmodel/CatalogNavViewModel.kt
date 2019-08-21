@@ -20,7 +20,7 @@ class CatalogNavViewModel @Inject constructor(var catalogUseCase: CatalogUseCase
     fun fetchCatalogDetail(params: RequestParams) {
         catalogUseCase.execute(params, object : Subscriber<SearchCatalog>() {
             override fun onNext(searchCatalog: SearchCatalog) {
-                mCatalog.value = Success(searchCatalog as SearchCatalog)
+                mCatalog.value = Success(searchCatalog)
             }
 
             override fun onCompleted() {

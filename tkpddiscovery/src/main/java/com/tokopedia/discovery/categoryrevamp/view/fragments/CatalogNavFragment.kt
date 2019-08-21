@@ -101,8 +101,13 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
             when (it) {
                 is Success -> {
                     catalogNavListAdapter?.removeLoading()
-                    list.addAll(it.data.items as ArrayList<Visitable<CatalogTypeFactory>>)
-                    catalog_recyclerview.adapter?.notifyDataSetChanged()
+                    if (it.data.count > 0) {
+                        list.addAll(it.data.items as ArrayList<Visitable<CatalogTypeFactory>>)
+                        catalog_recyclerview.adapter?.notifyDataSetChanged()
+                    } else {
+                        layout_no_data.visibility = View.VISIBLE
+
+                    }
                     hideRefreshLayout()
                 }
 
