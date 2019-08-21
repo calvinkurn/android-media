@@ -39,7 +39,7 @@ class AddToCartDoneViewModel @Inject constructor(
             const val KEY_PAGE_NAME = "pageName"
             const val KEY_XDEVICE = "xDevice"
             const val DEFAULT_DEVICE = "android"
-            const val DEFAULT_SRC_PAGE = "recentview"
+            const val DEFAULT_SRC_PAGE = "pdp_after_atc"
             const val KEY_PRODUCT_ID = "productIDs"
             const val KEY_XSOURCE = "xSource"
             const val KEY_PAGE_NUMBER = "pageNumber"
