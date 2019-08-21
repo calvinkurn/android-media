@@ -22,8 +22,8 @@
 
             <ImageView
                 android:id="@+id/img_banner"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_0"
                 android:scaleType="fitCenter"
                 android:src="@color/black"
                 app:layout_constraintDimensionRatio="h,3:1"
@@ -169,7 +169,7 @@
                 android:id="@+id/how_to_use_see_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="4sp"
+                android:lineSpacingExtra="@dimen/sp_4"
                 android:paddingBottom="@dimen/dp_16"
                 android:text="@string/see_more_txt"
                 android:textColor="@color/medium_green"
@@ -213,11 +213,11 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/gift_msg"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_12"
                     android:layout_marginLeft="@dimen/dp_12"
-                    android:text="Hadiahin kupon ini ke temanmu!"
+                    android:text="@string/tp_default_gift_text"
                     app:layout_constraintBottom_toBottomOf="@+id/gift_btn"
                     app:layout_constraintLeft_toRightOf="@+id/gift_image"
                     app:layout_constraintRight_toLeftOf="@+id/gift_btn"
@@ -233,7 +233,7 @@
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:paddingLeft="@dimen/dp_24"
                     android:paddingRight="@dimen/dp_24"
-                    android:text="Hadiahin"
+                    android:text="@string/tp_gift_btn_text"
                     android:textColor="@color/red_text_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"

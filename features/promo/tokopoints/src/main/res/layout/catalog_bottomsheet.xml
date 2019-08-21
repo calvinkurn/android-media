@@ -20,7 +20,7 @@
             app:srcCompat="@drawable/ic_close_button"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_16"
-            android:tint="#6C727C"
+            android:tint="@color/tp_tint_close_color"
             />
 
         <com.tokopedia.unifyprinciples.Typography
