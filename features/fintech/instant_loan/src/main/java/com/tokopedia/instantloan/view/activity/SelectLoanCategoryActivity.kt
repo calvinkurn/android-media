@@ -32,7 +32,7 @@ class SelectLoanCategoryActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_loan_param)
         topBarTitle = findViewById<View>(R.id.top_bar_title) as TextView
-        topBarTitle!!.text = getString(R.string.il_loan_category_title)
+        topBarTitle!!.text = getString(R.string.il_loan_category)
         recyclerView = findViewById<View>(R.id.list) as RecyclerView
         buttonClose = findViewById(R.id.top_bar_close_button)
         buttonClose.setOnClickListener { onBackPressed() }

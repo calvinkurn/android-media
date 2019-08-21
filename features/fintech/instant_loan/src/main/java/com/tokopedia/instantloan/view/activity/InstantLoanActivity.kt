@@ -193,10 +193,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
                 showCategoryLayout()
                 lendingCategoryAdpater = LendingCategoryAdapter(gqlLendingDataResponse.leCategory.categoryData)
                 setupCategoryLayout()
-
                 tanpaAgunanFragmentInstance?.setCategoryData(gqlLendingDataResponse.leCategory.categoryData)
 
-                // todo send category data to TanpaAgunanFragment
             } else {
                 hideCategoryLayout()
             }
