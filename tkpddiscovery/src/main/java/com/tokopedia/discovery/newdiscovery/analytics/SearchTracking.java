@@ -235,7 +235,7 @@ public class SearchTracking {
     }
 
     public static void trackEventClickImageSearchResultProduct(Object item) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                 EVENT_CATEGORY, SearchEventTracking.Category.IMAGE_SEARCH_RESULT,
                 EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT,
