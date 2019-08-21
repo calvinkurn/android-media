@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.*
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

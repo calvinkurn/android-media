@@ -12,7 +12,9 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-
+androidExtensions {
+    experimental = true
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.miscDependencies.viewModel
@@ -30,7 +32,7 @@ dependencies {
     implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation (rootProject.ext.miscDependencies.laku6Sdk){
+    implementation(rootProject.ext.miscDependencies.laku6Sdk) {
         exclude group: 'com.android.support'
         exclude group: 'com.squareup.retrofit2'
         exclude group: 'com.google.firebase'

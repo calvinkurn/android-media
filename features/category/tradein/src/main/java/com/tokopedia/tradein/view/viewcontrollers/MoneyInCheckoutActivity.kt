@@ -15,10 +15,16 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
 class MoneyInCheckoutActivity : BaseTradeInActivity() {
-    private lateinit var moneyInCheckoutViewModel: MoneyInCheckoutViewModel
+    private lateinit var moneyInCheckoutViewModel : MoneyInCheckoutViewModel
+    companion object {
+        const val MONEY_IN_DEFAULT_ADDRESS = "MONEY_IN_DEFAULT_ADDRESS"
+        const val MONEY_IN_NEW_ADDRESS = "MONEY_IN_NEW_ADDRESS"
+        const val MONEY_IN_REQUEST_CHECKOUT = 8952
+        const val MONEY_IN_ORDER_VALUE = "MONEY_IN_PRICE"
+        const val MONEY_IN_HARDWARE_ID ="HARDWARE_ID"
+    }
 
     override fun initView() {
-        moneyInCheckoutViewModel.getAddress(getMeGQlString(R.raw.gql_kero_get_address))
         moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
         setObservers()
     }

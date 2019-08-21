@@ -28,6 +28,9 @@ import com.tokopedia.unifycomponents.Toaster;
 
 public abstract class BaseViewModelActivity<T extends BaseViewModel> extends BaseSimpleActivity {
 
+    protected boolean isTncShowing = false;
+    protected T bVM;
+
     protected void initView() {
 
     }
@@ -45,10 +48,6 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     abstract protected boolean doNeedReattach();
 
     abstract protected ViewModelProvider.NewInstanceFactory getVMFactory();
-
-    protected boolean isTncShowing = false;
-
-    protected T bVM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +91,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
                 try {
                     Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
                             message,
-                            Snackbar.LENGTH_LONG, getString(R.string.close),(v)->{});
+                            Snackbar.LENGTH_LONG, getString(R.string.close), (v) -> retryOnError());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -104,6 +103,10 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         bVM = ViewModelProviders.of(this, getVMFactory()).get(getViewModelType());
         setViewModel(bVM);
         getLifecycle().addObserver(getLifeCycleObserver(bVM));
+    }
+
+    protected void retryOnError() {
+
     }
 
     protected BaseLifeCycleObserver getLifeCycleObserver(BaseViewModel viewModel) {

@@ -33,6 +33,7 @@ import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
@@ -1009,7 +1010,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private fun goToPinpointActivity(lat: Double?, long: Double?, isShowAutocomplete: Boolean, token: Token?, isPolygon: Boolean,
                                      isMismatchSolved: Boolean, isMismatch: Boolean, saveAddressDataModel: SaveAddressDataModel?) {
         startActivityForResult(context?.let {
-            PinpointMapActivity.newInstance(it, lat, long, isShowAutocomplete, token, isPolygon,
+            val token1 = TokenMapper().reverseTokenModel(token)
+            PinpointMapActivity.newInstance(it, lat, long, isShowAutocomplete, token1, isPolygon,
                     isMismatchSolved, isMismatch, saveAddressDataModel, true)
         }, FINISH_PINPOINT_FLAG)
     }

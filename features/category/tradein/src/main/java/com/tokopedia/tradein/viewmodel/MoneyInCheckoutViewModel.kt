@@ -1,12 +1,12 @@
 package com.tokopedia.tradein.viewmodel
 
+import android.app.Application
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.model.MoneyInCheckoutMutationResponse
 import com.tokopedia.tradein.model.MoneyInCheckoutMutationResponse.ResponseData.CheckoutGeneral.CheckoutData
 import com.tokopedia.tradein.model.MoneyInCourierResponse
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
-import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption
@@ -19,7 +19,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
 
-class MoneyInCheckoutViewModel : BaseViewModel(), CoroutineScope {
+class MoneyInCheckoutViewModel(application : Application) : BaseViewModel(application), CoroutineScope {
 
     private val addressLiveData = MutableLiveData<Result<KeroGetAddress>>()
     private val pickupScheduleOptionLiveData = MutableLiveData<Result<GetPickupScheduleOption>>()
@@ -29,17 +29,6 @@ class MoneyInCheckoutViewModel : BaseViewModel(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    fun getAddress(query: String) {
-        launchCatchError(block = {
-            val request = HashMap<String, String>()
-
-            val response = repository?.getGQLData(query, MoneyInKeroGetAddressResponse.ResponseData::class.java, request) as MoneyInKeroGetAddressResponse.ResponseData
-            addressLiveData.value = Success(response.keroGetAddress)
-        }, onError = {
-            it.printStackTrace()
-            warningMessage.value = it.localizedMessage
-        })
-    }
 
     fun getPickupScheduleOption(query: String) {
         launchCatchError(block = {
