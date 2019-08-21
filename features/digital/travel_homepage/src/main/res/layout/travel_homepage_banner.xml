@@ -46,6 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_30"
                 android:layout_gravity="bottom"
+                android:background="@drawable/background_banner_image_mask"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </FrameLayout>
@@ -73,7 +74,7 @@
             android:layout_height="@dimen/dp_121"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/banner_margin_top"
+            android:layout_marginTop="@dimen/dp_32"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
