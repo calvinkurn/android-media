@@ -9,4 +9,10 @@
     <color name="bg_label_grey">#f3f4f5</color>
     <color name="tp_history_item_grey_color">#7031353b</color>
     <color name="clr_31353b">#31353b</color>
+    <color name="bg_button_orange_border">#fa591d</color>
+    <color name="clr_5131353b">#5131353b</color>
+    <color name="clr_e5e7e9">#e5e7e9</color>
+    <color name="clr_fa591d">#fa591d</color>
+    <color name="clr_6C727C">#6C727C</color>
+    <color name="clr_7031353b">#7031353b</color>
 </resources>

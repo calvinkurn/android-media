@@ -376,7 +376,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
     }
 
     @Override
-    public void startSendGift(int id, String title, String pointStr) {
+    public void startSendGift(int id, String title, String pointStr, String banner) {
         Map<String, Object> variables = new HashMap<>();
         variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_ID, id);
         variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, 1);
@@ -404,7 +404,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                 if (data != null
                         && data.getPreValidateRedeem() != null
                         && data.getPreValidateRedeem().getIsValid() == 1) {
-                    getView().gotoSendGiftPage(id, title, pointStr);
+                    getView().gotoSendGiftPage(id, title, pointStr,banner);
                 } else {
                     //show error
                     List<GraphqlError> errors = response.getError(PreValidateRedeemBase.class);

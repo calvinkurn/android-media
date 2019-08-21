@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -17,6 +20,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -28,6 +33,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -42,6 +48,7 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponCatalogPresenter;
+import com.tokopedia.tokopoints.view.presenter.SendGiftPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.ImageUtil;
@@ -51,6 +58,7 @@ import com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.Inflater;
 
 import javax.inject.Inject;
 
@@ -661,7 +669,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             layoutParams.rightMargin = getResources().getDimensionPixelOffset(R.dimen.tp_margin_medium);
             btnAction1.setVisibility(View.VISIBLE);
             btnAction1.setText(R.string.tp_label_send);
-            btnAction1.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr()));
+            btnAction1.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(),data.getImageUrlMobile()));
         } else {
             btnAction1.setVisibility(View.GONE);
         }
@@ -921,12 +929,17 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     }
 
     @Override
-    public void gotoSendGiftPage(int id, String title, String pointStr) {
+    public void gotoSendGiftPage(int id, String title, String pointStr,String banner) {
         Bundle bundle = new Bundle();
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
-        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
+        bundle.putString(CommonConstant.EXTRA_COUPON_BANNER, banner);
+
+        SendGiftFragment sendGiftFragment = new SendGiftFragment();
+        sendGiftFragment.setArguments(bundle);
+        sendGiftFragment.show(getChildFragmentManager(),"sendfragmnet");
+
     }
 
     private void addCountDownTimer(CouponValueEntity item, TextView label, TextView btnContinue) {

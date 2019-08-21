@@ -30,6 +30,7 @@ public interface CommonConstant {
     String EXTRA_COUPON_ID = "extra_coupon_id";
     String EXTRA_PIN_INFO = "extra_pin_info";
     String EXTRA_COUPON_TITLE = "extra_coupon_title";
+    String EXTRA_COUPON_BANNER = "extra_coupon_banner";
     String EXTRA_COUPON_POINT = "extra_coupon_point";
     String EXTRA_SLUG = "slug";
     String CLIPBOARD_COUPON_CODE = "tokopedia_tokopoints_coupon";

@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.contract;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.widget.ImageView;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -55,7 +56,7 @@ public interface CouponCatalogContract {
 
         void onPreValidateError(String title, String message);
 
-        void gotoSendGiftPage(int id, String title, String pointStr);
+        void gotoSendGiftPage(int id, String title, String pointStr, String banner);
 
         void onSwipeResponse(CouponSwipeUpdate data, String qrCodeLink, String barCodeLink);
 
@@ -77,6 +78,6 @@ public interface CouponCatalogContract {
 
         void swipeMyCoupon(String partnerCode, String pin);
 
-        void startSendGift(int id, String title, String pointStr);
+        void startSendGift(int id, String title, String pointStr,String banner);
     }
 }

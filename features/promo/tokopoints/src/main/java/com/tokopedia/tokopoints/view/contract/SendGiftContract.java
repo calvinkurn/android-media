@@ -28,7 +28,7 @@ public interface SendGiftContract {
 
         Context getActivityContext();
 
-        void showPopup(String title, String message);
+        void showPopup(String title, String message, int success);
     }
 
     interface Presenter extends CustomerPresenter<View> {

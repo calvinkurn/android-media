@@ -37,6 +37,7 @@ dependencies {
     implementation project(rootProject.ext.features.tokopointsNotification)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.unifyDependencies.principles
 
     implementation rootProject.ext.networkDependencies.glide
 

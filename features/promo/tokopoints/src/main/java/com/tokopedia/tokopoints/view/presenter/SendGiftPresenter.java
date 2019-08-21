@@ -77,11 +77,13 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
             public void onNext(GraphqlResponse response) {
                 getView().hideLoadingSendNow();
                 RedeemCouponBaseEntity redeemCouponBaseEntity = response.getData(RedeemCouponBaseEntity.class);
+                int success=0;
                 String title;
                 String message;
                 if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem() != null) {
                     title = getView().getAppContext().getString(R.string.tp_send_gift_success_title);
                     message = getView().getAppContext().getString(R.string.tp_send_gift_success_message);
+                    success=1;
                 } else {
 
                     //show error
@@ -89,6 +91,7 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
 
                     title = getView().getAppContext().getString(R.string.tp_send_gift_failed_title);
                     message = getView().getAppContext().getString(R.string.tp_send_gift_failed_message);
+                    success=0;
 
                     if (errors != null && errors.size() > 0) {
                         String[] mesList = errors.get(0).getMessage().split("|");
@@ -101,7 +104,7 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
                     }
                 }
 
-                getView().showPopup(title, message);
+                getView().showPopup(title, message,success);
             }
         });
     }

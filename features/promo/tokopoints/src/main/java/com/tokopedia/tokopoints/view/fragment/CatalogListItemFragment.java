@@ -536,8 +536,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
-        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
-    }
+        SendGiftFragment sendGiftFragment = new SendGiftFragment();
+        sendGiftFragment.setArguments(bundle);
+        sendGiftFragment.show(getChildFragmentManager(),"sendfragmnet");    }
 
     @Override
     public void populateCatalog(int categoryId, int subCategoryId, int pointRange, boolean showLoader) {
