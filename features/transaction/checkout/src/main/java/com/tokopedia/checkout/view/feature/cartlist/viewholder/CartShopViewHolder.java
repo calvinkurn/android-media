@@ -265,6 +265,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 tickerError.setVisibility(View.VISIBLE);
                 tickerError.requestLayout();
                 layoutError.setVisibility(View.VISIBLE);
+            } else {
+                layoutError.setVisibility(View.GONE);
             }
             renderPromoMerchant(data, false);
         } else {
