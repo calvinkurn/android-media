@@ -73,6 +73,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -455,14 +456,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        ToasterNormal.make(getView(),
-                message.replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.bom_check_cart), v -> {
-                    orderListAnalytics.sendActionClickButtonSeeOnAtcSuccessToasterEvent();
-                    if (getActivity() != null && getActivity().getApplication() != null) {
-                        getActivity().startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
-                                .getCartIntent(getActivity()));
-                    }
-        }).show();
+        Toaster.Companion.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
     }
 
     @Override
@@ -516,7 +510,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgain(getAppContext().getResources());
+                        presenter.onBuyAgainAllItems();
                     }
                 });
             } else {
