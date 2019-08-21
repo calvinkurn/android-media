@@ -49,7 +49,7 @@ class TetraDebugger(private val context: Context) : CoroutineScope {
             if (dataSource.isWhitelisted()) {
                 val service = TetraService(context).makeRetrofitService()
                 val request = TetraService.parse(mapper.parseDebugRequest(dataSource.getUserId(), data))
-                val response = service.init(request).await()
+                val response = service.send(request).await()
                 mapper.parseDebugResponse(response.body())
             }
         }, {
