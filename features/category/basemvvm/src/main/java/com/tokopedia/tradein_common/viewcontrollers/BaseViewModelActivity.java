@@ -47,7 +47,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     abstract protected boolean doNeedReattach();
 
-    abstract protected ViewModelProvider.NewInstanceFactory getVMFactory();
+    abstract protected ViewModelProvider.AndroidViewModelFactory getVMFactory();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

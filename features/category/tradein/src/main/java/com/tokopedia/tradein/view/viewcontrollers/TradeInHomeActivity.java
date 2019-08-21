@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.HomeResult;
@@ -178,6 +179,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                     case DIAGNOSED_VALID:
                         Intent finalPriceIntent = new Intent(this, FinalPriceActivity.class);
                         finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), tradeInHomeViewModel.getTradeInParams());
+                        finalPriceIntent.putExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE,TRADEIN_TYPE);
                         navigateToActivityRequest(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
                         break;
                     case NOT_DIAGNOSED:

@@ -46,7 +46,7 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
     }
 
     @Override
-    protected ViewModelProvider.NewInstanceFactory getVMFactory() {
-        return TradeInVMFactory.getInstance(this.getApplication());
+    protected ViewModelProvider.AndroidViewModelFactory getVMFactory() {
+        return TradeInVMFactory.getInstance(this.getApplication(), getIntent());
     }
 }
