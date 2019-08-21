@@ -52,9 +52,6 @@ class AddToCartDoneBottomSheet :
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
         const val KEY_ADDED_PRODUCT_DATA_MODEL = "addedProductDataModel"
-        const val KEY_SUCCESS_MESSAGE_ATC = "successMessageAtc"
-
-
     }
 
     @Inject
@@ -65,10 +62,9 @@ class AddToCartDoneBottomSheet :
     private lateinit var addToCartDoneViewModel: AddToCartDoneViewModel
     private lateinit var atcDoneAdapter: AddToCartDoneAdapter
     private var lastAdapterPosition = -1
-    lateinit var recyclerView: RecyclerView
-    lateinit var containerLayout: CoordinatorLayout
-    var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
-    var successMessageAtc = ""
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var containerLayout: CoordinatorLayout
+    private var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
 
     override fun getLayoutResourceId(): Int {
         return R.layout.add_to_cart_done_bottomsheet
@@ -149,17 +145,15 @@ class AddToCartDoneBottomSheet :
         dialog?.run {
             val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
             val displaymetrics = DisplayMetrics()
-            parent.measure(0, 0)
             activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
             val screenHeight = displaymetrics.heightPixels
-            val contentHeight = parent.measuredHeight
-            val finalHeight = if (contentHeight >= screenHeight)
-                (screenHeight * 0.9f).toInt()
-            else {
-                contentHeight
-            }
+            val maxHeight = (screenHeight * 0.9f).toInt()
+            parent.measure(
+                    View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.AT_MOST)
+            )
             val params = parent.layoutParams
-            params.height = finalHeight
+            params.height = parent.measuredHeight
             parent.layoutParams = params
         }
     }
@@ -167,7 +161,6 @@ class AddToCartDoneBottomSheet :
     private fun getArgumentsData() {
         arguments?.let {
             addedProductDataModel = it.getParcelable(KEY_ADDED_PRODUCT_DATA_MODEL)
-            successMessageAtc = it.getString(KEY_SUCCESS_MESSAGE_ATC, "")
         }
     }
 
@@ -249,6 +242,7 @@ class AddToCartDoneBottomSheet :
                 item.header,
                 trackingQueue
         )
+        recyclerView.scrollTo(0, 0)
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {

@@ -103,7 +103,6 @@ import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_ADDED_PRODUCT_DATA_MODEL
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_SUCCESS_MESSAGE_ATC
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -1173,7 +1172,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             )
             val bundleData = Bundle()
             bundleData.putParcelable(KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
-            bundleData.putString(KEY_SUCCESS_MESSAGE_ATC, successMessage)
             addToCartDoneBottomSheet.arguments = bundleData
             addToCartDoneBottomSheet.show(
                     fragmentManager, "TAG"
