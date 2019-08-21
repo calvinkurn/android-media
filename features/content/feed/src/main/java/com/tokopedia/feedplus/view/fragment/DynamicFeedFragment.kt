@@ -170,18 +170,18 @@ class DynamicFeedFragment:
     }
 
     override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
-        if (isLiked) {
-            presenter.unlikeKol(id, positionInFeed, columnNumber)
-        } else {
-            presenter.likeKol(id, positionInFeed, columnNumber)
-        }
+//        if (isLiked) {
+//            presenter.unlikeKol(id, positionInFeed, columnNumber)
+//        } else {
+//            presenter.likeKol(id, positionInFeed, columnNumber)
+//        }
     }
 
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
-        val intent = KolCommentActivity.getCallingIntent(
-                context, id, positionInFeed
-        )
-        startActivityForResult(intent, KOL_COMMENT_CODE)
+//        val intent = KolCommentActivity.getCallingIntent(
+//                context, id, positionInFeed
+//        )
+//        startActivityForResult(intent, KOL_COMMENT_CODE)
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
