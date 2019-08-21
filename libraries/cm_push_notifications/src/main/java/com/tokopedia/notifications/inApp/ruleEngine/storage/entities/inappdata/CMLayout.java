@@ -46,7 +46,7 @@ public class CMLayout {
 
     @SerializedName("inAppButtons")
     @Expose
-    public ArrayList<CMButton> button;// = new ArrayList<>();
+    public ArrayList<CMButton> button;
 
     public CMLayout() {
 
