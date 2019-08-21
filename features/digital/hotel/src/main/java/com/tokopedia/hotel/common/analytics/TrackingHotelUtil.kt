@@ -230,8 +230,7 @@ class TrackingHotelUtil {
                 DataLayer.mapOf(
                         NAME_LABEL, room.roomInfo.name,
                         ID_LABEL, roomId,
-                        PRICE_LABEL, price,
-                        POSITION_LABEL, position
+                        PRICE_LABEL, price
                 )
         )
         )
