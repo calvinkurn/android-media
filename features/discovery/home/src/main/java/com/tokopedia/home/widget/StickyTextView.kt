@@ -72,14 +72,15 @@ class StickyTextView : FrameLayout {
     private fun initAttributeSet(attributeSet: AttributeSet) {
         val styleable = context!!.obtainStyledAttributes(attributeSet, R.styleable.StickyTextView, 0, 0)
         try {
-            val text = styleable.getString(R.styleable.StickyTextView_sticky_text)
+            var text = styleable.getString(R.styleable.StickyTextView_sticky_text)
             val textHighlight = styleable.getString(R.styleable.StickyTextView_sticky_text_highlight)
             val highlightColor = styleable.getColor(R.styleable.StickyTextView_sticky_highlight_color, -1)
 
             spannable = SpannableString("")
             if (text != null) {
                 if (textHighlight != null) {
-                    spannable = SpannableString("$text $textHighlight")
+                    text += " $textHighlight"
+                    spannable = SpannableString(text)
                     if (highlightColor != -1) {
                         spannable!!.setSpan(ForegroundColorSpan(highlightColor), text.length - textHighlight.length, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
