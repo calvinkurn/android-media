@@ -19,8 +19,7 @@ import com.tokopedia.search.utils.State
 import com.tokopedia.search.utils.State.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class SearchShopViewModel(
         dispatcher: CoroutineDispatcher,
@@ -69,9 +68,9 @@ class SearchShopViewModel(
     }
 
     fun searchShop() {
-        launchCatchError(coroutineContext, {
+        launchCatchError(block = {
             trySearchShop()
-        }, {
+        }, onError = {
             catchSearchShopError(it)
         })
     }
@@ -123,6 +122,7 @@ class SearchShopViewModel(
         updateIsHasNextPage(searchShopModel)
 
         val visitableList = createSearchShopListWithHeader(searchShopModel)
+
         updateSearchShopLiveDataStateToSuccess(visitableList)
     }
 
@@ -138,6 +138,8 @@ class SearchShopViewModel(
 
         val shopViewModelList = createShopItemViewModelAsVisitableList(searchShopModel)
         visitableList.addAll(shopViewModelList)
+
+        addLoadingMoreModel(visitableList)
 
         return visitableList
     }
@@ -171,6 +173,12 @@ class SearchShopViewModel(
         }
     }
 
+    private fun addLoadingMoreModel(visitableList: MutableList<Visitable<*>>) {
+        if (isHasNextPage) {
+            visitableList.add(loadingMoreModel)
+        }
+    }
+
     private fun updateSearchShopLiveDataStateToSuccess(visitableList: List<Visitable<*>>) {
         val searchShopDataList = getSearchShopLiveDataMutableList()
         searchShopDataList.remove(loadingMoreModel)
@@ -197,31 +205,19 @@ class SearchShopViewModel(
     }
 
     fun searchMoreShop() {
-        launch {
-            try {
-                trySearchMoreShop()
-            }
-            catch(e: Throwable) {
-                catchSearchShopError(e)
-            }
-        }
+        launchCatchError(block = {
+            trySearchMoreShop()
+        }, onError = {
+            catchSearchShopError(it)
+        })
     }
 
     private suspend fun trySearchMoreShop() {
         if(!isHasNextPage) return
 
-        addLoadingMoreToSearchShopLiveData()
-
         val searchShopModel = requestSearchShopModel(getTotalShopItemCount(), searchShopLoadMoreUseCase)
 
         searchShopLoadMoreSuccess(searchShopModel)
-    }
-
-    private fun addLoadingMoreToSearchShopLiveData() {
-        val searchShopDataList = getSearchShopLiveDataMutableList()
-        searchShopDataList.add(loadingMoreModel)
-
-        searchShopLiveData.postValue(Success(searchShopDataList))
     }
 
     private fun getTotalShopItemCount(): Int {
@@ -243,6 +239,8 @@ class SearchShopViewModel(
         val shopViewModelList = createShopItemViewModelAsVisitableList(searchShopModel)
         visitableList.addAll(shopViewModelList)
 
+        addLoadingMoreModel(visitableList)
+
         return visitableList
     }
 
@@ -252,6 +250,10 @@ class SearchShopViewModel(
 
     fun getSearchShopLiveData(): LiveData<State<List<Visitable<*>>>> {
         return searchShopLiveData
+    }
+
+    fun getIsHasNextPage(): Boolean {
+        return isHasNextPage
     }
 
     override fun onCleared() {

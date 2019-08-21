@@ -2,20 +2,21 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import com.tokopedia.search.result.domain.usecase.TestErrorSearchUseCase
 import com.tokopedia.search.result.domain.usecase.TestSearchUseCase
 import com.tokopedia.search.result.presentation.mapper.ShopHeaderViewModelMapper
+import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapper
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.State
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
@@ -31,7 +32,7 @@ class SearchShopViewModelMockKTest {
 
         `when execute search shop`()
 
-        `then assert search shop state is success with data contains search shop header and shop items`()
+        `then assert search shop success`()
     }
 
     @Test
@@ -49,7 +50,7 @@ class SearchShopViewModelMockKTest {
 
         `when execute search shop, then search more shop`()
 
-        `then assert search shop state is success with data from both search shop and search more shop`()
+        `then assert search shop and search more shop is success`()
     }
 
     @Test
@@ -91,48 +92,55 @@ class SearchShopViewModelMockKTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private abstract class MockShopHeaderViewModelMapper : Mapper<SearchShopModel, ShopHeaderViewModel>
-    private abstract class MockShopViewModelMapper : Mapper<SearchShopModel, ShopViewModel>
+    private val pagingWithNextPage = SearchShopModel.AceSearchShop.Paging(uriNext = "Some random string indicating has next page")
+    private val pagingWithoutNextPage = SearchShopModel.AceSearchShop.Paging(uriNext = "")
+
+    private val shopItemList = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "1"))
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "2"))
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "3"))
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "4"))
+    }
+
+    private val moreShopItemList = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "5"))
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "6"))
+    }
 
     private val aceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
-            paging = SearchShopModel.AceSearchShop.Paging(uriNext = "Some random string indicating has next page")
+            paging = pagingWithNextPage,
+            shopList = shopItemList
     )
+
     private val aceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
-            paging = SearchShopModel.AceSearchShop.Paging(uriNext = "")
+            paging = pagingWithoutNextPage,
+            shopList = shopItemList
     )
+
+    private val moreAceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
+            paging = pagingWithNextPage,
+            shopList = moreShopItemList
+    )
+
+    private val moreAceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
+            paging = pagingWithoutNextPage,
+            shopList = moreShopItemList
+    )
+
     private val searchShopModel = SearchShopModel(aceSearchShopWithNextPage)
-    private val searchMoreShopModel = SearchShopModel(aceSearchShopWithNextPage)
     private val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage)
-    private val searchMoreShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage)
+    private val searchMoreShopModel = SearchShopModel(moreAceSearchShopWithNextPage)
+    private val searchMoreShopModelWithoutNextPage = SearchShopModel(moreAceSearchShopWithoutNextPage)
 
-    private val shopHeaderViewModel = ShopHeaderViewModel()
-    private val shopItemViewModelList = mutableListOf<ShopViewModel.ShopItem>().also {
-        it.add(ShopViewModel.ShopItem())
-        it.add(ShopViewModel.ShopItem())
-        it.add(ShopViewModel.ShopItem())
-        it.add(ShopViewModel.ShopItem())
-    }
-
-    private val moreShopItemViewModelList = mutableListOf<ShopViewModel.ShopItem>().also {
-        it.add(ShopViewModel.ShopItem())
-        it.add(ShopViewModel.ShopItem())
-    }
-
-    private val shopViewModel = ShopViewModel(
-            shopItemList = shopItemViewModelList
-    )
-
-    private val moreShopViewModel = ShopViewModel(
-            shopItemList = moreShopItemViewModelList
-    )
+    private val searchShopUseCase = mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
+    private val searchMoreShopUseCase = mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
 
     private val searchShopParameter = mapOf(
             SearchApiConst.Q to "samsung"
     )
 
-    private val shopHeaderViewModelMapper = mockk<ShopHeaderViewModelMapper>()
-
-    private val shopViewModelMapper = mockk<MockShopViewModelMapper>()
+    private val shopHeaderViewModelMapper = ShopHeaderViewModelMapper()
+    private val shopViewModelMapper = ShopViewModelMapper()
 
     private val userSession = mockk<UserSessionInterface>().also {
         every { it.isLoggedIn }.returns(true)
@@ -146,14 +154,13 @@ class SearchShopViewModelMockKTest {
     private lateinit var searchShopViewModel: SearchShopViewModel
 
     private fun `given search shop API call will be successful and return search shop data`() {
-        every { shopHeaderViewModelMapper.convert(searchShopModel) }.returns(shopHeaderViewModel)
-        every { shopViewModelMapper.convert(searchShopModel) }.returns(shopViewModel)
+        coEvery { searchShopUseCase.executeOnBackground() }.returns(searchShopModel)
 
         searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
-                TestSearchUseCase(searchShopModel),
-                TestSearchUseCase(searchMoreShopModel),
+                searchShopUseCase,
+                searchMoreShopUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -165,9 +172,11 @@ class SearchShopViewModelMockKTest {
         searchShopViewModel.searchShop()
     }
 
-    private fun `then assert search shop state is success with data contains search shop header and shop items`() {
+    private fun `then assert search shop success`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchShopData(searchShopState)
+
+        assertUseCaseExecutionCount(searchShopUseCase, 1)
     }
 
     private fun assertSuccessSearchShopData(state: State<List<Visitable<*>>>?) {
@@ -175,7 +184,8 @@ class SearchShopViewModelMockKTest {
             assertStateIsSuccess(state)
             assertDataIsNotEmpty(state.data)
             assertShopHeaderAtFirstIndexOfData(state.data!!)
-            assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
+            assertLoadingMoreAtLastIndexOfData(state.data!!)
+            assertShopItemBetweenFirstAndLastIndexOfData(state.data!!)
         }
         else {
             assert(false) {
@@ -197,13 +207,19 @@ class SearchShopViewModelMockKTest {
     }
 
     private fun assertShopHeaderAtFirstIndexOfData(data: List<Visitable<*>>) {
-        assert(data[0] is ShopHeaderViewModel) {
-            "First element ${data[0].javaClass.kotlin.qualifiedName} is not of type ShopHeaderViewModel"
+        assert(data.first() is ShopHeaderViewModel) {
+            "First element ${data.first().javaClass.kotlin.qualifiedName} is not of type ShopHeaderViewModel"
         }
     }
 
-    private fun assertShopItemAtSecondIndexAndAboveOfData(data: List<Visitable<*>>) {
-        for(i in 1 until data.size) {
+    private fun assertLoadingMoreAtLastIndexOfData(data: List<Visitable<*>>) {
+        assert(data.last() is LoadingMoreModel) {
+            "Last element ${data.last().javaClass.kotlin.qualifiedName} is not of type LoadingMoreModel"
+        }
+    }
+
+    private fun assertShopItemBetweenFirstAndLastIndexOfData(data: List<Visitable<*>>) {
+        for(i in 1 until data.size - 1) {
             assertShopItemType(i, data[i])
             assertShopItemPosition(i, data[i] as ShopViewModel.ShopItem)
         }
@@ -221,13 +237,19 @@ class SearchShopViewModelMockKTest {
         }
     }
 
+    private fun assertUseCaseExecutionCount(useCase: SearchUseCase<SearchShopModel>, count: Int) {
+        coVerify(exactly = count) { useCase.executeOnBackground() }
+    }
+
     private fun `given search shop API call will fail`() {
         val exception = Exception("Mock exception for testing error")
+        coEvery { searchShopUseCase.executeOnBackground() }.throws(exception)
+
         searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
-                TestErrorSearchUseCase(exception),
-                TestSearchUseCase(searchMoreShopModel),
+                searchShopUseCase,
+                searchMoreShopUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -238,6 +260,8 @@ class SearchShopViewModelMockKTest {
     private fun `then assert search shop state is error with no data`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertErrorSearchShopData(searchShopState)
+
+        assertUseCaseExecutionCount(searchShopUseCase, 1)
     }
 
     private fun assertErrorSearchShopData(state: State<List<Visitable<*>>>?) {
@@ -265,15 +289,14 @@ class SearchShopViewModelMockKTest {
     }
 
     private fun `given search shop and search more shop API call will be successful and return search shop data`() {
-        every { shopHeaderViewModelMapper.convert(searchShopModel) }.returns(shopHeaderViewModel)
-        every { shopViewModelMapper.convert(searchShopModel) }.returns(shopViewModel)
-        every { shopViewModelMapper.convert(searchMoreShopModel) }.returns(moreShopViewModel)
+        coEvery { searchShopUseCase.executeOnBackground() }.returns(searchShopModel)
+        coEvery { searchMoreShopUseCase.executeOnBackground() }.returns(searchMoreShopModel)
 
         searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
-                TestSearchUseCase(searchShopModel),
-                TestSearchUseCase(searchMoreShopModel),
+                searchShopUseCase,
+                searchMoreShopUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -286,9 +309,12 @@ class SearchShopViewModelMockKTest {
         searchShopViewModel.searchMoreShop()
     }
 
-    private fun `then assert search shop state is success with data from both search shop and search more shop`() {
+    private fun `then assert search shop and search more shop is success`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchMoreShopData(searchShopState)
+
+        assertUseCaseExecutionCount(searchShopUseCase, 1)
+        assertUseCaseExecutionCount(searchMoreShopUseCase, 1)
     }
 
     private fun assertSuccessSearchMoreShopData(state: State<List<Visitable<*>>>?) {
@@ -296,8 +322,9 @@ class SearchShopViewModelMockKTest {
             assertStateIsSuccess(state)
             assertDataIsNotEmpty(state.data)
             assertShopHeaderAtFirstIndexOfData(state.data!!)
-            assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
-            assertShopItemSize(state.data!!, shopViewModel.shopItemList.size + moreShopViewModel.shopItemList.size)
+            assertLoadingMoreAtLastIndexOfData(state.data!!)
+            assertShopItemBetweenFirstAndLastIndexOfData(state.data!!)
+            assertShopItemSize(state.data!!, shopItemList.size + moreShopItemList.size)
         }
         else {
             assert(false) {
@@ -307,15 +334,15 @@ class SearchShopViewModelMockKTest {
     }
 
     private fun `given search shop API call will be successful, but search more shop API call will fail`() {
-        every { shopHeaderViewModelMapper.convert(searchShopModel) }.returns(shopHeaderViewModel)
-        every { shopViewModelMapper.convert(searchShopModel) }.returns(shopViewModel)
-
         val exception = Exception("Mock exception for testing error")
+        coEvery { searchShopUseCase.executeOnBackground() }.returns(searchShopModel)
+        coEvery { searchMoreShopUseCase.executeOnBackground() }.throws(exception)
+
         searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
-                TestSearchUseCase(searchShopModel),
-                TestErrorSearchUseCase(exception),
+                searchShopUseCase,
+                searchMoreShopUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -326,6 +353,9 @@ class SearchShopViewModelMockKTest {
     private fun `then assert search shop state is error, but still contains data from search shop`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertErrorSearchMoreShopData(searchShopState)
+
+        assertUseCaseExecutionCount(searchShopUseCase, 1)
+        assertUseCaseExecutionCount(searchMoreShopUseCase, 1)
     }
 
     private fun assertErrorSearchMoreShopData(state: State<List<Visitable<*>>>?) {
@@ -333,13 +363,20 @@ class SearchShopViewModelMockKTest {
             assertStateIsError(state)
             assertDataIsNotEmpty(state.data)
             assertShopHeaderAtFirstIndexOfData(state.data!!)
-            assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
-            assertShopItemSize(state.data!!, shopItemViewModelList.size)
+            assertShopItemFromSecondToLastIndexOfData(state.data!!)
+            assertShopItemSize(state.data!!, shopItemList.size)
         }
         else {
             assert (false) {
                 "State is null"
             }
+        }
+    }
+
+    private fun assertShopItemFromSecondToLastIndexOfData(data: List<Visitable<*>>) {
+        for(i in 1 until data.size) {
+            assertShopItemType(i, data[i])
+            assertShopItemPosition(i, data[i] as ShopViewModel.ShopItem)
         }
     }
 
@@ -352,19 +389,13 @@ class SearchShopViewModelMockKTest {
     }
 
     private fun `given search shop API call will return different values between first and second call`() {
-        every { shopHeaderViewModelMapper.convert(searchShopModel) }
-                .returns(shopHeaderViewModel)
-                .andThen(ShopHeaderViewModel())
-
-        every { shopViewModelMapper.convert(searchShopModel) }
-                .returns(shopViewModel)
-                .andThen(ShopViewModel())
+        coEvery { searchShopUseCase.executeOnBackground() }.returns(searchShopModel)
 
         searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
-                TestSearchUseCase(searchShopModel),
-                TestSearchUseCase(searchMoreShopModel),
+                searchShopUseCase,
+                searchMoreShopUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -380,6 +411,7 @@ class SearchShopViewModelMockKTest {
     private fun `then assert search shop state is success but only have data from the first search shop API call`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchShopDataOnlyOnce(searchShopState)
+        assertUseCaseExecutionCount(searchShopUseCase, 1)
     }
 
     private fun assertSuccessSearchShopDataOnlyOnce(state: State<List<Visitable<*>>>?) {
@@ -387,8 +419,9 @@ class SearchShopViewModelMockKTest {
             assertStateIsSuccess(state)
             assertDataIsNotEmpty(state.data)
             assertShopHeaderAtFirstIndexOfData(state.data!!)
-            assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
-            assertShopItemSize(state.data!!, shopItemViewModelList.size)
+            assertLoadingMoreAtLastIndexOfData(state.data!!)
+            assertShopItemBetweenFirstAndLastIndexOfData(state.data!!)
+            assertShopItemSize(state.data!!, shopItemList.size)
         }
         else {
             assert(false) {
@@ -398,18 +431,13 @@ class SearchShopViewModelMockKTest {
     }
 
     private fun `given search shop API call will return data with has next page is false`() {
-        every { shopHeaderViewModelMapper.convert(searchShopModelWithoutNextPage) }
-                .returns(shopHeaderViewModel)
-        every { shopViewModelMapper.convert(searchShopModelWithoutNextPage) }
-                .returns(shopViewModel)
-        every { shopViewModelMapper.convert(searchMoreShopModel) }
-                .returns(moreShopViewModel)
+        coEvery { searchShopUseCase.executeOnBackground() }.returns(searchShopModelWithoutNextPage)
 
         searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
-                TestSearchUseCase(searchShopModelWithoutNextPage),
-                TestSearchUseCase(searchMoreShopModel),
+                searchShopUseCase,
+                searchMoreShopUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -420,6 +448,9 @@ class SearchShopViewModelMockKTest {
     private fun `then assert search shop state is success, but only have search shop data`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchShopWithoutNextPage(searchShopState)
+
+        assertUseCaseExecutionCount(searchShopUseCase, 1)
+        assertUseCaseExecutionCount(searchMoreShopUseCase, 0)
     }
 
     private fun assertSuccessSearchShopWithoutNextPage(state: State<List<Visitable<*>>>?) {
@@ -427,8 +458,8 @@ class SearchShopViewModelMockKTest {
             assertStateIsSuccess(state)
             assertDataIsNotEmpty(state.data)
             assertShopHeaderAtFirstIndexOfData(state.data!!)
-            assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
-            assertShopItemSize(state.data!!, shopItemViewModelList.size)
+            assertShopItemFromSecondToLastIndexOfData(state.data!!)
+            assertShopItemSize(state.data!!, shopItemList.size)
         }
         else {
             assert (false) {
@@ -438,19 +469,13 @@ class SearchShopViewModelMockKTest {
     }
 
     private fun `given search more shop API will return data with has next page is false`() {
-        every { shopHeaderViewModelMapper.convert(searchShopModel) }
-                .returns(shopHeaderViewModel)
-        every { shopViewModelMapper.convert(searchShopModel) }
-                .returns(shopViewModel)
-        every { shopViewModelMapper.convert(searchMoreShopModelWithoutNextPage) }
-                .returns(moreShopViewModel)
-                .andThen(ShopViewModel(shopItemList = moreShopItemViewModelList.map { it.copy() }.toList()))
-
+        coEvery { searchShopUseCase.executeOnBackground() }.returns(searchShopModel)
+        coEvery { searchMoreShopUseCase.executeOnBackground() }.returns(searchMoreShopModelWithoutNextPage)
         searchShopViewModel = SearchShopViewModel(
                 Dispatchers.Unconfined,
                 searchShopParameter,
-                TestSearchUseCase(searchShopModel),
-                TestSearchUseCase(searchMoreShopModelWithoutNextPage),
+                searchShopUseCase,
+                searchMoreShopUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 userSession,
@@ -471,13 +496,13 @@ class SearchShopViewModelMockKTest {
 
     private fun assertSuccessSearchMoreShopWithoutNextPage(state: State<List<Visitable<*>>>?) {
         if (state != null) {
-            val expectedShopItemCount = shopItemViewModelList.size + moreShopItemViewModelList.size
+//            val expectedShopItemCount = shopItemViewModelList.size + moreShopItemViewModelList.size
 
             assertStateIsSuccess(state)
             assertDataIsNotEmpty(state.data)
             assertShopHeaderAtFirstIndexOfData(state.data!!)
-            assertShopItemAtSecondIndexAndAboveOfData(state.data!!)
-            assertShopItemSize(state.data!!, expectedShopItemCount)
+            assertShopItemBetweenFirstAndLastIndexOfData(state.data!!)
+            assertShopItemSize(state.data!!, 1)
         }
         else {
             assert (false) {

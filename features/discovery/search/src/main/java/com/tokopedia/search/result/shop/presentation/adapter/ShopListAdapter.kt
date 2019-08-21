@@ -5,7 +5,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.diffutil.ShopListDiffUtilCallback
 import java.util.ArrayList
@@ -24,6 +26,11 @@ open class ShopListAdapter(
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        val data = list[position] as Visitable<AdapterTypeFactory>
+        return data.type(shopListTypeFactory as AdapterTypeFactory)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {

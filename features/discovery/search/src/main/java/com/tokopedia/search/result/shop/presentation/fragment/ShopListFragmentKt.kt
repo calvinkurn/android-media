@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,6 +61,8 @@ class ShopListFragmentKt:
         initViewModel()
         initViews()
         observeViewModelData()
+
+        searchShop()
     }
 
     private fun initViewModel() {
@@ -90,7 +93,10 @@ class ShopListFragmentKt:
     private fun initLoadMoreListener() {
         gridLayoutLoadMoreTriggerListener = object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                Log.d("SearchShopFragment", "Load More is called. page: $page, total items: $totalItemsCount")
+
                 if (userVisibleHint) {
+                    Log.d("SearchShopFragment", "search more shop is called")
                     searchMoreShop()
                 }
             }
@@ -161,9 +167,13 @@ class ShopListFragmentKt:
                 showRefreshLayout()
             }
             is State.Success -> {
+                hideRefreshLayout()
                 shopListAdapter?.updateList(searchShopLiveData.data ?: listOf())
+                gridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
+                gridLayoutLoadMoreTriggerListener?.setHasNextPage(searchShopViewModel?.getIsHasNextPage() ?: false)
             }
             is State.Error -> {
+                hideRefreshLayout()
                 val retryClickedListener = NetworkErrorHelper.RetryClickedListener { this.searchMoreShop() }
                 NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
             }
@@ -172,6 +182,10 @@ class ShopListFragmentKt:
 
     private fun showRefreshLayout() {
         refreshLayout?.isRefreshing = true
+    }
+
+    private fun hideRefreshLayout() {
+        refreshLayout?.isRefreshing = false
     }
 
     override fun getScreenName(): String {
