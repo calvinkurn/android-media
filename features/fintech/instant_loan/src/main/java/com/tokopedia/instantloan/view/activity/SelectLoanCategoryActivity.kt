@@ -11,16 +11,16 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.instantloan.R
-import com.tokopedia.instantloan.data.model.response.LoanPeriodType
+import com.tokopedia.instantloan.data.model.response.GqlLendingCategoryData
 import java.util.*
 
-class SelectLoanParamActivity : BaseActivity() {
+class SelectLoanCategoryActivity : BaseActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonClose: View
     private var topBarTitle: TextView? = null
     private var adapter: ListAdapter? = null
-    private var data: ArrayList<LoanPeriodType>? = null
+    private var data: ArrayList<GqlLendingCategoryData>? = null
     private var selectedKey: Int = 0
     private var selectedValue: String? = null
 
@@ -32,15 +32,15 @@ class SelectLoanParamActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_loan_param)
         topBarTitle = findViewById<View>(R.id.top_bar_title) as TextView
-        topBarTitle!!.text = getString(R.string.title_sort_but)
+        topBarTitle!!.text = getString(R.string.il_loan_category_title)
         recyclerView = findViewById<View>(R.id.list) as RecyclerView
         buttonClose = findViewById(R.id.top_bar_close_button)
         buttonClose.setOnClickListener { onBackPressed() }
         data = intent.extras!!.getParcelableArrayList(EXTRA_DATA)
         adapter = ListAdapter(data, selectedKey, selectedValue, object : OnItemClickListener {
-            override fun onItemClicked(loanType: LoanPeriodType) {
+            override fun onItemClicked(categoryType: GqlLendingCategoryData) {
                 val intent = Intent()
-                intent.putExtra(EXTRA_SELECTED_NAME, loanType)
+                intent.putExtra(EXTRA_SELECTED_NAME, categoryType)
                 setResult(Activity.RESULT_OK, intent)
                 finish()
             }
@@ -68,8 +68,8 @@ class SelectLoanParamActivity : BaseActivity() {
         overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
     }
 
-    private inner class ListAdapter(sortList: List<LoanPeriodType>?, private var selectedKey: Int, private var selectedValue: String?, internal var clickListener: OnItemClickListener) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
-        internal var sortList: List<LoanPeriodType>
+    private inner class ListAdapter(sortList: List<GqlLendingCategoryData>?, private var selectedKey: Int, private var selectedValue: String?, internal var clickListener: OnItemClickListener) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+        internal var sortList: List<GqlLendingCategoryData>
 
         init {
             if (sortList == null) {
@@ -85,16 +85,16 @@ class SelectLoanParamActivity : BaseActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.title.text = sortList[position].label
-            holder.title.tag = sortList[position].value
+            holder.title.text = sortList[position].categoryName
+            holder.title.tag = sortList[position].categoryId
 
             holder.title.isSelected = sortList[position].isSelected
             holder.title.setOnClickListener(View.OnClickListener {
                 if (holder.adapterPosition == RecyclerView.NO_POSITION) {
                     return@OnClickListener
                 }
-                selectedKey = sortList[holder.adapterPosition].id
-                selectedValue = sortList[holder.adapterPosition].value
+                selectedKey = sortList[holder.adapterPosition].categoryId
+                selectedValue = sortList[holder.adapterPosition].categoryName
                 sortList[holder.adapterPosition].isSelected = true
                 clickListener.onItemClicked(sortList[holder.adapterPosition])
 
@@ -128,7 +128,7 @@ class SelectLoanParamActivity : BaseActivity() {
     }
 
     private interface OnItemClickListener {
-        fun onItemClicked(loanType: LoanPeriodType)
+        fun onItemClicked(categoryType: GqlLendingCategoryData)
     }
 
     companion object {
@@ -136,8 +136,8 @@ class SelectLoanParamActivity : BaseActivity() {
         val EXTRA_DATA = "EXTRA_DATA"
         val EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME"
 
-        fun createInstance(context: Context, sort: ArrayList<LoanPeriodType>): Intent {
-            val intent = Intent(context, SelectLoanParamActivity::class.java)
+        fun createInstance(context: Context, sort: ArrayList<GqlLendingCategoryData>): Intent {
+            val intent = Intent(context, SelectLoanCategoryActivity::class.java)
             intent.putParcelableArrayListExtra(EXTRA_DATA, sort)
             return intent
         }

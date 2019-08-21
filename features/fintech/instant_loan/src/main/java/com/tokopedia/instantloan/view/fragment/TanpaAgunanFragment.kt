@@ -23,6 +23,7 @@ import com.tokopedia.instantloan.data.model.response.LoanPeriodType
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.LOAN_AMOUNT_QUERY_PARAM
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_NO_COLLATERAL
 import com.tokopedia.instantloan.router.InstantLoanRouter
+import com.tokopedia.instantloan.view.activity.SelectLoanCategoryActivity
 import com.tokopedia.instantloan.view.activity.SelectLoanParamActivity
 import com.tokopedia.instantloan.view.contractor.OnlineLoanContractor
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment.Companion.LOGIN_REQUEST_CODE
@@ -53,6 +54,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     private lateinit var selectedLoanPeriodType: LoanPeriodType
     private lateinit var selectedLoanPeriodMonth: LoanPeriodType
     private lateinit var selectedLoanPeriodYear: LoanPeriodType
+    private lateinit var selectedLoanCategoryData: GqlLendingCategoryData
     private lateinit var selectedLoanAmountResponse: GqlLoanAmountResponse
 
     private var currentLoanPeriodType: Int = 0
@@ -60,6 +62,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     private var loanPeriodMonthList: ArrayList<LoanPeriodType> = ArrayList()
     private var loanPeriodYearList: ArrayList<LoanPeriodType> = ArrayList()
     private var loanPeriodTypeList: ArrayList<LoanPeriodType> = ArrayList()
+    private var loanCategoryTypeList: ArrayList<GqlLendingCategoryData> = ArrayList()
     private var loanAmountList: ArrayList<GqlLoanAmountResponse> = ArrayList()
     private var mCurrentTab: Int = 0
     private var mContext: Context? = null
@@ -107,7 +110,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         spinner_label_nominal.setOnClickListener {
 
             loanPeriodLabelTV.error = null
-            val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodTypeList, null)
+            val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodTypeList)
             startActivityForResult(intent, LOAN_PERIOD_TYPE)
         }
 
@@ -115,21 +118,23 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         loanPeriodValueTV.tag = ""
 
         loanCategoryValueTV.text = getString(R.string.il_loan_category_label)
+        loanCategoryValueTV.tag = 0
 
         spinner_value_nominal.setOnClickListener {
             if (!::selectedLoanPeriodType.isInitialized) {
                 loanPeriodLabelTV.error = ""
             } else if (selectedLoanPeriodType.value.equals(DEFAULT_YEAR_VALUE, true)) {
-                val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodYearList, null)
+                val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodYearList)
                 startActivityForResult(intent, LOAN_PERIOD_YEAR)
             } else if (selectedLoanPeriodType.value.equals(DEFAULT_MONTH_VALUE, true)) {
-                val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodMonthList, null)
+                val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodMonthList)
                 startActivityForResult(intent, LOAN_PERIOD_MONTH)
             }
         }
 
         spinner_loan_category.setOnClickListener {
-
+            val intent: Intent = SelectLoanCategoryActivity.createInstance(context!!, loanCategoryTypeList)
+            startActivityForResult(intent, LOAN_CATEGORY_TYPE)
         }
 
         view.findViewById<View>(R.id.button_search_pinjaman).setOnClickListener { view1 ->
@@ -144,7 +149,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     }
 
     fun setCategoryData(categoryData: ArrayList<GqlLendingCategoryData>) {
-
+        loanCategoryTypeList = categoryData
     }
 
     private fun sendCariPinjamanClickEvent() {
@@ -195,6 +200,16 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
             loanPeriodValueTV.text = selectedLoanPeriodYear.label
             loanPeriodValueTV.tag = selectedLoanPeriodYear.value
 
+        } else if (resultCode == RESULT_OK && requestCode == LOAN_CATEGORY_TYPE) {
+
+            selectedLoanCategoryData = data!!.extras?.getParcelable(SelectLoanCategoryActivity.EXTRA_SELECTED_NAME)!!
+
+            for (categoryData in loanCategoryTypeList) {
+                categoryData.isSelected = categoryData.categoryId == selectedLoanCategoryData.categoryId
+            }
+
+            loanCategoryValueTV.text = selectedLoanCategoryData.categoryName
+            loanCategoryValueTV.tag = selectedLoanCategoryData.categoryId
         }
     }
 
@@ -202,15 +217,22 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
         for (loanData in loanPeriodYearList) {
             loanData.isSelected = false
-            selectedLoanPeriodYear = LoanPeriodType("", "", -1, false)
         }
 
         for (loanData in loanPeriodMonthList) {
             loanData.isSelected = false
-            selectedLoanPeriodMonth = LoanPeriodType("", "", -1, false)
         }
 
+        for (categoryData in loanCategoryTypeList) {
+            categoryData.isSelected = false
+        }
+
+        selectedLoanPeriodYear = LoanPeriodType("", "", -1, false)
+        selectedLoanPeriodMonth = LoanPeriodType("", "", -1, false)
+        selectedLoanCategoryData = GqlLendingCategoryData(0, "", "", "", false)
+
         loanPeriodValueTV.text = getString(R.string.il_loan_period_value_label)
+        loanPeriodLabelTV.text = getString(R.string.il_loan_period_type_label)
     }
 
     override fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData) {
@@ -276,7 +298,6 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
     override fun onIncreaseButtonClicked(currentQuantity: Int) {
 
-
         if (currentQuantity in 0 until loanAmountList.size) {
             loanAmountWarning.visibility = View.INVISIBLE
             widgetAddRemove.setText(loanAmountList[currentQuantity].label)
@@ -333,7 +354,8 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
                     URLEncoder.encode(WEB_LINK_NO_COLLATERAL + String.format(LOAN_AMOUNT_QUERY_PARAM,
                             widgetAddRemove.getLoanValue().toString(),
                             selectedLoanPeriodType.value?.toLowerCase(),
-                            loanPeriodValueTV.tag as String), "UTF-8")))
+                            loanPeriodValueTV.tag as String,
+                            (loanCategoryValueTV.tag as Int).toString()), "UTF-8")))
 
         }
     }
@@ -350,6 +372,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         private val LOAN_PERIOD_TYPE = 12
         private val LOAN_PERIOD_MONTH = 13
         private val LOAN_PERIOD_YEAR = 14
+        private val LOAN_CATEGORY_TYPE = 15
 
         fun createInstance(position: Int): TanpaAgunanFragment {
             val bundle = Bundle()
