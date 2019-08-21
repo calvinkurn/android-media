@@ -103,13 +103,13 @@ class MerchantVoucherViewUsed : CustomVoucherView {
             val spannedVoucherTitle = SpanText(
                     voucherTitle,
                     merchantVoucherViewModel.getAmountShortString()
-            ).addBoldSpan().changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_18)).getCharSequence()
+            ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_20)).getCharSequence()
             tvVoucherTitle.text = spannedVoucherTitle
             val voucherDesc = merchantVoucherViewModel.getMinSpendLongString(context)
             tvVoucherDesc.text = SpanText(
                     voucherDesc,
                     merchantVoucherViewModel.getMinSpendAmountShortString()
-            ).addBoldSpan().getCharSequence()
+            ).addBoldSpanWithFontFamily("").getCharSequence()
             tvCode.text = merchantVoucherViewModel.voucherCode
             var isOwner = false
             onMerchantVoucherViewListener?.run {

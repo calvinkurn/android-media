@@ -17,6 +17,11 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.StyleSpan
+import android.text.style.TypefaceSpan
+import android.widget.TextView
+import android.graphics.Typeface
+import android.text.TextPaint
+
 
 /*
     Provides the background for voucher view
@@ -237,14 +242,22 @@ open class CustomVoucherView : FrameLayout {
     inner class SpanText(
             stringSource: String,
             stringToBeSpanned: String
-    ){
+    ) {
         private val spannableString: SpannableString = SpannableString(stringSource)
-        private val startIndex =  stringSource.indexOf(stringToBeSpanned)
-        private val endIndex =  startIndex + stringToBeSpanned.length
+        private val startIndex = stringSource.indexOf(stringToBeSpanned)
+        private val endIndex = startIndex + stringToBeSpanned.length
 
-        fun addBoldSpan(): SpanText{
-            if(startIndex == -1)
-                 return this
+        fun addBoldSpanWithFontFamily(fontFamilyName: String): SpanText {
+            if (startIndex == -1)
+                return this
+            if (fontFamilyName.isNotEmpty()) {
+                spannableString.setSpan(
+                        TypefaceSpan(fontFamilyName),
+                        startIndex,
+                        endIndex,
+                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                )
+            }
             spannableString.setSpan(
                     StyleSpan(Typeface.BOLD),
                     startIndex,
@@ -254,8 +267,8 @@ open class CustomVoucherView : FrameLayout {
             return this
         }
 
-        fun changeTextSize(sizeInDp: Int): SpanText{
-            if(startIndex == -1)
+        fun changeTextSize(sizeInDp: Int): SpanText {
+            if (startIndex == -1)
                 return this
             spannableString.setSpan(
                     AbsoluteSizeSpan(sizeInDp),
@@ -266,7 +279,7 @@ open class CustomVoucherView : FrameLayout {
             return this
         }
 
-        fun getCharSequence(): CharSequence{
+        fun getCharSequence(): CharSequence {
             return spannableString
         }
 
@@ -297,6 +310,38 @@ open class CustomVoucherView : FrameLayout {
 //        val endIndex = startIndex + stringToBeSpanned.length
 //
 //    }
+
+    inner class CustomTypefaceSpan(family: String, private val newType: Typeface) : TypefaceSpan(family) {
+
+        override fun updateDrawState(ds: TextPaint) {
+            applyCustomTypeFace(ds, newType)
+        }
+
+        override fun updateMeasureState(paint: TextPaint) {
+            applyCustomTypeFace(paint, newType)
+        }
+
+        private fun applyCustomTypeFace(paint: Paint, tf: Typeface) {
+            val oldStyle: Int
+            val old = paint.typeface
+            if (old == null) {
+                oldStyle = 0
+            } else {
+                oldStyle = old.style
+            }
+
+            val fake = oldStyle and tf.style.inv()
+            if (fake and Typeface.BOLD != 0) {
+                paint.isFakeBoldText = true
+            }
+
+            if (fake and Typeface.ITALIC != 0) {
+                paint.textSkewX = -0.25f
+            }
+
+            paint.typeface = tf
+        }
+    }
 
 
 }
