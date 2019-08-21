@@ -81,9 +81,6 @@ dependencies {
     implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro
 
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    kapt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
