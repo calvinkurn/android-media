@@ -242,7 +242,6 @@ class AddToCartDoneBottomSheet :
                 item.header,
                 trackingQueue
         )
-        recyclerView.scrollTo(0, 0)
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
