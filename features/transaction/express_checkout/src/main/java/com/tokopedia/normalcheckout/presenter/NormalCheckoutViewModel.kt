@@ -2,7 +2,9 @@ package com.tokopedia.normalcheckout.presenter
 
 import android.arch.lifecycle.MutableLiveData
 import android.content.res.Resources
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -49,6 +51,12 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
     val productInfoResp = MutableLiveData<Result<ProductInfoAndVariant>>()
     var warehouses: Map<String, MultiOriginWarehouse> = mapOf()
     var selectedwarehouse: MultiOriginWarehouse? = null
+    private var needRefresh = DEFAULT_NEED_REFRESH
+
+    fun parseDataFrom(arguments: Bundle?) {
+        if (arguments == null) return
+        needRefresh = arguments.getBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, DEFAULT_NEED_REFRESH)
+    }
 
     fun getProductInfo(productParams: ProductParams, resources: Resources) {
 
@@ -57,7 +65,8 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                     PARAM_SHOP_DOMAIN to productParams.shopDomain,
                     PARAM_PRODUCT_KEY to productParams.productName)
             val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO], ProductInfo.Response::class.java, paramsInfo)
-            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+            val cacheType = getCacheType()
+            val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
             val productInfoData = withContext(Dispatchers.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
@@ -105,6 +114,14 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
         }) {
             productInfoResp.value = Fail(it)
         }
+    }
+
+    private fun getCacheType(): CacheType {
+        var cacheType = CacheType.CACHE_FIRST
+        if (needRefresh) {
+            cacheType = CacheType.CLOUD_THEN_CACHE
+        }
+        return cacheType
     }
 
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
@@ -162,6 +179,10 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
     fun unsubscribe() {
         addToCartUseCase.unsubscribe()
         addToCartOcsUseCase.unsubscribe()
+    }
+
+    companion object {
+        const val DEFAULT_NEED_REFRESH = false
     }
 }
 

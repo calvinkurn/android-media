@@ -45,13 +45,14 @@ def detectAffectedModule(token, config, head, user, gradle, adb, deviceId):
     if configuration is None :
         exit(1)
     doCommand("git reset --hard HEAD")
+    doCommand("git remote -v")
     doCommand("git clean -f -d")
     doCommand("git fetch " + configuration["remote_name"])
-    doCommand("git checkout " + configuration["master"])
+    doCommand("git checkout -b " + configuration["master"]+" "+configuration["remote_name"]+"/"+configuration["master"])
     doCommand("git pull " + configuration["remote_name"] + " " + configuration["master"])
-    doCommand("git checkout " + head)
+    doCommand("git checkout -b " + head+" "+configuration["remote_name"]+"/"+head)
     doCommand("git pull " + configuration["remote_name"] + " " + head)
-    doCommand("git diff --name-only " + head + ".." + configuration["master"] + " > file_changes.log")
+    doCommand("git diff --name-only " + head + "..." + configuration["master"] + " > file_changes.log")
     modulesAffected = []
     pathAffected = []
     doCommand("rm -rf coverageResults")
@@ -66,7 +67,8 @@ def detectAffectedModule(token, config, head, user, gradle, adb, deviceId):
 
     doCommand(adb + " connect " + deviceId)
     for module in modulesAffected:
-        print doCommand(gradle + " " + module + "customjacocoTestCoverageVerification --stacktrace")
+        print doCommand(gradle + " " + module + "customjacocoTestCoverageVerification -Pcoverage --stacktrace")
+        
 
     doCommand(gradle + " sonarqube -Dsonar.host.url=http://10.164.8.12:9111")
     
