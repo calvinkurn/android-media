@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.following_list.di;
 
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.feature.following_list.domain.interactor
         .GetKolFollowingListLoadMoreUseCase;
 import com.tokopedia.kol.feature.following_list.domain.interactor.GetKolFollowingListUseCase;
@@ -20,9 +21,11 @@ public class KolFollowingListModule {
     @Provides
     public KolFollowingList.Presenter providesPresenter(
             GetKolFollowingListUseCase getKolFollowingListUseCase,
-            GetKolFollowingListLoadMoreUseCase getKolFollowingListLoadMoreUseCase) {
+            GetKolFollowingListLoadMoreUseCase getKolFollowingListLoadMoreUseCase,
+            GraphqlUseCase getFollowerList) {
         return new KolFollowingListPresenter(
                 getKolFollowingListUseCase,
-                getKolFollowingListLoadMoreUseCase);
+                getKolFollowingListLoadMoreUseCase,
+                getFollowerList);
     }
 }
