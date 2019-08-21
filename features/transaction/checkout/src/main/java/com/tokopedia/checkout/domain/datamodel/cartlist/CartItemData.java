@@ -22,7 +22,6 @@ public class CartItemData implements Parcelable {
     private String warningMessageDescription;
     private String errorMessageTitle;
     private String errorMessageDescription;
-    private String similarProductUrl;
     private SimilarProduct similarProduct;
     private boolean isDisableAllProducts;
     private boolean isFulfillment;
@@ -89,14 +88,6 @@ public class CartItemData implements Parcelable {
 
     public void setErrorMessageDescription(String errorMessageDescription) {
         this.errorMessageDescription = errorMessageDescription;
-    }
-
-    public String getSimilarProductUrl() {
-        return similarProductUrl;
-    }
-
-    public void setSimilarProductUrl(String similarProductUrl) {
-        this.similarProductUrl = similarProductUrl;
     }
 
     public SimilarProduct getSimilarProduct() {
@@ -974,7 +965,6 @@ public class CartItemData implements Parcelable {
         dest.writeString(this.warningMessageDescription);
         dest.writeString(this.errorMessageTitle);
         dest.writeString(this.errorMessageDescription);
-        dest.writeString(this.similarProductUrl);
         dest.writeParcelable(this.similarProduct, flags);
         dest.writeByte(this.isDisableAllProducts ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
@@ -992,7 +982,6 @@ public class CartItemData implements Parcelable {
         this.warningMessageDescription = in.readString();
         this.errorMessageTitle = in.readString();
         this.errorMessageDescription = in.readString();
-        this.similarProductUrl = in.readString();
         this.similarProduct = in.readParcelable(SimilarProduct.class.getClassLoader());
         this.isDisableAllProducts = in.readByte() != 0;
         this.isFulfillment = in.readByte() != 0;
