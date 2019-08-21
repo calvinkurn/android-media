@@ -560,7 +560,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Override
     public void onEmptyList(Object rawObject) {
-
+        onEmptyCatalog();
     }
 
     @Override
