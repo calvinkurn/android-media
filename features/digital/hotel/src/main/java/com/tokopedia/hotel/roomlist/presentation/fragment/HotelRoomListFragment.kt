@@ -313,7 +313,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_room_listing
+        emptyModel.urlRes = getString(R.string.hotel_url_empty_room_listing)
         if (roomListViewModel.isFilter) {
             emptyModel.title = getString(R.string.hotel_room_not_found_title_after_filter)
             emptyModel.content = getString(R.string.hotel_room_not_found_subtitle_after_filter)
