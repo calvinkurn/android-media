@@ -83,18 +83,6 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
-def archiveAPK(variant, output) {
-
-    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-    def originZipAlignedApkFile = output.outputFile;
-    def renameAPKFile = renameAPKFile(variant, density, output.versionCodeOverride);
-    copy {
-        from "$originZipAlignedApkFile"
-        into getAPKArchiveFolder(variant)
-        rename("$originZipAlignedApkFile.name", "$renameAPKFile")
-    }
-}
-
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -208,13 +196,6 @@ android {
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
                         output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
-                    }
-                    variant.assemble.doLast {
-                        variant.outputs.each { output ->
-                            if (output.zipAlign) {
-                                archiveAPK(variant, output);
-                            }
-                        }
                     }
                 }
             }
