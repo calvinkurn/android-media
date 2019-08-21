@@ -506,9 +506,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initPreference() {
-        if (userSession != null
-                && !TextUtils.isEmpty(userSession.getUserId())
-                && getApplication() instanceof GroupChatModuleRouter) {
+        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
 
             sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(getContext());
