@@ -21,19 +21,8 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
                                    var listener: OnItemClickListener):
         RecyclerView.Adapter<TravelHomepageSectionAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
-        val item = list.get(position)
-        lateinit var view: View
-        if (type == TravelHomepageSectionViewModel.TYPE_ORDER_LIST) {
-            view = if (item.subtitle.isNotEmpty())
-                LayoutInflater.from(parent.context).inflate(ViewHolder.ORDER_LAYOUT, parent, false)
-            else LayoutInflater.from(parent.context).inflate(ViewHolder.ORDER_LAYOUT_WITHOUT_SUBTITLE, parent, false)
-        } else {
-            view = if (item.subtitle.isNotEmpty())
-                LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false)
-            else LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT_WITHOUT_SUBTITLE, parent, false)
-        }
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int): ViewHolder {
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(itemViewType, parent, false))
     }
 
     override fun getItemCount(): Int = list.size
@@ -42,6 +31,15 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
         holder.bind(list.get(position), position, listener)
     }
 
+    override fun getItemViewType(position: Int): Int {
+        val item = list.get(position)
+        lateinit var view: View
+        if (type == TravelHomepageSectionViewModel.TYPE_ORDER_LIST) {
+            return if (item.subtitle.isBlank()) ViewHolder.ORDER_LAYOUT_WITHOUT_SUBTITLE else ViewHolder.ORDER_LAYOUT
+        } else {
+            return if (item.subtitle.isBlank()) ViewHolder.LAYOUT_WITHOUT_SUBTITLE else ViewHolder.LAYOUT
+        }
+    }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
