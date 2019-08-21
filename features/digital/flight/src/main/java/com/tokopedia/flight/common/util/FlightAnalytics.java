@@ -224,7 +224,7 @@ public class FlightAnalytics {
                 EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
                 EnhanceEccomerce.PRICE, journeyViewModel.getTotalNumeric(),
                 EnhanceEccomerce.DIMENSION66, TravelDateUtil.dateToString(TravelDateUtil.YYYYMMDD, TravelDateUtil.stringToDate(
-                        journeyViewModel.getRouteList().get(0).getDepartureTimestamp(), TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)),
+                        journeyViewModel.getRouteList().get(0).getDepartureTimestamp(), TravelDateUtil.YYYY_MM_DD)),
                 EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
                 EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
                 EnhanceEccomerce.DIMENSION69, "",
