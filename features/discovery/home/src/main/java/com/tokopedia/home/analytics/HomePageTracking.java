@@ -34,6 +34,8 @@ public class HomePageTracking {
 
     private static final String EVENT_CLICK_HOME_PAGE = "clickHomePage";
     private static final String EVENT_CLICK_HOME_PAGE_WISHLIST = "clickHomepage";
+    private static final String EVENT_CLICK_HOME_PAGE_STICKY = "clickHomepage";
+    private static final String EVENT_VIEW_HOME_PAGE_STICKY = "viewHomepage";
     private static final String EVENT_GIMMICK = "clickGimmick";
     private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
     private static final String EVENT_TOKO_POINT = "eventTokopoint";
@@ -114,6 +116,11 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_CLICK_ON_ATUR = "click on atur";
 
     public static final String CHANNEL_ID = "channelId";
+
+    private static final String EVENT_LABEL_CLICK = "click";
+    private static final String EVENT_ACTION_CLICK_ON_STICKY_LOGIN_WIDGET = "click on login sticky widget";
+    private static final String EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN = "click on button close login sticky widget";
+    private static final String EVENT_VIEW_STICKY_LOGIN_AT_HOME = "view login sticky widget";
 
     public static ContextAnalytics getTracker(Context context) {
         return TrackApp.getInstance().getGTM();
@@ -918,5 +925,36 @@ public class HomePageTracking {
                 )
         );
         tracker.sendEnhanceEcommerceEvent(data);
+    }
+
+    public static void eventClickOnStickyLogin(boolean isOnSticky) {
+        ContextAnalytics tracker = TrackApp.getInstance().getGTM();
+        if (tracker != null) {
+            if (isOnSticky) {
+                tracker.sendGeneralEvent(
+                        EVENT_CLICK_HOME_PAGE_STICKY,
+                        CATEGORY_HOME_PAGE,
+                        EVENT_ACTION_CLICK_ON_STICKY_LOGIN_WIDGET,
+                        EVENT_LABEL_CLICK
+                );
+            } else {
+                tracker.sendGeneralEvent(
+                        EVENT_CLICK_HOME_PAGE_STICKY,
+                        CATEGORY_HOME_PAGE,
+                        EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN,
+                        LABEL_EMPTY
+                );
+            }
+        }
+    }
+
+    public static void eventOnStickyLoginShowing() {
+        ContextAnalytics tracker = TrackApp.getInstance().getGTM();
+        tracker.sendGeneralEvent(
+                EVENT_VIEW_HOME_PAGE_STICKY,
+                CATEGORY_HOME_PAGE,
+                EVENT_VIEW_STICKY_LOGIN_AT_HOME,
+                LABEL_EMPTY
+        );
     }
 }

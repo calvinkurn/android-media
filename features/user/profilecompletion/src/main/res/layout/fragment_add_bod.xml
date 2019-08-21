@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,12 +21,11 @@
                 android:textColor="@color/color_subtitle_setting_profile"
                 android:text="@string/page_description"/>
 
-        <EditText
+        <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/chooseDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableRight="@drawable/ic_down_date"
-                android:drawableEnd="@drawable/ic_down_date"
+                app:editTextDrawableRightCompat="@drawable/ic_down_date"
                 android:hint="@string/hint_bod_setting_profile"
                 android:clickable="true"
                 android:cursorVisible="false"

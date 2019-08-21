@@ -475,11 +475,23 @@ public class SearchTracking {
                                            String keyword, String screenName,
                                            Map<String, String> selectedFilter) {
 
+        eventSearchNoResult(keyword, screenName, selectedFilter, "", "");
+    }
+
+    public static void eventSearchNoResult(String keyword, String screenName,
+                                           Map<String, String> selectedFilter,
+                                           String alternativeKeyword,
+                                           String resultCode) {
+
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_VIEW_TOP_NAV,
+                SearchEventTracking.Event.EVENT_VIEW_SEARCH_RESULT,
                 SearchEventTracking.Category.EVENT_TOP_NAV,
-                SearchEventTracking.Action.NO_SEARCH_RESULT,
-                String.format("keyword: %s - tab: %s - param: %s", keyword, screenName, generateFilterEventLabel(selectedFilter))
+                String.format(SearchEventTracking.Action.NO_SEARCH_RESULT_WITH_TAB, screenName),
+                String.format("keyword: %s - type: %s - alternative: %s - param: %s",
+                        keyword,
+                        !TextUtils.isEmpty(resultCode) ? resultCode : "none/other",
+                        !TextUtils.isEmpty(alternativeKeyword) ? alternativeKeyword : "none/other",
+                        generateFilterEventLabel(selectedFilter))
         );
     }
 

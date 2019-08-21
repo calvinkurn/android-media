@@ -21,6 +21,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.abstraction)
 }

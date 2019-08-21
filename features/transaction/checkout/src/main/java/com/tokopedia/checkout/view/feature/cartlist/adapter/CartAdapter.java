@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.feature.cartlist.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
@@ -236,6 +238,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void addDataList(List<ShopGroupData> shopGroupDataList) {
         for (ShopGroupData shopGroupData : shopGroupDataList) {
             CartShopHolderData cartShopHolderData = new CartShopHolderData();
+            cartShopHolderData.setShopGroupData(shopGroupData);
             if (shopGroupData.isError()) {
                 cartShopHolderData.setAllSelected(false);
             } else {
@@ -775,10 +778,12 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void removeCartLoadingData() {
+        int index = cartDataList.indexOf(cartLoadingHolderData);
         cartDataList.remove(cartLoadingHolderData);
+        notifyItemRemoved(index);
     }
 
-    public void removeCartItemById(List<Integer> cartIds) {
+    public void removeCartItemById(List<Integer> cartIds, Context context) {
         // Store item first before remove item to prevent ConcurrentModificationException
         List<CartShopHolderData> toBeRemovedcartShopholderData = new ArrayList<>();
         for (Object object : cartDataList) {
@@ -788,7 +793,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
                     if (cartIds.contains(cartItemHolderData.getCartItemData().getOriginData().getCartId())) {
                         toBeRemovedCartItemHolderData.add(cartItemHolderData);
-                        break;
                     }
                 }
                 for (CartItemHolderData cartItemHolderData : toBeRemovedCartItemHolderData) {
@@ -802,6 +806,39 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (CartShopHolderData cartShopHolderData : toBeRemovedcartShopholderData) {
             cartDataList.remove(cartShopHolderData);
         }
+
+        CartItemTickerErrorHolderData cartItemTickerErrorHolderData = null;
+        for (Object object : cartDataList) {
+            if (object instanceof CartItemTickerErrorHolderData) {
+                cartItemTickerErrorHolderData = (CartItemTickerErrorHolderData) object;
+                break;
+            }
+        }
+
+        if (cartItemTickerErrorHolderData != null) {
+            int errorItemCount = 0;
+            for (Object object : cartDataList) {
+                if (object instanceof CartShopHolderData) {
+                    List<CartItemHolderData> cartItemHolderDataList = ((CartShopHolderData) object).getShopGroupData().getCartItemDataList();
+                    for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
+                        if (cartItemHolderData.getCartItemData().isError()) {
+                            errorItemCount++;
+                        }
+                    }
+                }
+            }
+
+            if (errorItemCount > 0) {
+                if (context != null) {
+                    cartItemTickerErrorHolderData.getCartTickerErrorData().setErrorInfo(
+                            String.format(context.getString(R.string.cart_error_message), errorItemCount)
+                    );
+                }
+            } else {
+                cartDataList.remove(cartItemTickerErrorHolderData);
+            }
+        }
+
         notifyDataSetChanged();
     }
 

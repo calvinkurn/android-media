@@ -11,4 +11,5 @@ public interface UnifiedOrderListRouter {
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
     void actionOpenGeneralWebView(Activity activity, String url);
     Intent getOrderHistoryIntent(Context context, String orderId);
+    Intent getCartIntent(Activity activity);
 }
