@@ -32,6 +32,7 @@ object DeeplinkDFMapper {
     private val MODULE_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val MODULE_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val MODULE_HOTEL_TRAVEL = "hotel_travel"
+    private val MODULE_USER_PROFILE_COMPLETION = "profile_completion"
 
     private var manager: SplitInstallManager? = null
 
@@ -64,6 +65,11 @@ object DeeplinkDFMapper {
                     getDFDeeplinkIfNotInstalled(context,
                         deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
                         context.getString(R.string.shop_settings_title))
+                }
+                deeplink.startsWith(ApplinkConst.PROFILE_COMPLETION) -> {
+                    getDFDeeplinkIfNotInstalled(context,
+                        deeplink, MODULE_USER_PROFILE_COMPLETION,
+                        context.getString(R.string.applink_profile_completion_title))
                 }
                 else -> null
             }

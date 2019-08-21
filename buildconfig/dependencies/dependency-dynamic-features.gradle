@@ -2,6 +2,7 @@ ext {
 
     dynamicFeatures = [
             hotelTravel                     : ":dynamic-features:travel:hotel_travel",
+            profileCompletion               : ":dynamic-features:user:profile_completion",
             shopSettings                    : ":dynamic-features:merchant:shop_settings",
     ]
 

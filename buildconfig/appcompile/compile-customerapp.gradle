@@ -48,6 +48,7 @@ include "features:discovery:search"
 include "features:fintech:mitra_toppers"
 
 include "dynamic-features:travel:hotel_travel"
+include "dynamic-features:user:profile_completion"
 include "dynamic-features:merchant:shop_settings"
 
 include "features:fintech:home_credit"
@@ -167,7 +168,7 @@ include "features:user:notifcenter"
 include "features:user:onboarding"
 include "features:user:otp"
 include "features:user:phoneverification"
-include 'features:user:profilecompletion'
+//include 'features:user:profilecompletion'
 include "features:user:settingbank"
 include "features:user:sessioncommon"
 include "features:user:talk"
