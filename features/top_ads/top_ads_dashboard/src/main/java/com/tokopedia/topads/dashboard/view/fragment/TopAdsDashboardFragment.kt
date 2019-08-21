@@ -392,7 +392,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
             TopAdsStatisticsType.ALL_ADS ->  R.string.topads_dashboard_all_promo_menu
             TopAdsStatisticsType.PRODUCT_ADS ->  R.string.top_ads_title_product
             TopAdsStatisticsType.SHOP_ADS ->  R.string.title_top_ads_store
-            else -> -1
+            else -> R.string.top_ads_title_product
         }
         return getString(resString)
     }
