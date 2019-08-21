@@ -15,7 +15,7 @@ import com.tokopedia.travel.homepage.R
 class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : Toolbar(context, attrs, defStyleAttr) {
 
-    var shadowApplied: Boolean = false
+    var shadowApplied: Boolean = true
 
     fun toInitialMode() {
         hideShadow()

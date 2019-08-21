@@ -6,6 +6,6 @@
     <dimen name="travel_homepage_toolbar_size">32dp</dimen>
 
     <dimen name="toolbar_transition_range">50dp</dimen>
-    <dimen name="toolbar_padding">16dp</dimen>
+    <dimen name="toolbar_padding">24dp</dimen>
 
 </resources>

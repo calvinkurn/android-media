@@ -21,6 +21,7 @@ import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
 import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
 import com.tokopedia.travel.homepage.presentation.viewmodel.TravelHomepageViewModel
 import kotlinx.android.synthetic.main.travel_homepage_fragment.*
+import kotlinx.android.synthetic.main.travel_homepage_fragment.view.*
 import javax.inject.Inject
 
 /**
@@ -49,14 +50,14 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.travel_homepage_fragment, container, false);
+        val view = inflater.inflate(R.layout.travel_homepage_fragment, container, false)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        travel_homepage_toolbar.toInitialMode()
         travel_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        calculateToolbarView(0)
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
         getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -80,8 +81,10 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         }
 
         if (offsetAlpha >= 255) {
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             travel_homepage_toolbar.toOnScrolledMode()
         } else {
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
             travel_homepage_toolbar.toInitialMode()
         }
     }
