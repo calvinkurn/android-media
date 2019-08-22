@@ -226,7 +226,8 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     @Override
     public void onListItemClicked(KolFollowingViewModel item) {
-        if (RouteManager.isSupportApplink(getContext(), item.getProfileApplink())) {
+        if (RouteManager.isSupportApplink(getContext(), item.getProfileApplink())
+                && !item.getProfileApplink().contains("m.tokopedia.com")) {
             RouteManager.route(getContext(), item.getProfileApplink());
         }
     }
