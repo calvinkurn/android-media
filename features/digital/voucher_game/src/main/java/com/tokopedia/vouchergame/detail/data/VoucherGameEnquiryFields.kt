@@ -25,6 +25,15 @@ class VoucherGameEnquiryFields(
         class Validation(
                 @SerializedName("id")
                 @Expose
-                val id: Int = 0
+                val id: Int = 0,
+                @SerializedName("title")
+                @Expose
+                val title: String = "",
+                @SerializedName("rule")
+                @Expose
+                val rule: String = "",
+                @SerializedName("message")
+                @Expose
+                val message: String = ""
         )
 }
