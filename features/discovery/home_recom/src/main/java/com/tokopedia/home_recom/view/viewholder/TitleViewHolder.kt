@@ -6,6 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.TitleDataModel
 
+/**
+ * Created by lukas on 21/05/2019
+ *
+ * A class for holder view Title
+ */
 class TitleViewHolder(private val view: View) : AbstractViewHolder<TitleDataModel>(view){
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
 
