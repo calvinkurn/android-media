@@ -604,11 +604,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void onProductViewImpression(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
-        // do nothing, will delete soon
-    }
-
-    @Override
     public void onItemClicked(FlightJourneyViewModel journeyViewModel) {
         flightSearchPresenter.onSearchItemClicked(journeyViewModel);
     }
