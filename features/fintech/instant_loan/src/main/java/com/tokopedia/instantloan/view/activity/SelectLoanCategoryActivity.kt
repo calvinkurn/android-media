@@ -102,7 +102,7 @@ class SelectLoanCategoryActivity : BaseActivity() {
                 sortList[holder.adapterPosition].isSelected = true
                 clickListener.onItemClicked(sortList[holder.adapterPosition])
 
-                notifyDataSetChanged()
+                notifyItemChanged(holder.adapterPosition)
             })
         }
 
