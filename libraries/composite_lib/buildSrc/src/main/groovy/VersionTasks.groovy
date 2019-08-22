@@ -130,14 +130,7 @@ class VersionTasks extends DefaultTask {
 
         dot << '\n  # Dependencies\n\n'
         dependencies.forEach { key, traits ->
-
-//            dot << "  \"${key.second.group}\" -> \"${key.first.name}\""
-//            if (!traits.isEmpty()) {
-//                dot << " [${traits.join(", ")}]"
-//            }
-//            dot << '\n'
             listVersion.each{
-                //println "${key.second.name} = ${it.project}"
                if(key.second.name.equals(it.project)){
                    listTree.add(new TreeModel(key.second.name,key.first.name))
                    dot << "  \"${key.second.group}\" -> \"${key.first.name}\""

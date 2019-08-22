@@ -11,6 +11,4 @@ class ScanReleaseDateTasks extends DefaultTask{
             listReleaseDate.add(line)
         }
     }
-
-
 }

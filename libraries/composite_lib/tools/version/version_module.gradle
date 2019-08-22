@@ -9,8 +9,9 @@ task readGradlefile(type: ReadGradlefileTasks){
         moduleVersionUpdate()
     }
 }
-task scanSubproject(type: ScanSubprojectTasks){
-}
+task scanSubproject(type: ScanSubprojectTasks){}
+
+
 task scanReleaseDate(type: ScanReleaseDateTasks,dependsOn: scanSubproject){
     fileDir = 'tools/version/release_date.txt'
     doLast{
