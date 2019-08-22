@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,16 +94,6 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     private fun initView() {
         searchInputView.setResetListener(this)
 
-        val layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
-        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(p0: Int): Int {
-                return when (adapter.getItemViewType(p0)) {
-                    VoucherGameListViewHolder.LAYOUT -> 1
-                    else -> 3
-                }
-            }
-        }
-        recycler_view.layoutManager = layoutManager
         recycler_view.addItemDecoration(VoucherGameListDecorator(8, resources))
 
 //        promo_banner.setPagerAdapter(object: BannerViewPagerAdapter())
@@ -138,6 +129,19 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun hasInitialSwipeRefresh(): Boolean { return true }
+
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        val layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(p0: Int): Int {
+                return when (adapter.getItemViewType(p0)) {
+                    VoucherGameListViewHolder.LAYOUT -> 1
+                    else -> 3
+                }
+            }
+        }
+        return layoutManager
+    }
 
     override fun onEmptyContentItemTextClicked() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
