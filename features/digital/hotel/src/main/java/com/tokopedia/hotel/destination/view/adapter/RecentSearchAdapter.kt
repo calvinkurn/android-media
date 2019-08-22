@@ -4,9 +4,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.design.item.DeletableItemView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.RecentSearch
+import com.tokopedia.hotel.destination.view.widget.HotelDeletableItemView
 
 /**
  * @author by jessica on 01/04/19
@@ -43,7 +43,7 @@ class RecentSearchAdapter(val listener: RecentSearchListener): RecyclerView.Adap
 
     inner class ViewHolder(val itemview: View, val listener: RecentSearchListener): RecyclerView.ViewHolder(itemview) {
 
-        var textView: DeletableItemView = itemView.findViewById(R.id.autocomplete_chips_item)
+        var textView: HotelDeletableItemView = itemView.findViewById(R.id.autocomplete_chips_item)
 
         fun bind(data: RecentSearch, position: Int) {
             textView.setItemName(data.property.value)

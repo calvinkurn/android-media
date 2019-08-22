@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -40,6 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
+    private boolean pauseFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onPause() {
         super.onPause();
+        pauseFlag = true;
         unregisterForceLogoutReceiver();
         unregisterInAppReceiver();
         unregisterShake();
@@ -66,6 +69,14 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+
+        // this is to make sure the context of dynamic feature is updated when activity is onBackpressed
+        // hacky way of dynamic feature module, when activity is resumed after pausing.
+        // SplitCompat.install initiates on onAttachBaseContext by default.
+        if (pauseFlag) {
+            SplitCompat.install(this);
+            pauseFlag = false;
+        }
 
         sendScreenAnalytics();
         setLogCrash();
@@ -195,6 +206,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        SplitCompat.install(this);
     }
 
     public void setLogCrash() {

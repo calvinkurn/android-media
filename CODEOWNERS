@@ -8,12 +8,14 @@
 /feature/discovery/category_common/     @tokopedia/minion-stuart
 /feature/discovery/topadssdk/           @tokopedia/minion-dave
 /feature/discovery/home/                @tokopedia/minion-dave
+/feature/discovery/home_recom/          @tokopedia/minion-dave
 /feature/discovery/recentview/          @tokopedia/minion-dave
 /feature/discovery/wishlist_common/     @tokopedia/minion-dave
 /feature/discovery/productcard/         @tokopedia/minion-dave
 /feature/discovery/search/              @tokopedia/minion-dave
 /features/discovery/productcard/        @tokopedia/minion-dave
 /features/discovery/search/             @tokopedia/minion-dave
+/features/digital/digital_browse/       @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
 /tkpdseller/        @tokopedia/minion-stuart
@@ -53,7 +55,6 @@
 /features/digital/train/               @tokopedia/minion-mark
 /features/digital/hotel/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
-/features/digital/digital_browse/         @tokopedia/minion-mark
 /features/digital/digitalproduct        @tokopedia/minion-mark
 /featires/digital/common_travel         @tokopedia/minion-mark
 /libraries/travel_calendar              @tokopedia/minion-mark

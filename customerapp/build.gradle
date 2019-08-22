@@ -119,8 +119,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 322001101;
-        defaultVersionName = "3.22";
+        defaultVersionCode = 341001101;
+        defaultVersionName = "3.41";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -174,21 +174,20 @@ android {
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles  'proguard-rules.txt'
+            proguardFiles 'proguard-rules.txt'
             buildConfigField "boolean", "IS_PREINSTALL", "false"
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
-            ext.enableHansel=false
+            ext.enableHansel = false
         }
         release {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            ext.enableHansel=true
+            ext.enableHansel = true
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
@@ -204,32 +203,12 @@ android {
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
 
-            if (allowSplit()) {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
-                    }
-                    variant.assemble.doLast {
-                        variant.outputs.each { output ->
-                            if (output.zipAlign) {
-                                archiveAPK(variant, output);
-                            }
-                        }
-                    }
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    output.versionCodeOverride = (getTkpdVersionCode() * 100);
                 }
             }
         }
-    }
-
-    splits {
-        density {
-            enable allowSplit()
-            reset()
-            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
-            compatibleScreens 'small', 'normal', 'large', 'xlarge'
-        }
-
     }
 
     defaultConfig {
@@ -264,7 +243,7 @@ android {
     }
 
     // Specifies 4 flavor dimensions.
-    flavorDimensions "tier" , "client"
+    flavorDimensions "tier", "client"
 
     productFlavors {
         live {
@@ -280,6 +259,9 @@ android {
             dimension "client"
         }
     }
+
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
+
 }
 
 dependencies {
@@ -299,7 +281,6 @@ dependencies {
     implementation project(rootProject.ext.features.interestPick)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
@@ -367,6 +348,7 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
+    implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.browse)
     implementation project(rootProject.ext.features.notifCenter)
@@ -410,6 +392,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.omsApi)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.fingerprint)
@@ -455,7 +438,7 @@ dependencies {
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.paymentSetting)
 
-    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+    implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
@@ -480,10 +463,10 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.moengageSdk
     implementation rootProject.ext.analyticsDependencies.moengagePushbase
     implementation rootProject.ext.analyticsDependencies.moengageInapp
-    implementation (rootProject.ext.analyticsDependencies.moengage) {
+    implementation(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
-    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
+    implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
 
@@ -545,7 +528,7 @@ dependencies {
     }
 
     // Cloud testing
-    androidTestImplementation (name:'cloudtestingscreenshotter_lib', ext:'aar')
+    androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
 
     androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
@@ -585,7 +568,7 @@ dependencies {
 
 
 project.ext.sentryCli = [
-        logLevel: "debug",
+        logLevel   : "debug",
         flavorAware: true
 ]
 

@@ -185,7 +185,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         context?.run {
             startActivityForResult(HotelDestinationActivity.createInstance(this), REQUEST_CODE_DESTINATION)
         }
-        activity?.overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay)
+        activity?.overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_slide_up_in,
+                com.tokopedia.common.travel.R.anim.travel_anim_stay)
     }
 
     private fun configAndRenderCheckInDate() {

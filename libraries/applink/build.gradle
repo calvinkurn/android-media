@@ -25,6 +25,10 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.playServicesDependencies.core
+
+    implementation (rootProject.ext.serviceDependencies.crashlytics)
 }
 
 apply from: '../../publish_local.gradle'
