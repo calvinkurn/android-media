@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -312,8 +311,6 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
-import com.tokopedia.shop.open.ShopOpenInternalRouter;
-import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
@@ -639,11 +636,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-    }
-
-    @Override
-    public Intent getIntentCreateShop(Context context) {
-        return ShopOpenRouter.getIntentCreateEditShop(context);
     }
 
     @Override
@@ -2012,10 +2004,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopPageInternalRouter.getShoProductListIntent(context, shopId, keyword, etalaseId);
-    }
-
-    public Intent getOpenShopIntent(Context context) {
-        return ShopOpenInternalRouter.getOpenShopIntent(context);
     }
 
     @Override
