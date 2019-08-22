@@ -174,7 +174,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationFourthView: PartialRecommendationFourthView
     lateinit var valuePropositionView: PartialValuePropositionView
     lateinit var stickyLoginTextView: StickyTextView
-    lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
