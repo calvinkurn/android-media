@@ -15,18 +15,28 @@ import com.tokopedia.tradein.Utils
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
+import com.tokopedia.tradein.viewmodel.CourierPriceError
 import com.tokopedia.tradein.viewmodel.MoneyInCheckoutViewModel
+import com.tokopedia.tradein.viewmodel.MutationCheckoutError
+import com.tokopedia.tradein.viewmodel.ScheduleTimeError
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.payment.activity.TopPayActivity
+import com.tokopedia.common.payment.model.PaymentPassData
+
+
 
 class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBottomSheet.ActionListener {
 
     private lateinit var moneyInCheckoutViewModel: MoneyInCheckoutViewModel
-    private var scheduleTime: ScheduleDate.ScheduleTime? = null
+    private lateinit var scheduleTime: ScheduleDate.ScheduleTime
     private var orderValue :String = ""
     private var hardwareId : String = ""
+    private var spId : Int = -1
+    private var addrId: Int = -1
+    private lateinit var destination: String
 
     companion object {
         const val MONEY_IN_DEFAULT_ADDRESS = "MONEY_IN_DEFAULT_ADDRESS"
@@ -37,11 +47,16 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     override fun initView() {
-        orderValue = intent.getStringExtra(MONEY_IN_ORDER_VALUE)
-        hardwareId = intent.getStringExtra(MONEY_IN_HARDWARE_ID)
-        if (intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_DEFAULT_ADDRESS) != null) {
+        if(intent.hasExtra(MONEY_IN_ORDER_VALUE)) {
+            orderValue = intent.getStringExtra(MONEY_IN_ORDER_VALUE)
+        }
+        if(intent.hasExtra(MONEY_IN_HARDWARE_ID)) {
+            hardwareId = intent.getStringExtra(MONEY_IN_HARDWARE_ID)
+        }
+        if (intent.hasExtra(MONEY_IN_DEFAULT_ADDRESS)) {
             setAddressView(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_DEFAULT_ADDRESS))
-        } else if(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_NEW_ADDRESS) != null){
+        }
+        if(intent.hasExtra(MONEY_IN_NEW_ADDRESS)){
             setAddressView(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_NEW_ADDRESS))
         }
         moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
@@ -62,14 +77,6 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         mTvTnc.text = spannableString
         mTvTnc.isClickable = true
         mTvTnc.movementMethod = LinkMovementMethod.getInstance()
-        val btBuy = findViewById<Button>(R.id.bt_buy)
-        btBuy.setOnClickListener {
-            moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general))
-        }
-    }
-
-    override fun retryOnError() {
-
     }
 
     private fun showtnc() {
@@ -87,8 +94,6 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                     if (!it.data.scheduleDate.isNullOrEmpty())
                         setScheduleBottomSheet(it.data.scheduleDate)
                 }
-                is Fail -> {
-                }
             }
         })
         moneyInCheckoutViewModel.getCourierRatesLiveData().observe(this, Observer {
@@ -96,16 +101,40 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                 is Success -> {
                     setCourierRatesBottomSheet(it.data)
                 }
-                is Fail -> {
-                }
             }
         })
         moneyInCheckoutViewModel.getCheckoutDataLiveData().observe(this, Observer {
             when (it) {
                 is Success -> {
-
+                    val paymentPassData = PaymentPassData()
+                    paymentPassData.redirectUrl = it.data.redirectUrl
+                    paymentPassData.transactionId = it.data.parameter.transactionId
+                    paymentPassData.paymentId = ""
+                    paymentPassData.callbackSuccessUrl = it.data.callbackUrl
+                    paymentPassData.callbackFailedUrl = ""
+                    paymentPassData.queryString = it.data.queryString
+                    startActivityForResult(
+                            TopPayActivity.createInstance(this, paymentPassData),
+                            TopPayActivity.REQUEST_CODE)
                 }
-                is Fail -> {
+            }
+        })
+        moneyInCheckoutViewModel.getErrorLiveData().observe(this, Observer {
+            when(it) {
+                is ScheduleTimeError -> {
+                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
+                        moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
+                    }
+                }
+                is CourierPriceError -> {
+                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
+                        moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
+                    }
+                }
+                is MutationCheckoutError -> {
+                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
+                        moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.maxTimeUnix, scheduleTime.minTimeUnix)
+                    }
                 }
             }
         })
@@ -113,9 +142,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
     private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
         val courierBtn = findViewById<Button>(R.id.courier_btn)
+        spId = data.services[0].products[0].shipper.shipperProduct.id
         val moneyInCourierBottomSheet = MoneyInCourierBottomSheet.newInstance(
-                data.services?.get(0)?.products?.get(0)?.features?.moneyIn,
-                data.services?.get(0)?.products?.get(0)?.shipper?.shipperProduct?.description)
+                data.services[0].products[0].features.moneyIn,
+                data.services[0].products[0].shipper.shipperProduct.description)
         courierBtn.setOnClickListener {
             moneyInCourierBottomSheet.show(supportFragmentManager, "")
         }
@@ -134,7 +164,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         this.scheduleTime = scheduleTime
     }
 
-    private fun setAddressView(recipientAddress: KeroGetAddress.Data?) {
+    private fun setAddressView(recipientAddress: KeroGetAddress.Data) {
         val tvAddressStatus = findViewById<Typography>(R.id.tv_address_status) as Typography
         val tvAddressName = findViewById<Typography>(R.id.tv_address_name) as Typography
         val tvRecipientName = findViewById<Typography>(R.id.tv_recipient_name) as Typography
@@ -144,14 +174,14 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         val priceAmount = findViewById<Typography>(R.id.price_amount) as Typography
         val totalPaymentValue = findViewById<TextView>(R.id.tv_total_payment_value) as TextView
 
-        if (recipientAddress?.status == 2) {
+        if (recipientAddress.status == 2) {
             tvAddressStatus.visibility = View.VISIBLE
         } else {
             tvAddressStatus.visibility = View.GONE
         }
-        tvAddressName.text = Utils.getHtmlFormat(recipientAddress?.addrName)
-        tvRecipientName.text = Utils.getHtmlFormat(recipientAddress?.receiverName)
-        tvRecipientPhone.text = recipientAddress?.phone
+        tvAddressName.text = Utils.getHtmlFormat(recipientAddress.addrName)
+        tvRecipientName.text = Utils.getHtmlFormat(recipientAddress.receiverName)
+        tvRecipientPhone.text = recipientAddress.phone
         tvRecipientAddress.text = Utils.getHtmlFormat(getFullAddress(recipientAddress))
         priceAmount.text = orderValue
         totalPaymentValue.text = orderValue
@@ -159,15 +189,25 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         tvChangeRecipientAddress.setOnClickListener {
             //TODO change address activity
         }
-        val destination = "${(recipientAddress?.district).toString()}|${(recipientAddress?.postalCode).toString()}|${(recipientAddress?.latitude)},${(recipientAddress?.longitude)}"
+        destination = "${(recipientAddress.district)}|${(recipientAddress.postalCode)}|${(recipientAddress.latitude)},${(recipientAddress.longitude)}"
+        addrId = recipientAddress.addrId
         moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
+
+        val btBuy = findViewById<Button>(R.id.bt_buy)
+        btBuy.setOnClickListener {
+            if(::scheduleTime.isInitialized) {
+                moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.maxTimeUnix, scheduleTime.minTimeUnix)
+            } else {
+                showMessage(getString(R.string.select_fetch_time))
+            }
+        }
     }
 
-    private fun getFullAddress(recipientAddress: KeroGetAddress.Data?): String {
-        return (recipientAddress?.address1 + ", "
-                + recipientAddress?.districtName + ", "
-                + recipientAddress?.cityName + ", "
-                + recipientAddress?.provinceName)
+    private fun getFullAddress(recipientAddress: KeroGetAddress.Data): String {
+        return (recipientAddress.address1 + ", "
+                + recipientAddress.districtName + ", "
+                + recipientAddress.cityName + ", "
+                + recipientAddress.provinceName)
     }
 
     override fun getViewModelType(): Class<MoneyInCheckoutViewModel> {

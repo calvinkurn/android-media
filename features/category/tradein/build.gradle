@@ -57,4 +57,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
+    implementation project(rootProject.ext.libraries.fingerprint)
 }

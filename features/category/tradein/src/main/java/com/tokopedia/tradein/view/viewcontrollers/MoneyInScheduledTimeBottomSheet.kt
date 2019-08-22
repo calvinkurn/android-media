@@ -53,6 +53,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         timeSpinner?.setAdapter(timeAdapter)
         currentDate = dateSpinner?.getCurrentItem()
         changeTimeByDate()
+        currentTime = timeSpinner?.getCurrentItem()
         dateSpinner?.setOnValueChangedListener(object : OnValueChangeListener {
             override fun onValueChange(oldVal: String, newVal: String) {
                 currentDate = newVal
