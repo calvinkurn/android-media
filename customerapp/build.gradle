@@ -380,6 +380,7 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.onboarding)
+    implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
 
 
