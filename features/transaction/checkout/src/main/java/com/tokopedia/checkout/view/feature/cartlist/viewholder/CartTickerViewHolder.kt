@@ -18,10 +18,12 @@ class CartTickerViewHolder(itemView: View, val rv: RecyclerView?, val actionList
         itemView.cartTicker.requestLayout()
 
         // Workaround for ticker not wrapping multiline content correctly
-        if (rv != null) {
-            itemView.cartTicker.measure(View.MeasureSpec.makeMeasureSpec(rv.width, View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-            itemView.cartTicker.requestLayout()
+        itemView.cartTicker.post {
+            if (rv != null) {
+                itemView.cartTicker.measure(View.MeasureSpec.makeMeasureSpec(rv.width, View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                itemView.cartTicker.requestLayout()
+            }
         }
 
         actionListener.onShowCartTicker(cartTickerData.id)
