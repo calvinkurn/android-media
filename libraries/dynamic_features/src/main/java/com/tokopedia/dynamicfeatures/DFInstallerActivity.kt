@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.Toaster
+import timber.log.Timber
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -167,7 +168,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             sessionId = null
             hideProgress()
             val message = getString(R.string.error_for_module_x, moduleName)
-            showFailedMessage(message)
+            showFailedMessage(moduleName, message)
         }
     }
 
@@ -183,6 +184,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
         }
         this.finish()
+        Timber.w("P3Installed Module {$moduleName}")
     }
 
     /** Listener used to handle changes in state for install requests. */
@@ -198,6 +200,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             SplitInstallSessionStatus.DOWNLOADING -> {
                 //  In order to see this, the application has to be uploaded to the Play Store.
                 displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
+                Timber.w("P3Download Module {$names}")
             }
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                 /*
@@ -219,15 +222,15 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                showFailedMessage(message)
+                showFailedMessage(names, message)
                 hideProgress()
             }
         }
     }
 
-    private fun showFailedMessage(message: String) {
+    private fun showFailedMessage(moduleName: String, message: String) {
         if (!GlobalConfig.DEBUG) {
-            Crashlytics.logException(Exception(message))
+            Timber.w("P3Failed Module {$moduleName}")
         }
         Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
             message,
