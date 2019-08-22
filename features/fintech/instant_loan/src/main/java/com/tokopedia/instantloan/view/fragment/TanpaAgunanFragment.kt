@@ -118,17 +118,21 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         loanPeriodValueTV.tag = ""
 
         loanCategoryValueTV.text = getString(R.string.il_loan_category_label)
-        loanCategoryValueTV.tag = 0
+        loanCategoryValueTV.tag = DEFAULT_LOAN_CATEGORY
 
         spinner_value_nominal.setOnClickListener {
             if (!::selectedLoanPeriodType.isInitialized) {
                 loanPeriodLabelTV.error = ""
             } else if (selectedLoanPeriodType.value.equals(DEFAULT_YEAR_VALUE, true)) {
-                val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodYearList)
-                startActivityForResult(intent, LOAN_PERIOD_YEAR)
+                context?.let {
+                    val intent: Intent = SelectLoanParamActivity.createInstance(it, loanPeriodYearList)
+                    startActivityForResult(intent, LOAN_PERIOD_YEAR)
+                }
             } else if (selectedLoanPeriodType.value.equals(DEFAULT_MONTH_VALUE, true)) {
-                val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodMonthList)
-                startActivityForResult(intent, LOAN_PERIOD_MONTH)
+                context?.let {
+                    val intent: Intent = SelectLoanParamActivity.createInstance(it, loanPeriodMonthList)
+                    startActivityForResult(intent, LOAN_PERIOD_MONTH)
+                }
             }
         }
 
@@ -364,6 +368,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
         private val TAB_POSITION = "tab_position"
 
+        private val DEFAULT_LOAN_CATEGORY = 0
         private val DEFAULT_MONTH_VALUE = "Month"
         private val DEFAULT_MONTH_LABEL = "Bulan"
         private val DEFAULT_YEAR_VALUE = "Year"

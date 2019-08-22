@@ -18,7 +18,7 @@ class SelectLoanCategoryActivity : BaseActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonClose: View
-    private var topBarTitle: TextView? = null
+    private lateinit var topBarTitle: TextView
     private var adapter: ListAdapter? = null
     private var data: ArrayList<GqlLendingCategoryData>? = null
     private var selectedKey: Int = 0
@@ -32,11 +32,15 @@ class SelectLoanCategoryActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_loan_param)
         topBarTitle = findViewById<View>(R.id.top_bar_title) as TextView
-        topBarTitle!!.text = getString(R.string.il_loan_category)
         recyclerView = findViewById<View>(R.id.list) as RecyclerView
         buttonClose = findViewById(R.id.top_bar_close_button)
         buttonClose.setOnClickListener { onBackPressed() }
-        data = intent.extras!!.getParcelableArrayList(EXTRA_DATA)
+        topBarTitle.text = getString(R.string.il_loan_category)
+
+        intent.extras?.let {
+            data = it.getParcelableArrayList(EXTRA_DATA)
+        }
+
         adapter = ListAdapter(data, selectedKey, selectedValue, object : OnItemClickListener {
             override fun onItemClicked(categoryType: GqlLendingCategoryData) {
                 val intent = Intent()
@@ -120,7 +124,7 @@ class SelectLoanCategoryActivity : BaseActivity() {
                 textView.isSelected = true
                 sortList[adapterPosition].isSelected = true
                 clickListener.onItemClicked(sortList[adapterPosition])
-                notifyDataSetChanged()
+                notifyItemChanged(adapterPosition)
             }
 
         }
