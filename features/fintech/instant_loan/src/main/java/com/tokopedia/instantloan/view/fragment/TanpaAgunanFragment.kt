@@ -137,8 +137,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         }
 
         spinner_loan_category.setOnClickListener {
-            val intent: Intent = SelectLoanCategoryActivity.createInstance(context!!, loanCategoryTypeList)
-            startActivityForResult(intent, LOAN_CATEGORY_TYPE)
+            context?.let {
+                val intent: Intent = SelectLoanCategoryActivity.createInstance(it, loanCategoryTypeList)
+                startActivityForResult(intent, LOAN_CATEGORY_TYPE)
+            }
         }
 
         view.findViewById<View>(R.id.button_search_pinjaman).setOnClickListener { view1 ->
