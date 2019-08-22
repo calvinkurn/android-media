@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.create.customview.ChooseCategorySectionCreateResCenterView;
@@ -31,7 +30,7 @@ import com.tokopedia.inbox.rescenter.create.presenter.ChooseTroubleImpl;
 import com.tokopedia.inbox.rescenter.create.presenter.ChooseTroublePresenter;
 import com.tokopedia.core.util.AppUtils;
 
-import butterknife.BindView;
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -41,25 +40,15 @@ public class ChooseTroubleFragment extends BasePresenterFragment<ChooseTroublePr
 
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
     private CreateResCenterListener listener;
-
-    @BindView(R2.id.invoice)
-    TextView invoice;
-    @BindView(R2.id.shop_name)
-    TextView shopName;
-    @BindView(R2.id.view_category_section)
-    ChooseCategorySectionCreateResCenterView categorySection;
-    @BindView(R2.id.view_trouble_section)
-    ChooseTroubleSectionCreateResCenterView troubleSectionView;
-    @BindView(R2.id.view_product_section)
-    ChooseProductSectionCreateResCenterView productSection;
-    @BindView(R2.id.action_choose_solution)
-    View chooseSolution;
-    @BindView(R2.id.action_abort)
-    View actionAbort;
-    @BindView(R2.id.main_view)
-    View mainView;
-    @BindView(R2.id.include_loading)
-    View loading;
+    private TextView invoice;
+    private TextView shopName;
+    private ChooseCategorySectionCreateResCenterView categorySection;
+    private ChooseTroubleSectionCreateResCenterView troubleSectionView;
+    private ChooseProductSectionCreateResCenterView productSection;
+    private View chooseSolution;
+    private View actionAbort;
+    private View mainView;
+    private View loading;
 
     private ActionParameterPassData passData;
 
@@ -124,7 +113,19 @@ public class ChooseTroubleFragment extends BasePresenterFragment<ChooseTroublePr
 
     @Override
     protected void initView(View view) {
+        settingUpVariables(view);
+    }
 
+    private void settingUpVariables(View view) {
+        invoice = view.findViewById(R.id.invoice);
+        shopName = view.findViewById(R.id.shop_name);
+        categorySection = view.findViewById(R.id.view_category_section);
+        troubleSectionView = view.findViewById(R.id.view_trouble_section);
+        productSection = view.findViewById(R.id.view_product_section);
+        chooseSolution = view.findViewById(R.id.action_choose_solution);
+        actionAbort = view.findViewById(R.id.action_abort);
+        mainView = view.findViewById(R.id.main_view);
+        loading = view.findViewById(R.id.include_loading);
     }
 
     @Override
