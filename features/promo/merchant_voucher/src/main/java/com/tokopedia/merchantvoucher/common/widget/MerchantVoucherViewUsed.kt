@@ -62,13 +62,6 @@ class MerchantVoucherViewUsed : CustomVoucherView {
     }
 
     fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
-//        if (merchantVoucherViewModel?.enableButtonUse == true) {
-//            btnUseVoucher.visibility = View.VISIBLE
-//            tvCode.visibility = View.GONE
-//        } else {
-//            btnUseVoucher.visibility = View.GONE
-//            tvCode.visibility = View.VISIBLE
-//        }
         this.merchantVoucherViewModel = merchantVoucherViewModel
         btnUseVoucher.setOnClickListener {
             merchantVoucherViewModel?.run {
