@@ -61,8 +61,6 @@ class ShopListFragmentKt:
         initViewModel()
         initViews()
         observeViewModelData()
-
-        searchShop()
     }
 
     private fun initViewModel() {
@@ -86,6 +84,10 @@ class ShopListFragmentKt:
         }
     }
 
+    private fun reloadSearchShop() {
+        searchShopViewModel?.reloadSearchShop()
+    }
+
     private fun initGridLayoutManager() {
         gridLayoutManager = GridLayoutManager(activity, 1)
     }
@@ -93,14 +95,15 @@ class ShopListFragmentKt:
     private fun initLoadMoreListener() {
         gridLayoutLoadMoreTriggerListener = object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                Log.d("SearchShopFragment", "Load More is called. page: $page, total items: $totalItemsCount")
-
                 if (userVisibleHint) {
-                    Log.d("SearchShopFragment", "search more shop is called")
                     searchMoreShop()
                 }
             }
         }
+    }
+
+    private fun searchMoreShop() {
+        searchShopViewModel?.searchMoreShop()
     }
 
     private fun initRecyclerView() {
@@ -139,26 +142,6 @@ class ShopListFragmentKt:
         searchShopViewModel?.getSearchShopLiveData()?.observe(viewLifecycleOwner, Observer {
             updateAdapter(it)
         })
-    }
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-
-        if (isVisibleToUser) {
-            searchShop()
-        }
-    }
-
-    private fun searchShop() {
-        searchShopViewModel?.searchShop()
-    }
-
-    private fun searchMoreShop() {
-        searchShopViewModel?.searchMoreShop()
-    }
-
-    private fun reloadSearchShop() {
-
     }
 
     private fun updateAdapter(searchShopLiveData: State<List<Visitable<*>>>?) {
@@ -211,6 +194,18 @@ class ShopListFragmentKt:
 
     private fun isSearchShopLiveDataContainItems(searchShopLiveData: State<List<Visitable<*>>>): Boolean {
         return searchShopLiveData.data?.size == 0
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+
+        if (isVisibleToUser) {
+            searchShop()
+        }
+    }
+
+    private fun searchShop() {
+        searchShopViewModel?.searchShop()
     }
 
     override fun getScreenName(): String {

@@ -121,7 +121,7 @@ class SearchShopViewModel(
     private fun putRequestParamsOtherParameters(requestParams: RequestParams) {
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
-        requestParams.putString(SearchApiConst.OB, requestParams.getString(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT))
+        requestParams.putString(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
         requestParams.putString(SearchApiConst.ROWS, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS)
         requestParams.putString(SearchApiConst.IMAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE)
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE)
@@ -210,8 +210,6 @@ class SearchShopViewModel(
 
     private fun updateSearchShopLiveDataStateToError() {
         val searchShopDataList = getSearchShopLiveDataMutableList()
-        searchShopDataList.remove(loadingMoreModel)
-
         searchShopLiveData.postValue(Error("", searchShopDataList))
     }
 
@@ -274,6 +272,22 @@ class SearchShopViewModel(
 
     private fun isSearchShopLiveDataDoesNotContainItems(): Boolean {
         return !isSearchShopLiveDataContainItems()
+    }
+
+    fun reloadSearchShop() {
+        launchCatchError(block = {
+            tryReloadSearchShop()
+        }, onError = {
+            catchSearchShopError(it)
+        })
+    }
+
+    private suspend fun tryReloadSearchShop() {
+        updateSearchShopLiveDataStateToLoading()
+
+        val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
+
+        searchShopFirstPageSuccess(searchShopModel)
     }
 
     fun getSearchParameterQuery() = (searchParameter[SearchApiConst.Q] ?: "").toString()

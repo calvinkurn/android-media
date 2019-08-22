@@ -8,8 +8,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
-import com.tokopedia.search.result.domain.usecase.TestErrorSearchUseCase
-import com.tokopedia.search.result.domain.usecase.TestSearchUseCase
 import com.tokopedia.search.result.presentation.mapper.ShopHeaderViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapper
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
@@ -32,7 +30,7 @@ class SearchShopViewModelMockKTest {
 
         `when execute search shop`()
 
-        `then assert search shop success`()
+        `then assert search shop state is success and contains search shop data`()
     }
 
     @Test
@@ -50,7 +48,7 @@ class SearchShopViewModelMockKTest {
 
         `when execute search shop, then search more shop`()
 
-        `then assert search shop and search more shop is success`()
+        `then assert search shop state is success and contains data from search shop and search more shop`()
     }
 
     @Test
@@ -68,7 +66,7 @@ class SearchShopViewModelMockKTest {
 
         `when execute search shop twice`()
 
-        `then assert search shop state is success but only have data from the first search shop API call`()
+        `then assert search shop state is success and contains search shop data from first API call`()
     }
 
     @Test
@@ -86,7 +84,7 @@ class SearchShopViewModelMockKTest {
 
         `when execute search shop, search more shop, and then search more shop again`()
 
-        `then assert search shop state is success, without data from last search more shop API call`()
+        `then assert search shop state is success, without data from second search more shop API call`()
     }
 
     @Test
@@ -105,6 +103,24 @@ class SearchShopViewModelMockKTest {
         `when execute search shop, search more shop, and then retry`()
 
         `then assert search more shop success after retry`()
+    }
+
+    @Test
+    fun `test reload search shop`() {
+        `given search shop API call will be successful and return search shop data`()
+
+        `when reload search shop`()
+
+        `then assert search shop state is success and contains search shop data`()
+    }
+
+    @Test
+    fun `test reload search shop after search shop and search more shop`() {
+        `given search shop and search more shop API call will be successful and return search shop data`()
+
+        `when search shop, search more shop, and then reload`()
+
+        `then assert reload search shop success`()
     }
 
     @get:Rule
@@ -188,7 +204,7 @@ class SearchShopViewModelMockKTest {
         searchShopViewModel.searchShop()
     }
 
-    private fun `then assert search shop success`() {
+    private fun `then assert search shop state is success and contains search shop data`() {
         assertUseCaseExecutionCount(searchShopUseCase, 1)
 
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
@@ -206,6 +222,7 @@ class SearchShopViewModelMockKTest {
             assertShopHeaderAtFirstIndexOfData(state.data!!)
             assertLoadingMoreAtLastIndexOfData(state.data!!)
             assertShopItemBetweenFirstAndLastIndexOfData(state.data!!)
+            assertShopItemSize(state.data!!, shopItemList.size)
         }
         else {
             assert(false) {
@@ -257,6 +274,14 @@ class SearchShopViewModelMockKTest {
         }
     }
 
+    private fun assertShopItemSize(data: List<Visitable<*>>, expectedShopItemCount: Int) {
+        val actualShopItemCount = data.count { it is ShopViewModel.ShopItem }
+
+        assert(actualShopItemCount == expectedShopItemCount) {
+            "Actual shop item count is $actualShopItemCount, expected shop item count is $expectedShopItemCount"
+        }
+    }
+
     private fun `given search shop API call will fail`() {
         val exception = Exception("Mock exception for testing error")
         coEvery { searchShopUseCase.executeOnBackground() }.throws(exception)
@@ -303,7 +328,7 @@ class SearchShopViewModelMockKTest {
         searchShopViewModel.searchMoreShop()
     }
 
-    private fun `then assert search shop and search more shop is success`() {
+    private fun `then assert search shop state is success and contains data from search shop and search more shop`() {
         assertUseCaseExecutionCount(searchShopUseCase, 1)
         assertUseCaseExecutionCount(searchMoreShopUseCase, 1)
 
@@ -346,7 +371,8 @@ class SearchShopViewModelMockKTest {
             assertStateIsError(state)
             assertDataIsNotEmpty(state.data)
             assertShopHeaderAtFirstIndexOfData(state.data!!)
-            assertShopItemFromSecondToLastIndexOfData(state.data!!)
+            assertLoadingMoreAtLastIndexOfData(state.data!!)
+            assertShopItemBetweenFirstAndLastIndexOfData(state.data!!)
             assertShopItemSize(state.data!!, shopItemList.size)
         }
         else {
@@ -363,20 +389,12 @@ class SearchShopViewModelMockKTest {
         }
     }
 
-    private fun assertShopItemSize(data: List<Visitable<*>>, expectedShopItemCount: Int) {
-        val actualShopItemCount = data.count { it is ShopViewModel.ShopItem }
-
-        assert(actualShopItemCount == expectedShopItemCount) {
-            "Actual shop item count is $actualShopItemCount, expected shop item count is $expectedShopItemCount"
-        }
-    }
-
     private fun `when execute search shop twice`() {
         searchShopViewModel.searchShop()
         searchShopViewModel.searchShop()
     }
 
-    private fun `then assert search shop state is success but only have data from the first search shop API call`() {
+    private fun `then assert search shop state is success and contains search shop data from first API call`() {
         assertUseCaseExecutionCount(searchShopUseCase, 1)
 
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
@@ -439,7 +457,7 @@ class SearchShopViewModelMockKTest {
         searchShopViewModel.searchMoreShop()
     }
 
-    private fun `then assert search shop state is success, without data from last search more shop API call`() {
+    private fun `then assert search shop state is success, without data from second search more shop API call`() {
         assertUseCaseExecutionCount(searchShopUseCase, 1)
         assertUseCaseExecutionCount(searchMoreShopUseCase, 1)
 
@@ -503,6 +521,40 @@ class SearchShopViewModelMockKTest {
 
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         assertSuccessSearchMoreShopData(searchShopState)
+    }
+
+    private fun `when reload search shop`() {
+        searchShopViewModel.reloadSearchShop()
+    }
+
+    private fun `when search shop, search more shop, and then reload`() {
+        searchShopViewModel.searchShop()
+        searchShopViewModel.searchMoreShop()
+        searchShopViewModel.reloadSearchShop()
+    }
+
+    private fun `then assert reload search shop success`() {
+        assertUseCaseExecutionCount(searchShopUseCase, 2)
+        assertUseCaseExecutionCount(searchMoreShopUseCase, 1)
+
+        val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+        assertSuccessReloadSearchShopData(searchShopState)
+    }
+
+    private fun assertSuccessReloadSearchShopData(state: State<List<Visitable<*>>>?) {
+        if(state != null) {
+            assertStateIsSuccess(state)
+            assertDataIsNotEmpty(state.data)
+            assertShopHeaderAtFirstIndexOfData(state.data!!)
+            assertLoadingMoreAtLastIndexOfData(state.data!!)
+            assertShopItemBetweenFirstAndLastIndexOfData(state.data!!)
+            assertShopItemSize(state.data!!, shopItemList.size)
+        }
+        else {
+            assert(false) {
+                "State is null"
+            }
+        }
     }
 
     @After
