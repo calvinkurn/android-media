@@ -13,7 +13,6 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -26,18 +25,13 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 @Deprecated
 public class InboxResCenterActivity extends DrawerPresenterActivity<ResCenterPresenter>
         implements ResCenterView {
 
     public static final String TAG = InboxResCenterActivity.class.getSimpleName();
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
-
-    @BindView(R2.id.pager)
     public ViewPager viewPager;
-    @BindView(R2.id.indicator)
     public TabLayout tabLayout;
 
     private SectionsPagerAdapter pagerAdapter;
@@ -60,6 +54,8 @@ public class InboxResCenterActivity extends DrawerPresenterActivity<ResCenterPre
         super.onCreate(savedInstanceState);
         presenter.clearNotif(this, getIntent());
         presenter.initAnalytics(this);
+        viewPager = findViewById(R.id.pager);
+        tabLayout = findViewById(R.id.indicator);
     }
 
     @Override
