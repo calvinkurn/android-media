@@ -22,4 +22,5 @@
     <string name="tkpdtransaction_title_replacement_reason_4">Penjual tidak merespon</string>
     <string name="tkpdtransaction_common_enter_reason">Masukan alasan anda</string>
     <string name="ajukan">Ajukan</string>
+    <string name="please_chose_one">Mohon Pilih Salah Satu</string>
 </resources>

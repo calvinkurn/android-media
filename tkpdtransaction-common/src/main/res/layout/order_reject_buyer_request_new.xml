@@ -55,7 +55,7 @@
                     android:id="@+id/submit_button"
                     style="@style/Button.Submit.Green"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="@dimen/dp_52"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/bg_grey_button_rounded"

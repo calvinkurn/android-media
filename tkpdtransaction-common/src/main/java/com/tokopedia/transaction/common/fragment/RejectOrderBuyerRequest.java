@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.transaction.common.R;
 import com.tokopedia.transaction.common.adapters.RejectOrderReasonAdapter;
 
@@ -190,7 +191,7 @@ public class RejectOrderBuyerRequest extends Fragment implements RejectOrderReas
                 setButtonCancelSearch(false);
                 Toast.makeText(
                         getActivity(),
-                        "Mohon Pilih Salah Satu",
+                        getResources().getString(R.string.please_chose_one),
                         Toast.LENGTH_LONG).show();
             }
         };
@@ -198,10 +199,8 @@ public class RejectOrderBuyerRequest extends Fragment implements RejectOrderReas
 
     private void setButtonCancelSearch(boolean active) {
         submitButton.setEnabled(active);
-        submitButton.setBackground(active ? ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_green) :
-                ContextCompat.getDrawable(getActivity(), R.drawable.bg_grey_button_rounded));
-        submitButton.setTextColor(active ? ContextCompat.getColor(getActivity(), R.color.white) :
-                ContextCompat.getColor(getActivity(), R.color.grey_700));
+        MethodChecker.setBackground(submitButton, MethodChecker.getDrawable(getActivity(), active ? R.drawable.bg_button_green : R.drawable.bg_grey_button_rounded));
+        submitButton.setTextColor(MethodChecker.getColor(getActivity(), active ? R.color.white : R.color.grey_700));
     }
 
     public interface RejectOrderBuyerRequestListener {

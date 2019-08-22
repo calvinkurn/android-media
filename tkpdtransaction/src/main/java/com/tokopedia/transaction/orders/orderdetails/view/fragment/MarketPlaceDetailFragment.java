@@ -93,6 +93,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String NO_SALIN = "No. Resi";
     public static final String NO_SANIN_NEXT_LINE = "\n\nSalin No. Resi";
     public static final String BELI_LAGI = "Beli Lagi";
+    public static final String INVOICE_URL = "invoiceUrl";
+    public static final String TX_ASK_SELLER = "tx_ask_seller";
+    public static final String STATUS_CODE_220 = "220";
+    public static final String STATUS_CODE_400 = "400";
+    public static final String STATUS_CODE_11 = "11";
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
     public static final int CANCEL_BUYER_REQUEST = 103;
@@ -631,7 +636,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
                     intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                     intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
-                    if (this.status.status().equals("220") || this.status.status().equals("400")) {
+                    if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
                         if (presenter.shouldShowTimeForCancellation()) {
                             Toaster.Companion.showError(mainView,
                                     getContext().getResources().getString(
@@ -640,7 +645,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                     Snackbar.LENGTH_LONG);
                         } else
                             startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
-                    } else if (this.status.status().equals("11")) {
+                    } else if (this.status.status().equals(STATUS_CODE_11)) {
                         startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
                         String routingAppLink;
@@ -672,11 +677,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             String shopUrl = this.shopInfo.getShopUrl();
             String invoiceUrl;
             Uri uri = Uri.parse(uriString);
-            invoiceUrl = uri.getQueryParameter("invoiceUrl");
+            invoiceUrl = uri.getQueryParameter(INVOICE_URL);
             String applink = "tokopedia://topchat/askseller/" + shopId;
             Intent intent = RouteManager.getIntent(getContext(), applink);
             presenter.assignInvoiceDataTo(intent);
-            intent.putExtra(ApplinkConst.Chat.SOURCE, "tx_ask_seller");
+            intent.putExtra(ApplinkConst.Chat.SOURCE, TX_ASK_SELLER);
             startActivity(intent);
         }
     }
