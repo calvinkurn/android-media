@@ -103,7 +103,8 @@ class RecommendationItemViewHolder(
     }
 
     private fun showError(view: View, throwable: Throwable?){
-        Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
+        Toaster.showError(view,
+            ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
     }
 
 }
