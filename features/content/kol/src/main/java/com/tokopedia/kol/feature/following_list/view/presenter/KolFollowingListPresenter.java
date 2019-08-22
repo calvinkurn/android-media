@@ -8,6 +8,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.following_list.data.pojo.DataItem;
 import com.tokopedia.kol.feature.following_list.data.pojo.FollowerListData;
+import com.tokopedia.kol.feature.following_list.domain.interactor.GetFollowerListUseCase;
 import com.tokopedia.kol.feature.following_list.domain.interactor
         .GetKolFollowingListLoadMoreUseCase;
 import com.tokopedia.kol.feature.following_list.domain.interactor.GetKolFollowingListUseCase;
@@ -38,19 +39,12 @@ public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingL
     private KolFollowingList.View mainView;
     private final GetKolFollowingListUseCase getKolFollowingListUseCase;
     private final GetKolFollowingListLoadMoreUseCase getKolFollowingListLoadMoreUseCase;
-    private final GraphqlUseCase getFollowerList;
-
-    public static final String PARAM_ID = "userID";
-    public static final String PARAM_CURSOR = "cursor";
-    public static final String PARAM_LIMIT = "limit";
-
-
-    public static final int DEFAULT_LIMIT = 10;
+    private final GetFollowerListUseCase getFollowerList;
 
     @Inject
     public KolFollowingListPresenter(GetKolFollowingListUseCase getKolFollowingListUseCase,
                                      GetKolFollowingListLoadMoreUseCase getKolFollowingListLoadMoreUseCase,
-                                     GraphqlUseCase getFollowerList) {
+                                     GetFollowerListUseCase getFollowerList) {
         this.getKolFollowingListUseCase = getKolFollowingListUseCase;
         this.getKolFollowingListLoadMoreUseCase = getKolFollowingListLoadMoreUseCase;
         this.getFollowerList = getFollowerList;
@@ -95,11 +89,9 @@ public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingL
     @Override
     public void getFollowersList(int userId) {
         if (isViewAttached()) {
-            String query = GraphqlHelper.loadRawString(mainView.getContext().getResources(), R.raw.query_get_kol_followers_list);
-            GraphqlRequest request = new GraphqlRequest(query, FollowerListData.class, getFollowerListParam(userId, "").getParameters());
-            getFollowerList.clearRequest();
-            getFollowerList.addRequest(request);
-            getFollowerList.execute(new Subscriber<GraphqlResponse>() {
+            getFollowerList.execute(GetFollowerListUseCase.getFollowerListParam(
+                    userId,""),
+                    new Subscriber<KolFollowingResultViewModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -112,10 +104,9 @@ public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingL
                 }
 
                 @Override
-                public void onNext(GraphqlResponse graphqlResponse) {
+                public void onNext(KolFollowingResultViewModel result) {
                     mainView.hideLoading();
-                    FollowerListData data = graphqlResponse.getData(FollowerListData.class);
-                    getView().onSuccessGetKolFollowingList(mapFollowersData(data));
+                    getView().onSuccessGetKolFollowingList(result);
                 }
             });
         }
@@ -124,11 +115,10 @@ public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingL
     @Override
     public void getFollowersLoadMore(int userId, String cursor) {
         if (isViewAttached()) {
-            String query = GraphqlHelper.loadRawString(mainView.getContext().getResources(), R.raw.query_get_kol_followers_list);
-            GraphqlRequest request = new GraphqlRequest(query, FollowerListData.class, getFollowerListParam(userId, cursor).getParameters());
-            getFollowerList.clearRequest();
-            getFollowerList.addRequest(request);
-            getFollowerList.execute(new Subscriber<GraphqlResponse>() {
+
+            getFollowerList.execute(GetFollowerListUseCase.getFollowerListParam(
+                    userId, cursor),
+                    new Subscriber<KolFollowingResultViewModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -140,44 +130,10 @@ public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingL
                 }
 
                 @Override
-                public void onNext(GraphqlResponse graphqlResponse) {
-                    FollowerListData data = graphqlResponse.getData(FollowerListData.class);
-                    getView().onSuccessLoadMoreKolFollowingList(mapFollowersData(data));
+                public void onNext(KolFollowingResultViewModel result) {
+                    getView().onSuccessLoadMoreKolFollowingList(result);
                 }
             });
         }
-    }
-
-    private RequestParams getFollowerListParam(int id, String cursor) {
-        RequestParams params = RequestParams.create();
-        params.putInt(PARAM_ID, id);
-        params.putString(PARAM_CURSOR, cursor);
-        params.putInt(PARAM_LIMIT, DEFAULT_LIMIT);
-        return params;
-    }
-
-    private KolFollowingResultViewModel mapFollowersData(FollowerListData data) {
-        return new KolFollowingResultViewModel(
-                !data.getFeedGetUserFollowers().getMeta().getNextCursor().isEmpty(),
-                data.getFeedGetUserFollowers().getMeta().getNextCursor(),
-                mapFollowData(data.getFeedGetUserFollowers().getData()),
-                "",
-                ""
-        );
-    }
-
-    private List<KolFollowingViewModel> mapFollowData(List<DataItem> dataList) {
-        List<KolFollowingViewModel> resultList = new ArrayList<>();
-        for (DataItem data: dataList) {
-            resultList.add(new KolFollowingViewModel(
-                    data.getId(),
-                    data.getPhoto(),
-                    data.getApplink(),
-                    data.getApplink(),
-                    false,
-                    data.getName()
-            ));
-        }
-        return resultList;
     }
 }
