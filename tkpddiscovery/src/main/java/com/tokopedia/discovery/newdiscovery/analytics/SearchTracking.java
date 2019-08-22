@@ -135,18 +135,27 @@ public class SearchTracking {
     }
 
     public void trackImpressionSearchResultShop(List<Object> shopItemList, String keyword) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, "promoView",
-                        EVENT_CATEGORY, "search result",
-                        EVENT_ACTION, "impression - shop",
-                        EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(
-                                "promoView", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(shopItemList.toArray(new Object[shopItemList.size()]))
-                                )
-                        )
-                )
-        );
+        // Shop Impression tracking is turned off for now.
+
+        // Currently this tracking is hit every time Search Activity is started,
+        // even though the user might not want to go to the Shop Tab,
+        // so tracking shop impression is not accurate.
+
+        // This tracking will be turned on again if it is possible to only track shop  impression
+        // when the user go to Shop Tab
+
+//        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+//                DataLayer.mapOf(EVENT, "promoView",
+//                        EVENT_CATEGORY, "search result",
+//                        EVENT_ACTION, "impression - shop",
+//                        EVENT_LABEL, keyword,
+//                        ECOMMERCE, DataLayer.mapOf(
+//                                "promoView", DataLayer.mapOf(
+//                                        "promotions", DataLayer.listOf(shopItemList.toArray(new Object[shopItemList.size()]))
+//                                )
+//                        )
+//                )
+//        );
     }
 
     public void trackSearchResultShopItemClick(Object shopItem, String keyword) {
@@ -165,17 +174,26 @@ public class SearchTracking {
     }
 
     public void trackImpressionSearchResultShopProductPreview(List<Object> shopItemProductList, String keyword) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, "productView",
-                        EVENT_CATEGORY, "search result",
-                        EVENT_ACTION, "impression - product - shop tab",
-                        EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(shopItemProductList.toArray(new Object[shopItemProductList.size()]))
-                        )
-                )
-        );
+        // Shop Impression tracking is turned off for now.
+
+        // Currently this tracking is hit every time Search Activity is started,
+        // even though the user might not want to go to the Shop Tab,
+        // so tracking shop impression is not accurate.
+
+        // This tracking will be turned on again if it is possible to only track shop  impression
+        // when the user go to Shop Tab
+
+//        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+//                DataLayer.mapOf(EVENT, "productView",
+//                        EVENT_CATEGORY, "search result",
+//                        EVENT_ACTION, "impression - product - shop tab",
+//                        EVENT_LABEL, keyword,
+//                        ECOMMERCE, DataLayer.mapOf(
+//                                "currencyCode", "IDR",
+//                                "impressions", DataLayer.listOf(shopItemProductList.toArray(new Object[shopItemProductList.size()]))
+//                        )
+//                )
+//        );
     }
 
     public void trackSearchResultShopProductPreviewClick(Object shopItemProduct, String keyword) {
