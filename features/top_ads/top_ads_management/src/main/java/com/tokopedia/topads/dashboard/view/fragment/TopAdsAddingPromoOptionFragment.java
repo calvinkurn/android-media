@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;

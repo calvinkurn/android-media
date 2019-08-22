@@ -2,7 +2,7 @@ package com.tokopedia.seller.reputation.view.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.webkit.WebView;
 
 import com.tokopedia.core.app.TActivity;

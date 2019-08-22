@@ -8,7 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;

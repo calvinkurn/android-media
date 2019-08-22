@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.shopreputation.domain;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.pojo.ActResult;
 

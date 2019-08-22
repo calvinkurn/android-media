@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.home.favorite.view.adapter.viewholders;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

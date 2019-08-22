@@ -18,7 +18,7 @@ package com.db.williamchart.renderer;
 
 import android.graphics.Canvas;
 import android.graphics.Paint.Align;
-import android.support.annotation.IntRange;
+import androidx.annotation.IntRange;
 
 
 /**

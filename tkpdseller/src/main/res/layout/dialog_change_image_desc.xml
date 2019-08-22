@@ -15,7 +15,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/image_description_2" />
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:id="@+id/edit_description"
@@ -31,7 +31,7 @@
         android:layout_gravity="end"
         android:layout_marginTop="@dimen/dp_10">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="@string/title_cancel"
@@ -43,7 +43,7 @@
             android:padding="@dimen/dp_5"
             android:gravity="center"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="@string/title_ok"

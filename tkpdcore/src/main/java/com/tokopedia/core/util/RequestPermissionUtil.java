@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -145,7 +145,7 @@ public class RequestPermissionUtil {
     @Deprecated
     public static void onShowRationale(Context context, final PermissionRequest request,
                                        String permission) {
-        new android.support.v7.app.AlertDialog.Builder(context)
+        new androidx.appcompat.app.AlertDialog.Builder(context)
                 .setMessage(getNeedPermissionMessage(permission))
                 .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                     @Override
@@ -166,7 +166,7 @@ public class RequestPermissionUtil {
     @Deprecated
     public static void onShowRationale(Context context, final PermissionRequest request,
                                        List<String> permission) {
-        new android.support.v7.app.AlertDialog.Builder(context)
+        new androidx.appcompat.app.AlertDialog.Builder(context)
                 .setMessage(getNeedPermissionMessage(permission))
                 .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                     @Override

@@ -6,7 +6,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -24,7 +24,7 @@
             android:textColor="@color/black_70"
             android:textSize="16sp" />
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/parent_view"

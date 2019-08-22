@@ -1,15 +1,15 @@
 package com.tokopedia.tradein_common.viewcontrollers;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;

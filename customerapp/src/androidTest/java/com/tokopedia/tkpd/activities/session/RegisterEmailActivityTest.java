@@ -1,9 +1,9 @@
 package com.tokopedia.tkpd.activities.session;
 
 import android.Manifest;
-import android.support.annotation.IdRes;
-import android.support.test.espresso.ViewInteraction;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.annotation.IdRes;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.runner.AndroidJUnit4;
 import android.view.View;
 
 import com.google.android.libraries.cloudtesting.screenshots.ScreenShotter;
@@ -27,20 +27,20 @@ import java.util.List;
 
 import okhttp3.mockwebserver.MockResponse;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.clearText;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.openLinkWithText;
-import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.action.ViewActions.typeText;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.intent.Intents.intending;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.clearText;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.openLinkWithText;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.tokopedia.tkpd.Utils.allowPermissionsIfNeeded;
 import static com.tokopedia.tkpd.Utils.matchToolbarTitle;
 import static com.tokopedia.tkpd.Utils.mockGoogleActivityResult;

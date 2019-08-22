@@ -1,9 +1,9 @@
 package com.tokopedia.tradein.viewmodel;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;

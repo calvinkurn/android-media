@@ -1,8 +1,8 @@
 package com.tokopedia.train.station.data.database;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.support.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.annotation.NonNull;
 
 /**
  * Created by nabillasabbaha on 31/01/19.

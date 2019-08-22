@@ -1,6 +1,6 @@
 package com.tokopedia.imagepicker.picker.main.builder;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDef.TYPE_MULTIPLE;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDef.TYPE_SINGLE;

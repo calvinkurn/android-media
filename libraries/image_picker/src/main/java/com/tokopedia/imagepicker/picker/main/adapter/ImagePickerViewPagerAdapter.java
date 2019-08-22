@@ -2,10 +2,10 @@ package com.tokopedia.imagepicker.picker.main.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.util.SparseArrayCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.collection.SparseArrayCompat;
 import android.view.ViewGroup;
 
 import com.tokopedia.imagepicker.R;

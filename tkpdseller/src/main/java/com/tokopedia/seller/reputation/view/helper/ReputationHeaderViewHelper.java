@@ -1,8 +1,8 @@
 package com.tokopedia.seller.reputation.view.helper;
 
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatDrawableManager;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatDrawableManager;
 import android.view.View;
 
 import com.tokopedia.seller.R;

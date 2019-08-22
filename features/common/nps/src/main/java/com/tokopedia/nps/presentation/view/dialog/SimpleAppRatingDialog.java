@@ -1,7 +1,7 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;

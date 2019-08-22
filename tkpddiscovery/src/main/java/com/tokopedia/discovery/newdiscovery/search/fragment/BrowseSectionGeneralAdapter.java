@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;

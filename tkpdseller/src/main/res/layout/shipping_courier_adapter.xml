@@ -63,7 +63,7 @@
             android:background="@drawable/shipping_additonal_setting_selector"
             android:layout_marginTop="@dimen/dp_10">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"

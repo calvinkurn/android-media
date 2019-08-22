@@ -2,10 +2,10 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;

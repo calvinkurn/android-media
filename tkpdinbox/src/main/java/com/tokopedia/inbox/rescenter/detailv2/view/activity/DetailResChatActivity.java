@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
+import androidx.core.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;

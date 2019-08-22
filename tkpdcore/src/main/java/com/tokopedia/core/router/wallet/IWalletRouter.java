@@ -56,7 +56,7 @@ public interface IWalletRouter {
      * @param alternateRedirectUrl alternate uri webview if applink not found
      * @param bundlePass           bundle pass data
      */
-    void navigateAppLinkWallet(android.support.v4.app.Fragment fragmentSupport,
+    void navigateAppLinkWallet(androidx.fragment.app.Fragment fragmentSupport,
                                int requestCode,
                                String appLinkScheme,
                                String alternateRedirectUrl,

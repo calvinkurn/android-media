@@ -2,18 +2,18 @@ package com.tokopedia.shop.product.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SimpleItemAnimator
+import com.google.android.material.snackbar.Snackbar
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater

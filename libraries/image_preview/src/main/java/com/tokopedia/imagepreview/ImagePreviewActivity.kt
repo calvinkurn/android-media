@@ -13,10 +13,10 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
-import android.support.v4.app.NotificationCompat
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+import androidx.core.app.NotificationCompat
 import android.view.View
 import android.view.Window
 import android.view.WindowManager

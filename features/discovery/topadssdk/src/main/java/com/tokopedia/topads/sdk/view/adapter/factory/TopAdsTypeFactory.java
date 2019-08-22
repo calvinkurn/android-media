@@ -1,6 +1,6 @@
 package com.tokopedia.topads.sdk.view.adapter.factory;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ClientViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.LoadingViewModel;

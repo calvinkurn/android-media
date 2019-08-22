@@ -1,6 +1,6 @@
 package com.tokopedia.design.label.selection;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.design.item.DeletableItemView;
 

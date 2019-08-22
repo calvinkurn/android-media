@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.TaskStackBuilder;
+import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;

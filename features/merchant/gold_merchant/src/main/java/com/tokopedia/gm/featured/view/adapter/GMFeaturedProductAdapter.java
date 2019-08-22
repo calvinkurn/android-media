@@ -1,6 +1,6 @@
 package com.tokopedia.gm.featured.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;

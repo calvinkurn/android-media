@@ -1,6 +1,6 @@
 package com.tokopedia.videorecorder.utils
 
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 
 /**
  * Created by isfaaghyth on 02/04/19.

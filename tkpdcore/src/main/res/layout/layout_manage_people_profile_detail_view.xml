@@ -71,7 +71,7 @@
 
     </RelativeLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/title_dob"
@@ -87,7 +87,7 @@
             android:inputType="date"
             android:textSize="@dimen/fonts"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -118,7 +118,7 @@
             android:textSize="@dimen/fonts"/>
     </RadioGroup>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
@@ -133,6 +133,6 @@
             android:inputType="text"
             android:textSize="@dimen/fonts"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

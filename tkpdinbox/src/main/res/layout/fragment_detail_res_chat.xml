@@ -71,7 +71,7 @@
             android:layout_height="60dp"
             android:visibility="visible" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_attachment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
         <include layout="@layout/layout_next_step"
             android:id="@+id/cv_next_step"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chat"
             app:stackFromEnd="true"
             android:stackFromBottom="true"
@@ -111,7 +111,7 @@
         android:layout_centerInParent="true"
         android:visibility="visible" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

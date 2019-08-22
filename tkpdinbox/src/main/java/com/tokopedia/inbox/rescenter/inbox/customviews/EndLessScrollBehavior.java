@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.rescenter.inbox.customviews;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created on 4/11/16.

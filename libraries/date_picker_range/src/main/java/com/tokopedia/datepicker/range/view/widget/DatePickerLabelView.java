@@ -2,7 +2,7 @@ package com.tokopedia.datepicker.range.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;

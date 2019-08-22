@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_section"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -45,7 +45,7 @@
                         android:textSize="@dimen/sp_16"
                         tools:text="@string/oqr_fake_date" />
 
-                    <android.support.constraint.ConstraintLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_8"
@@ -72,7 +72,7 @@
                             android:textSize="@dimen/sp_34"
                             app:layout_constraintLeft_toRightOf="@+id/rp_string_id"
                             tools:text="@string/oqr_fake_number" />
-                    </android.support.constraint.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -195,7 +195,7 @@
 
             <include layout="@layout/oqr_bottom_section" />
         </LinearLayout>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <ProgressBar

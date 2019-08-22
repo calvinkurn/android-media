@@ -6,7 +6,7 @@
     android:layout_marginTop="?attr/actionBarSize"
     android:background="@color/white">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/dp_90">
@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" />
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/btn_set_filters"

@@ -1,17 +1,17 @@
 package com.tokopedia.tradein.viewmodel;
 
 import android.Manifest;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.OnLifecycleEvent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.gson.Gson;

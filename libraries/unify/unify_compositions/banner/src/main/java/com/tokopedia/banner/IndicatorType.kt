@@ -1,6 +1,6 @@
 package com.tokopedia.banner
 
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 
 class Indicator {
     @IntDef(WHITE, GREEN)

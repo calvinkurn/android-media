@@ -1,6 +1,6 @@
 package com.tokopedia.normalcheckout.presenter
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams

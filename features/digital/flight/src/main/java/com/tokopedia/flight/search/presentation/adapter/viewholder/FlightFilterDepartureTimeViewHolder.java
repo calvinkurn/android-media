@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search.presentation.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatCheckBox;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;

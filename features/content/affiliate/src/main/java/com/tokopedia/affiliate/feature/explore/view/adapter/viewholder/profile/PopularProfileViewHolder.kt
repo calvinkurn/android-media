@@ -1,8 +1,8 @@
 package com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.profile
 
 import android.graphics.Rect
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R

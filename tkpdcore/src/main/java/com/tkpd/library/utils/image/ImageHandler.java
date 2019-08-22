@@ -2,8 +2,8 @@ package com.tkpd.library.utils.image;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
 

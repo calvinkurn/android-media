@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.Small"
         android:text="@string/product_label_product_price"
         android:layout_marginTop="@dimen/dp_16"
@@ -49,7 +49,7 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textRecommendationPrice"
         style="@style/TextView.Title"
         android:layout_width="match_parent"
@@ -61,7 +61,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:visibility="gone"/>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.TitleBig.Bold"
         android:text="@string/product_label_additional_info"
         android:layout_marginTop="@dimen/dp_24"
@@ -116,7 +116,7 @@
             app:decimal_input_hint="@string/product_label_maksimum_buy"
             android:visibility="gone"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/TextView.Small.Green"
             android:text="@string/product_label_add_maksimum_buy"
             android:id="@+id/textAddMaksimumBuy"

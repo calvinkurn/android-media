@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/swipeToRefresh">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:reverseLayout="false"
             tools:listitem="@layout/notification_update_default_item" />
 
@@ -37,5 +37,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginBottom="@dimen/dp_18"/>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

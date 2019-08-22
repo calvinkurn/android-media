@@ -4,9 +4,9 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
 import android.text.TextUtils
 import android.view.*
 import android.widget.Toast

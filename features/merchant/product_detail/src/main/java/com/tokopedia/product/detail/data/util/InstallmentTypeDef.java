@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.data.util;
 
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.product.detail.data.util.InstallmentTypeDef.MONTH_12;
 import static com.tokopedia.product.detail.data.util.InstallmentTypeDef.MONTH_3;

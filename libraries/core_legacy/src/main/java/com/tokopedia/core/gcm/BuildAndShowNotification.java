@@ -10,8 +10,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;

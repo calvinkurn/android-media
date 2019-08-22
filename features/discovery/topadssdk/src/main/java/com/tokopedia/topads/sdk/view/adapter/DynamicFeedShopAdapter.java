@@ -1,8 +1,8 @@
 package com.tokopedia.topads.sdk.view.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;

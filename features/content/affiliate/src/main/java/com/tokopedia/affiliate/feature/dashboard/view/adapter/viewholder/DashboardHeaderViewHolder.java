@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder;
 
 import android.os.Build;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;

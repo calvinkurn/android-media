@@ -19,7 +19,7 @@
         android:lineSpacingExtra="4sp"
         android:layout_gravity="center"/>
 
-    <android.support.v4.widget.Space
+    <androidx.legacy.widget.Space
         android:layout_width="0dp"
         android:layout_height="@dimen/space_large" />
 
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <android.support.v4.widget.Space
+        <androidx.legacy.widget.Space
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"/>
@@ -47,7 +47,7 @@
             android:textColor="@drawable/gender_color"
             android:button="@android:color/transparent"/>
 
-        <android.support.v4.widget.Space
+        <androidx.legacy.widget.Space
             android:layout_width="60dp"
             android:layout_height="0dp" />
 
@@ -65,7 +65,7 @@
             android:textStyle="normal"
             android:textColor="@drawable/gender_color"
             android:button="@android:color/transparent"/>
-        <android.support.v4.widget.Space
+        <androidx.legacy.widget.Space
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"/>

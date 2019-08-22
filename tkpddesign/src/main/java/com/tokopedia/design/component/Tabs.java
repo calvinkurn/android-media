@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 
 import com.tokopedia.design.R;

@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.inbox.listener;
 
 import android.app.Application;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
+import com.google.android.material.tabs.TabLayout;
 
 /**
  * Created on 3/23/16.

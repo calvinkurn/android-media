@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.draft.domain.interactor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;

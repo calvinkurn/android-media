@@ -2,7 +2,7 @@ package com.tokopedia.flight.cancellation.view.presenter;
 
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;

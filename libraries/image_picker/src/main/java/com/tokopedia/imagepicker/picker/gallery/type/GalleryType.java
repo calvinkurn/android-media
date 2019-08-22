@@ -1,6 +1,6 @@
 package com.tokopedia.imagepicker.picker.gallery.type;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.imagepicker.picker.gallery.type.GalleryType.ALL;
 import static com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY;

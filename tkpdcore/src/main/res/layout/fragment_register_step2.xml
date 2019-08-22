@@ -118,7 +118,7 @@
                 android:textSize="@dimen/text_size_xlarge"
                 tools:text="Halo, Alessandro !"/>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/wrapper_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -131,9 +131,9 @@
                     android:inputType="phone"
                     android:maxLines="1"
                     android:textColor="@color/black" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/wrapper_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -145,9 +145,9 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/title_birthday"/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/wrapper_gender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -159,7 +159,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/title_gender"
                     app:drawableRightCompat="@drawable/arrow_drop_down"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/register_finish_button"

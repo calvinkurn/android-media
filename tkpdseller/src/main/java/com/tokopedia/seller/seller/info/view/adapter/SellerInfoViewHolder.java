@@ -1,9 +1,9 @@
 package com.tokopedia.seller.seller.info.view.adapter;
 
 import android.graphics.Bitmap;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

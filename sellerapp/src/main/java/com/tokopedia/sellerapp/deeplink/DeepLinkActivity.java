@@ -45,7 +45,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void inflateFragmentV4(android.support.v4.app.Fragment fragment, String tag) {
+    public void inflateFragmentV4(androidx.fragment.app.Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction().replace(R.id.main_view, fragment, tag).commit();
     }
 

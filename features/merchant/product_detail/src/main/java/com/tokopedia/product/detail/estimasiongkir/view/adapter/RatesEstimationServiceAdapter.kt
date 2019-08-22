@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.estimasiongkir.view.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.product.detail.R

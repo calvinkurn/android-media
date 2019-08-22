@@ -1,6 +1,6 @@
 package com.tokopedia.gm.featured.view.activity;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.gm.GMModuleRouter;

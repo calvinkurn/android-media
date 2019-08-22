@@ -1,6 +1,6 @@
 package com.tokopedia.shop.info.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge

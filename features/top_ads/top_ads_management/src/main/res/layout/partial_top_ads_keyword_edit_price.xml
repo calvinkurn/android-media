@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_input_layout_top_ads_cost_per_click"
             style="@style/TextInputLayout"
             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 app:prefix="@string/top_ads_label_currency_rupiah_editext" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/text_view_top_ads_max_price_description"

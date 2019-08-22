@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;

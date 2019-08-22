@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:layout_gravity="center"
             android:scaleType="centerCrop" />
 
-        <android.support.v4.widget.Space
+        <androidx.legacy.widget.Space
             android:layout_width="wrap_content"
             android:layout_height="@dimen/space_med" />
 
@@ -41,7 +41,7 @@
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
 
-        <android.support.v4.widget.Space
+        <androidx.legacy.widget.Space
             android:layout_width="wrap_content"
             android:layout_height="@dimen/space_mini" />
 
@@ -62,4 +62,4 @@
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
