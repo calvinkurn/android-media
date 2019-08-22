@@ -189,7 +189,7 @@ class AddEmailFragment : BaseDaggerFragment() {
                 val email = et_email.text.toString().trim()
                 viewModel.mutateAddEmail(email, otpCode)
             }else{
-                onErrorAddEmail(MessageErrorException(getString(R.string.default_request_error_unknown),
+                onErrorAddEmail(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
             }
         }

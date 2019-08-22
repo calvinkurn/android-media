@@ -88,7 +88,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         val dialog = UnifyDialog(activity as Activity, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
         dialog.setTitle(getString(R.string.title_change_email_dialog))
         dialog.setDescription(getString(R.string.cannot_change_email))
-        dialog.setOk(getString(R.string.title_ok))
+        dialog.setOk(getString(com.tokopedia.abstraction.R.string.title_ok))
         dialog.setOkOnClickListner(View.OnClickListener { dialog.dismiss() })
         dialog.show()
     }

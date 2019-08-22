@@ -225,7 +225,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
                 val phone = etPhone.text.toString()
                 viewModel.mutateAddPhone(phone.trim(), otpCode)
             } else {
-                onErrorAddPhone(MessageErrorException(getString(R.string.default_request_error_unknown),
+                onErrorAddPhone(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
             }
         }
