@@ -8,8 +8,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,10 +23,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import com.google.android.gms.location.LocationServices;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -79,6 +80,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
+import com.tokopedia.home.widget.StickyTextView;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
@@ -102,22 +104,21 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.google.android.gms.location.LocationServices;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import rx.Observable;
-
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import rx.Observable;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -139,6 +140,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
+    public static Boolean HIDE_TICKER = false;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
@@ -161,6 +163,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SnackbarRetry messageSnackbar;
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
+    private StickyTextView stickyLoginTextView;
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
@@ -184,6 +187,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Snackbar homeSnackbar;
     private SharedPreferences sharedPrefs;
 
+    private int[] positionSticky = new int[2];
+
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -200,10 +205,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         trackingQueue = new TrackingQueue(getActivity());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
 
-        searchBarTransitionRange =
-                getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
-        startToTransitionOffset =
-                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/4;
+        searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
+        startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 4;
     }
 
     @Override
@@ -276,9 +279,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         homeRecyclerView = view.findViewById(R.id.list);
         if (homeRecyclerView.getItemDecorationCount() == 0) {
-            homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(
-                    getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)
-            ));
+            homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)));
         }
 
         homeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -297,7 +298,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     refreshLayout.setCanChildScrollUp(true);
                 }
 
-                if (recyclerView.canScrollVertically(1)){
+                if (recyclerView.canScrollVertically(1)) {
                     homeMainToolbar.showShadow();
                     showFeedSectionViewHolderShadow(false);
                     homeRecyclerView.setNestedCanScroll(false);
@@ -321,6 +322,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
+        stickyLoginTextView = view.findViewById(R.id.sticky_login_text);
+
         root = view.findViewById(R.id.root);
 
         if (getArguments() != null) {
@@ -360,6 +363,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
+        updateStickyState();
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -379,6 +383,37 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 floatingTextButton.resetState();
             }
         });
+
+        stickyLoginTextView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                updateStickyState();
+
+                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+                if (floatingEggButtonFragment != null) {
+                    updateEggBottomMargin(floatingEggButtonFragment);
+                }
+            }
+        });
+        stickyLoginTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGoToLogin();
+                HomePageTracking.eventClickOnStickyLogin(true);
+            }
+        });
+        stickyLoginTextView.setOnDismissListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stickyLoginTextView.dismiss();
+                HomePageTracking.eventClickOnStickyLogin(false);
+
+                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+                if (floatingEggButtonFragment != null) {
+                    updateEggBottomMargin(floatingEggButtonFragment);
+                }
+            }
+        });
     }
 
     private void scrollToRecommendList() {
@@ -394,6 +429,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (activityStateListener != null) {
             activityStateListener.onResume();
+        }
+
+        updateStickyState();
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            updateEggBottomMargin(floatingEggButtonFragment);
         }
     }
 
@@ -439,8 +480,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void loadEggData() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-
         if (floatingEggButtonFragment != null) {
+            updateEggBottomMargin(floatingEggButtonFragment);
             floatingEggButtonFragment.loadEggData();
         }
     }
@@ -475,7 +516,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void setStatusBarAlpha(float alpha) {
         Drawable drawable = statusBarBackground.getBackground();
-        drawable.setAlpha((int)alpha);
+        drawable.setAlpha((int) alpha);
         statusBarBackground.setBackground(drawable);
     }
 
@@ -494,8 +535,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (dy == 0) {
                     return;
                 }
+
                 FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
                 if (floatingEggButtonFragment != null) {
+                    updateEggBottomMargin(floatingEggButtonFragment);
                     floatingEggButtonFragment.hideOnScrolling();
                 }
             }
@@ -596,7 +639,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         goToOvo(appLinkBalance);
     }
 
-    private void goToOvo(String appLinkScheme){
+    private void goToOvo(String appLinkScheme) {
         Intent intent = appLinkScheme == null || appLinkScheme.isEmpty() ?
                 RouteManager.getIntent(getActivity(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme)
                 : RouteManager.isSupportApplink(getActivity(), appLinkScheme)
@@ -689,7 +732,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private void showBannerWebViewOnAllPromoClickFromHomeIntent(String url, String title){
+    private void showBannerWebViewOnAllPromoClickFromHomeIntent(String url, String title) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PROMO);
         intent.putExtra(EXTRA_URL, url);
         intent.putExtra(EXTRA_TITLE, title);
@@ -698,6 +741,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCloseTicker(int pos) {
+        HIDE_TICKER = true;
         adapter.getItems().remove(pos);
         adapter.notifyItemRemoved(pos);
     }
@@ -730,6 +774,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() instanceof RefreshNotificationListener) {
             ((RefreshNotificationListener) getActivity()).onRefreshNotification();
         }
+        updateStickyState();
         loadEggData();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
     }
@@ -780,8 +825,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private boolean needToShowGeolocationComponent() {
-        boolean firebaseShowGeolocationComponent =
-                remoteConfig.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT,true);
+        boolean firebaseShowGeolocationComponent = remoteConfig.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true);
         if (!firebaseShowGeolocationComponent) {
             return false;
         }
@@ -858,7 +902,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         };
     }
 
-    public void saveLocation(Context context, double latitude, double longitude){
+    public void saveLocation(Context context, double latitude, double longitude) {
         SharedPreferences.Editor editor;
         if (context != null && !TextUtils.isEmpty(ConstantKey.LocationCache.KEY_LOCATION)) {
             sharedPrefs = context.getSharedPreferences(ConstantKey.LocationCache.KEY_LOCATION, Context.MODE_PRIVATE);
@@ -879,16 +923,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setHint(SearchPlaceholder searchPlaceholder) {
-        if(searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null && searchPlaceholder.getData().getKeyword() != null){
+        if (searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null && searchPlaceholder.getData().getKeyword() != null) {
             homeMainToolbar.setHint(searchPlaceholder.getData().getPlaceholder(), searchPlaceholder.getData().getKeyword());
         }
     }
 
-    private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable){
+    private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable) {
         this.feedTabVisitable = feedRecommendationVisitable;
         List<Visitable> currentVisitables = adapter.getItems();
 
-        for (int i = 0 ; i<currentVisitables.size() ; i++) {
+        for (int i = 0; i < currentVisitables.size(); i++) {
             if (currentVisitables.get(i) instanceof HomeRecommendationFeedViewModel) {
                 currentVisitables.set(i, feedRecommendationVisitable);
                 adapter.setElement(i, feedRecommendationVisitable);
@@ -1093,7 +1137,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -1193,12 +1236,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private BroadcastReceiver tokoCashBroadcaseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            String data = extras.getString(getActivity().getString(R.string.broadcast_wallet));
-            if (data != null && !data.isEmpty())
-                presenter.getHeaderData(false); // update header data
-        }
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                String data = extras.getString(getActivity().getString(R.string.broadcast_wallet));
+                if (data != null && !data.isEmpty())
+                    presenter.getHeaderData(false); // update header data
+            }
         }
     };
 
@@ -1218,8 +1261,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (pathSegmentList.size() > 1) {
                 String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
                 String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
-                Intent intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
-                                shopDomain, productKey);
+                Intent intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN, shopDomain, productKey);
                 if (intent != null) {
                     startActivity(intent);
                 } else {
@@ -1285,25 +1327,25 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         list.add(new ShowCaseObject(homeMainToolbar.getBtnNotification(),
                 getString(R.string.sc_notif_title),
                 getString(R.string.sc_notif_desc))
-        .withCustomTarget(new int[]{
-                homeMainToolbar.getBtnNotification().getLeft(),
-                homeMainToolbar.getBtnNotification().getTop()
-                + statusBarHeight,
-                homeMainToolbar.getBtnNotification().getRight(),
-                homeMainToolbar.getBtnNotification().getBottom()
-                + statusBarHeight
-        }));
+                .withCustomTarget(new int[]{
+                        homeMainToolbar.getBtnNotification().getLeft(),
+                        homeMainToolbar.getBtnNotification().getTop()
+                                + statusBarHeight,
+                        homeMainToolbar.getBtnNotification().getRight(),
+                        homeMainToolbar.getBtnNotification().getBottom()
+                                + statusBarHeight
+                }));
         list.add(new ShowCaseObject(homeMainToolbar.getBtnWishlist(),
                 getString(R.string.sc_wishlist_title),
                 getString(R.string.sc_wishlist_desc))
                 .withCustomTarget(new int[]{
-                homeMainToolbar.getBtnWishlist().getLeft(),
-                homeMainToolbar.getBtnWishlist().getTop()
-                        + statusBarHeight,
-                homeMainToolbar.getBtnWishlist().getRight(),
-                homeMainToolbar.getBtnWishlist().getBottom()
-                        + statusBarHeight
-        }));
+                        homeMainToolbar.getBtnWishlist().getLeft(),
+                        homeMainToolbar.getBtnWishlist().getTop()
+                                + statusBarHeight,
+                        homeMainToolbar.getBtnWishlist().getRight(),
+                        homeMainToolbar.getBtnWishlist().getBottom()
+                                + statusBarHeight
+                }));
         return list;
     }
 
@@ -1321,7 +1363,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void fetchTokopointsNotification(String type) {
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
         }
     }
@@ -1352,7 +1394,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private Intent getProductIntent(String productId) {
         if (getActivity() != null) {
-            return RouteManager.getIntent(getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            return RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }
@@ -1406,7 +1448,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (homeMainToolbar != null) {
             height = homeMainToolbar.getHeight();
             if (!homeMainToolbar.isShadowApplied()) {
-                height+=getResources().getDimensionPixelSize(R.dimen.dp_8);
+                height += getResources().getDimensionPixelSize(R.dimen.dp_8);
             }
         }
         return height;
@@ -1499,5 +1541,41 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDynamicIconScrollEnd() {
 
+    }
+
+    private void updateStickyState() {
+        boolean isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true);
+        if (!isCanShowing) {
+            stickyLoginTextView.setVisibility(View.GONE);
+            return;
+        }
+
+        if (stickyLoginTextView.isShowing()) {
+            positionSticky = stickyLoginTextView.getLocation();
+        }
+
+        if (isUserLoggedIn()) {
+            stickyLoginTextView.dismiss();
+        } else {
+            stickyLoginTextView.show();
+            HomePageTracking.eventOnStickyLoginShowing();
+        }
+    }
+
+    private void updateEggBottomMargin(FloatingEggButtonFragment floatingEggButtonFragment) {
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) floatingEggButtonFragment.getView().getLayoutParams();
+        if (stickyLoginTextView.isShowing()) {
+            params.setMargins(0, 0, 0, stickyLoginTextView.getHeight());
+
+            int[] positionEgg = new int[2];
+            int eggHeight = floatingEggButtonFragment.getEgg().getHeight();
+            floatingEggButtonFragment.getEgg().getLocationOnScreen(positionEgg);
+
+            if (positionEgg[1] + eggHeight > positionSticky[1]) {
+                floatingEggButtonFragment.moveEgg(positionSticky[1] - eggHeight);
+            }
+        } else {
+            params.setMargins(0, 0, 0, 0);
+        }
     }
 }

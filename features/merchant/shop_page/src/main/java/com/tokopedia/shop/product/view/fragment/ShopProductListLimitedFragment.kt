@@ -19,7 +19,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -147,7 +146,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             if (TextUtils.isEmpty(selectedEtalaseId)) {
                 return true
             }
-            val etalaseViewModelList = shopProductAdapter.shopProductEtalaseListViewModel?.etalaseModelList ?: return false
+            val etalaseViewModelList = shopProductAdapter.shopProductEtalaseListViewModel?.etalaseModelList
+                    ?: return false
             return etalaseViewModelList.size > 0 && etalaseViewModelList[0].etalaseId.equals(selectedEtalaseId, ignoreCase = true)
         }
 
@@ -159,21 +159,21 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.featuredProductResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessGetProductFeature(it.data)
                 is Fail -> onErrorGetProductFeature(it.throwable)
             }
         })
 
         viewModel.etalaseResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessGetEtalaseListByShop(ArrayList(it.data))
                 is Fail -> onErrorGetEtalaseListByShop(it.throwable)
             }
         })
 
         viewModel.productResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> renderProductList(it.data.second, it.data.first)
                 is Fail -> showGetListError(it.throwable)
             }
@@ -223,6 +223,12 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
         bottom_action_view.gone()
         bottom_action_view.hide(false)
+        if (!viewModel.isLogin) {
+            bottom_action_view.setPadding(bottom_action_view.paddingLeft,
+                    bottom_action_view.paddingTop,
+                    bottom_action_view.paddingRight,
+                    resources.getDimensionPixelOffset(R.dimen.dp_36))
+        }
 
         progressDialog = ProgressDialog(activity)
         progressDialog?.setMessage(getString(R.string.title_loading))
@@ -304,7 +310,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
             showLoading()
             shopId = it.shopCore.shopID
-            if (viewModel.isEtalaseEmpty){
+            if (viewModel.isEtalaseEmpty) {
                 viewModel.getShopEtalase(shopId!!)
             } else {
                 loadData(defaultInitialPage)
@@ -731,7 +737,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                                 shopProductViewModel.id))
             }
         }
-        if (!viewModel.isLogin){
+        if (!viewModel.isLogin) {
             onErrorAddToWishList(UserNotLoginException())
             return
         }
@@ -785,7 +791,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             }
         }
         goToPDP(shopProductViewModel.id, attribution,
-                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName) ?: "")
+                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName)
+                        ?: "")
 
 
     }
@@ -854,7 +861,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                     return
 
                 shopPageTracking?.clickSortBy(viewModel.isMyShop(shopId!!),
-                            sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant))
+                        sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant))
 
                 startActivity(ShopProductListActivity.createIntent(activity, shopId,
                         "", selectedEtalaseId, "", sortName))

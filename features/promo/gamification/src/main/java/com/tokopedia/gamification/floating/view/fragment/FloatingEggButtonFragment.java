@@ -177,7 +177,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         objectAnimator.start();
     }
 
-    public void showFloatingEggAnimate(boolean hasDelay) {
+    private void showFloatingEggAnimate(boolean hasDelay) {
         if (needHideFloatingToken) {
             return;
         }
@@ -580,5 +580,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             GamificationEventTracking.Action.CLICK_LUCKY_EGG,
                             idToken + "_" + name
                     );
+    }
+
+    public View getEgg() {
+        return vgFloatingEgg;
+    }
+
+    public void moveEgg(int yEgg) {
+        vgFloatingEgg.setY(yEgg);
+        animateToLeftOrRightBound();
     }
 }

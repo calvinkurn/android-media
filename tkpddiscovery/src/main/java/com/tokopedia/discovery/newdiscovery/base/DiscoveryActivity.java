@@ -1,11 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -21,34 +18,22 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.imagesearch.search.ImageSearchImagePickerActivity;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
-import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 
 /**
  * Created by hangnadi on 10/3/17.
@@ -59,12 +44,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.OnQueryTextListener,
         BottomNavigationListener {
 
-    private static final int REQUEST_CODE_IMAGE = 2390;
-    private static final double MIN_SCORE = 10.0;
-    private static final String FAILURE = "no matching result found";
-    private static final String NO_RESPONSE = "no response";
-    private static final String SUCCESS = "success match found";
-    private static final String SEARCH_RESULT_TRACE = "search_result_trace";
     private Toolbar toolbar;
     private FrameLayout container;
     private AHBottomNavigation bottomNavigation;
@@ -73,11 +52,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public MenuItem searchItem;
 
-    private TkpdProgressDialog tkpdProgressDialog;
-    private boolean isFromCamera = false;
-    private String imagePath;
-    private UserSessionInterface userSession;
-    private PerformanceMonitoring performanceMonitoring;
+    protected TkpdProgressDialog tkpdProgressDialog;
+
     protected View root;
 
     protected SearchParameter searchParameter;
@@ -86,7 +62,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
-        userSession = new UserSession(this);
         proceed();
     }
 
@@ -128,19 +103,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         container.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    public AHBottomNavigation getBottomNavigation() {
-        return bottomNavigation;
-    }
-
-    protected void onSearchingStart(String keyword) {
-        searchView.closeSearch();
-        showLoadingView(true);
-        showContainer(false);
-        setToolbarTitle(keyword);
-        setLastQuerySearchView(keyword);
-    }
-
-    private void initToolbar() {
+    protected void initToolbar() {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -189,9 +152,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         String query = searchParameter.getSearchQuery();
         AutoCompleteTracking.eventClickSubmit(this, query);
 
+        clearFocusSearchView();
         handleQueryTextSubmitBasedOnCurrentTab();
 
-        return false;
+        return true;
+    }
+
+    private void clearFocusSearchView() {
+        if(searchView != null) {
+            searchView.clearFocus();
+        }
     }
 
     private void handleQueryTextSubmitBasedOnCurrentTab() throws RuntimeException {
@@ -211,19 +181,36 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    @Override
     protected void onProductQuerySubmit() {
         setForceSwipeToShop(false);
-        setRequestOfficialStoreBanner(true);
-
-        performRequestProduct();
+        moveToSearchPage();
     }
 
     private void onShopQuerySubmit() {
         setForceSwipeToShop(true);
-        setRequestOfficialStoreBanner(true);
+        moveToSearchPage();
+    }
 
-        performRequestProduct();
+    private void moveToSearchPage() {
+        Intent searchActivityIntent = createIntentToSearchResult();
+
+        startActivity(searchActivityIntent);
+        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
+        finish();
+    }
+
+    private Intent createIntentToSearchResult() {
+        Intent intent = RouteManager.getIntent(this, createSearchResultApplink());
+
+        intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
+
+        return intent;
+    }
+
+    private String createSearchResultApplink() {
+        return ApplinkConstInternalDiscovery.SEARCH_RESULT
+                + "?"
+                + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
     }
 
     private void sendSearchProductGTM(String keyword) {
@@ -271,23 +258,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 label);
     }
 
-    private void sendGalleryImageSearchResultGTM(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.GALLERY_SEARCH_RESULT,
-                label);
-    }
-
-
-    private void sendCameraImageSearchResultGTM(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.CAMERA_SEARCH_RESULT,
-                label);
-    }
-
     @Override
     public boolean onQueryTextChange(String searchQuery) {
         return false;
@@ -317,119 +287,12 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public void onBackPressed() {
         if (searchView.isSearchOpen()) {
             if (searchView.isFinishOnClose()) {
-                finishWithAnimation();
+                finish();
             } else {
                 searchView.closeSearch();
             }
         } else {
             finish();
-        }
-    }
-
-    private void finishWithAnimation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AnimationUtil.unreveal(root, new AnimationUtil.AnimationListener() {
-                @Override
-                public boolean onAnimationStart(View view) {
-                    return false;
-                }
-
-                @Override
-                public boolean onAnimationEnd(View view) {
-                    finish();
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-
-                @Override
-                public boolean onAnimationCancel(View view) {
-                    return false;
-                }
-            });
-        } else {
-            finish();
-        }
-    }
-
-    protected void performRequestProduct() {
-        performRequestProduct("");
-    }
-
-    protected void performRequestProduct(String keyword) {
-        performRequestProduct(keyword, "");
-    }
-
-    protected void performRequestProduct(String searchQuery, String categoryId) {
-        updateSearchParameterBeforeSearchIfNotEmpty(searchQuery, categoryId);
-
-        searchQuery = this.searchParameter.getSearchQuery();
-
-        onSearchingStart(searchQuery);
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
-
-        getPresenter().initiateSearch(searchParameter, getInitiateSearchListener());
-    }
-
-    private InitiateSearchListener getInitiateSearchListener() {
-        return new InitiateSearchListener() {
-            @Override
-            public void onHandleResponseSearch(boolean isHasCatalog) {
-                ProductViewModel model = new ProductViewModel();
-                model.setSearchParameter(searchParameter);
-                model.setHasCatalog(isHasCatalog);
-
-                DiscoveryActivity.this.onHandleResponseSearch(model);
-            }
-
-            @Override
-            public void onHandleApplink(@NonNull String applink) {
-                DiscoveryActivity.this.onHandleApplink(applink);
-            }
-
-            @Override
-            public void onHandleResponseError() {
-                DiscoveryActivity.this.onHandleResponseError();
-            }
-
-            @Override
-            public void onHandleResponseUnknown() {
-                DiscoveryActivity.this.onHandleResponseUnknown();
-            }
-        };
-    }
-
-    private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {
-        if(searchParameter == null) searchParameter = new SearchParameter();
-
-        setSearchParameterQueryIfNotEmpty(searchQuery);
-        setSearchParameterUniqueId();
-        setSearchParameterUserIdIfLoggedIn();
-        setSearchParameterCategoryIdIfNotEmpty(categoryId);
-    }
-
-    private void setSearchParameterQueryIfNotEmpty(String searchQuery) {
-        if(!TextUtils.isEmpty(searchQuery)) {
-            searchParameter.setSearchQuery(searchQuery);
-        }
-    }
-
-    private void setSearchParameterUniqueId() {
-        String uniqueId = userSession.isLoggedIn() ?
-                AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(gcmHandler.getRegistrationId());
-
-        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
-    }
-
-    private void setSearchParameterUserIdIfLoggedIn() {
-        if(userSession.isLoggedIn()) {
-            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
-        }
-    }
-
-    private void setSearchParameterCategoryIdIfNotEmpty(String categoryId) {
-        if(!TextUtils.isEmpty(categoryId)) {
-            searchParameter.set(SearchApiConst.SC, categoryId);
         }
     }
 
@@ -514,56 +377,19 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         showLoadingView(false);
         showContainer(true);
-        NetworkErrorHelper.showEmptyState(this, container, this::performRequestProduct);
+        NetworkErrorHelper.showEmptyState(this, container, null);
     }
 
     @Override
     public void onImageSearchClicked() {
-
-
-        ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList = new ArrayList<>();
-
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.ORIGINAL);
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_1_1);
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_3_4);
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_4_3);
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_16_9);
-        imageRatioTypeDefArrayList.add(ImageRatioTypeDef.RATIO_9_16);
-
-        ImagePickerEditorBuilder imagePickerEditorBuilder = new ImagePickerEditorBuilder
-                (new int[]{ACTION_CROP, ACTION_BRIGHTNESS, ACTION_CONTRAST},
-                        false,
-                        imageRatioTypeDefArrayList);
-
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
-                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.IMAGE_SEARCH_MIN_RESOLUTION, null, true,
-                imagePickerEditorBuilder, null);
-        Intent intent = ImageSearchImagePickerActivity.getIntent(this, builder);
-        startActivityForResult(intent, REQUEST_CODE_IMAGE);
+        RouteManager.route(this, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImageSearchImagePickerActivity.PICKER_RESULT_PATHS);
-            if (imagePathList == null || imagePathList.size() <= 0) {
-                return;
-            }
-            String imagePath = imagePathList.get(0);
-            if (!TextUtils.isEmpty(imagePath)) {
-                onImagePickedSuccess(imagePath);
-            } else {
-                showSnackBarView(getString(com.tokopedia.core2.R.string.error_gallery_valid));
-            }
-            if (searchView != null) {
-                searchView.clearFocus();
-            }
-
-            isFromCamera = data.getBooleanExtra(ImageSearchImagePickerActivity.RESULT_IS_FROM_CAMERA, false);
-        } else if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case DiscoverySearchView.REQUEST_VOICE:
                     List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
@@ -575,135 +401,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 default:
                     break;
             }
-        }
-    }
-
-    public void onImagePickedSuccess(String imagePath) {
-        setImagePath(imagePath);
-        tkpdProgressDialog = new TkpdProgressDialog(this, 1);
-        tkpdProgressDialog.showDialog();
-        getPresenter().requestImageSearch(imagePath);
-    }
-
-    @Override
-    public void onHandleImageSearchResponseError() {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(FAILURE);
-        } else {
-            sendGalleryImageSearchResultGTM(FAILURE);
-        }
-        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
-    }
-
-    @Override
-    public void showErrorNetwork(String message) {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(NO_RESPONSE);
-        } else {
-            sendGalleryImageSearchResultGTM(NO_RESPONSE);
-        }
-
-        if (TextUtils.isEmpty(getImagePath())) {
-            NetworkErrorHelper.showSnackbar(this, message);
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(this, message, new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    onImagePickedSuccess(getImagePath());
-                }
-            }).showRetrySnackbar();
-        }
-    }
-
-    @Override
-    public void showTimeoutErrorNetwork(String message) {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-
-        if (TextUtils.isEmpty(getImagePath())) {
-            NetworkErrorHelper.showSnackbar(this, message);
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(this, message, new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    onImagePickedSuccess(getImagePath());
-                }
-            }).showRetrySnackbar();
-        }
-    }
-
-    @Override
-    public void onHandleInvalidImageSearchResponse() {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(NO_RESPONSE);
-        } else {
-            sendGalleryImageSearchResultGTM(NO_RESPONSE);
-        }
-
-        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.invalid_image_search_response));
-    }
-
-    @Override
-    public void onHandleImageSearchResponseSuccess() {
-
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(SUCCESS);
-        } else {
-            sendGalleryImageSearchResultGTM(SUCCESS);
-        }
-    }
-
-    @Override
-    public void showImageNotSupportedError() {
-        super.showImageNotSupportedError();
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-
-        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.image_not_supported));
-    }
-
-    public void showSnackBarView(String message) {
-        if (message == null) {
-            NetworkErrorHelper.showSnackbar(this);
-        } else {
-            NetworkErrorHelper.showSnackbar(this, message);
-        }
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    @Override
-    public void onHandleResponseSearch(ProductViewModel productViewModel) {
-        super.onHandleResponseSearch(productViewModel);
-        stopPerformanceMonitoring();
-    }
-
-    protected void stopPerformanceMonitoring() {
-        if (performanceMonitoring != null) {
-            performanceMonitoring.stopTrace();
         }
     }
 }

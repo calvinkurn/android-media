@@ -1,5 +1,6 @@
 package com.tokopedia.profile.view.fragment
 
+import android.animation.LayoutTransition
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -43,12 +44,12 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -75,6 +76,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
@@ -91,7 +93,6 @@ import com.tokopedia.profile.view.adapter.viewholder.OtherRelatedProfileViewHold
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
-import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -501,34 +502,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         view?.showErrorToaster(errorMessage, R.string.title_try_again) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         }
-    }
-
-    fun onErrorGetRelatedProfile(throwable: Throwable?) {
-        view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable),
-                R.string.title_try_again) {
-            getRelatedProfile()
-        }
-    }
-
-    fun onSuccessGetRelatedProfile(feedPostRelated: FeedPostRelated?) {
-        val visitables: ArrayList<Visitable<*>> = ArrayList()
-        if (feedPostRelated != null && feedPostRelated.meta.totalItems > 0) {
-            visitables.add(TitleViewModel())
-            feedPostRelated.data
-                .filter { it.content.body.media[0].thumbnail.isNotEmpty() }
-                .also {
-                    profileAnalytics.eventImpressionOtherPost(userId.toString(), it, userSession.userId, userSession.name)
-                }
-                .forEachIndexed { index, datum ->
-                    visitables.add(OtherRelatedProfileViewModel(datum, index))
-                }
-        }
-        renderList(visitables, false)
-    }
-
-    fun getRelatedProfile() {
-        presenter.getRelatedProfile(this::onErrorGetRelatedProfile,
-                this::onSuccessGetRelatedProfile)
     }
 
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -1096,6 +1069,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showFooterOthers() {
+        parentView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        footer.show()
         footerOthers.show()
         if (profileHeader?.isFollowed == true) {
             footerOthersText.text = getString(R.string.sticky_footer_following)
@@ -1126,6 +1101,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun hideFootersOthers() {
+        parentView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        footer.hide()
         footerOthers.hide()
     }
 
@@ -1186,7 +1163,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         element.link,
                         String.format(getString(R.string.profile_share_text),
                                 element.link),
-                        String.format(getString(R.string.profile_share_title)))
+                        String.format(getString(R.string.profile_other_share_title)))
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
                 showShareBottomSheets(this)
@@ -1675,6 +1652,34 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 userId,
                 isOwner
         )
+    }
+
+    private fun getRelatedProfile() {
+        presenter.getRelatedProfile(this::onErrorGetRelatedProfile,
+                this::onSuccessGetRelatedProfile)
+    }
+
+    private fun onErrorGetRelatedProfile(throwable: Throwable?) {
+        view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable),
+                R.string.title_try_again) {
+            getRelatedProfile()
+        }
+    }
+
+    private fun onSuccessGetRelatedProfile(feedPostRelated: FeedPostRelated?) {
+        val visitables: ArrayList<Visitable<*>> = ArrayList()
+        if (feedPostRelated != null && feedPostRelated.meta.totalItems > 0) {
+            visitables.add(TitleViewModel())
+            feedPostRelated.data
+                    .filter { it.content.body.media[0].thumbnail.isNotEmpty() }
+                    .also {
+                        profileAnalytics.eventImpressionOtherPost(userId.toString(), it, userSession.userId, userSession.name)
+                    }
+                    .forEachIndexed { index, datum ->
+                        visitables.add(OtherRelatedProfileViewModel(datum, index))
+                    }
+        }
+        renderList(visitables, false)
     }
 
     private fun registerBroadcastReceiver() {

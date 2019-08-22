@@ -3,17 +3,15 @@ package com.tokopedia.logger
 import android.app.Application
 import android.os.Build
 import android.util.Log
-import com.rapid7.jul.LogentriesHandler
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.logging.Level
-import java.util.logging.LogManager
-import java.util.logging.LogRecord
-import java.util.logging.Logger
+import java.io.DataOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -24,10 +22,7 @@ import kotlin.coroutines.CoroutineContext
  * LogWrapper.init(application);
  *
  * To send message to server:
- * LogWrapper.log(serverSeverity, priority, message); or
- * LogWrapper.log(serverSeverity, priority, message, throwable);
- * Server category: 1 means priority no. 1 (server) (highest)
- * Server category: 2 means priority no. 2 (server)
+ * LogWrapper.log(serverSeverity, priority, message)
  */
 class LogWrapper(val application: Application) : CoroutineScope {
     override val coroutineContext: CoroutineContext
@@ -37,61 +32,47 @@ class LogWrapper(val application: Application) : CoroutineScope {
         CoroutineExceptionHandler { _, ex -> }
     }
 
-    /**
-     * To give "INFO" message log to logging server
-     * INFO means generally useful information to log
-     */
-    private fun info(serverSeverity: Int, message: String) {
-        getLogger(serverSeverity)?.let {
-            launch {
-                it.info(message)
+    private fun sendLogToServer(serverSeverity: Int, logPriority: Int, message: String) {
+        launch {
+            val messageWithUser =
+                logToString(logPriority) + " " +
+                    buildUserMessage() + "\n" +
+                    message
+            val truncatedMessage: String
+            if (message.length > MAX_BUFFER) {
+                truncatedMessage = messageWithUser.substring(0, MAX_BUFFER)
+            } else {
+                truncatedMessage = messageWithUser
+            }
+            val token = TOKEN[serverSeverity - 1]
+            var urlConnection: HttpURLConnection? = null
+            val url: URL
+
+            try {
+                url = URL(URL_LOGENTRIES + token)
+                urlConnection = url.openConnection() as HttpURLConnection
+                urlConnection.requestMethod = "POST"
+                urlConnection.doOutput = true
+                val wr = DataOutputStream(urlConnection.getOutputStream())
+                wr.writeBytes(truncatedMessage)
+                wr.flush()
+                wr.close()
+
+                urlConnection.responseCode
+
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            } finally {
+                urlConnection?.disconnect()
             }
         }
     }
 
-    /**
-     * To give "WARNING" message log to logging server
-     * WARNING means Anything that can potentially cause application oddities,
-     * but app can still handle the main functionality
-     */
-    private fun warning(serverSeverity: Int, message: String) {
-        getLogger(serverSeverity)?.let {
-            launch {
-                it.warning(message)
-            }
-        }
-    }
-
-    /**
-     * To give "SEVERE" message log to logging server
-     * SEVERE means something quite fatal was happened and the main function might not be working properly
-     */
-    private fun severe(serverSeverity: Int, message: String) {
-        getLogger(serverSeverity)?.let {
-            launch {
-                it.severe(message)
-            }
-        }
-    }
-
-    private fun logMessage(serverSeverity: Int, level: Level, message: String) {
-        if (message.isEmpty()) {
-            return
-        }
-        if (level == Level.SEVERE) {
-            severe(serverSeverity, message)
-        } else if (level == Level.WARNING) {
-            warning(serverSeverity, message)
-        }
-    }
-
-    private fun logThrowable(serverSeverity: Int, level: Level, message: String, throwable: Throwable) {
-        getLogger(serverSeverity)?.let {
-            launch {
-                it.log(LogRecord(level, message).apply {
-                    this.thrown = throwable
-                })
-            }
+    private fun logToString(logPriority: Int): String {
+        return when (logPriority) {
+            Log.ERROR -> "SEVR"
+            Log.WARN -> "WARN"
+            else -> "INFO"
         }
     }
 
@@ -115,43 +96,17 @@ class LogWrapper(val application: Application) : CoroutineScope {
     }
 
     companion object {
-        const val LOGGER_NAME = "logentries"
+        const val MAX_BUFFER = 3900
+        const val URL_LOGENTRIES = "https://us.webhook.logs.insight.rapid7.com/v1/noformat/"
         var instance: LogWrapper? = null
         val TOKEN: Array<String> = arrayOf(
-            "0b653435-bd44-4ada-af6d-a511b42b2b08",
-            "b774630c-039b-4d58-aac2-6332fbc40712",
-            "78f40b14-98c6-435b-ae95-3f33cb85e199")
-
-        const val REGION = "us"
-        const val PORT = 10000
-
-        internal var loggers: ArrayList<Logger> = arrayListOf()
-
-        fun getLogger(serverSeverity: Int): Logger? {
-            return try {
-                return loggers.get(serverSeverity - 1)
-            } catch (e: Throwable) {
-                null
-            }
-        }
+            "08fcd148-14aa-4d89-ac67-4f70fefd2f37",
+            "60664ea7-4d61-4df1-b39c-365dc647aced",
+            "33acc8e7-1b5c-403e-bd31-7c1e61bbef2c")
 
         @JvmStatic
         fun init(application: Application) {
             instance = LogWrapper(application)
-            loggers.clear()
-            LogManager.getLogManager().readConfiguration(application.resources.openRawResource(R.raw.logging))
-            instance?.launch {
-                for (i in 0 until TOKEN.size) {
-                    loggers.add(Logger.getLogger(LOGGER_NAME + i))
-                    loggers.get(i).addHandler(LogentriesHandler().apply {
-                        region = REGION
-                        token = TOKEN[i].toByteArray()
-                        port = PORT
-                        formatter = LogFormatter()
-                    })
-                    loggers.get(i).useParentHandlers = false
-                }
-            }
         }
 
         /**
@@ -160,47 +115,11 @@ class LogWrapper(val application: Application) : CoroutineScope {
          */
         @JvmStatic
         fun log(serverSeverity: Int, logPriority: Int, message: String) {
-            if (toLevel(logPriority) == Level.OFF) {
-                return
-            }
             instance?.run {
-                val messageWithUser = buildUserMessage() + "\n" + message
-                if (logPriority == Log.ERROR) {
-                    severe(serverSeverity, messageWithUser)
-                } else if (logPriority == Log.WARN) {
-                    warning(serverSeverity, messageWithUser)
-                }
-            }
-
-        }
-
-        /**
-         * To give message log to logging server alongside with throwable if any
-         * priority to be handled are: Log.ERROR, Log.WARNING
-         */
-        @JvmStatic
-        fun log(serverSeverity: Int, priority: Int, message: String?, throwable: Throwable?) {
-            val level = toLevel(priority)
-            if (level == Level.OFF) {
-                return
-            }
-            instance?.run {
-                val messageWithUser = buildUserMessage() + "\n" + (message ?: "")
-                if (throwable != null) {
-                    logThrowable(serverSeverity, level, messageWithUser, throwable)
-                } else {
-                    logMessage(serverSeverity, level, messageWithUser)
-                }
+                sendLogToServer(serverSeverity, logPriority, message)
             }
         }
 
-        internal fun toLevel(logPriority: Int): Level {
-            return when (logPriority) {
-                Log.ERROR -> Level.SEVERE
-                Log.WARN -> Level.WARNING
-                else -> Level.OFF
-            }
-        }
     }
 
 }

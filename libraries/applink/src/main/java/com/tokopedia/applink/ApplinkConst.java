@@ -33,11 +33,14 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
-    String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi";
-    String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}";
+    String DEFAULT_RECOMMENDATION_PAGE_WITH_REF = "tokopedia://rekomendasi/?ref={ref}";
+    String RECOMMENDATION_PAGE_WITH_REF = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
+    String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi/?ref={ref}";
+    String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
+    String CHECKOUT = "tokopedia://checkout";
     String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
     String SELLER_SHIPMENT = "tokopedia://seller/shipment";
     String SELLER_STATUS = "tokopedia://seller/status";
@@ -131,6 +134,7 @@ public interface ApplinkConst {
     String INSURANCE_ORDER = "tokopedia://insurance/order";
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
     String HOTEL_ORDER = "tokopedia://hotel/order";
+    String HOTEL = "tokopedia://hotel";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
@@ -268,6 +272,7 @@ public interface ApplinkConst {
         String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
+        String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
     }
 
     interface Query {
@@ -329,5 +334,24 @@ public interface ApplinkConst {
 
     interface Profile {
         String PARAM_USER_ID = "{user_id}";
+    }
+
+    interface Transaction {
+        String EXTRA_SHOP_ID = "shop_id";
+        String EXTRA_PRODUCT_ID = "product_id";
+        String EXTRA_NOTES = "notes";
+        String EXTRA_QUANTITY = "quantity";
+        String EXTRA_SELECTED_VARIANT_ID = "selected_variant_id";
+        String EXTRA_ACTION = "action";
+        String EXTRA_PRODUCT_IMAGE = "product_image";
+        String EXTRA_SHOP_TYPE = "shop_type";
+        String EXTRA_SHOP_NAME = "shop_name";
+        String EXTRA_OCS = "ocs";
+        String EXTRA_TRADE_IN_PARAMS = "trade_in_params";
+        String EXTRA_NEED_REFRESH = "extra_need_refresh";
+        String TRACKER_ATTRIBUTION = "tracker_attribution";
+        String TRACKER_LIST_NAME = "tracker_list_name";
+
+        String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
     }
 }
