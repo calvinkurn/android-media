@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -146,6 +147,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
     }
 
     public void renderPopularLocations() {
+        rvLocationResults.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         rvLocationResults.setAdapter(dealsPopularLocationAdapter);
         dealsPopularLocationAdapter.startDataLoading();
     }
@@ -162,14 +164,17 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         if (!TextUtils.isEmpty(text)) {
             popularCityTitle.setVisibility(View.GONE);
             rvSearchResults.setVisibility(View.GONE);
+            popularLocationTitle.setVisibility(View.GONE);
             dealsPopularLocationAdapter.setSearchText(text);
             dealsPopularLocationAdapter.setCurrentPageIndex(1);
             dealsPopularLocationAdapter.startDataLoading();
         } else {
             dealsPopularLocationAdapter.setSearchText("");
+            dealsPopularLocationAdapter.setCurrentPageIndex(1);
             dealsPopularLocationAdapter.startDataLoading();
             popularCityTitle.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.VISIBLE);
+            popularLocationTitle.setVisibility(View.VISIBLE);
             noLocationLayout.setVisibility(View.GONE);
         }
     }

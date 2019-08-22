@@ -33,7 +33,7 @@ public class GetDealsListRequestUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST;
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST_V2;
         //Request 1
         Type token = new TypeToken<DataResponse<DealsResponse>>() {
         }.getType();

@@ -8,6 +8,7 @@ public class DealsUrl {
 
     public interface HelperUrl {
         String DEALS_LIST = "v1/api/h/deal";
+        String DEALS_LIST_V2 = "v2/api/h/deal";
         String DEALS_LIST_SEARCH = "v1/api/s/deal";
         String DEALS_LOCATIONS = "v1/api/s/location";
         String DEALS_PRODUCT = "v1/api/p";

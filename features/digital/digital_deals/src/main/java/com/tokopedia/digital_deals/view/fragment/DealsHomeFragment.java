@@ -575,11 +575,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location.getCityId() != 0) {
-            requestParams.putInt(Utils.LOCATION_CITY_ID, location.getCityId());
-        } else {
-            requestParams.putInt(Utils.LOCATION_CITY_ID, location.getId());
-        }
+//        if (location.getCityId() != 0) {
+//            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getCityId());
+//        } else {
+//            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+//        }
         if (!TextUtils.isEmpty(location.getCoordinates())) {
             requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
         }
@@ -595,9 +595,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
         if (location.getCityId() != 0) {
-            requestParams.putInt(Utils.LOCATION_CITY_ID, location.getCityId());
+            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getCityId());
         } else {
-            requestParams.putInt(Utils.LOCATION_CITY_ID, location.getId());
+            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
         }
         if (!TextUtils.isEmpty(location.getCoordinates())) {
             requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());

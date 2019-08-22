@@ -62,6 +62,7 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
         } else if (pageNumber == 1 && !TextUtils.isEmpty(searchText)) {
             requestParams.putString("name", searchText);
         } else {
+            requestParams.putString("url", "");
             if (location.getCityId() == 0) {
                 requestParams.putInt(Utils.LOCATION_CITY_ID, location.getId());
             } else {
