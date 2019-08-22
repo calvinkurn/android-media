@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.domain.usecase.searchshop
+package com.tokopedia.search.result.shop.domain
 
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase

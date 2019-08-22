@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.domain.usecase.searchshop
+package com.tokopedia.search.result.shop.domain
 
 import android.content.Context
 import android.support.annotation.RawRes

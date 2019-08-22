@@ -168,14 +168,12 @@ class ShopListFragmentKt:
             }
             is State.Success -> {
                 hideRefreshLayout()
-                shopListAdapter?.updateList(searchShopLiveData.data ?: listOf())
-                gridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
-                gridLayoutLoadMoreTriggerListener?.setHasNextPage(searchShopViewModel?.getIsHasNextPage() ?: false)
+                updateList(searchShopLiveData)
+                updateScrollListener()
             }
             is State.Error -> {
                 hideRefreshLayout()
-                val retryClickedListener = NetworkErrorHelper.RetryClickedListener { this.searchMoreShop() }
-                NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
+                showRetryLayout(searchShopLiveData)
             }
         }
     }
@@ -186,6 +184,33 @@ class ShopListFragmentKt:
 
     private fun hideRefreshLayout() {
         refreshLayout?.isRefreshing = false
+    }
+
+    private fun updateList(searchShopLiveData: State<List<Visitable<*>>>) {
+        shopListAdapter?.updateList(searchShopLiveData.data ?: listOf())
+    }
+
+    private fun updateScrollListener() {
+        gridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
+        gridLayoutLoadMoreTriggerListener?.setHasNextPage(searchShopViewModel?.getIsHasNextPage() ?: false)
+    }
+
+    private fun showRetryLayout(searchShopLiveData: State<List<Visitable<*>>>) {
+        val retryClickedListener = NetworkErrorHelper.RetryClickedListener { retrySearchShop() }
+
+        if (isSearchShopLiveDataContainItems(searchShopLiveData)) {
+            NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
+        }
+    }
+
+    private fun retrySearchShop() {
+        searchShopViewModel?.retrySearchShop()
+    }
+
+    private fun isSearchShopLiveDataContainItems(searchShopLiveData: State<List<Visitable<*>>>): Boolean {
+        return searchShopLiveData.data?.size == 0
     }
 
     override fun getScreenName(): String {

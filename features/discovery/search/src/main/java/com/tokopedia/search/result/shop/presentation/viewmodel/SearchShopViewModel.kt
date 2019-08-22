@@ -42,14 +42,13 @@ class SearchShopViewModel(
     private var isHasNextPage = false
 
     init {
-        this.searchParameter[SearchApiConst.UNIQUE_ID] = generateUniqueId()
-        this.searchParameter[SearchApiConst.USER_ID] = generateUserId()
-
+        setSearchParameterUniqueId()
+        setSearchParameterUserId()
         setSearchParameterStartRow(START_ROW_FIRST_TIME_LOAD)
     }
 
-    private fun generateUserId(): String {
-        return if (userSession.isLoggedIn) userSession.userId else "0"
+    private fun setSearchParameterUniqueId() {
+        this.searchParameter[SearchApiConst.UNIQUE_ID] = generateUniqueId()
     }
 
     private fun generateUniqueId(): String {
@@ -61,6 +60,14 @@ class SearchShopViewModel(
 
     private fun getRegistrationId(): String {
         return localCacheHandler.getString(GCM_ID, "")
+    }
+
+    private fun setSearchParameterUserId() {
+        this.searchParameter[SearchApiConst.USER_ID] = generateUserId()
+    }
+
+    private fun generateUserId(): String {
+        return if (userSession.isLoggedIn) userSession.userId else "0"
     }
 
     private fun setSearchParameterStartRow(startRow: Int) {
@@ -76,13 +83,17 @@ class SearchShopViewModel(
     }
 
     private suspend fun trySearchShop() {
-        if (searchShopLiveData.value != null) return
+        if (isSearchShopLiveDataContainItems()) return
 
         updateSearchShopLiveDataStateToLoading()
 
         val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
 
         searchShopFirstPageSuccess(searchShopModel)
+    }
+
+    private fun isSearchShopLiveDataContainItems(): Boolean {
+        return searchShopLiveData.value?.data?.size ?: 0 > 0
     }
 
     private fun updateSearchShopLiveDataStateToLoading() {
@@ -242,6 +253,27 @@ class SearchShopViewModel(
         addLoadingMoreModel(visitableList)
 
         return visitableList
+    }
+
+    fun retrySearchShop() {
+        launchCatchError(block = {
+            tryRetrySearchShop()
+        }, onError = {
+            catchSearchShopError(it)
+        })
+    }
+
+    private suspend fun tryRetrySearchShop() {
+        if (isSearchShopLiveDataDoesNotContainItems()) {
+            trySearchShop()
+        }
+        else {
+            trySearchMoreShop()
+        }
+    }
+
+    private fun isSearchShopLiveDataDoesNotContainItems(): Boolean {
+        return !isSearchShopLiveDataContainItems()
     }
 
     fun getSearchParameterQuery() = (searchParameter[SearchApiConst.Q] ?: "").toString()

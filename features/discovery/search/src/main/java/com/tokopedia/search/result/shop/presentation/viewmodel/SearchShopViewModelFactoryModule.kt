@@ -7,7 +7,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
-import com.tokopedia.search.result.domain.usecase.searchshop.SearchShopCoroutineUseCaseModule
+import com.tokopedia.search.result.shop.domain.SearchShopCoroutineUseCaseModule
 import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.model.ShopViewModel
