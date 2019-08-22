@@ -3,11 +3,12 @@ package com.tokopedia.inbox.rescenter.edit.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.rescenter.edit.customadapter.TroubleSpinnerAdapter;
 import com.tokopedia.inbox.rescenter.edit.listener.BuyerEditResCenterListener;
@@ -15,16 +16,13 @@ import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
 
 /**
  * Created on 8/24/16.
  */
 public class EditTroubleSectionView extends BaseView<EditResCenterFormData, BuyerEditResCenterListener> {
 
-    @BindView(R2.id.spinner_trouble)
     public Spinner troubleSpinner;
-    @BindView(R2.id.box_desc)
     public EditText descEditText;
 
     private EditResCenterFormData data;
@@ -92,5 +90,14 @@ public class EditTroubleSectionView extends BaseView<EditResCenterFormData, Buye
                 }
             }
         }
+    }
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        troubleSpinner = view.findViewById(R.id.spinner_trouble);
+        descEditText = view.findViewById(R.id.box_desc);
     }
 }

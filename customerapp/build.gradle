@@ -203,32 +203,12 @@ android {
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
 
-            if (allowSplit()) {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
-                    }
-                    variant.assemble.doLast {
-                        variant.outputs.each { output ->
-                            if (output.zipAlign) {
-                                archiveAPK(variant, output);
-                            }
-                        }
-                    }
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    output.versionCodeOverride = (getTkpdVersionCode() * 100);
                 }
             }
         }
-    }
-
-    splits {
-        density {
-            enable allowSplit()
-            reset()
-            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
-            compatibleScreens 'small', 'normal', 'large', 'xlarge'
-        }
-
     }
 
     defaultConfig {
@@ -280,6 +260,7 @@ android {
         }
     }
 
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
 
 }
 
@@ -300,7 +281,6 @@ dependencies {
     implementation project(rootProject.ext.features.interestPick)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
@@ -356,6 +336,7 @@ dependencies {
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
