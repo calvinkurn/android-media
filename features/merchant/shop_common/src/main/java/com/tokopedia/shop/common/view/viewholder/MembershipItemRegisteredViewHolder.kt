@@ -16,7 +16,7 @@ class MembershipItemRegisteredViewHolder(private val view: View, private val dat
     override fun bind(element: MembershipQuests) {
         membershipView.setMembershipModel(element, dataSize)
         membershipView.setOnClickListener {
-            RouteManager.route(view.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://${url}"))
+            RouteManager.route(view.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         }
         membershipView.btnClaim.setOnClickListener {
             listener.onButtonClaimClicked(element.questUserID)

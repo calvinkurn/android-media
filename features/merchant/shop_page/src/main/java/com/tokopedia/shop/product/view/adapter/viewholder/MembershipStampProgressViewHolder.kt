@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.CircleIndicatorView
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
@@ -39,13 +40,14 @@ class MembershipStampProgressViewHolder(itemView: View, listener: MembershipStam
             circleIndicator.setIndicator(element.membershipData.membershipProgram.membershipQuests.size)
         }
 
-        membershipAdapter.setMembershipData(element.membershipData)
-        rvMembership.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                circleIndicator.setCurrentIndicator((rvMembership.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition())
-            }
-        })
+            itemView.show()
+            membershipAdapter.setMembershipData(element.membershipData)
+            rvMembership.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    circleIndicator.setCurrentIndicator((rvMembership.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition())
+                }
+            })
     }
 
     private fun findViews(itemView: View) {

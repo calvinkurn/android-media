@@ -12,7 +12,7 @@ import com.tokopedia.hotel.search.data.model.Sort
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_NORMAL
 
-class HotelClosedSortBottomSheets: BottomSheets() {
+class HotelClosedSortBottomSheets : BottomSheets() {
     private var title: String = ""
     private var mode: Int = MODE_NORMAL
     private var menu: List<Sort> = listOf()
@@ -24,7 +24,7 @@ class HotelClosedSortBottomSheets: BottomSheets() {
     fun setMenu(_menu: List<Sort>): HotelClosedSortBottomSheets = this.apply { menu = _menu }
     fun setSelecetedItem(_sort: Sort): HotelClosedSortBottomSheets = this.apply { selectedItem = _sort }
 
-    override fun getLayoutResourceId(): Int = R.layout.fragment_base_list
+    override fun getLayoutResourceId(): Int = com.tokopedia.abstraction.R.layout.fragment_base_list
 
     override fun initView(view: View?) {
         val recyclerView = view?.findViewById<RecyclerView>(R.id.recycler_view)
@@ -43,7 +43,7 @@ class HotelClosedSortBottomSheets: BottomSheets() {
         val btnClose = getDialog().findViewById<AppCompatImageView>(com.tokopedia.design.R.id.btn_close)
         btnClose.setOnClickListener { dismiss() }
 
-        val title = getDialog().findViewById<TextView>(R.id.tv_title)
+        val title = getDialog().findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
         title.typeface = Typeface.DEFAULT_BOLD
     }
 

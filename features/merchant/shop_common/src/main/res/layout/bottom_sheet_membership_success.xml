@@ -37,7 +37,7 @@
         app:typographyType="body_3"
         android:layout_marginBottom="@dimen/dp_40"/>
 
-    <com.tokopedia.unifycomponents.Buttons
+    <Button
         android:id="@+id/btn_check_my_coupon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
