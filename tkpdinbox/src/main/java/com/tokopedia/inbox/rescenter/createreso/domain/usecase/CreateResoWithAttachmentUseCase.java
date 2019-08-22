@@ -101,31 +101,28 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
 
     private Func1<CreateResoRequestDomain, Observable<List<UploadDomain>>>
     getObservableUploadAttachment(final List<AttachmentViewModel> attachmentList) {
-        return new Func1<CreateResoRequestDomain, Observable<List<UploadDomain>>>() {
-            @Override
-            public Observable<List<UploadDomain>> call(CreateResoRequestDomain createResoRequestDomain) {
-                if (attachmentList != null && attachmentList.size() != 0) {
-                    return Observable.from(attachmentList)
-                            .flatMap((Func1<AttachmentViewModel, Observable<UploadDomain>>) attachmentViewModel -> {
-                                if (attachmentViewModel.isImage()) {
-                                    return uploadUseCase.createObservable(
-                                            UploadImageUseCase.getParam(
-                                                    createResoRequestDomain,
-                                                    attachmentViewModel.getAttachmentId(),
-                                                    attachmentViewModel.getFileLoc()
-                                            ));
-                                } else {
-                                    return uploadVideoUseCase.createObservable(
-                                            UploadImageUseCase.getParam(
-                                                    createResoRequestDomain,
-                                                    attachmentViewModel.getAttachmentId(),
-                                                    attachmentViewModel.getFileLoc()
-                                            ));
-                                }
-                            }).toList();
-                } else {
-                    return Observable.just(new ArrayList<>());
-                }
+        return createResoRequestDomain -> {
+            if (attachmentList != null && attachmentList.size() != 0) {
+                return Observable.from(attachmentList)
+                        .flatMap((Func1<AttachmentViewModel, Observable<UploadDomain>>) attachmentViewModel -> {
+                            if (attachmentViewModel.isImage()) {
+                                return uploadUseCase.createObservable(
+                                        UploadImageUseCase.getParam(
+                                                createResoRequestDomain,
+                                                attachmentViewModel.getAttachmentId(),
+                                                attachmentViewModel.getFileLoc()
+                                        ));
+                            } else {
+                                return uploadVideoUseCase.createObservable(
+                                        UploadImageUseCase.getParam(
+                                                createResoRequestDomain,
+                                                attachmentViewModel.getAttachmentId(),
+                                                attachmentViewModel.getFileLoc()
+                                        ));
+                            }
+                        }).toList();
+            } else {
+                return Observable.just(new ArrayList<>());
             }
         };
     }
