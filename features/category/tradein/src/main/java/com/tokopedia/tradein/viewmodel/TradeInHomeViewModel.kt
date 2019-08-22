@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.*
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -26,10 +25,19 @@ import tradein_common.TradeInUtils
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-class TradeInHomeViewModel(application: Application, intent: Intent) : BaseViewModel(application), CoroutineScope, LifecycleObserver, Laku6TradeIn.TradeInListener {
+class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseViewModel(application), CoroutineScope, LifecycleObserver, Laku6TradeIn.TradeInListener {
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
-    var tradeInParams: TradeInParams = intent.getParcelableExtra(TradeInParams::class.java.simpleName)
-    var tradeInType: Int = 0
+    var tradeInParams: TradeInParams
+
+    init {
+        tradeInParams = if (intent.hasExtra(TradeInParams::class.java.simpleName)) {
+            val parcelable = intent.getParcelableExtra (TradeInParams::class.java.simpleName) as TradeInParams?
+            parcelable ?: TradeInParams()
+        } else
+            TradeInParams()
+    }
+
+    var tradeInType: Int = 1
 
     fun processMessage(intent: Intent) {
         val result = intent.getStringExtra("test-result")
@@ -101,7 +109,6 @@ class TradeInHomeViewModel(application: Application, intent: Intent) : BaseViewM
 
     fun checkMoneyIn(modelId: Int, jsonObject: JSONObject) {
         progBarVisibility.value = true
-        tradeInParams = TradeInParams()
         tradeInParams.deviceId = TradeInUtils.getDeviceId(applicationInstance)
         tradeInParams.userId = repository.getUserLoginState().userId.toInt()
         tradeInParams.tradeInType = 2
