@@ -8,6 +8,7 @@ import com.tokopedia.tracking.usecase.RetryPickup;
 import com.tokopedia.tracking.usecase.TrackCourierUseCase;
 import com.tokopedia.tracking.usecase.entity.RetryAvailability;
 import com.tokopedia.tracking.usecase.entity.RetryAvailabilityResponse;
+import com.tokopedia.tracking.usecase.entity.RetryBookingResponse;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -82,8 +83,31 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
     }
 
     @Override
+    public void onRetryPickup(String orderId) {
+        retryPickupUsecase.execute(orderId)
+                .subscribe(new Observer<RetryBookingResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(RetryBookingResponse retryBookingResponse) {
+
+                    }
+                });
+    }
+
+    @Override
     public void onDetach() {
         useCase.unsubscribe();
+        retryAvailUsecase.unsubscribe();
+        retryPickupUsecase.unsubscribe();
     }
 
     private Subscriber<TrackingViewModel> trackingResultSubscriber() {

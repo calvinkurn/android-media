@@ -10,6 +10,8 @@ public interface ITrackingPagePresenter {
 
     void onGetRetryAvailability(String orderId);
 
+    void onRetryPickup(String orderId);
+
     void onDetach();
 
 }

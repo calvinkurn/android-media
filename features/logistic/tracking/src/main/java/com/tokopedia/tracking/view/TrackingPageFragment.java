@@ -141,6 +141,12 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         buyerName.setText(model.getBuyerName());
         buyerLocation.setText(model.getBuyerAddress());
         currentStatus.setText(model.getStatus());
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
+            }
+        });
         initialHistoryView();
         setHistoryView(model);
         setEmptyHistoryView(model);
