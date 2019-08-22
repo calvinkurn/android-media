@@ -14,7 +14,7 @@ include "libraries:common_network"
 //include 'libraries:date_picker_range'
 include "libraries:fingerprint"
 include "libraries:global_config"
-include "libraries:graphql"
+//include "libraries:graphql"
 include "libraries:cache_manager"
 //include "libraries:cache_manager_no_op"
 include "libraries:image_picker"
@@ -25,7 +25,7 @@ include "libraries:kotlin_extensions"
 //include 'libraries:locationmanager'
 include "libraries:logger"
 //include 'libraries:iris'
-include 'libraries:iris_no_op'
+//include 'libraries:iris_no_op'
 include "libraries:network"
 //include "libraries:pagination"
 //include "libraries:oms"
@@ -47,7 +47,7 @@ include "libraries:user_session"
 include "libraries:track"
 include "libraries:trackinterface"
 //include "libraries:graph_view"
-include 'libraries:cpm'
+//include 'libraries:cpm'
 include "libraries:linker"
 include "libraries:webview"
 include "libraries:akamai_bot_lib"
@@ -55,19 +55,20 @@ include "libraries:collapsing_tab_layout"
 
 include "libraries:videouploader"
 
-include "libraries:unify:unify_compositions:banner"
+//include "libraries:unify:unify_compositions:banner"
 
 include 'tkpddesign'
 include 'tkpdabstraction'
 include "features:user:sessioncommon"
+include "features:user:user_identification_common"
 include "features:common:resources_common"
 
 
 // FOR SHOP SETTINGS
-include "features:merchant:shop_settings"
-include "features:merchant:shop_common"
-include "features:merchant:gold_merchant_common"
-include "features:merchant:gold_merchant_resource"
+//include "features:merchant:shop_settings"
+//include "features:merchant:shop_common"
+//include "features:merchant:gold_merchant_common"
+//include "features:merchant:gold_merchant_resource"
 
 
 include 'testapp'
