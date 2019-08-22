@@ -43,4 +43,10 @@
     <string name="product_manage_empty_list_content">Yaah, produk tidak ditemukan</string>
     <string name="product_manage_empty_list_title">Masukkan informasi produk yang benar di pencarian.</string>
 
+
+    <string name="product_bs_etalase_title">Etalase produk</string>
+    <string name="product_bs_stock_title">Stok produk</string>
+    <string name="product_bs_delete_title">Hapus produk</string>
+    <string name="product_bs_title">Atur produk</string>
+
 </resources>

@@ -14,6 +14,8 @@ public class ProductManageConstant {
     public static final String LIST_ID_DELETED = "list_id_deleted";
     public static final int REQUEST_CODE_FILTER = 9483;
     public static final int REQUEST_CODE_SORT = 4782;
+    public static final int ETALASE_PICKER_REQUEST_CODE = 1111;
+    public static final int STOCK_EDIT_REQUEST_CODE = 2222;
     public static final int FILTER_ALL_PRODUK = -2;
     public static final int FILTER_SOLD_PRODUK = -3;
     public static final int FILTER_EMPTY_STOK = -4;

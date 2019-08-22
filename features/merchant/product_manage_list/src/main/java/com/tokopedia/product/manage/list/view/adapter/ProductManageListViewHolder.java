@@ -31,7 +31,7 @@ public class ProductManageListViewHolder extends BaseCheckableViewHolder<Product
     public interface ProductManageViewHolderListener {
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
 
-//        void onProductClicked(ProductManageViewModel productManageViewModel);
+        void onProductClicked(ProductManageViewModel productManageViewModel);
     }
 
     private ImageView productImageView;
@@ -89,6 +89,12 @@ public class ProductManageListViewHolder extends BaseCheckableViewHolder<Product
         optionImageButton.setOnClickListener(v -> {
             if (viewListener != null) {
                 viewListener.onClickOptionItem(productManageViewModel);
+            }
+        });
+
+        itemView.setOnClickListener(v -> {
+            if (viewListener != null) {
+                viewListener.onProductClicked(productManageViewModel);
             }
         });
 
