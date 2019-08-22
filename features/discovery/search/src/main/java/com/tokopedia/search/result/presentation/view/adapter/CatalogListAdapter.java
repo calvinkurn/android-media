@@ -193,20 +193,6 @@ public class CatalogListAdapter extends SearchSectionGeneralAdapter {
         return checkDataSize(position) && getItemList().get(position) instanceof EmptySearchViewModel;
     }
 
-    @Override
-    public int getIconTypeRecyclerView() {
-        switch (getTypeFactory().getRecyclerViewItem()) {
-            case SearchConstant.RecyclerView.VIEW_PRODUCT:
-                return R.drawable.ic_list_green;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return R.drawable.ic_grid_default_green;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
-                return R.drawable.ic_grid_box_green;
-            default:
-                return R.drawable.ic_grid_default_green;
-        }
-    }
-
     // Override parent's clearData
     // CatalogListAdapter do not need to notifyItemRangeRemoved
     // It will be done via TopAdsRecyclerAdapter

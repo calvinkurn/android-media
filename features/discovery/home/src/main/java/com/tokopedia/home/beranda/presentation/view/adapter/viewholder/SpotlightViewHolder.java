@@ -13,6 +13,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightItemViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,29 +110,34 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
 
     private static class SpotlightItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView title;
+        private Typography title;
         private TextView tag;
         private TextView description;
         private ImageView background;
         private View container;
         private Context context;
         private HomeCategoryListener listener;
-        private Typeface titleTypeface;
 
         public SpotlightItemViewHolder(View itemView, HomeCategoryListener listener) {
             super(itemView);
             context = itemView.getContext();
+
+            /**
+             * Hardcoded spotlight title to use dip unit
+             * prevent spotlight title increase text size
+             * when user font size preference is large
+             */
             title = itemView.findViewById(R.id.spotlightTitle);
+            title.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_16));
+
             tag = itemView.findViewById(R.id.spotlightTag);
             description = itemView.findViewById(R.id.spotlightDesc);
             background = itemView.findViewById(R.id.spotlightBackground);
             container = itemView.findViewById(R.id.spotlightContainer);
             this.listener = listener;
-            titleTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
         }
 
         public void bind(SpotlightItemViewModel model, final int position) {
-            title.setTypeface(titleTypeface);
             title.setText(model.getTitle());
             if (!TextUtils.isEmpty(model.getTagName())) {
                 tag.setText(model.getTagName().toUpperCase());
@@ -165,7 +172,7 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
         }
 
         private void eventClickSpotlight(Context context, SpotlightItemViewModel model, int position) {
-            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context, model.getEnhanceClickSpotlightHomePage(position));
+            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context, model.getEnhanceClickSpotlightHomePage(position, model.getChanneldId()));
         }
     }
 }

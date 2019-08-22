@@ -8,10 +8,15 @@ query SearchProduct(
         source
         shareUrl
         isFilter
+        response_code
         count
         count_text
         additional_params
         isQuerySafe
+        autocomplete_applink
+        redirection {
+            redirect_applink
+        }
         suggestion {
             currentKeyword
             suggestion

@@ -484,7 +484,7 @@ public abstract class SearchSectionFragment
     }
 
     public void performNewProductSearch(String query) {
-        redirectionListener.performNewProductSearch(query);
+        redirectionListener.startActivityWithApplink(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + query);
     }
 
     public void showSearchInputView() {

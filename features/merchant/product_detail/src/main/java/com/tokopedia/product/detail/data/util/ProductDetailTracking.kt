@@ -11,6 +11,7 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.normalcheckout.view.NormalCheckoutTracking.Companion.PRODUCT_DETAIL_PAGE
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -682,6 +683,54 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
     // MOENGAGE END
     ////////////////////////////////////////////////////////////////
 
+    private fun getFormattedPrice(price: Int): String {
+        return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
+    }
+
+    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
+        true -> "tokopedia"
+        else -> "regular"
+    }
+
+    private fun removeCurrencyPrice(priceFormatted: String): String{
+        return try {
+            priceFormatted.replace("[^\\d]".toRegex(), "")
+        } catch (t: Throwable){
+            "0"
+        }
+    }
+
+    fun eventClickOnStickyLogin(isOnSticky: Boolean) {
+        val tracker = TrackApp.getInstance().gtm
+        if (tracker != null) {
+            if (isOnSticky) {
+                tracker.sendGeneralEvent(
+                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                        ProductTrackingConstant.Category.PDP,
+                        ProductTrackingConstant.Action.CLICK_ON_LOGIN_STICKY_WIDGET,
+                        ProductTrackingConstant.Label.CLICK
+                )
+            } else {
+                tracker.sendGeneralEvent(
+                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                        ProductTrackingConstant.Category.PDP,
+                        ProductTrackingConstant.Action.CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET,
+                        ProductTrackingConstant.Label.EMPTY_LABEL
+                )
+            }
+        }
+    }
+
+    fun eventViewLoginStickyWidget() {
+        val tracker = TrackApp.getInstance().gtm
+        tracker.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.VIEW_LOGIN_STICKY_WIDGET,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"
@@ -713,22 +762,4 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         private const val CURRENCY_CODE = "currencyCode"
         private const val CURRENCY_DEFAULT_VALUE = "IDR"
     }
-
-    private fun getFormattedPrice(price: Int): String {
-        return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
-    }
-
-    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
-        true -> "tokopedia"
-        else -> "regular"
-    }
-
-    private fun removeCurrencyPrice(priceFormatted: String): String{
-        return try {
-            priceFormatted.replace("[^\\d]".toRegex(), "")
-        } catch (t: Throwable){
-            "0"
-        }
-    }
-
 }

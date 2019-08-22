@@ -55,11 +55,11 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     private ImageView noResultImage;
     private TextView emptyTitleTextView;
     private TextView emptyContentTextView;
-    private Button emptyButtonItemButton;
-    private final EmptyStateListener emptyStateListener;
+    private TextView emptyButtonItemButton;
+    protected final EmptyStateListener emptyStateListener;
     private final BannerAdsListener bannerAdsListener;
     private TopAdsBannerView topAdsBannerView;
-    private RecyclerView selectedFilterRecyclerView;
+    protected RecyclerView selectedFilterRecyclerView;
     private SelectedFilterAdapter selectedFilterAdapter;
     private EmptySearchViewModel boundedEmptySearchModel;
 
@@ -72,7 +72,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         noResultImage = (ImageView) view.findViewById(R.id.no_result_image);
         emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
         emptyContentTextView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
-        emptyButtonItemButton = (Button) view.findViewById(R.id.button_add_promo);
+        emptyButtonItemButton = view.findViewById(R.id.button_add_promo);
         this.emptyStateListener = emptyStateListener;
         this.bannerAdsListener = bannerAdsListener;
         context = itemView.getContext();
@@ -87,7 +87,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         initSelectedFilterRecyclerView();
     }
 
-    private void initSelectedFilterRecyclerView() {
+    protected void initSelectedFilterRecyclerView() {
         selectedFilterAdapter = new SelectedFilterAdapter(emptyStateListener);
         selectedFilterRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         selectedFilterRecyclerView.setAdapter(selectedFilterAdapter);
@@ -113,6 +113,11 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     }
 
     private void loadBannerAds() {
+        if (!boundedEmptySearchModel.isBannerAdsAllowed()) {
+            loadProductAds();
+            return;
+        }
+
         Config bannerAdsConfig = new Config.Builder()
                 .setSessionId(emptyStateListener.getRegistrationId())
                 .setUserId(emptyStateListener.getUserId())
@@ -173,7 +178,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         bindContentTextView();
         bindNewSearchButton();
         bindRecylerView();
-        loadBannerAdsIfNotNull();
+        bindBannerAds();
     }
 
     private void bindNoResultImage() {
@@ -213,18 +218,18 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         List<Option> selectedFilterFromEmptyStateListener = emptyStateListener.getSelectedFilterAsOptionList();
 
         if(selectedFilterFromEmptyStateListener != null && !selectedFilterFromEmptyStateListener.isEmpty()) {
+            selectedFilterRecyclerView.setVisibility(View.VISIBLE);
             populateSelectedFilterToRecylerView(selectedFilterFromEmptyStateListener);
         } else {
             selectedFilterRecyclerView.setVisibility(View.GONE);
         }
     }
 
-    private void populateSelectedFilterToRecylerView(List<Option> selectedFilterOptionList) {
-        selectedFilterRecyclerView.setVisibility(View.VISIBLE);
+    protected void populateSelectedFilterToRecylerView(List<Option> selectedFilterOptionList) {
         selectedFilterAdapter.setOptionList(selectedFilterOptionList);
     }
 
-    private void loadBannerAdsIfNotNull() {
+    private void bindBannerAds() {
         if (topAdsParams != null) {
             loadBannerAds();
         }
@@ -234,6 +239,10 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         String quoteSymbol = "\"";
         int firstQuotePos = text.indexOf(quoteSymbol);
         int lastQuotePos = text.lastIndexOf(quoteSymbol);
+
+        if (firstQuotePos < 0) {
+            return text;
+        }
 
         SpannableStringBuilder str = new SpannableStringBuilder(text);
         str.setSpan(new StyleSpan(Typeface.BOLD), firstQuotePos, lastQuotePos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

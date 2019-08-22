@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.home.R;
@@ -27,6 +28,7 @@ import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.Date;
 
@@ -40,7 +42,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     @LayoutRes
     public static final int LAYOUT = R.layout.home_channel_3_image;
     private static final String TAG = DynamicChannelSprintViewHolder.class.getSimpleName();
-    private TextView homeChannelTitle;
+    private Typography homeChannelTitle;
     private TextView seeAllButton;
     private HomeCategoryListener listener;
     private CountDownView countDownView;
@@ -82,8 +84,6 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
             itemAdapter.setChannel(channel);
-            Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
-            homeChannelTitle.setTypeface(typeface);
             homeChannelTitle.setText(channel.getHeader().getName());
 
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
@@ -103,22 +103,24 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 countDownView.setVisibility(View.GONE);
             }
         } catch (Exception e) {
-            Crashlytics.log(0, TAG, e.getLocalizedMessage());
+            if (!GlobalConfig.DEBUG) {
+                Crashlytics.log(0, TAG, e.getLocalizedMessage());
+            }
         }
     }
-
     private void setupClickListeners(final DynamicHomeChannel.Channels channel) {
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isSprintSale(channel)) {
-                    HomePageTracking.eventClickSeeAllProductSprint(context);
-                } else if (isSprintSaleLego(channel)) {
-                    HomePageTracking.eventClickSeeAllLegoProduct(context, channel.getHeader().getName());
+                    HomePageTracking.eventClickSeeAllProductSprint(context, channel.getId());
+                } else if (isSprintSaleLego(channel) || isOrganicLego(channel)) {
+                    HomePageTracking.eventClickSeeAllLegoProduct(context, channel.getHeader().getName(), channel.getId());
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(
                             context,
-                            DynamicLinkHelper.getActionLink(channel.getHeader()));
+                            DynamicLinkHelper.getActionLink(channel.getHeader()),
+                            channel.getId());
                 }
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
             }

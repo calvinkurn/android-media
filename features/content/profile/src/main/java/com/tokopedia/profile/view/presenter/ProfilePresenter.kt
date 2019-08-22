@@ -9,7 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.domain.usecase.GetProfileRelatedUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
@@ -26,15 +26,15 @@ import javax.inject.Inject
  * @author by milhamj on 9/21/18.
  */
 class ProfilePresenter @Inject constructor(
-    private val getDynamicFeedProfileFirstUseCase: GetDynamicFeedProfileFirstUseCase,
-    private val getDynamicFeedProfileUseCase: GetDynamicFeedProfileUseCase,
-    private val likeKolPostUseCase: LikeKolPostUseCase,
-    private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
-    private val deletePostUseCase: DeletePostUseCase,
-    private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-    private val shouldChangeUsernameUseCase: ShouldChangeUsernameUseCase,
-    private val getProfileRelatedUseCase: GetProfileRelatedUseCase,
-    private val atcUseCase: AddToCartUseCase)
+        private val getDynamicFeedProfileFirstUseCase: GetDynamicFeedProfileFirstUseCase,
+        private val getDynamicFeedProfileUseCase: GetDynamicFeedProfileUseCase,
+        private val likeKolPostUseCase: LikeKolPostUseCase,
+        private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
+        private val deletePostUseCase: DeletePostUseCase,
+        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
+        private val shouldChangeUsernameUseCase: ShouldChangeUsernameUseCase,
+        private val getRelatedPostUseCase: GetRelatedPostUseCase,
+        private val atcUseCase: AddToCartUseCase)
     : BaseDaggerPresenter<ProfileContract.View>(), ProfileContract.Presenter {
 
     override var cursor: String = ""
@@ -48,7 +48,8 @@ class ProfilePresenter @Inject constructor(
         deletePostUseCase.unsubscribe()
         trackAffiliateClickUseCase.unsubscribe()
         shouldChangeUsernameUseCase.unsubscribe()
-        getProfileRelatedUseCase.unsubscribe()
+        getRelatedPostUseCase.unsubscribe()
+        atcUseCase.unsubscribe()
     }
 
     override fun getProfileFirstPage(targetUserId: Int, isFromLogin: Boolean) {
@@ -153,8 +154,8 @@ class ProfilePresenter @Inject constructor(
     override fun getRelatedProfile(
         onErrorGetRelatedProfile: ((throwable: Throwable?) -> Unit)?,
         onSuccessGetRelatedProfile: ((feedPostRelated: FeedPostRelated?) -> Unit)?) {
-        getProfileRelatedUseCase.execute(
-            GetProfileRelatedUseCase.createRequestParams(""),
+        getRelatedPostUseCase.execute(
+            GetRelatedPostUseCase.createRequestParams(""),
             object : Subscriber<FeedPostRelated>() {
                 override fun onCompleted() {}
                 override fun onError(e: Throwable?) {

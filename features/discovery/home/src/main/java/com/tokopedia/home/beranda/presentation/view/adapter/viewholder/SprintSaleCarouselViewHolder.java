@@ -42,6 +42,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.Date;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     private RecyclerView recyclerView;
     private ItemAdapter itemAdapter;
     private Context context;
-    private TextView title;
+    private Typography title;
     private TextView seeMore;
     private ImageView headerBg;
     private CountDownView countDownView;
@@ -112,8 +113,6 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     public void bind(DynamicChannelViewModel element) {
         try {
             this.channels = element.getChannel();
-            Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
-            title.setTypeface(typeface);
             title.setText(channels.getHeader().getName());
             if (channels.getHeader().getBackColor() != null) {
                 Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
@@ -153,7 +152,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
 
     private void onClickSeeAll() {
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), channels.getHomeAttribution());
-        HomePageTracking.eventClickSeeAllProductSprintBackground(context);
+        HomePageTracking.eventClickSeeAllProductSprintBackground(context, channels.getId());
         HomeTrackingUtils.homeSprintSaleViewAll(context,
                 DynamicLinkHelper.getActionLink(channels.getHeader()));
     }
