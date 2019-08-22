@@ -18,14 +18,18 @@ class RemoveInsuranceProductUsecase @Inject constructor(@ApplicationContext val 
     var graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
     var requestParams = RequestParams.create()
 
+    val DATA_REQUEST_PARAM = "data"
+    val CART_ID_REQUEST_PARAM = "cartIds"
+    val CLIENT_REQUEST_PARAM = "android"
+
     fun setRequestParams(removeInsuranceDataList: ArrayList<RemoveInsuranceData>, pageType: String,
                          clientVersion: String, cartIdsList: ArrayList<String>) {
         val removeInsuranceProductRequest = RemoveInsuranceProductRequest(pageType,
                 clientVersion,
-                "android", removeInsuranceDataList)
+                CLIENT_REQUEST_PARAM, removeInsuranceDataList)
 
-        requestParams.putObject("data", removeInsuranceProductRequest)
-        requestParams.putObject("cartIds", cartIdsList)
+        requestParams.putObject(DATA_REQUEST_PARAM, removeInsuranceProductRequest)
+        requestParams.putObject(CART_ID_REQUEST_PARAM, cartIdsList)
     }
 
     fun execute(subscriber: Subscriber<GraphqlResponse>) {

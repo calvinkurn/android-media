@@ -7,47 +7,21 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-
+import android.widget.*
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.feature.cartlist.InsuranceItemActionListener
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.transaction.insurance.utils.*
 import com.tokopedia.transactiondata.insurance.entity.request.UpdateInsuranceProductApplicationDetails
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceApplicationValidation
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceProductApplicationDetails
-
-import java.util.ArrayList
-
-import com.tokopedia.transaction.insurance.utils.PAGE_TYPE_CART
-import com.tokopedia.transaction.insurance.utils.VALIDATION_TYPE_MAX_DATE
-import com.tokopedia.transaction.insurance.utils.VALIDATION_TYPE_MAX_LENGTH
-import com.tokopedia.transaction.insurance.utils.VALIDATION_TYPE_MIN_DATE
-import com.tokopedia.transaction.insurance.utils.VALIDATION_TYPE_MIN_LENGTH
-import com.tokopedia.transaction.insurance.utils.VALIDATION_TYPE_PATTERN
-import com.tokopedia.transaction.insurance.utils.dateFormatter
-import com.tokopedia.transaction.insurance.utils.getDate
-import com.tokopedia.transaction.insurance.utils.getDateInServerFormat
-import com.tokopedia.transaction.insurance.utils.getDateStringInUIFormat
-import com.tokopedia.transaction.insurance.utils.getDay
-import com.tokopedia.transaction.insurance.utils.getStartMonth
-import com.tokopedia.transaction.insurance.utils.getStartYear
-import com.tokopedia.transaction.insurance.utils.openBottomSheetWebView
-import com.tokopedia.transaction.insurance.utils.updateEditTextBackground
-import com.tokopedia.transaction.insurance.utils.validateMaxDate
-import com.tokopedia.transaction.insurance.utils.validateMaxLength
-import com.tokopedia.transaction.insurance.utils.validateMinDate
-import com.tokopedia.transaction.insurance.utils.validateMinLength
-import com.tokopedia.transaction.insurance.utils.validatePattern
+import java.util.*
 
 
 class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActionlistener: InsuranceItemActionListener) : RecyclerView.ViewHolder(itemView) {
@@ -66,9 +40,9 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
     private var insuranceCartShops: InsuranceCartShops? = null
     private val typeValues = ArrayList<TextView>()
     private var btnValidate: Button? = null
-    private var closeableBottomSheetDialog: CloseableBottomSheetDialog? = null
+    private var closeableBottomSheetDialog: CloseableBottomSheetDialog
     private var errorMessage: String? = null
-    private var datePicker: SaldoDatePickerUtil? = null
+    private var datePicker: SaldoDatePickerUtil
 
     private val updateInsuranceProductApplicationDetailsArrayList = ArrayList<UpdateInsuranceProductApplicationDetails>()
 
@@ -84,6 +58,9 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
         tvInsuranceTickerText = itemView.findViewById(R.id.tv_ticker_text)
         tvChangeInsuranceApplicationDetails = itemView.findViewById(R.id.insurance_application_details_change)
         tvInsuranceApplicationDetails = itemView.findViewById(R.id.insurance_appliation_details)
+        closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(itemView.context)
+        datePicker = SaldoDatePickerUtil(itemView.context as Activity)
+
     }
 
     fun bindData(insuranceCartShops: InsuranceCartShops, position: Int, pageType: String) {
@@ -93,8 +70,6 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
         if (!insuranceCartShops.shopItemsList.isEmpty() && !insuranceCartShops.shopItemsList[0].digitalProductList.isEmpty()) {
 
             val insuranceCartDigitalProduct = insuranceCartShops.shopItemsList[0].digitalProductList[0]
-
-            datePicker = SaldoDatePickerUtil(ivInsuranceIcon.context as Activity)
 
             if (!TextUtils.isEmpty(insuranceCartDigitalProduct.productInfo.sectionTitle)) {
                 tvProductTitle.text = insuranceCartDigitalProduct.productInfo.sectionTitle
@@ -110,16 +85,16 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
 
             if (!TextUtils.isEmpty(insuranceCartDigitalProduct.productInfo.subTitle)) {
                 tvInsuranceSubtitle.text = insuranceCartDigitalProduct.productInfo.subTitle
-                tvInsuranceSubtitle.visibility = View.VISIBLE
+                tvInsuranceSubtitle.show()
             } else {
-                tvInsuranceSubtitle.visibility = View.GONE
+                tvInsuranceSubtitle.hide()
             }
 
             if (!TextUtils.isEmpty(insuranceCartDigitalProduct.productInfo.tickerText)) {
                 tvInsuranceTickerText.text = insuranceCartDigitalProduct.productInfo.tickerText
-                tvInsuranceTickerText.visibility = View.VISIBLE
+                tvInsuranceTickerText.show()
             } else {
-                tvInsuranceTickerText.visibility = View.GONE
+                tvInsuranceTickerText.hide()
             }
 
             if (!TextUtils.isEmpty(insuranceCartDigitalProduct.productInfo.iconUrl)) {
@@ -127,9 +102,9 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
             }
 
             if (TextUtils.isEmpty(insuranceCartDigitalProduct.productInfo.linkName)) {
-                tvInsuranceInfo.visibility = View.GONE
+                tvInsuranceInfo.hide()
             } else {
-                tvInsuranceInfo.visibility = View.VISIBLE
+                tvInsuranceInfo.show()
                 tvInsuranceInfo.text = insuranceCartDigitalProduct.productInfo.linkName
                 tvInsuranceInfo.setOnClickListener { v ->
 
@@ -154,11 +129,10 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
 
                 if (!TextUtils.isEmpty(applicationDetails)) {
                     tvInsuranceApplicationDetails.text = applicationDetails
-                    tvInsuranceApplicationDetails.visibility = View.VISIBLE
-                    tvChangeInsuranceApplicationDetails.visibility = View.VISIBLE
+                    tvInsuranceApplicationDetails.show()
+                    tvChangeInsuranceApplicationDetails.show()
 
                     tvChangeInsuranceApplicationDetails.setOnClickListener {
-                        closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(tvChangeInsuranceApplicationDetails.context)
                         val rootView = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.layout_insurance_bottom_sheet, null, false)
 
                         val applicationDetailsView = rootView.findViewById<LinearLayout>(R.id.ll_application_details)
@@ -167,7 +141,8 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                         typeValues.clear()
                         for (insuranceProductApplicationDetails in insuranceCartDigitalProduct.applicationDetails) {
 
-                            if (insuranceProductApplicationDetails.type.equals("text", ignoreCase = true) || insuranceProductApplicationDetails.type.equals("number", ignoreCase = true)) {
+                            if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_TEXT, ignoreCase = true) ||
+                                    insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_NUMBER, ignoreCase = true)) {
 
                                 val view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.application_detail_text, null, false)
 
@@ -184,9 +159,9 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
 
                                     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                                         if (validateView(subtitle, insuranceProductApplicationDetails)) {
-                                            errorMessageView.visibility = View.GONE
+                                            errorMessageView.hide()
                                         } else {
-                                            errorMessageView.visibility = View.VISIBLE
+                                            errorMessageView.show()
                                             errorMessageView.text = errorMessage
                                         }
                                         updateEditTextBackground(subtitle, errorMessageView.currentTextColor, !TextUtils.isEmpty(errorMessage))
@@ -200,7 +175,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                                 applicationDetailsView.addView(view)
                                 addToValuesList(view, insuranceProductApplicationDetails)
 
-                            } else if (insuranceProductApplicationDetails.type.equals("date", ignoreCase = true)) {
+                            } else if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_DATE, ignoreCase = true)) {
 
                                 val view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.application_detail_date, null, false)
 
@@ -220,11 +195,11 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                                     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
 
                                         if (validateView(subTitleTextView, insuranceProductApplicationDetails)) {
-                                            errorMessageView.visibility = View.GONE
+                                            errorMessageView.hide()
                                             insuranceProductApplicationDetails.value = getDateInServerFormat(s.toString())
                                             insuranceProductApplicationDetails.isError = false
                                         } else {
-                                            errorMessageView.visibility = View.VISIBLE
+                                            errorMessageView.show()
                                             errorMessageView.text = errorMessage
                                             insuranceProductApplicationDetails.isError = true
                                         }
@@ -239,7 +214,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                                 applicationDetailsView.addView(view)
                                 addToValuesList(view, insuranceProductApplicationDetails)
 
-                            } else if (insuranceProductApplicationDetails.type.equals("dropdown", ignoreCase = true)) {
+                            } else if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_DROPDOWN, ignoreCase = true)) {
 
                                 val view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.application_detail_date, null, false)
 
@@ -260,25 +235,25 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
 
                         setValidateListener()
 
-                        closeableBottomSheetDialog!!.setContentView(rootView)
-                        closeableBottomSheetDialog!!.show()
+                        closeableBottomSheetDialog.setContentView(rootView)
+                        closeableBottomSheetDialog.show()
                     }
                 } else {
-                    tvInsuranceApplicationDetails.visibility = View.GONE
-                    tvChangeInsuranceApplicationDetails.visibility = View.GONE
+                    tvInsuranceApplicationDetails.hide()
+                    tvChangeInsuranceApplicationDetails.hide()
                 }
 
             } else {
-                tvInsuranceApplicationDetails.visibility = View.GONE
-                tvChangeInsuranceApplicationDetails.visibility = View.GONE
+                tvInsuranceApplicationDetails.hide()
+                tvChangeInsuranceApplicationDetails.hide()
 
             }
 
             tvInsurancePrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceCartDigitalProduct.pricePerProduct, false)
 
             if (pageType.equals(PAGE_TYPE_CART, ignoreCase = true)) {
-                tvChangeInsuranceApplicationDetails.visibility = View.VISIBLE
-                cbSelectInsurance.visibility = View.VISIBLE
+                tvChangeInsuranceApplicationDetails.show()
+                cbSelectInsurance.show()
                 cbSelectInsurance.setOnCheckedChangeListener { buttonView, isChecked ->
                     insuranceCartShops.shopItemsList[0].digitalProductList[0].optIn = isChecked
                     insuranceItemActionlistener.onInsuranceSelectStateChanges()
@@ -291,26 +266,26 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                 cbSelectInsurance.isChecked = true
                 insuranceCartDigitalProduct.optIn = true
 
-                ivDeleteInsurance.visibility = View.VISIBLE
+                ivDeleteInsurance.show()
                 ivDeleteInsurance.setOnClickListener {
                     val insuranceCartDigitalProductArrayList = ArrayList<InsuranceCartDigitalProduct>()
                     insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct)
                     insuranceItemActionlistener.deleteMacroInsurance(insuranceCartDigitalProductArrayList, true)
                 }
             } else {
-                tvChangeInsuranceApplicationDetails.visibility = View.GONE
-                cbSelectInsurance.visibility = View.GONE
-                ivDeleteInsurance.visibility = View.GONE
+                tvChangeInsuranceApplicationDetails.hide()
+                cbSelectInsurance.hide()
+                ivDeleteInsurance.hide()
             }
         } else {
-            itemView.visibility = View.GONE
+            itemView.hide()
         }
     }
 
     private fun onDateViewClicked(view: TextView) {
         val date = dateFormatter(view.text.toString())
-        datePicker!!.setDate(getDay(date), getStartMonth(date), getStartYear(date))
-        datePicker!!.DatePickerCalendar { year, month, day -> view.text = getDate(year, month, day) }
+        datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
+        datePicker.DatePickerCalendar { year, month, day -> view.text = getDate(year, month, day) }
     }
 
     private fun validateView(valueView: TextView, insuranceProductApplicationDetails: InsuranceProductApplicationDetails): Boolean {
@@ -354,7 +329,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
         btnValidate!!.setOnClickListener { v ->
             if (validateViews()) {
                 insuranceItemActionlistener.updateInsuranceProductData(insuranceCartShops!!, updateInsuranceProductApplicationDetailsArrayList)
-                closeableBottomSheetDialog!!.dismiss()
+                closeableBottomSheetDialog.dismiss()
             }
         }
     }
@@ -426,7 +401,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
     }
 
     companion object {
-        @JvmStatic
+        @JvmField
         val TYPE_VIEW_INSURANCE_CART_SHOP = R.layout.insurance_cart_item_shop
     }
 }

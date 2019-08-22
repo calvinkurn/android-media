@@ -160,7 +160,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (item instanceof ShipmentButtonPaymentModel) {
             return ShipmentButtonPaymentViewHolder.Companion.getITEM_VIEW_PAYMENT_BUTTON();
         } else if (item instanceof InsuranceCartShops) {
-            return InsuranceCartShopViewHolder.Companion.getTYPE_VIEW_INSURANCE_CART_SHOP();
+            return InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP;
         }
 
         return super.getItemViewType(position);
@@ -192,7 +192,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentEmasViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
             return new ShipmentButtonPaymentViewHolder(view, shipmentAdapterActionListener);
-        } else if (viewType == InsuranceCartShopViewHolder.Companion.getTYPE_VIEW_INSURANCE_CART_SHOP()) {
+        } else if (viewType == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
             return new InsuranceCartShopViewHolder(view, insuranceItemActionlistener);
         }
         throw new RuntimeException("No view holder type found");
@@ -229,7 +229,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentEmasViewHolder) holder).bindViewHolder(egoldAttributeModel);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
             ((ShipmentButtonPaymentViewHolder) holder).bindViewHolder((ShipmentButtonPaymentModel) data);
-        } else if (getItemViewType(position) == InsuranceCartShopViewHolder.Companion.getTYPE_VIEW_INSURANCE_CART_SHOP()) {
+        } else if (getItemViewType(position) == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
             final InsuranceCartShopViewHolder insuranceCartShopViewHolder = (InsuranceCartShopViewHolder) holder;
             final InsuranceCartShops insuranceCartShops = (InsuranceCartShops) shipmentDataList.get(position);
             insuranceCartShopViewHolder.bindData(insuranceCartShops, position, PAGE_TYPE_CHECKOUT);

@@ -20,6 +20,8 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.transaction.common.R
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -49,6 +51,18 @@ val PAGE_TYPE_CHECKOUT = "checkout"
 
 @JvmField
 val INSURANCE_RECOMMENDATION_PARAM_GQL = "digitalProducts"
+
+@JvmField
+val INSURANCE_APPLICATION_TYPE_TEXT = "text"
+
+@JvmField
+val INSURANCE_APPLICATION_TYPE_NUMBER = "number"
+
+@JvmField
+val INSURANCE_APPLICATION_TYPE_DATE = "date"
+
+@JvmField
+val INSURANCE_APPLICATION_TYPE_DROPDOWN = "dropdown"
 
 private val DATE_FORMAT_VIEW = "dd MMM yyyy"
 private val DATE_FORMAT_SERVER = "yyyy-MM-dd"
@@ -95,17 +109,17 @@ fun updateEditTextBackground(mEditText: TextView, colorInt: Int, isErrorShowing:
         return
     }
 
-    var editTextBackground: Drawable? = mEditText.background ?: return
+    var editTextBackground: Drawable = mEditText.background ?: return
 
-    if (android.support.v7.widget.DrawableUtils.canSafelyMutateDrawable(editTextBackground!!)) {
+    if (android.support.v7.widget.DrawableUtils.canSafelyMutateDrawable(editTextBackground)) {
         editTextBackground = editTextBackground.mutate()
     }
 
     if (isErrorShowing) {
-        editTextBackground!!.colorFilter = AppCompatDrawableManager.getPorterDuffColorFilter(
+        editTextBackground.colorFilter = AppCompatDrawableManager.getPorterDuffColorFilter(
                 colorInt, PorterDuff.Mode.SRC_IN)
     } else {
-        DrawableCompat.clearColorFilter(editTextBackground!!)
+        DrawableCompat.clearColorFilter(editTextBackground)
         mEditText.refreshDrawableState()
     }
 }
@@ -143,16 +157,16 @@ fun openBottomSheetWebView(context: Context, appLinkUrl: String, title: String) 
 
     closeImageView.setOnClickListener{ closeableBottomSheetDialog.dismiss() }
 
-    val progressBar = infoDialogView.findViewById<ProgressBar>(R.id.progbar)
+    val progressBar: ProgressBar = infoDialogView.findViewById(R.id.progbar)
 
     webView.webViewClient = object : WebViewClient() {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            progressBar.visibility = View.VISIBLE
+            progressBar.show()
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
-            progressBar.visibility = View.GONE
+            progressBar.hide()
         }
     }
 

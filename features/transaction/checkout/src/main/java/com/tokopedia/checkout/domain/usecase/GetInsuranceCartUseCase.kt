@@ -16,6 +16,7 @@ import javax.inject.Inject
 
 class GetInsuranceCartUseCase @Inject constructor(@ApplicationContext val context: Context) {
     var graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
+    val DATA_REQUEST_PARAM = "data"
 
     fun execute(subscriber: Subscriber<GraphqlResponse>) {
         graphqlUseCase.clearRequest()
@@ -24,7 +25,7 @@ class GetInsuranceCartUseCase @Inject constructor(@ApplicationContext val contex
         insuranceCartRequest.clientVersion = Build.VERSION.SDK_INT.toString()
 
         val requestParams = RequestParams.create()
-        requestParams.putObject("data", insuranceCartRequest)
+        requestParams.putObject(DATA_REQUEST_PARAM, insuranceCartRequest)
 
         val graphqlRequestForUsable = GraphqlRequest(
                 GraphqlHelper.loadRawString(context.resources, R.raw.query_insurance_cart),

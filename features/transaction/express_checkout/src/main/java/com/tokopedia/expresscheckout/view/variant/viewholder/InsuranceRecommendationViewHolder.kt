@@ -17,6 +17,8 @@ import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceApplicationValueViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceProductApplicationDetailsViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceRecommendationViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.transaction.insurance.utils.*
 import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page.view.*
 import java.util.*
@@ -49,16 +51,16 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
 
             if (insuranceCartDigitalProductViewModel.productInfo.subTitle.isNotBlank()) {
                 itemView.insurance_tv_subtitle.text = insuranceCartDigitalProductViewModel.productInfo.subTitle
-                itemView.insurance_tv_subtitle.visibility = View.VISIBLE
+                itemView.insurance_tv_subtitle.show()
             } else {
-                itemView.insurance_tv_subtitle.visibility = View.GONE
+                itemView.insurance_tv_subtitle.hide()
             }
 
             if (insuranceCartDigitalProductViewModel.productInfo.description.isNotBlank()) {
                 itemView.tv_insurance_description.text = insuranceCartDigitalProductViewModel.productInfo.description
-                itemView.tv_insurance_description.visibility = View.VISIBLE
+                itemView.tv_insurance_description.show()
             } else {
-                itemView.tv_insurance_description.visibility = View.GONE
+                itemView.tv_insurance_description.hide()
             }
 
             if (!TextUtils.isEmpty(insuranceCartDigitalProductViewModel.productInfo.iconUrl)) {
@@ -68,9 +70,9 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
 
             if (insuranceCartDigitalProductViewModel.productInfo.linkName.isBlank() ||
                     insuranceCartDigitalProductViewModel.productInfo.appLinkUrl.isBlank()) {
-                itemView.insurance_tv_info.visibility = View.GONE
+                itemView.insurance_tv_info.hide()
             } else {
-                itemView.insurance_tv_info.visibility = View.VISIBLE
+                itemView.insurance_tv_info.show()
                 itemView.insurance_tv_info.text = insuranceCartDigitalProductViewModel.productInfo.linkName
                 itemView.insurance_tv_info.setOnClickListener {
 
@@ -86,8 +88,8 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
 
             for (insuranceProductApplicationDetails in insuranceProductApplicationDetailsArrayList) {
 
-                if (insuranceProductApplicationDetails.type.equals("text", true) ||
-                        insuranceProductApplicationDetails.type.equals("number", true)) {
+                if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_TEXT, true) ||
+                        insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_NUMBER, true)) {
 
                     val view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.application_detail_text, null, false)
 
@@ -112,28 +114,28 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                             if (validateView(textView, insuranceProductApplicationDetails)) {
-                                errorMessageView.visibility = View.GONE
+                                errorMessageView.hide()
                                 insuranceProductApplicationDetails.value = s.toString()
                                 insuranceProductApplicationDetails.isError = false
                                 listener.onInsuranceSelectedStateChanged(element, insuranceCartDigitalProductViewModel.optIn)
                             } else {
-                                errorMessageView.visibility = View.VISIBLE
+                                errorMessageView.show()
                                 errorMessageView.text = errorMessage
                                 insuranceProductApplicationDetails.isError = true
                                 listener.onInsuranceSelectedStateChanged(null, insuranceCartDigitalProductViewModel.optIn)
                             }
                             if (errorMessage.isBlank()) {
-                                itemView.tv_info_text.visibility = View.VISIBLE
+                                itemView.tv_info_text.show()
                             } else {
-                                itemView.tv_info_text.visibility = View.GONE
+                                itemView.tv_info_text.hide()
                             }
                             updateEditTextBackground(textView, errorMessageView.currentTextColor, !errorMessage.isBlank())
                         }
                     })
 
 
-                } else if (insuranceProductApplicationDetails.type.equals("date", true) ||
-                        insuranceProductApplicationDetails.type.equals("dropdown", true)) {
+                } else if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_DATE, true) ||
+                        insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_DROPDOWN, true)) {
 
                     val view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.application_detail_date, null, false)
 
@@ -141,7 +143,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                     val subTitleTextView = view.findViewById<TextView>(R.id.sub_title)
                     val errorMessageView = view.findViewById<TextView>(R.id.error_message)
 
-                    if (insuranceProductApplicationDetails.type.equals("date", true)) {
+                    if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_DATE, true)) {
                         subTitleTextView.text = getDateStringInUIFormat(insuranceProductApplicationDetails.value)
                         subTitleTextView.setOnClickListener {
                             onDateViewClicked(subTitleTextView)
@@ -152,20 +154,20 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                                 if (validateView(subTitleTextView, insuranceProductApplicationDetails)) {
-                                    errorMessageView.visibility = View.GONE
+                                    errorMessageView.hide()
                                     insuranceProductApplicationDetails.value = getDateInServerFormat(s.toString())
                                     insuranceProductApplicationDetails.isError = false
                                     listener.onInsuranceSelectedStateChanged(element, insuranceCartDigitalProductViewModel.optIn)
                                 } else {
-                                    errorMessageView.visibility = View.VISIBLE
+                                    errorMessageView.show()
                                     errorMessageView.text = errorMessage
                                     insuranceProductApplicationDetails.isError = true
                                     listener.onInsuranceSelectedStateChanged(null, insuranceCartDigitalProductViewModel.optIn)
                                 }
                                 if (errorMessage.isBlank()) {
-                                    itemView.tv_info_text.visibility = View.VISIBLE
+                                    itemView.tv_info_text.show()
                                 } else {
-                                    itemView.tv_info_text.visibility = View.GONE
+                                    itemView.tv_info_text.hide()
                                 }
 
                                 updateEditTextBackground(subTitleTextView, errorMessageView.currentTextColor, !errorMessage.isBlank())
@@ -182,7 +184,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                             }
                         })
 
-                    } else if (insuranceProductApplicationDetails.type.equals("dropdown", true)) {
+                    } else if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_DROPDOWN, true)) {
                         subTitleTextView.text = insuranceProductApplicationDetails.value
                     }
 
@@ -192,7 +194,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 }
             }
 
-            applicationDetailsView.visibility = View.GONE
+            applicationDetailsView.hide()
 
             itemView.insurance_checkbox.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
 
@@ -203,21 +205,21 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                             insuranceCartDigitalProductViewModel.isApplicationNeeded) {
                         if (isChecked) {
                             validateViews()
-                            applicationDetailsView.visibility = View.VISIBLE
-                            itemView.tv_insurance_description.visibility = View.GONE
+                            applicationDetailsView.show()
+                            itemView.tv_insurance_description.hide()
                         } else {
-                            itemView.tv_insurance_description.visibility = View.VISIBLE
-                            applicationDetailsView.visibility = View.GONE
+                            itemView.tv_insurance_description.show()
+                            applicationDetailsView.hide()
                         }
                         if (errorMessage.isBlank() && isChecked) {
-                            itemView.tv_info_text.visibility = View.VISIBLE
+                            itemView.tv_info_text.show()
                         } else {
-                            itemView.tv_info_text.visibility = View.GONE
+                            itemView.tv_info_text.hide()
                         }
 
                     } else {
-                        applicationDetailsView.visibility = View.GONE
-                        itemView.tv_info_text.visibility = View.GONE
+                        applicationDetailsView.hide()
+                        itemView.tv_info_text.hide()
                     }
                     listener.onInsuranceSelectedStateChanged(originalData, isChecked)
                 }
@@ -228,7 +230,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
 
 
         } else {
-            itemView.visibility = View.GONE
+            itemView.hide()
         }
     }
 
@@ -288,14 +290,14 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
 
             updateEditTextBackground(view1, errorView.currentTextColor, !errorMessage.isBlank())
             if (errorMessage.isEmpty()) {
-                errorView.visibility = View.GONE
+                errorView.hide()
                 insuranceProductApplicationDetailsViewModel.isError = false
                 val updateInsuranceProductApplicationDetails =
                         InsuranceApplicationValueViewModel(insuranceProductApplicationDetailsViewModel.id, view1.text.toString())
                 updateInsuranceProductApplicationDetailsArrayList.add(updateInsuranceProductApplicationDetails)
             } else {
                 errorView.text = errorMessage
-                errorView.visibility = View.VISIBLE
+                errorView.show()
                 insuranceProductApplicationDetailsViewModel.isError = true
             }
         }
