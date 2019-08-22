@@ -137,7 +137,7 @@ class AddToCartDoneViewModel @Inject constructor(
         })
     }
 
-    fun isLoggedIn(): Boolean = userSessionInterface.userId.isNotEmpty()
+    fun isLoggedIn(): Boolean = userSessionInterface.isLoggedIn
 
 
 }
