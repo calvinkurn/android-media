@@ -70,6 +70,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     protected var isCombineDone: Boolean = false
 
+    protected var mExcludedAirlines = mutableListOf<String>()
+
     private lateinit var flightFilterModel: FlightFilterModel
 
     private lateinit var performanceMonitoringP1: PerformanceMonitoring
@@ -127,7 +129,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun onResume() {
         super.onResume()
-        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true)
+        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true, mExcludedAirlines)
     }
 
     override fun onPause() {
@@ -144,7 +146,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                         flightFilterModel = data.extras.get(FlightSearchFilterActivity.EXTRA_FILTER_MODEL) as FlightFilterModel
                         flightFilterModel = buildFilterModel(flightFilterModel)
 
-                        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
+                        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false, mExcludedAirlines)
                         setUIMarkFilter()
                     }
                 }
@@ -268,7 +270,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             showLoading()
         }
 
-        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true)
+        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true, mExcludedAirlines)
     }
 
     override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
@@ -409,9 +411,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         val departureAirport = flightSearchMetaViewModel.departureAirport
         val arrivalAirport = flightSearchMetaViewModel.arrivalAirport
         val flightAirportCombineModel = flightAirportCombineModelList.getData(departureAirport, arrivalAirport)
-        val localListAirline = flightAirportCombineModel.airlines
-        localListAirline.addAll(flightSearchMetaViewModel.airlines)
-        flightAirportCombineModel.airlines = localListAirline
+        val localAirlines = flightAirportCombineModel.airlines
+        localAirlines.addAll(flightSearchMetaViewModel.airlines)
+        flightAirportCombineModel.airlines = localAirlines
         val size: Int = flightAirportCombineModelList.data.size
         val halfProgressAmount: Int = divideTo(divideTo(MAX_PROGRESS, size), 2)
         if (!flightAirportCombineModel.isHasLoad) {
@@ -444,7 +446,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         setUpProgress()
 
         flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel,
-                flightAirportCombineModel.isNeedRefresh)
+                flightAirportCombineModel.isNeedRefresh, mExcludedAirlines)
+
+        mExcludedAirlines = flightAirportCombineModel.airlines
     }
 
     override fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyViewModel) {
@@ -500,10 +504,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun onShowBestPairingClicked() {
         // need in return search
-    }
-
-    override fun onProductViewImpression(journeyViewModel: FlightJourneyViewModel, adapterPosition: Int) {
-        flightSearchPresenter.onProductViewImpression(journeyViewModel, adapterPosition)
     }
 
     override fun onItemClicked(journeyViewModel: FlightJourneyViewModel?) {
@@ -606,7 +606,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     .setItemClickListener { menuItem ->
                         if (adapter.data != null) {
                             selectedSortOption = menuItem.itemId
-                            flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
+                            flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false, mExcludedAirlines)
                         }
                     }
                     .createDialog()

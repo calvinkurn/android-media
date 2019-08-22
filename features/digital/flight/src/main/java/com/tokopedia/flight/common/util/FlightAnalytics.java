@@ -42,7 +42,6 @@ public class FlightAnalytics {
     private String EVENT = "event";
     private String ECOMMERCE = "ecommerce";
     private String IMPRESSIONS = "impressions";
-    private String PRODUCTS = "products";
 
     @Inject
     public FlightAnalytics(FlightDateUtil flightDateUtil) {
@@ -210,37 +209,13 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventProductViewEnchanceEcommerce(FlightSearchPassDataViewModel searchPassDataViewModel, FlightJourneyViewModel journeyViewModel, int position) {
-        String isRefundable = "false";
-        for (Route route : journeyViewModel.getRouteList()) {
-            if (route.getRefundable()) {
-                isRefundable = "true";
-                break;
-            }
-        }
+    public void eventProductViewEnchanceEcommerce(FlightSearchPassDataViewModel searchPassDataViewModel, List<FlightJourneyViewModel> listJourneyViewModel, int lastPosition) {
 
         List<Object> products = new ArrayList<>();
-        products.add(DataLayer.mapOf(
-                EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
-                EnhanceEccomerce.PRICE, journeyViewModel.getTotalNumeric(),
-                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
-                EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
-                EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
-                EnhanceEccomerce.DIMENSION69, "",
-                EnhanceEccomerce.DIMENSION70, isRefundable,
-                EnhanceEccomerce.DIMENSION71, journeyViewModel.getTotalTransit() > 0 ? "true" : "false",
-                EnhanceEccomerce.DIMENSION72, journeyViewModel.getBeforeTotal().equals("") ? "normal" : "strike",
-                EnhanceEccomerce.DIMENSION73, searchPassDataViewModel.getFlightPassengerViewModel().getAdult() + " - " +
-                        searchPassDataViewModel.getFlightPassengerViewModel().getChildren() + " - " + searchPassDataViewModel.getFlightPassengerViewModel().getInfant(),
-                EnhanceEccomerce.ID, journeyViewModel.getId(),
-                EnhanceEccomerce.BRAND, journeyViewModel.getRouteList().get(0).getAirlineName(),
-                EnhanceEccomerce.DIMENSION74, journeyViewModel.getRouteList().get(0).getFlightNumber(),
-                EnhanceEccomerce.CATEGORY, Label.FLIGHT,
-                EnhanceEccomerce.DIMENSION75, journeyViewModel.getDepartureTime(),
-                EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime(),
-                EnhanceEccomerce.POSITIONS, position,
-                EnhanceEccomerce.LIST, "/flight"
-        ));
+        for (FlightJourneyViewModel item : listJourneyViewModel) {
+            lastPosition++;
+            products.add(transformSearchProductView(searchPassDataViewModel, item, lastPosition));
+        }
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PRODUCT_VIEW_EVENT,
@@ -248,9 +223,7 @@ public class FlightAnalytics {
                         EVENT_ACTION, Action.PRODUCT_VIEW_ACTION,
                         EVENT_LABEL, String.format(Label.PRODUCT_VIEW, searchPassDataViewModel.getDepartureAirport().getAirportCode(),
                                 searchPassDataViewModel.getArrivalAirport().getAirportCode()),
-                        ECOMMERCE, DataLayer.mapOf(IMPRESSIONS, DataLayer.mapOf(
-                                PRODUCTS, DataLayer.listOf(products))
-                        )
+                        ECOMMERCE, DataLayer.mapOf(IMPRESSIONS, DataLayer.listOf(products))
                 )
         );
     }
@@ -265,6 +238,39 @@ public class FlightAnalytics {
                 result.toString()
         ));
         productClickEnhanceEcommerce(Action.PRODUCT_CLICK_SEARCH_LIST, flightSearchPassData, viewModel, result);
+    }
+
+    private Object transformSearchProductView(FlightSearchPassDataViewModel searchPassDataViewModel, FlightJourneyViewModel journeyViewModel, int position) {
+        String isRefundable = "false";
+        for (Route route : journeyViewModel.getRouteList()) {
+            if (route.getRefundable()) {
+                isRefundable = "true";
+                break;
+            }
+        }
+
+        Object product = DataLayer.mapOf(
+                EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
+                EnhanceEccomerce.PRICE, journeyViewModel.getTotalNumeric(),
+                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
+                EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
+                EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
+                EnhanceEccomerce.DIMENSION70, isRefundable,
+                EnhanceEccomerce.DIMENSION71, journeyViewModel.getTotalTransit() > 0 ? "true" : "false",
+                EnhanceEccomerce.DIMENSION72, journeyViewModel.getBeforeTotal().equals("") ? "normal" : "strike",
+                EnhanceEccomerce.DIMENSION73, searchPassDataViewModel.getFlightPassengerViewModel().getAdult() + " - " +
+                        searchPassDataViewModel.getFlightPassengerViewModel().getChildren() + " - " + searchPassDataViewModel.getFlightPassengerViewModel().getInfant(),
+                EnhanceEccomerce.ID, journeyViewModel.getId(),
+                EnhanceEccomerce.BRAND, journeyViewModel.getRouteList().get(0).getAirlineName(),
+                EnhanceEccomerce.DIMENSION74, journeyViewModel.getRouteList().get(0).getFlightNumber(),
+                EnhanceEccomerce.CATEGORY, Label.FLIGHT,
+                EnhanceEccomerce.DIMENSION75, journeyViewModel.getDepartureTime(),
+                EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime(),
+                EnhanceEccomerce.POSITIONS, position,
+                EnhanceEccomerce.LIST, "/flight"
+        );
+
+        return product;
     }
 
     @NonNull
@@ -734,7 +740,6 @@ public class FlightAnalytics {
         static String DIMENSION66 = "dimension66";
         static String DIMENSION67 = "dimension67";
         static String DIMENSION68 = "dimension68";
-        static String DIMENSION69 = "dimension69";
         static String DIMENSION70 = "dimension70";
         static String DIMENSION71 = "dimension71";
         static String DIMENSION72 = "dimension72";

@@ -110,15 +110,13 @@ interface FlightSearchContract {
 
         fun fetchSearchDataCloud(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel, delayInSecond: Int = -1)
 
-        fun fetchSortAndFilter(@TravelSortOption flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean)
+        fun fetchSortAndFilter(@TravelSortOption flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean, excludedAirlines: MutableList<String>)
 
         fun fetchTickerData()
 
         fun fireAndForgetReturnFlight(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel)
 
         fun unsubscribeAll()
-
-        fun onProductViewImpression(journeyViewModel: FlightJourneyViewModel, position: Int)
 
     }
 }

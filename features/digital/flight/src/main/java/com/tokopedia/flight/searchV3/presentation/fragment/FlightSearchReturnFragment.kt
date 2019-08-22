@@ -224,7 +224,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         dialog.setOnOkClickListener {
             getFilterModel().isBestPairing = false
             isViewOnlyBestPairing = false
-            flightSearchPresenter.fetchSortAndFilter(selectedSortOption, getFilterModel(), false)
+            flightSearchPresenter.fetchSortAndFilter(selectedSortOption, getFilterModel(), false, mExcludedAirlines)
             resetDepartureLabelPrice()
             dialog.dismiss()
         }
@@ -243,7 +243,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         dialog.setOnOkClickListener {
             getFilterModel().isBestPairing = true
             isViewOnlyBestPairing = true
-            flightSearchPresenter.fetchSortAndFilter(selectedSortOption, getFilterModel(), false)
+            flightSearchPresenter.fetchSortAndFilter(selectedSortOption, getFilterModel(), false, mExcludedAirlines)
             resetDepartureLabelPrice()
             dialog.dismiss()
         }
