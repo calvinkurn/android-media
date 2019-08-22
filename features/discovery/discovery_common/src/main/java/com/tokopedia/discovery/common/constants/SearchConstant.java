@@ -4,29 +4,24 @@ public interface SearchConstant {
 
     String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
-    String EXTRA_HAS_CATALOG = "EXTRA_HAS_CATALOG";
     String EXTRA_FORCE_SWIPE_TO_SHOP = "EXTRA_FORCE_SWIPE_TO_SHOP";
-    String EXTRA_IS_FROM_APPLINK = "EXTRA_IS_FROM_APPLINK";
 
     String EXTRA_ACTIVE_TAB_POSITION = "EXTRA_ACTIVE_TAB_POSITION";
 
     String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
-    String DEEP_LINK_URI = "deep_link_uri";
 
     String SEARCH_RESULT_TRACE = "search_result_trace";
 
     String GCM_ID = "gcm_id";
     String GCM_STORAGE = "GCM_STORAGE";
 
-    String TRANSITION = "transition";
-
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
 
     int AUTO_COMPLETE_ACTIVITY_REQUEST_CODE = 14332;
-    int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY = 12323;
+    int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY = 12323;
 
     interface RecyclerView {
         int VIEW_PRODUCT = 3;
@@ -66,10 +61,6 @@ public interface SearchConstant {
         String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
         String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
-    }
-
-    interface Tome {
-        String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
     }
 
     interface DynamicFilter {

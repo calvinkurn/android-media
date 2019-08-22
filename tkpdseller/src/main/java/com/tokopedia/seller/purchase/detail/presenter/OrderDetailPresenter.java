@@ -2,6 +2,7 @@ package com.tokopedia.seller.purchase.detail.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -132,4 +133,6 @@ public interface OrderDetailPresenter {
     String CONFIRM_SHIPPING_CONSTANT = "confirm";
 
     boolean isToggleBuyAgainOn();
+
+    void assignInvoiceDataTo(Intent intent, OrderDetailData orderData);
 }

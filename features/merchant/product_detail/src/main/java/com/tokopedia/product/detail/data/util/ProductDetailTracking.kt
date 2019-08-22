@@ -11,12 +11,15 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.normalcheckout.view.NormalCheckoutTracking.Companion.PRODUCT_DETAIL_PAGE
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class ProductDetailTracking() {
@@ -269,7 +272,7 @@ class ProductDetailTracking() {
         )
     }
 
-    fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
+    fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String, trackingQueue: TrackingQueue) {
         val listValue = LIST_DEFAULT + pageName  +
                 (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
@@ -291,28 +294,28 @@ class ProductDetailTracking() {
             putString(KEY_LABEL, pageTitle)
         })
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(KEY_EVENT, "productView",
-                        KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
-                        (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
-                        KEY_LABEL, pageTitle,
+        val enhanceEcommerceData = DataLayer.mapOf(KEY_EVENT, "productView",
+                KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
+                KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
+                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
+                KEY_LABEL, pageTitle,
 
-                        KEY_ECOMMERCE, DataLayer.mapOf(
+                KEY_ECOMMERCE, DataLayer.mapOf(
 
-                        CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
+                CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
 
-                        "impressions", DataLayer.listOf(
-                                DataLayer.mapOf(PROMO_NAME, product.name,
-                                        ID, product.productId.toString(),
-                                        PRICE, removeCurrencyPrice(product.price),
-                                        BRAND, DEFAULT_VALUE,
-                                        VARIANT, DEFAULT_VALUE,
-                                        CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
-                                        PROMO_POSITION, position + 1,
-                                        LIST, listValue)
-                        ))
-                ))
+                "impressions", DataLayer.listOf(
+                DataLayer.mapOf(PROMO_NAME, product.name,
+                        ID, product.productId.toString(),
+                        PRICE, removeCurrencyPrice(product.price),
+                        BRAND, DEFAULT_VALUE,
+                        VARIANT, DEFAULT_VALUE,
+                        CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
+                        PROMO_POSITION, position + 1,
+                        LIST, listValue)
+        ))
+        )
+        trackingQueue.putEETracking(enhanceEcommerceData as HashMap<String, Any>?)
     }
 
     fun eventClickWishlistOnAffiliate(userId: String,
@@ -624,6 +627,54 @@ class ProductDetailTracking() {
     // MOENGAGE END
     ////////////////////////////////////////////////////////////////
 
+    private fun getFormattedPrice(price: Int): String {
+        return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
+    }
+
+    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
+        true -> "tokopedia"
+        else -> "regular"
+    }
+
+    private fun removeCurrencyPrice(priceFormatted: String): String{
+        return try {
+            priceFormatted.replace("[^\\d]".toRegex(), "")
+        } catch (t: Throwable){
+            "0"
+        }
+    }
+
+    fun eventClickOnStickyLogin(isOnSticky: Boolean) {
+        val tracker = TrackApp.getInstance().gtm
+        if (tracker != null) {
+            if (isOnSticky) {
+                tracker.sendGeneralEvent(
+                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                        ProductTrackingConstant.Category.PDP,
+                        ProductTrackingConstant.Action.CLICK_ON_LOGIN_STICKY_WIDGET,
+                        ProductTrackingConstant.Label.CLICK
+                )
+            } else {
+                tracker.sendGeneralEvent(
+                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                        ProductTrackingConstant.Category.PDP,
+                        ProductTrackingConstant.Action.CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET,
+                        ProductTrackingConstant.Label.EMPTY_LABEL
+                )
+            }
+        }
+    }
+
+    fun eventViewLoginStickyWidget() {
+        val tracker = TrackApp.getInstance().gtm
+        tracker.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.VIEW_LOGIN_STICKY_WIDGET,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"
@@ -655,22 +706,4 @@ class ProductDetailTracking() {
         private const val CURRENCY_CODE = "currencyCode"
         private const val CURRENCY_DEFAULT_VALUE = "IDR"
     }
-
-    private fun getFormattedPrice(price: Int): String {
-        return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
-    }
-
-    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
-        true -> "tokopedia"
-        else -> "regular"
-    }
-
-    private fun removeCurrencyPrice(priceFormatted: String): String{
-        return try {
-            priceFormatted.replace("[^\\d]".toRegex(), "")
-        } catch (t: Throwable){
-            "0"
-        }
-    }
-
 }

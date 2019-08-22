@@ -1,0 +1,17 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
+project.ext {
+    artifactId = 'global_config'
+    groupId = 'com.tokopedia.config'
+    versionName = "1"
+    artifactName = "global_config"
+}
+
+apply from: '../publish_local.gradle'

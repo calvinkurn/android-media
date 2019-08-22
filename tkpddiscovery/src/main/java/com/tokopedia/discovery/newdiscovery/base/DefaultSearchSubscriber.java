@@ -19,23 +19,14 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     private static final int DISCOVERY_URL_CATEGORY = 2;
     private static final int DISCOVERY_URL_SEARCH = 3;
     private static final int DISCOVERY_URL_CATALOG = 4;
-    private static final int DISCOVERY_URL_IMAGE_SEARCH = 4;
     private static final int DISCOVERY_URL_UNKNOWN = -1;
-
-    private final SearchParameter searchParameter;
 
     public D2 discoveryView;
     public boolean imageSearch;
 
     public DefaultSearchSubscriber(SearchParameter searchParameter, D2 discoveryView, boolean imageSearch) {
-        this.searchParameter = searchParameter;
         this.discoveryView = discoveryView;
         this.imageSearch = imageSearch;
-    }
-
-    public DefaultSearchSubscriber(D2 discoveryView) {
-        this.searchParameter = null;
-        this.discoveryView = discoveryView;
     }
 
     @Override
@@ -82,11 +73,9 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         discoveryView.onHandleResponseCatalog(searchResult.getRedirectUrl());
     }
 
+    // Overridden in subclass
     protected void onHandleSearch(SearchResultModel searchResult) {
-        ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResult);
-        model.setSearchParameter(searchParameter);
-        model.setImageSearch(imageSearch);
-        discoveryView.onHandleResponseSearch(model);
+
     }
 
     private int defineResponse(SearchResultModel data) {

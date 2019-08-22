@@ -34,7 +34,6 @@ class RecommendationItemViewHolder(
             setImageRatingVisible(element.productItem.rating > 0 && element.productItem.countReview > 0)
             setReviewCountVisible(element.productItem.rating > 0 && element.productItem.countReview > 0)
             setShopLocationVisible(element.productItem.badgesUrl.isNotEmpty())
-            setButtonWishlistVisible(true)
             setShopBadgesVisible(true)
             setButtonWishlistImage(element.productItem.isWishlist)
             setProductNameText(element.productItem.name)
@@ -100,7 +99,8 @@ class RecommendationItemViewHolder(
     }
 
     private fun showError(view: View, throwable: Throwable?){
-        Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
+        Toaster.showError(view,
+            ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
     }
 
 }
