@@ -131,10 +131,10 @@ public class HeaderHomeView extends BaseCustomView {
             int radius = Math.round(TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
 
-            Glide.with(getContext())
-                    .load(BG_CONTAINER_URL)
-                    .bitmapTransform(new RoundedRightCornerTransformation(getContext(), radius))
-                    .into(imgNonLogin);
+//            Glide.with(getContext())
+//                    .load(BG_CONTAINER_URL)
+//                    .bitmapTransform(new RoundedRightCornerTransformation(getContext(), radius))
+//                    .into(imgNonLogin);
 
             container.setOnClickListener(onCheckNowListener());
             scanHolder.setOnClickListener(onScanListener());
@@ -429,54 +429,54 @@ public class HeaderHomeView extends BaseCustomView {
         };
     }
 
-    class RoundedRightCornerTransformation implements Transformation<Bitmap> {
-
-        private BitmapPool mBitmapPool;
-        private int mRadius;
-        private int mDiameter;
-
-        RoundedRightCornerTransformation(Context context, int radius) {
-            this(Glide.get(context).getBitmapPool(), radius);
-        }
-
-        RoundedRightCornerTransformation(BitmapPool pool, int radius) {
-            mBitmapPool = pool;
-            mRadius = radius;
-            mDiameter = mRadius * 2;
-        }
-
-        @Override
-        public Resource<Bitmap> transform(Resource<Bitmap> resource, int outWidth, int outHeight) {
-            Bitmap source = resource.get();
-
-            int width = source.getWidth();
-            int height = source.getHeight();
-
-            Bitmap bitmap = mBitmapPool.get(width, height, Bitmap.Config.ARGB_8888);
-            if (bitmap == null) {
-                bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            }
-
-            Canvas canvas = new Canvas(bitmap);
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
-            drawRoundRect(canvas, paint, width, height);
-            return BitmapResource.obtain(bitmap, mBitmapPool);
-        }
-
-        private void drawRoundRect(Canvas canvas, Paint paint, float width, float height) {
-            float right = width - 0;
-            float bottom = height - 0;
-
-            canvas.drawRoundRect(new RectF(right - mDiameter, 0, right, bottom), mRadius, mRadius,
-                    paint);
-            canvas.drawRect(new RectF(0, 0, right - mRadius, bottom), paint);
-        }
-
-        @Override public String getId() {
-            return "RoundedRightCornerTransformation(radius=" + mRadius + ", diameter="
-                    + mDiameter + ")";
-        }
-    }
+//    class RoundedRightCornerTransformation implements Transformation<Bitmap> {
+//
+//        private BitmapPool mBitmapPool;
+//        private int mRadius;
+//        private int mDiameter;
+//
+//        RoundedRightCornerTransformation(Context context, int radius) {
+//            this(Glide.get(context).getBitmapPool(), radius);
+//        }
+//
+//        RoundedRightCornerTransformation(BitmapPool pool, int radius) {
+//            mBitmapPool = pool;
+//            mRadius = radius;
+//            mDiameter = mRadius * 2;
+//        }
+//
+//        @Override
+//        public Resource<Bitmap> transform(Resource<Bitmap> resource, int outWidth, int outHeight) {
+//            Bitmap source = resource.get();
+//
+//            int width = source.getWidth();
+//            int height = source.getHeight();
+//
+//            Bitmap bitmap = mBitmapPool.get(width, height, Bitmap.Config.ARGB_8888);
+//            if (bitmap == null) {
+//                bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+//            }
+//
+//            Canvas canvas = new Canvas(bitmap);
+//            Paint paint = new Paint();
+//            paint.setAntiAlias(true);
+//            paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+//            drawRoundRect(canvas, paint, width, height);
+//            return BitmapResource.obtain(bitmap, mBitmapPool);
+//        }
+//
+//        private void drawRoundRect(Canvas canvas, Paint paint, float width, float height) {
+//            float right = width - 0;
+//            float bottom = height - 0;
+//
+//            canvas.drawRoundRect(new RectF(right - mDiameter, 0, right, bottom), mRadius, mRadius,
+//                    paint);
+//            canvas.drawRect(new RectF(0, 0, right - mRadius, bottom), paint);
+//        }
+//
+//        @Override public String getId() {
+//            return "RoundedRightCornerTransformation(radius=" + mRadius + ", diameter="
+//                    + mDiameter + ")";
+//        }
+//    }
 }

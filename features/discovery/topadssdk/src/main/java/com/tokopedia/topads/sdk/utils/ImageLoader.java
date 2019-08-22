@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
@@ -60,56 +60,56 @@ public class ImageLoader {
 
     public void loadImage(Product product, final ImageView imageView, int pos,
                           TopAdsItemImpressionListener impressionListener) {
-        Glide.with(context)
-                .load(product.getImage().getS_ecs())
-                .asBitmap()
-                .placeholder(R.drawable.loading_page)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        imageView.setImageBitmap(resource);
-                        if (!product.isLoaded()) {
-                            product.setLoaded(true);
-                            new ImpresionTask().execute(product.getImage().getS_url());
-                            if(impressionListener!=null){
-                                impressionListener.onImpressionProductAdsItem(pos, product);
-                            }
-                        }
-                    }
-                });
+//        Glide.with(context)
+//                .load(product.getImage().getS_ecs())
+//                .asBitmap()
+//                .placeholder(R.drawable.loading_page)
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        imageView.setImageBitmap(resource);
+//                        if (!product.isLoaded()) {
+//                            product.setLoaded(true);
+//                            new ImpresionTask().execute(product.getImage().getS_url());
+//                            if(impressionListener!=null){
+//                                impressionListener.onImpressionProductAdsItem(pos, product);
+//                            }
+//                        }
+//                    }
+//                });
     }
 
     public void loadImage(Shop shop, final ImageView imageView) {
-        Glide.with(context)
-                .load(shop.getImageShop().getXsEcs())
-                .asBitmap()
-                .placeholder(R.drawable.loading_page)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        imageView.setImageBitmap(resource);
-                        if (!shop.isLoaded()) {
-                            shop.setLoaded(true);
-                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
-                        }
-                    }
-                });
+//        Glide.with(context)
+//                .load(shop.getImageShop().getXsEcs())
+//                .asBitmap()
+//                .placeholder(R.drawable.loading_page)
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        imageView.setImageBitmap(resource);
+//                        if (!shop.isLoaded()) {
+//                            shop.setLoaded(true);
+//                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
+//                        }
+//                    }
+//                });
     }
 
     public void loadImage(String ecs, final String url, final ImageView imageView) {
-        Glide.with(context)
-                .load(ecs)
-                .asBitmap()
-                .placeholder(R.drawable.loading_page)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        imageView.setImageBitmap(resource);
-                        if (url!=null && url.contains(PATH_VIEW)) {
-                            new ImpresionTask().execute(url);
-                        }
-                    }
-                });
+//        Glide.with(context)
+//                .load(ecs)
+//                .asBitmap()
+//                .placeholder(R.drawable.loading_page)
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        imageView.setImageBitmap(resource);
+//                        if (url!=null && url.contains(PATH_VIEW)) {
+//                            new ImpresionTask().execute(url);
+//                        }
+//                    }
+//                });
     }
 
     public void loadImageWithMemoryCache(String url, ImageView imageView){
@@ -117,25 +117,25 @@ public class ImageLoader {
     }
 
     public void loadCircle(Shop shop, final ImageView imageView) {
-        Glide.with(context)
-                .load(shop.getImageShop().getXsEcs())
-                .asBitmap()
-                .placeholder(R.drawable.loading_page)
-                .into(new BitmapImageViewTarget(imageView) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(imageView.getContext()
-                                        .getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        imageView.setImageDrawable(circularBitmapDrawable);
-
-                        if (!shop.isLoaded()) {
-                            shop.setLoaded(true);
-                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
-                        }
-                    }
-                });
+//        Glide.with(context)
+//                .load(shop.getImageShop().getXsEcs())
+//                .asBitmap()
+//                .placeholder(R.drawable.loading_page)
+//                .into(new BitmapImageViewTarget(imageView) {
+//                    @Override
+//                    protected void setResource(Bitmap resource) {
+//                        RoundedBitmapDrawable circularBitmapDrawable =
+//                                RoundedBitmapDrawableFactory.create(imageView.getContext()
+//                                        .getResources(), resource);
+//                        circularBitmapDrawable.setCircular(true);
+//                        imageView.setImageDrawable(circularBitmapDrawable);
+//
+//                        if (!shop.isLoaded()) {
+//                            shop.setLoaded(true);
+//                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
+//                        }
+//                    }
+//                });
     }
 
     public void loadBadge(final LinearLayout container, List<Badge> badges) {
@@ -158,7 +158,7 @@ public class ImageLoader {
 
     public static void clearImage(final ImageView imageView) {
         if (imageView != null) {
-            Glide.clear(imageView);
+//            Glide.clear(imageView);
             imageView.setImageDrawable(
                     getDrawable(imageView.getContext(), R.drawable.ic_loading_image)
             );

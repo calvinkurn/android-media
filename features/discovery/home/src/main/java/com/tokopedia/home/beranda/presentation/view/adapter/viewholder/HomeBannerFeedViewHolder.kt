@@ -44,13 +44,13 @@ class HomeBannerFeedViewHolder(itemView: View, private val homeFeedview: HomeFee
             RouteManager.route(context, element.applink)
         }
 
-        Glide.with(context)
-                .load(element.imageUrl)
-                .asBitmap()
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(bannerImageView)
+//        Glide.with(context)
+//                .load(element.imageUrl)
+//                .asBitmap()
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .into(bannerImageView)
 
         bannerImageView.addOnImpressionListener(element,
                 object : ViewHintListener{

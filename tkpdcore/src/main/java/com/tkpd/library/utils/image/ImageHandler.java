@@ -44,12 +44,12 @@ public class ImageHandler {
         if(simpleTarget == null)
             return;
 
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .skipMemoryCache( true )
-                .diskCacheStrategy( DiskCacheStrategy.NONE )
-                .into(simpleTarget);
+//        Glide.with(context)
+//                .load(url)
+//                .asBitmap()
+//                .skipMemoryCache( true )
+//                .diskCacheStrategy( DiskCacheStrategy.NONE )
+//                .into(simpleTarget);
     }
 
     public void loadImage(ImageView imageView, @NonNull String url, boolean withCache){

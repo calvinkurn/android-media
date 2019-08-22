@@ -33,7 +33,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -415,31 +415,31 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if (!TextUtils.isEmpty(imageUrl)) {
             if (imageUrl.endsWith(".gif")) {
-                Glide.with(getContext())
-                        .load(imageUrl)
-                        .asGif()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
-                            @Override
-                            protected void setResource(GifDrawable resource) {
-                                ivFloatingEgg.setImageDrawable(resource);
-                                resource.start();
-                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
-
-                            }
-                        });
+//                Glide.with(getContext())
+//                        .load(imageUrl)
+//                        .asGif()
+//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                        .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
+//                            @Override
+//                            protected void setResource(GifDrawable resource) {
+//                                ivFloatingEgg.setImageDrawable(resource);
+//                                resource.start();
+//                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
+//
+//                            }
+//                        });
             } else {
-                Glide.with(getContext())
-                        .load(imageUrl)
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                ivFloatingEgg.setImageBitmap(resource);
-                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
-                            }
-                        });
+//                Glide.with(getContext())
+//                        .load(imageUrl)
+//                        .asBitmap()
+//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                        .into(new SimpleTarget<Bitmap>() {
+//                            @Override
+//                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                                ivFloatingEgg.setImageBitmap(resource);
+//                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
+//                            }
+//                        });
 
             }
         }

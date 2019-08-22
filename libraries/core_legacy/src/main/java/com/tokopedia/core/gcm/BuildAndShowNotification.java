@@ -16,7 +16,7 @@ import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
-import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -147,41 +147,41 @@ public class BuildAndShowNotification {
     private void downloadImageAndShowNotification(final ApplinkNotificationPass applinkNotificationPass,
                                                   final NotificationCompat.Builder mBuilder,
                                                   final NotificationConfiguration configuration) {
-        Glide
-                .with(mBuilder.mContext)
-                .load(applinkNotificationPass.getImageUrl())
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>(60, 60) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                        mBuilder.setLargeIcon(
-                                ImageHandler.getRoundedCornerBitmap(resource, 60)
-                        );
-
-                        NotificationManager mNotificationManager =
-                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                        Notification notif = mBuilder.build();
-                        if (configuration.isVibrate() && configuration.isBell()) {
-                            notif.defaults |= Notification.DEFAULT_VIBRATE;
-                        }
-                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        mBuilder.setLargeIcon(
-                                BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
-                        );
-
-                        NotificationManager mNotificationManager =
-                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                        Notification notif = mBuilder.build();
-                        if (configuration.isVibrate() && configuration.isBell()) {
-                            notif.defaults |= Notification.DEFAULT_VIBRATE;
-                        }
-                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
-                    }
-                });
+//        Glide
+//                .with(mBuilder.mContext)
+//                .load(applinkNotificationPass.getImageUrl())
+//                .asBitmap()
+//                .into(new SimpleTarget<Bitmap>(60, 60) {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+//                        mBuilder.setLargeIcon(
+//                                ImageHandler.getRoundedCornerBitmap(resource, 60)
+//                        );
+//
+//                        NotificationManager mNotificationManager =
+//                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+//                        Notification notif = mBuilder.build();
+//                        if (configuration.isVibrate() && configuration.isBell()) {
+//                            notif.defaults |= Notification.DEFAULT_VIBRATE;
+//                        }
+//                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+//                    }
+//
+//                    @Override
+//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                        mBuilder.setLargeIcon(
+//                                BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
+//                        );
+//
+//                        NotificationManager mNotificationManager =
+//                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+//                        Notification notif = mBuilder.build();
+//                        if (configuration.isVibrate() && configuration.isBell()) {
+//                            notif.defaults |= Notification.DEFAULT_VIBRATE;
+//                        }
+//                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+//                    }
+//                });
 
     }
 
@@ -468,13 +468,10 @@ public class BuildAndShowNotification {
     }
 
     private Bitmap getBitmap(String url) {
-        try {
-            return Glide.with(mContext).load(url)
-                    .asBitmap()
-                    .into(60, 60)
-                    .get(3, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e ) {
-            return BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon());
-        }
+        return Bitmap.createBitmap(0, 0, Bitmap.Config.ALPHA_8);
+//            return Glide.with(mContext).load(url)
+//                    .asBitmap()
+//                    .into(60, 60)
+//                    .get(3, TimeUnit.SECONDS);
     }
 }

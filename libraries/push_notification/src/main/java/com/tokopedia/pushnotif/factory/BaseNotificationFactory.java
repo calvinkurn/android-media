@@ -76,11 +76,12 @@ public abstract class BaseNotificationFactory {
 
     protected Bitmap getBitmap(String url) {
         try {
-            return Glide.with(context).load(url)
-                    .asBitmap()
-                    .into(getImageWidth(), getImageHeight())
-                    .get(3, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e ) {
+            return Bitmap.createBitmap(0, 0, Bitmap.Config.ALPHA_8);
+//            return Glide.with(context).load(url)
+//                    .asBitmap()
+//                    .into(getImageWidth(), getImageHeight())
+//                    .get(3, TimeUnit.SECONDS);
+        } catch ( IllegalArgumentException e ) {
             return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
         }
     }

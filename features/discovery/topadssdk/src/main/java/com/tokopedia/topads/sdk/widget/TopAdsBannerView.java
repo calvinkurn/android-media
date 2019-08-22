@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
@@ -190,15 +190,15 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     private void setHeadlineDigitalData(Context context, Cpm cpm) {
         try {
-            Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    if (iconImg != null && resource != null) {
-                        iconImg.setImageBitmap(resource);
-                        new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
-                    }
-                }
-            });
+//            Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
+//                @Override
+//                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                    if (iconImg != null && resource != null) {
+//                        iconImg.setImageBitmap(resource);
+//                        new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
+//                    }
+//                }
+//            });
             nameTxt.setText(escapeHTML(cpm.getName() == null ? "" : cpm.getName()));
             descriptionTxt.setText(escapeHTML(cpm.getDecription() == null ? "" : cpm.getDecription()));
             ctaTxt.setText(cpm.getCta() == null ? "" : cpm.getCta());

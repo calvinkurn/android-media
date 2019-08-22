@@ -101,11 +101,11 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
             if (data.get(position).getFileLoc() == null) {
                 ImageHandler.loadImageRounded2(holder.image.getContext(),holder.image, data.get(position).getPicSrc(), convertDpToPx(holder.image.getContext(), RADIUS_CORNER));
             } else {
-                Glide.with(holder.image.getContext())
-                        .load(new File(data.get(position).getFileLoc()))
-                        .asBitmap()
-                        .centerCrop()
-                        .into(getRoundedImageViewTarget(holder.image, convertDpToPx(holder.image.getContext(), RADIUS_CORNER)));
+//                Glide.with(holder.image.getContext())
+//                        .load(new File(data.get(position).getFileLoc()))
+//                        .asBitmap()
+//                        .centerCrop()
+//                        .into(getRoundedImageViewTarget(holder.image, convertDpToPx(holder.image.getContext(), RADIUS_CORNER)));
             }
         } catch (Exception e) {
             e.printStackTrace();

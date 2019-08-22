@@ -89,11 +89,11 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
             badgeTxt.setVisibility(View.GONE);
             badgeImage.setVisibility(View.GONE);
         }
-        Glide.with(reputationMedal.getContext()).load(data.getReputationBadge())
-                .asGif()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(reputationMedal);
+//        Glide.with(reputationMedal.getContext()).load(data.getReputationBadge())
+//                .asGif()
+//                .skipMemoryCache(true)
+//                .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                .into(reputationMedal);
     }
 
 }

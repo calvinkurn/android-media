@@ -31,7 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -302,12 +302,12 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     private void loadBackgroundImage(String backgroundImgURL) {
-        ImageHandler.loadImageBitmap2(getContext(), backgroundImgURL, new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                ivContainer.setImageBitmap(resource);
-            }
-        });
+//        ImageHandler.loadImageBitmap2(getContext(), backgroundImgURL, new SimpleTarget<Bitmap>() {
+//            @Override
+//            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                ivContainer.setImageBitmap(resource);
+//            }
+//        });
     }
 
     private void setActionButtons() {
@@ -727,24 +727,24 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         }
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
                 !TextUtils.isEmpty(crackResult.getImageUrl())) {
-            Glide.with(getContext())
-                    .load(crackResult.getImageUrl())
-                    .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            crackResult.setImageBitmap(resource);
-                            showCrackWidgetSuccess(crackResult);
-                        }
-
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            crackResult.setImageBitmap(null);
-                            // image load is failed, but we need to show the text instead.
-                            showCrackWidgetSuccess(crackResult);
-                        }
-                    });
+//            Glide.with(getContext())
+//                    .load(crackResult.getImageUrl())
+//                    .asBitmap()
+//                    .into(new SimpleTarget<Bitmap>() {
+//                        @Override
+//                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                            crackResult.setImageBitmap(resource);
+//                            showCrackWidgetSuccess(crackResult);
+//                        }
+//
+//                        @Override
+//                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                            super.onLoadFailed(e, errorDrawable);
+//                            crackResult.setImageBitmap(null);
+//                            // image load is failed, but we need to show the text instead.
+//                            showCrackWidgetSuccess(crackResult);
+//                        }
+//                    });
         } else {
             showCrackWidgetSuccess(crackResult);
         }

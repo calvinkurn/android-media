@@ -226,10 +226,11 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     internal fun getBitmap(url: String?): Bitmap {
         return try {
-            Glide.with(context).load(url)
-                    .asBitmap()
-                    .into(imageWidth, imageHeight)
-                    .get(3, TimeUnit.SECONDS)
+            return Bitmap.createBitmap(0, 0, Bitmap.Config.ALPHA_8)
+//            Glide.with(context).load(url)
+//                    .asBitmap()
+//                    .into(imageWidth, imageHeight)
+//                    .get(3, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {
@@ -244,11 +245,12 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     internal fun getActionButtonBitmap(url: String): Bitmap {
         return try {
-            val wh = actionButtonHeightWidth
-            Glide.with(context).load(url)
-                    .asBitmap()
-                    .into(wh, wh)
-                    .get(3, TimeUnit.SECONDS)
+            return Bitmap.createBitmap(0, 0, Bitmap.Config.ALPHA_8)
+//            val wh = actionButtonHeightWidth
+//            Glide.with(context).load(url)
+//                    .asBitmap()
+//                    .into(wh, wh)
+//                    .get(3, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {

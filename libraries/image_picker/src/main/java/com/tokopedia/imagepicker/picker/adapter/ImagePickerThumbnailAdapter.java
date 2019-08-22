@@ -108,21 +108,21 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         public void bind(String imagePath, int position) {
-            Glide.with(context)
-                    .load(imagePath)
-                    .asBitmap()
-                    .override(thumbnailSize, thumbnailSize)
-                    .centerCrop()
-                    .into(new BitmapImageViewTarget(imageView) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), resource);
-                            circularBitmapDrawable.setCornerRadius(roundedSize);
-                            imageView.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
-            if (position == 0 && primaryImageStringRes > 0) {
+//            Glide.with(context)
+//                    .load(imagePath)
+//                    .asBitmap()
+//                    .override(thumbnailSize, thumbnailSize)
+//                    .centerCrop()
+//                    .into(new BitmapImageViewTarget(imageView) {
+//                        @Override
+//                        protected void setResource(Bitmap resource) {
+//                            RoundedBitmapDrawable circularBitmapDrawable =
+//                                    RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), resource);
+//                            circularBitmapDrawable.setCornerRadius(roundedSize);
+//                            imageView.setImageDrawable(circularBitmapDrawable);
+//                        }
+//                    });
+            if (position == 0 && primaryImageStringRes != -1) {
                 tvCounterPrimary.setText(primaryImageStringRes);
                 tvCounterPrimary.setVisibility(View.VISIBLE);
                 tvCounter.setVisibility(View.GONE);

@@ -51,13 +51,13 @@ class CardBannerPagerAdapter(bannerImageUrls : List<String>,
             )
         }
         try {
-            Glide.with(holder.itemView.context)
-                    .load(bannerImageUrls[position])
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .centerCrop()
-                    .into(holder.bannerImage)
+//            Glide.with(holder.itemView.context)
+//                    .load(bannerImageUrls[position])
+//                    .dontAnimate()
+//                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+//                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+//                    .centerCrop()
+//                    .into(holder.bannerImage)
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -28,37 +28,37 @@ class PicturePagerAdapter(private val context: Context,
             imageView.scaleType = ImageView.ScaleType.FIT_CENTER
 
             if (!urlTemp.isNullOrEmpty() && position == 0) {
-                Glide.with(context).load(urlImage)
-                        .dontAnimate().dontTransform().fitCenter()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .thumbnail(Glide.with(context).load(urlTemp)
-                                .dontAnimate().dontTransform().fitCenter()
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE))
-                        .into(imageView)
+//                Glide.with(context).load(urlImage)
+//                        .dontAnimate().dontTransform().fitCenter()
+//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                        .thumbnail(Glide.with(context).load(urlTemp)
+//                                .dontAnimate().dontTransform().fitCenter()
+//                                .diskCacheStrategy(DiskCacheStrategy.SOURCE))
+//                        .into(imageView)
             } else if (!urlImage.isEmpty()) {
-                Glide.with(context)
-                        .load(if (urlImage.equals(urlTemp, true)) urlTemp else urlImage)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .fitCenter()
-                        .into(imageView)
+//                Glide.with(context)
+//                        .load(if (urlImage.equals(urlTemp, true)) urlTemp else urlImage)
+//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                        .fitCenter()
+//                        .into(imageView)
             }
         } else {
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
 
             if (!urlTemp.isNullOrEmpty() && position == 0) {
-                Glide.with(context).load(urlImage)
-                        .dontAnimate().dontTransform().centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .thumbnail(Glide.with(context).load(urlTemp)
-                                .dontAnimate().dontTransform().centerCrop()
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE))
-                        .into(imageView)
+//                Glide.with(context).load(urlImage)
+//                        .dontAnimate().dontTransform().centerCrop()
+//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                        .thumbnail(Glide.with(context).load(urlTemp)
+//                                .dontAnimate().dontTransform().centerCrop()
+//                                .diskCacheStrategy(DiskCacheStrategy.SOURCE))
+//                        .into(imageView)
             } else if (!urlImage.isEmpty()) {
-                Glide.with(context)
-                        .load(if (urlImage.equals(urlTemp, true)) urlTemp else urlImage)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .centerCrop()
-                        .into(imageView)
+//                Glide.with(context)
+//                        .load(if (urlImage.equals(urlTemp, true)) urlTemp else urlImage)
+//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                        .centerCrop()
+//                        .into(imageView)
             }
         }
         imageView.setOnClickListener { onPictureClickListener?.invoke(position) }

@@ -10,7 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.animation.GlideAnimation
+//import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.affiliate.R
 import java.io.File
@@ -111,17 +111,17 @@ abstract class SubmitPostNotificationManager(
         } else firstImage
 
         Handler(Looper.getMainLooper()).post {
-            Glide.with(context.applicationContext)
-                    .load(file)
-                    .asBitmap()
-                    .error(R.drawable.ic_big_notif_customerapp)
-                    .into(object : SimpleTarget<Bitmap>(100, 100) {
-                        override fun onResourceReady(resource: Bitmap?,
-                                                     glideAnimation: GlideAnimation<in Bitmap>?) {
-                            builder.setLargeIcon(resource)
-                            notificationManager.notify(TAG, id, builder.build())
-                        }
-                    })
+//            Glide.with(context.applicationContext)
+//                    .load(file)
+//                    .asBitmap()
+//                    .error(R.drawable.ic_big_notif_customerapp)
+//                    .into(object : SimpleTarget<Bitmap>(100, 100) {
+//                        override fun onResourceReady(resource: Bitmap?,
+//                                                     glideAnimation: GlideAnimation<in Bitmap>?) {
+//                            builder.setLargeIcon(resource)
+//                            notificationManager.notify(TAG, id, builder.build())
+//                        }
+//                    })
         }
     }
 }

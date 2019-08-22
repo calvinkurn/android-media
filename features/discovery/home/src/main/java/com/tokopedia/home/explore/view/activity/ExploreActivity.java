@@ -212,7 +212,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             TextView labelTxt = view.findViewById(R.id.label);
             ImageView iconView = view.findViewById(R.id.icon);
             String title = model.getName();
-            Glide.with(this).load(model.getImageUrl()).diskCacheStrategy(DiskCacheStrategy.RESULT).into(iconView);
+//            Glide.with(this).load(model.getImageUrl()).diskCacheStrategy(DiskCacheStrategy.RESULT).into(iconView);
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             labelTxt.setText(title);
             view.setOnClickListener(new OnTabExplorerClickListener(this, title, tabLayout, i));

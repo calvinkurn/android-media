@@ -104,11 +104,11 @@ public class ShopCardView extends BaseCustomView {
 
     public void setShopReputation(String url) {
         if (!TextUtils.isEmpty(url)) {
-            Glide.with(getContext())
-                    .load(url)
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .into(shopReputation);
+//            Glide.with(getContext())
+//                    .load(url)
+//                    .dontAnimate()
+//                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+//                    .into(shopReputation);
             shopReputation.setVisibility(VISIBLE);
         } else {
             shopReputation.setVisibility(GONE);

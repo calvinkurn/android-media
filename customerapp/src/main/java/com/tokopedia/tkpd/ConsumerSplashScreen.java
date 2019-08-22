@@ -17,7 +17,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.firebase.perf.metrics.Trace;
@@ -128,36 +128,36 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
         setContentView(R.layout.activity_splash);
         mainLayout = findViewById(R.id.layout_splash);
-        Glide.with(this)
-                .load(imageUrl)
-                .asBitmap()
-                .dontAnimate()
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .priority(Priority.HIGH)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                    }
-
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        try {
-                            if (resource != null) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                    mainLayout.setBackground(new BitmapDrawable(getResources(), resource));
-                                }
-                            }
-                        } catch (Exception ex) {
-                        }
-                    }
-
-                    @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        super.onLoadStarted(placeholder);
-                    }
-                });
+//        Glide.with(this)
+//                .load(imageUrl)
+//                .asBitmap()
+//                .dontAnimate()
+//                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+//                .priority(Priority.HIGH)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                        super.onLoadFailed(e, errorDrawable);
+//                    }
+//
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        try {
+//                            if (resource != null) {
+//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//                                    mainLayout.setBackground(new BitmapDrawable(getResources(), resource));
+//                                }
+//                            }
+//                        } catch (Exception ex) {
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onLoadStarted(Drawable placeholder) {
+//                        super.onLoadStarted(placeholder);
+//                    }
+//                });
     }
 
     @Override

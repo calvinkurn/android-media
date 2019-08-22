@@ -68,11 +68,11 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
         tvPassengerName.setText(element.getPassengerName());
 
         if (element.getFilepath() != null && element.getFilepath().length() > 0) {
-            Glide.with(itemView.getContext())
-                    .load(new File(element.getFilepath()))
-                    .asBitmap()
-                    .centerCrop()
-                    .into(getRoundedImageViewTarget(ivAttachment, 5.0f));
+//            Glide.with(itemView.getContext())
+//                    .load(new File(element.getFilepath()))
+//                    .asBitmap()
+//                    .centerCrop()
+//                    .into(getRoundedImageViewTarget(ivAttachment, 5.0f));
 
             ivAttachment.setOnClickListener(new View.OnClickListener() {
                 @Override

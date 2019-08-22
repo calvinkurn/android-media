@@ -83,11 +83,11 @@ public class FlightCancellationViewImageDialogFragment extends DialogFragment {
     }
 
     private void showImage() {
-        Glide.with(context)
-                .load(new File(filepath))
-                .asBitmap()
-                .centerCrop()
-                .into(getRoundedImageViewTarget(imageView, 5.0f));
+//        Glide.with(context)
+//                .load(new File(filepath))
+//                .asBitmap()
+//                .centerCrop()
+//                .into(getRoundedImageViewTarget(imageView, 5.0f));
     }
 
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {

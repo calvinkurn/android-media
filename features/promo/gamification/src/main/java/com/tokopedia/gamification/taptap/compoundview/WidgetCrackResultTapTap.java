@@ -26,7 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
@@ -130,17 +130,17 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             }, REWARDS_TEXT_TRANSLATE_START_DELAY);
         } else {
             if (!TextUtils.isEmpty(crackResult.getImageUrl())) {
-                Glide.with(getContext())
-                        .load(crackResult.getImageUrl())
-                        .asBitmap()
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                imageViewCrackResult.setImageBitmap(resource);
-                                rewardTranslateAnimatorSet.start();
-                                imageViewCrackResult.setVisibility(View.VISIBLE);
-                            }
-                        });
+//                Glide.with(getContext())
+//                        .load(crackResult.getImageUrl())
+//                        .asBitmap()
+//                        .into(new SimpleTarget<Bitmap>() {
+//                            @Override
+//                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                                imageViewCrackResult.setImageBitmap(resource);
+//                                rewardTranslateAnimatorSet.start();
+//                                imageViewCrackResult.setVisibility(View.VISIBLE);
+//                            }
+//                        });
             }
         }
 
