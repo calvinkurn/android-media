@@ -8,6 +8,8 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -16,7 +18,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.inbox.rescenter.create.customview.BaseView;
@@ -24,8 +25,6 @@ import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detail.listener.DetailResCenterView;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData.Detail;
-
-import butterknife.BindView;
 
 /**
  * Created on 8/16/16.
@@ -53,8 +52,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
     private static final int ACTION_INBOX = 17;
     private static final int ACTION_OPEN_VIDEO = 18;
 
-    @BindView(R2.id.webview)
-    TkpdWebView webView;
+    private TkpdWebView webView;
 
     private Detail resolutionDetailModel;
 
@@ -342,5 +340,13 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
 
     private String getResolutionIDFromQueryParameter(String parserUrl) {
         return Uri.parse(parserUrl).getQueryParameter("id");
+    }
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        webView = view.findViewById(R.id.webview);
     }
 }
