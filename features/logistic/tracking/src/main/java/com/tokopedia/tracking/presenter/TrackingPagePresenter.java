@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.tracking.usecase.GetRetryAvailability;
 import com.tokopedia.tracking.usecase.RetryPickup;
 import com.tokopedia.tracking.usecase.TrackCourierUseCase;
+import com.tokopedia.tracking.usecase.entity.RetryAvailability;
+import com.tokopedia.tracking.usecase.entity.RetryAvailabilityResponse;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -13,6 +15,7 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
+import rx.Observer;
 import rx.Subscriber;
 
 /**
@@ -23,6 +26,8 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
 
     private TrackCourierUseCase useCase;
     private UserSession userSession;
+    private GetRetryAvailability retryAvailUsecase;
+    private RetryPickup retryPickupUsecase;
     private ITrackingPageFragment view;
 
     @Inject
@@ -33,6 +38,8 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
                                  ITrackingPageFragment view) {
         this.useCase = useCase;
         this.userSession = userSession;
+        this.retryAvailUsecase = getRetryUsecase;
+        this.retryPickupUsecase = retryPickupUsecase;
         this.view = view;
     }
 
@@ -52,7 +59,26 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
 
     @Override
     public void onGetRetryAvailability(String orderId) {
+        retryAvailUsecase.execute(orderId)
+                .subscribe(new Observer<RetryAvailabilityResponse>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(RetryAvailabilityResponse retryAvailabilityResponse) {
+                        if (retryAvailabilityResponse.getRetryAvailability().getShowRetryButton() &&
+                        retryAvailabilityResponse.getRetryAvailability().getAvailabilityRetry()) {
+                            view.setRetryButton(true);
+                        } else view.setRetryButton(false);
+                    }
+                });
     }
 
     @Override

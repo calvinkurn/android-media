@@ -66,6 +66,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private ViewGroup liveTrackingButton;
     private ViewGroup rootView;
     private LinearLayout descriptionLayout;
+    private View retryButton;
 
     @Inject
     ITrackingPagePresenter presenter;
@@ -113,6 +114,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         emptyUpdateNotification = view.findViewById(R.id.empty_update_notification);
         notificationText = view.findViewById(R.id.notification_text);
         notificationHelpStep = view.findViewById(R.id.notification_help_step);
+        retryButton = view.findViewById(R.id.retry_pickup_button);
         descriptionLayout = view.findViewById(R.id.description_layout);
         TextView furtherInformationText = view.findViewById(R.id.further_information_text);
         furtherInformationText.setText(Html
@@ -121,6 +123,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         furtherInformationText.setOnClickListener(onFurtherInformationClicked());
         liveTrackingButton = view.findViewById(R.id.live_tracking_button);
         presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
+        presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
     }
 
 
@@ -179,6 +182,10 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
                 () -> presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY)));
     }
 
+    @Override
+    public void setRetryButton(boolean active) {
+        retryButton.setVisibility(active ? View.VISIBLE : View.GONE);
+    }
 
     private void initialHistoryView() {
         trackingHistory.setVisibility(View.GONE);

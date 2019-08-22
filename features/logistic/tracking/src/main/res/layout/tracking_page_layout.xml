@@ -320,6 +320,15 @@
 
             </LinearLayout>
 
+            <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/retry_pickup_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/find_new_driver"
+                android:visibility="gone"
+                app:buttonCompatSize="medium"
+                app:buttonCompatType="secondary" />
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
