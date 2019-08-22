@@ -3,6 +3,8 @@ package com.tokopedia.tracking.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.tracking.usecase.GetRetryAvailability;
+import com.tokopedia.tracking.usecase.RetryPickup;
 import com.tokopedia.tracking.usecase.TrackCourierUseCase;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
@@ -25,6 +27,8 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
 
     @Inject
     public TrackingPagePresenter(TrackCourierUseCase useCase,
+                                 GetRetryAvailability getRetryUsecase,
+                                 RetryPickup retryPickupUsecase,
                                  UserSession userSession,
                                  ITrackingPageFragment view) {
         this.useCase = useCase;
@@ -44,6 +48,11 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
                         userSession.getUserId(), userSession.getDeviceId(), request)
         );
         useCase.execute(requestParams, trackingResultSubscriber());
+    }
+
+    @Override
+    public void onGetRetryAvailability(String orderId) {
+
     }
 
     @Override
