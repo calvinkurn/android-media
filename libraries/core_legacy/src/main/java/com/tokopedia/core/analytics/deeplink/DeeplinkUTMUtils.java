@@ -136,6 +136,10 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                     campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
+                    campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
+                            maps.get(AppEventTracking.GTM.X_CLID) : "");
+                    campaign.setXAtttribute(maps.get(AppEventTracking.GTM.X_ATTR) != null ?
+                            maps.get(AppEventTracking.GTM.X_ATTR) : "");
 
                 } else if (host.contains("www.google")) {
 
@@ -167,6 +171,10 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                     campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
+                    campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
+                            maps.get(AppEventTracking.GTM.X_CLID) : "");
+                    campaign.setXAtttribute(maps.get(AppEventTracking.GTM.X_ATTR) != null ?
+                            maps.get(AppEventTracking.GTM.X_ATTR) : "");
 
                 }
 
@@ -196,6 +204,10 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                     campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
+                    campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
+                            maps.get(AppEventTracking.GTM.X_CLID) : "");
+                    campaign.setXAtttribute(maps.get(AppEventTracking.GTM.X_ATTR) != null ?
+                            maps.get(AppEventTracking.GTM.X_ATTR) : "");
 
                 } else if (!APP_CRAWLER.equals(referrerPackage)) {
                     // App was deep linked into from another app (excl. Google crawler)
@@ -214,6 +226,10 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_TERM) : "");
                     campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
+                    campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
+                            maps.get(AppEventTracking.GTM.X_CLID) : "");
+                    campaign.setXAtttribute(maps.get(AppEventTracking.GTM.X_ATTR) != null ?
+                            maps.get(AppEventTracking.GTM.X_ATTR) : "");
 
                 }
             }
