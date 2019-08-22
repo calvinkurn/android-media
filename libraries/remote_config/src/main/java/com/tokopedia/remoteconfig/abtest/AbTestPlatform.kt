@@ -88,11 +88,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
     }
 
     override fun fetch(listener: RemoteConfig.Listener?) {
-        // =================== ToDo =================== //
-        // 1. Request gql
-        // 2. Save the result to sharedPref and replace the existing
-        // 3. Send analytics data from gql response
-
         // Get existing revision for next Gql request
         val revision = sharedPreferences.getInt(REVISION, 0)
 
@@ -162,7 +157,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                 "session_id" to userSession.deviceId,
                 "feature" to featureVariants
         )
-        System.out.println(dataLayerAbTest)
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
     }
 
