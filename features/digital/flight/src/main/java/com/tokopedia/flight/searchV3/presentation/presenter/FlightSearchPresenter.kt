@@ -335,7 +335,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
                         // filter journey that not tracked yet
                         val newJourneyList = flightJourneyViewModelList.filter { !excludedAirlines.contains(it.routeList[0].airline) }
-                        onProductViewImpression(newJourneyList, lastPosition)
+                        if (newJourneyList.isNotEmpty()) onProductViewImpression(newJourneyList, lastPosition)
                         lastPosition = flightJourneyViewModelList.size
                     }
                 }
