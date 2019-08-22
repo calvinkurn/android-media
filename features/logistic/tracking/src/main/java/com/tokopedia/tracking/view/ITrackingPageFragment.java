@@ -20,6 +20,6 @@ public interface ITrackingPageFragment {
 
     void showError(String message);
 
-    void setRetryButton(boolean active);
+    void setRetryButton(boolean active, long deadline);
 
 }

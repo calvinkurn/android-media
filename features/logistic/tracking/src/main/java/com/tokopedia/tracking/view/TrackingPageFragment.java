@@ -67,6 +67,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private ViewGroup rootView;
     private LinearLayout descriptionLayout;
     private View retryButton;
+    private TextView retryStatus;
 
     @Inject
     ITrackingPagePresenter presenter;
@@ -116,6 +117,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         notificationHelpStep = view.findViewById(R.id.notification_help_step);
         retryButton = view.findViewById(R.id.retry_pickup_button);
         descriptionLayout = view.findViewById(R.id.description_layout);
+        retryStatus = view.findViewById(R.id.tv_retry_status);
         TextView furtherInformationText = view.findViewById(R.id.further_information_text);
         furtherInformationText.setText(Html
                         .fromHtml(getString(R.string.further_information_text_html)),
@@ -183,11 +185,19 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void setRetryButton(boolean active) {
-        retryButton.setVisibility(active ? View.VISIBLE : View.GONE);
+    public void setRetryButton(boolean active, long deadline) {
         if (active) {
+            retryButton.setVisibility(View.VISIBLE);
             retryButton.setOnClickListener(view ->
                     presenter.onRetryPickup(getArguments().getString(ORDER_ID_KEY)));
+            retryStatus.setVisibility(View.GONE);
+        } else {
+            retryButton.setVisibility(View.GONE);
+            if (deadline > 0) {
+                retryStatus.setVisibility(View.VISIBLE);
+            } else {
+                retryStatus.setVisibility(View.GONE);
+            }
         }
     }
 

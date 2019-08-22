@@ -329,6 +329,17 @@
                 app:buttonCompatSize="medium"
                 app:buttonCompatType="secondary" />
 
+            <TextView
+                android:id="@+id/tv_retry_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="Tunggu untuk mencari driver baru"
+                android:textStyle="bold"
+                android:gravity="center" />
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

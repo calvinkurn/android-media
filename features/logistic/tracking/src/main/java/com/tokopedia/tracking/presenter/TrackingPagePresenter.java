@@ -74,10 +74,13 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
 
                     @Override
                     public void onNext(RetryAvailabilityResponse retryAvailabilityResponse) {
-                        if (retryAvailabilityResponse.getRetryAvailability().getShowRetryButton() &&
-                        retryAvailabilityResponse.getRetryAvailability().getAvailabilityRetry()) {
-                            view.setRetryButton(true);
-                        } else view.setRetryButton(false);
+                        RetryAvailability avail = retryAvailabilityResponse.getRetryAvailability();
+                        long deadline = Long.parseLong(avail.getDeadlineRetryUnixtime());
+                        if (avail.getShowRetryButton() && avail.getAvailabilityRetry()) {
+                            view.setRetryButton(true, 0L);
+                        } else if (!avail.getAvailabilityRetry()) {
+                            view.setRetryButton(false, deadline);
+                        } else view.setRetryButton(false, 0L);
                     }
                 });
     }
