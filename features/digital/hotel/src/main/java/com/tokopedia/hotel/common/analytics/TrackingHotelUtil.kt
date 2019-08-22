@@ -98,9 +98,7 @@ class TrackingHotelUtil {
         map[EVENT_ACTION] = VIEW_HOTEL_LIST_IMPRESSION
         map[EVENT_LABEL] = "$HOTEL_LABEL - $destination - $roomCount - $guestCount - $dayDiff - $duration"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
-                IMPRESSIONS_LABEL, DataLayer.mapOf(
-                PRODUCTS_LABEL, getViewHotelListProducts(products)
-        )
+                IMPRESSIONS_LABEL, getViewHotelListProducts(products)
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
@@ -136,7 +134,9 @@ class TrackingHotelUtil {
         map[EVENT_ACTION] = CHOOSE_HOTEL
         map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $dayDiff - $price"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
-                CLICK_LABEL, DataLayer.mapOf(PRODUCTS_LABEL, getChooseHotelProducts(property, position))
+                CLICK_LABEL, DataLayer.mapOf(
+                ACTION_FIELD_LABEL, DataLayer.mapOf(LIST_LABEL, SLASH_HOTEL_LABEL),
+                PRODUCTS_LABEL, getChooseHotelProducts(property, position))
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
