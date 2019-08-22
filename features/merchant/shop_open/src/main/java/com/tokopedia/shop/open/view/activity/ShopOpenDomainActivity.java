@@ -1,11 +1,13 @@
 package com.tokopedia.shop.open.view.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -50,7 +52,16 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
     @Override
     public void onBackPressed() {
         if (GlobalConfig.isSellerApp() && isTaskRoot()) {
-            Toast.makeText(this, "Logout here", Toast.LENGTH_LONG).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Keluar dari Tokopedia?");
+            builder.setMessage("Batal");
+            builder.setPositiveButton("Lanjutkan", (DialogInterface dialogInterface, int i) -> {
+                RouteManager.route(this, "sellerapp://logout");
+                dialogInterface.dismiss();
+                finish();
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         } else {
             super.onBackPressed();
         }
