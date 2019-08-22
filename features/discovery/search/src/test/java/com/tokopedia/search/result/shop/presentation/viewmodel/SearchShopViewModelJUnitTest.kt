@@ -6,12 +6,12 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.TestErrorSearchUseCase
 import com.tokopedia.search.result.domain.usecase.TestSearchUseCase
-import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
-import com.tokopedia.search.result.presentation.model.ShopViewModel
-import com.tokopedia.search.utils.State
+import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.common.State
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

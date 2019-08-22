@@ -4,7 +4,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

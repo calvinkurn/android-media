@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.shop.domain
+package com.tokopedia.search.result.shop.domain.usecase
 
 import android.content.Context
 import android.support.annotation.RawRes
@@ -9,7 +9,7 @@ import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.search.R
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import dagger.Module
 import dagger.Provides

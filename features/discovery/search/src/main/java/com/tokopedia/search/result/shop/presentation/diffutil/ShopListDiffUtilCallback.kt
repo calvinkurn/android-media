@@ -2,7 +2,7 @@ package com.tokopedia.search.result.shop.presentation.diffutil
 
 import android.support.v7.util.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.search.result.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 
 class ShopListDiffUtilCallback(
         private val oldList: List<Visitable<*>> = listOf(),

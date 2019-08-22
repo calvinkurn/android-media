@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -165,8 +166,9 @@ public class SearchActivity extends BaseActivity
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
         Uri uri = intent.getData();
+        String applinkUri = (uri == null) ? "" : MethodChecker.fromHtml(uri.toString()).toString();
 
-        return (uri == null) ? new SearchParameter() : new SearchParameter(uri.toString());
+        return new SearchParameter(applinkUri);
     }
 
     private void initActivityOnCreate() {

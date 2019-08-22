@@ -23,7 +23,7 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
-import com.tokopedia.search.result.presentation.model.ShopViewModel;
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.ShopListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration;

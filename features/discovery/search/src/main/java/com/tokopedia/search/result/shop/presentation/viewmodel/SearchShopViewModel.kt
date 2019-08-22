@@ -11,15 +11,16 @@ import com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.AuthUtil
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.common.EmptySearchCreator
+import com.tokopedia.search.result.common.State
+import com.tokopedia.search.result.common.State.*
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
-import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
-import com.tokopedia.search.result.presentation.model.ShopViewModel
-import com.tokopedia.search.utils.State
-import com.tokopedia.search.utils.State.*
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
 
 class SearchShopViewModel(
         dispatcher: CoroutineDispatcher,
@@ -28,6 +29,7 @@ class SearchShopViewModel(
         private val searchShopLoadMoreUseCase: SearchUseCase<SearchShopModel>,
         private val shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
+        private val emptySearchCreator: EmptySearchCreator,
         private val userSession: UserSessionInterface,
         private val localCacheHandler: LocalCacheHandler
 ) : BaseViewModel(dispatcher) {
@@ -48,25 +50,25 @@ class SearchShopViewModel(
     }
 
     private fun setSearchParameterUniqueId() {
-        this.searchParameter[SearchApiConst.UNIQUE_ID] = generateUniqueId()
+        this.searchParameter[SearchApiConst.UNIQUE_ID] = getUniqueId()
     }
 
-    private fun generateUniqueId(): String {
+    private fun getUniqueId(): String {
         return if (userSession.isLoggedIn)
             AuthUtil.md5(userSession.userId)
         else
             AuthUtil.md5(getRegistrationId())
     }
 
-    private fun getRegistrationId(): String {
+    fun getRegistrationId(): String {
         return localCacheHandler.getString(GCM_ID, "")
     }
 
     private fun setSearchParameterUserId() {
-        this.searchParameter[SearchApiConst.USER_ID] = generateUserId()
+        this.searchParameter[SearchApiConst.USER_ID] = getUserId()
     }
 
-    private fun generateUserId(): String {
+    fun getUserId(): String {
         return if (userSession.isLoggedIn) userSession.userId else "0"
     }
 

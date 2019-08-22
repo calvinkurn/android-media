@@ -4,10 +4,11 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.common.EmptySearchCreator
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
-import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
-import com.tokopedia.search.result.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 
@@ -18,6 +19,7 @@ class SearchShopViewModelFactory(
         private val searchShopLoadMoreUseCase: SearchUseCase<SearchShopModel>,
         private val shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
+        private val emptySearchCreator: EmptySearchCreator,
         private val userSession: UserSessionInterface,
         private val localCacheHandler: LocalCacheHandler
 ): ViewModelProvider.Factory {
@@ -39,6 +41,7 @@ class SearchShopViewModelFactory(
                 searchShopLoadMoreUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )

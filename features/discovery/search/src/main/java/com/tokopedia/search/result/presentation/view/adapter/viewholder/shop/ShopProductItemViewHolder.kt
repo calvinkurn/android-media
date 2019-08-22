@@ -6,7 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
 import kotlinx.android.synthetic.main.search_result_shop_item_product_card.view.*
 

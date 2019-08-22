@@ -1,8 +1,8 @@
-package com.tokopedia.search.result.presentation.mapper
+package com.tokopedia.search.result.shop.presentation.mapper
 
 import com.tokopedia.discovery.common.Mapper
-import com.tokopedia.search.result.domain.model.SearchShopModel
-import com.tokopedia.search.result.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 
 class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
 

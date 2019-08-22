@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.model
+package com.tokopedia.search.result.shop.presentation.model
 
 import android.os.Parcel
 import android.os.Parcelable

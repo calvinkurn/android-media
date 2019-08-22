@@ -5,7 +5,7 @@ import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchshop.SearchShopUseCaseModule;
-import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapperModule;
+import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule;
 
 import dagger.Component;

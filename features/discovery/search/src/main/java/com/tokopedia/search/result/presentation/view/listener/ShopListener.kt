@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.view.listener
 
-import com.tokopedia.search.result.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 
 interface ShopListener {
 

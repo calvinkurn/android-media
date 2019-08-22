@@ -6,15 +6,20 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.common.EmptySearchCreator
+import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
-import com.tokopedia.search.result.presentation.mapper.ShopHeaderViewModelMapper
-import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapper
-import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
-import com.tokopedia.search.result.presentation.model.ShopViewModel
-import com.tokopedia.search.utils.State
+import com.tokopedia.search.result.presentation.model.EmptySearchViewModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.presentation.mapper.ShopHeaderViewModelMapper
+import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapper
+import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
@@ -176,6 +181,8 @@ class SearchShopViewModelMockKTest {
     private val shopHeaderViewModelMapper = ShopHeaderViewModelMapper()
     private val shopViewModelMapper = ShopViewModelMapper()
 
+    private val emptySearchCreator = mockk<EmptySearchCreator>()
+
     private val userSession = mockk<UserSessionInterface>().also {
         every { it.isLoggedIn }.returns(true)
         every { it.userId }.returns("123456")
@@ -192,6 +199,7 @@ class SearchShopViewModelMockKTest {
             searchMoreShopUseCase,
             shopHeaderViewModelMapper,
             shopViewModelMapper,
+            emptySearchCreator,
             userSession,
             localCacheHandler
     )

@@ -5,12 +5,14 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.common.EmptySearchCreator
+import com.tokopedia.search.result.common.EmptySearchCreatorModule
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
-import com.tokopedia.search.result.shop.domain.SearchShopCoroutineUseCaseModule
-import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapperModule
-import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
-import com.tokopedia.search.result.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.domain.usecase.SearchShopCoroutineUseCaseModule
+import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
+import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -20,7 +22,8 @@ import javax.inject.Named
 @SearchScope
 @Module(includes = [
     SearchShopCoroutineUseCaseModule::class,
-    ShopViewModelMapperModule::class
+    ShopViewModelMapperModule::class,
+    EmptySearchCreatorModule::class
 ])
 class SearchShopViewModelFactoryModule(
         private val searchParameter: Map<String, Any> = mapOf()
@@ -36,6 +39,7 @@ class SearchShopViewModelFactoryModule(
             searchShopLoadMoreUseCase: SearchUseCase<SearchShopModel>,
             shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
+            emptySearchCreator: EmptySearchCreator,
             userSession: UserSessionInterface,
             localCacheHandler: LocalCacheHandler
     ): ViewModelProvider.Factory {
@@ -46,6 +50,7 @@ class SearchShopViewModelFactoryModule(
                 searchShopLoadMoreUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )

@@ -7,18 +7,16 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.common.data.Option
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
@@ -27,12 +25,13 @@ import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFac
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
-import com.tokopedia.search.utils.State
+import com.tokopedia.search.result.common.State
 import com.tokopedia.topads.sdk.domain.model.CpmData
 
 class ShopListFragmentKt:
         BaseDaggerFragment(),
         ShopListener,
+        EmptyStateListener,
         BannerAdsListener {
 
     companion object {
@@ -126,7 +125,7 @@ class ShopListFragmentKt:
     }
 
     private fun createShopListTypeFactory(): ShopListTypeFactory {
-        return ShopListTypeFactoryImpl(this, getDummyEmptyStateListener(), this)
+        return ShopListTypeFactoryImpl(this, this, this)
     }
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
@@ -148,6 +147,8 @@ class ShopListFragmentKt:
         when(searchShopLiveData) {
             is State.Loading -> {
                 showRefreshLayout()
+                updateList(searchShopLiveData)
+                updateScrollListener()
             }
             is State.Success -> {
                 hideRefreshLayout()
@@ -231,29 +232,23 @@ class ShopListFragmentKt:
 
     }
 
-    @Deprecated("Please create a better empty state view holder and listener")
-    private fun getDummyEmptyStateListener(): EmptyStateListener {
-        return object : EmptyStateListener {
-            override fun onEmptyButtonClicked() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+    override fun onEmptyButtonClicked() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
-            override fun onSelectedFilterRemoved(uniqueId: String?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+    override fun onSelectedFilterRemoved(uniqueId: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
-            override fun getRegistrationId(): String {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+    override fun getRegistrationId(): String {
+        return searchShopViewModel?.getRegistrationId() ?: ""
+    }
 
-            override fun getUserId(): String {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+    override fun getUserId(): String {
+        return searchShopViewModel?.getUserId() ?: ""
+    }
 
-            override fun getSelectedFilterAsOptionList(): MutableList<Option> {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-        }
+    override fun getSelectedFilterAsOptionList(): MutableList<Option> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

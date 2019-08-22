@@ -1,8 +1,8 @@
-package com.tokopedia.search.result.shop.domain
+package com.tokopedia.search.result.shop.domain.usecase
 
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.TopAdsParams

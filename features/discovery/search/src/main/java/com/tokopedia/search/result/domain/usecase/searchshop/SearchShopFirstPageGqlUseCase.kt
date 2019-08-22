@@ -6,7 +6,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.*
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams

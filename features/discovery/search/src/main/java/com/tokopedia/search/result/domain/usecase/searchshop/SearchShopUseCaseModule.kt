@@ -10,7 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.R
 import com.tokopedia.search.result.data.mapper.searchshop.SearchShopMapperModule
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.usecase.UseCase
 import dagger.Module
 import dagger.Provides

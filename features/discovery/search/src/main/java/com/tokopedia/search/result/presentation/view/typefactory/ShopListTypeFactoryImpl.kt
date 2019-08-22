@@ -3,8 +3,8 @@ package com.tokopedia.search.result.presentation.view.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel
-import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
-import com.tokopedia.search.result.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.shop.ShopHeaderViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.shop.ShopItemViewHolder

@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener

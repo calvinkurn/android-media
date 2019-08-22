@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.shop.ShopProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
 

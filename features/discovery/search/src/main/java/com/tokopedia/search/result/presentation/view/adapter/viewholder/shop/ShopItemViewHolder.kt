@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.utils.doIfVisible
 import com.tokopedia.productcard.utils.isNullOrNotVisible
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.ShopProductItemAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopProductItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.ShopListener

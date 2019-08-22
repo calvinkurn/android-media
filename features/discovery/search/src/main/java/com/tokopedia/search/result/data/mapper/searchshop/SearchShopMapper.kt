@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.data.mapper.searchshop
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.search.result.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 
 import rx.functions.Func1
 
