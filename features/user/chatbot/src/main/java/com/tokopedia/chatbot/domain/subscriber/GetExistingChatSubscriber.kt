@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.domain.subscriber
 
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.util.handleError
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
