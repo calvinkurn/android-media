@@ -33,6 +33,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -58,9 +60,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private static final int QTY_MAX = 10000;
     private static final int MAX_SHOWING_NOTES_CHAR = 20;
 
-    private final Context context;
-    private final CartItemAdapter.ActionListener actionListener;
+    private Context context;
+    private CartItemAdapter.ActionListener actionListener;
     private ViewHolderListener viewHolderListener;
+    private CompositeSubscription compositeSubscription;
 
     private LinearLayout llWarningAndError;
     private FrameLayout flCartItemContainer;
@@ -102,6 +105,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
     private int parentPosition;
     private int dataSize;
+    private Subscription quantityDebounceSubscription;
+    private Subscription noteDebounceSubscription;
 
     @SuppressLint("ClickableViewAccessibility")
     public CartItemViewHolder(View itemView, CompositeSubscription cadapterCmpositeSubscription,
@@ -109,6 +114,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.actionListener = actionListener;
         this.context = itemView.getContext();
+        compositeSubscription = cadapterCmpositeSubscription;
 
         this.llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
         this.flCartItemContainer = itemView.findViewById(R.id.fl_cart_item_container);
@@ -163,8 +169,16 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         initTextwatcherDebouncer(cadapterCmpositeSubscription);
     }
 
+    public void clear() {
+        context = null;
+        actionListener = null;
+        viewHolderListener = null;
+        compositeSubscription.remove(quantityDebounceSubscription);
+        compositeSubscription.remove(noteDebounceSubscription);
+    }
+
     private void initTextwatcherDebouncer(CompositeSubscription compositeSubscription) {
-        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<QuantityWrapper>() {
+        quantityDebounceSubscription = Observable.create(new Observable.OnSubscribe<QuantityWrapper>() {
             @Override
             public void call(final Subscriber<? super QuantityWrapper> subscriber) {
                 quantityTextwatcherListener = new QuantityTextWatcher.QuantityTextwatcherListener() {
@@ -192,9 +206,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     public void onNext(QuantityWrapper quantity) {
                         itemQuantityTextWatcherAction(quantity);
                     }
-                }));
+                });
+        compositeSubscription.add(quantityDebounceSubscription);
 
-        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<Editable>() {
+        noteDebounceSubscription = Observable.create(new Observable.OnSubscribe<Editable>() {
             @Override
             public void call(final Subscriber<? super Editable> subscriber) {
                 noteTextwatcherListener = new NoteTextWatcher.NoteTextwatcherListener() {
@@ -222,7 +237,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     public void onNext(Editable editable) {
                         itemNoteTextWatcherAction(editable);
                     }
-                }));
+                });
+        compositeSubscription.add(noteDebounceSubscription);
     }
 
     public void bindData(final CartItemHolderData data, int parentPosition, ViewHolderListener viewHolderListener, int dataSize) {
@@ -615,19 +631,38 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
 
-            String errorDescription = data.getCartItemData().getErrorMessageDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
+            String similarProductUrl = data.getCartItemData().getSimilarProductUrl();
+            if (!TextUtils.isEmpty(similarProductUrl)) {
                 tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
-                tickerError.setTextDescription(errorDescription);
+                tickerError.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(CharSequence url) {
+                        actionListener.onCartItemSimilarProductUrlClicked(url.toString());
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
+                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
+                actionListener.onCartItemShowTickerOutOfStock(data.getCartItemData().getOriginData().getProductId());
             } else {
-                tickerError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                String errorDescription = data.getCartItemData().getErrorMessageDescription();
+                if (!TextUtils.isEmpty(errorDescription)) {
+                    tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
+                    tickerError.setTextDescription(errorDescription);
+                } else {
+                    tickerError.setTickerTitle(null);
+                    tickerError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                }
             }
             tickerError.setTickerType(Ticker.TYPE_ERROR);
             tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerError.setCloseButtonVisibility(View.GONE);
             tickerError.setVisibility(View.VISIBLE);
+            tickerError.requestLayout();
             layoutError.setVisibility(View.VISIBLE);
-
         } else {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart);
@@ -639,15 +674,17 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if (data.getCartItemData().isWarning()) {
             String warningDescription = data.getCartItemData().getWarningMessageDescription();
             if (!TextUtils.isEmpty(warningDescription)) {
-                tickerWarning.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
+                tickerWarning.setTickerTitle(data.getCartItemData().getWarningMessageTitle());
                 tickerWarning.setTextDescription(warningDescription);
             } else {
-                tickerWarning.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                tickerWarning.setTickerTitle(null);
+                tickerWarning.setTextDescription(data.getCartItemData().getWarningMessageTitle());
             }
             tickerWarning.setTickerType(Ticker.TYPE_WARNING);
             tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
+            tickerWarning.requestLayout();
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
             tickerWarning.setVisibility(View.GONE);

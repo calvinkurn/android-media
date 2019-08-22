@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v4.view.ViewCompat
@@ -38,6 +39,7 @@ import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_recommendation.*
@@ -60,7 +62,12 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     lateinit var recentSearchAdapter: RecentSearchAdapter
 
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    private var gpsRetryCounter: Int = 0
+    private val GPS_MAX_RETRY = 5
 
     override fun getScreenName(): String = ""
 
@@ -76,6 +83,9 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         }
+
+        permissionCheckerHelper = PermissionCheckerHelper()
+        destinationViewModel.setPermissionChecker(permissionCheckerHelper)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -95,7 +105,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        val staticDimen8dp = context?.getResources()?.getDimensionPixelOffset(R.dimen.dp_8)
+        val staticDimen8dp = context?.getResources()?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
         val recentSearchRecyclerView = view.findViewById(R.id.recent_search_recycler_view) as RecyclerView
         recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp ?: 0, staticDimen8dp ?: 0))
         recentSearchRecyclerView.layoutManager = layoutManager
@@ -111,10 +121,14 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         }
     }
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = 0
+
+    override fun getRecyclerViewResourceId() = com.tokopedia.hotel.R.id.recycler_view
+
     fun initCurrentLocationTextView(view: View) {
 
         currentLocationTextView = view.findViewById(R.id.current_location_tv)
-        currentLocationTextView.setDrawableLeft(R.drawable.ic_system_action_currentlocation_grayscale_24)
+        currentLocationTextView.setDrawableLeft(com.tokopedia.resources.common.R.drawable.ic_system_action_currentlocation_grayscale_24)
 
         currentLocationLayout = view.findViewById(R.id.current_location_layout)
         currentLocationLayout.setOnClickListener {
@@ -168,7 +182,8 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         intent.putExtra(HOTEL_CURRENT_LOCATION_LAT, lat)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-        activity?.overridePendingTransition(R.anim.travel_anim_stay, R.anim.travel_slide_out_up)
+        activity?.overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_anim_stay,
+                com.tokopedia.common.travel.R.anim.travel_slide_out_up)
     }
 
     fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
@@ -186,7 +201,8 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         intent.putExtra(HOTEL_DESTINATION_TYPE, popularSearch.type)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-        activity?.overridePendingTransition(R.anim.travel_anim_stay, R.anim.travel_slide_out_up)
+        activity?.overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_anim_stay,
+                com.tokopedia.common.travel.R.anim.travel_slide_out_up)
     }
 
     override fun loadData(page: Int) {
@@ -219,7 +235,8 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         intent.putExtra(HOTEL_DESTINATION_TYPE, recentSearch.property.type)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-        activity?.overridePendingTransition(R.anim.travel_anim_stay, R.anim.travel_slide_out_up)
+        activity?.overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_anim_stay,
+                com.tokopedia.common.travel.R.anim.travel_slide_out_up)
     }
 
     override fun isRecentSearchEmpty() {
@@ -242,7 +259,14 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showDialogEnableGPS()
         } else {
-            onErrorGetLocation()
+            if (gpsRetryCounter < GPS_MAX_RETRY) {
+                gpsRetryCounter++
+                destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+            }
+            else {
+                onErrorGetLocation()
+                gpsRetryCounter = 0
+            }
         }
     }
 
@@ -273,6 +297,18 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         when(requestCode) {
             REQUEST_CODE_GPS -> {
                 destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        context?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheckerHelper.onRequestPermissionsResult(it,
+                        requestCode, permissions,
+                        grantResults)
             }
         }
     }

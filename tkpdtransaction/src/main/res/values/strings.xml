@@ -352,4 +352,5 @@ Anda di sini.</string>
     <string name="event_voucher_code_copied">Berhasil! Silakan cek e-tiket di</string>
     <string name="purchase_detail">Detail Pembelian</string>
     <string name="order_list_title_recommendation">Rekomendasi untuk Anda</string>
+    <string name="bom_check_cart">Lihat</string>
 </resources>
