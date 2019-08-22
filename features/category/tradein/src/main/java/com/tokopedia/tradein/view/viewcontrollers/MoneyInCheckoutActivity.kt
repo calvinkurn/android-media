@@ -80,11 +80,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     private fun showtnc() {
-        showTnC(R.string.tradein_tnc)
-        sendGeneralEvent("clickTradeIn",
-                "harga final trade in",
-                "click syarat dan ketentuan",
-                "")
+        showTnC(R.string.money_in_tnc)
     }
 
     private fun setObservers() {
