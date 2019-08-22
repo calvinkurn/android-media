@@ -6,27 +6,27 @@ import com.google.gson.annotations.SerializedName
 
 data class DataItem(
 
-		@SerializedName("badges")
+	@SerializedName("badges")
 	@Expose
 	val badges: List<String> = ArrayList(),
 
-		@SerializedName("isFollow")
+	@SerializedName("isFollow")
 	@Expose
 	val isFollow: Boolean = false,
 
-		@SerializedName("applink")
+	@SerializedName("applink")
 	@Expose
 	val applink: String = "",
 
-		@SerializedName("name")
+	@SerializedName("name")
 	@Expose
 	val name: String = "",
 
-		@SerializedName("photo")
+	@SerializedName("photo")
 	@Expose
 	val photo: String = "",
 
-		@SerializedName("id")
+	@SerializedName("id")
 	@Expose
 	val id: Int = 0
 )
