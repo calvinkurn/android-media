@@ -7,14 +7,17 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
-import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.common.EmptySearchCreator
+import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.domain.usecase.TestErrorSearchUseCase
 import com.tokopedia.search.result.domain.usecase.TestSearchUseCase
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
-import com.tokopedia.search.result.common.State
 import com.tokopedia.user.session.UserSessionInterface
-import io.kotlintest.*
+import io.kotlintest.Spec
+import io.kotlintest.TestCase
+import io.kotlintest.TestResult
 import io.kotlintest.extensions.TopLevelTest
 import io.kotlintest.matchers.asClue
 import io.kotlintest.matchers.collections.shouldNotBeEmpty
@@ -124,6 +127,8 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
 
     private val shopViewModelMapper = Mockito.mock(MockShopViewModelMapper::class.java)
 
+    private val emptySearchCreator = Mockito.mock(EmptySearchCreator::class.java)
+
     private val userSession = Mockito.mock(UserSessionInterface::class.java).also {
         Mockito.`when`(it.isLoggedIn).thenReturn(true)
         Mockito.`when`(it.userId).thenReturn("123456")
@@ -146,6 +151,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -220,6 +226,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -266,6 +273,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -308,6 +316,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 TestErrorSearchUseCase(exception),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -357,6 +366,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -399,6 +409,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -438,6 +449,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 TestSearchUseCase(searchMoreShopModelWithoutNextPage),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )

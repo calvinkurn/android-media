@@ -36,6 +36,7 @@ class SearchShopViewModel(
 
     companion object {
         const val START_ROW_FIRST_TIME_LOAD = 0
+        const val SHOP_TAB_TITLE = "Toko"
     }
 
     private val searchShopLiveData = MutableLiveData<State<List<Visitable<*>>>>()
@@ -134,13 +135,40 @@ class SearchShopViewModel(
 
         updateIsHasNextPage(searchShopModel)
 
-        val visitableList = createSearchShopListWithHeader(searchShopModel)
+        val visitableList = createVisitableListFromModel(searchShopModel)
 
         updateSearchShopLiveDataStateToSuccess(visitableList)
     }
 
     private fun updateIsHasNextPage(searchShopModel: SearchShopModel) {
         isHasNextPage = searchShopModel.aceSearchShop.paging.uriNext.isNotEmpty()
+    }
+
+    private fun createVisitableListFromModel(searchShopModel: SearchShopModel): List<Visitable<*>> {
+        return if (isSearchShopListEmpty(searchShopModel)) {
+            createEmptySearchViewModel()
+        }
+        else {
+            createSearchShopListWithHeader(searchShopModel)
+        }
+    }
+
+    private fun isSearchShopListEmpty(searchShopModel: SearchShopModel): Boolean {
+        return searchShopModel.aceSearchShop.shopList.isEmpty()
+    }
+
+    private fun createEmptySearchViewModel(): List<Visitable<*>> {
+        val visitableList = mutableListOf<Visitable<*>>()
+
+        val emptySearchViewModel = emptySearchCreator.createEmptySearchViewModel(
+                getSearchParameterQuery(),
+                false,
+                SHOP_TAB_TITLE
+        )
+
+        visitableList.add(emptySearchViewModel)
+
+        return visitableList
     }
 
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {

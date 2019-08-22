@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
-import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.common.EmptySearchCreator
+import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.domain.usecase.TestErrorSearchUseCase
 import com.tokopedia.search.result.domain.usecase.TestSearchUseCase
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
-import com.tokopedia.search.result.common.State
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -133,6 +134,8 @@ class SearchShopViewModelJUnitTest {
 
     private val shopViewModelMapper = mock(MockShopViewModelMapper::class.java)
 
+    private val emptySearchCreator = mock(EmptySearchCreator::class.java)
+
     private val userSession = mock(UserSessionInterface::class.java).also {
         whenever(it.isLoggedIn).thenReturn(true)
         whenever(it.userId).thenReturn("123456")
@@ -155,6 +158,7 @@ class SearchShopViewModelJUnitTest {
                 TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -229,6 +233,7 @@ class SearchShopViewModelJUnitTest {
                 TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -275,6 +280,7 @@ class SearchShopViewModelJUnitTest {
                 TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -317,6 +323,7 @@ class SearchShopViewModelJUnitTest {
                 TestErrorSearchUseCase(exception),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -366,6 +373,7 @@ class SearchShopViewModelJUnitTest {
                 TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -408,6 +416,7 @@ class SearchShopViewModelJUnitTest {
                 TestSearchUseCase(searchMoreShopModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )
@@ -447,6 +456,7 @@ class SearchShopViewModelJUnitTest {
                 TestSearchUseCase(searchMoreShopModelWithoutNextPage),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )

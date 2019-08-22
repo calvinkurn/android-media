@@ -125,7 +125,16 @@ class SearchShopViewModelMockKTest {
 
         `when search shop, search more shop, and then reload`()
 
-        `then assert reload search shop success`()
+        `then assert reload search shop success and search shop state contains search shop data`()
+    }
+
+    @Test
+    fun `test empty result search shop`() {
+        `given search shop API will be successful and return empty search shop list`()
+
+        `when execute search shop`()
+
+        `then assert search shop state is success and contains empty search data`()
     }
 
     @get:Rule
@@ -168,6 +177,7 @@ class SearchShopViewModelMockKTest {
 
     private val searchShopModel = SearchShopModel(aceSearchShopWithNextPage)
     private val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage)
+    private val searchShopModelEmptyList = SearchShopModel()
     private val searchMoreShopModel = SearchShopModel(moreAceSearchShopWithNextPage)
     private val searchMoreShopModelWithoutNextPage = SearchShopModel(moreAceSearchShopWithoutNextPage)
 
@@ -181,7 +191,7 @@ class SearchShopViewModelMockKTest {
     private val shopHeaderViewModelMapper = ShopHeaderViewModelMapper()
     private val shopViewModelMapper = ShopViewModelMapper()
 
-    private val emptySearchCreator = mockk<EmptySearchCreator>()
+    private val emptySearchCreator = mockk<EmptySearchCreator>(relaxed = true)
 
     private val userSession = mockk<UserSessionInterface>().also {
         every { it.isLoggedIn }.returns(true)
@@ -541,7 +551,7 @@ class SearchShopViewModelMockKTest {
         searchShopViewModel.reloadSearchShop()
     }
 
-    private fun `then assert reload search shop success`() {
+    private fun `then assert reload search shop success and search shop state contains search shop data`() {
         assertUseCaseExecutionCount(searchShopUseCase, 2)
         assertUseCaseExecutionCount(searchMoreShopUseCase, 1)
 
@@ -562,6 +572,47 @@ class SearchShopViewModelMockKTest {
             assert(false) {
                 "State is null"
             }
+        }
+    }
+
+    private fun `given search shop API will be successful and return empty search shop list`() {
+        coEvery { searchShopUseCase.executeOnBackground() }.returns(searchShopModelEmptyList)
+    }
+
+    private fun `then assert search shop state is success and contains empty search data`() {
+        assertUseCaseExecutionCount(searchShopUseCase, 1)
+
+        val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+        assertSuccessSearchShopDataEmpty(searchShopState)
+    }
+
+    private fun assertSuccessSearchShopDataEmpty(state: State<List<Visitable<*>>>?) {
+        if(state != null) {
+            assertStateIsSuccess(state)
+            assertDataIsNotEmpty(state.data)
+            assertDataOnlyContainsEmptySearchViewModel(state.data!!)
+        }
+        else {
+            assert(false) {
+                "State is null"
+            }
+        }
+    }
+
+    private fun assertDataOnlyContainsEmptySearchViewModel(data: List<Visitable<*>>) {
+        assertDataSizeForEmptySearch(data)
+        assertEmptySearchData(data)
+    }
+
+    private fun assertDataSizeForEmptySearch(data: List<Visitable<*>>) {
+        assert(data.size == 1) {
+            "Data should only contain 1 instance of EmptySearchViewModel. Actual data size: ${data.size}"
+        }
+    }
+
+    private fun assertEmptySearchData(data: List<Visitable<*>>) {
+        assert(data.first() is EmptySearchViewModel) {
+            "Element ${data.first().javaClass.kotlin.qualifiedName} is not of type EmptySearchViewModel"
         }
     }
 

@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.common.data.Option
 import com.tokopedia.search.R
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
@@ -24,8 +24,8 @@ import com.tokopedia.search.result.presentation.view.listener.ShopListener
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
-import com.tokopedia.search.result.common.State
 import com.tokopedia.topads.sdk.domain.model.CpmData
 
 class ShopListFragmentKt:
@@ -233,11 +233,11 @@ class ShopListFragmentKt:
     }
 
     override fun onEmptyButtonClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onSelectedFilterRemoved(uniqueId: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun getRegistrationId(): String {
@@ -249,6 +249,6 @@ class ShopListFragmentKt:
     }
 
     override fun getSelectedFilterAsOptionList(): MutableList<Option> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return mutableListOf()
     }
 }
