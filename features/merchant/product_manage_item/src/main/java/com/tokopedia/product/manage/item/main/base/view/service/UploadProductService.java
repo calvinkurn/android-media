@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -20,6 +21,7 @@ import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.common.util.AddProductException;
 import com.tokopedia.product.manage.item.common.util.ProductStatus;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.main.base.di.component.DaggerAddProductServiceComponent;
@@ -126,6 +128,8 @@ public class UploadProductService extends BaseService implements AddProductServi
         bundle.putString(TkpdState.ProductService.MESSAGE_ERROR_FLAG, errorMessage);
         result.putExtras(bundle);
         sendBroadcast(result);
+
+        Crashlytics.logException(new AddProductException(t));
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         lbm.sendBroadcast(new Intent(ACTION_DRAFT_CHANGED));
