@@ -141,12 +141,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         buyerName.setText(model.getBuyerName());
         buyerLocation.setText(model.getBuyerAddress());
         currentStatus.setText(model.getStatus());
-        retryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
-            }
-        });
         initialHistoryView();
         setHistoryView(model);
         setEmptyHistoryView(model);
@@ -191,6 +185,10 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     @Override
     public void setRetryButton(boolean active) {
         retryButton.setVisibility(active ? View.VISIBLE : View.GONE);
+        if (active) {
+            retryButton.setOnClickListener(view ->
+                    presenter.onRetryPickup(getArguments().getString(ORDER_ID_KEY)));
+        }
     }
 
     private void initialHistoryView() {
