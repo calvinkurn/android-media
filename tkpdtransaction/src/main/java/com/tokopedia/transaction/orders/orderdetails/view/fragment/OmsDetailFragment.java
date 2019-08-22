@@ -493,6 +493,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
+    public void showSuccessMessageWithAction(String message) {
+
+    }
+
+    @Override
     public void showErrorMessage(String message) {
 
     }

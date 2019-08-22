@@ -126,6 +126,7 @@ public class SearchActivity extends BaseActivity
     private String catalogTabTitle;
     private String shopTabTitle;
     private String profileTabTitle;
+    private String autocompleteApplink;
     private boolean isForceSwipeToShop;
     private int activeTabPosition;
 
@@ -279,7 +280,11 @@ public class SearchActivity extends BaseActivity
     private void moveToAutoCompleteActivity() {
         String query = searchParameter.getSearchQuery();
 
-        startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + query);
+        if (!TextUtils.isEmpty(autocompleteApplink)) {
+            startActivityWithApplink(autocompleteApplink);
+        } else {
+            startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + query);
+        }
     }
 
     private void initViewPager() {
@@ -658,6 +663,11 @@ public class SearchActivity extends BaseActivity
     @Override
     public void showSearchInputView() {
         moveToAutoCompleteActivity();
+    }
+
+    @Override
+    public void setAutocompleteApplink(String autocompleteApplink) {
+        this.autocompleteApplink = autocompleteApplink;
     }
 
     @Override
