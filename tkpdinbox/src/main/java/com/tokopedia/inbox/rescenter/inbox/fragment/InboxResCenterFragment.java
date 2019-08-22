@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -30,7 +29,6 @@ import com.tokopedia.inbox.rescenter.inbox.presenter.InboxResCenterPresenter;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
 
 /**
  * Created on 3/23/16.
@@ -41,11 +39,8 @@ public class InboxResCenterFragment extends BasePresenterFragment<InboxResCenter
     private static final String TAG = InboxResCenterFragment.class.getSimpleName();
     private static final String ARG_PARAM_INBOX_TAB = "ARG_PARAM_INBOX_TAB";
     private static final String ARG_PARAM_INBOX_LIST = "ARG_PARAM_INBOX_LIST";
-
-    @BindView(R2.id.recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R2.id.fab)
-    FloatingActionButton fab;
+    private RecyclerView recyclerView;
+    private FloatingActionButton fab;
 
     private View rootView;
     private ArrayList<ResCenterInboxItem> list;
@@ -172,6 +167,8 @@ public class InboxResCenterFragment extends BasePresenterFragment<InboxResCenter
 
     @Override
     protected void initView(View view) {
+        recyclerView = view.findViewById(R.id.recycler_view);
+        fab = view.findViewById(R.id.fab);
         this.setRootView(view);
         this.prepareRecyclerView();
         this.prepareBottomSheet();

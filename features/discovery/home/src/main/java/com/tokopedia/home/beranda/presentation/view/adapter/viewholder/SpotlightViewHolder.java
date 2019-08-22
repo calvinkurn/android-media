@@ -172,7 +172,7 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
         }
 
         private void eventClickSpotlight(Context context, SpotlightItemViewModel model, int position) {
-            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context, model.getEnhanceClickSpotlightHomePage(position));
+            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context, model.getEnhanceClickSpotlightHomePage(position, model.getChanneldId()));
         }
     }
 }
