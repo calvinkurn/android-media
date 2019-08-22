@@ -227,13 +227,6 @@ repositories {
     }
 }
 
-afterEvaluate {
-    dependencies {
-        liveDevImplementation rootProject.ext.instabugDependencies.instabug
-        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
-    }
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
