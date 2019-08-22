@@ -85,7 +85,7 @@ class MembershipStampAdapter(private val context: Context, private val listener:
     override fun onBindViewHolder(holder: BaseMembershipViewHolder<*>, position: Int) {
         when (holder) {
             is MembershipItemUnregisteredViewHolder -> holder.bind(membershipData.infoMessage)
-            is MembershipItemRegisteredViewHolder -> holder.bind(membershipQuest[position])
+            is MembershipItemRegisteredViewHolder ->holder.bind(membershipQuest[position])
         }
     }
 

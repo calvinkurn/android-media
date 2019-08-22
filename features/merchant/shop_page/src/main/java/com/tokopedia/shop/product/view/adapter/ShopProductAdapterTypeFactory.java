@@ -111,7 +111,12 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         if (!membershipStampProgressViewModel.getMembershipData().isShown()) {
             return HideViewHolder.LAYOUT;
         } else {
-            return MembershipStampProgressViewHolder.getLAYOUT();
+            if (membershipStampProgressViewModel.getMembershipData().getMembershipProgram().getMembershipQuests().isEmpty()
+                    && membershipStampProgressViewModel.getMembershipData().isUserRegistered()) {
+                return HideViewHolder.LAYOUT;
+            } else {
+                return MembershipStampProgressViewHolder.getLAYOUT();
+            }
         }
     }
 
