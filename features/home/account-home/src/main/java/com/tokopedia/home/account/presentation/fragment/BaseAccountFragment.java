@@ -43,6 +43,7 @@ import com.tokopedia.user_identification_common.KycCommonUrl;
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -358,8 +359,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     protected void moveToCreateShop(){
         isOpenShop = true;
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivityForResult(((AccountHomeRouter) getContext().getApplicationContext()).
-                    getIntentCreateShop(getContext()),OPEN_SHOP_SUCCESS);
+            startActivityForResult(RouteManager.getIntent(getContext(), OPEN_SHOP), OPEN_SHOP_SUCCESS);
         }
     }
 
