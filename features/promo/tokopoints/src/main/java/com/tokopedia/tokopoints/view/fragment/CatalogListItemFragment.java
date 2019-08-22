@@ -65,8 +65,8 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         public void run() {
             List<Integer> items = new ArrayList<>();
             for (BaseItem each : mAdapter.getItems()) {
-                if(each instanceof CatalogsValueEntity) {
-                    CatalogsValueEntity entity= (CatalogsValueEntity) each;
+                if (each instanceof CatalogsValueEntity) {
+                    CatalogsValueEntity entity = (CatalogsValueEntity) each;
                     if (entity.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
                         items.add(entity.getId());
                     }
@@ -537,7 +537,8 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
         SendGiftFragment sendGiftFragment = new SendGiftFragment();
         sendGiftFragment.setArguments(bundle);
-        sendGiftFragment.show(getChildFragmentManager(),CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);    }
+        sendGiftFragment.show(getChildFragmentManager(), CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
+    }
 
     @Override
     public void populateCatalog(int categoryId, int subCategoryId, int pointRange, boolean showLoader) {

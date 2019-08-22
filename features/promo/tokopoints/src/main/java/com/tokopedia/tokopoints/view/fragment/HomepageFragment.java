@@ -806,7 +806,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
         SendGiftFragment sendGiftFragment = new SendGiftFragment();
         sendGiftFragment.setArguments(bundle);
-        sendGiftFragment.show(getChildFragmentManager(),CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);    }
+        sendGiftFragment.show(getChildFragmentManager(), CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
+    }
 
     @Override
     public void showTokoPointCoupon(TokoPointSumCoupon data) {

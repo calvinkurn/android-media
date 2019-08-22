@@ -86,8 +86,10 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
         mBtnSendNow = view.findViewById(R.id.button_send_now);
 
         ImageView ivCancelInitial = getView().findViewById(R.id.iv_cancel);
-        ImageView ivCancelPreConfirm=getView().findViewById(R.id.iv_cancel_preconfirmation);
-        ivCancelInitial.setOnClickListener(view1 -> {dismiss();});
+        ImageView ivCancelPreConfirm = getView().findViewById(R.id.iv_cancel_preconfirmation);
+        ivCancelInitial.setOnClickListener(view1 -> {
+            dismiss();
+        });
         ivCancelPreConfirm.setOnClickListener(view1 -> dismiss());
 
         mEditEmail.addTextChangedListener(this);

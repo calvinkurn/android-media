@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.contract;
 
 import android.content.Context;
 import android.content.res.Resources;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
@@ -76,6 +77,6 @@ public interface CouponCatalogContract {
 
         void swipeMyCoupon(String partnerCode, String pin);
 
-        void startSendGift(int id, String title, String pointStr,String banner);
+        void startSendGift(int id, String title, String pointStr, String banner);
     }
 }

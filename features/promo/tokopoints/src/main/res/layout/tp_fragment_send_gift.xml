@@ -4,8 +4,8 @@
     android:id="@+id/container_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:measureAllChildren="false"
     android:background="@color/transparent"
+    android:measureAllChildren="false"
     android:orientation="vertical">
 
     <include layout="@layout/tp_content_send_form" />

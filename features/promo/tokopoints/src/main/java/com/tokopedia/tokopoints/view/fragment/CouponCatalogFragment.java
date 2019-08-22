@@ -561,7 +561,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         TextView disabledError = getView().findViewById(R.id.text_disabled_error);
         TextView btnAction1 = getView().findViewById(R.id.button_action_1);
         btnAction1.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_tp_gift), null, null , null);
+                (getActivity(), R.drawable.ic_tp_gift), null, null, null);
         TextView btnAction2 = getView().findViewById(R.id.button_action_2);
         ImageView imgBanner = getView().findViewById(R.id.img_banner);
         ImageView imgTime = getView().findViewById(R.id.img_time);
@@ -660,7 +660,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             layoutParams.rightMargin = getResources().getDimensionPixelOffset(R.dimen.tp_margin_medium);
             btnAction1.setVisibility(View.VISIBLE);
             btnAction1.setText(R.string.tp_label_send);
-            btnAction1.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(),data.getImageUrlMobile()));
+            btnAction1.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(), data.getImageUrlMobile()));
         } else {
             btnAction1.setVisibility(View.GONE);
         }
@@ -920,7 +920,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     }
 
     @Override
-    public void gotoSendGiftPage(int id, String title, String pointStr,String banner) {
+    public void gotoSendGiftPage(int id, String title, String pointStr, String banner) {
         Bundle bundle = new Bundle();
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
@@ -929,7 +929,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
         SendGiftFragment sendGiftFragment = new SendGiftFragment();
         sendGiftFragment.setArguments(bundle);
-        sendGiftFragment.show(getChildFragmentManager(),CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
+        sendGiftFragment.show(getChildFragmentManager(), CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
 
     }
 

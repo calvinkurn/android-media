@@ -108,7 +108,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                 String title;
                 ValidateCouponBaseEntity validateCoupon = response.getData(ValidateCouponBaseEntity.class);
 
-                if (validateCoupon!=null && validateCoupon.getValidateCoupon() != null) {
+                if (validateCoupon != null && validateCoupon.getValidateCoupon() != null) {
                     validateResponseCode = CommonConstant.CouponRedemptionCode.SUCCESS;
                     message = validateCoupon.getValidateCoupon().getMessageSuccess();
                     title = validateCoupon.getValidateCoupon().getMessageTitle();
@@ -179,7 +179,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
             @Override
             public void onNext(GraphqlResponse response) {
                 RedeemCouponBaseEntity redeemCouponBaseEntity = response.getData(RedeemCouponBaseEntity.class);
-                if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem()!=null) {
+                if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem() != null) {
                     getView().showConfirmRedeemDialog(redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCta(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCode(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
@@ -404,7 +404,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                 if (data != null
                         && data.getPreValidateRedeem() != null
                         && data.getPreValidateRedeem().getIsValid() == 1) {
-                    getView().gotoSendGiftPage(id, title, pointStr,banner);
+                    getView().gotoSendGiftPage(id, title, pointStr, banner);
                 } else {
                     //show error
                     List<GraphqlError> errors = response.getError(PreValidateRedeemBase.class);

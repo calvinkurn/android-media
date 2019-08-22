@@ -22,40 +22,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_action_x" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <ProgressBar
+            android:id="@+id/progress_send"
+            style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:lineSpacingExtra="@dimen/sp_6"
-            android:text="@string/tp_title_kirim_coupon"
-            android:textColor="@color/clr_f531353b"
-            app:layout_constraintBottom_toBottomOf="@id/iv_cancel"
-            app:layout_constraintStart_toEndOf="@id/iv_cancel"
-            app:layout_constraintTop_toTopOf="@id/iv_cancel"
-            app:typographyType="heading_3" />
-
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/wrapper_email"
-            style="@style/HintTextInputLayout"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_30"
-            android:hint="@string/tp_label_email"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_cancel">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/edit_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/font_large" />
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/button_send"
+            app:layout_constraintLeft_toLeftOf="@+id/button_send"
+            app:layout_constraintRight_toRightOf="@+id/button_send"
+            app:layout_constraintTop_toTopOf="@+id/button_send" />
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/wrapper_text_count"
@@ -80,6 +56,29 @@
                 android:textSize="@dimen/font_large" />
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/wrapper_email"
+            style="@style/HintTextInputLayout"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:hint="@string/tp_label_email"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cancel">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/font_large" />
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/button_send"
             android:layout_width="@dimen/dp_0"
@@ -97,16 +96,17 @@
             app:layout_constraintTop_toBottomOf="@+id/wrapper_text_count"
             app:typographyType="heading_4" />
 
-        <ProgressBar
-            android:id="@+id/progress_send"
-            style="?android:attr/progressBarStyleSmall"
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/button_send"
-            app:layout_constraintLeft_toLeftOf="@+id/button_send"
-            app:layout_constraintRight_toRightOf="@+id/button_send"
-            app:layout_constraintTop_toTopOf="@+id/button_send" />
+            android:layout_marginLeft="@dimen/dp_12"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:text="@string/tp_title_kirim_coupon"
+            android:textColor="@color/clr_f531353b"
+            app:layout_constraintBottom_toBottomOf="@id/iv_cancel"
+            app:layout_constraintStart_toEndOf="@id/iv_cancel"
+            app:layout_constraintTop_toTopOf="@id/iv_cancel"
+            app:typographyType="heading_3" />
 
 
     </android.support.constraint.ConstraintLayout>
