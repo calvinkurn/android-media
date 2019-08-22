@@ -638,11 +638,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
                     if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
                         if (presenter.shouldShowTimeForCancellation()) {
-                            Toaster.Companion.showError(mainView,
-                                    getContext().getResources().getString(
-                                            R.string.tkpdtransaction_cancellation_with_time,
-                                            presenter.getCancelTime()),
-                                    Snackbar.LENGTH_LONG);
+                            Toaster.Companion.showErrorWithAction(mainView,
+                                            presenter.getCancelTime(),
+                                    Snackbar.LENGTH_LONG,
+                                    getResources().getString(R.string.title_ok), v -> {});
                         } else
                             startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
                     } else if (this.status.status().equals(STATUS_CODE_11)) {

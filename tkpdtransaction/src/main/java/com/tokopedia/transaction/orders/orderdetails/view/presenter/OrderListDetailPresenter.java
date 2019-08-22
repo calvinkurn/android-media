@@ -572,7 +572,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     public String getCancelTime() {
-        return requestCancelInfo.getRequestCancelNote() + requestCancelInfo.getRequestCancelMinTime();
+        return requestCancelInfo.getRequestCancelNote();
     }
 
     public boolean shouldShowTimeForCancellation(){
