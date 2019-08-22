@@ -251,7 +251,7 @@ public class FlightAnalytics {
 
         Object product = DataLayer.mapOf(
                 EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
-                EnhanceEccomerce.PRICE, journeyViewModel.getTotalNumeric(),
+                EnhanceEccomerce.PRICE, (journeyViewModel.getFare().getAdultNumericCombo()>0) ? journeyViewModel.getFare().getAdultNumericCombo() : journeyViewModel.getFare().getAdultNumeric(),
                 EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
                 EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
                 EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
@@ -262,7 +262,7 @@ public class FlightAnalytics {
                         searchPassDataViewModel.getFlightPassengerViewModel().getChildren() + " - " + searchPassDataViewModel.getFlightPassengerViewModel().getInfant(),
                 EnhanceEccomerce.ID, journeyViewModel.getId(),
                 EnhanceEccomerce.BRAND, journeyViewModel.getRouteList().get(0).getAirlineName(),
-                EnhanceEccomerce.DIMENSION74, journeyViewModel.getRouteList().get(0).getFlightNumber(),
+                EnhanceEccomerce.DIMENSION74, journeyViewModel.getRouteList().get(0).getAirline() + " - " + journeyViewModel.getRouteList().get(0).getFlightNumber(),
                 EnhanceEccomerce.CATEGORY, Label.FLIGHT,
                 EnhanceEccomerce.DIMENSION75, journeyViewModel.getDepartureTime(),
                 EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime(),
