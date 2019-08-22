@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
@@ -57,6 +59,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
 
         container.setBackgroundColor(color)
         showImageBannerIfExist(element)
+        extendTitle()
         ImageHandler.loadImage2(icon, element.iconUrl, R.drawable.ic_loading_toped_new)
         title.text = element.title
         body.text = element.body
@@ -71,6 +74,21 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
             element.isRead = true
             RouteManager.route(itemView.context, element.appLink)
         }
+    }
+
+    private fun extendTitle() {
+        var marginRight = 24f.toPx()
+        if (!contentImage.isVisible) {
+            marginRight = 0f
+        }
+
+        val layoutParam = title.layoutParams
+        if (layoutParam is ConstraintLayout.LayoutParams) {
+            layoutParam.apply {
+                setMargins(leftMargin, topMargin, marginRight.toInt(), bottomMargin)
+            }
+        }
+        title.layoutParams = layoutParam
     }
 
     private fun showImageBannerIfExist(element: NotificationUpdateItemViewModel) {
