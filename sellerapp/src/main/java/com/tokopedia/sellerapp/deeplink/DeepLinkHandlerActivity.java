@@ -219,9 +219,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
             return null;
 
         Intent intent = RouteManager.getIntent(context,OPEN_SHOP);
-        if(GlobalConfig.isSellerApp()){
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }
