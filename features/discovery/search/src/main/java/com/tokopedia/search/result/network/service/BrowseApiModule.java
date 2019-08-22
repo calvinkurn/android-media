@@ -51,7 +51,7 @@ public class BrowseApiModule {
     @Provides
     @AceQualifier
     Retrofit provideAceRetrofit(@AceQualifier OkHttpClient okHttpClient,
-                                       @SearchQualifier Retrofit.Builder retrofitBuilder) {
+                                @SearchQualifier Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(SearchConstant.BaseUrl.ACE_DOMAIN).client(okHttpClient).build();
     }
 
