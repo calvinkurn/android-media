@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.edit.customadapter.ProductAdapter;
@@ -30,29 +29,21 @@ import com.tokopedia.inbox.rescenter.edit.presenter.BuyerEditProductImpl;
 import com.tokopedia.inbox.rescenter.edit.presenter.BuyerEditProductPresenter;
 import com.tokopedia.core.util.AppUtils;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 /**
  * Created on 8/26/16.
  */
 public class BuyerEditProductResCenterFragment
         extends BasePresenterFragment<BuyerEditProductPresenter>
-        implements BuyerEditProductListener {
+        implements BuyerEditProductListener, View.OnClickListener {
 
     private static final String ARGS_PARAM_PASS_DATA = "pass_data";
     private static final String TAG_STEP_2 = "step_2";
     private ActionParameterPassData passData;
     private ProductAdapter adapter;
-
-    @BindView(R2.id.invoice)
-    TextView invoice;
-    @BindView(R2.id.shop_name)
-    TextView shopName;
-    @BindView(R2.id.recycler_view)
-    RecyclerView productRecyclerView;
-    @BindView(R2.id.main_view)
-    View mainView;
+    private TextView invoice;
+    private TextView shopName;
+    private RecyclerView productRecyclerView;
+    private View mainView;
 
     public static Fragment newInstane(ActionParameterPassData passData) {
         BuyerEditProductResCenterFragment fragment = new BuyerEditProductResCenterFragment();
@@ -113,6 +104,12 @@ public class BuyerEditProductResCenterFragment
     @Override
     protected void initView(View view) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        invoice = view.findViewById(R.id.invoice);
+        shopName = view.findViewById(R.id.shop_name);
+        productRecyclerView = view.findViewById(R.id.recycler_view);
+        mainView = view.findViewById(R.id.main_view);
+        view.findViewById(R.id.action_submit).setOnClickListener(this::onClick);
+        view.findViewById(R.id.action_abort).setOnClickListener(this::onClick);
         adapter = new ProductAdapter(
                 passData.getProductTroubleChoosenList(),
                 passData.getTroubleCategoryChoosen(),
@@ -195,13 +192,11 @@ public class BuyerEditProductResCenterFragment
 
     }
 
-    @OnClick(R2.id.action_submit)
     public void onActionSubmit() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.onSubmitButtonClicked(getActivity());
     }
 
-    @OnClick(R2.id.action_abort)
     public void onActionAbort() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.dialog_discard_changes)
@@ -252,6 +247,16 @@ public class BuyerEditProductResCenterFragment
                             BuyerEditSolutionResCenterFragment.class.getSimpleName())
                     .addToBackStack(TAG_STEP_2)
                     .commit();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.action_submit){
+           onActionSubmit();
+        }else if(id==R.id.action_abort){
+            onActionAbort();
         }
     }
 }
