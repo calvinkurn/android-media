@@ -34,6 +34,8 @@ import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEd
 import com.tokopedia.product.manage.item.utils.ErrorHandlerAddProduct;
 import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 
@@ -129,7 +131,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         result.putExtras(bundle);
         sendBroadcast(result);
 
-        Crashlytics.logException(new AddProductException(t));
+        logException(t);
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         lbm.sendBroadcast(new Intent(ACTION_DRAFT_CHANGED));
@@ -141,6 +143,13 @@ public class UploadProductService extends BaseService implements AddProductServi
                 AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_ERROR_SERVER,
                 label);
+    }
+
+    private void logException(Throwable t) {
+        UserSessionInterface userSession = new UserSession(this);
+        String errorMessage = String.format("userId: %s | userEmail: %s", userSession.getUserId(), userSession.getEmail());
+        AddProductException exception = new AddProductException(errorMessage, t);
+        Crashlytics.logException(exception);
     }
 
     private void removeNotificationFromList(int notificationId) {
