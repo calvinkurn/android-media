@@ -32,6 +32,8 @@
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/shop_item_product_price_color"
         android:visibility="gone"
+        android:singleLine="true"
+        android:ellipsize="end"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         app:layout_constraintTop_toBottomOf="@id/cardViewShopItemProductImage"

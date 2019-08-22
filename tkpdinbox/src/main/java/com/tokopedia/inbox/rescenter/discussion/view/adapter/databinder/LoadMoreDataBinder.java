@@ -6,14 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
-
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.inbox.R;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by nisie on 3/31/17.
@@ -28,16 +24,13 @@ public class LoadMoreDataBinder extends DataBinder<LoadMoreDataBinder.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.btn_load_more)
         Button loadMore;
-
-        @BindView(R2.id.progressBar)
         ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
-
+            loadMore =itemView.findViewById(R.id.btn_load_more);
+            progressBar = itemView.findViewById(R.id.progressBar);
         }
     }
 
