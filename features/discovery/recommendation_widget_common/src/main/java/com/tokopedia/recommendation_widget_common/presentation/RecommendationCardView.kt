@@ -21,6 +21,7 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
+@Deprecated("RecommendationCardView replaced with ProductCardView v2")
 open class RecommendationCardView : ProductCardView {
 
     constructor(context: Context) : super(context) {}

@@ -3,6 +3,10 @@ package com.tokopedia.home_recom.model.entity
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * A Pojo Class for Primary Product.
+ */
+
 data class ProductRecommendationProductDetail(
         @SerializedName("data")
         val `data`: List<Data>
