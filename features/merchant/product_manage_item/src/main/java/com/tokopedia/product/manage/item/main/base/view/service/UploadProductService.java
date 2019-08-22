@@ -20,6 +20,7 @@ import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.product.manage.item.BuildConfig;
 import com.tokopedia.product.manage.item.R;
 import com.tokopedia.product.manage.item.common.util.AddProductException;
 import com.tokopedia.product.manage.item.common.util.ProductStatus;
@@ -34,7 +35,6 @@ import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEd
 import com.tokopedia.product.manage.item.utils.ErrorHandlerAddProduct;
 import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
@@ -50,6 +50,9 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Inject
     AddProductServicePresenter presenter;
+
+    @Inject
+    UserSessionInterface userSession;
 
     private NotificationManager notificationManager;
     private HashMap<Integer, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
@@ -146,10 +149,17 @@ public class UploadProductService extends BaseService implements AddProductServi
     }
 
     private void logException(Throwable t) {
-        UserSessionInterface userSession = new UserSession(this);
-        String errorMessage = String.format("userId: %s | userEmail: %s", userSession.getUserId(), userSession.getEmail());
-        AddProductException exception = new AddProductException(errorMessage, t);
-        Crashlytics.logException(exception);
+        try {
+            if (!BuildConfig.DEBUG) {
+                String errorMessage = String.format("Error add product. userId: %s | userEmail: %s",
+                        userSession.getUserId(),
+                        userSession.getEmail());
+                AddProductException exception = new AddProductException(errorMessage, t);
+                Crashlytics.logException(exception);
+            }
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void removeNotificationFromList(int notificationId) {
