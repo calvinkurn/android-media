@@ -5,7 +5,6 @@ import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
@@ -101,7 +100,9 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
     }
 
     private fun showError(view: View, throwable: Throwable?){
-        Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
+        Toaster.showError(view,
+            ErrorHandler.getErrorMessage(view.context, throwable),
+            Snackbar.LENGTH_LONG)
     }
 
     private fun mapBadges(badges: List<String?>){

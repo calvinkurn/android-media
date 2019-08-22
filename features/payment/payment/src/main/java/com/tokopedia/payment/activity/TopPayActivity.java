@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
