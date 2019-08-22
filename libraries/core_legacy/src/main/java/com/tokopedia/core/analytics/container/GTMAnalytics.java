@@ -347,7 +347,8 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushClickEECommerce(Bundle bundle){
         // replace list
-        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))) {
+        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
+                && !TextUtils.isEmpty(bundle.getString("list"))) {
             bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
             bundle.remove("list");
         }
