@@ -27,10 +27,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
+//import com.bumptech.glide.Glide;
+//import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.target.SimpleTarget;
+//import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -304,8 +304,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
 
-        ImageHandler.loadImageWithSignature(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl(),
-                new StringSignature(tokenUser.getBackgroundAsset().getVersion()));
+//        ImageHandler.loadImageWithSignature(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl(),
+//                new StringSignature(tokenUser.getBackgroundAsset().getVersion()));
 
         widgetTokenView.setToken(tokenUser.getTokenAsset());
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
@@ -533,24 +533,24 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onSuccessCrackToken(final CrackResultEntity crackResult) {
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
                 !TextUtils.isEmpty(crackResult.getImageUrl())) {
-            Glide.with(getContext())
-                    .load(crackResult.getImageUrl())
-                    .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            crackResult.setImageBitmap(resource);
-                            showCrackWidgetSuccess(crackResult);
-                        }
-
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            crackResult.setImageBitmap(null);
-                            // image load is failed, but we need to show the text instead.
-                            showCrackWidgetSuccess(crackResult);
-                        }
-                    });
+//            Glide.with(getContext())
+//                    .load(crackResult.getImageUrl())
+//                    .asBitmap()
+//                    .into(new SimpleTarget<Bitmap>() {
+//                        @Override
+//                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                            crackResult.setImageBitmap(resource);
+//                            showCrackWidgetSuccess(crackResult);
+//                        }
+//
+//                        @Override
+//                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                            super.onLoadFailed(e, errorDrawable);
+//                            crackResult.setImageBitmap(null);
+//                            // image load is failed, but we need to show the text instead.
+//                            showCrackWidgetSuccess(crackResult);
+//                        }
+//                    });
         } else {
             showCrackWidgetSuccess(crackResult);
         }

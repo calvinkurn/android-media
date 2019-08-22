@@ -3,9 +3,9 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+//import com.bumptech.glide.Glide
+//import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
+//import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
@@ -29,13 +29,13 @@ class ImageDualAnnouncementViewHolder(itemView: View, private val viewListener: 
     override fun bind(viewModel: ImageDualAnnouncementViewModel) {
         super.bind(viewModel)
 
-        ImageHandler.loadImageWithListener(top, viewModel.imageUrlTop, DynamicSizeImageRequestListener())
+//        ImageHandler.loadImageWithListener(top, viewModel.imageUrlTop, DynamicSizeImageRequestListener())
         top!!.setOnClickListener { v: View ->
             viewListener.onDualAnnouncementClicked(viewModel.redirectUrlTop, viewModel
                     .attachmentId, viewModel.blastId)
         }
 
-        ImageHandler.loadImageWithListener(bottom, viewModel.imageUrlBottom, DynamicSizeImageRequestListener())
+//        ImageHandler.loadImageWithListener(bottom, viewModel.imageUrlBottom, DynamicSizeImageRequestListener())
         bottom!!.setOnClickListener { v: View ->
             viewListener.onDualAnnouncementClicked(viewModel.redirectUrlBottom, viewModel
                     .attachmentId, viewModel.blastId)
@@ -45,11 +45,11 @@ class ImageDualAnnouncementViewHolder(itemView: View, private val viewListener: 
     override fun onViewRecycled() {
         super.onViewRecycled()
         if (top != null) {
-            Glide.clear(top)
+//            Glide.clear(top)
         }
 
         if (bottom != null) {
-            Glide.clear(bottom)
+//            Glide.clear(bottom)
         }
     }
 

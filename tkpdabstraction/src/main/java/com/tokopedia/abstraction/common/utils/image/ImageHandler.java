@@ -36,17 +36,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+//import com.bumptech.glide.load.engine.DiskCacheStrategy;
+//import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+//import com.bumptech.glide.request.RequestListener;
+//import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
+//import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -167,36 +167,36 @@ public class ImageHandler {
     }
 
     public static void loadImageWithoutFit(Context context, ImageView imageview, String url) {
-        Glide.with(context)
-                .load(url)
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageview);
+//        Glide.with(context)
+//                .load(url)
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .into(imageview);
     }
 
     public static void loadImageThumbs(Context context, ImageView imageview, String url) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .into(imageview);
+//        Glide.with(context)
+//                .load(url)
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+//                .into(imageview);
     }
 
 
 
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(colorDrawable)
-                .error(colorDrawable)
-                .crossFade()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageview);
+//        Glide.with(context)
+//                .load(url)
+//                .dontAnimate()
+//                .placeholder(colorDrawable)
+//                .error(colorDrawable)
+//                .crossFade()
+//                .skipMemoryCache(true)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .into(imageview);
     }
 
 
@@ -242,26 +242,26 @@ public class ImageHandler {
     }
 
     public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .fitCenter()
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(simpleTarget);
+//        Glide.with(context)
+//                .load(url)
+//                .asBitmap()
+//                .fitCenter()
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .into(simpleTarget);
     }
 
     public static void loadImageWithTargetCenterCrop(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .fitCenter()
-                .centerCrop()
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(simpleTarget);
+//        Glide.with(context)
+//                .load(url)
+//                .asBitmap()
+//                .fitCenter()
+//                .centerCrop()
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .into(simpleTarget);
     }
 
     public static void loadImage2(ImageView imageview, String url, int resId) {
@@ -283,133 +283,133 @@ public class ImageHandler {
     }
 
     public static void loadImageAndCache(ImageView imageview, String url) {
-        Glide.with(imageview.getContext())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .dontAnimate()
-                .into(imageview);
+//        Glide.with(imageview.getContext())
+//                .load(url)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .dontAnimate()
+//                .into(imageview);
     }
 
-    public static void loadImageWithSignature(ImageView imageview, String url, StringSignature stringSignature) {
-        Glide.with(imageview.getContext())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .dontAnimate()
-                .signature(stringSignature)
-                .into(imageview);
-    }
+//    public static void loadImageWithSignature(ImageView imageview, String url, StringSignature stringSignature) {
+//        Glide.with(imageview.getContext())
+//                .load(url)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .dontAnimate()
+//                .signature(stringSignature)
+//                .into(imageview);
+//    }
 
-    public static void downloadOriginalSizeImageWithSignature(Context context, String url, StringSignature stringSignature,
-                                                              RequestListener<String, GlideDrawable> backgroundImgRequestListener) {
-        Glide.with(context)
-                .load(url)
-                .signature(stringSignature)
-                .listener(backgroundImgRequestListener)
-                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
-    }
+//    public static void downloadOriginalSizeImageWithSignature(Context context, String url, StringSignature stringSignature,
+//                                                              RequestListener<String, GlideDrawable> backgroundImgRequestListener) {
+//        Glide.with(context)
+//                .load(url)
+//                .signature(stringSignature)
+//                .listener(backgroundImgRequestListener)
+//                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+//    }
 
     public static void loadImageCover2(ImageView imageview, String url) {
-        Glide.with(imageview.getContext())
-                .load(url)
-                .into(imageview);
+//        Glide.with(imageview.getContext())
+//                .load(url)
+//                .into(imageview);
     }
 
 
     public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .centerCrop()
-                .into(target);
+//        Glide.with(context)
+//                .load(url)
+//                .asBitmap()
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .centerCrop()
+//                .into(target);
     }
 
     public static void loadImageCircle2(Context context, final ImageView imageView,
                                         final String url) {
         if (url != null && !url.isEmpty()) {
-            Glide.with(context)
-                    .load(url)
-                    .asBitmap()
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(getCircleImageViewTarget(imageView));
+//            Glide.with(context)
+//                    .load(url)
+//                    .asBitmap()
+//                    .dontAnimate()
+//                    .placeholder(R.drawable.loading_page)
+//                    .error(R.drawable.error_drawable)
+//                    .into(getCircleImageViewTarget(imageView));
         }
     }
 
     public static void loadImageCircle2(Context context, final ImageView imageView,
                                         final String url, int resIdEmpty) {
         if (url != null && !url.isEmpty()) {
-            Glide.with(context)
-                    .load(url)
-                    .asBitmap()
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(getCircleImageViewTarget(imageView));
+//            Glide.with(context)
+//                    .load(url)
+//                    .asBitmap()
+//                    .dontAnimate()
+//                    .placeholder(R.drawable.loading_page)
+//                    .error(R.drawable.error_drawable)
+//                    .into(getCircleImageViewTarget(imageView));
         } else {
-            Glide.with(context)
-                    .load(resIdEmpty)
-                    .asBitmap()
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(getCircleImageViewTarget(imageView));
+//            Glide.with(context)
+//                    .load(resIdEmpty)
+//                    .asBitmap()
+//                    .dontAnimate()
+//                    .placeholder(R.drawable.loading_page)
+//                    .error(R.drawable.error_drawable)
+//                    .into(getCircleImageViewTarget(imageView));
         }
     }
 
     public static void loadImageCircle2(Context context, ImageView imageView, File file) {
         if (file != null && file.exists()) {
-            Glide.with(context)
-                    .load(file)
-                    .asBitmap()
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(getCircleImageViewTarget(imageView));
+//            Glide.with(context)
+//                    .load(file)
+//                    .asBitmap()
+//                    .dontAnimate()
+//                    .placeholder(R.drawable.loading_page)
+//                    .error(R.drawable.error_drawable)
+//                    .into(getCircleImageViewTarget(imageView));
         }
     }
 
     public static void loadImageRounded2Target(final Context context,
                                                final ImageView imageview, final String url) {
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(new SimpleTarget<Bitmap>() {
-
-                    @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        super.onLoadStarted(placeholder);
-                        imageview.setImageDrawable(placeholder);
-                    }
-
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        float newWidth = context.getResources().getDimension(R.dimen.half_screen) * 2;
-                        int width = resource.getWidth();
-                        int height = resource.getHeight();
-                        float newHeight = (newWidth * height) / width;
-
-                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) imageview.getLayoutParams();
-                        params.width = (int) newWidth;
-                        params.height = (int) newHeight;
-                        imageview.setLayoutParams(params);
-
-                        imageview.setImageBitmap(resource);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        imageview.setImageDrawable(errorDrawable);
-                    }
-                });
+//        Glide.with(context)
+//                .load(url)
+//                .asBitmap()
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .into(new SimpleTarget<Bitmap>() {
+//
+//                    @Override
+//                    public void onLoadStarted(Drawable placeholder) {
+//                        super.onLoadStarted(placeholder);
+//                        imageview.setImageDrawable(placeholder);
+//                    }
+//
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        float newWidth = context.getResources().getDimension(R.dimen.half_screen) * 2;
+//                        int width = resource.getWidth();
+//                        int height = resource.getHeight();
+//                        float newHeight = (newWidth * height) / width;
+//
+//                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) imageview.getLayoutParams();
+//                        params.width = (int) newWidth;
+//                        params.height = (int) newHeight;
+//                        imageview.setLayoutParams(params);
+//
+//                        imageview.setImageBitmap(resource);
+//                    }
+//
+//                    @Override
+//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                        super.onLoadFailed(e, errorDrawable);
+//                        imageview.setImageDrawable(errorDrawable);
+//                    }
+//                });
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
@@ -425,142 +425,142 @@ public class ImageHandler {
                                                   int width,
                                                   int height
                                                   ) {
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(getRoundedCornerWithBorderViewTarget(
-                        imageView,
-                        context,
-                        cornerRadius,
-                        strokeWidth,
-                        strokeColor,
-                        width,
-                        height
-                ));
+//        Glide.with(context)
+//                .load(url)
+//                .asBitmap()
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .into(getRoundedCornerWithBorderViewTarget(
+//                        imageView,
+//                        context,
+//                        cornerRadius,
+//                        strokeWidth,
+//                        strokeColor,
+//                        width,
+//                        height
+//                ));
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final int resourceDrawable, float radius) {
-        Glide.with(context)
-                .load(resourceDrawable)
-                .asBitmap()
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(getRoundedImageViewTarget(imageview, radius));
+//        Glide.with(context)
+//                .load(resourceDrawable)
+//                .asBitmap()
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .into(getRoundedImageViewTarget(imageview, radius));
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url, float radius) {
         if (url != null && !url.isEmpty()) {
-            Glide.with(context)
-                    .load(url)
-                    .asBitmap()
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(getRoundedImageViewTarget(imageview, radius));
+//            Glide.with(context)
+//                    .load(url)
+//                    .asBitmap()
+//                    .dontAnimate()
+//                    .placeholder(R.drawable.loading_page)
+//                    .error(R.drawable.error_drawable)
+//                    .into(getRoundedImageViewTarget(imageview, radius));
         }
     }
 
     public static void loadImageRounded(Context context, final ImageView imageview, final String url, float radius) {
         if (url != null && !url.isEmpty()) {
-            Glide.with(context)
-                    .load(url)
-                    .asBitmap()
-                    .dontAnimate()
-                    .centerCrop()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(getRoundedImageViewTarget(imageview, radius));
+//            Glide.with(context)
+//                    .load(url)
+//                    .asBitmap()
+//                    .dontAnimate()
+//                    .centerCrop()
+//                    .placeholder(R.drawable.loading_page)
+//                    .error(R.drawable.error_drawable)
+//                    .into(getRoundedImageViewTarget(imageview, radius));
         }
     }
 
     public static void loadImageRounded2(Fragment fragment, final ImageView imageview, final String url) {
         if (url != null && !url.isEmpty()) {
-            Glide.with(fragment)
-                    .load(url)
-                    .asBitmap()
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(getRoundedImageViewTarget(imageview, 5.0f));
+//            Glide.with(fragment)
+//                    .load(url)
+//                    .asBitmap()
+//                    .dontAnimate()
+//                    .placeholder(R.drawable.loading_page)
+//                    .error(R.drawable.error_drawable)
+//                    .into(getRoundedImageViewTarget(imageview, 5.0f));
         }
     }
 
     public static void loadImageFit2(Context context, ImageView imageView, String url) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .centerCrop()
-                .into(imageView);
+//        Glide.with(context)
+//                .load(url)
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .centerCrop()
+//                .into(imageView);
     }
 
     public static void loadImageFitTransformation(Context context, ImageView imageView, String url,
                                                   BitmapTransformation transformation) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .centerCrop()
-                .transform(transformation)
-                .into(imageView);
+//        Glide.with(context)
+//                .load(url)
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .centerCrop()
+//                .transform(transformation)
+//                .into(imageView);
     }
 
     public static void loadImageFitCenter(Context context, ImageView imageView, String url) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .fitCenter()
-                .into(imageView);
+//        Glide.with(context)
+//                .load(url)
+//                .dontAnimate()
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+//                .fitCenter()
+//                .into(imageView);
     }
 
-    public static void loadImageFit2(Context context, ImageView imageView, String url, RequestListener<String, GlideDrawable> requestListener) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .listener(requestListener)
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .centerCrop()
-                .into(imageView);
-    }
+//    public static void loadImageFit2(Context context, ImageView imageView, String url, RequestListener<String, GlideDrawable> requestListener) {
+//        Glide.with(context)
+//                .load(url)
+//                .dontAnimate()
+//                .listener(requestListener)
+//                .placeholder(R.drawable.loading_page)
+//                .error(R.drawable.error_drawable)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .centerCrop()
+//                .into(imageView);
+//    }
 
     public static void loadImageLucky2(Context context, final ImageView imageView, String url) {
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        if (resource.getWidth() > 1) {
-                            imageView.setImageBitmap(resource);
-                            imageView.setVisibility(View.VISIBLE);
-                        } else
-                            imageView.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        super.onLoadStarted(placeholder);
-                        imageView.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        imageView.setVisibility(View.GONE);
-                    }
-                });
+//        Glide.with(context)
+//                .load(url)
+//                .asBitmap()
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        if (resource.getWidth() > 1) {
+//                            imageView.setImageBitmap(resource);
+//                            imageView.setVisibility(View.VISIBLE);
+//                        } else
+//                            imageView.setVisibility(View.GONE);
+//                    }
+//
+//                    @Override
+//                    public void onLoadStarted(Drawable placeholder) {
+//                        super.onLoadStarted(placeholder);
+//                        imageView.setVisibility(View.GONE);
+//                    }
+//
+//                    @Override
+//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                        super.onLoadFailed(e, errorDrawable);
+//                        imageView.setVisibility(View.GONE);
+//                    }
+//                });
     }
 
     private static BitmapImageViewTarget getCircleImageViewTarget(final ImageView imageView) {
@@ -674,16 +674,16 @@ public class ImageHandler {
 
     public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
         if(placeholder < 0) {
-            Glide.with(imageView.getContext()).load(gifDrawable)
-                    .asGif()
-                    .into(imageView);
+//            Glide.with(imageView.getContext()).load(gifDrawable)
+//                    .asGif()
+//                    .into(imageView);
             return;
         }
         Drawable drawable = AppCompatResources.getDrawable(imageView.getContext(), placeholder);
-        Glide.with(imageView.getContext()).load(gifDrawable)
-                .asGif()
-                .placeholder(drawable)
-                .into(imageView);
+//        Glide.with(imageView.getContext()).load(gifDrawable)
+//                .asGif()
+//                .placeholder(drawable)
+//                .into(imageView);
     }
 
     public static void loadGifFromUrl(ImageView imageView, String url, int placeholder) {
@@ -692,10 +692,10 @@ public class ImageHandler {
             return;
         }
         Drawable drawable = AppCompatResources.getDrawable(imageView.getContext(), placeholder);
-        Glide.with(imageView.getContext()).load(url)
-                .asGif()
-                .placeholder(drawable)
-                .into(imageView);
+//        Glide.with(imageView.getContext()).load(url)
+//                .asGif()
+//                .placeholder(drawable)
+//                .into(imageView);
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
@@ -704,14 +704,14 @@ public class ImageHandler {
             return;
         }
         Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), placeholder);
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(drawable)
-                .error(R.drawable.error_drawable)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageview);
+//        Glide.with(context)
+//                .load(url)
+//                .dontAnimate()
+//                .placeholder(drawable)
+//                .error(R.drawable.error_drawable)
+//                .skipMemoryCache(true)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .into(imageview);
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
@@ -721,14 +721,14 @@ public class ImageHandler {
         }
         Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), placeholder);
         Drawable errorDrawable = AppCompatResources.getDrawable(imageview.getContext(), error_image);
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(drawable)
-                .error(errorDrawable)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageview);
+//        Glide.with(context)
+//                .load(url)
+//                .dontAnimate()
+//                .placeholder(drawable)
+//                .error(errorDrawable)
+//                .skipMemoryCache(true)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .into(imageview);
     }
 
     public static void loadImageFit2(Context context, ImageView imageView, File file) {
@@ -751,18 +751,18 @@ public class ImageHandler {
         }
 
         if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .asBitmap()
-                    .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation
-                                glideAnimation) {
-                            Bitmap blurredBitmap = blur(context, resource);
-                            imageView.setImageBitmap(blurredBitmap);
-                        }
-                    });
+//            Glide.with(context)
+//                    .load(imageUrl)
+//                    .asBitmap()
+//                    .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
+//                    .into(new SimpleTarget<Bitmap>() {
+//                        @Override
+//                        public void onResourceReady(Bitmap resource, GlideAnimation
+//                                glideAnimation) {
+//                            Bitmap blurredBitmap = blur(context, resource);
+//                            imageView.setImageBitmap(blurredBitmap);
+//                        }
+//                    });
         }
     }
 
@@ -770,34 +770,35 @@ public class ImageHandler {
                                      String imageUrl,
                                      SimpleTarget<Bitmap> simpleTarget) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .asBitmap()
-                    .centerCrop()
-                    .into(simpleTarget);
+//            Glide.with(context)
+//                    .load(imageUrl)
+//                    .asBitmap()
+//                    .centerCrop()
+//                    .into(simpleTarget);
         } else if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .asBitmap()
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .transform(new CenterCrop(context), blurTransformation(context))
-                    .into(simpleTarget);
+//            Glide.with(context)
+//                    .load(imageUrl)
+//                    .asBitmap()
+//                    .dontAnimate()
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .transform(new CenterCrop(context), blurTransformation(context))
+//                    .into(simpleTarget);
         }
     }
 
     private static BitmapTransformation blurTransformation(Context context) {
-        return new BitmapTransformation(context) {
-            @Override
-            protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-                return blurStrong(context, toTransform);
-            }
-
-            @Override
-            public String getId() {
-                return getClass().getName();
-            }
-        };
+        return null;
+//        return new BitmapTransformation(context) {
+//            @Override
+//            protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+//                return blurStrong(context, toTransform);
+//            }
+//
+//            @Override
+//            public String getId() {
+//                return getClass().getName();
+//            }
+//        };
     }
 
     private static RenderScript rs;
@@ -815,12 +816,12 @@ public class ImageHandler {
 
     private static ScriptIntrinsicBlur getIntrinsic(Context context){
         if (theIntrinsic == null) {
-            synchronized (ScriptIntrinsicBlur.class) {
-                if (theIntrinsic == null) {
-                    theIntrinsic = ScriptIntrinsicBlur.create(getRs(context),
-                            Element.U8_4(getRs(context)));
-                }
-            }
+//            synchronized (ScriptIntrinsicBlur.class) {
+//                if (theIntrinsic == null) {
+//                    theIntrinsic = ScriptIntrinsicBlur.create(getRs(context),
+//                            Element.U8_4(getRs(context)));
+//                }
+//            }
         }
         return theIntrinsic;
     }
@@ -837,9 +838,9 @@ public class ImageHandler {
 
         Allocation tmpIn = Allocation.createFromBitmap(getRs(context), inputBitmap);
         Allocation tmpOut = Allocation.createFromBitmap(getRs(context), outputBitmap);
-        getIntrinsic(context).setRadius(BLUR_RADIUS);
-        getIntrinsic(context).setInput(tmpIn);
-        getIntrinsic(context).forEach(tmpOut);
+//        getIntrinsic(context).setRadius(BLUR_RADIUS);
+//        getIntrinsic(context).setInput(tmpIn);
+//        getIntrinsic(context).forEach(tmpOut);
         tmpOut.copyTo(outputBitmap);
 
         return outputBitmap;
@@ -856,68 +857,68 @@ public class ImageHandler {
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
 
         RenderScript rs = RenderScript.create(context);
-        ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+//        ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
         Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
         Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
-        theIntrinsic.setRadius(BLUR_RADIUS);
-        theIntrinsic.setInput(tmpIn);
-        theIntrinsic.forEach(tmpOut);
+//        theIntrinsic.setRadius(BLUR_RADIUS);
+//        theIntrinsic.setInput(tmpIn);
+//        theIntrinsic.forEach(tmpOut);
         tmpOut.copyTo(outputBitmap);
 
         return outputBitmap;
     }
 
     public static void loadCircleImageWithPlaceHolder(Context context, final ImageView imageView, int placeHolder, String url) {
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .placeholder(placeHolder)
-                .error(placeHolder)
-                .into(getCircleImageViewTarget(imageView));
+//        Glide.with(context)
+//                .load(url)
+//                .asBitmap()
+//                .placeholder(placeHolder)
+//                .error(placeHolder)
+//                .into(getCircleImageViewTarget(imageView));
     }
 
-    public static void loadImageWithListener(ImageView imageview, String url,
-                                             RequestListener<String,
-                                                     GlideDrawable> requestListener) {
-        if (url != null) {
-            Glide.with(imageview.getContext())
-                    .load(url)
-                    .dontAnimate()
-                    .listener(requestListener)
-                    .fitCenter()
-                    .placeholder(R.drawable.loading_page)
-                    .into(imageview);
-        }
-    }
+//    public static void loadImageWithListener(ImageView imageview, String url,
+//                                             RequestListener<String,
+//                                                     GlideDrawable> requestListener) {
+//        if (url != null) {
+//            Glide.with(imageview.getContext())
+//                    .load(url)
+//                    .dontAnimate()
+//                    .listener(requestListener)
+//                    .fitCenter()
+//                    .placeholder(R.drawable.loading_page)
+//                    .into(imageview);
+//        }
+//    }
 
     public static void clearImage(ImageView imageView) {
         if (imageView != null) {
-            Glide.clear(imageView);
+//            Glide.clear(imageView);
         }
     }
 
-    public static void loadImageBlurredWithListener(ImageView imageView, String url, int
-            blurWidth, int blurHeight, RequestListener<String, GlideDrawable> listener) {
-        if (url != null) {
-            Glide.with(imageView.getContext())
-                    .load(url)
-                    .dontAnimate()
-                    .override(blurWidth, blurHeight)
-                    .listener(listener)
-                    .fitCenter()
-                    .placeholder(R.drawable.loading_page)
-                    .into(imageView);
-        }
-    }
+//    public static void loadImageBlurredWithListener(ImageView imageView, String url, int
+//            blurWidth, int blurHeight, RequestListener<String, GlideDrawable> listener) {
+//        if (url != null) {
+//            Glide.with(imageView.getContext())
+//                    .load(url)
+//                    .dontAnimate()
+//                    .override(blurWidth, blurHeight)
+//                    .listener(listener)
+//                    .fitCenter()
+//                    .placeholder(R.drawable.loading_page)
+//                    .into(imageView);
+//        }
+//    }
 
     public static void loadBackgroundImage(@Nullable Window window, @NotNull String backgroundUrl) {
         if (window != null && window.getContext() != null) {
-            Glide.with(window.getContext()).load(backgroundUrl).into(new SimpleTarget<GlideDrawable>() {
-                @Override
-                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                    window.setBackgroundDrawable(resource);
-                }
-            });
+//            Glide.with(window.getContext()).load(backgroundUrl).into(new SimpleTarget<GlideDrawable>() {
+//                @Override
+//                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+//                    window.setBackgroundDrawable(resource);
+//                }
+//            });
         }
     }
 
@@ -926,31 +927,30 @@ public class ImageHandler {
             return;
         }
 
-        Glide.with(view.getContext())
-                .load(url)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        if (resource.getWidth() > 1) {
-                            view.setBackground(new BitmapDrawable(view.getResources(), resource));
-                        }
-                    }
-                });
+//        Glide.with(view.getContext())
+//                .load(url)
+//                .asBitmap()
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        if (resource.getWidth() > 1) {
+//                            view.setBackground(new BitmapDrawable(view.getResources(), resource));
+//                        }
+//                    }
+//                });
     }
 
 
     public static void cacheFromUrl(@NotNull Context context, @NotNull String url, @NotNull ArrayList<Drawable> cacheImageList) {
         int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 21, Resources.getSystem().getDisplayMetrics());
-        Glide.with(context)
-                .load(url)
-                .override(size, size)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        cacheImageList.add(resource);
-                    }
-                });
-
+//        Glide.with(context)
+//                .load(url)
+//                .override(size, size)
+//                .into(new SimpleTarget<GlideDrawable>() {
+//                    @Override
+//                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+//                        cacheImageList.add(resource);
+//                    }
+//                });
     }
 }

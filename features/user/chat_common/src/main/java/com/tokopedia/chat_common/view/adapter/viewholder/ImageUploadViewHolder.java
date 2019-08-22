@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener;
+//import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.ImageUploadViewModel;
@@ -67,13 +67,13 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
 
             if (element.isDummy()) {
                 setVisibility(progressBarSendImage, View.VISIBLE);
-                ImageHandler.loadImageBlurredWithListener(attachment, element.getImageUrl(),
-                        BLUR_WIDTH, BLUR_HEIGHT,
-                        new DynamicSizeImageRequestListener());
+//                ImageHandler.loadImageBlurredWithListener(attachment, element.getImageUrl(),
+//                        BLUR_WIDTH, BLUR_HEIGHT,
+//                        new DynamicSizeImageRequestListener());
             } else {
                 setVisibility(progressBarSendImage, View.GONE);
-                ImageHandler.loadImageWithListener(attachment, element.getImageUrl(),
-                        new DynamicSizeImageRequestListener());
+//                ImageHandler.loadImageWithListener(attachment, element.getImageUrl(),
+//                        new DynamicSizeImageRequestListener());
             }
 
 

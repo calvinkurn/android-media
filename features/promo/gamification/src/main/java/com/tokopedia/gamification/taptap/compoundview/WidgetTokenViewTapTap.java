@@ -21,11 +21,11 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
+//import com.bumptech.glide.Glide;
+//import com.bumptech.glide.load.engine.DiskCacheStrategy;
+//import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.target.SimpleTarget;
+//import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationConstants;
 import com.tokopedia.gamification.R;
@@ -280,24 +280,24 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         String imageFullWhitetUrl = tokenAsset.getGlowImgURL();
         String imageSemiWhiteUrl = tokenAsset.getGlowShadowImgURL();
 
-        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
-
-        ImageHandler.loadImageWithSignature(imageViewFull, full, stringSignature);
-        Glide.with(getContext())
-                .load(cracked)
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .signature(new StringSignature(String.valueOf(tokenAsset.getVersion())))
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        imageViewCracked.setImageBitmap(resource);
-                    }
-                });
-        ImageHandler.loadImageWithSignature(imageViewRight, imageRightUrl, stringSignature);
-        ImageHandler.loadImageWithSignature(imageViewLeft, imageLeftUrl, stringSignature);
-        ImageHandler.loadImageWithSignature(imageFullWhiteEgg, imageFullWhitetUrl, stringSignature);
-        ImageHandler.loadImageWithSignature(imageSemiWhiteEgg, imageSemiWhiteUrl, stringSignature);
+//        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
+//
+//        ImageHandler.loadImageWithSignature(imageViewFull, full, stringSignature);
+//        Glide.with(getContext())
+//                .load(cracked)
+//                .asBitmap()
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .signature(new StringSignature(String.valueOf(tokenAsset.getVersion())))
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        imageViewCracked.setImageBitmap(resource);
+//                    }
+//                });
+//        ImageHandler.loadImageWithSignature(imageViewRight, imageRightUrl, stringSignature);
+//        ImageHandler.loadImageWithSignature(imageViewLeft, imageLeftUrl, stringSignature);
+//        ImageHandler.loadImageWithSignature(imageFullWhiteEgg, imageFullWhitetUrl, stringSignature);
+//        ImageHandler.loadImageWithSignature(imageSemiWhiteEgg, imageSemiWhiteUrl, stringSignature);
 
         show();
         reset(tokenUser);
@@ -310,8 +310,8 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         }
         this.tokenUserId = tokenUser.getTokenUserID();
         String empty = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_EMPTY);
-        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
-        ImageHandler.loadImageWithSignature(imageViewFull, empty, stringSignature);
+//        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
+//        ImageHandler.loadImageWithSignature(imageViewFull, empty, stringSignature);
         reset(tokenUser);
         this.setVisibility(View.VISIBLE);
 

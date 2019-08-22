@@ -13,9 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
+//import com.bumptech.glide.Glide;
+//import com.bumptech.glide.load.engine.DiskCacheStrategy;
+//import com.bumptech.glide.request.target.Target;
 import com.tokopedia.design.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -74,14 +74,14 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
             );
         }
         try {
-            Glide.with(holder.itemView.getContext())
-                    .load(bannerImageUrls.get(position))
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .placeholder(R.drawable.ic_loading_image)
-                    .error(R.drawable.ic_loading_image)
-                    .centerCrop()
-                    .into(holder.bannerImage);
+//            Glide.with(holder.itemView.getContext())
+//                    .load(bannerImageUrls.get(position))
+//                    .dontAnimate()
+//                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+//                    .placeholder(R.drawable.ic_loading_image)
+//                    .error(R.drawable.ic_loading_image)
+//                    .centerCrop()
+//                    .into(holder.bannerImage);
         } catch (Exception e) {
             e.printStackTrace();
         }

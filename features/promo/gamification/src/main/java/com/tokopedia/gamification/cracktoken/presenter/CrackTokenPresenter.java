@@ -3,10 +3,10 @@ package com.tokopedia.gamification.cracktoken.presenter;
 import android.content.Context;
 import android.util.Pair;
 
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
+//import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+//import com.bumptech.glide.request.RequestListener;
+//import com.bumptech.glide.request.target.Target;
+//import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -233,49 +233,49 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         assetUrls.add(new Pair<>(imageRightUrl, tokenAssetVersion));
         assetUrls.add(new Pair<>(tokenAsset.getSmallImgv2Url(), tokenAssetVersion));
 
-        RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
-        for (Pair<String, String> assetUrlPair : assetUrls) {
-            ImageHandler.downloadOriginalSizeImageWithSignature(
-                    context, assetUrlPair.first, new StringSignature(assetUrlPair.second),
-                    tokenAssetRequestListener);
-        }
+//        RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
+//        for (Pair<String, String> assetUrlPair : assetUrls) {
+//            ImageHandler.downloadOriginalSizeImageWithSignature(
+//                    context, assetUrlPair.first, new StringSignature(assetUrlPair.second),
+//                    tokenAssetRequestListener);
+//        }
     }
 
-    public class ImageRequestListener implements RequestListener<String, GlideDrawable> {
-
-        private int size;
-
-        ImageRequestListener(int size) {
-            this.size = size;
-        }
-
-        int counter = 0;
-
-        @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            counter++;
-            if (counter == size) {
-                onAllResourceDownloaded();
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            counter++;
-            if (counter == size) {
-                onAllResourceDownloaded();
-            }
-            return false;
-        }
-
-        void onAllResourceDownloaded() {
-            if (isViewAttached()) {
-                getView().hideLoading();
-                getView().onSuccessDownloadAllAsset();
-            }
-        }
-    }
+//    public class ImageRequestListener implements RequestListener<String, GlideDrawable> {
+//
+//        private int size;
+//
+//        ImageRequestListener(int size) {
+//            this.size = size;
+//        }
+//
+//        int counter = 0;
+//
+//        @Override
+//        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//            counter++;
+//            if (counter == size) {
+//                onAllResourceDownloaded();
+//            }
+//            return false;
+//        }
+//
+//        @Override
+//        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//            counter++;
+//            if (counter == size) {
+//                onAllResourceDownloaded();
+//            }
+//            return false;
+//        }
+//
+//        void onAllResourceDownloaded() {
+//            if (isViewAttached()) {
+//                getView().hideLoading();
+//                getView().onSuccessDownloadAllAsset();
+//            }
+//        }
+//    }
 
     @Override
     public void detachView() {

@@ -18,7 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.signature.StringSignature;
+//import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -117,11 +117,11 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
 
         getMoreTokenBtn.setText(tokenData.getHome().getEmptyState().getButtonText());
 
-        ImageHandler.loadImageWithSignature(ivContainer, tokenData.getHome().getEmptyState().getBackgroundImgUrl(),
-                new StringSignature(String.valueOf(tokenData.getHome().getEmptyState().getVersion())));
-
-        ImageHandler.loadImageWithSignature(tokenEmptyImage, tokenData.getHome().getEmptyState().getImageUrl(),
-                new StringSignature(String.valueOf(tokenData.getHome().getEmptyState().getVersion())));
+//        ImageHandler.loadImageWithSignature(ivContainer, tokenData.getHome().getEmptyState().getBackgroundImgUrl(),
+//                new StringSignature(String.valueOf(tokenData.getHome().getEmptyState().getVersion())));
+//
+//        ImageHandler.loadImageWithSignature(tokenEmptyImage, tokenData.getHome().getEmptyState().getImageUrl(),
+//                new StringSignature(String.valueOf(tokenData.getHome().getEmptyState().getVersion())));
 
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
