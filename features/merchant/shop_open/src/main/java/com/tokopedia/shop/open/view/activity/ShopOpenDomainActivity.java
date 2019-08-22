@@ -3,7 +3,9 @@ package com.tokopedia.shop.open.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.widget.Toast;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -43,5 +45,14 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
                 .shopOpenDomainModule(new ShopOpenDomainModule())
                 .shopComponent(((SellerModuleRouter) getApplication()).getShopComponent())
                 .build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (GlobalConfig.isSellerApp() && isTaskRoot()) {
+            Toast.makeText(this, "Logout here", Toast.LENGTH_LONG).show();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
