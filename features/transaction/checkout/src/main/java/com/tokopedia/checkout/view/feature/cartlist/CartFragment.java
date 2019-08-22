@@ -71,6 +71,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItem
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartSectionHeaderHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTickerHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
@@ -133,6 +134,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private static final int NO_ELEVATION = 0;
     private static final String CART_TRACE = "mp_cart";
     private static final String CART_ALL_TRACE = "mp_cart_all";
+    private static final String CART_PAGE = "cart";
     private static final int NAVIGATION_PDP = 64728;
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
@@ -375,7 +377,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     int cartSelectAllViewHolderPosition = cartAdapter.getCartSelectAllViewHolderPosition();
                     if (cartSelectAllViewHolderPosition > -1) {
                         if (((GridLayoutManager) layoutManager).findFirstVisibleItemPosition() >= cartSelectAllViewHolderPosition) {
-                            if (cardHeader != null && cardHeader.getVisibility() != View.VISIBLE) {
+                            if (cardHeader != null && cardHeader.getVisibility() != View.VISIBLE && cardFooter.getVisibility() == View.VISIBLE) {
                                 cardHeader.setVisibility(View.VISIBLE);
                             }
                         } else {
@@ -1160,16 +1162,21 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     cartAdapter.addPromoStackingVoucherData(promoStackingData);
                 }
                 cartAdapter.addCartEmptyData();
+
+                CartTickerData tickerData = cartListData.getTicker();
+                if (tickerData != null && tickerData.isValid(CART_PAGE)) {
+                    cartAdapter.addCartTicker(new CartTickerHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
+                }
+
                 cartAdapter.notifyDataSetChanged();
                 onCartEmpty();
             } else {
                 cartAdapter.removeCartEmptyData();
 
                 CartTickerData tickerData = cartListData.getTicker();
-                if (tickerData != null) {
-                    cartAdapter.addCartTicker(tickerData);
+                if (tickerData != null && tickerData.isValid(CART_PAGE)) {
+                    cartAdapter.addCartTicker(new CartTickerHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
                 }
-                cartAdapter.addCartSelectAll(true);
                 cartAdapter.addPromoStackingVoucherData(promoStackingData);
 
                 if (cartListData.getCartPromoSuggestion().isVisible()) {

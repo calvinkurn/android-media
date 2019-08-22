@@ -44,4 +44,8 @@ class CartTickerData : Parcelable {
             }
         }
     }
+
+    fun isValid(page: String?): Boolean {
+        return (page == null || page.equals(this.page, true)) && message.isNotBlank()
+    }
 }
