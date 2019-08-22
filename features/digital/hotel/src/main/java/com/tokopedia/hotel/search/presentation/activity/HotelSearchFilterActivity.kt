@@ -15,6 +15,8 @@ class HotelSearchFilterActivity: BaseSimpleActivity() {
 
     override fun getLayoutRes(): Int = R.layout.activity_hotel_search_filter
 
+    override fun getParentViewResourceID() = R.id.parent_view
+
     override fun getNewFragment(): Fragment {
         return HotelSearchFilterFragment.createInstance(intent.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID))
     }
